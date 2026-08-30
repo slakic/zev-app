@@ -1,0 +1,8 @@
+node_modules
+.next
+var
+.env
+*.zip
+*.log
+tsconfig.tsbuildinfo
+.git

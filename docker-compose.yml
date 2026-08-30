@@ -1,0 +1,45 @@
+# Pokretanje: docker compose up -d --build
+# Aplikacija: http://localhost:3000  (demo nalozi su u README.md)
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zev
+      POSTGRES_PASSWORD: zev_dev_password
+      POSTGRES_DB: zev
+    volumes:
+      - zev-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zev -d zev"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    # Otkomentarišite za direktan pristup bazi sa hosta:
+    # ports:
+    #   - "5432:5432"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://zev:zev_dev_password@db:5432/zev?schema=public
+      # OBAVEZNO promijeniti u produkciji (openssl rand -hex 32):
+      SESSION_SECRET: change-me-in-production-0123456789abcdef
+      APP_URL: http://localhost:3000
+      EMAIL_PROVIDER: mock
+      VIBER_PROVIDER: mock
+      STORAGE_DIR: ./var/storage
+      # 1 = pri prvom pokretanju ubaci demo podatke (preskače se ako ih već ima)
+      SEED_ON_START: "1"
+    volumes:
+      - zev-storage:/app/var/storage
+    ports:
+      - "3000:3000"
+
+volumes:
+  zev-pgdata:
+  zev-storage:

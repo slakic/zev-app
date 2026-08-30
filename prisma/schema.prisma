@@ -1,0 +1,1307 @@
+// ZEV MVP — domain schema
+// Money: always Decimal (Postgres numeric). Never float.
+// Audit + votes are append-only (enforced by DB triggers in migration SQL).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Auth & parties
+// ---------------------------------------------------------------------------
+
+enum Role {
+  PRESIDENT
+  ACCOUNTANT
+  OWNER
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  roles        Role[]
+  active       Boolean   @default(true)
+  deactivatedAt DateTime?
+  party        Party?    @relation(fields: [partyId], references: [id])
+  partyId      String?   @unique
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+enum PartyKind {
+  PERSON
+  ORGANIZATION
+}
+
+/// A natural person or legal entity. Owners, occupants, proxies, officers all reference Party.
+model Party {
+  id                    String     @id @default(cuid())
+  kind                  PartyKind
+  firstName             String?
+  lastName              String?
+  orgName               String?
+  orgIdNumber           String?    // JIB/MB for organizations
+  email                 String?
+  phone                 String?
+  address               String?    // property/legal address
+  correspondenceAddress String?    // may differ from address
+  note                  String?
+  active                Boolean    @default(true)
+  user                  User?
+  ownershipStakes       OwnershipStake[]
+  occupancies           Occupancy[]
+  proxiesGiven          Proxy[]    @relation("ProxyGrantor")
+  proxiesHeld           Proxy[]    @relation("ProxyHolder")
+  officeTerms           OfficeTerm[]
+  invoices              Invoice[]  @relation("InvoiceDebtor")
+  invoiceRecipientFor   Unit[]     @relation("UnitInvoiceRecipient")
+  correspondenceFor     Unit[]     @relation("UnitCorrespondenceContact")
+  payments              Payment[]
+  eligibleVoters        EligibleVoter[] @relation("EVOwner")
+  eligibleProxyFor      EligibleVoter[] @relation("EVProxy")
+  votesCast             Vote[]     @relation("VoteVoter")
+  votesRepresented      Vote[]     @relation("VoteRepresented")
+  reportedIssues        MaintenanceIssue[] @relation("IssueReporter")
+  responsibleForIssues  MaintenanceIssue[] @relation("IssueResponsible")
+  notifications         NotificationMessage[]
+  viberSubscriber       ViberSubscriber?
+  attendances           Attendance[]
+  balanceCorrections    BalanceCorrection[]
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// ZEV, buildings, units
+// ---------------------------------------------------------------------------
+
+model Zev {
+  id                 String   @id @default(cuid())
+  legalName          String
+  shortName          String?
+  registrationNumber String?
+  jib                String?  // tax identifier
+  registeredAddress  String?
+  city               String?
+  municipality       String?
+  foundingDate       DateTime?
+  registrationDate   DateTime?
+  note               String?
+  buildings          Building[]
+  accounts           MoneyAccount[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Building {
+  id           String     @id @default(cuid())
+  zev          Zev        @relation(fields: [zevId], references: [id])
+  zevId        String
+  name         String
+  address      String
+  cadastralRef String?
+  yearBuilt    Int?
+  floorsCount  Int?
+  note         String?
+  entrances    Entrance[]
+  units        Unit[]
+  commonAssets CommonAsset[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+/// Entrance or functional section of a building
+model Entrance {
+  id         String   @id @default(cuid())
+  building   Building @relation(fields: [buildingId], references: [id])
+  buildingId String
+  name       String
+  address    String?
+  note       String?
+  units      Unit[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum UnitType {
+  APARTMENT
+  BUSINESS
+  GARAGE
+  OTHER
+}
+
+model Unit {
+  id                     String    @id @default(cuid())
+  building               Building  @relation(fields: [buildingId], references: [id])
+  buildingId             String
+  entrance               Entrance? @relation(fields: [entranceId], references: [id])
+  entranceId             String?
+  type                   UnitType
+  label                  String    // e.g. "Stan 12"
+  floor                  Int?
+  usableArea             Decimal   @db.Decimal(10, 2) // m2
+  ownershipShare         Decimal   @db.Decimal(9, 6)  // % share in ZEV common property
+  occupantCount          Int       @default(0)
+  typeCoefficient        Decimal   @default(1) @db.Decimal(6, 3)
+  active                 Boolean   @default(true)
+  note                   String?
+  invoiceRecipient       Party?    @relation("UnitInvoiceRecipient", fields: [invoiceRecipientId], references: [id])
+  invoiceRecipientId     String?
+  correspondenceContact  Party?    @relation("UnitCorrespondenceContact", fields: [correspondenceContactId], references: [id])
+  correspondenceContactId String?
+  ownershipStakes        OwnershipStake[]
+  occupancies            Occupancy[]
+  allocationMemberships  AllocationGroupMember[]
+  invoices               Invoice[]
+  chargeExceptions       ChargeUnitOverride[]
+  meterReadings          MeterReading[]
+  proposalScopes         ProposalUnit[]
+  maintenanceIssues      MaintenanceIssue[]
+  planItemScopes         PlanItemUnit[]
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@unique([buildingId, label])
+}
+
+/// Effective-dated ownership. Co-ownership = several stakes on same unit whose shares sum to 100.
+model OwnershipStake {
+  id           String    @id @default(cuid())
+  unit         Unit      @relation(fields: [unitId], references: [id])
+  unitId       String
+  owner        Party     @relation(fields: [ownerId], references: [id])
+  ownerId      String
+  sharePercent Decimal   @db.Decimal(9, 6) // % of the unit
+  validFrom    DateTime
+  validTo      DateTime? // null = current
+  acquisitionNote String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([unitId, validFrom])
+  @@index([ownerId])
+}
+
+enum OccupancyType {
+  OWNER_OCCUPANT
+  TENANT
+  OTHER_OCCUPANT
+}
+
+model Occupancy {
+  id        String        @id @default(cuid())
+  unit      Unit          @relation(fields: [unitId], references: [id])
+  unitId    String
+  party     Party         @relation(fields: [partyId], references: [id])
+  partyId   String
+  type      OccupancyType
+  headcount Int           @default(1)
+  validFrom DateTime
+  validTo   DateTime?
+  note      String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([unitId])
+}
+
+enum ProxyScope {
+  ALL
+  MEETING
+  PROPOSAL
+}
+
+/// Authorization of a proxy to vote for an owner. Effective-dated, revocable.
+model Proxy {
+  id          String     @id @default(cuid())
+  grantor     Party      @relation("ProxyGrantor", fields: [grantorId], references: [id])
+  grantorId   String
+  holder      Party      @relation("ProxyHolder", fields: [holderId], references: [id])
+  holderId    String
+  scope       ProxyScope
+  meeting     Meeting?   @relation(fields: [meetingId], references: [id])
+  meetingId   String?
+  proposalId  String?
+  documentRef String?    // reference to the written authorization
+  validFrom   DateTime
+  validTo     DateTime?
+  revokedAt   DateTime?
+  revokedReason String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([grantorId])
+}
+
+enum OfficeRole {
+  PRESIDENT
+  ACCOUNTANT
+  BOARD_MEMBER
+}
+
+/// Effective-dated office holders (president mandate, accountant engagement,
+/// upravni odbor membership). PRESIDENT and ACCOUNTANT are single-holder
+/// roles (setting a new term closes the previous one); BOARD_MEMBER is
+/// multi-holder — several rows may be concurrently open. See
+/// LEGAL_AND_FINANCIAL_ASSUMPTIONS.md §Organi ZEV for the legal basis and
+/// the assumptions flagged for review (board size, mandate length, whether
+/// the ZEV "predsjednik" tracked here is also predsjednik upravnog odbora).
+model OfficeTerm {
+  id        String     @id @default(cuid())
+  role      OfficeRole
+  party     Party      @relation(fields: [partyId], references: [id])
+  partyId   String
+  validFrom DateTime
+  validTo   DateTime?
+  decisionRef String?
+  createdAt DateTime   @default(now())
+}
+
+model AllocationGroup {
+  id        String                  @id @default(cuid())
+  name      String                  @unique
+  note      String?
+  members   AllocationGroupMember[]
+  createdAt DateTime                @default(now())
+}
+
+model AllocationGroupMember {
+  id      String          @id @default(cuid())
+  group   AllocationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+  unit    Unit            @relation(fields: [unitId], references: [id])
+  unitId  String
+  weight  Decimal         @default(1) @db.Decimal(12, 6)
+
+  @@unique([groupId, unitId])
+}
+
+enum CommonAssetKind {
+  AREA
+  SYSTEM
+  EQUIPMENT
+}
+
+model CommonAsset {
+  id            String          @id @default(cuid())
+  building      Building?       @relation(fields: [buildingId], references: [id])
+  buildingId    String?
+  kind          CommonAssetKind
+  name          String
+  description   String?
+  warrantyUntil DateTime?
+  note          String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Scope pattern (shared by charges, proposals, plan items, expenses, issues)
+// ---------------------------------------------------------------------------
+
+enum ScopeType {
+  ZEV
+  BUILDING
+  ENTRANCE
+  UNITS
+  GROUP
+}
+
+// ---------------------------------------------------------------------------
+// Meetings & voting
+// ---------------------------------------------------------------------------
+
+enum MeetingStatus {
+  DRAFT
+  SCHEDULED
+  INVITATIONS_PREPARED
+  INVITATIONS_SENT
+  VOTING_OPEN
+  VOTING_CLOSED
+  RESULTS_REVIEW
+  DECISION_RECORDED
+  MINUTES_FINALIZED
+  ARCHIVED
+}
+
+enum MeetingType {
+  REGULAR
+  EXTRAORDINARY
+  CONSTITUTIVE
+  WRITTEN
+}
+
+/// Which organ a sjednica belongs to. ASSEMBLY = skupština (all owners,
+/// ownership-weighted per the proposal's VotingRule). BOARD = sjednica
+/// upravnog odbora (current board members only, one member one vote —
+/// see LEGAL_AND_FINANCIAL_ASSUMPTIONS.md §Organi ZEV).
+enum MeetingBody {
+  ASSEMBLY
+  BOARD
+}
+
+model Meeting {
+  id             String        @id @default(cuid())
+  title          String
+  type           MeetingType
+  body           MeetingBody   @default(ASSEMBLY)
+  status         MeetingStatus @default(DRAFT)
+  location       String?
+  scheduledAt    DateTime?
+  eVoteOpensAt   DateTime?
+  eVoteClosesAt  DateTime?
+  discussionNotes String?
+  agendaItems    AgendaItem[]
+  proposals      Proposal[]
+  attendances    Attendance[]
+  proxies        Proxy[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model AgendaItem {
+  id        String    @id @default(cuid())
+  meeting   Meeting   @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meetingId String
+  order     Int
+  title     String
+  note      String?
+  proposals Proposal[]
+
+  @@unique([meetingId, order])
+}
+
+model Attendance {
+  id        String  @id @default(cuid())
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meetingId String
+  party     Party   @relation(fields: [partyId], references: [id])
+  partyId   String
+  present   Boolean @default(true)
+  viaProxyId String? // Proxy.id when represented
+  note      String?
+
+  @@unique([meetingId, partyId])
+}
+
+enum ProposalStatus {
+  DRAFT
+  VOTING_OPEN
+  VOTING_CLOSED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  SUPERSEDED
+}
+
+enum QuorumType {
+  NONE
+  PERCENT_OF_TOTAL_WEIGHT
+  PERCENT_OF_OWNER_COUNT
+}
+
+enum MajorityType {
+  SIMPLE_OF_VOTES_CAST
+  PERCENT_OF_VOTES_CAST
+  PERCENT_OF_ELIGIBLE_WEIGHT
+}
+
+enum WeightMethod {
+  PER_OWNER
+  OWNERSHIP_SHARE
+  USABLE_AREA
+}
+
+/// Reusable, configurable voting rule presets
+model VotingRule {
+  id            String       @id @default(cuid())
+  name          String       @unique
+  quorumType    QuorumType
+  quorumPercent Decimal?     @db.Decimal(6, 3)
+  majorityType  MajorityType
+  majorityPercent Decimal?   @db.Decimal(6, 3)
+  weightMethod  WeightMethod
+  note          String?
+  proposals     Proposal[]
+  createdAt     DateTime     @default(now())
+}
+
+model Proposal {
+  id                String         @id @default(cuid())
+  meeting           Meeting        @relation(fields: [meetingId], references: [id])
+  meetingId         String
+  agendaItem        AgendaItem?    @relation(fields: [agendaItemId], references: [id])
+  agendaItemId      String?
+  code              String         // e.g. "P-2026-03"
+  version           Int            @default(1)
+  supersedesId      String?        @unique
+  supersedes        Proposal?      @relation("ProposalVersions", fields: [supersedesId], references: [id])
+  supersededBy      Proposal?      @relation("ProposalVersions")
+  title             String
+  text              String         // exact proposal text
+  rationale         String?
+  financialImpact   Decimal?       @db.Decimal(14, 2)
+  scopeType         ScopeType      @default(ZEV)
+  buildingId        String?
+  entranceId        String?
+  allocationGroupId String?
+  scopeUnits        ProposalUnit[]
+  status            ProposalStatus @default(DRAFT)
+  votingRule        VotingRule?    @relation(fields: [votingRuleId], references: [id])
+  votingRuleId      String?
+  /// Frozen snapshot of quorum/majority/weight rules + eligible base, taken when voting opens
+  ruleSnapshot      Json?
+  contentHash       String?        // sha256 of text+attachments at freeze time
+  votingOpensAt     DateTime?
+  votingClosesAt    DateTime?
+  frozenAt          DateTime?
+  resultSummary     Json?          // computed result snapshot at close
+  decisionNumber    String?
+  eligibleVoters    EligibleVoter[]
+  votes             Vote[]
+  attachments       Attachment[]   @relation("ProposalAttachments")
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([code, version])
+}
+
+model ProposalUnit {
+  id         String   @id @default(cuid())
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposalId String
+  unit       Unit     @relation(fields: [unitId], references: [id])
+  unitId     String
+
+  @@unique([proposalId, unitId])
+}
+
+/// Snapshot of who may vote on a proposal, with what weight, frozen at voting open.
+model EligibleVoter {
+  id           String    @id @default(cuid())
+  proposal     Proposal  @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposalId   String
+  owner        Party     @relation("EVOwner", fields: [ownerId], references: [id])
+  ownerId      String
+  proxy        Party?    @relation("EVProxy", fields: [proxyId], references: [id])
+  proxyId      String?
+  proxyRecordId String?  // Proxy.id used
+  weight       Decimal   @db.Decimal(14, 6)
+  basis        Json      // units + shares this weight derives from
+  tokens       ApprovalToken[]
+  votes        Vote[]
+  createdAt    DateTime  @default(now())
+
+  @@unique([proposalId, ownerId])
+}
+
+enum TokenStatus {
+  ACTIVE
+  USED
+  REVOKED
+  EXPIRED
+  SUPERSEDED
+}
+
+/// Approval link token. Only the SHA-256 hash of the token is stored.
+model ApprovalToken {
+  id                String        @id @default(cuid())
+  eligibleVoter     EligibleVoter @relation(fields: [eligibleVoterId], references: [id], onDelete: Cascade)
+  eligibleVoterId   String
+  tokenHash         String        @unique // sha256(token), never plaintext
+  verificationHash  String        // sha256 of one-time personal verification code
+  status            TokenStatus   @default(ACTIVE)
+  expiresAt         DateTime
+  issuedAt          DateTime      @default(now())
+  deliveredVia      String?       // EMAIL | VIBER | MANUAL
+  openedAt          DateTime?
+  usedAt            DateTime?
+  revokedAt         DateTime?
+  revokedReason     String?
+  replacedById      String?       @unique
+  replacedBy        ApprovalToken? @relation("TokenReissue", fields: [replacedById], references: [id])
+  replaces          ApprovalToken? @relation("TokenReissue")
+  failedAttempts    Int           @default(0)
+  vote              Vote?
+
+  @@index([eligibleVoterId])
+}
+
+enum VoteChoice {
+  APPROVE
+  REJECT
+  ABSTAIN
+}
+
+enum VoteChannel {
+  ELECTRONIC
+  PAPER
+  IN_PERSON
+}
+
+/// Immutable vote evidence. UPDATE/DELETE blocked by DB trigger.
+/// Corrections are separate rows referencing correctionOfId with a reason.
+model Vote {
+  id                 String      @id @default(cuid())
+  proposal           Proposal    @relation(fields: [proposalId], references: [id])
+  proposalId         String
+  proposalVersion    Int
+  eligibleVoter      EligibleVoter @relation(fields: [eligibleVoterId], references: [id])
+  eligibleVoterId    String
+  voter              Party       @relation("VoteVoter", fields: [voterId], references: [id])
+  voterId            String      // who physically voted (owner or proxy)
+  represented        Party?      @relation("VoteRepresented", fields: [representedId], references: [id])
+  representedId      String?     // owner represented by proxy
+  proxyRecordId      String?
+  choice             VoteChoice
+  channel            VoteChannel
+  weight             Decimal     @db.Decimal(14, 6)
+  countsForQuorum    Boolean     @default(true)
+  token              ApprovalToken? @relation(fields: [tokenId], references: [id])
+  tokenId            String?     @unique
+  proposalHash       String      // hash of frozen proposal content voter saw
+  acknowledgementText String
+  ipHash             String?     // sha256(ip), retention-limited
+  userAgent          String?
+  issuedAt           DateTime?   // token issued
+  openedAt           DateTime?   // link opened
+  confirmedAt        DateTime?   // identity confirmed
+  submittedAt        DateTime    @default(now())
+  deliveryChannel    String?
+  invalid            Boolean     @default(false)
+  invalidReason      String?
+  correctionOfId     String?     @unique
+  correctionOf       Vote?       @relation("VoteCorrection", fields: [correctionOfId], references: [id])
+  correctedBy        Vote?       @relation("VoteCorrection")
+  correctionReason   String?
+  correctionAuthority String?
+
+  @@unique([proposalId, eligibleVoterId, correctionOfId])
+  @@index([proposalId])
+}
+
+// ---------------------------------------------------------------------------
+// Finance: accounts, transactions, charges, invoices, payments
+// ---------------------------------------------------------------------------
+
+enum AccountType {
+  BANK
+  CASH
+}
+
+model MoneyAccount {
+  id             String      @id @default(cuid())
+  zev            Zev         @relation(fields: [zevId], references: [id])
+  zevId          String
+  type           AccountType
+  name           String
+  bankName       String?
+  iban           String?     // account number
+  openingBalance Decimal     @default(0) @db.Decimal(14, 2)
+  openingDate    DateTime
+  active         Boolean     @default(true)
+  transactions   FinTransaction[]
+  payments       Payment[]
+  createdAt      DateTime    @default(now())
+}
+
+model TransactionCategory {
+  id    String @id @default(cuid())
+  name  String @unique
+  kind  String // INCOME | EXPENSE
+  transactions FinTransaction[]
+  expenses     Expense[]
+}
+
+enum TxType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum TxStatus {
+  ACTIVE
+  CANCELLED
+}
+
+/// Operational cash movement on an account (non-double-entry).
+model FinTransaction {
+  id             String    @id @default(cuid())
+  account        MoneyAccount @relation(fields: [accountId], references: [id])
+  accountId      String
+  date           DateTime
+  type           TxType
+  amount         Decimal   @db.Decimal(14, 2) // always positive; sign by type
+  currency       String    @default("BAM")
+  counterpartyName String?
+  category       TransactionCategory? @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+  paymentMethod  String?   // BANK | CASH
+  docRef         String?
+  description    String?
+  buildingId     String?
+  entranceId     String?
+  projectId      String?
+  planItemId     String?
+  expenseId      String?
+  payment        Payment?  @relation(fields: [paymentId], references: [id])
+  paymentId      String?   @unique
+  isReserveFund  Boolean   @default(false)
+  status         TxStatus  @default(ACTIVE)
+  cancelledAt    DateTime?
+  cancelReason   String?
+  cancelOfId     String?   @unique
+  cancelOf       FinTransaction? @relation("TxCancel", fields: [cancelOfId], references: [id])
+  cancelledByTx  FinTransaction? @relation("TxCancel")
+  attachments    Attachment[] @relation("TxAttachments")
+  createdById    String?
+  createdAt      DateTime  @default(now())
+
+  @@index([accountId, date])
+}
+
+enum ChargeMethod {
+  FIXED_PER_UNIT
+  PER_AREA
+  PER_OWNERSHIP_SHARE
+  PER_OCCUPANT
+  EQUAL_SPLIT
+  UNIT_TYPE_COEFFICIENT
+  CONSUMPTION
+  CUSTOM_WEIGHTS
+  MANUAL
+}
+
+enum BillingFrequency {
+  MONTHLY
+  ANNUAL
+  ONE_TIME
+}
+
+enum RoundingMethod {
+  HALF_UP_2
+  UP_2
+  DOWN_2
+}
+
+model ChargeItem {
+  id                String         @id @default(cuid())
+  name              String
+  description       String?
+  scopeType         ScopeType      @default(ZEV)
+  buildingId        String?
+  entranceId        String?
+  allocationGroupId String?
+  method            ChargeMethod
+  rate              Decimal?       @db.Decimal(14, 6) // amount, or rate per m2/%/occupant/consumption unit
+  effectiveFrom     DateTime
+  effectiveTo       DateTime?
+  frequency         BillingFrequency @default(MONTHLY)
+  dueDayOfMonth     Int            @default(15)
+  rounding          RoundingMethod @default(HALF_UP_2)
+  minAmount         Decimal?       @db.Decimal(14, 2)
+  maxAmount         Decimal?       @db.Decimal(14, 2)
+  displayOrder      Int            @default(0)
+  isReserveFund     Boolean        @default(false)
+  active            Boolean        @default(true)
+  unitOverrides     ChargeUnitOverride[]
+  meterReadings     MeterReading[]
+  invoiceLines      InvoiceLine[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+/// Per-unit exemption, custom weight or manual amount for a charge item
+model ChargeUnitOverride {
+  id           String     @id @default(cuid())
+  chargeItem   ChargeItem @relation(fields: [chargeItemId], references: [id], onDelete: Cascade)
+  chargeItemId String
+  unit         Unit       @relation(fields: [unitId], references: [id])
+  unitId       String
+  exempt       Boolean    @default(false)
+  customWeight Decimal?   @db.Decimal(12, 6)
+  manualAmount Decimal?   @db.Decimal(14, 2)
+
+  @@unique([chargeItemId, unitId])
+}
+
+model MeterReading {
+  id           String     @id @default(cuid())
+  chargeItem   ChargeItem @relation(fields: [chargeItemId], references: [id], onDelete: Cascade)
+  chargeItemId String
+  unit         Unit       @relation(fields: [unitId], references: [id])
+  unitId       String
+  period       String     // "2026-08"
+  quantity     Decimal    @db.Decimal(14, 3)
+  enteredById  String?
+  createdAt    DateTime   @default(now())
+
+  @@unique([chargeItemId, unitId, period])
+}
+
+enum BatchStatus {
+  DRAFT
+  ISSUED
+  CANCELLED
+}
+
+model InvoiceBatch {
+  id          String      @id @default(cuid())
+  period      String      // "2026-08" or label for one-time
+  description String?
+  status      BatchStatus @default(DRAFT)
+  previewData Json?       // full calculation preview per unit/owner
+  issuedAt    DateTime?
+  createdById String?
+  invoices    Invoice[]
+  createdAt   DateTime    @default(now())
+
+  @@unique([period, status], name: "one_issued_batch_per_period")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  CANCELLED
+  CORRECTED
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  number         String        @unique // "FAK-2026-000123"
+  batch          InvoiceBatch? @relation(fields: [batchId], references: [id])
+  batchId        String?
+  unit           Unit          @relation(fields: [unitId], references: [id])
+  unitId         String
+  debtor         Party         @relation("InvoiceDebtor", fields: [debtorId], references: [id])
+  debtorId       String        // legally responsible owner at issue time
+  debtorShare    Decimal       @default(100) @db.Decimal(9, 6) // co-ownership split of this invoice
+  issueDate      DateTime
+  dueDate        DateTime
+  periodLabel    String?
+  total          Decimal       @db.Decimal(14, 2)
+  currency       String        @default("BAM")
+  status         InvoiceStatus @default(DRAFT)
+  paymentReference String?     // poziv na broj
+  cancelledAt    DateTime?
+  cancelReason   String?
+  correctionOfId String?       @unique
+  correctionOf   Invoice?      @relation("InvoiceCorrection", fields: [correctionOfId], references: [id])
+  correctedBy    Invoice?      @relation("InvoiceCorrection")
+  lines          InvoiceLine[]
+  allocations    PaymentAllocation[]
+  documentId     String?
+  deliveryStatus String?       // QUEUED | SENT | DELIVERED | FAILED
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([debtorId])
+  @@index([unitId])
+}
+
+model InvoiceLine {
+  id           String      @id @default(cuid())
+  invoice      Invoice     @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId    String
+  chargeItem   ChargeItem? @relation(fields: [chargeItemId], references: [id])
+  chargeItemId String?
+  description  String
+  calcSnapshot Json        // method, formula, inputs, allocation basis, rounding
+  amount       Decimal     @db.Decimal(14, 2)
+  order        Int         @default(0)
+}
+
+enum PaymentStatus {
+  UNAPPLIED
+  PARTIALLY_APPLIED
+  APPLIED
+  REVERSED
+}
+
+model BankImportBatch {
+  id          String    @id @default(cuid())
+  filename    String
+  mapping     Json      // column mapping used
+  importedAt  DateTime  @default(now())
+  importedById String?
+  payments    Payment[]
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  account       MoneyAccount  @relation(fields: [accountId], references: [id])
+  accountId     String
+  date          DateTime
+  amount        Decimal       @db.Decimal(14, 2)
+  currency      String        @default("BAM")
+  payer         Party?        @relation(fields: [payerId], references: [id])
+  payerId       String?
+  payerNameRaw  String?       // as in bank statement
+  reference     String?       // poziv na broj / bank reference
+  method        String?       // BANK | CASH
+  importBatch   BankImportBatch? @relation(fields: [importBatchId], references: [id])
+  importBatchId String?
+  status        PaymentStatus @default(UNAPPLIED)
+  note          String?
+  reversedAt    DateTime?
+  reversalReason String?
+  reversalOfId  String?       @unique
+  reversalOf    Payment?      @relation("PaymentReversal", fields: [reversalOfId], references: [id])
+  reversedByPmt Payment?      @relation("PaymentReversal")
+  allocations   PaymentAllocation[]
+  transaction   FinTransaction?
+  createdById   String?
+  createdAt     DateTime      @default(now())
+
+  @@index([payerId])
+}
+
+/// Append-only allocation of a payment to an invoice. Reversal = new row with negative amount.
+model PaymentAllocation {
+  id          String   @id @default(cuid())
+  payment     Payment  @relation(fields: [paymentId], references: [id])
+  paymentId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId   String
+  amount      Decimal  @db.Decimal(14, 2) // negative for reversal rows
+  reversalOfId String? @unique
+  reason      String?
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  @@index([invoiceId])
+  @@index([paymentId])
+}
+
+/// Explicit audited owner-balance correction (e.g. authorized debt transfer)
+model BalanceCorrection {
+  id          String   @id @default(cuid())
+  party       Party    @relation(fields: [partyId], references: [id])
+  partyId     String
+  unitId      String?
+  amount      Decimal  @db.Decimal(14, 2) // positive increases debt, negative reduces
+  reason      String
+  authority   String?  // decision/document authorizing it
+  createdById String?
+  createdAt   DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Suppliers & expenses
+// ---------------------------------------------------------------------------
+
+model Supplier {
+  id        String    @id @default(cuid())
+  name      String
+  jib       String?
+  address   String?
+  iban      String?
+  contactName String?
+  email     String?
+  phone     String?
+  note      String?
+  active    Boolean   @default(true)
+  expenses  Expense[]
+  offers    ContractorOffer[]
+  workOrders WorkOrder[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum ExpenseStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+}
+
+model Expense {
+  id             String        @id @default(cuid())
+  supplier       Supplier?     @relation(fields: [supplierId], references: [id])
+  supplierId     String?
+  invoiceNumber  String?
+  invoiceDate    DateTime?
+  category       TransactionCategory? @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+  amount         Decimal       @db.Decimal(14, 2)
+  currency       String        @default("BAM")
+  dueDate        DateTime?
+  status         ExpenseStatus @default(UNPAID)
+  paidDate       DateTime?
+  paidAmount     Decimal       @default(0) @db.Decimal(14, 2)
+  buildingId     String?
+  entranceId     String?
+  projectId      String?
+  planItemId     String?
+  maintenanceIssue MaintenanceIssue? @relation(fields: [maintenanceIssueId], references: [id])
+  maintenanceIssueId String?
+  workOrderId    String?
+  description    String?
+  recurring      Boolean       @default(false)
+  recurrenceRule String?       // e.g. "MONTHLY"
+  cancelledAt    DateTime?
+  cancelReason   String?
+  attachments    Attachment[]  @relation("ExpenseAttachments")
+  createdById    String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([supplierId, invoiceNumber])
+}
+
+// ---------------------------------------------------------------------------
+// Annual planning
+// ---------------------------------------------------------------------------
+
+enum PlanKind {
+  MAINTENANCE
+  BUDGET
+}
+
+enum PlanStatus {
+  DRAFT
+  PROPOSED
+  APPROVED
+  ARCHIVED
+}
+
+model AnnualPlan {
+  id         String     @id @default(cuid())
+  year       Int
+  kind       PlanKind
+  version    Int        @default(1)
+  status     PlanStatus @default(DRAFT)
+  title      String
+  note       String?
+  approvedByProposalId String?
+  approvedAt DateTime?
+  items      PlanItem[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([year, kind, version])
+}
+
+enum PlanItemType {
+  INCOME
+  RECURRING_EXPENSE
+  MAINTENANCE_EXPENSE
+  PROJECT
+  RESERVE_ALLOCATION
+  CONTINGENCY
+  PREVENTIVE_MAINTENANCE
+  INSPECTION
+}
+
+model PlanItem {
+  id            String       @id @default(cuid())
+  plan          AnnualPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId        String
+  type          PlanItemType
+  name          String
+  description   String?
+  plannedAmount Decimal      @default(0) @db.Decimal(14, 2)
+  month         Int?         // 1-12 for monthly cash-flow planning / schedule
+  scopeType     ScopeType    @default(ZEV)
+  buildingId    String?
+  entranceId    String?
+  projectId     String?
+  scopeUnits    PlanItemUnit[]
+  categoryName  String?
+  scheduledDate DateTime?    // for inspections / preventive maintenance
+  createdAt     DateTime     @default(now())
+}
+
+model PlanItemUnit {
+  id         String   @id @default(cuid())
+  planItem   PlanItem @relation(fields: [planItemId], references: [id], onDelete: Cascade)
+  planItemId String
+  unit       Unit     @relation(fields: [unitId], references: [id])
+  unitId     String
+
+  @@unique([planItemId, unitId])
+}
+
+model Project {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  status        String   @default("PLANNED") // PLANNED | ACTIVE | COMPLETED | CANCELLED
+  estimatedCost Decimal? @db.Decimal(14, 2)
+  createdAt     DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Maintenance
+// ---------------------------------------------------------------------------
+
+enum IssueStatus {
+  REPORTED
+  TRIAGED
+  AUTHORIZATION_REQUIRED
+  APPROVED
+  OFFERS_REQUESTED
+  CONTRACTOR_SELECTED
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  VERIFIED
+  INVOICED
+  PAID
+  CLOSED
+  REJECTED
+}
+
+enum IssueUrgency {
+  LOW
+  NORMAL
+  HIGH
+  EMERGENCY
+}
+
+model MaintenanceIssue {
+  id                 String       @id @default(cuid())
+  title              String
+  description        String
+  reporter           Party        @relation("IssueReporter", fields: [reporterId], references: [id])
+  reporterId         String
+  buildingId         String?
+  entranceId         String?
+  unit               Unit?        @relation(fields: [unitId], references: [id])
+  unitId             String?
+  locationNote       String?
+  category           String?
+  urgency            IssueUrgency @default(NORMAL)
+  isEmergency        Boolean      @default(false)
+  safetyImpact       Boolean      @default(false)
+  status             IssueStatus  @default(REPORTED)
+  responsible        Party?       @relation("IssueResponsible", fields: [responsibleId], references: [id])
+  responsibleId      String?
+  approvalProposalId String?
+  emergencyReason    String?
+  emergencyAuthorizedBy String?
+  emergencyAuthority String?
+  emergencyRatifiedRef String?
+  estimatedCost      Decimal?     @db.Decimal(14, 2)
+  actualCost         Decimal?     @db.Decimal(14, 2)
+  warrantyUntil      DateTime?
+  recurrenceNote     String?
+  planItemId         String?
+  comments           IssueComment[]
+  statusEvents       IssueStatusEvent[]
+  offers             ContractorOffer[]
+  workOrders         WorkOrder[]
+  expenses           Expense[]
+  attachments        Attachment[] @relation("IssueAttachments")
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model IssueComment {
+  id        String           @id @default(cuid())
+  issue     MaintenanceIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId   String
+  authorId  String?
+  text      String
+  createdAt DateTime         @default(now())
+}
+
+model IssueStatusEvent {
+  id        String           @id @default(cuid())
+  issue     MaintenanceIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId   String
+  from      IssueStatus?
+  to        IssueStatus
+  actorId   String?
+  note      String?
+  createdAt DateTime         @default(now())
+}
+
+model ContractorOffer {
+  id         String           @id @default(cuid())
+  issue      MaintenanceIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId    String
+  supplier   Supplier         @relation(fields: [supplierId], references: [id])
+  supplierId String
+  amount     Decimal          @db.Decimal(14, 2)
+  description String?
+  validUntil DateTime?
+  selected   Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+}
+
+model WorkOrder {
+  id             String           @id @default(cuid())
+  issue          MaintenanceIssue @relation(fields: [issueId], references: [id])
+  issueId        String
+  number         String           @unique
+  supplier       Supplier         @relation(fields: [supplierId], references: [id])
+  supplierId     String
+  description    String
+  scheduledFrom  DateTime?
+  scheduledTo    DateTime?
+  status         String           @default("OPEN") // OPEN | IN_PROGRESS | COMPLETED | CANCELLED
+  completionNote String?
+  completedAt    DateTime?
+  documentId     String?
+  createdAt      DateTime         @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Documents, attachments, notifications, audit, settings
+// ---------------------------------------------------------------------------
+
+enum DocumentType {
+  FOUNDING_AGREEMENT
+  REGISTRY_APPLICATION
+  MEETING_INVITATION
+  AGENDA
+  PROXY_AUTHORIZATION
+  ATTENDANCE_LIST
+  VOTING_LIST
+  MINUTES
+  DECISION
+  ANNUAL_MAINTENANCE_PLAN
+  ANNUAL_FINANCIAL_PLAN
+  ANNUAL_REPORT
+  INVOICE
+  OWNER_STATEMENT
+  PAYMENT_REMINDER
+  DEBT_STATEMENT
+  OFFER_COMPARISON
+  WORK_ORDER
+  COMPLETION_RECORD
+  OTHER
+}
+
+enum DocumentStatus {
+  DRAFT
+  FINAL
+}
+
+/// Generated PDF documents. FINAL documents are immutable; a change = new version row.
+model Document {
+  id          String         @id @default(cuid())
+  type        DocumentType
+  number      String
+  title       String
+  status      DocumentStatus @default(DRAFT)
+  version     Int            @default(1)
+  sourceType  String?        // e.g. "Meeting", "Invoice", "AnnualPlan"
+  sourceId    String?
+  filePath    String
+  sha256      String
+  publishedToOwners Boolean  @default(false)
+  createdById String?
+  finalizedAt DateTime?
+  createdAt   DateTime       @default(now())
+
+  @@unique([type, number, version])
+  @@index([sourceType, sourceId])
+}
+
+model Attachment {
+  id          String   @id @default(cuid())
+  filename    String
+  mime        String
+  size        Int
+  filePath    String
+  sha256      String?
+  uploadedById String?
+  proposals   Proposal[]        @relation("ProposalAttachments")
+  expenses    Expense[]         @relation("ExpenseAttachments")
+  issues      MaintenanceIssue[] @relation("IssueAttachments")
+  transactions FinTransaction[] @relation("TxAttachments")
+  createdAt   DateTime @default(now())
+}
+
+enum NotifChannel {
+  EMAIL
+  VIBER
+}
+
+enum NotifStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  SEEN
+  FAILED
+}
+
+model NotificationMessage {
+  id           String       @id @default(cuid())
+  channel      NotifChannel
+  recipient    Party?       @relation(fields: [recipientId], references: [id])
+  recipientId  String?
+  toAddress    String       // email address or viber subscriber id
+  template     String?
+  subject      String?
+  body         String
+  status       NotifStatus  @default(QUEUED)
+  attempts     Int          @default(0)
+  lastError    String?
+  events       Json?        // delivery/seen/failure callback log
+  relatedType  String?
+  relatedId    String?
+  sentAt       DateTime?
+  createdAt    DateTime     @default(now())
+
+  @@index([recipientId])
+  @@index([relatedType, relatedId])
+}
+
+model ViberSubscriber {
+  id        String   @id @default(cuid())
+  party     Party    @relation(fields: [partyId], references: [id])
+  partyId   String   @unique
+  viberId   String   @unique
+  optIn     Boolean  @default(false)
+  optInAt   DateTime?
+  optOutAt  DateTime?
+  createdAt DateTime @default(now())
+}
+
+/// Append-only audit trail. UPDATE/DELETE blocked by DB trigger.
+model AuditEvent {
+  id         String   @id @default(cuid())
+  actorId    String?  // User.id
+  actorLabel String?  // denormalized display, or "system"
+  action     String   // e.g. "vote.submit", "invoice.issue"
+  targetType String
+  targetId   String?
+  before     Json?
+  after      Json?
+  reason     String?
+  ipHash     String?
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+  @@index([action])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
