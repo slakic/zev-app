@@ -35,7 +35,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Primijeni period</button>
       </form>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Stanje računa i tok novca">
           <Table headers={["Račun", "Početno", "Prilivi", "Odlivi", "Neto", "Trenutno stanje"]} empty={cashFlow.length === 0}>
             {cashFlow.map((r) => (

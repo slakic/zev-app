@@ -176,7 +176,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
         {p.contentHash && <span className="text-xs text-slate-400">hash: {p.contentHash.slice(0, 16)}…</span>}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Tekst prijedloga (zamrznut nakon otvaranja glasanja)">
           <p className="whitespace-pre-wrap text-sm">{p.text}</p>
           {p.rationale && (<><h3 className="mt-3 text-xs font-semibold uppercase text-slate-500">Obrazloženje</h3><p className="whitespace-pre-wrap text-sm">{p.rationale}</p></>)}
@@ -256,9 +256,9 @@ export default async function ProposalPage({ params, searchParams }: { params: P
       )}
 
       {isPresident && p.status === "VOTING_OPEN" && (
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Unos papirnog / ličnog glasa">
-            <form action={manualVoteAction} className="grid grid-cols-2 gap-3">
+            <form action={manualVoteAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="hidden" name="proposalId" value={p.id} />
               <Field label="Vlasnik">
                 <select name="eligibleVoterId" className={inputCls}>
@@ -281,7 +281,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 </select>
               </Field>
               <Field label="Napomena"><input name="note" className={inputCls} /></Field>
-              <div className="col-span-2"><SubmitBtn>Evidentiraj glas</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn>Evidentiraj glas</SubmitBtn></div>
             </form>
           </Card>
           <Card title="Izmjena prijedloga (materijalna promjena)">
@@ -299,16 +299,16 @@ export default async function ProposalPage({ params, searchParams }: { params: P
       )}
 
       {isPresident && (p.status === "ACCEPTED" || p.status === "REJECTED") && (
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Evidentiraj odluku">
-            <form action={decisionAction} className="flex items-end gap-2">
+            <form action={decisionAction} className="flex flex-wrap items-end gap-2">
               <input type="hidden" name="proposalId" value={p.id} />
               <Field label="Broj odluke"><input name="decisionNumber" required className={inputCls} placeholder="OD-2026-01" defaultValue={p.decisionNumber ?? ""} /></Field>
               <SubmitBtn>Evidentiraj i generiši PDF odluke</SubmitBtn>
             </form>
           </Card>
           <Card title="Ispravka glasa (samo uz razlog i osnov — trag ostaje)">
-            <form action={correctVoteAction} className="grid grid-cols-2 gap-3">
+            <form action={correctVoteAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="hidden" name="proposalId" value={p.id} />
               <Field label="Glas">
                 <select name="voteId" className={inputCls}>
@@ -328,7 +328,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
               </Field>
               <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
               <Field label="Osnov / ovlašćenje"><input name="authority" required className={inputCls} /></Field>
-              <div className="col-span-2"><SubmitBtn variant="danger">Evidentiraj ispravku</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn variant="danger">Evidentiraj ispravku</SubmitBtn></div>
             </form>
           </Card>
         </div>

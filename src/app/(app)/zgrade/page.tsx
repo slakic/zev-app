@@ -74,7 +74,7 @@ export default async function BuildingsPage() {
     <div>
       <PageHeader title="Zgrade i jedinice" subtitle={zev?.legalName ?? undefined} />
       {!zev && <Flash err="ZEV još nije konfigurisana — unesite matične podatke u Podešavanjima." />}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Zgrade">
           <Table headers={["Naziv", "Adresa", "Ulazi", "Jedinica"]} empty={buildings.length === 0}>
             {buildings.map((b) => (
@@ -87,7 +87,7 @@ export default async function BuildingsPage() {
             ))}
           </Table>
           {isPresident && (
-            <form action={addBuildingAction} className="mt-4 grid grid-cols-2 gap-3">
+            <form action={addBuildingAction} className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Naziv zgrade"><input name="name" required className={inputCls} /></Field>
               <Field label="Adresa"><input name="address" required className={inputCls} /></Field>
               <Field label="Godina izgradnje"><input name="yearBuilt" type="number" className={inputCls} /></Field>
@@ -106,7 +106,7 @@ export default async function BuildingsPage() {
             ))}
           </Table>
           {isPresident && buildings.length > 0 && (
-            <form action={addEntranceAction} className="mt-4 grid grid-cols-2 gap-3">
+            <form action={addEntranceAction} className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Zgrada">
                 <select name="buildingId" className={inputCls}>
                   {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
@@ -143,7 +143,7 @@ export default async function BuildingsPage() {
             ))}
           </Table>
           {isPresident && buildings.length > 0 && (
-            <form action={addUnitAction} className="mt-4 grid grid-cols-3 gap-3 lg:grid-cols-5">
+            <form action={addUnitAction} className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 lg:grid-cols-5">
               <Field label="Zgrada">
                 <select name="buildingId" className={inputCls}>
                   {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
@@ -188,7 +188,7 @@ export default async function BuildingsPage() {
             ))}
           </Table>
           {isPresident && (
-            <form action={addAssetAction} className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
+            <form action={addAssetAction} className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-5">
               <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Lift — ulaz A" /></Field>
               <Field label="Vrsta">
                 <select name="kind" className={inputCls}>

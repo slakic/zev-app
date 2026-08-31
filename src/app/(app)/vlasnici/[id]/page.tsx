@@ -23,7 +23,7 @@ export default async function PartyDetailPage({ params }: { params: Promise<{ id
         <Stat label="Plaćeno" value={formatMoney(balance.paid)} tone="ok" />
         <Stat label="Avans" value={formatMoney(advance)} tone="neutral" />
       </div>
-      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Kontakt">
           <dl className="space-y-1 text-sm">
             <div><dt className="inline font-medium">E-mail: </dt><dd className="inline">{party.email ?? "—"}</dd></div>

@@ -64,7 +64,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       <Flash err={err} msg={msg} />
 
       {management && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Stavke naknada (konfigurabilne)">
             <Table headers={["Naziv", "Metoda", "Stopa/iznos", "Obuhvat", "Frekvencija", "Fond"]} empty={chargeItems.length === 0}>
               {chargeItems.map((c) => (
@@ -80,7 +80,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
             </Table>
             <details className="mt-3">
               <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Nova stavka naknade</summary>
-              <form action={addChargeItemAction} className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-3">
+              <form action={addChargeItemAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
                 <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno održavanje" /></Field>
                 <Field label="Metoda obračuna">
                   <select name="method" className={inputCls}>
@@ -145,7 +145,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
               ))}
             </Table>
             {actor.roles.includes("ACCOUNTANT") && (
-              <form action={createBatchAction} className="mt-3 flex items-end gap-2">
+              <form action={createBatchAction} className="mt-3 flex flex-wrap items-end gap-2">
                 <Field label="Period (GGGG-MM)"><input name="period" required pattern="\d{4}-\d{2}" placeholder="2026-08" className={inputCls} /></Field>
                 <SubmitBtn>Kreiraj nacrt serije sa pregledom obračuna</SubmitBtn>
               </form>

@@ -137,7 +137,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         {isPresident && (plan.status === "DRAFT" || plan.status === "PROPOSED") && (
           <details className="mt-3">
             <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Nova stavka</summary>
-            <form action={addItemAction} className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <form action={addItemAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-4">
               <input type="hidden" name="planId" value={plan.id} />
               <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
               <Field label="Vrsta">

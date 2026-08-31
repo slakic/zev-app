@@ -154,7 +154,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
         {issue.actualCost && <span className="text-sm">Stvarni trošak: {formatMoney(issue.actualCost.toString())}</span>}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Opis">
           <p className="whitespace-pre-wrap text-sm">{issue.description}</p>
           {issue.isEmergency && (
@@ -163,7 +163,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
               <p><b>Odobrio:</b> {issue.emergencyAuthorizedBy} ({issue.emergencyAuthority})</p>
               <p><b>Naknadna ratifikacija:</b> {issue.emergencyRatifiedRef ?? "još nije evidentirana"}</p>
               {isPresident && !issue.emergencyRatifiedRef && (
-                <form action={ratifyAction} className="mt-2 flex items-end gap-2">
+                <form action={ratifyAction} className="mt-2 flex flex-wrap items-end gap-2">
                   <input type="hidden" name="issueId" value={issue.id} />
                   <Field label="Broj odluke / zapisnika o ratifikaciji"><input name="ref" required className={inputCls} /></Field>
                   <SubmitBtn variant="secondary">Evidentiraj</SubmitBtn>
@@ -197,13 +197,13 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
           {isPresident && !issue.isEmergency && ["REPORTED", "TRIAGED", "AUTHORIZATION_REQUIRED"].includes(issue.status) && (
             <details className="mt-3">
               <summary className="cursor-pointer text-sm font-medium text-red-700">Hitna intervencija (preskače odobrenje)</summary>
-              <form action={emergencyAction} className="mt-2 grid grid-cols-2 gap-2">
+              <form action={emergencyAction} className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input type="hidden" name="issueId" value={issue.id} />
                 <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
                 <Field label="Odobrio (ime)"><input name="authorizedBy" required className={inputCls} /></Field>
                 <Field label="Osnov ovlašćenja"><input name="authority" required className={inputCls} placeholder="čl. ugovora/odluke..." /></Field>
                 <Field label="Procjena troška (KM)"><input name="estimatedCost" className={inputCls} /></Field>
-                <div className="col-span-2"><SubmitBtn variant="danger">Označi kao hitno i odobri</SubmitBtn></div>
+                <div className="sm:col-span-2"><SubmitBtn variant="danger">Označi kao hitno i odobri</SubmitBtn></div>
               </form>
             </details>
           )}
@@ -231,7 +231,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
               ))}
             </Table>
             {isPresident && (
-              <form action={offerAction} className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+              <form action={offerAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 lg:grid-cols-4">
                 <input type="hidden" name="issueId" value={issue.id} />
                 <Field label="Izvođač">
                   <select name="supplierId" className={inputCls}>
@@ -269,7 +269,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
               ))}
             </Table>
             {isPresident && issue.status === "CONTRACTOR_SELECTED" && (
-              <form action={workOrderAction} className="mt-3 grid grid-cols-2 gap-2">
+              <form action={workOrderAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input type="hidden" name="issueId" value={issue.id} />
                 <Field label="Izvođač">
                   <select name="supplierId" className={inputCls} defaultValue={issue.offers.find((o) => o.selected)?.supplierId}>
@@ -279,7 +279,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
                 <Field label="Opis radova"><input name="description" required className={inputCls} /></Field>
                 <Field label="Od"><input name="scheduledFrom" type="date" className={inputCls} /></Field>
                 <Field label="Do"><input name="scheduledTo" type="date" className={inputCls} /></Field>
-                <div className="col-span-2"><SubmitBtn>Kreiraj radni nalog (PDF)</SubmitBtn></div>
+                <div className="sm:col-span-2"><SubmitBtn>Kreiraj radni nalog (PDF)</SubmitBtn></div>
               </form>
             )}
           </Card>

@@ -78,7 +78,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
         {payment.reference && <span className="font-mono text-xs text-slate-500">poziv: {payment.reference}</span>}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Prijedlozi uparivanja">
           <Table headers={["Faktura", "Jedinica", "Otvoreno", "Osnov prijedloga", ""]} empty={suggestions.length === 0}>
             {suggestions.map((s) => (
@@ -104,9 +104,9 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
           {payment.status === "REVERSED" ? (
             <p className="text-sm text-red-700">Uplata je stornirana ({payment.reversalReason}).</p>
           ) : (
-            <form action={allocateAction} className="grid grid-cols-2 gap-3">
+            <form action={allocateAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="hidden" name="paymentId" value={payment.id} />
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <Field label="Faktura">
                   <select name="invoiceId" className={inputCls}>
                     {openInvoices.map((inv) => {
@@ -127,7 +127,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
             </form>
           )}
           {payment.status !== "REVERSED" && (
-            <form action={reversePaymentAction} className="mt-4 flex items-end gap-2 border-t border-slate-100 pt-3">
+            <form action={reversePaymentAction} className="mt-4 flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
               <input type="hidden" name="paymentId" value={payment.id} />
               <Field label="Storniraj cijelu uplatu — razlog"><input name="reason" required className={inputCls} /></Field>
               <SubmitBtn variant="danger">Storniraj uplatu</SubmitBtn>

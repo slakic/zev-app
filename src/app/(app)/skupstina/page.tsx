@@ -82,7 +82,7 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
         {actor.roles.includes("PRESIDENT") && (
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Nova sjednica</summary>
-            <form action={addMeetingAction} className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <form action={addMeetingAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
               <Field label="Naziv">
                 <input
                   name="title"
@@ -131,7 +131,7 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
             {actor.roles.includes("PRESIDENT") && (
               <details className="mt-4">
                 <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Novo pravilo</summary>
-                <form action={addRuleAction} className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-3">
+                <form action={addRuleAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
                   <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno upravljanje" /></Field>
                   <Field label="Tip kvoruma">
                     <select name="quorumType" className={inputCls}>

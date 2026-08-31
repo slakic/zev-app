@@ -60,7 +60,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
         <Stat label="Nacrti serija faktura" value={String(draftBatches.length)} tone={draftBatches.length ? "warn" : "neutral"} />
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Prijedlozi na glasanju">
           {openProposals.length === 0 && <p className="text-sm text-slate-400">Nema otvorenih glasanja.</p>}
           <ul className="space-y-2">
@@ -157,7 +157,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
         <Stat label="Ukupno plaćeno" value={formatMoney(balance.paid)} tone="ok" />
         <Stat label="Avans / preplata" value={formatMoney(advance)} tone="neutral" />
       </div>
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Moje neplaćene fakture">
           {unpaid.length === 0 && <p className="text-sm text-slate-400">Nemate neplaćenih faktura.</p>}
           <ul className="space-y-2">

@@ -151,7 +151,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
       <Flash err={err} />
       <div className="mb-4"><StatusBadge status={meeting.status} label={tEnum("meetingStatus", meeting.status)} /></div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Dnevni red">
           <ol className="list-inside list-decimal space-y-1 text-sm">
             {meeting.agendaItems.map((a) => (
@@ -187,14 +187,14 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
           {isPresident && (
             <details className="mt-4">
               <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Novi prijedlog</summary>
-              <form action={addProposalAction} className="mt-3 grid grid-cols-2 gap-3">
+              <form action={addProposalAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input type="hidden" name="meetingId" value={meeting.id} />
                 <Field label="Šifra"><input name="code" required className={inputCls} placeholder="P-2026-01" /></Field>
                 <Field label="Naslov"><input name="title" required className={inputCls} /></Field>
-                <div className="col-span-2">
+                <div className="sm:col-span-2">
                   <Field label="Tačan tekst prijedloga"><textarea name="text" required rows={3} className={inputCls} /></Field>
                 </div>
-                <div className="col-span-2">
+                <div className="sm:col-span-2">
                   <Field label="Obrazloženje"><textarea name="rationale" rows={2} className={inputCls} /></Field>
                 </div>
                 <Field label="Procjena finansijskog uticaja (KM)"><input name="financialImpact" className={inputCls} placeholder="0.00" /></Field>
@@ -222,7 +222,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                   </select>
                 </Field>
                 <Field label="Glasanje otvoreno do"><input name="votingClosesAt" type="datetime-local" className={inputCls} /></Field>
-                <div className="col-span-2"><SubmitBtn>Sačuvaj prijedlog</SubmitBtn></div>
+                <div className="sm:col-span-2"><SubmitBtn>Sačuvaj prijedlog</SubmitBtn></div>
               </form>
             </details>
           )}

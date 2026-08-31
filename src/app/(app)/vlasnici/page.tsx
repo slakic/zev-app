@@ -125,7 +125,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
         {isPresident && (
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Dodaj lice</summary>
-            <form action={addPartyAction} className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <form action={addPartyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-4">
               <Field label="Vrsta">
                 <select name="kind" className={inputCls}>
                   <option value="PERSON">Fizičko lice</option>
@@ -148,9 +148,9 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
       </Card>
 
       {isPresident && (
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Dodaj vlasnički udio">
-            <form action={addStakeAction} className="grid grid-cols-2 gap-3">
+            <form action={addStakeAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Jedinica">
                 <select name="unitId" className={inputCls}>
                   {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
@@ -163,14 +163,14 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               </Field>
               <Field label="Udio na jedinici (%)"><input name="sharePercent" required className={inputCls} placeholder="100 ili 50" /></Field>
               <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
-              <div className="col-span-2"><SubmitBtn>Dodaj udio</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn>Dodaj udio</SubmitBtn></div>
             </form>
           </Card>
           <Card title="Promjena vlasništva (promet jedinice)">
             <p className="mb-3 text-xs text-slate-500">
               Istorijski dug ostaje na prethodnom vlasniku; prenos duga moguć je samo izričitom korekcijom salda.
             </p>
-            <form action={transferAction} className="grid grid-cols-2 gap-3">
+            <form action={transferAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Jedinica">
                 <select name="unitId" className={inputCls}>
                   {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
@@ -193,7 +193,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
           </Card>
           <Card title="Evidentiraj stanara / zakupca">
             <p className="mb-3 text-xs text-slate-500">Stanar ili zakupac NE stiče pravo glasa stanovanjem.</p>
-            <form action={addOccupancyAction} className="grid grid-cols-2 gap-3">
+            <form action={addOccupancyAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Jedinica">
                 <select name="unitId" className={inputCls}>
                   {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
@@ -228,7 +228,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
                 </tr>
               ))}
             </Table>
-            <form action={grantProxyAction} className="mt-3 grid grid-cols-2 gap-3">
+            <form action={grantProxyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Davalac (vlasnik)">
                 <select name="grantorId" className={inputCls}>
                   {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
@@ -248,7 +248,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               <Field label="Referenca dokumenta"><input name="documentRef" className={inputCls} placeholder="ovjerena punomoć br..." /></Field>
               <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
               <Field label="Važi do (opciono)"><input name="validTo" type="date" className={inputCls} /></Field>
-              <div className="col-span-2"><SubmitBtn>Evidentiraj punomoć</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn>Evidentiraj punomoć</SubmitBtn></div>
             </form>
           </Card>
         </div>

@@ -70,9 +70,9 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
       <Flash err={err} msg={msg} />
 
       {management && actor.roles.includes("ACCOUNTANT") && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Ručni unos uplate">
-            <form action={enterPaymentAction} className="grid grid-cols-2 gap-3">
+            <form action={enterPaymentAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Račun">
                 <select name="accountId" className={inputCls}>
                   {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -98,8 +98,8 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
             </form>
           </Card>
           <Card title="Uvoz bankovnog izvoda (CSV)">
-            <form action={importCsvAction} className="grid grid-cols-2 gap-3" encType="multipart/form-data">
-              <div className="col-span-2">
+            <form action={importCsvAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3" encType="multipart/form-data">
+              <div className="sm:col-span-2">
                 <Field label="CSV fajl"><input name="file" type="file" accept=".csv,text/csv" required className={inputCls} /></Field>
               </div>
               <Field label="Račun">

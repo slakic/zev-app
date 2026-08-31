@@ -75,7 +75,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
         {inv.cancelReason && <span className="text-sm text-red-600">Storno: {inv.cancelReason}</span>}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card title="Iznosi">
           <dl className="space-y-1 text-sm">
             <div className="flex justify-between"><dt>Ukupno:</dt><dd className="tabular-nums font-semibold">{formatMoney(inv.total.toString())}</dd></div>
@@ -121,21 +121,21 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
       </div>
 
       {management && actor.roles.includes("ACCOUNTANT") && inv.status === "ISSUED" && (
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Korekcija fakture (original ostaje vidljiv)">
-            <form action={correctAction} className="grid grid-cols-2 gap-3">
+            <form action={correctAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="hidden" name="invoiceId" value={inv.id} />
               <Field label="Novi ukupan iznos (KM)"><input name="newTotal" required className={inputCls} /></Field>
               <Field label="Opis korekcije"><input name="description" required className={inputCls} /></Field>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
               </div>
-              <div className="col-span-2"><SubmitBtn variant="danger">Kreiraj korektivnu fakturu</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn variant="danger">Kreiraj korektivnu fakturu</SubmitBtn></div>
             </form>
           </Card>
           <Card title="Storniranje">
             <p className="mb-2 text-xs text-slate-500">Moguće samo dok nema raspoređenih uplata. Faktura ostaje u evidenciji sa statusom „stornirana”.</p>
-            <form action={cancelAction} className="flex items-end gap-2">
+            <form action={cancelAction} className="flex flex-wrap items-end gap-2">
               <input type="hidden" name="invoiceId" value={inv.id} />
               <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
               <SubmitBtn variant="danger">Storniraj</SubmitBtn>

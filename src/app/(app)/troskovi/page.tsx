@@ -97,7 +97,7 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
     <div>
       <PageHeader title="Troškovi i dobavljači" subtitle="Ulazne fakture, plaćanja, veza sa planom i održavanjem" />
       <Flash err={err} />
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Dobavljači i izvođači">
           <Table headers={["Naziv", "JIB", "Račun", "Kontakt"]} empty={suppliers.length === 0}>
             {suppliers.map((s) => (
@@ -111,7 +111,7 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
           </Table>
           <details className="mt-3">
             <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Novi dobavljač</summary>
-            <form action={addSupplierAction} className="mt-3 grid grid-cols-2 gap-3">
+            <form action={addSupplierAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
               <Field label="JIB"><input name="jib" className={inputCls} /></Field>
               <Field label="Žiro račun"><input name="iban" className={inputCls} /></Field>
@@ -123,7 +123,7 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
         </Card>
 
         <Card title="Novi trošak (ulazna faktura)">
-          <form action={addExpenseAction} className="grid grid-cols-2 gap-3">
+          <form action={addExpenseAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Dobavljač">
               <select name="supplierId" className={inputCls}>
                 <option value="">—</option>
@@ -156,7 +156,7 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
             <Field label="Opis"><input name="description" className={inputCls} /></Field>
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="recurring" /> ponavljajući (mjesečno)</label>
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="allowDuplicate" /> dozvoli mogući duplikat</label>
-            <div className="col-span-2"><SubmitBtn>Evidentiraj trošak</SubmitBtn></div>
+            <div className="sm:col-span-2"><SubmitBtn>Evidentiraj trošak</SubmitBtn></div>
           </form>
         </Card>
       </div>

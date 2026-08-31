@@ -90,7 +90,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
         </p>
       </Card>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card title="Predsjednik ZEV">
           {holders.president ? (
             <div className="text-sm">
@@ -117,7 +117,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
 
       {isPresident && (
         <Card title="Postavi predsjednika / računovođu">
-          <form action={setOfficerAction} className="grid gap-3 md:grid-cols-5 md:items-end">
+          <form action={setOfficerAction} className="grid grid-cols-1 gap-3 md:grid-cols-5 md:items-end">
             <Field label="Funkcija">
               <select name="role" className={inputCls}>
                 <option value="PRESIDENT">Predsjednik ZEV</option>
@@ -162,7 +162,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
 
       {isPresident && (
         <Card title="Dodaj člana upravnog odbora">
-          <form action={addBoardMemberAction} className="grid gap-3 md:grid-cols-4 md:items-end">
+          <form action={addBoardMemberAction} className="grid grid-cols-1 gap-3 md:grid-cols-4 md:items-end">
             <Field label="Lice">
               <select name="partyId" required className={inputCls}>
                 {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}

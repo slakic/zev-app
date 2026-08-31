@@ -42,7 +42,7 @@ export default async function MaintenancePage({ searchParams }: { searchParams: 
       <PageHeader title="Održavanje" subtitle={management ? "Prijave, trijaža, ponude, radni nalozi i realizacija" : "Vaše prijave kvarova"} />
       <Flash err={err} />
       <Card title="Prijavi kvar / problem">
-        <form action={reportAction} className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <form action={reportAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
           <Field label="Naslov"><input name="title" required className={inputCls} placeholder="Curenje u podrumu" /></Field>
           <Field label="Zgrada">
             <select name="buildingId" className={inputCls}>
@@ -56,7 +56,7 @@ export default async function MaintenancePage({ searchParams }: { searchParams: 
               {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
             </select>
           </Field>
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Field label="Opis problema"><textarea name="description" required rows={2} className={inputCls} /></Field>
           </div>
           <Field label="Lokacija (napomena)"><input name="locationNote" className={inputCls} placeholder="podrum, kod liftovskog okna" /></Field>

@@ -84,10 +84,10 @@ export default async function SettingsPage() {
           </div>
         }
       />
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Matični podaci ZEV">
-          <form action={saveZevAction} className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
+          <form action={saveZevAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="sm:col-span-2">
               <Field label="Puni naziv"><input name="legalName" required defaultValue={zev?.legalName} className={inputCls} disabled={!isPresident} /></Field>
             </div>
             <Field label="Skraćeni naziv"><input name="shortName" defaultValue={zev?.shortName ?? ""} className={inputCls} disabled={!isPresident} /></Field>
@@ -96,7 +96,7 @@ export default async function SettingsPage() {
             <Field label="Sjedište (adresa)"><input name="registeredAddress" defaultValue={zev?.registeredAddress ?? ""} className={inputCls} disabled={!isPresident} /></Field>
             <Field label="Grad"><input name="city" defaultValue={zev?.city ?? ""} className={inputCls} disabled={!isPresident} /></Field>
             <Field label="Opština"><input name="municipality" defaultValue={zev?.municipality ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            {isPresident && <div className="col-span-2"><SubmitBtn>Sačuvaj</SubmitBtn></div>}
+            {isPresident && <div className="sm:col-span-2"><SubmitBtn>Sačuvaj</SubmitBtn></div>}
           </form>
         </Card>
 
@@ -111,7 +111,7 @@ export default async function SettingsPage() {
               </tr>
             ))}
           </Table>
-          <form action={addAccountAction} className="mt-3 grid grid-cols-2 gap-3">
+          <form action={addAccountAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
             <Field label="Vrsta">
               <select name="type" className={inputCls}>
@@ -123,7 +123,7 @@ export default async function SettingsPage() {
             <Field label="Banka"><input name="bankName" className={inputCls} /></Field>
             <Field label="Početno stanje (KM)"><input name="openingBalance" defaultValue="0" className={inputCls} /></Field>
             <Field label="Datum početnog stanja"><input name="openingDate" type="date" required className={inputCls} /></Field>
-            <div className="col-span-2"><SubmitBtn>Dodaj račun</SubmitBtn></div>
+            <div className="sm:col-span-2"><SubmitBtn>Dodaj račun</SubmitBtn></div>
           </form>
         </Card>
 
@@ -133,11 +133,13 @@ export default async function SettingsPage() {
           </p>
           <div className="space-y-3">
             {LEGAL_SETTINGS.map((s) => (
-              <form key={s.key} action={saveSettingAction} className="flex items-end gap-2">
+              <form key={s.key} action={saveSettingAction} className="flex flex-wrap items-end gap-2">
                 <input type="hidden" name="key" value={s.key} />
-                <Field label={s.label}>
-                  <input name="value" defaultValue={settingsMap.get(s.key) ?? s.def} className={inputCls} disabled={!isPresident} />
-                </Field>
+                <div className="min-w-[220px] flex-1">
+                  <Field label={s.label}>
+                    <input name="value" defaultValue={settingsMap.get(s.key) ?? s.def} className={inputCls} disabled={!isPresident} />
+                  </Field>
+                </div>
                 {isPresident && <SubmitBtn variant="secondary">Sačuvaj</SubmitBtn>}
               </form>
             ))}
