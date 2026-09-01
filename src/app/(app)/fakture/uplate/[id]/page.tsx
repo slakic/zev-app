@@ -70,6 +70,8 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
       <PageHeader
         title={`Uplata — ${formatMoney(payment.amount.toString())}`}
         subtitle={`${formatDate(payment.date)} · ${payment.payer ? partyDisplayName(payment.payer) : payment.payerNameRaw ?? "nepoznat platilac"} · ${payment.account.name}`}
+        backHref="/fakture/uplate"
+        backLabel="Nazad na sve uplate"
       />
       <Flash err={err} />
       <div className="mb-4 flex items-center gap-3">

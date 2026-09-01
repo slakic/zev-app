@@ -5,6 +5,7 @@ import { createDraftBatch, issueBatch } from "@/server/services/billing";
 import {
   enterPayment, allocatePayment, reverseAllocation, reversePayment,
   ownerBalance, ownerAdvance, importBankCsv, suggestMatches, addBalanceCorrection,
+  commitPdfImport,
 } from "@/server/services/payments";
 import { transferOwnership } from "@/server/services/ownership";
 import type { Invoice } from "@/generated/prisma/client";
@@ -156,6 +157,199 @@ describe("payments and owner balances", () => {
     const matches = await suggestMatches(f.accountant, imported.id);
     expect(matches[0].invoiceId).toBe(target.id);
     expect(matches[0].reasons).toContain("poziv na broj");
+  });
+
+  it("suggests a match from the unit number a tenant wrote in the payment purpose", async () => {
+    // A tenant (not the owner) transfers money; the bank statement purpose text names
+    // the unit ("stan 47") rather than the owner. suggestMatches must still find the
+    // owner's invoice for that unit, even though payerId/payerNameRaw point to someone else.
+    const b = await prisma.building.create({ data: { zevId: f.zev.id, name: `Zgrada-stan47-${f.t}`, address: "Test" } });
+    const unit = await prisma.unit.create({
+      data: { buildingId: b.id, type: "APARTMENT", label: "Stan 47", usableArea: "40.00", ownershipShare: "5.00" },
+    });
+    const inv = await prisma.invoice.create({
+      data: {
+        number: `FAK-STAN47-${f.t}`, unitId: unit.id, debtorId: f.ownerA.id,
+        issueDate: new Date(), dueDate: new Date(), total: "49.47", status: "ISSUED",
+      },
+    });
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: "49.47",
+      payerNameRaw: "DRAGANA DEJANAC", // a tenant, not the owner
+    });
+    await prisma.payment.update({ where: { id: p.id }, data: { purposeRaw: "Racun za juli, stan 47" } });
+    const matches = await suggestMatches(f.accountant, p.id);
+    expect(matches[0].invoiceId).toBe(inv.id);
+    expect(matches[0].reasons).toContain("broj stana u svrsi uplate");
+  });
+
+  it("does not confuse a month/year period in the purpose with a unit number", async () => {
+    const b = await prisma.building.create({ data: { zevId: f.zev.id, name: `Zgrada-stan4-${f.t}`, address: "Test" } });
+    const unit7 = await prisma.unit.create({
+      data: { buildingId: b.id, type: "APARTMENT", label: "Stan 7", usableArea: "40.00", ownershipShare: "5.00" },
+    });
+    const unit4 = await prisma.unit.create({
+      data: { buildingId: b.id, type: "APARTMENT", label: "Stan 4", usableArea: "40.00", ownershipShare: "5.00" },
+    });
+    await prisma.invoice.create({
+      data: { number: `FAK-STAN7-${f.t}`, unitId: unit7.id, debtorId: f.ownerA.id, issueDate: new Date(), dueDate: new Date(), total: "25.33", status: "ISSUED" },
+    });
+    const inv4 = await prisma.invoice.create({
+      data: { number: `FAK-STAN4-${f.t}`, unitId: unit4.id, debtorId: f.ownerA.id, issueDate: new Date(), dueDate: new Date(), total: "25.33", status: "ISSUED" },
+    });
+    const p = await enterPayment(f.accountant, { accountId: f.account.id, date: new Date(), amount: "25.33" });
+    await prisma.payment.update({ where: { id: p.id }, data: { purposeRaw: "0000000000 ZA STAN 7/2026 STAN 4" } });
+    const matches = await suggestMatches(f.accountant, p.id);
+    expect(matches[0].invoiceId).toBe(inv4.id);
+    expect(matches.find((m) => m.invoiceId !== inv4.id && m.reasons.includes("broj stana u svrsi uplate"))).toBeUndefined();
+  });
+
+  it("suggests a match when the owner's own name appears inside the payment purpose", async () => {
+    const inv = invOf(f.u3.id); // debtor is the co-owned unit's main stake
+    const debtor = await prisma.party.findUniqueOrThrow({ where: { id: inv.debtorId } });
+    const debtorName = `${debtor.firstName} ${debtor.lastName}`;
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: inv.total.toString(), payerNameRaw: "NEKO DRUGI",
+    });
+    await prisma.payment.update({ where: { id: p.id }, data: { purposeRaw: `Uplata za ${debtorName}, avgust` } });
+    const matches = await suggestMatches(f.accountant, p.id);
+    expect(matches.some((m) => m.invoiceId === inv.id && m.reasons.includes("ime vlasnika pomenuto u svrsi uplate"))).toBe(true);
+  });
+
+  it("CSV import with a purpose column feeds the unit-number matching signal too", async () => {
+    const b = await prisma.building.create({ data: { zevId: f.zev.id, name: `Zgrada-csv-svrha-${f.t}`, address: "Test" } });
+    const unit = await prisma.unit.create({
+      data: { buildingId: b.id, type: "APARTMENT", label: "Stan 9", usableArea: "40.00", ownershipShare: "5.00" },
+    });
+    const inv = await prisma.invoice.create({
+      data: { number: `FAK-STAN9-${f.t}`, unitId: unit.id, debtorId: f.ownerA.id, issueDate: new Date(), dueDate: new Date(), total: "30.00", status: "ISSUED" },
+    });
+    const csv = [
+      "Datum;Iznos;Platilac;Poziv;Svrha",
+      `20.03.2032.;30,00;NEKO DRUGI;;stan 9`,
+    ].join("\n");
+    const res = await importBankCsv(f.accountant, {
+      accountId: f.account.id, filename: "izvod-svrha-test.csv", content: csv,
+      mapping: { purposeCol: 4 },
+    });
+    expect(res.imported).toBe(1);
+    const imported = await prisma.payment.findFirstOrThrow({ where: { importBatchId: res.batchId } });
+    expect(imported.purposeRaw).toBe("stan 9");
+    const matches = await suggestMatches(f.accountant, imported.id);
+    expect(matches[0].invoiceId).toBe(inv.id);
+    expect(matches[0].reasons).toContain("broj stana u svrsi uplate");
+  });
+
+  it("PDF import commit allocates an IN row straight away when the reviewer accepted an invoice", async () => {
+    const b = await prisma.building.create({ data: { zevId: f.zev.id, name: `Zgrada-pdf-in-${f.t}`, address: "Test" } });
+    const unit = await prisma.unit.create({
+      data: { buildingId: b.id, type: "APARTMENT", label: "Stan 21", usableArea: "40.00", ownershipShare: "5.00" },
+    });
+    const inv = await prisma.invoice.create({
+      data: { number: `FAK-PDFIN-${f.t}`, unitId: unit.id, debtorId: f.ownerA.id, issueDate: new Date(), dueDate: new Date(), total: "44.00", status: "ISSUED" },
+    });
+    const res = await commitPdfImport(f.accountant, {
+      accountId: f.account.id, filename: "izvod-pdf-in.pdf", rawText: "test",
+      rows: [{
+        direction: "IN", date: "2032-05-01", amount: "44.00",
+        payerNameRaw: "NEKI STANAR", purposeRaw: "stan 21", reference: "",
+        invoiceId: inv.id,
+      }],
+    });
+    expect(res.imported).toBe(1);
+    const payment = await prisma.payment.findFirstOrThrow({ where: { importBatchId: res.batchId } });
+    expect(payment.status).toBe("APPLIED");
+    const alloc = await prisma.paymentAllocation.findFirstOrThrow({ where: { paymentId: payment.id } });
+    expect(alloc.invoiceId).toBe(inv.id);
+    expect(Number(alloc.amount).toFixed(2)).toBe("44.00");
+    const updatedInv = await prisma.invoice.findUniqueOrThrow({ where: { id: inv.id } });
+    expect(updatedInv.status).toBe("PAID");
+  });
+
+  it("PDF import commit clamps an accepted invoice match to its open amount, leaving the rest unapplied", async () => {
+    const b = await prisma.building.create({ data: { zevId: f.zev.id, name: `Zgrada-pdf-clamp-${f.t}`, address: "Test" } });
+    const unit = await prisma.unit.create({
+      data: { buildingId: b.id, type: "APARTMENT", label: "Stan 22", usableArea: "40.00", ownershipShare: "5.00" },
+    });
+    const inv = await prisma.invoice.create({
+      data: { number: `FAK-PDFCLAMP-${f.t}`, unitId: unit.id, debtorId: f.ownerA.id, issueDate: new Date(), dueDate: new Date(), total: "30.00", status: "ISSUED" },
+    });
+    const res = await commitPdfImport(f.accountant, {
+      accountId: f.account.id, filename: "izvod-pdf-clamp.pdf", rawText: "test",
+      rows: [{
+        direction: "IN", date: "2032-05-01", amount: "50.00",
+        payerNameRaw: "NEKI STANAR", purposeRaw: "stan 22", reference: "",
+        invoiceId: inv.id,
+      }],
+    });
+    const payment = await prisma.payment.findFirstOrThrow({ where: { importBatchId: res.batchId } });
+    expect(payment.status).toBe("PARTIALLY_APPLIED");
+    const alloc = await prisma.paymentAllocation.findFirstOrThrow({ where: { paymentId: payment.id } });
+    expect(Number(alloc.amount).toFixed(2)).toBe("30.00");
+    // The remaining 20.00 stays as an unapplied advance on the payment itself — PDF-imported
+    // payments have no payerId (only a free-text payerNameRaw), so ownerAdvance() can't see it.
+    expect((Number(payment.amount) - Number(alloc.amount)).toFixed(2)).toBe("20.00");
+  });
+
+  it("PDF import commit settles a linked Trošak (expense) from an OUT row", async () => {
+    const exp = await prisma.expense.create({
+      data: { amount: "120.00", description: `Račun za struju ${f.t}`, createdById: f.accountant.userId },
+    });
+    const res = await commitPdfImport(f.accountant, {
+      accountId: f.account.id, filename: "izvod-pdf-out.pdf", rawText: "test",
+      rows: [{
+        direction: "OUT", date: "2032-05-02", amount: "120.00",
+        payerNameRaw: "ELEKTRODISTRIBUCIJA", purposeRaw: "racun struja", reference: "",
+        expenseId: exp.id,
+      }],
+    });
+    expect(res.imported).toBe(1);
+    const updated = await prisma.expense.findUniqueOrThrow({ where: { id: exp.id } });
+    expect(updated.status).toBe("PAID");
+    expect(Number(updated.paidAmount).toFixed(2)).toBe("120.00");
+    const tx = await prisma.finTransaction.findFirstOrThrow({ where: { expenseId: exp.id } });
+    expect(tx.type).toBe("EXPENSE");
+    expect(Number(tx.amount).toFixed(2)).toBe("120.00");
+  });
+
+  it("PDF import commit records an unlinked OUT row with a free-text category, without touching any expense", async () => {
+    const res = await commitPdfImport(f.accountant, {
+      accountId: f.account.id, filename: "izvod-pdf-out-unlinked.pdf", rawText: "test",
+      rows: [{
+        direction: "OUT", date: "2032-05-03", amount: "15.00",
+        payerNameRaw: "BANKA", purposeRaw: "naknada za odrzavanje racuna", reference: "",
+        categoryName: "Bankarske naknade",
+      }],
+    });
+    expect(res.imported).toBe(1);
+    const tx = await prisma.finTransaction.findFirstOrThrow({
+      where: { accountId: f.account.id, description: "naknada za odrzavanje racuna" },
+    });
+    expect(tx.type).toBe("EXPENSE");
+    expect(tx.expenseId).toBeNull();
+    const category = await prisma.transactionCategory.findUniqueOrThrow({ where: { name: "Bankarske naknade" } });
+    expect(tx.categoryId).toBe(category.id);
+  });
+
+  it("PDF import commit refuses (and writes nothing) when the chosen expense would be overpaid", async () => {
+    const exp = await prisma.expense.create({
+      data: { amount: "50.00", description: `Trošak koji ne smije biti preplaćen ${f.t}`, createdById: f.accountant.userId },
+    });
+    await expect(
+      commitPdfImport(f.accountant, {
+        accountId: f.account.id, filename: "izvod-pdf-overpay.pdf", rawText: "test",
+        rows: [{
+          direction: "OUT", date: "2032-05-04", amount: "80.00",
+          payerNameRaw: "DOBAVLJAC", purposeRaw: "", reference: "",
+          expenseId: exp.id,
+        }],
+      })
+    ).rejects.toThrow();
+    const batch = await prisma.bankImportBatch.findFirst({ where: { filename: "izvod-pdf-overpay.pdf" } });
+    expect(batch).toBeNull();
+    const unchanged = await prisma.expense.findUniqueOrThrow({ where: { id: exp.id } });
+    expect(unchanged.status).toBe("UNPAID");
+    expect(Number(unchanged.paidAmount).toFixed(2)).toBe("0.00");
   });
 
   it("ownership change preserves historical liability with the old owner", async () => {

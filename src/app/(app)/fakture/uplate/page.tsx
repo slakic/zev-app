@@ -8,6 +8,7 @@ import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PdfStatementImport } from "@/components/pdf-statement-import";
 
 async function enterPaymentAction(formData: FormData) {
   "use server";
@@ -44,6 +45,7 @@ async function importCsvAction(formData: FormData) {
         amountCol: Number(formData.get("amountCol") ?? 1),
         payerCol: Number(formData.get("payerCol") ?? 2),
         referenceCol: Number(formData.get("referenceCol") ?? 3),
+        purposeCol: formData.get("purposeCol") ? Number(formData.get("purposeCol")) : -1,
         delimiter: String(formData.get("delimiter") || ";"),
         skipRows: Number(formData.get("skipRows") ?? 1),
         decimalComma: formData.get("decimalComma") === "on",
@@ -112,6 +114,9 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
               <Field label="Kolona iznosa"><input name="amountCol" type="number" defaultValue={1} className={inputCls} /></Field>
               <Field label="Kolona platioca"><input name="payerCol" type="number" defaultValue={2} className={inputCls} /></Field>
               <Field label="Kolona poziva na broj"><input name="referenceCol" type="number" defaultValue={3} className={inputCls} /></Field>
+              <Field label="Kolona svrhe uplate (opciono)" hint="Ostavite prazno ako izvod nema posebnu kolonu za svrhu.">
+                <input name="purposeCol" type="number" className={inputCls} />
+              </Field>
               <Field label="Preskoči redova (zaglavlje)"><input name="skipRows" type="number" defaultValue={1} className={inputCls} /></Field>
               <Field label="Format datuma">
                 <select name="dateFormat" className={inputCls}>
@@ -122,6 +127,11 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="decimalComma" defaultChecked /> decimalni zarez (1.234,56)</label>
               <div className="flex items-end"><SubmitBtn>Uvezi</SubmitBtn></div>
             </form>
+          </Card>
+          <Card title="Uvoz bankovnog izvoda (PDF)" className="lg:col-span-2">
+            <PdfStatementImport
+              accounts={accounts.filter((a) => a.type === "BANK").map((a) => ({ id: a.id, name: a.name }))}
+            />
           </Card>
         </div>
       )}

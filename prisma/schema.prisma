@@ -28,6 +28,8 @@ model User {
   roles        Role[]
   active       Boolean   @default(true)
   deactivatedAt DateTime?
+  passwordResetTokenHash String?   // sha256(token); cleared on use, overwritten by a new request
+  passwordResetExpiresAt DateTime? // null = no pending reset request
   party        Party?    @relation(fields: [partyId], references: [id])
   partyId      String?   @unique
   sessions     Session[]
@@ -843,6 +845,8 @@ model BankImportBatch {
   id          String    @id @default(cuid())
   filename    String
   mapping     Json      // column mapping used
+  sourceType  String    @default("CSV") // CSV | PDF
+  rawText     String?   // izvorni tekst izvučen iz PDF izvoda (revizija / ponovno parsiranje)
   importedAt  DateTime  @default(now())
   importedById String?
   payments    Payment[]
@@ -859,6 +863,7 @@ model Payment {
   payerId       String?
   payerNameRaw  String?       // as in bank statement
   reference     String?       // poziv na broj / bank reference
+  purposeRaw    String?       // svrha doznake / opis plaćanja (npr. broj stana koji je platilac naveo)
   method        String?       // BANK | CASH
   importBatch   BankImportBatch? @relation(fields: [importBatchId], references: [id])
   importBatchId String?

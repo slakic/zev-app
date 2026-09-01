@@ -28,14 +28,18 @@ export type BankImportBatchMinAggregateOutputType = {
   id: string | null
   filename: string | null
   importedAt: Date | null
+  sourceType: string | null
   importedById: string | null
+  rawText: string | null
 }
 
 export type BankImportBatchMaxAggregateOutputType = {
   id: string | null
   filename: string | null
   importedAt: Date | null
+  sourceType: string | null
   importedById: string | null
+  rawText: string | null
 }
 
 export type BankImportBatchCountAggregateOutputType = {
@@ -43,7 +47,9 @@ export type BankImportBatchCountAggregateOutputType = {
   filename: number
   mapping: number
   importedAt: number
+  sourceType: number
   importedById: number
+  rawText: number
   _all: number
 }
 
@@ -52,14 +58,18 @@ export type BankImportBatchMinAggregateInputType = {
   id?: true
   filename?: true
   importedAt?: true
+  sourceType?: true
   importedById?: true
+  rawText?: true
 }
 
 export type BankImportBatchMaxAggregateInputType = {
   id?: true
   filename?: true
   importedAt?: true
+  sourceType?: true
   importedById?: true
+  rawText?: true
 }
 
 export type BankImportBatchCountAggregateInputType = {
@@ -67,7 +77,9 @@ export type BankImportBatchCountAggregateInputType = {
   filename?: true
   mapping?: true
   importedAt?: true
+  sourceType?: true
   importedById?: true
+  rawText?: true
   _all?: true
 }
 
@@ -148,7 +160,9 @@ export type BankImportBatchGroupByOutputType = {
   filename: string
   mapping: runtime.JsonValue
   importedAt: Date
+  sourceType: string
   importedById: string | null
+  rawText: string | null
   _count: BankImportBatchCountAggregateOutputType | null
   _min: BankImportBatchMinAggregateOutputType | null
   _max: BankImportBatchMaxAggregateOutputType | null
@@ -177,7 +191,9 @@ export type BankImportBatchWhereInput = {
   filename?: Prisma.StringFilter<"BankImportBatch"> | string
   mapping?: Prisma.JsonFilter<"BankImportBatch">
   importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
+  sourceType?: Prisma.StringFilter<"BankImportBatch"> | string
   importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  rawText?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
   payments?: Prisma.PaymentListRelationFilter
 }
 
@@ -186,7 +202,9 @@ export type BankImportBatchOrderByWithRelationInput = {
   filename?: Prisma.SortOrder
   mapping?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  sourceType?: Prisma.SortOrder
   importedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  rawText?: Prisma.SortOrderInput | Prisma.SortOrder
   payments?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
@@ -198,7 +216,9 @@ export type BankImportBatchWhereUniqueInput = Prisma.AtLeast<{
   filename?: Prisma.StringFilter<"BankImportBatch"> | string
   mapping?: Prisma.JsonFilter<"BankImportBatch">
   importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
+  sourceType?: Prisma.StringFilter<"BankImportBatch"> | string
   importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  rawText?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
   payments?: Prisma.PaymentListRelationFilter
 }, "id">
 
@@ -207,7 +227,9 @@ export type BankImportBatchOrderByWithAggregationInput = {
   filename?: Prisma.SortOrder
   mapping?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  sourceType?: Prisma.SortOrder
   importedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  rawText?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.BankImportBatchCountOrderByAggregateInput
   _max?: Prisma.BankImportBatchMaxOrderByAggregateInput
   _min?: Prisma.BankImportBatchMinOrderByAggregateInput
@@ -221,7 +243,9 @@ export type BankImportBatchScalarWhereWithAggregatesInput = {
   filename?: Prisma.StringWithAggregatesFilter<"BankImportBatch"> | string
   mapping?: Prisma.JsonWithAggregatesFilter<"BankImportBatch">
   importedAt?: Prisma.DateTimeWithAggregatesFilter<"BankImportBatch"> | Date | string
+  sourceType?: Prisma.StringWithAggregatesFilter<"BankImportBatch"> | string
   importedById?: Prisma.StringNullableWithAggregatesFilter<"BankImportBatch"> | string | null
+  rawText?: Prisma.StringNullableWithAggregatesFilter<"BankImportBatch"> | string | null
 }
 
 export type BankImportBatchCreateInput = {
@@ -229,7 +253,9 @@ export type BankImportBatchCreateInput = {
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Date | string
+  sourceType?: string
   importedById?: string | null
+  rawText?: string | null
   payments?: Prisma.PaymentCreateNestedManyWithoutImportBatchInput
 }
 
@@ -238,7 +264,9 @@ export type BankImportBatchUncheckedCreateInput = {
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Date | string
+  sourceType?: string
   importedById?: string | null
+  rawText?: string | null
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutImportBatchInput
 }
 
@@ -247,7 +275,9 @@ export type BankImportBatchUpdateInput = {
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
   importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.PaymentUpdateManyWithoutImportBatchNestedInput
 }
 
@@ -256,7 +286,9 @@ export type BankImportBatchUncheckedUpdateInput = {
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
   importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutImportBatchNestedInput
 }
 
@@ -265,7 +297,9 @@ export type BankImportBatchCreateManyInput = {
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Date | string
+  sourceType?: string
   importedById?: string | null
+  rawText?: string | null
 }
 
 export type BankImportBatchUpdateManyMutationInput = {
@@ -273,7 +307,9 @@ export type BankImportBatchUpdateManyMutationInput = {
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
   importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BankImportBatchUncheckedUpdateManyInput = {
@@ -281,7 +317,9 @@ export type BankImportBatchUncheckedUpdateManyInput = {
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
   importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BankImportBatchCountOrderByAggregateInput = {
@@ -289,21 +327,27 @@ export type BankImportBatchCountOrderByAggregateInput = {
   filename?: Prisma.SortOrder
   mapping?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  sourceType?: Prisma.SortOrder
   importedById?: Prisma.SortOrder
+  rawText?: Prisma.SortOrder
 }
 
 export type BankImportBatchMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   filename?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  sourceType?: Prisma.SortOrder
   importedById?: Prisma.SortOrder
+  rawText?: Prisma.SortOrder
 }
 
 export type BankImportBatchMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   filename?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  sourceType?: Prisma.SortOrder
   importedById?: Prisma.SortOrder
+  rawText?: Prisma.SortOrder
 }
 
 export type BankImportBatchNullableScalarRelationFilter = {
@@ -332,7 +376,9 @@ export type BankImportBatchCreateWithoutPaymentsInput = {
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Date | string
+  sourceType?: string
   importedById?: string | null
+  rawText?: string | null
 }
 
 export type BankImportBatchUncheckedCreateWithoutPaymentsInput = {
@@ -340,7 +386,9 @@ export type BankImportBatchUncheckedCreateWithoutPaymentsInput = {
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Date | string
+  sourceType?: string
   importedById?: string | null
+  rawText?: string | null
 }
 
 export type BankImportBatchCreateOrConnectWithoutPaymentsInput = {
@@ -364,7 +412,9 @@ export type BankImportBatchUpdateWithoutPaymentsInput = {
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
   importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BankImportBatchUncheckedUpdateWithoutPaymentsInput = {
@@ -372,7 +422,9 @@ export type BankImportBatchUncheckedUpdateWithoutPaymentsInput = {
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
   importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -411,7 +463,9 @@ export type BankImportBatchSelect<ExtArgs extends runtime.Types.Extensions.Inter
   filename?: boolean
   mapping?: boolean
   importedAt?: boolean
+  sourceType?: boolean
   importedById?: boolean
+  rawText?: boolean
   payments?: boolean | Prisma.BankImportBatch$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.BankImportBatchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankImportBatch"]>
@@ -421,7 +475,9 @@ export type BankImportBatchSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   filename?: boolean
   mapping?: boolean
   importedAt?: boolean
+  sourceType?: boolean
   importedById?: boolean
+  rawText?: boolean
 }, ExtArgs["result"]["bankImportBatch"]>
 
 export type BankImportBatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -429,7 +485,9 @@ export type BankImportBatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   filename?: boolean
   mapping?: boolean
   importedAt?: boolean
+  sourceType?: boolean
   importedById?: boolean
+  rawText?: boolean
 }, ExtArgs["result"]["bankImportBatch"]>
 
 export type BankImportBatchSelectScalar = {
@@ -437,10 +495,12 @@ export type BankImportBatchSelectScalar = {
   filename?: boolean
   mapping?: boolean
   importedAt?: boolean
+  sourceType?: boolean
   importedById?: boolean
+  rawText?: boolean
 }
 
-export type BankImportBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "filename" | "mapping" | "importedAt" | "importedById", ExtArgs["result"]["bankImportBatch"]>
+export type BankImportBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "filename" | "mapping" | "sourceType" | "rawText" | "importedAt" | "importedById", ExtArgs["result"]["bankImportBatch"]>
 export type BankImportBatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payments?: boolean | Prisma.BankImportBatch$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.BankImportBatchCountOutputTypeDefaultArgs<ExtArgs>
@@ -458,7 +518,9 @@ export type $BankImportBatchPayload<ExtArgs extends runtime.Types.Extensions.Int
     filename: string
     mapping: runtime.JsonValue
     importedAt: Date
+    sourceType: string
     importedById: string | null
+    rawText: string | null
   }, ExtArgs["result"]["bankImportBatch"]>
   composites: {}
 }
@@ -887,7 +949,9 @@ export interface BankImportBatchFieldRefs {
   readonly filename: Prisma.FieldRef<"BankImportBatch", 'String'>
   readonly mapping: Prisma.FieldRef<"BankImportBatch", 'Json'>
   readonly importedAt: Prisma.FieldRef<"BankImportBatch", 'DateTime'>
+  readonly sourceType: Prisma.FieldRef<"BankImportBatch", 'String'>
   readonly importedById: Prisma.FieldRef<"BankImportBatch", 'String'>
+  readonly rawText: Prisma.FieldRef<"BankImportBatch", 'String'>
 }
     
 

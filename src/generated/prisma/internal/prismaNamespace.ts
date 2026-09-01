@@ -4437,6 +4437,8 @@ export const UserScalarFieldEnum = {
   roles: 'roles',
   active: 'active',
   deactivatedAt: 'deactivatedAt',
+  passwordResetTokenHash: 'passwordResetTokenHash',
+  passwordResetExpiresAt: 'passwordResetExpiresAt',
   partyId: 'partyId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -4971,6 +4973,8 @@ export const BankImportBatchScalarFieldEnum = {
   id: 'id',
   filename: 'filename',
   mapping: 'mapping',
+  sourceType: 'sourceType',
+  rawText: 'rawText',
   importedAt: 'importedAt',
   importedById: 'importedById'
 } as const
@@ -4987,6 +4991,7 @@ export const PaymentScalarFieldEnum = {
   payerId: 'payerId',
   payerNameRaw: 'payerNameRaw',
   reference: 'reference',
+  purposeRaw: 'purposeRaw',
   method: 'method',
   importBatchId: 'importBatchId',
   status: 'status',
