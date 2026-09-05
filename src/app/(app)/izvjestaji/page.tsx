@@ -27,7 +27,8 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
     <div>
       <PageHeader
         title="Izvještaji"
-        subtitle="Operativni finansijski pregledi — izvoz u CSV za eksternog računovođu"
+        subtitle="Operativni finansijski pregledi — izvoz u CSV za eksternog računovođu ili u PDF za štampu/arhivu"
+        actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="primary">Izvoz svih izvještaja (PDF)</BtnLink>}
       />
       <form className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
         <label className="text-sm">Od <input type="date" name="from" defaultValue={sp.from} className="ml-1 rounded border border-slate-300 px-2 py-1" /></label>

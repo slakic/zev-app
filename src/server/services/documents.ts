@@ -6,6 +6,16 @@ import { requireRole, requireSelfOrRole, requireAnyUser, type Actor } from "@/se
 import { formatMoney, formatWeight } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { partyDisplayName } from "./ownership";
+import {
+  cashFlowReport,
+  incomeExpenseReport,
+  receivablesReport,
+  supplierReport,
+  unpaidSupplierInvoices,
+  allocationSummary,
+  type DateRange,
+} from "./reports";
+import { reserveFundBalance } from "./finance";
 import PDFDocument from "pdfkit";
 import QRCode from "qrcode";
 import fs from "node:fs";
@@ -711,4 +721,179 @@ export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
   });
   await prisma.workOrder.update({ where: { id: wo.id }, data: { documentId: stored.id } });
   return stored;
+}
+
+/**
+ * Consolidated financial report (cash flow, income/expense, receivables aging,
+ * suppliers, reserve fund, per-building/per-project breakdown) for a date range —
+ * the printable counterpart to the CSV exports on the Izvještaji page. Stored as
+ * a versioned Document (type ANNUAL_REPORT) so it shows up in Dokumenti and can
+ * be re-downloaded later, same as the other formal PDFs in this file.
+ */
+export async function generateFinancialReportPdf(actor: Actor, range?: DateRange) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const [cashFlow, incExp, receivables, suppliers, supplierUnpaid, fund, byBuilding, byProject] = await Promise.all([
+    cashFlowReport(actor, range),
+    incomeExpenseReport(actor, range),
+    receivablesReport(actor, range?.to ?? new Date()),
+    supplierReport(actor, range),
+    unpaidSupplierInvoices(actor),
+    reserveFundBalance(actor),
+    allocationSummary(actor, "building", range),
+    allocationSummary(actor, "project", range),
+  ]);
+  const periodLabel = range?.from || range?.to
+    ? `${range?.from ? formatDate(range.from) : "početak"} — ${range?.to ? formatDate(range.to) : "danas"}`
+    : "cijeli period";
+
+  type Col = { label: string; x: number; width: number; right?: boolean };
+  const buffer = await renderPdf(async (doc) => {
+    await zevHeader(doc, {
+      number: await nextDocNumber("ANNUAL_REPORT"),
+      title: "FINANSIJSKI IZVJEŠTAJ",
+      issueDate: new Date(),
+    });
+    doc.font("reg").fontSize(9).text(`Period: ${periodLabel}`, 50, doc.y, { width: 495, align: "center" });
+    doc.moveDown();
+
+    const section = (title: string) => {
+      if (doc.y > 680) doc.addPage();
+      doc.font("bold").fontSize(11).text(title, 50, doc.y, { width: 495 });
+      doc.moveDown(0.3);
+    };
+    const table = (cols: Col[], rows: string[][], empty: string) => {
+      if (doc.y > 700) doc.addPage();
+      doc.font("bold").fontSize(8.5);
+      const hy = doc.y;
+      cols.forEach((c) => doc.text(c.label, c.x, hy, { width: c.width, align: c.right ? "right" : "left" }));
+      doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
+      doc.moveDown(0.25);
+      doc.font("reg").fontSize(9);
+      if (rows.length === 0) {
+        doc.fillColor("#777").text(empty, 50, doc.y, { width: 495 }).fillColor("#000");
+      }
+      for (const r of rows) {
+        if (doc.y > 760) {
+          doc.addPage();
+          doc.font("bold").fontSize(8.5);
+          const hy2 = doc.y;
+          cols.forEach((c) => doc.text(c.label, c.x, hy2, { width: c.width, align: c.right ? "right" : "left" }));
+          doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
+          doc.moveDown(0.25);
+          doc.font("reg").fontSize(9);
+        }
+        const ry = doc.y + 2;
+        // Measure the tallest cell first — a wrapped (multi-line) name in any
+        // column must not let the next row's y creep up and overlap it.
+        const rowHeight = Math.max(...cols.map((c, i) => doc.heightOfString(r[i], { width: c.width })));
+        cols.forEach((c, i) => doc.text(r[i], c.x, ry, { width: c.width, align: c.right ? "right" : "left" }));
+        doc.y = ry + rowHeight;
+      }
+      doc.x = 50;
+      doc.moveDown(1);
+    };
+
+    section("Stanje računa i tok novca");
+    table(
+      [
+        { label: "Račun", x: 50, width: 160 },
+        { label: "Početno", x: 210, width: 75, right: true },
+        { label: "Prilivi", x: 285, width: 75, right: true },
+        { label: "Odlivi", x: 360, width: 75, right: true },
+        { label: "Trenutno stanje", x: 435, width: 110, right: true },
+      ],
+      cashFlow.map((r) => [r.accountName, formatMoney(r.opening, ""), formatMoney(r.income, ""), formatMoney(r.expense, ""), formatMoney(r.currentBalance, "")]),
+      "Nema aktivnih računa."
+    );
+
+    section("Prihodi i rashodi po kategorijama");
+    table(
+      [
+        { label: "Kategorija", x: 50, width: 300 },
+        { label: "Vrsta", x: 350, width: 95 },
+        { label: "Iznos", x: 445, width: 100, right: true },
+      ],
+      incExp.map((r) => [r.category, r.kind === "INCOME" ? "Prihod" : "Rashod", formatMoney(r.total, "")]),
+      "Nema knjiženja u odabranom periodu."
+    );
+
+    section(`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`);
+    table(
+      [
+        { label: "Faktura", x: 50, width: 85 },
+        { label: "Dužnik", x: 140, width: 140 },
+        { label: "Jedinica", x: 285, width: 70 },
+        { label: "Dospijeće", x: 360, width: 65 },
+        { label: "Otvoreno", x: 430, width: 60, right: true },
+        { label: "Starost", x: 495, width: 50 },
+      ],
+      receivables.rows.map((r) => [r.number, r.debtor, r.unit, formatDate(r.dueDate), formatMoney(r.open, ""), r.bucket]),
+      "Nema otvorenih potraživanja."
+    );
+
+    section("Dobavljači");
+    table(
+      [
+        { label: "Dobavljač", x: 50, width: 280 },
+        { label: "Faktura", x: 330, width: 60, right: true },
+        { label: "Ukupno", x: 400, width: 70, right: true },
+        { label: "Neplaćeno", x: 475, width: 70, right: true },
+      ],
+      suppliers.map((s) => [s.supplier, String(s.count), formatMoney(s.total, ""), formatMoney(s.unpaid, "")]),
+      "Nema troškova dobavljača u odabranom periodu."
+    );
+
+    section(`Fond održavanja — uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)}, stanje ${formatMoney(fund.balance)}`);
+    doc.moveDown(0.5);
+
+    section("Neplaćene fakture dobavljača");
+    table(
+      [
+        { label: "Dobavljač", x: 50, width: 220 },
+        { label: "Br. fakture", x: 275, width: 120 },
+        { label: "Rok", x: 400, width: 70 },
+        { label: "Otvoreno", x: 475, width: 70, right: true },
+      ],
+      supplierUnpaid.map((e) => [
+        e.supplier?.name ?? "—",
+        e.invoiceNumber ?? "—",
+        formatDate(e.dueDate),
+        formatMoney((Number(e.amount) - Number(e.paidAmount)).toFixed(2), ""),
+      ]),
+      "Nema neplaćenih faktura dobavljača."
+    );
+
+    section("Pregled po zgradama");
+    table(
+      [
+        { label: "Zgrada", x: 50, width: 250 },
+        { label: "Prilivi", x: 305, width: 90, right: true },
+        { label: "Odlivi", x: 400, width: 70, right: true },
+        { label: "Neto", x: 475, width: 70, right: true },
+      ],
+      byBuilding.map((r) => [r.name, formatMoney(r.income, ""), formatMoney(r.expense, ""), formatMoney(r.net, "")]),
+      "Nema knjiženja po zgradama u odabranom periodu."
+    );
+
+    section("Pregled po projektima");
+    table(
+      [
+        { label: "Projekat", x: 50, width: 250 },
+        { label: "Prilivi", x: 305, width: 90, right: true },
+        { label: "Odlivi", x: 400, width: 70, right: true },
+        { label: "Neto", x: 475, width: 70, right: true },
+      ],
+      byProject.map((r) => [r.name, formatMoney(r.income, ""), formatMoney(r.expense, ""), formatMoney(r.net, "")]),
+      "Nema knjiženja po projektima u odabranom periodu."
+    );
+
+    docFooter(doc, { sourceRef: `Financial report ${periodLabel}`, version: 1, status: "FINAL" });
+  });
+
+  return storeDocument(actor, {
+    type: "ANNUAL_REPORT",
+    title: `Finansijski izvještaj — ${periodLabel}`,
+    buffer,
+    finalize: true,
+  });
 }
