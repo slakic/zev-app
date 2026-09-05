@@ -1,10 +1,14 @@
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
 import { getZev, upsertZev } from "@/server/services/property";
 import { listAccounts, createAccount } from "@/server/services/finance";
+import { getParty, updateParty, requireOwnerParty } from "@/server/services/ownership";
+import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink } from "@/components/ui";
+import { formatDateTime, tEnum } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, Flash } from "@/components/ui";
 import type { Prisma } from "@/generated/prisma/client";
 
 async function saveZevAction(formData: FormData) {
@@ -52,6 +56,36 @@ async function saveSettingAction(formData: FormData) {
   revalidatePath("/podesavanja");
 }
 
+async function updateMyContactAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor();
+  try {
+    const partyId = await requireOwnerParty(actor);
+    await updateParty(actor, partyId, {
+      email: (formData.get("email") as string) || null,
+      phone: (formData.get("phone") as string) || null,
+      correspondenceAddress: (formData.get("correspondenceAddress") as string) || null,
+    });
+  } catch (e) {
+    redirect(`/podesavanja?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath("/podesavanja");
+  redirect("/podesavanja?msg=saved");
+}
+
+async function revokeMyConsentAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor();
+  const reason = (formData.get("reason") as string) || null;
+  try {
+    const partyId = await requireOwnerParty(actor);
+    await revokeEVoteConsent(actor, partyId, reason);
+  } catch (e) {
+    redirect(`/podesavanja?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect("/podesavanja?msg=saved");
+}
+
 const LEGAL_SETTINGS: { key: string; label: string; def: string }[] = [
   { key: "retention.financialYears", label: "Čuvanje finansijskih dokumenata (godina)", def: "11" },
   { key: "retention.voteIpDays", label: "Čuvanje IP metapodataka glasanja (dana)", def: "30" },
@@ -63,98 +97,182 @@ const LEGAL_SETTINGS: { key: string; label: string; def: string }[] = [
   { key: "board.presidentIsBoardPresident", label: "Predsjednik ZEV je ujedno predsjednik upravnog odbora (pretpostavka — vidi LEGAL_AND_FINANCIAL_ASSUMPTIONS.md)", def: "true" },
 ];
 
-export default async function SettingsPage() {
-  const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ err?: string; msg?: string }>;
+}) {
+  const actor = await requireActor();
+  const { err, msg } = await searchParams;
+  const okMsg = msg === "saved" ? "Sačuvano." : undefined;
   const isPresident = actor.roles.includes("PRESIDENT");
-  const [zev, accounts, settings] = await Promise.all([
-    getZev(),
-    listAccounts(actor),
-    prisma.setting.findMany(),
+  const isManagement = isPresident || actor.roles.includes("ACCOUNTANT");
+
+  const [zev, accounts, settings, myParty, myConsent] = await Promise.all([
+    isManagement ? getZev() : null,
+    isManagement ? listAccounts(actor) : Promise.resolve([]),
+    isManagement ? prisma.setting.findMany() : Promise.resolve([]),
+    actor.partyId ? getParty(actor, actor.partyId) : null,
+    actor.partyId ? getEVoteConsentHistory(actor, actor.partyId) : null,
   ]);
   const settingsMap = new Map(settings.map((s) => [s.key, String(s.value)]));
+
   return (
     <div>
       <PageHeader
         title="Podešavanja"
-        subtitle="Matični podaci ZEV, računi, pravni parametri, poruke i revizorski trag"
+        subtitle={
+          isManagement
+            ? "Moji podaci, matični podaci ZEV, računi, pravni parametri, poruke i revizorski trag"
+            : "Moji lični podaci i elektronsko glasanje"
+        }
         actions={
-          <div className="flex gap-2">
-            <BtnLink href="/podesavanja/poruke" variant="secondary">Poslate poruke</BtnLink>
-            <BtnLink href="/podesavanja/audit" variant="secondary">Revizorski trag</BtnLink>
-          </div>
+          isManagement ? (
+            <div className="flex gap-2">
+              <BtnLink href="/podesavanja/poruke" variant="secondary">Poslate poruke</BtnLink>
+              <BtnLink href="/podesavanja/audit" variant="secondary">Revizorski trag</BtnLink>
+            </div>
+          ) : undefined
         }
       />
+      <Flash err={err} msg={okMsg} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card title="Matični podaci ZEV">
-          <form action={saveZevAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="sm:col-span-2">
-              <Field label="Puni naziv"><input name="legalName" required defaultValue={zev?.legalName} className={inputCls} disabled={!isPresident} /></Field>
-            </div>
-            <Field label="Skraćeni naziv"><input name="shortName" defaultValue={zev?.shortName ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            <Field label="JIB"><input name="jib" defaultValue={zev?.jib ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            <Field label="Registarski broj"><input name="registrationNumber" defaultValue={zev?.registrationNumber ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            <Field label="Sjedište (adresa)"><input name="registeredAddress" defaultValue={zev?.registeredAddress ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            <Field label="Grad"><input name="city" defaultValue={zev?.city ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            <Field label="Opština"><input name="municipality" defaultValue={zev?.municipality ?? ""} className={inputCls} disabled={!isPresident} /></Field>
-            {isPresident && <div className="sm:col-span-2"><SubmitBtn>Sačuvaj</SubmitBtn></div>}
-          </form>
-        </Card>
+        {myParty && (
+          <Card title="Moji podaci">
+            <form action={updateMyContactAction} className="space-y-3">
+              <Field label="E-mail"><input name="email" type="email" defaultValue={myParty.email ?? ""} className={inputCls} /></Field>
+              <Field label="Telefon"><input name="phone" defaultValue={myParty.phone ?? ""} className={inputCls} /></Field>
+              <Field label="Adresa za prepisku (ako je različita)">
+                <input name="correspondenceAddress" defaultValue={myParty.correspondenceAddress ?? ""} className={inputCls} />
+              </Field>
+              <p className="text-xs text-slate-400">
+                Ime, prezime i adresu nekretnine mijenja predsjednik — vidi vaš profil u „Vlasnici i korisnici”.
+              </p>
+              <SubmitBtn>Sačuvaj</SubmitBtn>
+            </form>
+          </Card>
+        )}
 
-        <Card title="Računi (banka i blagajna)">
-          <Table headers={["Naziv", "Vrsta", "Broj računa", "Početno stanje"]} empty={accounts.length === 0}>
-            {accounts.map((a) => (
-              <tr key={a.id}>
-                <Td>{a.name}</Td>
-                <Td>{a.type === "BANK" ? "Banka" : "Blagajna"}</Td>
-                <Td className="font-mono text-xs">{a.iban ?? "—"}</Td>
-                <Td right>{formatMoney(a.openingBalance.toString())}</Td>
-              </tr>
-            ))}
-          </Table>
-          <form action={addAccountAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
-            <Field label="Vrsta">
-              <select name="type" className={inputCls}>
-                <option value="BANK">Bankovni račun</option>
-                <option value="CASH">Blagajna</option>
-              </select>
-            </Field>
-            <Field label="Broj računa"><input name="iban" className={inputCls} /></Field>
-            <Field label="Banka"><input name="bankName" className={inputCls} /></Field>
-            <Field label="Početno stanje (KM)"><input name="openingBalance" defaultValue="0" className={inputCls} /></Field>
-            <Field label="Datum početnog stanja"><input name="openingDate" type="date" required className={inputCls} /></Field>
-            <div className="sm:col-span-2"><SubmitBtn>Dodaj račun</SubmitBtn></div>
-          </form>
-        </Card>
-
-        <Card title="Konfigurabilni pravni i finansijski parametri">
-          <p className="mb-3 text-xs text-slate-500">
-            Vrijednosti označene u LEGAL_AND_FINANCIAL_ASSUMPTIONS.md — pravna/računovodstvena provjera obavezna prije produkcijske upotrebe.
-          </p>
-          <div className="space-y-3">
-            {LEGAL_SETTINGS.map((s) => (
-              <form key={s.key} action={saveSettingAction} className="flex flex-wrap items-end gap-2">
-                <input type="hidden" name="key" value={s.key} />
-                <div className="min-w-[220px] flex-1">
-                  <Field label={s.label}>
-                    <input name="value" defaultValue={settingsMap.get(s.key) ?? s.def} className={inputCls} disabled={!isPresident} />
+        {myParty && myConsent && (
+          <Card title="Elektronsko glasanje">
+            <div className="space-y-3 text-sm">
+              <StatusBadge status={myParty.eVoteConsentStatus} label={tEnum("eVoteConsentStatus", myParty.eVoteConsentStatus)} />
+              <p className="text-slate-600">
+                Da biste se elektronskim putem izjašnjavali na sjednicama skupštine i upravnog odbora, kao i u
+                drugim postupcima izjašnjavanja koje ZEV objavi, potrebno je da preuzmete izjavu o saglasnosti,
+                odštampate je, potpišete i donesete predsjedniku ZEV-a. Predsjednik potom, po prijemu potpisane
+                izjave, omogućava vam elektronsko izjašnjavanje.
+              </p>
+              <dl className="space-y-1">
+                <div><dt className="inline font-medium">E-mail na izjavi: </dt><dd className="inline">{myParty.eVoteConsentEmail ?? "—"}</dd></div>
+                {myConsent.signedAt && (
+                  <div><dt className="inline font-medium">Potpisana: </dt><dd className="inline">{formatDateTime(myConsent.signedAt)}</dd></div>
+                )}
+                {myConsent.revokedAt && (
+                  <div>
+                    <dt className="inline font-medium">Povučena: </dt>
+                    <dd className="inline">
+                      {formatDateTime(myConsent.revokedAt)}
+                      {myConsent.revokeReason ? ` — ${myConsent.revokeReason}` : ""}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              <p>
+                <BtnLink href={`/api/dokumenti/saglasnost/${myParty.id}`} variant="secondary">
+                  Preuzmi izjavu (PDF)
+                </BtnLink>
+              </p>
+              {myParty.eVoteConsentStatus !== "NONE" && myParty.eVoteConsentStatus !== "REVOKED" && (
+                <form action={revokeMyConsentAction} className="space-y-2 border-t border-slate-100 pt-3">
+                  <Field label="Razlog opoziva (opciono)">
+                    <input name="reason" className={inputCls} />
                   </Field>
-                </div>
-                {isPresident && <SubmitBtn variant="secondary">Sačuvaj</SubmitBtn>}
-              </form>
-            ))}
-          </div>
-        </Card>
+                  <SubmitBtn variant="danger">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
+                </form>
+              )}
+            </div>
+          </Card>
+        )}
 
-        <Card title="Napomena o integracijama">
-          <p className="text-sm text-slate-600">
-            E-mail i Viber rade preko <b>mock</b> provajdera: poruke se evidentiraju u
-            „Poslate poruke” sa simuliranim statusima isporuke. Konfiguracija stvarnih
-            provajdera opisana je u <code className="rounded bg-slate-100 px-1">.env.example</code> i README.
-            Viber bot može slati poruke korisnicima koji su se pretplatili na bota —
-            automatsko objavljivanje u proizvoljne privatne grupe nije podržano zvaničnim API-jem.
-          </p>
-        </Card>
+        {isManagement && (
+          <Card title="Matični podaci ZEV">
+            <form action={saveZevAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
+                <Field label="Puni naziv"><input name="legalName" required defaultValue={zev?.legalName} className={inputCls} disabled={!isPresident} /></Field>
+              </div>
+              <Field label="Skraćeni naziv"><input name="shortName" defaultValue={zev?.shortName ?? ""} className={inputCls} disabled={!isPresident} /></Field>
+              <Field label="JIB"><input name="jib" defaultValue={zev?.jib ?? ""} className={inputCls} disabled={!isPresident} /></Field>
+              <Field label="Registarski broj"><input name="registrationNumber" defaultValue={zev?.registrationNumber ?? ""} className={inputCls} disabled={!isPresident} /></Field>
+              <Field label="Sjedište (adresa)"><input name="registeredAddress" defaultValue={zev?.registeredAddress ?? ""} className={inputCls} disabled={!isPresident} /></Field>
+              <Field label="Grad"><input name="city" defaultValue={zev?.city ?? ""} className={inputCls} disabled={!isPresident} /></Field>
+              <Field label="Opština"><input name="municipality" defaultValue={zev?.municipality ?? ""} className={inputCls} disabled={!isPresident} /></Field>
+              {isPresident && <div className="sm:col-span-2"><SubmitBtn>Sačuvaj</SubmitBtn></div>}
+            </form>
+          </Card>
+        )}
+
+        {isManagement && (
+          <Card title="Računi (banka i blagajna)">
+            <Table headers={["Naziv", "Vrsta", "Broj računa", "Početno stanje"]} empty={accounts.length === 0}>
+              {accounts.map((a) => (
+                <tr key={a.id}>
+                  <Td>{a.name}</Td>
+                  <Td>{a.type === "BANK" ? "Banka" : "Blagajna"}</Td>
+                  <Td className="font-mono text-xs">{a.iban ?? "—"}</Td>
+                  <Td right>{formatMoney(a.openingBalance.toString())}</Td>
+                </tr>
+              ))}
+            </Table>
+            <form action={addAccountAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
+              <Field label="Vrsta">
+                <select name="type" className={inputCls}>
+                  <option value="BANK">Bankovni račun</option>
+                  <option value="CASH">Blagajna</option>
+                </select>
+              </Field>
+              <Field label="Broj računa"><input name="iban" className={inputCls} /></Field>
+              <Field label="Banka"><input name="bankName" className={inputCls} /></Field>
+              <Field label="Početno stanje (KM)"><input name="openingBalance" defaultValue="0" className={inputCls} /></Field>
+              <Field label="Datum početnog stanja"><input name="openingDate" type="date" required className={inputCls} /></Field>
+              <div className="sm:col-span-2"><SubmitBtn>Dodaj račun</SubmitBtn></div>
+            </form>
+          </Card>
+        )}
+
+        {isManagement && (
+          <Card title="Konfigurabilni pravni i finansijski parametri">
+            <p className="mb-3 text-xs text-slate-500">
+              Vrijednosti označene u LEGAL_AND_FINANCIAL_ASSUMPTIONS.md — pravna/računovodstvena provjera obavezna prije produkcijske upotrebe.
+            </p>
+            <div className="space-y-3">
+              {LEGAL_SETTINGS.map((s) => (
+                <form key={s.key} action={saveSettingAction} className="flex flex-wrap items-end gap-2">
+                  <input type="hidden" name="key" value={s.key} />
+                  <div className="min-w-[220px] flex-1">
+                    <Field label={s.label}>
+                      <input name="value" defaultValue={settingsMap.get(s.key) ?? s.def} className={inputCls} disabled={!isPresident} />
+                    </Field>
+                  </div>
+                  {isPresident && <SubmitBtn variant="secondary">Sačuvaj</SubmitBtn>}
+                </form>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {isManagement && (
+          <Card title="Napomena o integracijama">
+            <p className="text-sm text-slate-600">
+              E-mail i Viber rade preko <b>mock</b> provajdera: poruke se evidentiraju u
+              „Poslate poruke” sa simuliranim statusima isporuke. Konfiguracija stvarnih
+              provajdera opisana je u <code className="rounded bg-slate-100 px-1">.env.example</code> i README.
+              Viber bot može slati poruke korisnicima koji su se pretplatili na bota —
+              automatsko objavljivanje u proizvoljne privatne grupe nije podržano zvaničnim API-jem.
+            </p>
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -98,12 +98,12 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
   return (
     <div>
       {error && (
-        <div role="alert" className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        <div role="alert" className="mb-3 rounded-xl border-l-4 border-l-red-500 bg-red-50 px-3 py-2.5 text-sm text-red-800 shadow-sm">
           {error}
         </div>
       )}
       {message && (
-        <div role="status" className="mb-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+        <div role="status" className="mb-3 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800 shadow-sm">
           {message}
         </div>
       )}
@@ -128,7 +128,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
             <button
               type="submit"
               disabled={pending}
-              className="rounded-md border border-transparent bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-full border border-transparent bg-blue-600 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow active:scale-[0.97] disabled:opacity-50"
             >
               {pending ? "Čitam izvod…" : "Učitaj i pregledaj"}
             </button>
@@ -139,7 +139,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
       {preview && (
         <div>
           {preview.accountMismatch && (
-            <div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            <div className="mb-3 rounded-xl border-l-4 border-l-amber-500 bg-amber-50 px-3 py-2.5 text-sm text-amber-800 shadow-sm">
               Upozorenje: broj računa u izvodu ({preview.ownAccountNumber}) ne izgleda kao odabrani račun. Provjerite da li ste
               odabrali ispravan račun prije uvoza.
             </div>
@@ -150,7 +150,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
             uvoza — ništa još nije sačuvano.
             {preview.skipped > 0 && ` (${preview.skipped} stavki bez iznosa preskočeno.)`}
           </p>
-          <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-left">
@@ -257,7 +257,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
               type="button"
               onClick={handleCommit}
               disabled={pending || includedCount === 0}
-              className="rounded-md border border-transparent bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-full border border-transparent bg-blue-600 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow active:scale-[0.97] disabled:opacity-50"
             >
               {pending ? "Uvozim…" : `Uvezi (${includedCount})`}
             </button>
@@ -265,7 +265,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
               type="button"
               onClick={handleCancel}
               disabled={pending}
-              className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-50"
+              className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50"
             >
               Odustani
             </button>

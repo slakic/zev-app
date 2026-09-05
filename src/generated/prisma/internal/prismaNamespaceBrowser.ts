@@ -165,6 +165,9 @@ export const PartyScalarFieldEnum = {
   correspondenceAddress: 'correspondenceAddress',
   note: 'note',
   active: 'active',
+  eVoteConsentStatus: 'eVoteConsentStatus',
+  eVoteConsentEmail: 'eVoteConsentEmail',
+  eVoteConsentDocumentId: 'eVoteConsentDocumentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -949,6 +952,9 @@ export const AttachmentScalarFieldEnum = {
   filePath: 'filePath',
   sha256: 'sha256',
   uploadedById: 'uploadedById',
+  category: 'category',
+  linkedType: 'linkedType',
+  linkedId: 'linkedId',
   createdAt: 'createdAt'
 } as const
 

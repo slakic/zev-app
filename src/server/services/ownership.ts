@@ -5,7 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireSelfOrRole, requireAnyUser, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, type Decimal } from "@/lib/money";
+import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
 import type { PartyKind, OccupancyType, ProxyScope, Prisma } from "@/generated/prisma/client";
+
+/** The proof-of-ownership document a president must attach whenever a new stake is opened. */
+export type OwnershipProofInput = Pick<UploadInput, "buffer" | "filename" | "mime">;
 
 export function partyDisplayName(p: { kind: PartyKind; firstName: string | null; lastName: string | null; orgName: string | null }): string {
   return p.kind === "PERSON"
@@ -94,11 +98,21 @@ export async function currentStakesForUnit(unitId: string, asOf: Date = new Date
   });
 }
 
+/**
+ * Adding a stake without proof of ownership (a sale contract, a land-registry excerpt...) is
+ * refused outright — proof is not optional metadata, it's the evidence the stake itself rests
+ * on. The stake and its proof Attachment are created in one transaction: either both exist or
+ * neither does.
+ */
 export async function addOwnershipStake(
   actor: Actor,
-  data: { unitId: string; ownerId: string; sharePercent: string; validFrom: Date; acquisitionNote?: string | null }
+  data: { unitId: string; ownerId: string; sharePercent: string; validFrom: Date; acquisitionNote?: string | null },
+  proof: OwnershipProofInput
 ) {
   requireRole(actor, "PRESIDENT");
+  if (!proof || !proof.buffer || proof.buffer.length === 0) {
+    throw new Error("Dokaz o vlasništvu (dokument) je obavezan za dodavanje vlasničkog udjela.");
+  }
   const share = dec(data.sharePercent);
   if (share.lessThanOrEqualTo(0) || share.greaterThan(100)) {
     throw new Error("Udio mora biti u rasponu (0, 100].");
@@ -108,10 +122,19 @@ export async function addOwnershipStake(
   if (sum.greaterThan(dec(100).plus(dec("0.0001")))) {
     throw new Error(`Zbir udjela za jedinicu prelazi 100% (${sum.toFixed(4)}%).`);
   }
-  const stake = await prisma.ownershipStake.create({ data });
-  await audit(actor, {
-    action: "ownership.stake.add", targetType: "OwnershipStake", targetId: stake.id,
-    after: { unitId: data.unitId, ownerId: data.ownerId, sharePercent: data.sharePercent, validFrom: data.validFrom.toISOString() },
+  const stake = await prisma.$transaction(async (tx) => {
+    const s = await tx.ownershipStake.create({ data });
+    await createLinkedAttachmentTx(tx, actor, {
+      ...proof,
+      category: "OWNERSHIP_PROOF",
+      linkedType: "OwnershipStake",
+      linkedId: s.id,
+    });
+    await audit(actor, {
+      action: "ownership.stake.add", targetType: "OwnershipStake", targetId: s.id,
+      after: { unitId: data.unitId, ownerId: data.ownerId, sharePercent: data.sharePercent, validFrom: data.validFrom.toISOString() },
+    }, tx);
+    return s;
   });
   return stake;
 }
@@ -129,9 +152,13 @@ export async function transferOwnership(
     toOwnerId: string;
     effectiveDate: Date;
     note?: string | null;
-  }
+  },
+  proof: OwnershipProofInput
 ) {
   requireRole(actor, "PRESIDENT");
+  if (!proof || !proof.buffer || proof.buffer.length === 0) {
+    throw new Error("Dokaz o vlasništvu (dokument) je obavezan za promjenu vlasništva.");
+  }
   return prisma.$transaction(async (tx) => {
     const stake = await tx.ownershipStake.findFirst({
       where: { unitId: data.unitId, ownerId: data.fromOwnerId, validTo: null },
@@ -149,6 +176,12 @@ export async function transferOwnership(
         validFrom: data.effectiveDate,
         acquisitionNote: data.note ?? null,
       },
+    });
+    await createLinkedAttachmentTx(tx, actor, {
+      ...proof,
+      category: "OWNERSHIP_PROOF",
+      linkedType: "OwnershipStake",
+      linkedId: newStake.id,
     });
     await audit(actor, {
       action: "ownership.transfer",

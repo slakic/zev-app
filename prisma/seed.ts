@@ -109,16 +109,18 @@ async function main() {
 
   // --- Ownership (incl. co-owners, multi-unit owner), occupancy, proxy ------
   const past = new Date(Date.UTC(2019, 0, 1));
-  await ownership.addOwnershipStake(president, { unitId: stan1.id, ownerId: ownerAna.id, sharePercent: "100", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: stan2.id, ownerId: ownerMarko.id, sharePercent: "100", validFrom: past });
+  // Demo placeholder — a real deployment always attaches a scanned contract/land-registry excerpt.
+  const seedProof = { buffer: Buffer.from("Demo dokaz o vlasnistvu (seed)"), filename: "dokaz-seed.pdf", mime: "application/pdf" };
+  await ownership.addOwnershipStake(president, { unitId: stan1.id, ownerId: ownerAna.id, sharePercent: "100", validFrom: past }, seedProof);
+  await ownership.addOwnershipStake(president, { unitId: stan2.id, ownerId: ownerMarko.id, sharePercent: "100", validFrom: past }, seedProof);
   // co-ownership 60/40
-  await ownership.addOwnershipStake(president, { unitId: stan3.id, ownerId: ownerNikola.id, sharePercent: "60", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: stan3.id, ownerId: ownerSara.id, sharePercent: "40", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: stan4.id, ownerId: ownerMarko.id, sharePercent: "100", validFrom: past }); // Marko owns two units
-  await ownership.addOwnershipStake(president, { unitId: lokal1.id, ownerId: ownerFirma.id, sharePercent: "100", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: garaza1.id, ownerId: ownerAna.id, sharePercent: "100", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: garaza2.id, ownerId: presidentParty.id, sharePercent: "100", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: stan5.id, ownerId: presidentParty.id, sharePercent: "100", validFrom: past });
+  await ownership.addOwnershipStake(president, { unitId: stan3.id, ownerId: ownerNikola.id, sharePercent: "60", validFrom: past }, seedProof);
+  await ownership.addOwnershipStake(president, { unitId: stan3.id, ownerId: ownerSara.id, sharePercent: "40", validFrom: past }, seedProof);
+  await ownership.addOwnershipStake(president, { unitId: stan4.id, ownerId: ownerMarko.id, sharePercent: "100", validFrom: past }, seedProof); // Marko owns two units
+  await ownership.addOwnershipStake(president, { unitId: lokal1.id, ownerId: ownerFirma.id, sharePercent: "100", validFrom: past }, seedProof);
+  await ownership.addOwnershipStake(president, { unitId: garaza1.id, ownerId: ownerAna.id, sharePercent: "100", validFrom: past }, seedProof);
+  await ownership.addOwnershipStake(president, { unitId: garaza2.id, ownerId: presidentParty.id, sharePercent: "100", validFrom: past }, seedProof);
+  await ownership.addOwnershipStake(president, { unitId: stan5.id, ownerId: presidentParty.id, sharePercent: "100", validFrom: past }, seedProof);
 
   await ownership.setOccupancy(president, { unitId: stan1.id, partyId: ownerAna.id, type: "OWNER_OCCUPANT", headcount: 3, validFrom: past });
   await ownership.setOccupancy(president, { unitId: stan4.id, partyId: tenantIvana.id, type: "TENANT", headcount: 1, validFrom: new Date(Date.UTC(year - 1, 8, 1)) });

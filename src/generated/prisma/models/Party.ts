@@ -37,6 +37,9 @@ export type PartyMinAggregateOutputType = {
   correspondenceAddress: string | null
   note: string | null
   active: boolean | null
+  eVoteConsentStatus: string | null
+  eVoteConsentEmail: string | null
+  eVoteConsentDocumentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +57,9 @@ export type PartyMaxAggregateOutputType = {
   correspondenceAddress: string | null
   note: string | null
   active: boolean | null
+  eVoteConsentStatus: string | null
+  eVoteConsentEmail: string | null
+  eVoteConsentDocumentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +77,9 @@ export type PartyCountAggregateOutputType = {
   correspondenceAddress: number
   note: number
   active: number
+  eVoteConsentStatus: number
+  eVoteConsentEmail: number
+  eVoteConsentDocumentId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +99,9 @@ export type PartyMinAggregateInputType = {
   correspondenceAddress?: true
   note?: true
   active?: true
+  eVoteConsentStatus?: true
+  eVoteConsentEmail?: true
+  eVoteConsentDocumentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +119,9 @@ export type PartyMaxAggregateInputType = {
   correspondenceAddress?: true
   note?: true
   active?: true
+  eVoteConsentStatus?: true
+  eVoteConsentEmail?: true
+  eVoteConsentDocumentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +139,9 @@ export type PartyCountAggregateInputType = {
   correspondenceAddress?: true
   note?: true
   active?: true
+  eVoteConsentStatus?: true
+  eVoteConsentEmail?: true
+  eVoteConsentDocumentId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +232,9 @@ export type PartyGroupByOutputType = {
   correspondenceAddress: string | null
   note: string | null
   active: boolean
+  eVoteConsentStatus: string
+  eVoteConsentEmail: string | null
+  eVoteConsentDocumentId: string | null
   createdAt: Date
   updatedAt: Date
   _count: PartyCountAggregateOutputType | null
@@ -252,6 +273,9 @@ export type PartyWhereInput = {
   correspondenceAddress?: Prisma.StringNullableFilter<"Party"> | string | null
   note?: Prisma.StringNullableFilter<"Party"> | string | null
   active?: Prisma.BoolFilter<"Party"> | boolean
+  eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
+  eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
+  eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -289,6 +313,9 @@ export type PartyOrderByWithRelationInput = {
   correspondenceAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
+  eVoteConsentStatus?: Prisma.SortOrder
+  eVoteConsentEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  eVoteConsentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -329,6 +356,9 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   correspondenceAddress?: Prisma.StringNullableFilter<"Party"> | string | null
   note?: Prisma.StringNullableFilter<"Party"> | string | null
   active?: Prisma.BoolFilter<"Party"> | boolean
+  eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
+  eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
+  eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -366,6 +396,9 @@ export type PartyOrderByWithAggregationInput = {
   correspondenceAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
+  eVoteConsentStatus?: Prisma.SortOrder
+  eVoteConsentEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  eVoteConsentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PartyCountOrderByAggregateInput
@@ -389,6 +422,9 @@ export type PartyScalarWhereWithAggregatesInput = {
   correspondenceAddress?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   note?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   active?: Prisma.BoolWithAggregatesFilter<"Party"> | boolean
+  eVoteConsentStatus?: Prisma.StringWithAggregatesFilter<"Party"> | string
+  eVoteConsentEmail?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
+  eVoteConsentDocumentId?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
 }
@@ -406,6 +442,9 @@ export type PartyCreateInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -443,6 +482,9 @@ export type PartyUncheckedCreateInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -480,6 +522,9 @@ export type PartyUpdateInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -517,6 +562,9 @@ export type PartyUncheckedUpdateInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -554,6 +602,9 @@ export type PartyCreateManyInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -571,6 +622,9 @@ export type PartyUpdateManyMutationInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -588,6 +642,9 @@ export type PartyUncheckedUpdateManyInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -610,6 +667,9 @@ export type PartyCountOrderByAggregateInput = {
   correspondenceAddress?: Prisma.SortOrder
   note?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  eVoteConsentStatus?: Prisma.SortOrder
+  eVoteConsentEmail?: Prisma.SortOrder
+  eVoteConsentDocumentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -627,6 +687,9 @@ export type PartyMaxOrderByAggregateInput = {
   correspondenceAddress?: Prisma.SortOrder
   note?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  eVoteConsentStatus?: Prisma.SortOrder
+  eVoteConsentEmail?: Prisma.SortOrder
+  eVoteConsentDocumentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -644,6 +707,9 @@ export type PartyMinOrderByAggregateInput = {
   correspondenceAddress?: Prisma.SortOrder
   note?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  eVoteConsentStatus?: Prisma.SortOrder
+  eVoteConsentEmail?: Prisma.SortOrder
+  eVoteConsentDocumentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -966,6 +1032,9 @@ export type PartyCreateWithoutUserInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
@@ -1002,6 +1071,9 @@ export type PartyUncheckedCreateWithoutUserInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
@@ -1054,6 +1126,9 @@ export type PartyUpdateWithoutUserInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
@@ -1090,6 +1165,9 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1126,6 +1204,9 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -1162,6 +1243,9 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1203,6 +1287,9 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -1239,6 +1326,9 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1291,6 +1381,9 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -1327,6 +1420,9 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -1374,6 +1470,9 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -1410,6 +1509,9 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -1446,6 +1548,9 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -1482,6 +1587,9 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1534,6 +1642,9 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -1570,6 +1681,9 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -1606,6 +1720,9 @@ export type PartyCreateWithoutOccupanciesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -1642,6 +1759,9 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1694,6 +1814,9 @@ export type PartyUpdateWithoutOccupanciesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -1730,6 +1853,9 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -1766,6 +1892,9 @@ export type PartyCreateWithoutProxiesGivenInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -1802,6 +1931,9 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1843,6 +1975,9 @@ export type PartyCreateWithoutProxiesHeldInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -1879,6 +2014,9 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1931,6 +2069,9 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -1967,6 +2108,9 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2014,6 +2158,9 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -2050,6 +2197,9 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2086,6 +2236,9 @@ export type PartyCreateWithoutOfficeTermsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -2122,6 +2275,9 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -2174,6 +2330,9 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -2210,6 +2369,9 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2246,6 +2408,9 @@ export type PartyCreateWithoutAttendancesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -2282,6 +2447,9 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -2334,6 +2502,9 @@ export type PartyUpdateWithoutAttendancesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -2370,6 +2541,9 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2406,6 +2580,9 @@ export type PartyCreateWithoutEligibleVotersInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -2442,6 +2619,9 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -2483,6 +2663,9 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -2519,6 +2702,9 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -2571,6 +2757,9 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -2607,6 +2796,9 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2654,6 +2846,9 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -2690,6 +2885,9 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2726,6 +2924,9 @@ export type PartyCreateWithoutVotesCastInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -2762,6 +2963,9 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -2803,6 +3007,9 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -2839,6 +3046,9 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -2891,6 +3101,9 @@ export type PartyUpdateWithoutVotesCastInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -2927,6 +3140,9 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -2974,6 +3190,9 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3010,6 +3229,9 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -3046,6 +3268,9 @@ export type PartyCreateWithoutInvoicesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -3082,6 +3307,9 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -3134,6 +3362,9 @@ export type PartyUpdateWithoutInvoicesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3170,6 +3401,9 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -3206,6 +3440,9 @@ export type PartyCreateWithoutPaymentsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -3242,6 +3479,9 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -3294,6 +3534,9 @@ export type PartyUpdateWithoutPaymentsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3330,6 +3573,9 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -3366,6 +3612,9 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -3402,6 +3651,9 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -3454,6 +3706,9 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3490,6 +3745,9 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -3526,6 +3784,9 @@ export type PartyCreateWithoutReportedIssuesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -3562,6 +3823,9 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -3603,6 +3867,9 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -3639,6 +3906,9 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -3691,6 +3961,9 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3727,6 +4000,9 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -3774,6 +4050,9 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3810,6 +4089,9 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -3846,6 +4128,9 @@ export type PartyCreateWithoutNotificationsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -3882,6 +4167,9 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -3934,6 +4222,9 @@ export type PartyUpdateWithoutNotificationsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -3970,6 +4261,9 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -4006,6 +4300,9 @@ export type PartyCreateWithoutViberSubscriberInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartyInput
@@ -4042,6 +4339,9 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   correspondenceAddress?: string | null
   note?: string | null
   active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -4094,6 +4394,9 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartyNestedInput
@@ -4130,6 +4433,9 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -4350,6 +4656,9 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   correspondenceAddress?: boolean
   note?: boolean
   active?: boolean
+  eVoteConsentStatus?: boolean
+  eVoteConsentEmail?: boolean
+  eVoteConsentDocumentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.Party$userArgs<ExtArgs>
@@ -4388,6 +4697,9 @@ export type PartySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   correspondenceAddress?: boolean
   note?: boolean
   active?: boolean
+  eVoteConsentStatus?: boolean
+  eVoteConsentEmail?: boolean
+  eVoteConsentDocumentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["party"]>
@@ -4405,6 +4717,9 @@ export type PartySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   correspondenceAddress?: boolean
   note?: boolean
   active?: boolean
+  eVoteConsentStatus?: boolean
+  eVoteConsentEmail?: boolean
+  eVoteConsentDocumentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["party"]>
@@ -4422,11 +4737,14 @@ export type PartySelectScalar = {
   correspondenceAddress?: boolean
   note?: boolean
   active?: boolean
+  eVoteConsentStatus?: boolean
+  eVoteConsentEmail?: boolean
+  eVoteConsentDocumentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "kind" | "firstName" | "lastName" | "orgName" | "orgIdNumber" | "email" | "phone" | "address" | "correspondenceAddress" | "note" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["party"]>
+export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "kind" | "firstName" | "lastName" | "orgName" | "orgIdNumber" | "email" | "phone" | "address" | "correspondenceAddress" | "note" | "active" | "eVoteConsentStatus" | "eVoteConsentEmail" | "eVoteConsentDocumentId" | "createdAt" | "updatedAt", ExtArgs["result"]["party"]>
 export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Party$userArgs<ExtArgs>
   ownershipStakes?: boolean | Prisma.Party$ownershipStakesArgs<ExtArgs>
@@ -4490,6 +4808,9 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     correspondenceAddress: string | null
     note: string | null
     active: boolean
+    eVoteConsentStatus: string
+    eVoteConsentEmail: string | null
+    eVoteConsentDocumentId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["party"]>
@@ -4947,6 +5268,9 @@ export interface PartyFieldRefs {
   readonly correspondenceAddress: Prisma.FieldRef<"Party", 'String'>
   readonly note: Prisma.FieldRef<"Party", 'String'>
   readonly active: Prisma.FieldRef<"Party", 'Boolean'>
+  readonly eVoteConsentStatus: Prisma.FieldRef<"Party", 'String'>
+  readonly eVoteConsentEmail: Prisma.FieldRef<"Party", 'String'>
+  readonly eVoteConsentDocumentId: Prisma.FieldRef<"Party", 'String'>
   readonly createdAt: Prisma.FieldRef<"Party", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Party", 'DateTime'>
 }

@@ -2,12 +2,13 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
-import { listInvoices, listChargeItems, createChargeItem, createDraftBatch, invoicePaidAmount } from "@/server/services/billing";
+import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount } from "@/server/services/billing";
 import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink } from "@/components/ui";
+import { ChargeItemRow } from "@/components/charge-item-row";
 
 async function addChargeItemAction(formData: FormData) {
   "use server";
@@ -23,6 +24,26 @@ async function addChargeItemAction(formData: FormData) {
     dueDayOfMonth: Number(formData.get("dueDayOfMonth") || 15),
     rounding: (formData.get("rounding") as never) || "HALF_UP_2",
     isReserveFund: formData.get("isReserveFund") === "on",
+    displayOrder: Number(formData.get("displayOrder") || 0),
+  });
+  revalidatePath("/fakture");
+}
+
+async function updateChargeItemAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
+  const id = String(formData.get("id"));
+  await updateChargeItem(actor, id, {
+    name: String(formData.get("name")),
+    scopeType: (formData.get("scopeType") as never) ?? "ZEV",
+    buildingId: (formData.get("buildingId") as string) || null,
+    method: formData.get("method") as never,
+    rate: parseMoneyInput(formData.get("rate") as string | null),
+    frequency: (formData.get("frequency") as never) || "MONTHLY",
+    dueDayOfMonth: Number(formData.get("dueDayOfMonth") || 15),
+    rounding: (formData.get("rounding") as never) || "HALF_UP_2",
+    isReserveFund: formData.get("isReserveFund") === "on",
+    active: formData.get("active") === "on",
     displayOrder: Number(formData.get("displayOrder") || 0),
   });
   revalidatePath("/fakture");
@@ -66,16 +87,27 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       {management && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Stavke naknada (konfigurabilne)">
-            <Table headers={["Naziv", "Metoda", "Stopa/iznos", "Obuhvat", "Frekvencija", "Fond"]} empty={chargeItems.length === 0}>
+            <Table headers={["Naziv", "Metoda", "Stopa/iznos", "Obuhvat", "Frekvencija", "Fond", "Radnje"]} empty={chargeItems.length === 0}>
               {chargeItems.map((c) => (
-                <tr key={c.id}>
-                  <Td>{c.name}</Td>
-                  <Td>{tEnum("chargeMethod", c.method)}</Td>
-                  <Td right>{c.rate?.toString() ?? "—"}</Td>
-                  <Td>{tEnum("scope", c.scopeType)}</Td>
-                  <Td>{tEnum("frequency", c.frequency)}</Td>
-                  <Td>{c.isReserveFund ? "Da" : "—"}</Td>
-                </tr>
+                <ChargeItemRow
+                  key={c.id}
+                  item={{
+                    id: c.id,
+                    name: c.name,
+                    method: c.method,
+                    rate: c.rate?.toString() ?? null,
+                    scopeType: c.scopeType,
+                    buildingId: c.buildingId,
+                    frequency: c.frequency,
+                    dueDayOfMonth: c.dueDayOfMonth,
+                    rounding: c.rounding,
+                    isReserveFund: c.isReserveFund,
+                    displayOrder: c.displayOrder,
+                    active: c.active,
+                  }}
+                  buildings={buildings}
+                  action={updateChargeItemAction}
+                />
               ))}
             </Table>
             <details className="mt-3">

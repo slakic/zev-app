@@ -22,7 +22,7 @@ const NAV: { href: string; key: string; roles?: string[] }[] = [
   { href: "/odrzavanje", key: "nav.maintenance" },
   { href: "/dokumenti", key: "nav.documents" },
   { href: "/izvjestaji", key: "nav.reports", roles: ["PRESIDENT", "ACCOUNTANT"] },
-  { href: "/podesavanja", key: "nav.settings", roles: ["PRESIDENT", "ACCOUNTANT"] },
+  { href: "/podesavanja", key: "nav.settings" },
 ];
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {

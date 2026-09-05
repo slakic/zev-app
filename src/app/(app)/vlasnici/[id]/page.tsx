@@ -3,9 +3,11 @@ import { requireActor } from "@/server/actor";
 import { getParty, partyDisplayName, updateParty } from "@/server/services/ownership";
 import { updateUserRoles, activateUser, deactivateUser } from "@/server/services/users";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
-import { formatDate } from "@/lib/i18n";
+import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
+import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
+import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
-import { PageHeader, Card, Table, Td, Stat, BtnLink, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
@@ -73,6 +75,39 @@ async function toggleActiveAction(formData: FormData) {
   redirect(`/vlasnici/${id}?msg=saved`);
 }
 
+async function markConsentSignedAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+  const id = String(formData.get("id"));
+  const file = formData.get("scanFile") as File | null;
+  if (!file || file.size === 0) {
+    redirect(`/vlasnici/${id}?err=${encodeURIComponent("Skenirani dokument je obavezan.")}`);
+  }
+  try {
+    await markEVoteConsentSigned(actor, id, {
+      buffer: Buffer.from(await file!.arrayBuffer()),
+      filename: file!.name,
+      mime: file!.type,
+    });
+  } catch (e) {
+    redirect(`/vlasnici/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect(`/vlasnici/${id}?msg=saved`);
+}
+
+async function revokeConsentAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor();
+  const id = String(formData.get("id"));
+  const reason = (formData.get("reason") as string) || null;
+  try {
+    await revokeEVoteConsent(actor, id, reason);
+  } catch (e) {
+    redirect(`/vlasnici/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect(`/vlasnici/${id}?msg=saved`);
+}
+
 export default async function PartyDetailPage({
   params,
   searchParams,
@@ -84,8 +119,14 @@ export default async function PartyDetailPage({
   const actor = await requireActor();
   const { err, msg } = await searchParams;
   const party = await getParty(actor, id);
-  const [balance, advance] = await Promise.all([ownerBalance(actor, id), ownerAdvance(actor, id)]);
+  const [balance, advance, proofsByStake, consentHistory] = await Promise.all([
+    ownerBalance(actor, id),
+    ownerAdvance(actor, id),
+    listOwnershipProofsByStakeIds(actor, party.ownershipStakes.map((s) => s.id)),
+    getEVoteConsentHistory(actor, id),
+  ]);
   const isPresident = actor.roles.includes("PRESIDENT");
+  const isAccountant = actor.roles.includes("ACCOUNTANT");
   const isSelf = actor.partyId === id;
   const canEditContact = isPresident || isSelf;
   const okMsg = msg === "saved" ? "Sačuvano." : undefined;
@@ -143,15 +184,25 @@ export default async function PartyDetailPage({
           )}
         </Card>
         <Card title="Vlasnički udjeli (istorija se čuva)">
-          <Table headers={["Jedinica", "Udio %", "Od", "Do"]} empty={party.ownershipStakes.length === 0}>
-            {party.ownershipStakes.map((s) => (
-              <tr key={s.id} className={s.validTo ? "text-slate-400" : ""}>
-                <Td>{s.unit.building.name} / {s.unit.label}</Td>
-                <Td right>{s.sharePercent.toString()}</Td>
-                <Td>{formatDate(s.validFrom)}</Td>
-                <Td>{s.validTo ? formatDate(s.validTo) : "aktivno"}</Td>
-              </tr>
-            ))}
+          <Table headers={["Jedinica", "Udio %", "Od", "Do", "Dokaz o vlasništvu"]} empty={party.ownershipStakes.length === 0}>
+            {party.ownershipStakes.map((s) => {
+              const proof = proofsByStake.get(s.id);
+              return (
+                <tr key={s.id} className={s.validTo ? "text-slate-400" : ""}>
+                  <Td>{s.unit.building.name} / {s.unit.label}</Td>
+                  <Td right>{s.sharePercent.toString()}</Td>
+                  <Td>{formatDate(s.validFrom)}</Td>
+                  <Td>{s.validTo ? formatDate(s.validTo) : "aktivno"}</Td>
+                  <Td>
+                    {proof ? (
+                      <a href={`/api/prilozi/${proof.id}`} className="text-blue-700 hover:underline">dokument</a>
+                    ) : (
+                      "—"
+                    )}
+                  </Td>
+                </tr>
+              );
+            })}
           </Table>
         </Card>
         <Card title="Korištenje jedinica">
@@ -182,6 +233,72 @@ export default async function PartyDetailPage({
                 <li key={p.id}>za {partyDisplayName(p.grantor)} — {p.revokedAt ? "OPOZVANA" : "aktivna"}</li>
               ))}
             </ul>
+          </div>
+        </Card>
+        <Card title="Saglasnost za elektronsko glasanje">
+          <div className="space-y-3 text-sm">
+            <div className="flex items-center gap-2">
+              <StatusBadge status={party.eVoteConsentStatus} label={tEnum("eVoteConsentStatus", party.eVoteConsentStatus)} />
+            </div>
+            <dl className="space-y-1">
+              <div><dt className="inline font-medium">E-mail na izjavi: </dt><dd className="inline">{party.eVoteConsentEmail ?? "—"}</dd></div>
+              {consentHistory.signedAt && (
+                <div><dt className="inline font-medium">Potpisana: </dt><dd className="inline">{formatDateTime(consentHistory.signedAt)}</dd></div>
+              )}
+              {consentHistory.revokedAt && (
+                <div>
+                  <dt className="inline font-medium">Povučena: </dt>
+                  <dd className="inline">
+                    {formatDateTime(consentHistory.revokedAt)}
+                    {consentHistory.revokeReason ? ` — ${consentHistory.revokeReason}` : ""}
+                  </dd>
+                </div>
+              )}
+              {party.eVoteConsentDocumentId && (
+                <div>
+                  <dt className="inline font-medium">Skenirani dokument: </dt>
+                  <dd className="inline">
+                    <a href={`/api/prilozi/${party.eVoteConsentDocumentId}`} className="text-blue-700 hover:underline">
+                      pregledaj
+                    </a>
+                  </dd>
+                </div>
+              )}
+            </dl>
+
+            {(isPresident || isSelf) && (
+              <p>
+                <BtnLink href={`/api/dokumenti/saglasnost/${party.id}`} variant="secondary">
+                  Preuzmi izjavu (PDF)
+                </BtnLink>
+              </p>
+            )}
+
+            {(isPresident || isAccountant) && (
+              <form action={markConsentSignedAction} className="space-y-2 border-t border-slate-100 pt-3">
+                <input type="hidden" name="id" value={party.id} />
+                <Field label="Skenirana potpisana izjava" hint="PDF, JPG, PNG ili WEBP.">
+                  <input
+                    name="scanFile"
+                    type="file"
+                    accept=".pdf,application/pdf,image/jpeg,image/png,image/webp"
+                    required
+                    className={inputCls}
+                  />
+                </Field>
+                <SubmitBtn variant="secondary">Označi kao potpisanu i sačuvaj sken</SubmitBtn>
+              </form>
+            )}
+
+            {(isPresident || isSelf) && party.eVoteConsentStatus !== "NONE" && party.eVoteConsentStatus !== "REVOKED" && (
+              <form action={revokeConsentAction} className="space-y-2 border-t border-slate-100 pt-3">
+                <input type="hidden" name="id" value={party.id} />
+                <Field label="Razlog opoziva (opciono)">
+                  <input name="reason" className={inputCls} />
+                </Field>
+                <SubmitBtn variant="danger">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
+              </form>
+            )}
           </div>
         </Card>
         {isPresident && party.user && (

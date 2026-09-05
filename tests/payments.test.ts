@@ -357,7 +357,7 @@ describe("payments and owner balances", () => {
     await transferOwnership(f.president, {
       unitId: f.u2.id, fromOwnerId: f.ownerB.id, toOwnerId: f.ownerC.id,
       effectiveDate: new Date(), note: "kupoprodaja",
-    });
+    }, { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" });
     // C inherits NO old debt
     const balC = await ownerBalance(f.accountant, f.ownerC.id);
     expect(balC.charged).toBe(balBefore.charged);

@@ -71,12 +71,13 @@ export async function createFixture(tag: string) {
   const u4 = await property.createUnit(president, { buildingId: b2.id, type: "GARAGE", label: `G1-${t}`, usableArea: "20.00", ownershipShare: "10.00", occupantCount: 0, typeCoefficient: "0.5" });
 
   const past = new Date("2020-01-01");
-  await ownership.addOwnershipStake(president, { unitId: u1.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: u2.id, ownerId: ownerB.id, sharePercent: "100", validFrom: past });
+  const proof = { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" };
+  await ownership.addOwnershipStake(president, { unitId: u1.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
+  await ownership.addOwnershipStake(president, { unitId: u2.id, ownerId: ownerB.id, sharePercent: "100", validFrom: past }, proof);
   // co-owned unit: B 50 / C 50
-  await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerB.id, sharePercent: "50", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerC.id, sharePercent: "50", validFrom: past });
-  await ownership.addOwnershipStake(president, { unitId: u4.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past });
+  await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerB.id, sharePercent: "50", validFrom: past }, proof);
+  await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerC.id, sharePercent: "50", validFrom: past }, proof);
+  await ownership.addOwnershipStake(president, { unitId: u4.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
 
   const account = await finance.createAccount(accountant, {
     zevId: zev.id, type: "BANK", name: `Racun-${t}`, openingBalance: "1000.00", openingDate: past,

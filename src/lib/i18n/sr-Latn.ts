@@ -249,6 +249,23 @@ const srLatn = {
     DRAFT: "Nacrt",
     FINAL: "Finalizovan",
   },
+  attachmentCategory: {
+    OWNERSHIP_PROOF: "Vlasnička dokumentacija",
+    INVOICE: "Fakture",
+    REPORT: "Izvještaji",
+    MINUTES: "Zapisnici",
+    CONTRACT: "Ugovori",
+    CORRESPONDENCE: "Prepiska",
+    PHOTO: "Fotografije",
+    CONSENT: "Saglasnost za elektronsko glasanje",
+    OTHER: "Ostalo",
+  },
+  eVoteConsentStatus: {
+    NONE: "Nije pokrenuto",
+    PENDING: "Izjava preuzeta — čeka se potpis",
+    SIGNED: "Potpisana izjava dostavljena",
+    REVOKED: "Saglasnost povučena",
+  },
 } as const;
 
 export default srLatn;

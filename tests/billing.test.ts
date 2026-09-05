@@ -181,7 +181,7 @@ describe("invoice batches (integration)", () => {
     await transferOwnership(f.president, {
       unitId: f.u1.id, fromOwnerId: f.ownerA.id, toOwnerId: f.ownerC.id,
       effectiveDate: new Date(), note: "prodaja",
-    });
+    }, { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" });
     const invAfter = await prisma.invoice.findUniqueOrThrow({ where: { id: invBefore.id } });
     expect(invAfter.debtorId).toBe(f.ownerA.id); // historical debtor unchanged
     // old stake closed, not deleted

@@ -32,16 +32,25 @@ async function addPartyAction(formData: FormData) {
   revalidatePath("/vlasnici");
 }
 
+/** Pull the mandatory proof-of-ownership file out of a submitted form. */
+async function readProofFile(formData: FormData): Promise<{ buffer: Buffer; filename: string; mime: string } | null> {
+  const file = formData.get("proofFile") as File | null;
+  if (!file || file.size === 0) return null;
+  return { buffer: Buffer.from(await file.arrayBuffer()), filename: file.name, mime: file.type };
+}
+
 async function addStakeAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
+  const proof = await readProofFile(formData);
   try {
+    if (!proof) throw new Error("Dokaz o vlasništvu (dokument) je obavezan za dodavanje vlasničkog udjela.");
     await addOwnershipStake(actor, {
       unitId: String(formData.get("unitId")),
       ownerId: String(formData.get("ownerId")),
       sharePercent: parseMoneyInput(formData.get("sharePercent") as string | null) ?? "",
       validFrom: new Date(String(formData.get("validFrom"))),
-    });
+    }, proof);
   } catch (e) {
     redirect(`/vlasnici?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -51,14 +60,16 @@ async function addStakeAction(formData: FormData) {
 async function transferAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
+  const proof = await readProofFile(formData);
   try {
+    if (!proof) throw new Error("Dokaz o vlasništvu (dokument) je obavezan za promjenu vlasništva.");
     await transferOwnership(actor, {
       unitId: String(formData.get("unitId")),
       fromOwnerId: String(formData.get("fromOwnerId")),
       toOwnerId: String(formData.get("toOwnerId")),
       effectiveDate: new Date(String(formData.get("effectiveDate"))),
       note: (formData.get("note") as string) || null,
-    });
+    }, proof);
   } catch (e) {
     redirect(`/vlasnici?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -163,6 +174,11 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               </Field>
               <Field label="Udio na jedinici (%)"><input name="sharePercent" required className={inputCls} placeholder="100 ili 50" /></Field>
               <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
+              <div className="sm:col-span-2">
+                <Field label="Dokaz o vlasništvu" hint="Obavezno — ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
+                  <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
+                </Field>
+              </div>
               <div className="sm:col-span-2"><SubmitBtn>Dodaj udio</SubmitBtn></div>
             </form>
           </Card>
@@ -188,6 +204,11 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               </Field>
               <Field label="Datum prenosa"><input name="effectiveDate" type="date" required className={inputCls} /></Field>
               <Field label="Napomena / osnov"><input name="note" className={inputCls} placeholder="kupoprodajni ugovor br..." /></Field>
+              <div className="sm:col-span-2">
+                <Field label="Dokaz o vlasništvu" hint="Obavezno — kupoprodajni ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
+                  <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
+                </Field>
+              </div>
               <div className="flex items-end"><SubmitBtn variant="danger">Evidentiraj prenos</SubmitBtn></div>
             </form>
           </Card>

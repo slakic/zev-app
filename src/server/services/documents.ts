@@ -299,6 +299,171 @@ export async function generateOwnerStatementPdf(actor: Actor, partyId: string, a
   });
 }
 
+/**
+ * Personalized, print-and-sign "Izjava o saglasnosti za elektronsko glasanje" — pre-filled with
+ * this owner's name, unit address(es) and registered e-mail, with JMBG, mjesto/datum and the
+ * signature left blank for physical completion. Generated on demand and NOT persisted as a
+ * Document: a blank/unsigned form has no evidentiary value until the owner signs it on paper and
+ * the president records that (see markEVoteConsentSigned in evoteConsent.ts). Downloading it does
+ * not itself grant consent — it only moves a fresh party from NONE to PENDING so the president can
+ * see who has been asked; re-downloading after SIGNED or REVOKED never resets that decision.
+ */
+export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Promise<Buffer> {
+  requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const party = await prisma.party.findUniqueOrThrow({
+    where: { id: partyId },
+    include: {
+      ownershipStakes: { where: { validTo: null }, include: { unit: { include: { building: true } } } },
+      user: { select: { email: true } },
+    },
+  });
+  const zev = await prisma.zev.findFirst();
+  const ownerName = partyDisplayName(party);
+  const email = party.user?.email ?? party.email ?? "";
+  const unitAddresses = party.ownershipStakes
+    .map((s) => `${s.unit.building.name}, ${s.unit.label}${s.unit.building.address ? ` (${s.unit.building.address})` : ""}`)
+    .join("; ") || "—";
+
+  const buffer = await renderPdf(async (doc) => {
+    doc.font("bold").fontSize(12).text(zev?.legalName ?? "Zajednica etažnih vlasnika");
+    doc.font("reg").fontSize(9)
+      .text(zev?.registeredAddress ?? "")
+      .text(`JIB: ${zev?.jib ?? "—"}   Registarski broj: ${zev?.registrationNumber ?? "—"}`);
+    doc.moveDown(0.3);
+    doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke();
+    doc.moveDown(0.3);
+    doc.font("bold").fontSize(13).text("IZJAVA O SAGLASNOSTI", { align: "center" });
+    doc.font("bold").fontSize(9.5).text(
+      "za elektronsko izjašnjavanje i glasanje u organima i postupcima odlučivanja zajednice etažnih vlasnika",
+      { align: "center" }
+    );
+    doc.moveDown(0.6);
+
+    doc.font("reg").fontSize(9).text(
+      `Ja, dolje potpisani/a vlasnik posebnog dijela zgrade (u daljem tekstu: vlasnik), član zajednice etažnih ` +
+      `vlasnika ${zev?.legalName ?? "[NAZIV ZEV-a]"} (u daljem tekstu: ZEV), ovom izjavom dobrovoljno i saglasno ` +
+      `pristajem da se moje izjašnjenje o prijedlozima odluka i glasanje na sjednicama skupštine i upravnog odbora ` +
+      `ZEV-a, kao i u svakom drugom postupku izjašnjavanja, glasanja ili prikupljanja saglasnosti koji ZEV objavi ` +
+      `elektronskim putem (u daljem tekstu zajednički: elektronsko izjašnjavanje), dato u skladu sa odredbama ove ` +
+      `izjave, smatra pravno valjanim i da ima istu pravnu težinu kao moje lično, fizičko izjašnjenje/potpis.`,
+      { align: "justify" }
+    );
+    doc.moveDown(0.6);
+
+    doc.font("bold").fontSize(10.5).text("Podaci o vlasniku");
+    doc.moveDown(0.25);
+    const idRow = (label: string, value: string) => {
+      const y = doc.y;
+      doc.font("bold").fontSize(8.5);
+      const labelHeight = doc.heightOfString(label, { width: 190 });
+      doc.text(label, 50, y, { width: 190 });
+      doc.font("reg").fontSize(8.5);
+      const valueHeight = doc.heightOfString(value, { width: 300 });
+      doc.text(value, 245, y, { width: 300 });
+      // Rows with a wrapped (multi-line) label or value need more space before the next row
+      // than a fixed moveDown() would give — measure the taller column instead of guessing.
+      doc.y = y + Math.max(labelHeight, valueHeight) + 4;
+    };
+    idRow("Ime i prezime vlasnika", ownerName);
+    idRow("JMBG / lični broj", "________________________");
+    idRow("Adresa (zgrada / stan)", unitAddresses);
+    idRow("Kontakt telefon", party.phone ?? "________________________");
+    idRow("E-mail adresa za elektronsko izjašnjavanje", email || "________________________");
+    // idRow's last call positioned text at x=245 (the value column) — PDFKit "sticks" to that
+    // x for every subsequent text() call that doesn't pass its own, so without this reset
+    // everything below (headings, clauses, footer) would render indented and narrowed.
+    doc.x = 50;
+    doc.moveDown(0.35);
+
+    doc.font("bold").fontSize(10.5).text("Odredbe izjave", 50, doc.y, { width: 495 });
+    doc.moveDown(0.25);
+    const clause = (title: string, text: string) => {
+      doc.font("bold").fontSize(8.75).text(title, 50, doc.y, { width: 495 });
+      doc.font("reg").fontSize(8.75).text(text, 50, doc.y, { width: 495, align: "justify" });
+      doc.moveDown(0.28);
+    };
+    clause(
+      "1. Predmet izjave",
+      "Ovom izjavom vlasnik ovlašćuje ZEV da elektronska izjašnjenja (glasove, saglasnosti, primjedbe, odgovore na " +
+      "ankete i slično) pristigla isključivo sa gore navedene e-mail adrese, putem sistema za elektronsko " +
+      "izjašnjavanje koji ZEV koristi (jedinstveni vremenski ograničen link i verifikacioni kod dostavljeni na " +
+      "navedenu adresu za svaku sjednicu, prijedlog ili drugi postupak izjašnjavanja), smatra njegovim ličnim " +
+      "identitetom i ličnom izjavom volje, bez potrebe za dodatnom fizičkom potvrdom. Ova saglasnost pokriva " +
+      "sjednice skupštine, sjednice upravnog odbora, kao i svaki drugi postupak elektronskog izjašnjavanja koji " +
+      "ZEV objavi vlasnicima."
+    );
+    clause(
+      "2. Pravno dejstvo elektronskog izjašnjenja",
+      "Elektronsko izjašnjenje dato u skladu sa ovom izjavom uračunava se u kvorum i većinu potrebnu za donošenje " +
+      "odluke organa ZEV-a (skupštine, odnosno upravnog odbora) na isti način kao fizičko prisustvo i glasanje na " +
+      "sjednici. U slučaju drugih postupaka izjašnjavanja koje ZEV objavi van sjednice (npr. prikupljanje " +
+      "saglasnosti ili mišljenja vlasnika), elektronsko izjašnjenje smatra se punovažnim izjašnjenjem vlasnika u " +
+      "tom postupku — sve u skladu sa Pravilima o međusobnim odnosima etažnih vlasnika ZEV-a te opštim odredbama " +
+      "Zakona o obligacionim odnosima o slobodi ugovaranja i Zakona o elektronskom potpisu Republike Srpske."
+    );
+    clause(
+      "3. Odgovornost vlasnika",
+      "Vlasnik je isključivo odgovoran za čuvanje pristupa navedenoj e-mail adresi i za sva izjašnjenja data putem " +
+      "nje, te je dužan bez odlaganja pisanim putem obavijestiti ZEV o svakoj sumnji na neovlašćen pristup toj " +
+      "adresi."
+    );
+    clause(
+      "4. Obrada ličnih podataka",
+      "Vlasnik je saglasan da ZEV obrađuje njegove lične podatke navedene u ovoj izjavi isključivo u svrhu " +
+      "sprovođenja elektronskog izjašnjavanja i vođenja evidencije o radu organa i postupaka izjašnjavanja ZEV-a."
+    );
+    clause(
+      "5. Opoziv saglasnosti",
+      "Vlasnik može u svakom trenutku, bez obrazloženja, opozvati ovu saglasnost — pisanim putem ili kroz " +
+      "aplikaciju ZEV upravnik. Opoziv proizvodi dejstvo počev od prve naredne sjednice organa ZEV-a ili drugog " +
+      "postupka izjašnjavanja nakon prijema obavještenja, odnosno nakon unosa opoziva u aplikaciju."
+    );
+    clause(
+      "6. Trajanje",
+      "Ova izjava proizvodi pravno dejstvo od dana potpisivanja i važi za sve naredne sjednice organa ZEV-a i " +
+      "druge postupke elektronskog izjašnjavanja koje ZEV objavi, do eventualnog opoziva u skladu sa tačkom 5., " +
+      "odnosno do promjene e-mail adrese."
+    );
+
+    doc.moveDown(0.5);
+    doc.font("reg").fontSize(9).text("Mjesto i datum: ________________________", 50, doc.y, { width: 495 });
+    doc.moveDown(1.3);
+    const sigY = doc.y;
+    doc.text("____________________________", 50, sigY, { width: 220 });
+    doc.text("____________________________", 320, sigY, { width: 220 });
+    doc.fontSize(8).text("Svojeručni potpis vlasnika", 50, doc.y, { width: 220 });
+    doc.text("Primio, za ZEV (predsjednik / upravnik)", 320, doc.y, { width: 220 });
+
+    // The signature row above ends on a positioned call at x=320 — reset back to the margin
+    // before the closing note so it isn't squeezed into that column's narrower width too.
+    doc.x = 50;
+    doc.moveDown(1.0);
+    doc.fontSize(7.5).fillColor("#555").text(
+      "Napomena: Ova izjava se popunjava i potpisuje u fizičkom, papirnom obliku, jednokratno, prije nego što " +
+      "vlasnik prvi put iskoristi mogućnost elektronskog izjašnjavanja. Original se čuva u dokumentaciji ZEV-a, a " +
+      "predsjednik u aplikaciji označava izjavu kao potpisanu i prilaže skenirani primjerak.",
+      50, doc.y, { width: 495, align: "justify" }
+    );
+  });
+
+  // Downloading only ever moves a fresh consent forward (NONE -> PENDING); it never disturbs an
+  // already-decided SIGNED or REVOKED status, so re-printing a copy can't silently reopen it.
+  if (party.eVoteConsentStatus === "NONE" || party.eVoteConsentStatus === "PENDING") {
+    await prisma.party.update({
+      where: { id: partyId },
+      data: { eVoteConsentStatus: "PENDING", eVoteConsentEmail: email || null },
+    });
+  }
+  await audit(actor, {
+    action: "party.evote_consent.request",
+    targetType: "Party",
+    targetId: partyId,
+    after: { email },
+  });
+
+  return buffer;
+}
+
 export async function generateMeetingInvitationPdf(actor: Actor, meetingId: string) {
   requireRole(actor, "PRESIDENT");
   const meeting = await prisma.meeting.findUniqueOrThrow({

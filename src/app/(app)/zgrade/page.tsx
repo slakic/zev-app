@@ -2,9 +2,12 @@ import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
 import { listBuildings, listUnits, createBuilding, createEntrance, createUnit, getZev, listCommonAssets, createCommonAsset } from "@/server/services/property";
 import { partyDisplayName } from "@/server/services/ownership";
+import { updateBuildingAction, updateUnitAction } from "@/server/actions/property";
 import { parseMoneyInput } from "@/lib/money";
 import { tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { BuildingRow } from "@/components/building-row";
+import { UnitRow } from "@/components/unit-row";
 
 async function addBuildingAction(formData: FormData) {
   "use server";
@@ -60,9 +63,15 @@ async function addAssetAction(formData: FormData) {
   revalidatePath("/zgrade");
 }
 
-export default async function BuildingsPage() {
+export default async function BuildingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ err?: string; msg?: string }>;
+}) {
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
+  const { err, msg } = await searchParams;
+  const okMsg = msg === "saved" ? "Sačuvano." : undefined;
   const [zev, buildings, units, assets] = await Promise.all([
     getZev(),
     listBuildings(actor),
@@ -70,20 +79,19 @@ export default async function BuildingsPage() {
     listCommonAssets(actor),
   ]);
   const entrances = buildings.flatMap((b) => b.entrances.map((e) => ({ ...e, buildingName: b.name })));
+  const buildingHeaders = isPresident
+    ? ["Naziv", "Adresa", "Ulazi", "Jedinica", "Radnje"]
+    : ["Naziv", "Adresa", "Ulazi", "Jedinica"];
   return (
     <div>
       <PageHeader title="Zgrade i jedinice" subtitle={zev?.legalName ?? undefined} />
       {!zev && <Flash err="ZEV još nije konfigurisana — unesite matične podatke u Podešavanjima." />}
+      <Flash err={err} msg={okMsg} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Zgrade">
-          <Table headers={["Naziv", "Adresa", "Ulazi", "Jedinica"]} empty={buildings.length === 0}>
+          <Table headers={buildingHeaders} empty={buildings.length === 0}>
             {buildings.map((b) => (
-              <tr key={b.id}>
-                <Td>{b.name}</Td>
-                <Td>{b.address}</Td>
-                <Td>{b.entrances.map((e) => e.name).join(", ") || "—"}</Td>
-                <Td right>{b._count.units}</Td>
-              </tr>
+              <BuildingRow key={b.id} building={b} canEdit={isPresident} action={updateBuildingAction} />
             ))}
           </Table>
           {isPresident && (
@@ -122,24 +130,38 @@ export default async function BuildingsPage() {
 
       <div className="mt-4">
         <Card title="Posebni dijelovi (stanovi, poslovni prostori, garaže)">
-          <Table headers={["Zgrada", "Ulaz", "Oznaka", "Tip", "Sprat", "Površina m²", "Udio %", "Korisnika", "Vlasnici", "Stanari/zakupci"]} empty={units.length === 0}>
+          <Table
+            headers={[
+              "Zgrada", "Ulaz", "Oznaka", "Tip", "Sprat", "Površina m²", "Udio %", "Korisnika", "Vlasnici", "Stanari/zakupci",
+              ...(isPresident ? ["Radnje"] : []),
+            ]}
+            empty={units.length === 0}
+          >
             {units.map((u) => (
-              <tr key={u.id}>
-                <Td>{u.building.name}</Td>
-                <Td>{u.entrance?.name ?? "—"}</Td>
-                <Td>{u.label}</Td>
-                <Td>{tEnum("unitType", u.type)}</Td>
-                <Td right>{u.floor ?? "—"}</Td>
-                <Td right>{u.usableArea.toString()}</Td>
-                <Td right>{u.ownershipShare.toString()}</Td>
-                <Td right>{u.occupantCount}</Td>
-                <Td>
-                  {u.ownershipStakes.map((s) => `${partyDisplayName(s.owner)} (${s.sharePercent}%)`).join(", ") || "—"}
-                </Td>
-                <Td>
-                  {u.occupancies.map((o) => `${partyDisplayName(o.party)} (${tEnum("occupancy", o.type)})`).join(", ") || "—"}
-                </Td>
-              </tr>
+              <UnitRow
+                key={u.id}
+                canEdit={isPresident}
+                action={updateUnitAction}
+                buildings={buildings.map((b) => ({ id: b.id, name: b.name }))}
+                entrances={entrances.map((e) => ({ id: e.id, name: e.name, buildingName: e.buildingName }))}
+                unit={{
+                  id: u.id,
+                  buildingId: u.buildingId,
+                  entranceId: u.entranceId,
+                  type: u.type,
+                  label: u.label,
+                  floor: u.floor,
+                  usableArea: u.usableArea.toString(),
+                  ownershipShare: u.ownershipShare.toString(),
+                  occupantCount: u.occupantCount,
+                  typeCoefficient: u.typeCoefficient.toString(),
+                  buildingName: u.building.name,
+                  entranceName: u.entrance?.name ?? null,
+                  typeLabel: tEnum("unitType", u.type),
+                  ownersDisplay: u.ownershipStakes.map((s) => `${partyDisplayName(s.owner)} (${s.sharePercent}%)`).join(", ") || "—",
+                  occupantsDisplay: u.occupancies.map((o) => `${partyDisplayName(o.party)} (${tEnum("occupancy", o.type)})`).join(", ") || "—",
+                }}
+              />
             ))}
           </Table>
           {isPresident && buildings.length > 0 && (

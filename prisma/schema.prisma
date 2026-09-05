@@ -69,6 +69,12 @@ model Party {
   correspondenceAddress String?    // may differ from address
   note                  String?
   active                Boolean    @default(true)
+  /// Consent to receive/cast assembly votes electronically (see EVOTE_CONSENT_STATUSES in
+  /// evoteConsent.ts): NONE | PENDING (form downloaded, not yet returned) | SIGNED | REVOKED.
+  /// Kept a plain String (like Attachment.category) so it can evolve without a migration.
+  eVoteConsentStatus     String     @default("NONE")
+  eVoteConsentEmail      String?    // email named on the signed consent form
+  eVoteConsentDocumentId String?    // Attachment.id of the scanned signed copy (category CONSENT)
   user                  User?
   ownershipStakes       OwnershipStake[]
   occupancies           Occupancy[]
@@ -1226,6 +1232,11 @@ model Document {
   @@index([sourceType, sourceId])
 }
 
+/// Classification: OWNERSHIP_PROOF | INVOICE | REPORT | MINUTES | CONTRACT |
+/// CORRESPONDENCE | PHOTO | CONSENT | OTHER (see ATTACHMENT_CATEGORIES in attachments.ts —
+/// kept as a plain String, not a DB enum, so the set can grow without a migration).
+/// linkedType/linkedId optionally tie an attachment to a specific record (e.g.
+/// "OwnershipStake"), mirroring Document.sourceType/sourceId; both null = general library item.
 model Attachment {
   id          String   @id @default(cuid())
   filename    String
@@ -1234,11 +1245,17 @@ model Attachment {
   filePath    String
   sha256      String?
   uploadedById String?
+  category    String   @default("OTHER")
+  linkedType  String?
+  linkedId    String?
   proposals   Proposal[]        @relation("ProposalAttachments")
   expenses    Expense[]         @relation("ExpenseAttachments")
   issues      MaintenanceIssue[] @relation("IssueAttachments")
   transactions FinTransaction[] @relation("TxAttachments")
   createdAt   DateTime @default(now())
+
+  @@index([linkedType, linkedId])
+  @@index([category])
 }
 
 enum NotifChannel {
