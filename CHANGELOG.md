@@ -4,28 +4,72 @@ Sve bitne izmjene u aplikaciji se evidentiraju ovdje.
 
 ## Verzionisanje
 
-Ne koristi se standardni SemVer nego jednostavnija šema oblika `MAJOR.mmm`:
+**Od verzije 0.2.0 koristi se standardni SemVer, `MAJOR.MINOR.PATCH`, sa jednom
+namjernom izmjenom u odnosu na podrazumijevano ponašanje:**
+
+- **Minor je podrazumijevani korak.** Svaka normalna, zaokružena izmjena/funkcionalnost/
+  ispravka podiže minor za `1` i vraća patch na `0` — npr. `0.2.0` → `0.3.0`.
+- **Patch se koristi za iteracije na nečemu što još nije završeno.** Dok se ista
+  funkcionalnost/ispravka doradjuje kroz više krugova u istom poduhvatu (npr. pronađe
+  se i ispravi bag, pa se u istom dijelu koda otkrije još nešto prije nego što je posao
+  zaista gotov), svaki takav međukorak podiže patch — npr. `0.3.0` → `0.3.1` → `0.3.2`,
+  umjesto da svaki put ide novi minor. Kad je taj rad zaista završen i stabilan,
+  *sljedeća nova* izmjena opet ide kao minor.
+- **Major je za značajniju prekretnicu** i vraća minor na `1` (ne na `0`), a patch na
+  `0` — npr. `1.4.2` → `2.1.0`, a ne `2.0.0`. Ovo je namjerno odstupanje od
+  podrazumijevanog semver/npm ponašanja: sâm `npm version major` završi na `X.0.0`, pa
+  je za željeno `X.1.0` potrebno odmah nakon toga pokrenuti i `npm version minor`
+  (za major izdanje: `npm version major && npm version minor`). `npm version minor` i
+  `npm version patch` sami po sebi već rade tačno ono što treba za ta dva slučaja.
+- Prije svake nadogradnje verzije se potvrđuje sa korisnikom da li je u pitanju patch,
+  minor ili major.
+
+**Napomena o promjeni šeme:** verzije `0.900` i `0.901` niže su nastale po staroj šemi
+(`MAJOR.mmm`, minor kao trocifreni brojač 1/1000, opisano dolje radi istorijskog
+konteksta) i nisu preimenovane. Od unosa `0.2.0` na dalje važi šema opisana iznad.
+Nastavak brojanja minor verzija (a ne povratak na `0.1.0`) odražava da su `0.900` i
+`0.901` već predstavljale dvije zaokružene isporuke pod major `0`.
+
+<details>
+<summary>Stara šema (do 0.901, radi istorijskog konteksta)</summary>
+
+Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 - **Minor** (`mmm`, tri cifre) raste za `1` pri svakom manjem izdanju / zaokruženom skupu
   izmjena — npr. `0.900` → `0.901` → `0.902`. Jedan korak = 1/1000 verzije.
-- **Major** raste za `1` pri značajnijoj prekretnici (veći redizajn, nova cjelina
-  funkcionalnosti i sl.), i tada se minor vraća na `000` — npr. `0.999` → `1.000`,
-  pa dalje `1.001`, `1.002`, ..., sljedeća prekretnica bi bila `2.000`.
-- Prva verzionisana isporuka je `0.900` (postojeća aplikacija u trenutku uvođenja
-  verzionisanja), ne `0.000`, jer je aplikacija u tom trenutku već funkcionalna i
-  korištena — brojevi ispod `0.900` nisu iskorišteni.
+- **Major** raste za `1` pri značajnijoj prekretnici, i tada se minor vraća na `000`.
+- Prva verzionisana isporuka je bila `0.900` (postojeća aplikacija u trenutku uvođenja
+  verzionisanja), ne `0.000`.
 
-U `package.json` ista verzija se zapisuje kao standardan tročlani semver
-`MAJOR.mmm.0` (treće polje je rezervisano, trenutno se ne koristi). Zahvaljujući tome
-uobičajene npm komande rade tačno ovu šemu bez dodatnih skripti:
+</details>
 
-```bash
-npm version minor   # 0.900.0 -> 0.901.0  (minor +1)
-npm version major   # 0.999.0 -> 1.0.0    (major +1, minor se resetuje)
-```
+## [0.2.0] - 2026-09-05
 
-Nakon `npm version ...` dodati odgovarajući unos ispod i napraviti commit/tag kako npm
-i predlaže.
+### Izmijenjeno
+
+- Promijenjena šema verzionisanja sa `MAJOR.mmm` na standardni semver
+  `MAJOR.MINOR.PATCH` (minor kao podrazumijevani korak, patch za međukorake dok se
+  nešto dovršava, major resetuje minor na `1` umjesto na `0`). Vidjeti sekciju
+  „Verzionisanje" iznad. Prethodne verzije (`0.900`, `0.901`) ostaju kako su
+  zabilježene, bez preimenovanja.
+
+## [0.901] - 2026-09-05
+
+### Dodato
+
+- Izvoz svih operativnih izvještaja (stanje računa, prihodi/rashodi, potraživanja,
+  dobavljači, fond održavanja, pregled po zgradama/projektima) u jedan PDF dokument,
+  pored postojećeg CSV izvoza po pojedinačnom izvještaju.
+- Novi izvještaj „Dugovanja po vlasnicima" na stranici Izvještaji — zaduženo/plaćeno/
+  korekcije/saldo po vlasniku, sa stanjem na proizvoljno izabran dan i mogućnošću da
+  se prikaže za jednog, više ili sve vlasnike. Izvoz u PDF (izvod otvorenih stavki),
+  verzionisan i vidljiv u Dokumentima.
+
+### Ispravljeno
+
+- Filter „stanje na dan" (i za dugovanja po vlasnicima) je do sada isključivao stavke
+  izdate/knjižene istog dana nakon ponoći (npr. izvještaj za „danas" je znao pokazati
+  sve nule) — sada obuhvata cijeli izabrani dan.
 
 ## [0.900] - 2026-09-05
 
