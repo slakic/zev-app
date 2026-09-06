@@ -13,6 +13,7 @@ import {
   supplierReport,
   unpaidSupplierInvoices,
   allocationSummary,
+  ownerDebtReport,
   type DateRange,
 } from "./reports";
 import { reserveFundBalance } from "./finance";
@@ -723,6 +724,48 @@ export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
   return stored;
 }
 
+type PdfCol = { label: string; x: number; width: number; right?: boolean };
+
+/** Section heading for the multi-report PDFs below — breaks to a new page if it wouldn't fit. */
+function pdfSection(doc: PDFKit.PDFDocument, title: string) {
+  if (doc.y > 680) doc.addPage();
+  doc.font("bold").fontSize(11).text(title, 50, doc.y, { width: 495 });
+  doc.moveDown(0.3);
+}
+
+/**
+ * A simple paginated table for the report PDFs — redraws the header row on
+ * page breaks, and measures each row's tallest cell (via heightOfString) so a
+ * wrapped multi-line name never lets the next row creep up and overlap it.
+ */
+function pdfTable(doc: PDFKit.PDFDocument, cols: PdfCol[], rows: string[][], empty: string) {
+  if (doc.y > 700) doc.addPage();
+  const drawHeader = () => {
+    doc.font("bold").fontSize(8.5);
+    const hy = doc.y;
+    cols.forEach((c) => doc.text(c.label, c.x, hy, { width: c.width, align: c.right ? "right" : "left" }));
+    doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
+    doc.moveDown(0.25);
+    doc.font("reg").fontSize(9);
+  };
+  drawHeader();
+  if (rows.length === 0) {
+    doc.fillColor("#777").text(empty, 50, doc.y, { width: 495 }).fillColor("#000");
+  }
+  for (const r of rows) {
+    if (doc.y > 760) {
+      doc.addPage();
+      drawHeader();
+    }
+    const ry = doc.y + 2;
+    const rowHeight = Math.max(...cols.map((c, i) => doc.heightOfString(r[i], { width: c.width })));
+    cols.forEach((c, i) => doc.text(r[i], c.x, ry, { width: c.width, align: c.right ? "right" : "left" }));
+    doc.y = ry + rowHeight;
+  }
+  doc.x = 50;
+  doc.moveDown(1);
+}
+
 /**
  * Consolidated financial report (cash flow, income/expense, receivables aging,
  * suppliers, reserve fund, per-building/per-project breakdown) for a date range —
@@ -746,7 +789,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
     ? `${range?.from ? formatDate(range.from) : "početak"} — ${range?.to ? formatDate(range.to) : "danas"}`
     : "cijeli period";
 
-  type Col = { label: string; x: number; width: number; right?: boolean };
+  const section = pdfSection;
+  const table = pdfTable;
   const buffer = await renderPdf(async (doc) => {
     await zevHeader(doc, {
       number: await nextDocNumber("ANNUAL_REPORT"),
@@ -756,45 +800,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
     doc.font("reg").fontSize(9).text(`Period: ${periodLabel}`, 50, doc.y, { width: 495, align: "center" });
     doc.moveDown();
 
-    const section = (title: string) => {
-      if (doc.y > 680) doc.addPage();
-      doc.font("bold").fontSize(11).text(title, 50, doc.y, { width: 495 });
-      doc.moveDown(0.3);
-    };
-    const table = (cols: Col[], rows: string[][], empty: string) => {
-      if (doc.y > 700) doc.addPage();
-      doc.font("bold").fontSize(8.5);
-      const hy = doc.y;
-      cols.forEach((c) => doc.text(c.label, c.x, hy, { width: c.width, align: c.right ? "right" : "left" }));
-      doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
-      doc.moveDown(0.25);
-      doc.font("reg").fontSize(9);
-      if (rows.length === 0) {
-        doc.fillColor("#777").text(empty, 50, doc.y, { width: 495 }).fillColor("#000");
-      }
-      for (const r of rows) {
-        if (doc.y > 760) {
-          doc.addPage();
-          doc.font("bold").fontSize(8.5);
-          const hy2 = doc.y;
-          cols.forEach((c) => doc.text(c.label, c.x, hy2, { width: c.width, align: c.right ? "right" : "left" }));
-          doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
-          doc.moveDown(0.25);
-          doc.font("reg").fontSize(9);
-        }
-        const ry = doc.y + 2;
-        // Measure the tallest cell first — a wrapped (multi-line) name in any
-        // column must not let the next row's y creep up and overlap it.
-        const rowHeight = Math.max(...cols.map((c, i) => doc.heightOfString(r[i], { width: c.width })));
-        cols.forEach((c, i) => doc.text(r[i], c.x, ry, { width: c.width, align: c.right ? "right" : "left" }));
-        doc.y = ry + rowHeight;
-      }
-      doc.x = 50;
-      doc.moveDown(1);
-    };
-
-    section("Stanje računa i tok novca");
-    table(
+    section(doc, "Stanje računa i tok novca");
+    table(doc,
       [
         { label: "Račun", x: 50, width: 160 },
         { label: "Početno", x: 210, width: 75, right: true },
@@ -806,8 +813,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
       "Nema aktivnih računa."
     );
 
-    section("Prihodi i rashodi po kategorijama");
-    table(
+    section(doc, "Prihodi i rashodi po kategorijama");
+    table(doc,
       [
         { label: "Kategorija", x: 50, width: 300 },
         { label: "Vrsta", x: 350, width: 95 },
@@ -817,8 +824,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
       "Nema knjiženja u odabranom periodu."
     );
 
-    section(`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`);
-    table(
+    section(doc, `Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`);
+    table(doc,
       [
         { label: "Faktura", x: 50, width: 85 },
         { label: "Dužnik", x: 140, width: 140 },
@@ -831,8 +838,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
       "Nema otvorenih potraživanja."
     );
 
-    section("Dobavljači");
-    table(
+    section(doc, "Dobavljači");
+    table(doc,
       [
         { label: "Dobavljač", x: 50, width: 280 },
         { label: "Faktura", x: 330, width: 60, right: true },
@@ -843,11 +850,11 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
       "Nema troškova dobavljača u odabranom periodu."
     );
 
-    section(`Fond održavanja — uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)}, stanje ${formatMoney(fund.balance)}`);
+    section(doc, `Fond održavanja — uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)}, stanje ${formatMoney(fund.balance)}`);
     doc.moveDown(0.5);
 
-    section("Neplaćene fakture dobavljača");
-    table(
+    section(doc, "Neplaćene fakture dobavljača");
+    table(doc,
       [
         { label: "Dobavljač", x: 50, width: 220 },
         { label: "Br. fakture", x: 275, width: 120 },
@@ -863,8 +870,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
       "Nema neplaćenih faktura dobavljača."
     );
 
-    section("Pregled po zgradama");
-    table(
+    section(doc, "Pregled po zgradama");
+    table(doc,
       [
         { label: "Zgrada", x: 50, width: 250 },
         { label: "Prilivi", x: 305, width: 90, right: true },
@@ -875,8 +882,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
       "Nema knjiženja po zgradama u odabranom periodu."
     );
 
-    section("Pregled po projektima");
-    table(
+    section(doc, "Pregled po projektima");
+    table(doc,
       [
         { label: "Projekat", x: 50, width: 250 },
         { label: "Prilivi", x: 305, width: 90, right: true },
@@ -893,6 +900,57 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
   return storeDocument(actor, {
     type: "ANNUAL_REPORT",
     title: `Finansijski izvještaj — ${periodLabel}`,
+    buffer,
+    finalize: true,
+  });
+}
+
+/**
+ * Owner debt/balance statement ("izvod otvorenih stavki") as of a chosen date,
+ * for one, several, or all owners. Stored as a versioned Document (type
+ * DEBT_STATEMENT) so it shows up in Dokumenti and can be re-downloaded later.
+ */
+export async function generateOwnerDebtReportPdf(actor: Actor, opts: { asOf: Date; partyIds?: string[] }) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const report = await ownerDebtReport(actor, opts);
+  const scopeLabel =
+    opts.partyIds && opts.partyIds.length > 0
+      ? `${opts.partyIds.length} izabrani vlasnik${opts.partyIds.length === 1 ? "" : "a"}`
+      : "svi vlasnici";
+
+  const buffer = await renderPdf(async (doc) => {
+    await zevHeader(doc, {
+      number: await nextDocNumber("DEBT_STATEMENT"),
+      title: "IZVJEŠTAJ DUGOVANJA PO VLASNICIMA",
+      issueDate: new Date(),
+    });
+    doc.font("reg").fontSize(9).text(`Stanje na dan: ${formatDate(opts.asOf)} · Obuhvat: ${scopeLabel}`, 50, doc.y, {
+      width: 495,
+      align: "center",
+    });
+    doc.moveDown();
+
+    pdfTable(
+      doc,
+      [
+        { label: "Vlasnik", x: 50, width: 135 },
+        { label: "Jedinica(e)", x: 190, width: 130 },
+        { label: "Zaduženo", x: 325, width: 65, right: true },
+        { label: "Plaćeno", x: 395, width: 65, right: true },
+        { label: "Saldo (duguje)", x: 465, width: 80, right: true },
+      ],
+      report.rows.map((r) => [r.name, r.units, formatMoney(r.charged, ""), formatMoney(r.paid, ""), formatMoney(r.balance, "")]),
+      "Nema vlasnika u odabranom obuhvatu."
+    );
+    doc.font("bold").fontSize(9).text(`UKUPNO SALDO: ${formatMoney(report.totalBalance)}`, 50, doc.y, { width: 495, align: "right" });
+    doc.font("reg");
+
+    docFooter(doc, { sourceRef: `Owner debt report ${formatDate(opts.asOf)}`, version: 1, status: "FINAL" });
+  });
+
+  return storeDocument(actor, {
+    type: "DEBT_STATEMENT",
+    title: `Izvještaj dugovanja po vlasnicima — ${formatDate(opts.asOf)} (${scopeLabel})`,
     buffer,
     finalize: true,
   });

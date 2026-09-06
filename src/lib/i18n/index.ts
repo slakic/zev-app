@@ -55,3 +55,15 @@ export function formatDateTime(d: Date | string | null | undefined): string {
   const mi = String(date.getMinutes()).padStart(2, "0");
   return `${formatDate(date)} ${hh}:${mi}`;
 }
+
+/**
+ * End of day (23:59:59.999, local time) for a plain "YYYY-MM-DD" date input —
+ * use this for an as-of/upper-bound date filter so it includes everything
+ * dated *during* that day, not just before local midnight. `new Date("YYYY-MM-DD")`
+ * parses as UTC midnight, which silently excludes same-day records created
+ * later in the day (e.g. a "stanje na dan [danas]" report showing nothing).
+ */
+export function endOfDay(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, (m || 1) - 1, d || 1, 23, 59, 59, 999);
+}

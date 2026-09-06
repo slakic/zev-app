@@ -1,18 +1,29 @@
 import { requireActor } from "@/server/actor";
-import { cashFlowReport, incomeExpenseReport, receivablesReport, supplierReport, unpaidSupplierInvoices, allocationSummary } from "@/server/services/reports";
+import { cashFlowReport, incomeExpenseReport, receivablesReport, supplierReport, unpaidSupplierInvoices, allocationSummary, ownerDebtReport } from "@/server/services/reports";
 import { reserveFundBalance } from "@/server/services/finance";
+import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
-import { formatDate } from "@/lib/i18n";
+import { formatDate, endOfDay } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, BtnLink } from "@/components/ui";
 
-export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ from?: string; to?: string }> }) {
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export default async function ReportsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string; to?: string; asOf?: string; owner?: string | string[] }>;
+}) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const sp = await searchParams;
   const range = {
     from: sp.from ? new Date(sp.from) : undefined,
     to: sp.to ? new Date(sp.to) : undefined,
   };
-  const [cashFlow, incExp, receivables, suppliers, supplierUnpaid, fund, byBuilding, byProject] = await Promise.all([
+  const asOfStr = sp.asOf || todayIso();
+  const ownerIds = sp.owner ? (Array.isArray(sp.owner) ? sp.owner : [sp.owner]) : [];
+  const [cashFlow, incExp, receivables, suppliers, supplierUnpaid, fund, byBuilding, byProject, parties, debt] = await Promise.all([
     cashFlowReport(actor, range),
     incomeExpenseReport(actor, range),
     receivablesReport(actor, range.to ?? new Date()),
@@ -21,8 +32,17 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
     reserveFundBalance(actor),
     allocationSummary(actor, "building", range),
     allocationSummary(actor, "project", range),
+    listParties(actor),
+    ownerDebtReport(actor, { asOf: endOfDay(asOfStr), partyIds: ownerIds.length > 0 ? ownerIds : undefined }),
   ]);
+  const owners = parties
+    .filter((p) => p.ownershipStakes.length > 0)
+    .map((p) => ({
+      id: p.id,
+      label: `${partyDisplayName(p)} — ${p.ownershipStakes.map((s) => s.unit.label).join(", ")}`,
+    }));
   const csvQ = `?from=${sp.from ?? ""}&to=${sp.to ?? ""}`;
+  const debtQ = `?asOf=${asOfStr}${ownerIds.map((id) => `&owner=${encodeURIComponent(id)}`).join("")}`;
   return (
     <div>
       <PageHeader
@@ -36,7 +56,47 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Primijeni period</button>
       </form>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <Card
+        title={`Dugovanja po vlasnicima — stanje na dan ${formatDate(new Date(asOfStr))} (ukupno: ${formatMoney(debt.totalBalance)})`}
+      >
+        <form className="mb-3 flex flex-wrap items-end gap-3">
+          <label className="text-sm">
+            Stanje na dan{" "}
+            <input type="date" name="asOf" defaultValue={asOfStr} className="ml-1 rounded border border-slate-300 px-2 py-1" />
+          </label>
+          <label className="text-sm">
+            Vlasnici{" "}
+            <select name="owner" multiple size={6} defaultValue={ownerIds} className="ml-1 min-w-[280px] rounded border border-slate-300 px-2 py-1">
+              {owners.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="text-xs text-slate-500">Ne biraj nijednog za sve vlasnike; Ctrl/Cmd + klik za više njih.</p>
+          <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Prikaži</button>
+        </form>
+        <Table headers={["Vlasnik", "Jedinica(e)", "Zaduženo", "Plaćeno", "Korekcije", "Saldo (duguje)"]} empty={debt.rows.length === 0}>
+          {debt.rows.map((r) => (
+            <tr key={r.partyId}>
+              <Td>{r.name}</Td>
+              <Td>{r.units}</Td>
+              <Td right>{formatMoney(r.charged, "")}</Td>
+              <Td right>{formatMoney(r.paid, "")}</Td>
+              <Td right>{formatMoney(r.corrections, "")}</Td>
+              <Td right className="font-semibold">{formatMoney(r.balance, "")}</Td>
+            </tr>
+          ))}
+        </Table>
+        <div className="mt-2">
+          <BtnLink href={`/api/izvjestaji/dugovanja${debtQ}`} variant="secondary">
+            Izvoz PDF
+          </BtnLink>
+        </div>
+      </Card>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Stanje računa i tok novca">
           <Table headers={["Račun", "Početno", "Prilivi", "Odlivi", "Neto", "Trenutno stanje"]} empty={cashFlow.length === 0}>
             {cashFlow.map((r) => (

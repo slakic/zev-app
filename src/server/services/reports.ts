@@ -139,6 +139,44 @@ export async function allocationSummary(actor: Actor, groupBy: "building" | "ent
   }));
 }
 
+/**
+ * Per-owner debt/balance snapshot as of a given date — zaduženo/plaćeno/korekcije/saldo
+ * per owner, either for every current owner or for a chosen subset. Backs the
+ * "Dugovanja po vlasnicima" report and its PDF export.
+ */
+export async function ownerDebtReport(actor: Actor, opts: { asOf: Date; partyIds?: string[] }) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const { ownerBalance } = await import("./payments");
+  const parties = await prisma.party.findMany({
+    where:
+      opts.partyIds && opts.partyIds.length > 0
+        ? { active: true, id: { in: opts.partyIds } }
+        : { active: true, ownershipStakes: { some: { validTo: null } } },
+    include: {
+      ownershipStakes: { where: { validTo: null }, include: { unit: { include: { building: true } } } },
+    },
+    orderBy: [{ lastName: "asc" }, { orgName: "asc" }],
+  });
+  const rows = [];
+  for (const p of parties) {
+    const bal = await ownerBalance(actor, p.id, opts.asOf);
+    const units =
+      p.ownershipStakes.map((s) => `${s.unit.building.name}, ${s.unit.label}`).join("; ") || "—";
+    rows.push({
+      partyId: p.id,
+      name: partyDisplayName(p),
+      units,
+      charged: bal.charged,
+      paid: bal.paid,
+      corrections: bal.corrections,
+      balance: bal.balance,
+    });
+  }
+  rows.sort((a, b) => dec(b.balance).comparedTo(dec(a.balance)));
+  const totalBalance = sumDecimals(rows.map((r) => dec(r.balance)));
+  return { asOf: opts.asOf, rows, totalBalance: totalBalance.toFixed(2) };
+}
+
 // ---- CSV export ----
 
 export function toCsv(rows: Record<string, unknown>[], columns?: { key: string; label: string }[]): string {
