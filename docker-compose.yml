@@ -16,8 +16,8 @@ services:
       timeout: 3s
       retries: 20
     # Otkomentarišite za direktan pristup bazi sa hosta:
-    # ports:
-    #   - "5432:5432"
+    ports:
+       - "5432:5432"
 
   app:
     build: .
@@ -27,6 +27,12 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://zev:zev_dev_password@db:5432/zev?schema=public
+      # Zasebna baza (isti Postgres, drugo ime) za `npm test` unutar kontejnera —
+      # bez ovoga tests/global-setup.ts baca "TEST_DATABASE_URL is not set", a
+      # vrijednost iz .env (koja koristi "localhost") ionako ne bi radila ovdje
+      # (.env se ne kopira u sliku — vidi .dockerignore — a i "localhost" iz app
+      # kontejnera ne pokazuje na db kontejner).
+      TEST_DATABASE_URL: postgresql://zev:zev_dev_password@db:5432/zev_test?schema=public
       # OBAVEZNO promijeniti u produkciji (openssl rand -hex 32):
       SESSION_SECRET: change-me-in-production-0123456789abcdef
       APP_URL: http://localhost:3000

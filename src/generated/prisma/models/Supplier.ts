@@ -26,6 +26,7 @@ export type AggregateSupplier = {
 
 export type SupplierMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   jib: string | null
   address: string | null
@@ -41,6 +42,7 @@ export type SupplierMinAggregateOutputType = {
 
 export type SupplierMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   jib: string | null
   address: string | null
@@ -56,6 +58,7 @@ export type SupplierMaxAggregateOutputType = {
 
 export type SupplierCountAggregateOutputType = {
   id: number
+  zevId: number
   name: number
   jib: number
   address: number
@@ -73,6 +76,7 @@ export type SupplierCountAggregateOutputType = {
 
 export type SupplierMinAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   jib?: true
   address?: true
@@ -88,6 +92,7 @@ export type SupplierMinAggregateInputType = {
 
 export type SupplierMaxAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   jib?: true
   address?: true
@@ -103,6 +108,7 @@ export type SupplierMaxAggregateInputType = {
 
 export type SupplierCountAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   jib?: true
   address?: true
@@ -191,6 +197,7 @@ export type SupplierGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type SupplierGroupByOutputType = {
   id: string
+  zevId: string
   name: string
   jib: string | null
   address: string | null
@@ -227,6 +234,7 @@ export type SupplierWhereInput = {
   OR?: Prisma.SupplierWhereInput[]
   NOT?: Prisma.SupplierWhereInput | Prisma.SupplierWhereInput[]
   id?: Prisma.StringFilter<"Supplier"> | string
+  zevId?: Prisma.StringFilter<"Supplier"> | string
   name?: Prisma.StringFilter<"Supplier"> | string
   jib?: Prisma.StringNullableFilter<"Supplier"> | string | null
   address?: Prisma.StringNullableFilter<"Supplier"> | string | null
@@ -238,6 +246,7 @@ export type SupplierWhereInput = {
   active?: Prisma.BoolFilter<"Supplier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Supplier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Supplier"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   expenses?: Prisma.ExpenseListRelationFilter
   offers?: Prisma.ContractorOfferListRelationFilter
   workOrders?: Prisma.WorkOrderListRelationFilter
@@ -245,6 +254,7 @@ export type SupplierWhereInput = {
 
 export type SupplierOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   jib?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -256,6 +266,7 @@ export type SupplierOrderByWithRelationInput = {
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
   offers?: Prisma.ContractorOfferOrderByRelationAggregateInput
   workOrders?: Prisma.WorkOrderOrderByRelationAggregateInput
@@ -266,6 +277,7 @@ export type SupplierWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.SupplierWhereInput | Prisma.SupplierWhereInput[]
   OR?: Prisma.SupplierWhereInput[]
   NOT?: Prisma.SupplierWhereInput | Prisma.SupplierWhereInput[]
+  zevId?: Prisma.StringFilter<"Supplier"> | string
   name?: Prisma.StringFilter<"Supplier"> | string
   jib?: Prisma.StringNullableFilter<"Supplier"> | string | null
   address?: Prisma.StringNullableFilter<"Supplier"> | string | null
@@ -277,6 +289,7 @@ export type SupplierWhereUniqueInput = Prisma.AtLeast<{
   active?: Prisma.BoolFilter<"Supplier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Supplier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Supplier"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   expenses?: Prisma.ExpenseListRelationFilter
   offers?: Prisma.ContractorOfferListRelationFilter
   workOrders?: Prisma.WorkOrderListRelationFilter
@@ -284,6 +297,7 @@ export type SupplierWhereUniqueInput = Prisma.AtLeast<{
 
 export type SupplierOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   jib?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -305,6 +319,7 @@ export type SupplierScalarWhereWithAggregatesInput = {
   OR?: Prisma.SupplierScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SupplierScalarWhereWithAggregatesInput | Prisma.SupplierScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
   name?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
   jib?: Prisma.StringNullableWithAggregatesFilter<"Supplier"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Supplier"> | string | null
@@ -331,6 +346,7 @@ export type SupplierCreateInput = {
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
@@ -338,6 +354,7 @@ export type SupplierCreateInput = {
 
 export type SupplierUncheckedCreateInput = {
   id?: string
+  zevId: string
   name: string
   jib?: string | null
   address?: string | null
@@ -367,6 +384,7 @@ export type SupplierUpdateInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
@@ -374,6 +392,7 @@ export type SupplierUpdateInput = {
 
 export type SupplierUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -392,6 +411,7 @@ export type SupplierUncheckedUpdateInput = {
 
 export type SupplierCreateManyInput = {
   id?: string
+  zevId: string
   name: string
   jib?: string | null
   address?: string | null
@@ -422,6 +442,7 @@ export type SupplierUpdateManyMutationInput = {
 
 export type SupplierUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -435,8 +456,19 @@ export type SupplierUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type SupplierListRelationFilter = {
+  every?: Prisma.SupplierWhereInput
+  some?: Prisma.SupplierWhereInput
+  none?: Prisma.SupplierWhereInput
+}
+
+export type SupplierOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type SupplierCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   jib?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -452,6 +484,7 @@ export type SupplierCountOrderByAggregateInput = {
 
 export type SupplierMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   jib?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -467,6 +500,7 @@ export type SupplierMaxOrderByAggregateInput = {
 
 export type SupplierMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   jib?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -488,6 +522,48 @@ export type SupplierNullableScalarRelationFilter = {
 export type SupplierScalarRelationFilter = {
   is?: Prisma.SupplierWhereInput
   isNot?: Prisma.SupplierWhereInput
+}
+
+export type SupplierCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.SupplierCreateWithoutZevInput, Prisma.SupplierUncheckedCreateWithoutZevInput> | Prisma.SupplierCreateWithoutZevInput[] | Prisma.SupplierUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutZevInput | Prisma.SupplierCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.SupplierCreateManyZevInputEnvelope
+  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+}
+
+export type SupplierUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.SupplierCreateWithoutZevInput, Prisma.SupplierUncheckedCreateWithoutZevInput> | Prisma.SupplierCreateWithoutZevInput[] | Prisma.SupplierUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutZevInput | Prisma.SupplierCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.SupplierCreateManyZevInputEnvelope
+  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+}
+
+export type SupplierUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.SupplierCreateWithoutZevInput, Prisma.SupplierUncheckedCreateWithoutZevInput> | Prisma.SupplierCreateWithoutZevInput[] | Prisma.SupplierUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutZevInput | Prisma.SupplierCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.SupplierUpsertWithWhereUniqueWithoutZevInput | Prisma.SupplierUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.SupplierCreateManyZevInputEnvelope
+  set?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  disconnect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  delete?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  update?: Prisma.SupplierUpdateWithWhereUniqueWithoutZevInput | Prisma.SupplierUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.SupplierUpdateManyWithWhereWithoutZevInput | Prisma.SupplierUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
+}
+
+export type SupplierUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.SupplierCreateWithoutZevInput, Prisma.SupplierUncheckedCreateWithoutZevInput> | Prisma.SupplierCreateWithoutZevInput[] | Prisma.SupplierUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutZevInput | Prisma.SupplierCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.SupplierUpsertWithWhereUniqueWithoutZevInput | Prisma.SupplierUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.SupplierCreateManyZevInputEnvelope
+  set?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  disconnect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  delete?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+  update?: Prisma.SupplierUpdateWithWhereUniqueWithoutZevInput | Prisma.SupplierUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.SupplierUpdateManyWithWhereWithoutZevInput | Prisma.SupplierUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
 }
 
 export type SupplierCreateNestedOneWithoutExpensesInput = {
@@ -534,6 +610,87 @@ export type SupplierUpdateOneRequiredWithoutWorkOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SupplierUpdateToOneWithWhereWithoutWorkOrdersInput, Prisma.SupplierUpdateWithoutWorkOrdersInput>, Prisma.SupplierUncheckedUpdateWithoutWorkOrdersInput>
 }
 
+export type SupplierCreateWithoutZevInput = {
+  id?: string
+  name: string
+  jib?: string | null
+  address?: string | null
+  iban?: string | null
+  contactName?: string | null
+  email?: string | null
+  phone?: string | null
+  note?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
+  offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
+}
+
+export type SupplierUncheckedCreateWithoutZevInput = {
+  id?: string
+  name: string
+  jib?: string | null
+  address?: string | null
+  iban?: string | null
+  contactName?: string | null
+  email?: string | null
+  phone?: string | null
+  note?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutSupplierInput
+  offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutSupplierInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutSupplierInput
+}
+
+export type SupplierCreateOrConnectWithoutZevInput = {
+  where: Prisma.SupplierWhereUniqueInput
+  create: Prisma.XOR<Prisma.SupplierCreateWithoutZevInput, Prisma.SupplierUncheckedCreateWithoutZevInput>
+}
+
+export type SupplierCreateManyZevInputEnvelope = {
+  data: Prisma.SupplierCreateManyZevInput | Prisma.SupplierCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type SupplierUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.SupplierWhereUniqueInput
+  update: Prisma.XOR<Prisma.SupplierUpdateWithoutZevInput, Prisma.SupplierUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.SupplierCreateWithoutZevInput, Prisma.SupplierUncheckedCreateWithoutZevInput>
+}
+
+export type SupplierUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.SupplierWhereUniqueInput
+  data: Prisma.XOR<Prisma.SupplierUpdateWithoutZevInput, Prisma.SupplierUncheckedUpdateWithoutZevInput>
+}
+
+export type SupplierUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.SupplierScalarWhereInput
+  data: Prisma.XOR<Prisma.SupplierUpdateManyMutationInput, Prisma.SupplierUncheckedUpdateManyWithoutZevInput>
+}
+
+export type SupplierScalarWhereInput = {
+  AND?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
+  OR?: Prisma.SupplierScalarWhereInput[]
+  NOT?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
+  id?: Prisma.StringFilter<"Supplier"> | string
+  zevId?: Prisma.StringFilter<"Supplier"> | string
+  name?: Prisma.StringFilter<"Supplier"> | string
+  jib?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  address?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  iban?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  contactName?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  email?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  phone?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  note?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  active?: Prisma.BoolFilter<"Supplier"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Supplier"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Supplier"> | Date | string
+}
+
 export type SupplierCreateWithoutExpensesInput = {
   id?: string
   name: string
@@ -547,12 +704,14 @@ export type SupplierCreateWithoutExpensesInput = {
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutExpensesInput = {
   id?: string
+  zevId: string
   name: string
   jib?: string | null
   address?: string | null
@@ -597,12 +756,14 @@ export type SupplierUpdateWithoutExpensesInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutExpensesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -631,12 +792,14 @@ export type SupplierCreateWithoutOffersInput = {
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutOffersInput = {
   id?: string
+  zevId: string
   name: string
   jib?: string | null
   address?: string | null
@@ -681,12 +844,14 @@ export type SupplierUpdateWithoutOffersInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -715,12 +880,14 @@ export type SupplierCreateWithoutWorkOrdersInput = {
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutWorkOrdersInput = {
   id?: string
+  zevId: string
   name: string
   jib?: string | null
   address?: string | null
@@ -765,11 +932,63 @@ export type SupplierUpdateWithoutWorkOrdersInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutWorkOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
+  offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
+}
+
+export type SupplierCreateManyZevInput = {
+  id?: string
+  name: string
+  jib?: string | null
+  address?: string | null
+  iban?: string | null
+  contactName?: string | null
+  email?: string | null
+  phone?: string | null
+  note?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SupplierUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
+  offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
+}
+
+export type SupplierUncheckedUpdateWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -784,6 +1003,22 @@ export type SupplierUncheckedUpdateWithoutWorkOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutSupplierNestedInput
+}
+
+export type SupplierUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -837,6 +1072,7 @@ export type SupplierCountOutputTypeCountWorkOrdersArgs<ExtArgs extends runtime.T
 
 export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   jib?: boolean
   address?: boolean
@@ -848,6 +1084,7 @@ export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   expenses?: boolean | Prisma.Supplier$expensesArgs<ExtArgs>
   offers?: boolean | Prisma.Supplier$offersArgs<ExtArgs>
   workOrders?: boolean | Prisma.Supplier$workOrdersArgs<ExtArgs>
@@ -856,6 +1093,7 @@ export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 
 export type SupplierSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   jib?: boolean
   address?: boolean
@@ -867,10 +1105,12 @@ export type SupplierSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["supplier"]>
 
 export type SupplierSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   jib?: boolean
   address?: boolean
@@ -882,10 +1122,12 @@ export type SupplierSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["supplier"]>
 
 export type SupplierSelectScalar = {
   id?: boolean
+  zevId?: boolean
   name?: boolean
   jib?: boolean
   address?: boolean
@@ -899,25 +1141,32 @@ export type SupplierSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "jib" | "address" | "iban" | "contactName" | "email" | "phone" | "note" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["supplier"]>
+export type SupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "jib" | "address" | "iban" | "contactName" | "email" | "phone" | "note" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["supplier"]>
 export type SupplierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   expenses?: boolean | Prisma.Supplier$expensesArgs<ExtArgs>
   offers?: boolean | Prisma.Supplier$offersArgs<ExtArgs>
   workOrders?: boolean | Prisma.Supplier$workOrdersArgs<ExtArgs>
   _count?: boolean | Prisma.SupplierCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type SupplierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type SupplierIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type SupplierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type SupplierIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $SupplierPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Supplier"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     expenses: Prisma.$ExpensePayload<ExtArgs>[]
     offers: Prisma.$ContractorOfferPayload<ExtArgs>[]
     workOrders: Prisma.$WorkOrderPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     name: string
     jib: string | null
     address: string | null
@@ -1323,6 +1572,7 @@ readonly fields: SupplierFieldRefs;
  */
 export interface Prisma__SupplierClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   expenses<T extends Prisma.Supplier$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   offers<T extends Prisma.Supplier$offersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$offersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractorOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workOrders<T extends Prisma.Supplier$workOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$workOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1356,6 +1606,7 @@ export interface Prisma__SupplierClient<T, Null = never, ExtArgs extends runtime
  */
 export interface SupplierFieldRefs {
   readonly id: Prisma.FieldRef<"Supplier", 'String'>
+  readonly zevId: Prisma.FieldRef<"Supplier", 'String'>
   readonly name: Prisma.FieldRef<"Supplier", 'String'>
   readonly jib: Prisma.FieldRef<"Supplier", 'String'>
   readonly address: Prisma.FieldRef<"Supplier", 'String'>
@@ -1621,6 +1872,10 @@ export type SupplierCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.SupplierCreateManyInput | Prisma.SupplierCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupplierIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1691,6 +1946,10 @@ export type SupplierUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Suppliers to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupplierIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

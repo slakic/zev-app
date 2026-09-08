@@ -12,10 +12,7 @@ import { UnitRow } from "@/components/unit-row";
 async function addBuildingAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
-  const zev = await getZev();
-  if (!zev) return;
   await createBuilding(actor, {
-    zevId: zev.id,
     name: String(formData.get("name")),
     address: String(formData.get("address")),
     yearBuilt: formData.get("yearBuilt") ? Number(formData.get("yearBuilt")) : null,
@@ -73,7 +70,7 @@ export default async function BuildingsPage({
   const { err, msg } = await searchParams;
   const okMsg = msg === "saved" ? "Sačuvano." : undefined;
   const [zev, buildings, units, assets] = await Promise.all([
-    getZev(),
+    getZev(actor),
     listBuildings(actor),
     listUnits(actor),
     listCommonAssets(actor),

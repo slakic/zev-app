@@ -38,6 +38,7 @@ export type InvoiceSumAggregateOutputType = {
 
 export type InvoiceMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   number: string | null
   batchId: string | null
   unitId: string | null
@@ -61,6 +62,7 @@ export type InvoiceMinAggregateOutputType = {
 
 export type InvoiceMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   number: string | null
   batchId: string | null
   unitId: string | null
@@ -84,6 +86,7 @@ export type InvoiceMaxAggregateOutputType = {
 
 export type InvoiceCountAggregateOutputType = {
   id: number
+  zevId: number
   number: number
   batchId: number
   unitId: number
@@ -119,6 +122,7 @@ export type InvoiceSumAggregateInputType = {
 
 export type InvoiceMinAggregateInputType = {
   id?: true
+  zevId?: true
   number?: true
   batchId?: true
   unitId?: true
@@ -142,6 +146,7 @@ export type InvoiceMinAggregateInputType = {
 
 export type InvoiceMaxAggregateInputType = {
   id?: true
+  zevId?: true
   number?: true
   batchId?: true
   unitId?: true
@@ -165,6 +170,7 @@ export type InvoiceMaxAggregateInputType = {
 
 export type InvoiceCountAggregateInputType = {
   id?: true
+  zevId?: true
   number?: true
   batchId?: true
   unitId?: true
@@ -275,6 +281,7 @@ export type InvoiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type InvoiceGroupByOutputType = {
   id: string
+  zevId: string
   number: string
   batchId: string | null
   unitId: string
@@ -321,6 +328,7 @@ export type InvoiceWhereInput = {
   OR?: Prisma.InvoiceWhereInput[]
   NOT?: Prisma.InvoiceWhereInput | Prisma.InvoiceWhereInput[]
   id?: Prisma.StringFilter<"Invoice"> | string
+  zevId?: Prisma.StringFilter<"Invoice"> | string
   number?: Prisma.StringFilter<"Invoice"> | string
   batchId?: Prisma.StringNullableFilter<"Invoice"> | string | null
   unitId?: Prisma.StringFilter<"Invoice"> | string
@@ -340,6 +348,7 @@ export type InvoiceWhereInput = {
   deliveryStatus?: Prisma.StringNullableFilter<"Invoice"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   batch?: Prisma.XOR<Prisma.InvoiceBatchNullableScalarRelationFilter, Prisma.InvoiceBatchWhereInput> | null
   unit?: Prisma.XOR<Prisma.UnitScalarRelationFilter, Prisma.UnitWhereInput>
   debtor?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -351,6 +360,7 @@ export type InvoiceWhereInput = {
 
 export type InvoiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   batchId?: Prisma.SortOrderInput | Prisma.SortOrder
   unitId?: Prisma.SortOrder
@@ -370,6 +380,7 @@ export type InvoiceOrderByWithRelationInput = {
   deliveryStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   batch?: Prisma.InvoiceBatchOrderByWithRelationInput
   unit?: Prisma.UnitOrderByWithRelationInput
   debtor?: Prisma.PartyOrderByWithRelationInput
@@ -381,11 +392,13 @@ export type InvoiceOrderByWithRelationInput = {
 
 export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  number?: string
   correctionOfId?: string
+  zevId_number?: Prisma.InvoiceZevIdNumberCompoundUniqueInput
   AND?: Prisma.InvoiceWhereInput | Prisma.InvoiceWhereInput[]
   OR?: Prisma.InvoiceWhereInput[]
   NOT?: Prisma.InvoiceWhereInput | Prisma.InvoiceWhereInput[]
+  zevId?: Prisma.StringFilter<"Invoice"> | string
+  number?: Prisma.StringFilter<"Invoice"> | string
   batchId?: Prisma.StringNullableFilter<"Invoice"> | string | null
   unitId?: Prisma.StringFilter<"Invoice"> | string
   debtorId?: Prisma.StringFilter<"Invoice"> | string
@@ -403,6 +416,7 @@ export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
   deliveryStatus?: Prisma.StringNullableFilter<"Invoice"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   batch?: Prisma.XOR<Prisma.InvoiceBatchNullableScalarRelationFilter, Prisma.InvoiceBatchWhereInput> | null
   unit?: Prisma.XOR<Prisma.UnitScalarRelationFilter, Prisma.UnitWhereInput>
   debtor?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -410,10 +424,11 @@ export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
   correctedBy?: Prisma.XOR<Prisma.InvoiceNullableScalarRelationFilter, Prisma.InvoiceWhereInput> | null
   lines?: Prisma.InvoiceLineListRelationFilter
   allocations?: Prisma.PaymentAllocationListRelationFilter
-}, "id" | "number" | "correctionOfId">
+}, "id" | "correctionOfId" | "zevId_number">
 
 export type InvoiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   batchId?: Prisma.SortOrderInput | Prisma.SortOrder
   unitId?: Prisma.SortOrder
@@ -445,6 +460,7 @@ export type InvoiceScalarWhereWithAggregatesInput = {
   OR?: Prisma.InvoiceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.InvoiceScalarWhereWithAggregatesInput | Prisma.InvoiceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Invoice"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Invoice"> | string
   number?: Prisma.StringWithAggregatesFilter<"Invoice"> | string
   batchId?: Prisma.StringNullableWithAggregatesFilter<"Invoice"> | string | null
   unitId?: Prisma.StringWithAggregatesFilter<"Invoice"> | string
@@ -483,6 +499,7 @@ export type InvoiceCreateInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
@@ -494,6 +511,7 @@ export type InvoiceCreateInput = {
 
 export type InvoiceUncheckedCreateInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -535,6 +553,7 @@ export type InvoiceUpdateInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
@@ -546,6 +565,7 @@ export type InvoiceUpdateInput = {
 
 export type InvoiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -572,6 +592,7 @@ export type InvoiceUncheckedUpdateInput = {
 
 export type InvoiceCreateManyInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -614,6 +635,7 @@ export type InvoiceUpdateManyMutationInput = {
 
 export type InvoiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -650,8 +672,14 @@ export type InvoiceNullableScalarRelationFilter = {
   isNot?: Prisma.InvoiceWhereInput | null
 }
 
+export type InvoiceZevIdNumberCompoundUniqueInput = {
+  zevId: string
+  number: string
+}
+
 export type InvoiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
@@ -680,6 +708,7 @@ export type InvoiceAvgOrderByAggregateInput = {
 
 export type InvoiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
@@ -703,6 +732,7 @@ export type InvoiceMaxOrderByAggregateInput = {
 
 export type InvoiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
@@ -773,6 +803,48 @@ export type InvoiceUncheckedUpdateManyWithoutDebtorNestedInput = {
   connect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
   update?: Prisma.InvoiceUpdateWithWhereUniqueWithoutDebtorInput | Prisma.InvoiceUpdateWithWhereUniqueWithoutDebtorInput[]
   updateMany?: Prisma.InvoiceUpdateManyWithWhereWithoutDebtorInput | Prisma.InvoiceUpdateManyWithWhereWithoutDebtorInput[]
+  deleteMany?: Prisma.InvoiceScalarWhereInput | Prisma.InvoiceScalarWhereInput[]
+}
+
+export type InvoiceCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.InvoiceCreateWithoutZevInput, Prisma.InvoiceUncheckedCreateWithoutZevInput> | Prisma.InvoiceCreateWithoutZevInput[] | Prisma.InvoiceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.InvoiceCreateOrConnectWithoutZevInput | Prisma.InvoiceCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.InvoiceCreateManyZevInputEnvelope
+  connect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+}
+
+export type InvoiceUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.InvoiceCreateWithoutZevInput, Prisma.InvoiceUncheckedCreateWithoutZevInput> | Prisma.InvoiceCreateWithoutZevInput[] | Prisma.InvoiceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.InvoiceCreateOrConnectWithoutZevInput | Prisma.InvoiceCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.InvoiceCreateManyZevInputEnvelope
+  connect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+}
+
+export type InvoiceUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.InvoiceCreateWithoutZevInput, Prisma.InvoiceUncheckedCreateWithoutZevInput> | Prisma.InvoiceCreateWithoutZevInput[] | Prisma.InvoiceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.InvoiceCreateOrConnectWithoutZevInput | Prisma.InvoiceCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.InvoiceUpsertWithWhereUniqueWithoutZevInput | Prisma.InvoiceUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.InvoiceCreateManyZevInputEnvelope
+  set?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  disconnect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  delete?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  connect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  update?: Prisma.InvoiceUpdateWithWhereUniqueWithoutZevInput | Prisma.InvoiceUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.InvoiceUpdateManyWithWhereWithoutZevInput | Prisma.InvoiceUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.InvoiceScalarWhereInput | Prisma.InvoiceScalarWhereInput[]
+}
+
+export type InvoiceUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.InvoiceCreateWithoutZevInput, Prisma.InvoiceUncheckedCreateWithoutZevInput> | Prisma.InvoiceCreateWithoutZevInput[] | Prisma.InvoiceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.InvoiceCreateOrConnectWithoutZevInput | Prisma.InvoiceCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.InvoiceUpsertWithWhereUniqueWithoutZevInput | Prisma.InvoiceUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.InvoiceCreateManyZevInputEnvelope
+  set?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  disconnect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  delete?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  connect?: Prisma.InvoiceWhereUniqueInput | Prisma.InvoiceWhereUniqueInput[]
+  update?: Prisma.InvoiceUpdateWithWhereUniqueWithoutZevInput | Prisma.InvoiceUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.InvoiceUpdateManyWithWhereWithoutZevInput | Prisma.InvoiceUpdateManyWithWhereWithoutZevInput[]
   deleteMany?: Prisma.InvoiceScalarWhereInput | Prisma.InvoiceScalarWhereInput[]
 }
 
@@ -957,6 +1029,7 @@ export type InvoiceCreateWithoutDebtorInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   correctionOf?: Prisma.InvoiceCreateNestedOneWithoutCorrectedByInput
@@ -967,6 +1040,7 @@ export type InvoiceCreateWithoutDebtorInput = {
 
 export type InvoiceUncheckedCreateWithoutDebtorInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -1021,6 +1095,7 @@ export type InvoiceScalarWhereInput = {
   OR?: Prisma.InvoiceScalarWhereInput[]
   NOT?: Prisma.InvoiceScalarWhereInput | Prisma.InvoiceScalarWhereInput[]
   id?: Prisma.StringFilter<"Invoice"> | string
+  zevId?: Prisma.StringFilter<"Invoice"> | string
   number?: Prisma.StringFilter<"Invoice"> | string
   batchId?: Prisma.StringNullableFilter<"Invoice"> | string | null
   unitId?: Prisma.StringFilter<"Invoice"> | string
@@ -1042,7 +1117,7 @@ export type InvoiceScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
 }
 
-export type InvoiceCreateWithoutUnitInput = {
+export type InvoiceCreateWithoutZevInput = {
   id?: string
   number: string
   debtorShare?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1060,6 +1135,85 @@ export type InvoiceCreateWithoutUnitInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
+  unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
+  debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
+  correctionOf?: Prisma.InvoiceCreateNestedOneWithoutCorrectedByInput
+  correctedBy?: Prisma.InvoiceCreateNestedOneWithoutCorrectionOfInput
+  lines?: Prisma.InvoiceLineCreateNestedManyWithoutInvoiceInput
+  allocations?: Prisma.PaymentAllocationCreateNestedManyWithoutInvoiceInput
+}
+
+export type InvoiceUncheckedCreateWithoutZevInput = {
+  id?: string
+  number: string
+  batchId?: string | null
+  unitId: string
+  debtorId: string
+  debtorShare?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  issueDate: Date | string
+  dueDate: Date | string
+  periodLabel?: string | null
+  total: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  status?: $Enums.InvoiceStatus
+  paymentReference?: string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  correctionOfId?: string | null
+  documentId?: string | null
+  deliveryStatus?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  correctedBy?: Prisma.InvoiceUncheckedCreateNestedOneWithoutCorrectionOfInput
+  lines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutInvoiceInput
+  allocations?: Prisma.PaymentAllocationUncheckedCreateNestedManyWithoutInvoiceInput
+}
+
+export type InvoiceCreateOrConnectWithoutZevInput = {
+  where: Prisma.InvoiceWhereUniqueInput
+  create: Prisma.XOR<Prisma.InvoiceCreateWithoutZevInput, Prisma.InvoiceUncheckedCreateWithoutZevInput>
+}
+
+export type InvoiceCreateManyZevInputEnvelope = {
+  data: Prisma.InvoiceCreateManyZevInput | Prisma.InvoiceCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type InvoiceUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.InvoiceWhereUniqueInput
+  update: Prisma.XOR<Prisma.InvoiceUpdateWithoutZevInput, Prisma.InvoiceUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.InvoiceCreateWithoutZevInput, Prisma.InvoiceUncheckedCreateWithoutZevInput>
+}
+
+export type InvoiceUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.InvoiceWhereUniqueInput
+  data: Prisma.XOR<Prisma.InvoiceUpdateWithoutZevInput, Prisma.InvoiceUncheckedUpdateWithoutZevInput>
+}
+
+export type InvoiceUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.InvoiceScalarWhereInput
+  data: Prisma.XOR<Prisma.InvoiceUpdateManyMutationInput, Prisma.InvoiceUncheckedUpdateManyWithoutZevInput>
+}
+
+export type InvoiceCreateWithoutUnitInput = {
+  id?: string
+  number: string
+  debtorShare?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  issueDate: Date | string
+  dueDate: Date | string
+  periodLabel?: string | null
+  total: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  status?: $Enums.InvoiceStatus
+  paymentReference?: string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  documentId?: string | null
+  deliveryStatus?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
+  batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
   correctionOf?: Prisma.InvoiceCreateNestedOneWithoutCorrectedByInput
   correctedBy?: Prisma.InvoiceCreateNestedOneWithoutCorrectionOfInput
@@ -1069,6 +1223,7 @@ export type InvoiceCreateWithoutUnitInput = {
 
 export type InvoiceUncheckedCreateWithoutUnitInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   debtorId: string
@@ -1135,6 +1290,7 @@ export type InvoiceCreateWithoutBatchInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
   correctionOf?: Prisma.InvoiceCreateNestedOneWithoutCorrectedByInput
@@ -1145,6 +1301,7 @@ export type InvoiceCreateWithoutBatchInput = {
 
 export type InvoiceUncheckedCreateWithoutBatchInput = {
   id?: string
+  zevId: string
   number: string
   unitId: string
   debtorId: string
@@ -1211,6 +1368,7 @@ export type InvoiceCreateWithoutCorrectedByInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
@@ -1221,6 +1379,7 @@ export type InvoiceCreateWithoutCorrectedByInput = {
 
 export type InvoiceUncheckedCreateWithoutCorrectedByInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -1266,6 +1425,7 @@ export type InvoiceCreateWithoutCorrectionOfInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
@@ -1276,6 +1436,7 @@ export type InvoiceCreateWithoutCorrectionOfInput = {
 
 export type InvoiceUncheckedCreateWithoutCorrectionOfInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -1332,6 +1493,7 @@ export type InvoiceUpdateWithoutCorrectedByInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
@@ -1342,6 +1504,7 @@ export type InvoiceUpdateWithoutCorrectedByInput = {
 
 export type InvoiceUncheckedUpdateWithoutCorrectedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1393,6 +1556,7 @@ export type InvoiceUpdateWithoutCorrectionOfInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
@@ -1403,6 +1567,7 @@ export type InvoiceUpdateWithoutCorrectionOfInput = {
 
 export type InvoiceUncheckedUpdateWithoutCorrectionOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1443,6 +1608,7 @@ export type InvoiceCreateWithoutLinesInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
@@ -1453,6 +1619,7 @@ export type InvoiceCreateWithoutLinesInput = {
 
 export type InvoiceUncheckedCreateWithoutLinesInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -1509,6 +1676,7 @@ export type InvoiceUpdateWithoutLinesInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
@@ -1519,6 +1687,7 @@ export type InvoiceUpdateWithoutLinesInput = {
 
 export type InvoiceUncheckedUpdateWithoutLinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1559,6 +1728,7 @@ export type InvoiceCreateWithoutAllocationsInput = {
   deliveryStatus?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutInvoicesInput
   batch?: Prisma.InvoiceBatchCreateNestedOneWithoutInvoicesInput
   unit: Prisma.UnitCreateNestedOneWithoutInvoicesInput
   debtor: Prisma.PartyCreateNestedOneWithoutInvoicesInput
@@ -1569,6 +1739,7 @@ export type InvoiceCreateWithoutAllocationsInput = {
 
 export type InvoiceUncheckedCreateWithoutAllocationsInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -1625,6 +1796,7 @@ export type InvoiceUpdateWithoutAllocationsInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
@@ -1635,6 +1807,7 @@ export type InvoiceUpdateWithoutAllocationsInput = {
 
 export type InvoiceUncheckedUpdateWithoutAllocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1660,6 +1833,7 @@ export type InvoiceUncheckedUpdateWithoutAllocationsInput = {
 
 export type InvoiceCreateManyDebtorInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   unitId: string
@@ -1697,6 +1871,7 @@ export type InvoiceUpdateWithoutDebtorInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   correctionOf?: Prisma.InvoiceUpdateOneWithoutCorrectedByNestedInput
@@ -1707,6 +1882,7 @@ export type InvoiceUpdateWithoutDebtorInput = {
 
 export type InvoiceUncheckedUpdateWithoutDebtorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1732,6 +1908,7 @@ export type InvoiceUncheckedUpdateWithoutDebtorInput = {
 
 export type InvoiceUncheckedUpdateManyWithoutDebtorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1752,8 +1929,107 @@ export type InvoiceUncheckedUpdateManyWithoutDebtorInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type InvoiceCreateManyZevInput = {
+  id?: string
+  number: string
+  batchId?: string | null
+  unitId: string
+  debtorId: string
+  debtorShare?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  issueDate: Date | string
+  dueDate: Date | string
+  periodLabel?: string | null
+  total: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  status?: $Enums.InvoiceStatus
+  paymentReference?: string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  correctionOfId?: string | null
+  documentId?: string | null
+  deliveryStatus?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type InvoiceUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  debtorShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  issueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
+  paymentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
+  unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
+  debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
+  correctionOf?: Prisma.InvoiceUpdateOneWithoutCorrectedByNestedInput
+  correctedBy?: Prisma.InvoiceUpdateOneWithoutCorrectionOfNestedInput
+  lines?: Prisma.InvoiceLineUpdateManyWithoutInvoiceNestedInput
+  allocations?: Prisma.PaymentAllocationUpdateManyWithoutInvoiceNestedInput
+}
+
+export type InvoiceUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  debtorId?: Prisma.StringFieldUpdateOperationsInput | string
+  debtorShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  issueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
+  paymentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correctedBy?: Prisma.InvoiceUncheckedUpdateOneWithoutCorrectionOfNestedInput
+  lines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutInvoiceNestedInput
+  allocations?: Prisma.PaymentAllocationUncheckedUpdateManyWithoutInvoiceNestedInput
+}
+
+export type InvoiceUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  debtorId?: Prisma.StringFieldUpdateOperationsInput | string
+  debtorShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  issueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
+  paymentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type InvoiceCreateManyUnitInput = {
   id?: string
+  zevId: string
   number: string
   batchId?: string | null
   debtorId: string
@@ -1791,6 +2067,7 @@ export type InvoiceUpdateWithoutUnitInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   batch?: Prisma.InvoiceBatchUpdateOneWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
   correctionOf?: Prisma.InvoiceUpdateOneWithoutCorrectedByNestedInput
@@ -1801,6 +2078,7 @@ export type InvoiceUpdateWithoutUnitInput = {
 
 export type InvoiceUncheckedUpdateWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   debtorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1826,6 +2104,7 @@ export type InvoiceUncheckedUpdateWithoutUnitInput = {
 
 export type InvoiceUncheckedUpdateManyWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   debtorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1848,6 +2127,7 @@ export type InvoiceUncheckedUpdateManyWithoutUnitInput = {
 
 export type InvoiceCreateManyBatchInput = {
   id?: string
+  zevId: string
   number: string
   unitId: string
   debtorId: string
@@ -1885,6 +2165,7 @@ export type InvoiceUpdateWithoutBatchInput = {
   deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutInvoicesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutInvoicesNestedInput
   debtor?: Prisma.PartyUpdateOneRequiredWithoutInvoicesNestedInput
   correctionOf?: Prisma.InvoiceUpdateOneWithoutCorrectedByNestedInput
@@ -1895,6 +2176,7 @@ export type InvoiceUpdateWithoutBatchInput = {
 
 export type InvoiceUncheckedUpdateWithoutBatchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   debtorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1920,6 +2202,7 @@ export type InvoiceUncheckedUpdateWithoutBatchInput = {
 
 export type InvoiceUncheckedUpdateManyWithoutBatchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   debtorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1982,6 +2265,7 @@ export type InvoiceCountOutputTypeCountAllocationsArgs<ExtArgs extends runtime.T
 
 export type InvoiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   number?: boolean
   batchId?: boolean
   unitId?: boolean
@@ -2001,6 +2285,7 @@ export type InvoiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   deliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.Invoice$batchArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   debtor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2013,6 +2298,7 @@ export type InvoiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 
 export type InvoiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   number?: boolean
   batchId?: boolean
   unitId?: boolean
@@ -2032,6 +2318,7 @@ export type InvoiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   deliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.Invoice$batchArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   debtor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2040,6 +2327,7 @@ export type InvoiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type InvoiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   number?: boolean
   batchId?: boolean
   unitId?: boolean
@@ -2059,6 +2347,7 @@ export type InvoiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   deliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.Invoice$batchArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   debtor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2067,6 +2356,7 @@ export type InvoiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type InvoiceSelectScalar = {
   id?: boolean
+  zevId?: boolean
   number?: boolean
   batchId?: boolean
   unitId?: boolean
@@ -2088,8 +2378,9 @@ export type InvoiceSelectScalar = {
   updatedAt?: boolean
 }
 
-export type InvoiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "batchId" | "unitId" | "debtorId" | "debtorShare" | "issueDate" | "dueDate" | "periodLabel" | "total" | "currency" | "status" | "paymentReference" | "cancelledAt" | "cancelReason" | "correctionOfId" | "documentId" | "deliveryStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+export type InvoiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "number" | "batchId" | "unitId" | "debtorId" | "debtorShare" | "issueDate" | "dueDate" | "periodLabel" | "total" | "currency" | "status" | "paymentReference" | "cancelledAt" | "cancelReason" | "correctionOfId" | "documentId" | "deliveryStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
 export type InvoiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.Invoice$batchArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   debtor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2100,12 +2391,14 @@ export type InvoiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   _count?: boolean | Prisma.InvoiceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type InvoiceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.Invoice$batchArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   debtor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   correctionOf?: boolean | Prisma.Invoice$correctionOfArgs<ExtArgs>
 }
 export type InvoiceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   batch?: boolean | Prisma.Invoice$batchArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   debtor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2115,6 +2408,7 @@ export type InvoiceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $InvoicePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Invoice"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     batch: Prisma.$InvoiceBatchPayload<ExtArgs> | null
     unit: Prisma.$UnitPayload<ExtArgs>
     debtor: Prisma.$PartyPayload<ExtArgs>
@@ -2125,6 +2419,7 @@ export type $InvoicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     number: string
     batchId: string | null
     unitId: string
@@ -2538,6 +2833,7 @@ readonly fields: InvoiceFieldRefs;
  */
 export interface Prisma__InvoiceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   batch<T extends Prisma.Invoice$batchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Invoice$batchArgs<ExtArgs>>): Prisma.Prisma__InvoiceBatchClient<runtime.Types.Result.GetResult<Prisma.$InvoiceBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   unit<T extends Prisma.UnitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UnitDefaultArgs<ExtArgs>>): Prisma.Prisma__UnitClient<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   debtor<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -2575,6 +2871,7 @@ export interface Prisma__InvoiceClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface InvoiceFieldRefs {
   readonly id: Prisma.FieldRef<"Invoice", 'String'>
+  readonly zevId: Prisma.FieldRef<"Invoice", 'String'>
   readonly number: Prisma.FieldRef<"Invoice", 'String'>
   readonly batchId: Prisma.FieldRef<"Invoice", 'String'>
   readonly unitId: Prisma.FieldRef<"Invoice", 'String'>

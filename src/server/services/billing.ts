@@ -3,7 +3,7 @@
 // linked corrective invoices, cancellation keeps the original visible.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireSelfOrRole, requireAnyUser, type Actor } from "@/server/auth/guards";
+import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import { calculateCharge, type BillingUnitInput, type ChargeDefinitionInput } from "@/server/engines/billing";
 import { dec, ZERO, sumDecimals, type Decimal } from "@/lib/money";
 import { unitsInScope } from "./property";
@@ -15,6 +15,7 @@ import type { ChargeMethod, BillingFrequency, RoundingMethod, ScopeType, Prisma 
 export async function listChargeItems(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   return prisma.chargeItem.findMany({
+    where: { zevId: requireZev(actor) },
     include: { unitOverrides: { include: { unit: true } } },
     orderBy: { displayOrder: "asc" },
   });
@@ -44,8 +45,18 @@ export async function createChargeItem(
   }
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
+  if (data.buildingId) await prisma.building.findUniqueOrThrow({ where: { id: data.buildingId, zevId } });
+  if (data.entranceId) await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
+  if (data.allocationGroupId) await prisma.allocationGroup.findUniqueOrThrow({ where: { id: data.allocationGroupId, zevId } });
+  if (data.overrides?.length) {
+    const unitIds = data.overrides.map((o) => o.unitId);
+    const count = await prisma.unit.count({ where: { zevId, id: { in: unitIds } } });
+    if (count !== new Set(unitIds).size) throw new Error("Jedna ili više jedinica ne pripadaju ovom ZEV-u.");
+  }
   const item = await prisma.chargeItem.create({
     data: {
+      zevId,
       name: data.name,
       description: data.description ?? null,
       scopeType: data.scopeType,
@@ -81,8 +92,9 @@ export async function createChargeItem(
 
 export async function updateChargeItem(actor: Actor, id: string, data: Prisma.ChargeItemUncheckedUpdateInput) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
-  const before = await prisma.chargeItem.findUniqueOrThrow({ where: { id } });
-  const item = await prisma.chargeItem.update({ where: { id }, data });
+  const zevId = requireZev(actor);
+  const before = await prisma.chargeItem.findUniqueOrThrow({ where: { id, zevId } });
+  const item = await prisma.chargeItem.update({ where: { id, zevId }, data });
   await audit(actor, {
     action: "charge_item.update", targetType: "ChargeItem", targetId: id,
     before: { name: before.name, rate: before.rate?.toString() ?? null, method: before.method },
@@ -96,6 +108,10 @@ export async function enterMeterReading(
   data: { chargeItemId: string; unitId: string; period: string; quantity: string }
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
+  // MeterReading has no zevId column of its own — tenant-check via its parents.
+  await prisma.chargeItem.findUniqueOrThrow({ where: { id: data.chargeItemId, zevId } });
+  await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
   const r = await prisma.meterReading.upsert({
     where: { chargeItemId_unitId_period: { chargeItemId: data.chargeItemId, unitId: data.unitId, period: data.period } },
     create: { ...data, enteredById: actor.userId },
@@ -143,8 +159,9 @@ function isItemActiveInPeriod(item: { effectiveFrom: Date; effectiveTo: Date | n
  */
 export async function previewBatch(actor: Actor, period: string, chargeItemIds?: string[]): Promise<UnitCalculation[]> {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
   const items = await prisma.chargeItem.findMany({
-    where: { id: chargeItemIds?.length ? { in: chargeItemIds } : undefined },
+    where: { zevId, id: chargeItemIds?.length ? { in: chargeItemIds } : undefined },
     include: { unitOverrides: true },
     orderBy: { displayOrder: "asc" },
   });
@@ -154,7 +171,7 @@ export async function previewBatch(actor: Actor, period: string, chargeItemIds?:
   const unitCache = new Map<string, { label: string; buildingName: string }>();
 
   for (const item of activeItems) {
-    const units = await unitsInScope({
+    const units = await unitsInScope(zevId, {
       scopeType: item.scopeType,
       buildingId: item.buildingId,
       entranceId: item.entranceId,
@@ -197,7 +214,7 @@ export async function previewBatch(actor: Actor, period: string, chargeItemIds?:
 
     for (const line of lines) {
       if (!unitCache.has(line.unitId)) {
-        const u = await prisma.unit.findUniqueOrThrow({ where: { id: line.unitId }, include: { building: true } });
+        const u = await prisma.unit.findUniqueOrThrow({ where: { id: line.unitId, zevId }, include: { building: true } });
         unitCache.set(line.unitId, { label: u.label, buildingName: u.building.name });
       }
       const meta = unitCache.get(line.unitId)!;
@@ -218,8 +235,8 @@ export async function previewBatch(actor: Actor, period: string, chargeItemIds?:
   // Resolve debtor (current majority owner / invoice recipient) per unit.
   const result: UnitCalculation[] = [];
   for (const calc of perUnit.values()) {
-    const unit = await prisma.unit.findUniqueOrThrow({ where: { id: calc.unitId }, include: { invoiceRecipient: true } });
-    const stakes = await currentStakesForUnit(calc.unitId);
+    const unit = await prisma.unit.findUniqueOrThrow({ where: { id: calc.unitId, zevId }, include: { invoiceRecipient: true } });
+    const stakes = await currentStakesForUnit(zevId, calc.unitId);
     let debtorId: string | null = null;
     let debtorName = "—";
     if (unit.invoiceRecipient) {
@@ -238,9 +255,11 @@ export async function previewBatch(actor: Actor, period: string, chargeItemIds?:
 
 export async function createDraftBatch(actor: Actor, period: string, description?: string, chargeItemIds?: string[]) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const preview = await previewBatch(actor, period, chargeItemIds);
   const batch = await prisma.invoiceBatch.create({
     data: {
+      zevId,
       period,
       description: description ?? null,
       previewData: preview as unknown as Prisma.InputJsonValue,
@@ -251,10 +270,10 @@ export async function createDraftBatch(actor: Actor, period: string, description
   return { batch, preview };
 }
 
-async function nextInvoiceNumber(tx: Prisma.TransactionClient, year: number): Promise<string> {
+async function nextInvoiceNumber(tx: Prisma.TransactionClient, zevId: string, year: number): Promise<string> {
   const prefix = `FAK-${year}-`;
   const last = await tx.invoice.findFirst({
-    where: { number: { startsWith: prefix } },
+    where: { zevId, number: { startsWith: prefix } },
     orderBy: { number: "desc" },
     select: { number: true },
   });
@@ -268,11 +287,12 @@ async function nextInvoiceNumber(tx: Prisma.TransactionClient, year: number): Pr
  */
 export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate?: Date }) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   return prisma.$transaction(async (tx) => {
-    const batch = await tx.invoiceBatch.findUniqueOrThrow({ where: { id: batchId } });
+    const batch = await tx.invoiceBatch.findUniqueOrThrow({ where: { id: batchId, zevId } });
     if (batch.status !== "DRAFT") throw new Error("Samo nacrt serije može biti izdat.");
     const already = await tx.invoiceBatch.findFirst({
-      where: { period: batch.period, status: "ISSUED", NOT: { id: batchId } },
+      where: { zevId, period: batch.period, status: "ISSUED", NOT: { id: batchId } },
     });
     if (already) throw new Error(`Za period ${batch.period} već postoji izdata serija faktura.`);
 
@@ -287,9 +307,10 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
     const invoices = [];
     for (const calc of preview) {
       if (!calc.debtorId) throw new Error(`Jedinica ${calc.unitLabel} nema evidentiranog vlasnika/primaoca fakture.`);
-      const number = await nextInvoiceNumber(tx, year);
+      const number = await nextInvoiceNumber(tx, zevId, year);
       const inv = await tx.invoice.create({
         data: {
+          zevId,
           number,
           batchId: batch.id,
           unitId: calc.unitId,
@@ -319,7 +340,7 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
         after: { number: inv.number, unitId: inv.unitId, debtorId: inv.debtorId, total: inv.total.toString() },
       }, tx);
     }
-    await tx.invoiceBatch.update({ where: { id: batchId }, data: { status: "ISSUED", issuedAt: new Date() } });
+    await tx.invoiceBatch.update({ where: { id: batchId, zevId }, data: { status: "ISSUED", issuedAt: new Date() } });
     await audit(actor, { action: "invoice_batch.issue", targetType: "InvoiceBatch", targetId: batchId, after: { count: invoices.length, period: batch.period } }, tx);
     return invoices;
   }, { timeout: 30000 });
@@ -331,10 +352,14 @@ export async function issueSingleInvoice(
   data: { unitId: string; debtorId: string; dueDate: Date; description: string; amount: string; periodLabel?: string }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
+  await prisma.party.findUniqueOrThrow({ where: { id: data.debtorId, zevId } });
   return prisma.$transaction(async (tx) => {
-    const number = await nextInvoiceNumber(tx, new Date().getFullYear());
+    const number = await nextInvoiceNumber(tx, zevId, new Date().getFullYear());
     const inv = await tx.invoice.create({
       data: {
+        zevId,
         number,
         unitId: data.unitId,
         debtorId: data.debtorId,
@@ -365,6 +390,7 @@ export async function listInvoices(actor: Actor, filter?: { debtorId?: string; u
   const debtorId = isManagement ? filter?.debtorId : actor.partyId ?? "__none__";
   return prisma.invoice.findMany({
     where: {
+      zevId: requireZev(actor),
       debtorId: debtorId ?? undefined,
       unitId: filter?.unitId,
       status: filter?.status as never,
@@ -378,7 +404,7 @@ export async function listInvoices(actor: Actor, filter?: { debtorId?: string; u
 export async function getInvoice(actor: Actor, id: string) {
   requireAnyUser(actor);
   const inv = await prisma.invoice.findUniqueOrThrow({
-    where: { id },
+    where: { id, zevId: requireZev(actor) },
     include: {
       unit: { include: { building: true } },
       debtor: true,
@@ -399,14 +425,15 @@ export function invoicePaidAmount(inv: { allocations: { amount: Prisma.Decimal }
 /** Cancel (storno) an issued invoice — original stays visible. */
 export async function cancelInvoice(actor: Actor, invoiceId: string, reason: string) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje zahtijeva razlog.");
   return prisma.$transaction(async (tx) => {
-    const inv = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId }, include: { allocations: true } });
+    const inv = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { allocations: true } });
     if (inv.status === "CANCELLED") throw new Error("Faktura je već stornirana.");
     const paid = invoicePaidAmount(inv);
     if (!paid.isZero()) throw new Error("Faktura sa raspoređenim uplatama ne može se stornirati — prvo stornirajte alokacije.");
     const updated = await tx.invoice.update({
-      where: { id: invoiceId },
+      where: { id: invoiceId, zevId },
       data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: reason },
     });
     await audit(actor, {
@@ -427,14 +454,16 @@ export async function correctInvoice(
   data: { newTotal: string; description: string; reason: string }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (!data.reason.trim()) throw new Error("Korekcija zahtijeva razlog.");
   return prisma.$transaction(async (tx) => {
-    const original = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId }, include: { correctedBy: true } });
+    const original = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { correctedBy: true } });
     if (original.status !== "ISSUED") throw new Error("Samo izdata faktura može biti korigovana.");
     if (original.correctedBy) throw new Error("Faktura je već korigovana.");
-    const number = await nextInvoiceNumber(tx, new Date().getFullYear());
+    const number = await nextInvoiceNumber(tx, zevId, new Date().getFullYear());
     const corrective = await tx.invoice.create({
       data: {
+        zevId,
         number,
         unitId: original.unitId,
         debtorId: original.debtorId,
@@ -457,7 +486,7 @@ export async function correctInvoice(
         },
       },
     });
-    await tx.invoice.update({ where: { id: original.id }, data: { status: "CORRECTED" } });
+    await tx.invoice.update({ where: { id: original.id, zevId }, data: { status: "CORRECTED" } });
     await audit(actor, {
       action: "invoice.correct",
       targetType: "Invoice",

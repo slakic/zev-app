@@ -62,6 +62,11 @@ export type Party = Prisma.PartyModel
  */
 export type Zev = Prisma.ZevModel
 /**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel
+/**
  * Model Building
  * 
  */
@@ -93,7 +98,13 @@ export type Occupancy = Prisma.OccupancyModel
 export type Proxy = Prisma.ProxyModel
 /**
  * Model OfficeTerm
- * Effective-dated office holders (president mandate, accountant engagement)
+ * Effective-dated office holders (president mandate, accountant engagement,
+ * upravni odbor membership). PRESIDENT and ACCOUNTANT are single-holder
+ * roles (setting a new term closes the previous one); BOARD_MEMBER is
+ * multi-holder — several rows may be concurrently open. See
+ * LEGAL_AND_FINANCIAL_ASSUMPTIONS.md §Organi ZEV for the legal basis and
+ * the assumptions flagged for review (board size, mandate length, whether
+ * the ZEV "predsjednik" tracked here is also predsjednik upravnog odbora).
  */
 export type OfficeTerm = Prisma.OfficeTermModel
 /**
@@ -284,7 +295,11 @@ export type WorkOrder = Prisma.WorkOrderModel
 export type Document = Prisma.DocumentModel
 /**
  * Model Attachment
- * 
+ * Classification: OWNERSHIP_PROOF | INVOICE | REPORT | MINUTES | CONTRACT |
+ * CORRESPONDENCE | PHOTO | CONSENT | OTHER (see ATTACHMENT_CATEGORIES in attachments.ts —
+ * kept as a plain String, not a DB enum, so the set can grow without a migration).
+ * linkedType/linkedId optionally tie an attachment to a specific record (e.g.
+ * "OwnershipStake"), mirroring Document.sourceType/sourceId; both null = general library item.
  */
 export type Attachment = Prisma.AttachmentModel
 /**

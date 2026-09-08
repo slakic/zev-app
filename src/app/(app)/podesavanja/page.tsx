@@ -29,10 +29,7 @@ async function saveZevAction(formData: FormData) {
 async function addAccountAction(formData: FormData) {
   "use server";
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
-  const zev = await getZev();
-  if (!zev) return;
   await createAccount(actor, {
-    zevId: zev.id,
     type: formData.get("type") as never,
     name: String(formData.get("name")),
     bankName: (formData.get("bankName") as string) || null,
@@ -109,7 +106,7 @@ export default async function SettingsPage({
   const isManagement = isPresident || actor.roles.includes("ACCOUNTANT");
 
   const [zev, accounts, settings, myParty, myConsent] = await Promise.all([
-    isManagement ? getZev() : null,
+    isManagement ? getZev(actor) : null,
     isManagement ? listAccounts(actor) : Promise.resolve([]),
     isManagement ? prisma.setting.findMany() : Promise.resolve([]),
     actor.partyId ? getParty(actor, actor.partyId) : null,

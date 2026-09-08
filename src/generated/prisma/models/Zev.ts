@@ -36,6 +36,8 @@ export type ZevMinAggregateOutputType = {
   foundingDate: Date | null
   registrationDate: Date | null
   note: string | null
+  tier: $Enums.ZevTier | null
+  active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +54,8 @@ export type ZevMaxAggregateOutputType = {
   foundingDate: Date | null
   registrationDate: Date | null
   note: string | null
+  tier: $Enums.ZevTier | null
+  active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +72,8 @@ export type ZevCountAggregateOutputType = {
   foundingDate: number
   registrationDate: number
   note: number
+  tier: number
+  active: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -86,6 +92,8 @@ export type ZevMinAggregateInputType = {
   foundingDate?: true
   registrationDate?: true
   note?: true
+  tier?: true
+  active?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -102,6 +110,8 @@ export type ZevMaxAggregateInputType = {
   foundingDate?: true
   registrationDate?: true
   note?: true
+  tier?: true
+  active?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +128,8 @@ export type ZevCountAggregateInputType = {
   foundingDate?: true
   registrationDate?: true
   note?: true
+  tier?: true
+  active?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -207,6 +219,8 @@ export type ZevGroupByOutputType = {
   foundingDate: Date | null
   registrationDate: Date | null
   note: string | null
+  tier: $Enums.ZevTier
+  active: boolean
   createdAt: Date
   updatedAt: Date
   _count: ZevCountAggregateOutputType | null
@@ -244,10 +258,46 @@ export type ZevWhereInput = {
   foundingDate?: Prisma.DateTimeNullableFilter<"Zev"> | Date | string | null
   registrationDate?: Prisma.DateTimeNullableFilter<"Zev"> | Date | string | null
   note?: Prisma.StringNullableFilter<"Zev"> | string | null
+  tier?: Prisma.EnumZevTierFilter<"Zev"> | $Enums.ZevTier
+  active?: Prisma.BoolFilter<"Zev"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Zev"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Zev"> | Date | string
   buildings?: Prisma.BuildingListRelationFilter
   accounts?: Prisma.MoneyAccountListRelationFilter
+  memberships?: Prisma.MembershipListRelationFilter
+  sessions?: Prisma.SessionListRelationFilter
+  parties?: Prisma.PartyListRelationFilter
+  entrances?: Prisma.EntranceListRelationFilter
+  units?: Prisma.UnitListRelationFilter
+  ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
+  occupancies?: Prisma.OccupancyListRelationFilter
+  proxies?: Prisma.ProxyListRelationFilter
+  officeTerms?: Prisma.OfficeTermListRelationFilter
+  allocationGroups?: Prisma.AllocationGroupListRelationFilter
+  commonAssets?: Prisma.CommonAssetListRelationFilter
+  meetings?: Prisma.MeetingListRelationFilter
+  votingRules?: Prisma.VotingRuleListRelationFilter
+  proposals?: Prisma.ProposalListRelationFilter
+  votes?: Prisma.VoteListRelationFilter
+  transactionCategories?: Prisma.TransactionCategoryListRelationFilter
+  finTransactions?: Prisma.FinTransactionListRelationFilter
+  chargeItems?: Prisma.ChargeItemListRelationFilter
+  invoiceBatches?: Prisma.InvoiceBatchListRelationFilter
+  invoices?: Prisma.InvoiceListRelationFilter
+  bankImportBatches?: Prisma.BankImportBatchListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
+  balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
+  suppliers?: Prisma.SupplierListRelationFilter
+  expenses?: Prisma.ExpenseListRelationFilter
+  annualPlans?: Prisma.AnnualPlanListRelationFilter
+  planItems?: Prisma.PlanItemListRelationFilter
+  projects?: Prisma.ProjectListRelationFilter
+  maintenanceIssues?: Prisma.MaintenanceIssueListRelationFilter
+  workOrders?: Prisma.WorkOrderListRelationFilter
+  documents?: Prisma.DocumentListRelationFilter
+  attachments?: Prisma.AttachmentListRelationFilter
+  notificationMessages?: Prisma.NotificationMessageListRelationFilter
+  auditEvents?: Prisma.AuditEventListRelationFilter
 }
 
 export type ZevOrderByWithRelationInput = {
@@ -262,10 +312,46 @@ export type ZevOrderByWithRelationInput = {
   foundingDate?: Prisma.SortOrderInput | Prisma.SortOrder
   registrationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   buildings?: Prisma.BuildingOrderByRelationAggregateInput
   accounts?: Prisma.MoneyAccountOrderByRelationAggregateInput
+  memberships?: Prisma.MembershipOrderByRelationAggregateInput
+  sessions?: Prisma.SessionOrderByRelationAggregateInput
+  parties?: Prisma.PartyOrderByRelationAggregateInput
+  entrances?: Prisma.EntranceOrderByRelationAggregateInput
+  units?: Prisma.UnitOrderByRelationAggregateInput
+  ownershipStakes?: Prisma.OwnershipStakeOrderByRelationAggregateInput
+  occupancies?: Prisma.OccupancyOrderByRelationAggregateInput
+  proxies?: Prisma.ProxyOrderByRelationAggregateInput
+  officeTerms?: Prisma.OfficeTermOrderByRelationAggregateInput
+  allocationGroups?: Prisma.AllocationGroupOrderByRelationAggregateInput
+  commonAssets?: Prisma.CommonAssetOrderByRelationAggregateInput
+  meetings?: Prisma.MeetingOrderByRelationAggregateInput
+  votingRules?: Prisma.VotingRuleOrderByRelationAggregateInput
+  proposals?: Prisma.ProposalOrderByRelationAggregateInput
+  votes?: Prisma.VoteOrderByRelationAggregateInput
+  transactionCategories?: Prisma.TransactionCategoryOrderByRelationAggregateInput
+  finTransactions?: Prisma.FinTransactionOrderByRelationAggregateInput
+  chargeItems?: Prisma.ChargeItemOrderByRelationAggregateInput
+  invoiceBatches?: Prisma.InvoiceBatchOrderByRelationAggregateInput
+  invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  bankImportBatches?: Prisma.BankImportBatchOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
+  balanceCorrections?: Prisma.BalanceCorrectionOrderByRelationAggregateInput
+  suppliers?: Prisma.SupplierOrderByRelationAggregateInput
+  expenses?: Prisma.ExpenseOrderByRelationAggregateInput
+  annualPlans?: Prisma.AnnualPlanOrderByRelationAggregateInput
+  planItems?: Prisma.PlanItemOrderByRelationAggregateInput
+  projects?: Prisma.ProjectOrderByRelationAggregateInput
+  maintenanceIssues?: Prisma.MaintenanceIssueOrderByRelationAggregateInput
+  workOrders?: Prisma.WorkOrderOrderByRelationAggregateInput
+  documents?: Prisma.DocumentOrderByRelationAggregateInput
+  attachments?: Prisma.AttachmentOrderByRelationAggregateInput
+  notificationMessages?: Prisma.NotificationMessageOrderByRelationAggregateInput
+  auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
 }
 
 export type ZevWhereUniqueInput = Prisma.AtLeast<{
@@ -283,10 +369,46 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   foundingDate?: Prisma.DateTimeNullableFilter<"Zev"> | Date | string | null
   registrationDate?: Prisma.DateTimeNullableFilter<"Zev"> | Date | string | null
   note?: Prisma.StringNullableFilter<"Zev"> | string | null
+  tier?: Prisma.EnumZevTierFilter<"Zev"> | $Enums.ZevTier
+  active?: Prisma.BoolFilter<"Zev"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Zev"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Zev"> | Date | string
   buildings?: Prisma.BuildingListRelationFilter
   accounts?: Prisma.MoneyAccountListRelationFilter
+  memberships?: Prisma.MembershipListRelationFilter
+  sessions?: Prisma.SessionListRelationFilter
+  parties?: Prisma.PartyListRelationFilter
+  entrances?: Prisma.EntranceListRelationFilter
+  units?: Prisma.UnitListRelationFilter
+  ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
+  occupancies?: Prisma.OccupancyListRelationFilter
+  proxies?: Prisma.ProxyListRelationFilter
+  officeTerms?: Prisma.OfficeTermListRelationFilter
+  allocationGroups?: Prisma.AllocationGroupListRelationFilter
+  commonAssets?: Prisma.CommonAssetListRelationFilter
+  meetings?: Prisma.MeetingListRelationFilter
+  votingRules?: Prisma.VotingRuleListRelationFilter
+  proposals?: Prisma.ProposalListRelationFilter
+  votes?: Prisma.VoteListRelationFilter
+  transactionCategories?: Prisma.TransactionCategoryListRelationFilter
+  finTransactions?: Prisma.FinTransactionListRelationFilter
+  chargeItems?: Prisma.ChargeItemListRelationFilter
+  invoiceBatches?: Prisma.InvoiceBatchListRelationFilter
+  invoices?: Prisma.InvoiceListRelationFilter
+  bankImportBatches?: Prisma.BankImportBatchListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
+  balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
+  suppliers?: Prisma.SupplierListRelationFilter
+  expenses?: Prisma.ExpenseListRelationFilter
+  annualPlans?: Prisma.AnnualPlanListRelationFilter
+  planItems?: Prisma.PlanItemListRelationFilter
+  projects?: Prisma.ProjectListRelationFilter
+  maintenanceIssues?: Prisma.MaintenanceIssueListRelationFilter
+  workOrders?: Prisma.WorkOrderListRelationFilter
+  documents?: Prisma.DocumentListRelationFilter
+  attachments?: Prisma.AttachmentListRelationFilter
+  notificationMessages?: Prisma.NotificationMessageListRelationFilter
+  auditEvents?: Prisma.AuditEventListRelationFilter
 }, "id">
 
 export type ZevOrderByWithAggregationInput = {
@@ -301,6 +423,8 @@ export type ZevOrderByWithAggregationInput = {
   foundingDate?: Prisma.SortOrderInput | Prisma.SortOrder
   registrationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ZevCountOrderByAggregateInput
@@ -323,6 +447,8 @@ export type ZevScalarWhereWithAggregatesInput = {
   foundingDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Zev"> | Date | string | null
   registrationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Zev"> | Date | string | null
   note?: Prisma.StringNullableWithAggregatesFilter<"Zev"> | string | null
+  tier?: Prisma.EnumZevTierWithAggregatesFilter<"Zev"> | $Enums.ZevTier
+  active?: Prisma.BoolWithAggregatesFilter<"Zev"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Zev"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Zev"> | Date | string
 }
@@ -339,10 +465,46 @@ export type ZevCreateInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
   accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateInput = {
@@ -357,10 +519,46 @@ export type ZevUncheckedCreateInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
   accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevUpdateInput = {
@@ -375,10 +573,46 @@ export type ZevUpdateInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
   accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateInput = {
@@ -393,10 +627,46 @@ export type ZevUncheckedUpdateInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
   accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateManyInput = {
@@ -411,6 +681,8 @@ export type ZevCreateManyInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -427,6 +699,8 @@ export type ZevUpdateManyMutationInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,8 +717,20 @@ export type ZevUncheckedUpdateManyInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ZevNullableScalarRelationFilter = {
+  is?: Prisma.ZevWhereInput | null
+  isNot?: Prisma.ZevWhereInput | null
+}
+
+export type ZevScalarRelationFilter = {
+  is?: Prisma.ZevWhereInput
+  isNot?: Prisma.ZevWhereInput
 }
 
 export type ZevCountOrderByAggregateInput = {
@@ -459,6 +745,8 @@ export type ZevCountOrderByAggregateInput = {
   foundingDate?: Prisma.SortOrder
   registrationDate?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -475,6 +763,8 @@ export type ZevMaxOrderByAggregateInput = {
   foundingDate?: Prisma.SortOrder
   registrationDate?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -491,13 +781,58 @@ export type ZevMinOrderByAggregateInput = {
   foundingDate?: Prisma.SortOrder
   registrationDate?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type ZevScalarRelationFilter = {
-  is?: Prisma.ZevWhereInput
-  isNot?: Prisma.ZevWhereInput
+export type ZevCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutSessionsInput, Prisma.ZevUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutSessionsInput, Prisma.ZevUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.ZevUpsertWithoutSessionsInput
+  disconnect?: Prisma.ZevWhereInput | boolean
+  delete?: Prisma.ZevWhereInput | boolean
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutSessionsInput, Prisma.ZevUpdateWithoutSessionsInput>, Prisma.ZevUncheckedUpdateWithoutSessionsInput>
+}
+
+export type ZevCreateNestedOneWithoutPartiesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPartiesInput, Prisma.ZevUncheckedCreateWithoutPartiesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPartiesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutPartiesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPartiesInput, Prisma.ZevUncheckedCreateWithoutPartiesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPartiesInput
+  upsert?: Prisma.ZevUpsertWithoutPartiesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutPartiesInput, Prisma.ZevUpdateWithoutPartiesInput>, Prisma.ZevUncheckedUpdateWithoutPartiesInput>
+}
+
+export type EnumZevTierFieldUpdateOperationsInput = {
+  set?: $Enums.ZevTier
+}
+
+export type ZevCreateNestedOneWithoutMembershipsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutMembershipsInput, Prisma.ZevUncheckedCreateWithoutMembershipsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutMembershipsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutMembershipsInput, Prisma.ZevUncheckedCreateWithoutMembershipsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutMembershipsInput
+  upsert?: Prisma.ZevUpsertWithoutMembershipsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutMembershipsInput, Prisma.ZevUpdateWithoutMembershipsInput>, Prisma.ZevUncheckedUpdateWithoutMembershipsInput>
 }
 
 export type ZevCreateNestedOneWithoutBuildingsInput = {
@@ -514,6 +849,174 @@ export type ZevUpdateOneRequiredWithoutBuildingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutBuildingsInput, Prisma.ZevUpdateWithoutBuildingsInput>, Prisma.ZevUncheckedUpdateWithoutBuildingsInput>
 }
 
+export type ZevCreateNestedOneWithoutEntrancesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutEntrancesInput, Prisma.ZevUncheckedCreateWithoutEntrancesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutEntrancesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutEntrancesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutEntrancesInput, Prisma.ZevUncheckedCreateWithoutEntrancesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutEntrancesInput
+  upsert?: Prisma.ZevUpsertWithoutEntrancesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutEntrancesInput, Prisma.ZevUpdateWithoutEntrancesInput>, Prisma.ZevUncheckedUpdateWithoutEntrancesInput>
+}
+
+export type ZevCreateNestedOneWithoutUnitsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutUnitsInput, Prisma.ZevUncheckedCreateWithoutUnitsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutUnitsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutUnitsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutUnitsInput, Prisma.ZevUncheckedCreateWithoutUnitsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutUnitsInput
+  upsert?: Prisma.ZevUpsertWithoutUnitsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutUnitsInput, Prisma.ZevUpdateWithoutUnitsInput>, Prisma.ZevUncheckedUpdateWithoutUnitsInput>
+}
+
+export type ZevCreateNestedOneWithoutOwnershipStakesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutOwnershipStakesInput, Prisma.ZevUncheckedCreateWithoutOwnershipStakesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutOwnershipStakesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutOwnershipStakesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutOwnershipStakesInput, Prisma.ZevUncheckedCreateWithoutOwnershipStakesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutOwnershipStakesInput
+  upsert?: Prisma.ZevUpsertWithoutOwnershipStakesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutOwnershipStakesInput, Prisma.ZevUpdateWithoutOwnershipStakesInput>, Prisma.ZevUncheckedUpdateWithoutOwnershipStakesInput>
+}
+
+export type ZevCreateNestedOneWithoutOccupanciesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutOccupanciesInput, Prisma.ZevUncheckedCreateWithoutOccupanciesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutOccupanciesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutOccupanciesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutOccupanciesInput, Prisma.ZevUncheckedCreateWithoutOccupanciesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutOccupanciesInput
+  upsert?: Prisma.ZevUpsertWithoutOccupanciesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutOccupanciesInput, Prisma.ZevUpdateWithoutOccupanciesInput>, Prisma.ZevUncheckedUpdateWithoutOccupanciesInput>
+}
+
+export type ZevCreateNestedOneWithoutProxiesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutProxiesInput, Prisma.ZevUncheckedCreateWithoutProxiesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutProxiesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutProxiesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutProxiesInput, Prisma.ZevUncheckedCreateWithoutProxiesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutProxiesInput
+  upsert?: Prisma.ZevUpsertWithoutProxiesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutProxiesInput, Prisma.ZevUpdateWithoutProxiesInput>, Prisma.ZevUncheckedUpdateWithoutProxiesInput>
+}
+
+export type ZevCreateNestedOneWithoutOfficeTermsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutOfficeTermsInput, Prisma.ZevUncheckedCreateWithoutOfficeTermsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutOfficeTermsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutOfficeTermsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutOfficeTermsInput, Prisma.ZevUncheckedCreateWithoutOfficeTermsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutOfficeTermsInput
+  upsert?: Prisma.ZevUpsertWithoutOfficeTermsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutOfficeTermsInput, Prisma.ZevUpdateWithoutOfficeTermsInput>, Prisma.ZevUncheckedUpdateWithoutOfficeTermsInput>
+}
+
+export type ZevCreateNestedOneWithoutAllocationGroupsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAllocationGroupsInput, Prisma.ZevUncheckedCreateWithoutAllocationGroupsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAllocationGroupsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutAllocationGroupsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAllocationGroupsInput, Prisma.ZevUncheckedCreateWithoutAllocationGroupsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAllocationGroupsInput
+  upsert?: Prisma.ZevUpsertWithoutAllocationGroupsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutAllocationGroupsInput, Prisma.ZevUpdateWithoutAllocationGroupsInput>, Prisma.ZevUncheckedUpdateWithoutAllocationGroupsInput>
+}
+
+export type ZevCreateNestedOneWithoutCommonAssetsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutCommonAssetsInput, Prisma.ZevUncheckedCreateWithoutCommonAssetsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutCommonAssetsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutCommonAssetsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutCommonAssetsInput, Prisma.ZevUncheckedCreateWithoutCommonAssetsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutCommonAssetsInput
+  upsert?: Prisma.ZevUpsertWithoutCommonAssetsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutCommonAssetsInput, Prisma.ZevUpdateWithoutCommonAssetsInput>, Prisma.ZevUncheckedUpdateWithoutCommonAssetsInput>
+}
+
+export type ZevCreateNestedOneWithoutMeetingsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutMeetingsInput, Prisma.ZevUncheckedCreateWithoutMeetingsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutMeetingsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutMeetingsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutMeetingsInput, Prisma.ZevUncheckedCreateWithoutMeetingsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutMeetingsInput
+  upsert?: Prisma.ZevUpsertWithoutMeetingsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutMeetingsInput, Prisma.ZevUpdateWithoutMeetingsInput>, Prisma.ZevUncheckedUpdateWithoutMeetingsInput>
+}
+
+export type ZevCreateNestedOneWithoutVotingRulesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutVotingRulesInput, Prisma.ZevUncheckedCreateWithoutVotingRulesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutVotingRulesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutVotingRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutVotingRulesInput, Prisma.ZevUncheckedCreateWithoutVotingRulesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutVotingRulesInput
+  upsert?: Prisma.ZevUpsertWithoutVotingRulesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutVotingRulesInput, Prisma.ZevUpdateWithoutVotingRulesInput>, Prisma.ZevUncheckedUpdateWithoutVotingRulesInput>
+}
+
+export type ZevCreateNestedOneWithoutProposalsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutProposalsInput, Prisma.ZevUncheckedCreateWithoutProposalsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutProposalsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutProposalsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutProposalsInput, Prisma.ZevUncheckedCreateWithoutProposalsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutProposalsInput
+  upsert?: Prisma.ZevUpsertWithoutProposalsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutProposalsInput, Prisma.ZevUpdateWithoutProposalsInput>, Prisma.ZevUncheckedUpdateWithoutProposalsInput>
+}
+
+export type ZevCreateNestedOneWithoutVotesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutVotesInput, Prisma.ZevUncheckedCreateWithoutVotesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutVotesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutVotesInput, Prisma.ZevUncheckedCreateWithoutVotesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutVotesInput
+  upsert?: Prisma.ZevUpsertWithoutVotesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutVotesInput, Prisma.ZevUpdateWithoutVotesInput>, Prisma.ZevUncheckedUpdateWithoutVotesInput>
+}
+
 export type ZevCreateNestedOneWithoutAccountsInput = {
   create?: Prisma.XOR<Prisma.ZevCreateWithoutAccountsInput, Prisma.ZevUncheckedCreateWithoutAccountsInput>
   connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAccountsInput
@@ -528,6 +1031,960 @@ export type ZevUpdateOneRequiredWithoutAccountsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutAccountsInput, Prisma.ZevUpdateWithoutAccountsInput>, Prisma.ZevUncheckedUpdateWithoutAccountsInput>
 }
 
+export type ZevCreateNestedOneWithoutTransactionCategoriesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutTransactionCategoriesInput, Prisma.ZevUncheckedCreateWithoutTransactionCategoriesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutTransactionCategoriesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutTransactionCategoriesInput, Prisma.ZevUncheckedCreateWithoutTransactionCategoriesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutTransactionCategoriesInput
+  upsert?: Prisma.ZevUpsertWithoutTransactionCategoriesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutTransactionCategoriesInput, Prisma.ZevUpdateWithoutTransactionCategoriesInput>, Prisma.ZevUncheckedUpdateWithoutTransactionCategoriesInput>
+}
+
+export type ZevCreateNestedOneWithoutFinTransactionsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutFinTransactionsInput, Prisma.ZevUncheckedCreateWithoutFinTransactionsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutFinTransactionsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutFinTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutFinTransactionsInput, Prisma.ZevUncheckedCreateWithoutFinTransactionsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutFinTransactionsInput
+  upsert?: Prisma.ZevUpsertWithoutFinTransactionsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutFinTransactionsInput, Prisma.ZevUpdateWithoutFinTransactionsInput>, Prisma.ZevUncheckedUpdateWithoutFinTransactionsInput>
+}
+
+export type ZevCreateNestedOneWithoutChargeItemsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutChargeItemsInput, Prisma.ZevUncheckedCreateWithoutChargeItemsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutChargeItemsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutChargeItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutChargeItemsInput, Prisma.ZevUncheckedCreateWithoutChargeItemsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutChargeItemsInput
+  upsert?: Prisma.ZevUpsertWithoutChargeItemsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutChargeItemsInput, Prisma.ZevUpdateWithoutChargeItemsInput>, Prisma.ZevUncheckedUpdateWithoutChargeItemsInput>
+}
+
+export type ZevCreateNestedOneWithoutInvoiceBatchesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutInvoiceBatchesInput, Prisma.ZevUncheckedCreateWithoutInvoiceBatchesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutInvoiceBatchesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutInvoiceBatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutInvoiceBatchesInput, Prisma.ZevUncheckedCreateWithoutInvoiceBatchesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutInvoiceBatchesInput
+  upsert?: Prisma.ZevUpsertWithoutInvoiceBatchesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutInvoiceBatchesInput, Prisma.ZevUpdateWithoutInvoiceBatchesInput>, Prisma.ZevUncheckedUpdateWithoutInvoiceBatchesInput>
+}
+
+export type ZevCreateNestedOneWithoutInvoicesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutInvoicesInput, Prisma.ZevUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutInvoicesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutInvoicesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutInvoicesInput, Prisma.ZevUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutInvoicesInput
+  upsert?: Prisma.ZevUpsertWithoutInvoicesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutInvoicesInput, Prisma.ZevUpdateWithoutInvoicesInput>, Prisma.ZevUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type ZevCreateNestedOneWithoutBankImportBatchesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutBankImportBatchesInput, Prisma.ZevUncheckedCreateWithoutBankImportBatchesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutBankImportBatchesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutBankImportBatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutBankImportBatchesInput, Prisma.ZevUncheckedCreateWithoutBankImportBatchesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutBankImportBatchesInput
+  upsert?: Prisma.ZevUpsertWithoutBankImportBatchesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutBankImportBatchesInput, Prisma.ZevUpdateWithoutBankImportBatchesInput>, Prisma.ZevUncheckedUpdateWithoutBankImportBatchesInput>
+}
+
+export type ZevCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPaymentsInput, Prisma.ZevUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPaymentsInput, Prisma.ZevUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.ZevUpsertWithoutPaymentsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutPaymentsInput, Prisma.ZevUpdateWithoutPaymentsInput>, Prisma.ZevUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type ZevCreateNestedOneWithoutBalanceCorrectionsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutBalanceCorrectionsInput, Prisma.ZevUncheckedCreateWithoutBalanceCorrectionsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutBalanceCorrectionsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutBalanceCorrectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutBalanceCorrectionsInput, Prisma.ZevUncheckedCreateWithoutBalanceCorrectionsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutBalanceCorrectionsInput
+  upsert?: Prisma.ZevUpsertWithoutBalanceCorrectionsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutBalanceCorrectionsInput, Prisma.ZevUpdateWithoutBalanceCorrectionsInput>, Prisma.ZevUncheckedUpdateWithoutBalanceCorrectionsInput>
+}
+
+export type ZevCreateNestedOneWithoutSuppliersInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutSuppliersInput, Prisma.ZevUncheckedCreateWithoutSuppliersInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutSuppliersInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutSuppliersNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutSuppliersInput, Prisma.ZevUncheckedCreateWithoutSuppliersInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutSuppliersInput
+  upsert?: Prisma.ZevUpsertWithoutSuppliersInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutSuppliersInput, Prisma.ZevUpdateWithoutSuppliersInput>, Prisma.ZevUncheckedUpdateWithoutSuppliersInput>
+}
+
+export type ZevCreateNestedOneWithoutExpensesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutExpensesInput, Prisma.ZevUncheckedCreateWithoutExpensesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutExpensesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutExpensesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutExpensesInput, Prisma.ZevUncheckedCreateWithoutExpensesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutExpensesInput
+  upsert?: Prisma.ZevUpsertWithoutExpensesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutExpensesInput, Prisma.ZevUpdateWithoutExpensesInput>, Prisma.ZevUncheckedUpdateWithoutExpensesInput>
+}
+
+export type ZevCreateNestedOneWithoutAnnualPlansInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAnnualPlansInput, Prisma.ZevUncheckedCreateWithoutAnnualPlansInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAnnualPlansInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutAnnualPlansNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAnnualPlansInput, Prisma.ZevUncheckedCreateWithoutAnnualPlansInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAnnualPlansInput
+  upsert?: Prisma.ZevUpsertWithoutAnnualPlansInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutAnnualPlansInput, Prisma.ZevUpdateWithoutAnnualPlansInput>, Prisma.ZevUncheckedUpdateWithoutAnnualPlansInput>
+}
+
+export type ZevCreateNestedOneWithoutPlanItemsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPlanItemsInput, Prisma.ZevUncheckedCreateWithoutPlanItemsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPlanItemsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutPlanItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPlanItemsInput, Prisma.ZevUncheckedCreateWithoutPlanItemsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPlanItemsInput
+  upsert?: Prisma.ZevUpsertWithoutPlanItemsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutPlanItemsInput, Prisma.ZevUpdateWithoutPlanItemsInput>, Prisma.ZevUncheckedUpdateWithoutPlanItemsInput>
+}
+
+export type ZevCreateNestedOneWithoutProjectsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutProjectsInput, Prisma.ZevUncheckedCreateWithoutProjectsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutProjectsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutProjectsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutProjectsInput, Prisma.ZevUncheckedCreateWithoutProjectsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutProjectsInput
+  upsert?: Prisma.ZevUpsertWithoutProjectsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutProjectsInput, Prisma.ZevUpdateWithoutProjectsInput>, Prisma.ZevUncheckedUpdateWithoutProjectsInput>
+}
+
+export type ZevCreateNestedOneWithoutMaintenanceIssuesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutMaintenanceIssuesInput, Prisma.ZevUncheckedCreateWithoutMaintenanceIssuesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutMaintenanceIssuesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutMaintenanceIssuesInput, Prisma.ZevUncheckedCreateWithoutMaintenanceIssuesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutMaintenanceIssuesInput
+  upsert?: Prisma.ZevUpsertWithoutMaintenanceIssuesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutMaintenanceIssuesInput, Prisma.ZevUpdateWithoutMaintenanceIssuesInput>, Prisma.ZevUncheckedUpdateWithoutMaintenanceIssuesInput>
+}
+
+export type ZevCreateNestedOneWithoutWorkOrdersInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutWorkOrdersInput, Prisma.ZevUncheckedCreateWithoutWorkOrdersInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutWorkOrdersInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutWorkOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutWorkOrdersInput, Prisma.ZevUncheckedCreateWithoutWorkOrdersInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutWorkOrdersInput
+  upsert?: Prisma.ZevUpsertWithoutWorkOrdersInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutWorkOrdersInput, Prisma.ZevUpdateWithoutWorkOrdersInput>, Prisma.ZevUncheckedUpdateWithoutWorkOrdersInput>
+}
+
+export type ZevCreateNestedOneWithoutDocumentsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutDocumentsInput, Prisma.ZevUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutDocumentsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutDocumentsInput, Prisma.ZevUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutDocumentsInput
+  upsert?: Prisma.ZevUpsertWithoutDocumentsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutDocumentsInput, Prisma.ZevUpdateWithoutDocumentsInput>, Prisma.ZevUncheckedUpdateWithoutDocumentsInput>
+}
+
+export type ZevCreateNestedOneWithoutAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAttachmentsInput, Prisma.ZevUncheckedCreateWithoutAttachmentsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAttachmentsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAttachmentsInput, Prisma.ZevUncheckedCreateWithoutAttachmentsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAttachmentsInput
+  upsert?: Prisma.ZevUpsertWithoutAttachmentsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutAttachmentsInput, Prisma.ZevUpdateWithoutAttachmentsInput>, Prisma.ZevUncheckedUpdateWithoutAttachmentsInput>
+}
+
+export type ZevCreateNestedOneWithoutNotificationMessagesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutNotificationMessagesInput, Prisma.ZevUncheckedCreateWithoutNotificationMessagesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutNotificationMessagesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneWithoutNotificationMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutNotificationMessagesInput, Prisma.ZevUncheckedCreateWithoutNotificationMessagesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutNotificationMessagesInput
+  upsert?: Prisma.ZevUpsertWithoutNotificationMessagesInput
+  disconnect?: Prisma.ZevWhereInput | boolean
+  delete?: Prisma.ZevWhereInput | boolean
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutNotificationMessagesInput, Prisma.ZevUpdateWithoutNotificationMessagesInput>, Prisma.ZevUncheckedUpdateWithoutNotificationMessagesInput>
+}
+
+export type ZevCreateNestedOneWithoutAuditEventsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAuditEventsInput, Prisma.ZevUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAuditEventsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneWithoutAuditEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutAuditEventsInput, Prisma.ZevUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutAuditEventsInput
+  upsert?: Prisma.ZevUpsertWithoutAuditEventsInput
+  disconnect?: Prisma.ZevWhereInput | boolean
+  delete?: Prisma.ZevWhereInput | boolean
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutAuditEventsInput, Prisma.ZevUpdateWithoutAuditEventsInput>, Prisma.ZevUncheckedUpdateWithoutAuditEventsInput>
+}
+
+export type ZevCreateWithoutSessionsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutSessionsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutSessionsInput, Prisma.ZevUncheckedCreateWithoutSessionsInput>
+}
+
+export type ZevUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutSessionsInput, Prisma.ZevUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutSessionsInput, Prisma.ZevUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutSessionsInput, Prisma.ZevUncheckedUpdateWithoutSessionsInput>
+}
+
+export type ZevUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutPartiesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutPartiesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutPartiesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPartiesInput, Prisma.ZevUncheckedCreateWithoutPartiesInput>
+}
+
+export type ZevUpsertWithoutPartiesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutPartiesInput, Prisma.ZevUncheckedUpdateWithoutPartiesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPartiesInput, Prisma.ZevUncheckedCreateWithoutPartiesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutPartiesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutPartiesInput, Prisma.ZevUncheckedUpdateWithoutPartiesInput>
+}
+
+export type ZevUpdateWithoutPartiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutPartiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutMembershipsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutMembershipsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutMembershipsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutMembershipsInput, Prisma.ZevUncheckedCreateWithoutMembershipsInput>
+}
+
+export type ZevUpsertWithoutMembershipsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutMembershipsInput, Prisma.ZevUncheckedUpdateWithoutMembershipsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutMembershipsInput, Prisma.ZevUncheckedCreateWithoutMembershipsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutMembershipsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutMembershipsInput, Prisma.ZevUncheckedUpdateWithoutMembershipsInput>
+}
+
+export type ZevUpdateWithoutMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
 export type ZevCreateWithoutBuildingsInput = {
   id?: string
   legalName: string
@@ -540,9 +1997,45 @@ export type ZevCreateWithoutBuildingsInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBuildingsInput = {
@@ -557,9 +2050,45 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBuildingsInput = {
@@ -590,9 +2119,45 @@ export type ZevUpdateWithoutBuildingsInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBuildingsInput = {
@@ -607,9 +2172,2781 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutEntrancesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutEntrancesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutEntrancesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutEntrancesInput, Prisma.ZevUncheckedCreateWithoutEntrancesInput>
+}
+
+export type ZevUpsertWithoutEntrancesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutEntrancesInput, Prisma.ZevUncheckedUpdateWithoutEntrancesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutEntrancesInput, Prisma.ZevUncheckedCreateWithoutEntrancesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutEntrancesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutEntrancesInput, Prisma.ZevUncheckedUpdateWithoutEntrancesInput>
+}
+
+export type ZevUpdateWithoutEntrancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutEntrancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutUnitsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutUnitsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutUnitsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutUnitsInput, Prisma.ZevUncheckedCreateWithoutUnitsInput>
+}
+
+export type ZevUpsertWithoutUnitsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutUnitsInput, Prisma.ZevUncheckedUpdateWithoutUnitsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutUnitsInput, Prisma.ZevUncheckedCreateWithoutUnitsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutUnitsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutUnitsInput, Prisma.ZevUncheckedUpdateWithoutUnitsInput>
+}
+
+export type ZevUpdateWithoutUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutOwnershipStakesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutOwnershipStakesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutOwnershipStakesInput, Prisma.ZevUncheckedCreateWithoutOwnershipStakesInput>
+}
+
+export type ZevUpsertWithoutOwnershipStakesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutOwnershipStakesInput, Prisma.ZevUncheckedUpdateWithoutOwnershipStakesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutOwnershipStakesInput, Prisma.ZevUncheckedCreateWithoutOwnershipStakesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutOwnershipStakesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutOwnershipStakesInput, Prisma.ZevUncheckedUpdateWithoutOwnershipStakesInput>
+}
+
+export type ZevUpdateWithoutOwnershipStakesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutOccupanciesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutOccupanciesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutOccupanciesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutOccupanciesInput, Prisma.ZevUncheckedCreateWithoutOccupanciesInput>
+}
+
+export type ZevUpsertWithoutOccupanciesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutOccupanciesInput, Prisma.ZevUncheckedUpdateWithoutOccupanciesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutOccupanciesInput, Prisma.ZevUncheckedCreateWithoutOccupanciesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutOccupanciesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutOccupanciesInput, Prisma.ZevUncheckedUpdateWithoutOccupanciesInput>
+}
+
+export type ZevUpdateWithoutOccupanciesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutOccupanciesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutProxiesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutProxiesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutProxiesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutProxiesInput, Prisma.ZevUncheckedCreateWithoutProxiesInput>
+}
+
+export type ZevUpsertWithoutProxiesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutProxiesInput, Prisma.ZevUncheckedUpdateWithoutProxiesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutProxiesInput, Prisma.ZevUncheckedCreateWithoutProxiesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutProxiesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutProxiesInput, Prisma.ZevUncheckedUpdateWithoutProxiesInput>
+}
+
+export type ZevUpdateWithoutProxiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutProxiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutOfficeTermsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutOfficeTermsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutOfficeTermsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutOfficeTermsInput, Prisma.ZevUncheckedCreateWithoutOfficeTermsInput>
+}
+
+export type ZevUpsertWithoutOfficeTermsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutOfficeTermsInput, Prisma.ZevUncheckedUpdateWithoutOfficeTermsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutOfficeTermsInput, Prisma.ZevUncheckedCreateWithoutOfficeTermsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutOfficeTermsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutOfficeTermsInput, Prisma.ZevUncheckedUpdateWithoutOfficeTermsInput>
+}
+
+export type ZevUpdateWithoutOfficeTermsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutAllocationGroupsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutAllocationGroupsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAllocationGroupsInput, Prisma.ZevUncheckedCreateWithoutAllocationGroupsInput>
+}
+
+export type ZevUpsertWithoutAllocationGroupsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutAllocationGroupsInput, Prisma.ZevUncheckedUpdateWithoutAllocationGroupsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAllocationGroupsInput, Prisma.ZevUncheckedCreateWithoutAllocationGroupsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutAllocationGroupsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutAllocationGroupsInput, Prisma.ZevUncheckedUpdateWithoutAllocationGroupsInput>
+}
+
+export type ZevUpdateWithoutAllocationGroupsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutCommonAssetsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutCommonAssetsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutCommonAssetsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutCommonAssetsInput, Prisma.ZevUncheckedCreateWithoutCommonAssetsInput>
+}
+
+export type ZevUpsertWithoutCommonAssetsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutCommonAssetsInput, Prisma.ZevUncheckedUpdateWithoutCommonAssetsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutCommonAssetsInput, Prisma.ZevUncheckedCreateWithoutCommonAssetsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutCommonAssetsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutCommonAssetsInput, Prisma.ZevUncheckedUpdateWithoutCommonAssetsInput>
+}
+
+export type ZevUpdateWithoutCommonAssetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutMeetingsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutMeetingsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutMeetingsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutMeetingsInput, Prisma.ZevUncheckedCreateWithoutMeetingsInput>
+}
+
+export type ZevUpsertWithoutMeetingsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutMeetingsInput, Prisma.ZevUncheckedUpdateWithoutMeetingsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutMeetingsInput, Prisma.ZevUncheckedCreateWithoutMeetingsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutMeetingsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutMeetingsInput, Prisma.ZevUncheckedUpdateWithoutMeetingsInput>
+}
+
+export type ZevUpdateWithoutMeetingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutMeetingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutVotingRulesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutVotingRulesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutVotingRulesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutVotingRulesInput, Prisma.ZevUncheckedCreateWithoutVotingRulesInput>
+}
+
+export type ZevUpsertWithoutVotingRulesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutVotingRulesInput, Prisma.ZevUncheckedUpdateWithoutVotingRulesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutVotingRulesInput, Prisma.ZevUncheckedCreateWithoutVotingRulesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutVotingRulesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutVotingRulesInput, Prisma.ZevUncheckedUpdateWithoutVotingRulesInput>
+}
+
+export type ZevUpdateWithoutVotingRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutVotingRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutProposalsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutProposalsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutProposalsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutProposalsInput, Prisma.ZevUncheckedCreateWithoutProposalsInput>
+}
+
+export type ZevUpsertWithoutProposalsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutProposalsInput, Prisma.ZevUncheckedUpdateWithoutProposalsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutProposalsInput, Prisma.ZevUncheckedCreateWithoutProposalsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutProposalsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutProposalsInput, Prisma.ZevUncheckedUpdateWithoutProposalsInput>
+}
+
+export type ZevUpdateWithoutProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutVotesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutVotesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutVotesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutVotesInput, Prisma.ZevUncheckedCreateWithoutVotesInput>
+}
+
+export type ZevUpsertWithoutVotesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutVotesInput, Prisma.ZevUncheckedUpdateWithoutVotesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutVotesInput, Prisma.ZevUncheckedCreateWithoutVotesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutVotesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutVotesInput, Prisma.ZevUncheckedUpdateWithoutVotesInput>
+}
+
+export type ZevUpdateWithoutVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAccountsInput = {
@@ -624,9 +4961,45 @@ export type ZevCreateWithoutAccountsInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAccountsInput = {
@@ -641,9 +5014,45 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   foundingDate?: Date | string | null
   registrationDate?: Date | string | null
   note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAccountsInput = {
@@ -674,9 +5083,45 @@ export type ZevUpdateWithoutAccountsInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAccountsInput = {
@@ -691,9 +5136,4377 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutTransactionCategoriesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutTransactionCategoriesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutTransactionCategoriesInput, Prisma.ZevUncheckedCreateWithoutTransactionCategoriesInput>
+}
+
+export type ZevUpsertWithoutTransactionCategoriesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutTransactionCategoriesInput, Prisma.ZevUncheckedUpdateWithoutTransactionCategoriesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutTransactionCategoriesInput, Prisma.ZevUncheckedCreateWithoutTransactionCategoriesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutTransactionCategoriesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutTransactionCategoriesInput, Prisma.ZevUncheckedUpdateWithoutTransactionCategoriesInput>
+}
+
+export type ZevUpdateWithoutTransactionCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutFinTransactionsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutFinTransactionsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutFinTransactionsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutFinTransactionsInput, Prisma.ZevUncheckedCreateWithoutFinTransactionsInput>
+}
+
+export type ZevUpsertWithoutFinTransactionsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutFinTransactionsInput, Prisma.ZevUncheckedUpdateWithoutFinTransactionsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutFinTransactionsInput, Prisma.ZevUncheckedCreateWithoutFinTransactionsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutFinTransactionsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutFinTransactionsInput, Prisma.ZevUncheckedUpdateWithoutFinTransactionsInput>
+}
+
+export type ZevUpdateWithoutFinTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutChargeItemsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutChargeItemsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutChargeItemsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutChargeItemsInput, Prisma.ZevUncheckedCreateWithoutChargeItemsInput>
+}
+
+export type ZevUpsertWithoutChargeItemsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutChargeItemsInput, Prisma.ZevUncheckedUpdateWithoutChargeItemsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutChargeItemsInput, Prisma.ZevUncheckedCreateWithoutChargeItemsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutChargeItemsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutChargeItemsInput, Prisma.ZevUncheckedUpdateWithoutChargeItemsInput>
+}
+
+export type ZevUpdateWithoutChargeItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutChargeItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutInvoiceBatchesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutInvoiceBatchesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutInvoiceBatchesInput, Prisma.ZevUncheckedCreateWithoutInvoiceBatchesInput>
+}
+
+export type ZevUpsertWithoutInvoiceBatchesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutInvoiceBatchesInput, Prisma.ZevUncheckedUpdateWithoutInvoiceBatchesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutInvoiceBatchesInput, Prisma.ZevUncheckedCreateWithoutInvoiceBatchesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutInvoiceBatchesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutInvoiceBatchesInput, Prisma.ZevUncheckedUpdateWithoutInvoiceBatchesInput>
+}
+
+export type ZevUpdateWithoutInvoiceBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutInvoicesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutInvoicesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutInvoicesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutInvoicesInput, Prisma.ZevUncheckedCreateWithoutInvoicesInput>
+}
+
+export type ZevUpsertWithoutInvoicesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutInvoicesInput, Prisma.ZevUncheckedUpdateWithoutInvoicesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutInvoicesInput, Prisma.ZevUncheckedCreateWithoutInvoicesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutInvoicesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutInvoicesInput, Prisma.ZevUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type ZevUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutBankImportBatchesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutBankImportBatchesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutBankImportBatchesInput, Prisma.ZevUncheckedCreateWithoutBankImportBatchesInput>
+}
+
+export type ZevUpsertWithoutBankImportBatchesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutBankImportBatchesInput, Prisma.ZevUncheckedUpdateWithoutBankImportBatchesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutBankImportBatchesInput, Prisma.ZevUncheckedCreateWithoutBankImportBatchesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutBankImportBatchesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutBankImportBatchesInput, Prisma.ZevUncheckedUpdateWithoutBankImportBatchesInput>
+}
+
+export type ZevUpdateWithoutBankImportBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutPaymentsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPaymentsInput, Prisma.ZevUncheckedCreateWithoutPaymentsInput>
+}
+
+export type ZevUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutPaymentsInput, Prisma.ZevUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPaymentsInput, Prisma.ZevUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutPaymentsInput, Prisma.ZevUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type ZevUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutBalanceCorrectionsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutBalanceCorrectionsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutBalanceCorrectionsInput, Prisma.ZevUncheckedCreateWithoutBalanceCorrectionsInput>
+}
+
+export type ZevUpsertWithoutBalanceCorrectionsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutBalanceCorrectionsInput, Prisma.ZevUncheckedUpdateWithoutBalanceCorrectionsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutBalanceCorrectionsInput, Prisma.ZevUncheckedCreateWithoutBalanceCorrectionsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutBalanceCorrectionsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutBalanceCorrectionsInput, Prisma.ZevUncheckedUpdateWithoutBalanceCorrectionsInput>
+}
+
+export type ZevUpdateWithoutBalanceCorrectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutSuppliersInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutSuppliersInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutSuppliersInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutSuppliersInput, Prisma.ZevUncheckedCreateWithoutSuppliersInput>
+}
+
+export type ZevUpsertWithoutSuppliersInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutSuppliersInput, Prisma.ZevUncheckedUpdateWithoutSuppliersInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutSuppliersInput, Prisma.ZevUncheckedCreateWithoutSuppliersInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutSuppliersInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutSuppliersInput, Prisma.ZevUncheckedUpdateWithoutSuppliersInput>
+}
+
+export type ZevUpdateWithoutSuppliersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutSuppliersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutExpensesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutExpensesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutExpensesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutExpensesInput, Prisma.ZevUncheckedCreateWithoutExpensesInput>
+}
+
+export type ZevUpsertWithoutExpensesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutExpensesInput, Prisma.ZevUncheckedUpdateWithoutExpensesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutExpensesInput, Prisma.ZevUncheckedCreateWithoutExpensesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutExpensesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutExpensesInput, Prisma.ZevUncheckedUpdateWithoutExpensesInput>
+}
+
+export type ZevUpdateWithoutExpensesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutExpensesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutAnnualPlansInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutAnnualPlansInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutAnnualPlansInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAnnualPlansInput, Prisma.ZevUncheckedCreateWithoutAnnualPlansInput>
+}
+
+export type ZevUpsertWithoutAnnualPlansInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutAnnualPlansInput, Prisma.ZevUncheckedUpdateWithoutAnnualPlansInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAnnualPlansInput, Prisma.ZevUncheckedCreateWithoutAnnualPlansInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutAnnualPlansInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutAnnualPlansInput, Prisma.ZevUncheckedUpdateWithoutAnnualPlansInput>
+}
+
+export type ZevUpdateWithoutAnnualPlansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutPlanItemsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutPlanItemsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutPlanItemsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPlanItemsInput, Prisma.ZevUncheckedCreateWithoutPlanItemsInput>
+}
+
+export type ZevUpsertWithoutPlanItemsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutPlanItemsInput, Prisma.ZevUncheckedUpdateWithoutPlanItemsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPlanItemsInput, Prisma.ZevUncheckedCreateWithoutPlanItemsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutPlanItemsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutPlanItemsInput, Prisma.ZevUncheckedUpdateWithoutPlanItemsInput>
+}
+
+export type ZevUpdateWithoutPlanItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutPlanItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutProjectsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutProjectsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutProjectsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutProjectsInput, Prisma.ZevUncheckedCreateWithoutProjectsInput>
+}
+
+export type ZevUpsertWithoutProjectsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutProjectsInput, Prisma.ZevUncheckedUpdateWithoutProjectsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutProjectsInput, Prisma.ZevUncheckedCreateWithoutProjectsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutProjectsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutProjectsInput, Prisma.ZevUncheckedUpdateWithoutProjectsInput>
+}
+
+export type ZevUpdateWithoutProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutMaintenanceIssuesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutMaintenanceIssuesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutMaintenanceIssuesInput, Prisma.ZevUncheckedCreateWithoutMaintenanceIssuesInput>
+}
+
+export type ZevUpsertWithoutMaintenanceIssuesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutMaintenanceIssuesInput, Prisma.ZevUncheckedUpdateWithoutMaintenanceIssuesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutMaintenanceIssuesInput, Prisma.ZevUncheckedCreateWithoutMaintenanceIssuesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutMaintenanceIssuesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutMaintenanceIssuesInput, Prisma.ZevUncheckedUpdateWithoutMaintenanceIssuesInput>
+}
+
+export type ZevUpdateWithoutMaintenanceIssuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutWorkOrdersInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutWorkOrdersInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutWorkOrdersInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutWorkOrdersInput, Prisma.ZevUncheckedCreateWithoutWorkOrdersInput>
+}
+
+export type ZevUpsertWithoutWorkOrdersInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutWorkOrdersInput, Prisma.ZevUncheckedUpdateWithoutWorkOrdersInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutWorkOrdersInput, Prisma.ZevUncheckedCreateWithoutWorkOrdersInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutWorkOrdersInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutWorkOrdersInput, Prisma.ZevUncheckedUpdateWithoutWorkOrdersInput>
+}
+
+export type ZevUpdateWithoutWorkOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutDocumentsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutDocumentsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutDocumentsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutDocumentsInput, Prisma.ZevUncheckedCreateWithoutDocumentsInput>
+}
+
+export type ZevUpsertWithoutDocumentsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutDocumentsInput, Prisma.ZevUncheckedUpdateWithoutDocumentsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutDocumentsInput, Prisma.ZevUncheckedCreateWithoutDocumentsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutDocumentsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutDocumentsInput, Prisma.ZevUncheckedUpdateWithoutDocumentsInput>
+}
+
+export type ZevUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutAttachmentsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutAttachmentsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutAttachmentsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAttachmentsInput, Prisma.ZevUncheckedCreateWithoutAttachmentsInput>
+}
+
+export type ZevUpsertWithoutAttachmentsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutAttachmentsInput, Prisma.ZevUncheckedUpdateWithoutAttachmentsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAttachmentsInput, Prisma.ZevUncheckedCreateWithoutAttachmentsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutAttachmentsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutAttachmentsInput, Prisma.ZevUncheckedUpdateWithoutAttachmentsInput>
+}
+
+export type ZevUpdateWithoutAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutNotificationMessagesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutNotificationMessagesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutNotificationMessagesInput, Prisma.ZevUncheckedCreateWithoutNotificationMessagesInput>
+}
+
+export type ZevUpsertWithoutNotificationMessagesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutNotificationMessagesInput, Prisma.ZevUncheckedUpdateWithoutNotificationMessagesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutNotificationMessagesInput, Prisma.ZevUncheckedCreateWithoutNotificationMessagesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutNotificationMessagesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutNotificationMessagesInput, Prisma.ZevUncheckedUpdateWithoutNotificationMessagesInput>
+}
+
+export type ZevUpdateWithoutNotificationMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutAuditEventsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutAuditEventsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutAuditEventsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAuditEventsInput, Prisma.ZevUncheckedCreateWithoutAuditEventsInput>
+}
+
+export type ZevUpsertWithoutAuditEventsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutAuditEventsInput, Prisma.ZevUncheckedUpdateWithoutAuditEventsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutAuditEventsInput, Prisma.ZevUncheckedCreateWithoutAuditEventsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutAuditEventsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutAuditEventsInput, Prisma.ZevUncheckedUpdateWithoutAuditEventsInput>
+}
+
+export type ZevUpdateWithoutAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
 }
 
 
@@ -704,11 +9517,79 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
 export type ZevCountOutputType = {
   buildings: number
   accounts: number
+  memberships: number
+  sessions: number
+  parties: number
+  entrances: number
+  units: number
+  ownershipStakes: number
+  occupancies: number
+  proxies: number
+  officeTerms: number
+  allocationGroups: number
+  commonAssets: number
+  meetings: number
+  votingRules: number
+  proposals: number
+  votes: number
+  transactionCategories: number
+  finTransactions: number
+  chargeItems: number
+  invoiceBatches: number
+  invoices: number
+  bankImportBatches: number
+  payments: number
+  balanceCorrections: number
+  suppliers: number
+  expenses: number
+  annualPlans: number
+  planItems: number
+  projects: number
+  maintenanceIssues: number
+  workOrders: number
+  documents: number
+  attachments: number
+  notificationMessages: number
+  auditEvents: number
 }
 
 export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   buildings?: boolean | ZevCountOutputTypeCountBuildingsArgs
   accounts?: boolean | ZevCountOutputTypeCountAccountsArgs
+  memberships?: boolean | ZevCountOutputTypeCountMembershipsArgs
+  sessions?: boolean | ZevCountOutputTypeCountSessionsArgs
+  parties?: boolean | ZevCountOutputTypeCountPartiesArgs
+  entrances?: boolean | ZevCountOutputTypeCountEntrancesArgs
+  units?: boolean | ZevCountOutputTypeCountUnitsArgs
+  ownershipStakes?: boolean | ZevCountOutputTypeCountOwnershipStakesArgs
+  occupancies?: boolean | ZevCountOutputTypeCountOccupanciesArgs
+  proxies?: boolean | ZevCountOutputTypeCountProxiesArgs
+  officeTerms?: boolean | ZevCountOutputTypeCountOfficeTermsArgs
+  allocationGroups?: boolean | ZevCountOutputTypeCountAllocationGroupsArgs
+  commonAssets?: boolean | ZevCountOutputTypeCountCommonAssetsArgs
+  meetings?: boolean | ZevCountOutputTypeCountMeetingsArgs
+  votingRules?: boolean | ZevCountOutputTypeCountVotingRulesArgs
+  proposals?: boolean | ZevCountOutputTypeCountProposalsArgs
+  votes?: boolean | ZevCountOutputTypeCountVotesArgs
+  transactionCategories?: boolean | ZevCountOutputTypeCountTransactionCategoriesArgs
+  finTransactions?: boolean | ZevCountOutputTypeCountFinTransactionsArgs
+  chargeItems?: boolean | ZevCountOutputTypeCountChargeItemsArgs
+  invoiceBatches?: boolean | ZevCountOutputTypeCountInvoiceBatchesArgs
+  invoices?: boolean | ZevCountOutputTypeCountInvoicesArgs
+  bankImportBatches?: boolean | ZevCountOutputTypeCountBankImportBatchesArgs
+  payments?: boolean | ZevCountOutputTypeCountPaymentsArgs
+  balanceCorrections?: boolean | ZevCountOutputTypeCountBalanceCorrectionsArgs
+  suppliers?: boolean | ZevCountOutputTypeCountSuppliersArgs
+  expenses?: boolean | ZevCountOutputTypeCountExpensesArgs
+  annualPlans?: boolean | ZevCountOutputTypeCountAnnualPlansArgs
+  planItems?: boolean | ZevCountOutputTypeCountPlanItemsArgs
+  projects?: boolean | ZevCountOutputTypeCountProjectsArgs
+  maintenanceIssues?: boolean | ZevCountOutputTypeCountMaintenanceIssuesArgs
+  workOrders?: boolean | ZevCountOutputTypeCountWorkOrdersArgs
+  documents?: boolean | ZevCountOutputTypeCountDocumentsArgs
+  attachments?: boolean | ZevCountOutputTypeCountAttachmentsArgs
+  notificationMessages?: boolean | ZevCountOutputTypeCountNotificationMessagesArgs
+  auditEvents?: boolean | ZevCountOutputTypeCountAuditEventsArgs
 }
 
 /**
@@ -735,6 +9616,244 @@ export type ZevCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.MoneyAccountWhereInput
 }
 
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MembershipWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SessionWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountPartiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartyWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountEntrancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EntranceWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnitWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountOwnershipStakesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OwnershipStakeWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountOccupanciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OccupancyWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountProxiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProxyWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountOfficeTermsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OfficeTermWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountAllocationGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AllocationGroupWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountCommonAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommonAssetWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountMeetingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MeetingWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountVotingRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VotingRuleWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountProposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProposalWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VoteWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountTransactionCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TransactionCategoryWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountFinTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FinTransactionWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountChargeItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChargeItemWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountInvoiceBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoiceBatchWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoiceWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountBankImportBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BankImportBatchWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountBalanceCorrectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BalanceCorrectionWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountSuppliersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupplierWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountExpensesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExpenseWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountAnnualPlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AnnualPlanWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountPlanItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlanItemWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountMaintenanceIssuesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaintenanceIssueWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountWorkOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkOrderWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DocumentWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttachmentWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountNotificationMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationMessageWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditEventWhereInput
+}
+
 
 export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -748,10 +9867,46 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   foundingDate?: boolean
   registrationDate?: boolean
   note?: boolean
+  tier?: boolean
+  active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   buildings?: boolean | Prisma.Zev$buildingsArgs<ExtArgs>
   accounts?: boolean | Prisma.Zev$accountsArgs<ExtArgs>
+  memberships?: boolean | Prisma.Zev$membershipsArgs<ExtArgs>
+  sessions?: boolean | Prisma.Zev$sessionsArgs<ExtArgs>
+  parties?: boolean | Prisma.Zev$partiesArgs<ExtArgs>
+  entrances?: boolean | Prisma.Zev$entrancesArgs<ExtArgs>
+  units?: boolean | Prisma.Zev$unitsArgs<ExtArgs>
+  ownershipStakes?: boolean | Prisma.Zev$ownershipStakesArgs<ExtArgs>
+  occupancies?: boolean | Prisma.Zev$occupanciesArgs<ExtArgs>
+  proxies?: boolean | Prisma.Zev$proxiesArgs<ExtArgs>
+  officeTerms?: boolean | Prisma.Zev$officeTermsArgs<ExtArgs>
+  allocationGroups?: boolean | Prisma.Zev$allocationGroupsArgs<ExtArgs>
+  commonAssets?: boolean | Prisma.Zev$commonAssetsArgs<ExtArgs>
+  meetings?: boolean | Prisma.Zev$meetingsArgs<ExtArgs>
+  votingRules?: boolean | Prisma.Zev$votingRulesArgs<ExtArgs>
+  proposals?: boolean | Prisma.Zev$proposalsArgs<ExtArgs>
+  votes?: boolean | Prisma.Zev$votesArgs<ExtArgs>
+  transactionCategories?: boolean | Prisma.Zev$transactionCategoriesArgs<ExtArgs>
+  finTransactions?: boolean | Prisma.Zev$finTransactionsArgs<ExtArgs>
+  chargeItems?: boolean | Prisma.Zev$chargeItemsArgs<ExtArgs>
+  invoiceBatches?: boolean | Prisma.Zev$invoiceBatchesArgs<ExtArgs>
+  invoices?: boolean | Prisma.Zev$invoicesArgs<ExtArgs>
+  bankImportBatches?: boolean | Prisma.Zev$bankImportBatchesArgs<ExtArgs>
+  payments?: boolean | Prisma.Zev$paymentsArgs<ExtArgs>
+  balanceCorrections?: boolean | Prisma.Zev$balanceCorrectionsArgs<ExtArgs>
+  suppliers?: boolean | Prisma.Zev$suppliersArgs<ExtArgs>
+  expenses?: boolean | Prisma.Zev$expensesArgs<ExtArgs>
+  annualPlans?: boolean | Prisma.Zev$annualPlansArgs<ExtArgs>
+  planItems?: boolean | Prisma.Zev$planItemsArgs<ExtArgs>
+  projects?: boolean | Prisma.Zev$projectsArgs<ExtArgs>
+  maintenanceIssues?: boolean | Prisma.Zev$maintenanceIssuesArgs<ExtArgs>
+  workOrders?: boolean | Prisma.Zev$workOrdersArgs<ExtArgs>
+  documents?: boolean | Prisma.Zev$documentsArgs<ExtArgs>
+  attachments?: boolean | Prisma.Zev$attachmentsArgs<ExtArgs>
+  notificationMessages?: boolean | Prisma.Zev$notificationMessagesArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.Zev$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["zev"]>
 
@@ -767,6 +9922,8 @@ export type ZevSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   foundingDate?: boolean
   registrationDate?: boolean
   note?: boolean
+  tier?: boolean
+  active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["zev"]>
@@ -783,6 +9940,8 @@ export type ZevSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   foundingDate?: boolean
   registrationDate?: boolean
   note?: boolean
+  tier?: boolean
+  active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["zev"]>
@@ -799,14 +9958,50 @@ export type ZevSelectScalar = {
   foundingDate?: boolean
   registrationDate?: boolean
   note?: boolean
+  tier?: boolean
+  active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ZevOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "legalName" | "shortName" | "registrationNumber" | "jib" | "registeredAddress" | "city" | "municipality" | "foundingDate" | "registrationDate" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["zev"]>
+export type ZevOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "legalName" | "shortName" | "registrationNumber" | "jib" | "registeredAddress" | "city" | "municipality" | "foundingDate" | "registrationDate" | "note" | "tier" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["zev"]>
 export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   buildings?: boolean | Prisma.Zev$buildingsArgs<ExtArgs>
   accounts?: boolean | Prisma.Zev$accountsArgs<ExtArgs>
+  memberships?: boolean | Prisma.Zev$membershipsArgs<ExtArgs>
+  sessions?: boolean | Prisma.Zev$sessionsArgs<ExtArgs>
+  parties?: boolean | Prisma.Zev$partiesArgs<ExtArgs>
+  entrances?: boolean | Prisma.Zev$entrancesArgs<ExtArgs>
+  units?: boolean | Prisma.Zev$unitsArgs<ExtArgs>
+  ownershipStakes?: boolean | Prisma.Zev$ownershipStakesArgs<ExtArgs>
+  occupancies?: boolean | Prisma.Zev$occupanciesArgs<ExtArgs>
+  proxies?: boolean | Prisma.Zev$proxiesArgs<ExtArgs>
+  officeTerms?: boolean | Prisma.Zev$officeTermsArgs<ExtArgs>
+  allocationGroups?: boolean | Prisma.Zev$allocationGroupsArgs<ExtArgs>
+  commonAssets?: boolean | Prisma.Zev$commonAssetsArgs<ExtArgs>
+  meetings?: boolean | Prisma.Zev$meetingsArgs<ExtArgs>
+  votingRules?: boolean | Prisma.Zev$votingRulesArgs<ExtArgs>
+  proposals?: boolean | Prisma.Zev$proposalsArgs<ExtArgs>
+  votes?: boolean | Prisma.Zev$votesArgs<ExtArgs>
+  transactionCategories?: boolean | Prisma.Zev$transactionCategoriesArgs<ExtArgs>
+  finTransactions?: boolean | Prisma.Zev$finTransactionsArgs<ExtArgs>
+  chargeItems?: boolean | Prisma.Zev$chargeItemsArgs<ExtArgs>
+  invoiceBatches?: boolean | Prisma.Zev$invoiceBatchesArgs<ExtArgs>
+  invoices?: boolean | Prisma.Zev$invoicesArgs<ExtArgs>
+  bankImportBatches?: boolean | Prisma.Zev$bankImportBatchesArgs<ExtArgs>
+  payments?: boolean | Prisma.Zev$paymentsArgs<ExtArgs>
+  balanceCorrections?: boolean | Prisma.Zev$balanceCorrectionsArgs<ExtArgs>
+  suppliers?: boolean | Prisma.Zev$suppliersArgs<ExtArgs>
+  expenses?: boolean | Prisma.Zev$expensesArgs<ExtArgs>
+  annualPlans?: boolean | Prisma.Zev$annualPlansArgs<ExtArgs>
+  planItems?: boolean | Prisma.Zev$planItemsArgs<ExtArgs>
+  projects?: boolean | Prisma.Zev$projectsArgs<ExtArgs>
+  maintenanceIssues?: boolean | Prisma.Zev$maintenanceIssuesArgs<ExtArgs>
+  workOrders?: boolean | Prisma.Zev$workOrdersArgs<ExtArgs>
+  documents?: boolean | Prisma.Zev$documentsArgs<ExtArgs>
+  attachments?: boolean | Prisma.Zev$attachmentsArgs<ExtArgs>
+  notificationMessages?: boolean | Prisma.Zev$notificationMessagesArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.Zev$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ZevIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -817,6 +10012,40 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objects: {
     buildings: Prisma.$BuildingPayload<ExtArgs>[]
     accounts: Prisma.$MoneyAccountPayload<ExtArgs>[]
+    memberships: Prisma.$MembershipPayload<ExtArgs>[]
+    sessions: Prisma.$SessionPayload<ExtArgs>[]
+    parties: Prisma.$PartyPayload<ExtArgs>[]
+    entrances: Prisma.$EntrancePayload<ExtArgs>[]
+    units: Prisma.$UnitPayload<ExtArgs>[]
+    ownershipStakes: Prisma.$OwnershipStakePayload<ExtArgs>[]
+    occupancies: Prisma.$OccupancyPayload<ExtArgs>[]
+    proxies: Prisma.$ProxyPayload<ExtArgs>[]
+    officeTerms: Prisma.$OfficeTermPayload<ExtArgs>[]
+    allocationGroups: Prisma.$AllocationGroupPayload<ExtArgs>[]
+    commonAssets: Prisma.$CommonAssetPayload<ExtArgs>[]
+    meetings: Prisma.$MeetingPayload<ExtArgs>[]
+    votingRules: Prisma.$VotingRulePayload<ExtArgs>[]
+    proposals: Prisma.$ProposalPayload<ExtArgs>[]
+    votes: Prisma.$VotePayload<ExtArgs>[]
+    transactionCategories: Prisma.$TransactionCategoryPayload<ExtArgs>[]
+    finTransactions: Prisma.$FinTransactionPayload<ExtArgs>[]
+    chargeItems: Prisma.$ChargeItemPayload<ExtArgs>[]
+    invoiceBatches: Prisma.$InvoiceBatchPayload<ExtArgs>[]
+    invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    bankImportBatches: Prisma.$BankImportBatchPayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
+    balanceCorrections: Prisma.$BalanceCorrectionPayload<ExtArgs>[]
+    suppliers: Prisma.$SupplierPayload<ExtArgs>[]
+    expenses: Prisma.$ExpensePayload<ExtArgs>[]
+    annualPlans: Prisma.$AnnualPlanPayload<ExtArgs>[]
+    planItems: Prisma.$PlanItemPayload<ExtArgs>[]
+    projects: Prisma.$ProjectPayload<ExtArgs>[]
+    maintenanceIssues: Prisma.$MaintenanceIssuePayload<ExtArgs>[]
+    workOrders: Prisma.$WorkOrderPayload<ExtArgs>[]
+    documents: Prisma.$DocumentPayload<ExtArgs>[]
+    attachments: Prisma.$AttachmentPayload<ExtArgs>[]
+    notificationMessages: Prisma.$NotificationMessagePayload<ExtArgs>[]
+    auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -830,6 +10059,15 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     foundingDate: Date | null
     registrationDate: Date | null
     note: string | null
+    /**
+     * Feature package — see ZevTier. Existing (pre-multitenancy) tenant defaults to FULL so
+     * nothing it already uses (finance + e-glasanje) becomes newly gated.
+     */
+    tier: $Enums.ZevTier
+    /**
+     * Soft-disable a tenant without deleting its data (e.g. suspended account).
+     */
+    active: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["zev"]>
@@ -1228,6 +10466,40 @@ export interface Prisma__ZevClient<T, Null = never, ExtArgs extends runtime.Type
   readonly [Symbol.toStringTag]: "PrismaPromise"
   buildings<T extends Prisma.Zev$buildingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$buildingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BuildingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.Zev$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MoneyAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  memberships<T extends Prisma.Zev$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sessions<T extends Prisma.Zev$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  parties<T extends Prisma.Zev$partiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$partiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  entrances<T extends Prisma.Zev$entrancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$entrancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntrancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  units<T extends Prisma.Zev$unitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$unitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownershipStakes<T extends Prisma.Zev$ownershipStakesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$ownershipStakesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OwnershipStakePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  occupancies<T extends Prisma.Zev$occupanciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$occupanciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OccupancyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  proxies<T extends Prisma.Zev$proxiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$proxiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProxyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  officeTerms<T extends Prisma.Zev$officeTermsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$officeTermsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfficeTermPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  allocationGroups<T extends Prisma.Zev$allocationGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$allocationGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllocationGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commonAssets<T extends Prisma.Zev$commonAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$commonAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommonAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  meetings<T extends Prisma.Zev$meetingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$meetingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  votingRules<T extends Prisma.Zev$votingRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$votingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotingRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  proposals<T extends Prisma.Zev$proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  votes<T extends Prisma.Zev$votesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$votesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  transactionCategories<T extends Prisma.Zev$transactionCategoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$transactionCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  finTransactions<T extends Prisma.Zev$finTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$finTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chargeItems<T extends Prisma.Zev$chargeItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$chargeItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChargeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoiceBatches<T extends Prisma.Zev$invoiceBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$invoiceBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoices<T extends Prisma.Zev$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bankImportBatches<T extends Prisma.Zev$bankImportBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$bankImportBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Zev$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  balanceCorrections<T extends Prisma.Zev$balanceCorrectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$balanceCorrectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BalanceCorrectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  suppliers<T extends Prisma.Zev$suppliersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$suppliersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  expenses<T extends Prisma.Zev$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  annualPlans<T extends Prisma.Zev$annualPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$annualPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnnualPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  planItems<T extends Prisma.Zev$planItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$planItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  projects<T extends Prisma.Zev$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  maintenanceIssues<T extends Prisma.Zev$maintenanceIssuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$maintenanceIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workOrders<T extends Prisma.Zev$workOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$workOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  documents<T extends Prisma.Zev$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attachments<T extends Prisma.Zev$attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notificationMessages<T extends Prisma.Zev$notificationMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$notificationMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditEvents<T extends Prisma.Zev$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1268,6 +10540,8 @@ export interface ZevFieldRefs {
   readonly foundingDate: Prisma.FieldRef<"Zev", 'DateTime'>
   readonly registrationDate: Prisma.FieldRef<"Zev", 'DateTime'>
   readonly note: Prisma.FieldRef<"Zev", 'String'>
+  readonly tier: Prisma.FieldRef<"Zev", 'ZevTier'>
+  readonly active: Prisma.FieldRef<"Zev", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Zev", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Zev", 'DateTime'>
 }
@@ -1708,6 +10982,822 @@ export type Zev$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.MoneyAccountScalarFieldEnum | Prisma.MoneyAccountScalarFieldEnum[]
+}
+
+/**
+ * Zev.memberships
+ */
+export type Zev$membershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Membership
+   */
+  select?: Prisma.MembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Membership
+   */
+  omit?: Prisma.MembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MembershipInclude<ExtArgs> | null
+  where?: Prisma.MembershipWhereInput
+  orderBy?: Prisma.MembershipOrderByWithRelationInput | Prisma.MembershipOrderByWithRelationInput[]
+  cursor?: Prisma.MembershipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MembershipScalarFieldEnum | Prisma.MembershipScalarFieldEnum[]
+}
+
+/**
+ * Zev.sessions
+ */
+export type Zev$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Session
+   */
+  select?: Prisma.SessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Session
+   */
+  omit?: Prisma.SessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SessionInclude<ExtArgs> | null
+  where?: Prisma.SessionWhereInput
+  orderBy?: Prisma.SessionOrderByWithRelationInput | Prisma.SessionOrderByWithRelationInput[]
+  cursor?: Prisma.SessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
+}
+
+/**
+ * Zev.parties
+ */
+export type Zev$partiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Party
+   */
+  select?: Prisma.PartySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Party
+   */
+  omit?: Prisma.PartyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartyInclude<ExtArgs> | null
+  where?: Prisma.PartyWhereInput
+  orderBy?: Prisma.PartyOrderByWithRelationInput | Prisma.PartyOrderByWithRelationInput[]
+  cursor?: Prisma.PartyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartyScalarFieldEnum | Prisma.PartyScalarFieldEnum[]
+}
+
+/**
+ * Zev.entrances
+ */
+export type Zev$entrancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Entrance
+   */
+  select?: Prisma.EntranceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Entrance
+   */
+  omit?: Prisma.EntranceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EntranceInclude<ExtArgs> | null
+  where?: Prisma.EntranceWhereInput
+  orderBy?: Prisma.EntranceOrderByWithRelationInput | Prisma.EntranceOrderByWithRelationInput[]
+  cursor?: Prisma.EntranceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EntranceScalarFieldEnum | Prisma.EntranceScalarFieldEnum[]
+}
+
+/**
+ * Zev.units
+ */
+export type Zev$unitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Unit
+   */
+  select?: Prisma.UnitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Unit
+   */
+  omit?: Prisma.UnitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnitInclude<ExtArgs> | null
+  where?: Prisma.UnitWhereInput
+  orderBy?: Prisma.UnitOrderByWithRelationInput | Prisma.UnitOrderByWithRelationInput[]
+  cursor?: Prisma.UnitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnitScalarFieldEnum | Prisma.UnitScalarFieldEnum[]
+}
+
+/**
+ * Zev.ownershipStakes
+ */
+export type Zev$ownershipStakesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OwnershipStake
+   */
+  select?: Prisma.OwnershipStakeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OwnershipStake
+   */
+  omit?: Prisma.OwnershipStakeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OwnershipStakeInclude<ExtArgs> | null
+  where?: Prisma.OwnershipStakeWhereInput
+  orderBy?: Prisma.OwnershipStakeOrderByWithRelationInput | Prisma.OwnershipStakeOrderByWithRelationInput[]
+  cursor?: Prisma.OwnershipStakeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OwnershipStakeScalarFieldEnum | Prisma.OwnershipStakeScalarFieldEnum[]
+}
+
+/**
+ * Zev.occupancies
+ */
+export type Zev$occupanciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Occupancy
+   */
+  select?: Prisma.OccupancySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Occupancy
+   */
+  omit?: Prisma.OccupancyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OccupancyInclude<ExtArgs> | null
+  where?: Prisma.OccupancyWhereInput
+  orderBy?: Prisma.OccupancyOrderByWithRelationInput | Prisma.OccupancyOrderByWithRelationInput[]
+  cursor?: Prisma.OccupancyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OccupancyScalarFieldEnum | Prisma.OccupancyScalarFieldEnum[]
+}
+
+/**
+ * Zev.proxies
+ */
+export type Zev$proxiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Proxy
+   */
+  select?: Prisma.ProxySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Proxy
+   */
+  omit?: Prisma.ProxyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProxyInclude<ExtArgs> | null
+  where?: Prisma.ProxyWhereInput
+  orderBy?: Prisma.ProxyOrderByWithRelationInput | Prisma.ProxyOrderByWithRelationInput[]
+  cursor?: Prisma.ProxyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProxyScalarFieldEnum | Prisma.ProxyScalarFieldEnum[]
+}
+
+/**
+ * Zev.officeTerms
+ */
+export type Zev$officeTermsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OfficeTerm
+   */
+  select?: Prisma.OfficeTermSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OfficeTerm
+   */
+  omit?: Prisma.OfficeTermOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OfficeTermInclude<ExtArgs> | null
+  where?: Prisma.OfficeTermWhereInput
+  orderBy?: Prisma.OfficeTermOrderByWithRelationInput | Prisma.OfficeTermOrderByWithRelationInput[]
+  cursor?: Prisma.OfficeTermWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OfficeTermScalarFieldEnum | Prisma.OfficeTermScalarFieldEnum[]
+}
+
+/**
+ * Zev.allocationGroups
+ */
+export type Zev$allocationGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AllocationGroup
+   */
+  select?: Prisma.AllocationGroupSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AllocationGroup
+   */
+  omit?: Prisma.AllocationGroupOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AllocationGroupInclude<ExtArgs> | null
+  where?: Prisma.AllocationGroupWhereInput
+  orderBy?: Prisma.AllocationGroupOrderByWithRelationInput | Prisma.AllocationGroupOrderByWithRelationInput[]
+  cursor?: Prisma.AllocationGroupWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AllocationGroupScalarFieldEnum | Prisma.AllocationGroupScalarFieldEnum[]
+}
+
+/**
+ * Zev.commonAssets
+ */
+export type Zev$commonAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommonAsset
+   */
+  select?: Prisma.CommonAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommonAsset
+   */
+  omit?: Prisma.CommonAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommonAssetInclude<ExtArgs> | null
+  where?: Prisma.CommonAssetWhereInput
+  orderBy?: Prisma.CommonAssetOrderByWithRelationInput | Prisma.CommonAssetOrderByWithRelationInput[]
+  cursor?: Prisma.CommonAssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommonAssetScalarFieldEnum | Prisma.CommonAssetScalarFieldEnum[]
+}
+
+/**
+ * Zev.meetings
+ */
+export type Zev$meetingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Meeting
+   */
+  select?: Prisma.MeetingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Meeting
+   */
+  omit?: Prisma.MeetingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingInclude<ExtArgs> | null
+  where?: Prisma.MeetingWhereInput
+  orderBy?: Prisma.MeetingOrderByWithRelationInput | Prisma.MeetingOrderByWithRelationInput[]
+  cursor?: Prisma.MeetingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MeetingScalarFieldEnum | Prisma.MeetingScalarFieldEnum[]
+}
+
+/**
+ * Zev.votingRules
+ */
+export type Zev$votingRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VotingRule
+   */
+  select?: Prisma.VotingRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VotingRule
+   */
+  omit?: Prisma.VotingRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VotingRuleInclude<ExtArgs> | null
+  where?: Prisma.VotingRuleWhereInput
+  orderBy?: Prisma.VotingRuleOrderByWithRelationInput | Prisma.VotingRuleOrderByWithRelationInput[]
+  cursor?: Prisma.VotingRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VotingRuleScalarFieldEnum | Prisma.VotingRuleScalarFieldEnum[]
+}
+
+/**
+ * Zev.proposals
+ */
+export type Zev$proposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Proposal
+   */
+  select?: Prisma.ProposalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Proposal
+   */
+  omit?: Prisma.ProposalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProposalInclude<ExtArgs> | null
+  where?: Prisma.ProposalWhereInput
+  orderBy?: Prisma.ProposalOrderByWithRelationInput | Prisma.ProposalOrderByWithRelationInput[]
+  cursor?: Prisma.ProposalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProposalScalarFieldEnum | Prisma.ProposalScalarFieldEnum[]
+}
+
+/**
+ * Zev.votes
+ */
+export type Zev$votesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vote
+   */
+  select?: Prisma.VoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Vote
+   */
+  omit?: Prisma.VoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VoteInclude<ExtArgs> | null
+  where?: Prisma.VoteWhereInput
+  orderBy?: Prisma.VoteOrderByWithRelationInput | Prisma.VoteOrderByWithRelationInput[]
+  cursor?: Prisma.VoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VoteScalarFieldEnum | Prisma.VoteScalarFieldEnum[]
+}
+
+/**
+ * Zev.transactionCategories
+ */
+export type Zev$transactionCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TransactionCategory
+   */
+  select?: Prisma.TransactionCategorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TransactionCategory
+   */
+  omit?: Prisma.TransactionCategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TransactionCategoryInclude<ExtArgs> | null
+  where?: Prisma.TransactionCategoryWhereInput
+  orderBy?: Prisma.TransactionCategoryOrderByWithRelationInput | Prisma.TransactionCategoryOrderByWithRelationInput[]
+  cursor?: Prisma.TransactionCategoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TransactionCategoryScalarFieldEnum | Prisma.TransactionCategoryScalarFieldEnum[]
+}
+
+/**
+ * Zev.finTransactions
+ */
+export type Zev$finTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FinTransaction
+   */
+  select?: Prisma.FinTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FinTransaction
+   */
+  omit?: Prisma.FinTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FinTransactionInclude<ExtArgs> | null
+  where?: Prisma.FinTransactionWhereInput
+  orderBy?: Prisma.FinTransactionOrderByWithRelationInput | Prisma.FinTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.FinTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FinTransactionScalarFieldEnum | Prisma.FinTransactionScalarFieldEnum[]
+}
+
+/**
+ * Zev.chargeItems
+ */
+export type Zev$chargeItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChargeItem
+   */
+  select?: Prisma.ChargeItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChargeItem
+   */
+  omit?: Prisma.ChargeItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChargeItemInclude<ExtArgs> | null
+  where?: Prisma.ChargeItemWhereInput
+  orderBy?: Prisma.ChargeItemOrderByWithRelationInput | Prisma.ChargeItemOrderByWithRelationInput[]
+  cursor?: Prisma.ChargeItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChargeItemScalarFieldEnum | Prisma.ChargeItemScalarFieldEnum[]
+}
+
+/**
+ * Zev.invoiceBatches
+ */
+export type Zev$invoiceBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvoiceBatch
+   */
+  select?: Prisma.InvoiceBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvoiceBatch
+   */
+  omit?: Prisma.InvoiceBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoiceBatchInclude<ExtArgs> | null
+  where?: Prisma.InvoiceBatchWhereInput
+  orderBy?: Prisma.InvoiceBatchOrderByWithRelationInput | Prisma.InvoiceBatchOrderByWithRelationInput[]
+  cursor?: Prisma.InvoiceBatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoiceBatchScalarFieldEnum | Prisma.InvoiceBatchScalarFieldEnum[]
+}
+
+/**
+ * Zev.invoices
+ */
+export type Zev$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invoice
+   */
+  select?: Prisma.InvoiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invoice
+   */
+  omit?: Prisma.InvoiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoiceInclude<ExtArgs> | null
+  where?: Prisma.InvoiceWhereInput
+  orderBy?: Prisma.InvoiceOrderByWithRelationInput | Prisma.InvoiceOrderByWithRelationInput[]
+  cursor?: Prisma.InvoiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * Zev.bankImportBatches
+ */
+export type Zev$bankImportBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BankImportBatch
+   */
+  select?: Prisma.BankImportBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BankImportBatch
+   */
+  omit?: Prisma.BankImportBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BankImportBatchInclude<ExtArgs> | null
+  where?: Prisma.BankImportBatchWhereInput
+  orderBy?: Prisma.BankImportBatchOrderByWithRelationInput | Prisma.BankImportBatchOrderByWithRelationInput[]
+  cursor?: Prisma.BankImportBatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BankImportBatchScalarFieldEnum | Prisma.BankImportBatchScalarFieldEnum[]
+}
+
+/**
+ * Zev.payments
+ */
+export type Zev$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * Zev.balanceCorrections
+ */
+export type Zev$balanceCorrectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BalanceCorrection
+   */
+  select?: Prisma.BalanceCorrectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BalanceCorrection
+   */
+  omit?: Prisma.BalanceCorrectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BalanceCorrectionInclude<ExtArgs> | null
+  where?: Prisma.BalanceCorrectionWhereInput
+  orderBy?: Prisma.BalanceCorrectionOrderByWithRelationInput | Prisma.BalanceCorrectionOrderByWithRelationInput[]
+  cursor?: Prisma.BalanceCorrectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BalanceCorrectionScalarFieldEnum | Prisma.BalanceCorrectionScalarFieldEnum[]
+}
+
+/**
+ * Zev.suppliers
+ */
+export type Zev$suppliersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Supplier
+   */
+  select?: Prisma.SupplierSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Supplier
+   */
+  omit?: Prisma.SupplierOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupplierInclude<ExtArgs> | null
+  where?: Prisma.SupplierWhereInput
+  orderBy?: Prisma.SupplierOrderByWithRelationInput | Prisma.SupplierOrderByWithRelationInput[]
+  cursor?: Prisma.SupplierWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupplierScalarFieldEnum | Prisma.SupplierScalarFieldEnum[]
+}
+
+/**
+ * Zev.expenses
+ */
+export type Zev$expensesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Expense
+   */
+  select?: Prisma.ExpenseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Expense
+   */
+  omit?: Prisma.ExpenseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExpenseInclude<ExtArgs> | null
+  where?: Prisma.ExpenseWhereInput
+  orderBy?: Prisma.ExpenseOrderByWithRelationInput | Prisma.ExpenseOrderByWithRelationInput[]
+  cursor?: Prisma.ExpenseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExpenseScalarFieldEnum | Prisma.ExpenseScalarFieldEnum[]
+}
+
+/**
+ * Zev.annualPlans
+ */
+export type Zev$annualPlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AnnualPlan
+   */
+  select?: Prisma.AnnualPlanSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AnnualPlan
+   */
+  omit?: Prisma.AnnualPlanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnnualPlanInclude<ExtArgs> | null
+  where?: Prisma.AnnualPlanWhereInput
+  orderBy?: Prisma.AnnualPlanOrderByWithRelationInput | Prisma.AnnualPlanOrderByWithRelationInput[]
+  cursor?: Prisma.AnnualPlanWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AnnualPlanScalarFieldEnum | Prisma.AnnualPlanScalarFieldEnum[]
+}
+
+/**
+ * Zev.planItems
+ */
+export type Zev$planItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlanItem
+   */
+  select?: Prisma.PlanItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlanItem
+   */
+  omit?: Prisma.PlanItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanItemInclude<ExtArgs> | null
+  where?: Prisma.PlanItemWhereInput
+  orderBy?: Prisma.PlanItemOrderByWithRelationInput | Prisma.PlanItemOrderByWithRelationInput[]
+  cursor?: Prisma.PlanItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlanItemScalarFieldEnum | Prisma.PlanItemScalarFieldEnum[]
+}
+
+/**
+ * Zev.projects
+ */
+export type Zev$projectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Project
+   */
+  select?: Prisma.ProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Project
+   */
+  omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  where?: Prisma.ProjectWhereInput
+  orderBy?: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * Zev.maintenanceIssues
+ */
+export type Zev$maintenanceIssuesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaintenanceIssue
+   */
+  select?: Prisma.MaintenanceIssueSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MaintenanceIssue
+   */
+  omit?: Prisma.MaintenanceIssueOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaintenanceIssueInclude<ExtArgs> | null
+  where?: Prisma.MaintenanceIssueWhereInput
+  orderBy?: Prisma.MaintenanceIssueOrderByWithRelationInput | Prisma.MaintenanceIssueOrderByWithRelationInput[]
+  cursor?: Prisma.MaintenanceIssueWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaintenanceIssueScalarFieldEnum | Prisma.MaintenanceIssueScalarFieldEnum[]
+}
+
+/**
+ * Zev.workOrders
+ */
+export type Zev$workOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkOrder
+   */
+  select?: Prisma.WorkOrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkOrder
+   */
+  omit?: Prisma.WorkOrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkOrderInclude<ExtArgs> | null
+  where?: Prisma.WorkOrderWhereInput
+  orderBy?: Prisma.WorkOrderOrderByWithRelationInput | Prisma.WorkOrderOrderByWithRelationInput[]
+  cursor?: Prisma.WorkOrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkOrderScalarFieldEnum | Prisma.WorkOrderScalarFieldEnum[]
+}
+
+/**
+ * Zev.documents
+ */
+export type Zev$documentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  where?: Prisma.DocumentWhereInput
+  orderBy?: Prisma.DocumentOrderByWithRelationInput | Prisma.DocumentOrderByWithRelationInput[]
+  cursor?: Prisma.DocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[]
+}
+
+/**
+ * Zev.attachments
+ */
+export type Zev$attachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Attachment
+   */
+  select?: Prisma.AttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Attachment
+   */
+  omit?: Prisma.AttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttachmentInclude<ExtArgs> | null
+  where?: Prisma.AttachmentWhereInput
+  orderBy?: Prisma.AttachmentOrderByWithRelationInput | Prisma.AttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.AttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttachmentScalarFieldEnum | Prisma.AttachmentScalarFieldEnum[]
+}
+
+/**
+ * Zev.notificationMessages
+ */
+export type Zev$notificationMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NotificationMessage
+   */
+  select?: Prisma.NotificationMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NotificationMessage
+   */
+  omit?: Prisma.NotificationMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationMessageInclude<ExtArgs> | null
+  where?: Prisma.NotificationMessageWhereInput
+  orderBy?: Prisma.NotificationMessageOrderByWithRelationInput | Prisma.NotificationMessageOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationMessageScalarFieldEnum | Prisma.NotificationMessageScalarFieldEnum[]
+}
+
+/**
+ * Zev.auditEvents
+ */
+export type Zev$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditEvent
+   */
+  select?: Prisma.AuditEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditEvent
+   */
+  omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  where?: Prisma.AuditEventWhereInput
+  orderBy?: Prisma.AuditEventOrderByWithRelationInput | Prisma.AuditEventOrderByWithRelationInput[]
+  cursor?: Prisma.AuditEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
 }
 
 /**

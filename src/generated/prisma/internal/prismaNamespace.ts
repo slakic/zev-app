@@ -401,6 +401,7 @@ export const ModelName = {
   Session: 'Session',
   Party: 'Party',
   Zev: 'Zev',
+  Membership: 'Membership',
   Building: 'Building',
   Entrance: 'Entrance',
   Unit: 'Unit',
@@ -465,7 +466,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "attachment" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "attachment" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -762,6 +763,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ZevCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ZevCountAggregateOutputType> | number
+        }
+      }
+    }
+    Membership: {
+      payload: Prisma.$MembershipPayload<ExtArgs>
+      fields: Prisma.MembershipFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MembershipFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MembershipFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>
+        }
+        findFirst: {
+          args: Prisma.MembershipFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MembershipFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>
+        }
+        findMany: {
+          args: Prisma.MembershipFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>[]
+        }
+        create: {
+          args: Prisma.MembershipCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>
+        }
+        createMany: {
+          args: Prisma.MembershipCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MembershipCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>[]
+        }
+        delete: {
+          args: Prisma.MembershipDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>
+        }
+        update: {
+          args: Prisma.MembershipUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>
+        }
+        deleteMany: {
+          args: Prisma.MembershipDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MembershipUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MembershipUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>[]
+        }
+        upsert: {
+          args: Prisma.MembershipUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MembershipPayload>
+        }
+        aggregate: {
+          args: Prisma.MembershipAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMembership>
+        }
+        groupBy: {
+          args: Prisma.MembershipGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MembershipGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MembershipCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MembershipCountAggregateOutputType> | number
         }
       }
     }
@@ -4435,6 +4510,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   passwordHash: 'passwordHash',
   roles: 'roles',
+  isSuperAdmin: 'isSuperAdmin',
   active: 'active',
   deactivatedAt: 'deactivatedAt',
   passwordResetTokenHash: 'passwordResetTokenHash',
@@ -4450,6 +4526,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const SessionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  activeZevId: 'activeZevId',
   expiresAt: 'expiresAt',
   revokedAt: 'revokedAt',
   ip: 'ip',
@@ -4462,6 +4539,7 @@ export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeo
 
 export const PartyScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   kind: 'kind',
   firstName: 'firstName',
   lastName: 'lastName',
@@ -4495,11 +4573,24 @@ export const ZevScalarFieldEnum = {
   foundingDate: 'foundingDate',
   registrationDate: 'registrationDate',
   note: 'note',
+  tier: 'tier',
+  active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ZevScalarFieldEnum = (typeof ZevScalarFieldEnum)[keyof typeof ZevScalarFieldEnum]
+
+
+export const MembershipScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  zevId: 'zevId',
+  role: 'role',
+  createdAt: 'createdAt'
+} as const
+
+export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
 
 
 export const BuildingScalarFieldEnum = {
@@ -4520,6 +4611,7 @@ export type BuildingScalarFieldEnum = (typeof BuildingScalarFieldEnum)[keyof typ
 
 export const EntranceScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   buildingId: 'buildingId',
   name: 'name',
   address: 'address',
@@ -4533,6 +4625,7 @@ export type EntranceScalarFieldEnum = (typeof EntranceScalarFieldEnum)[keyof typ
 
 export const UnitScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   buildingId: 'buildingId',
   entranceId: 'entranceId',
   type: 'type',
@@ -4555,6 +4648,7 @@ export type UnitScalarFieldEnum = (typeof UnitScalarFieldEnum)[keyof typeof Unit
 
 export const OwnershipStakeScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   unitId: 'unitId',
   ownerId: 'ownerId',
   sharePercent: 'sharePercent',
@@ -4570,6 +4664,7 @@ export type OwnershipStakeScalarFieldEnum = (typeof OwnershipStakeScalarFieldEnu
 
 export const OccupancyScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   unitId: 'unitId',
   partyId: 'partyId',
   type: 'type',
@@ -4586,6 +4681,7 @@ export type OccupancyScalarFieldEnum = (typeof OccupancyScalarFieldEnum)[keyof t
 
 export const ProxyScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   grantorId: 'grantorId',
   holderId: 'holderId',
   scope: 'scope',
@@ -4605,6 +4701,7 @@ export type ProxyScalarFieldEnum = (typeof ProxyScalarFieldEnum)[keyof typeof Pr
 
 export const OfficeTermScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   role: 'role',
   partyId: 'partyId',
   validFrom: 'validFrom',
@@ -4618,6 +4715,7 @@ export type OfficeTermScalarFieldEnum = (typeof OfficeTermScalarFieldEnum)[keyof
 
 export const AllocationGroupScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   name: 'name',
   note: 'note',
   createdAt: 'createdAt'
@@ -4638,6 +4736,7 @@ export type AllocationGroupMemberScalarFieldEnum = (typeof AllocationGroupMember
 
 export const CommonAssetScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   buildingId: 'buildingId',
   kind: 'kind',
   name: 'name',
@@ -4653,8 +4752,10 @@ export type CommonAssetScalarFieldEnum = (typeof CommonAssetScalarFieldEnum)[key
 
 export const MeetingScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   title: 'title',
   type: 'type',
+  body: 'body',
   status: 'status',
   location: 'location',
   scheduledAt: 'scheduledAt',
@@ -4693,6 +4794,7 @@ export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof
 
 export const VotingRuleScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   name: 'name',
   quorumType: 'quorumType',
   quorumPercent: 'quorumPercent',
@@ -4708,6 +4810,7 @@ export type VotingRuleScalarFieldEnum = (typeof VotingRuleScalarFieldEnum)[keyof
 
 export const ProposalScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   meetingId: 'meetingId',
   agendaItemId: 'agendaItemId',
   code: 'code',
@@ -4782,6 +4885,7 @@ export type ApprovalTokenScalarFieldEnum = (typeof ApprovalTokenScalarFieldEnum)
 
 export const VoteScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   proposalId: 'proposalId',
   proposalVersion: 'proposalVersion',
   eligibleVoterId: 'eligibleVoterId',
@@ -4830,6 +4934,7 @@ export type MoneyAccountScalarFieldEnum = (typeof MoneyAccountScalarFieldEnum)[k
 
 export const TransactionCategoryScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   name: 'name',
   kind: 'kind'
 } as const
@@ -4839,6 +4944,7 @@ export type TransactionCategoryScalarFieldEnum = (typeof TransactionCategoryScal
 
 export const FinTransactionScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   accountId: 'accountId',
   date: 'date',
   type: 'type',
@@ -4869,6 +4975,7 @@ export type FinTransactionScalarFieldEnum = (typeof FinTransactionScalarFieldEnu
 
 export const ChargeItemScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   name: 'name',
   description: 'description',
   scopeType: 'scopeType',
@@ -4921,6 +5028,7 @@ export type MeterReadingScalarFieldEnum = (typeof MeterReadingScalarFieldEnum)[k
 
 export const InvoiceBatchScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   period: 'period',
   description: 'description',
   status: 'status',
@@ -4935,6 +5043,7 @@ export type InvoiceBatchScalarFieldEnum = (typeof InvoiceBatchScalarFieldEnum)[k
 
 export const InvoiceScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   number: 'number',
   batchId: 'batchId',
   unitId: 'unitId',
@@ -4974,6 +5083,7 @@ export type InvoiceLineScalarFieldEnum = (typeof InvoiceLineScalarFieldEnum)[key
 
 export const BankImportBatchScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   filename: 'filename',
   mapping: 'mapping',
   sourceType: 'sourceType',
@@ -4987,6 +5097,7 @@ export type BankImportBatchScalarFieldEnum = (typeof BankImportBatchScalarFieldE
 
 export const PaymentScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   accountId: 'accountId',
   date: 'date',
   amount: 'amount',
@@ -5025,6 +5136,7 @@ export type PaymentAllocationScalarFieldEnum = (typeof PaymentAllocationScalarFi
 
 export const BalanceCorrectionScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   partyId: 'partyId',
   unitId: 'unitId',
   amount: 'amount',
@@ -5039,6 +5151,7 @@ export type BalanceCorrectionScalarFieldEnum = (typeof BalanceCorrectionScalarFi
 
 export const SupplierScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   name: 'name',
   jib: 'jib',
   address: 'address',
@@ -5057,6 +5170,7 @@ export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typ
 
 export const ExpenseScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   supplierId: 'supplierId',
   invoiceNumber: 'invoiceNumber',
   invoiceDate: 'invoiceDate',
@@ -5088,6 +5202,7 @@ export type ExpenseScalarFieldEnum = (typeof ExpenseScalarFieldEnum)[keyof typeo
 
 export const AnnualPlanScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   year: 'year',
   kind: 'kind',
   version: 'version',
@@ -5105,6 +5220,7 @@ export type AnnualPlanScalarFieldEnum = (typeof AnnualPlanScalarFieldEnum)[keyof
 
 export const PlanItemScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   planId: 'planId',
   type: 'type',
   name: 'name',
@@ -5134,6 +5250,7 @@ export type PlanItemUnitScalarFieldEnum = (typeof PlanItemUnitScalarFieldEnum)[k
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   name: 'name',
   description: 'description',
   status: 'status',
@@ -5146,6 +5263,7 @@ export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeo
 
 export const MaintenanceIssueScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   title: 'title',
   description: 'description',
   reporterId: 'reporterId',
@@ -5216,6 +5334,7 @@ export type ContractorOfferScalarFieldEnum = (typeof ContractorOfferScalarFieldE
 
 export const WorkOrderScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   issueId: 'issueId',
   number: 'number',
   supplierId: 'supplierId',
@@ -5234,6 +5353,7 @@ export type WorkOrderScalarFieldEnum = (typeof WorkOrderScalarFieldEnum)[keyof t
 
 export const DocumentScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   type: 'type',
   number: 'number',
   title: 'title',
@@ -5254,6 +5374,7 @@ export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typ
 
 export const AttachmentScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   filename: 'filename',
   mime: 'mime',
   size: 'size',
@@ -5271,6 +5392,7 @@ export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof
 
 export const NotificationMessageScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   channel: 'channel',
   recipientId: 'recipientId',
   toAddress: 'toAddress',
@@ -5305,6 +5427,7 @@ export type ViberSubscriberScalarFieldEnum = (typeof ViberSubscriberScalarFieldE
 
 export const AuditEventScalarFieldEnum = {
   id: 'id',
+  zevId: 'zevId',
   actorId: 'actorId',
   actorLabel: 'actorLabel',
   action: 'action',
@@ -5447,6 +5570,20 @@ export type ListEnumPartyKindFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 
 
 /**
+ * Reference to a field of type 'ZevTier'
+ */
+export type EnumZevTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ZevTier'>
+    
+
+
+/**
+ * Reference to a field of type 'ZevTier[]'
+ */
+export type ListEnumZevTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ZevTier[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -5555,6 +5692,20 @@ export type EnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'MeetingType[]'
  */
 export type ListEnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingBody'
+ */
+export type EnumMeetingBodyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingBody'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingBody[]'
+ */
+export type ListEnumMeetingBodyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingBody[]'>
     
 
 
@@ -6132,6 +6283,7 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   party?: Prisma.PartyOmit
   zev?: Prisma.ZevOmit
+  membership?: Prisma.MembershipOmit
   building?: Prisma.BuildingOmit
   entrance?: Prisma.EntranceOmit
   unit?: Prisma.UnitOmit

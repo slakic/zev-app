@@ -36,6 +36,7 @@ export type OwnershipStakeSumAggregateOutputType = {
 
 export type OwnershipStakeMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   unitId: string | null
   ownerId: string | null
   sharePercent: runtime.Decimal | null
@@ -48,6 +49,7 @@ export type OwnershipStakeMinAggregateOutputType = {
 
 export type OwnershipStakeMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   unitId: string | null
   ownerId: string | null
   sharePercent: runtime.Decimal | null
@@ -60,6 +62,7 @@ export type OwnershipStakeMaxAggregateOutputType = {
 
 export type OwnershipStakeCountAggregateOutputType = {
   id: number
+  zevId: number
   unitId: number
   ownerId: number
   sharePercent: number
@@ -82,6 +85,7 @@ export type OwnershipStakeSumAggregateInputType = {
 
 export type OwnershipStakeMinAggregateInputType = {
   id?: true
+  zevId?: true
   unitId?: true
   ownerId?: true
   sharePercent?: true
@@ -94,6 +98,7 @@ export type OwnershipStakeMinAggregateInputType = {
 
 export type OwnershipStakeMaxAggregateInputType = {
   id?: true
+  zevId?: true
   unitId?: true
   ownerId?: true
   sharePercent?: true
@@ -106,6 +111,7 @@ export type OwnershipStakeMaxAggregateInputType = {
 
 export type OwnershipStakeCountAggregateInputType = {
   id?: true
+  zevId?: true
   unitId?: true
   ownerId?: true
   sharePercent?: true
@@ -205,6 +211,7 @@ export type OwnershipStakeGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 
 export type OwnershipStakeGroupByOutputType = {
   id: string
+  zevId: string
   unitId: string
   ownerId: string
   sharePercent: runtime.Decimal
@@ -240,6 +247,7 @@ export type OwnershipStakeWhereInput = {
   OR?: Prisma.OwnershipStakeWhereInput[]
   NOT?: Prisma.OwnershipStakeWhereInput | Prisma.OwnershipStakeWhereInput[]
   id?: Prisma.StringFilter<"OwnershipStake"> | string
+  zevId?: Prisma.StringFilter<"OwnershipStake"> | string
   unitId?: Prisma.StringFilter<"OwnershipStake"> | string
   ownerId?: Prisma.StringFilter<"OwnershipStake"> | string
   sharePercent?: Prisma.DecimalFilter<"OwnershipStake"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -248,12 +256,14 @@ export type OwnershipStakeWhereInput = {
   acquisitionNote?: Prisma.StringNullableFilter<"OwnershipStake"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OwnershipStake"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OwnershipStake"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   unit?: Prisma.XOR<Prisma.UnitScalarRelationFilter, Prisma.UnitWhereInput>
   owner?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }
 
 export type OwnershipStakeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   sharePercent?: Prisma.SortOrder
@@ -262,6 +272,7 @@ export type OwnershipStakeOrderByWithRelationInput = {
   acquisitionNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   unit?: Prisma.UnitOrderByWithRelationInput
   owner?: Prisma.PartyOrderByWithRelationInput
 }
@@ -271,6 +282,7 @@ export type OwnershipStakeWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OwnershipStakeWhereInput | Prisma.OwnershipStakeWhereInput[]
   OR?: Prisma.OwnershipStakeWhereInput[]
   NOT?: Prisma.OwnershipStakeWhereInput | Prisma.OwnershipStakeWhereInput[]
+  zevId?: Prisma.StringFilter<"OwnershipStake"> | string
   unitId?: Prisma.StringFilter<"OwnershipStake"> | string
   ownerId?: Prisma.StringFilter<"OwnershipStake"> | string
   sharePercent?: Prisma.DecimalFilter<"OwnershipStake"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -279,12 +291,14 @@ export type OwnershipStakeWhereUniqueInput = Prisma.AtLeast<{
   acquisitionNote?: Prisma.StringNullableFilter<"OwnershipStake"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OwnershipStake"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OwnershipStake"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   unit?: Prisma.XOR<Prisma.UnitScalarRelationFilter, Prisma.UnitWhereInput>
   owner?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }, "id">
 
 export type OwnershipStakeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   sharePercent?: Prisma.SortOrder
@@ -305,6 +319,7 @@ export type OwnershipStakeScalarWhereWithAggregatesInput = {
   OR?: Prisma.OwnershipStakeScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OwnershipStakeScalarWhereWithAggregatesInput | Prisma.OwnershipStakeScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"OwnershipStake"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"OwnershipStake"> | string
   unitId?: Prisma.StringWithAggregatesFilter<"OwnershipStake"> | string
   ownerId?: Prisma.StringWithAggregatesFilter<"OwnershipStake"> | string
   sharePercent?: Prisma.DecimalWithAggregatesFilter<"OwnershipStake"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -323,12 +338,14 @@ export type OwnershipStakeCreateInput = {
   acquisitionNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOwnershipStakesInput
   unit: Prisma.UnitCreateNestedOneWithoutOwnershipStakesInput
   owner: Prisma.PartyCreateNestedOneWithoutOwnershipStakesInput
 }
 
 export type OwnershipStakeUncheckedCreateInput = {
   id?: string
+  zevId: string
   unitId: string
   ownerId: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -347,12 +364,14 @@ export type OwnershipStakeUpdateInput = {
   acquisitionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOwnershipStakesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutOwnershipStakesNestedInput
   owner?: Prisma.PartyUpdateOneRequiredWithoutOwnershipStakesNestedInput
 }
 
 export type OwnershipStakeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -365,6 +384,7 @@ export type OwnershipStakeUncheckedUpdateInput = {
 
 export type OwnershipStakeCreateManyInput = {
   id?: string
+  zevId: string
   unitId: string
   ownerId: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -387,6 +407,7 @@ export type OwnershipStakeUpdateManyMutationInput = {
 
 export type OwnershipStakeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -409,6 +430,7 @@ export type OwnershipStakeOrderByRelationAggregateInput = {
 
 export type OwnershipStakeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   sharePercent?: Prisma.SortOrder
@@ -425,6 +447,7 @@ export type OwnershipStakeAvgOrderByAggregateInput = {
 
 export type OwnershipStakeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   sharePercent?: Prisma.SortOrder
@@ -437,6 +460,7 @@ export type OwnershipStakeMaxOrderByAggregateInput = {
 
 export type OwnershipStakeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   sharePercent?: Prisma.SortOrder
@@ -493,6 +517,48 @@ export type OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.OwnershipStakeScalarWhereInput | Prisma.OwnershipStakeScalarWhereInput[]
 }
 
+export type OwnershipStakeCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutZevInput, Prisma.OwnershipStakeUncheckedCreateWithoutZevInput> | Prisma.OwnershipStakeCreateWithoutZevInput[] | Prisma.OwnershipStakeUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OwnershipStakeCreateOrConnectWithoutZevInput | Prisma.OwnershipStakeCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.OwnershipStakeCreateManyZevInputEnvelope
+  connect?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+}
+
+export type OwnershipStakeUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutZevInput, Prisma.OwnershipStakeUncheckedCreateWithoutZevInput> | Prisma.OwnershipStakeCreateWithoutZevInput[] | Prisma.OwnershipStakeUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OwnershipStakeCreateOrConnectWithoutZevInput | Prisma.OwnershipStakeCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.OwnershipStakeCreateManyZevInputEnvelope
+  connect?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+}
+
+export type OwnershipStakeUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutZevInput, Prisma.OwnershipStakeUncheckedCreateWithoutZevInput> | Prisma.OwnershipStakeCreateWithoutZevInput[] | Prisma.OwnershipStakeUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OwnershipStakeCreateOrConnectWithoutZevInput | Prisma.OwnershipStakeCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.OwnershipStakeUpsertWithWhereUniqueWithoutZevInput | Prisma.OwnershipStakeUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.OwnershipStakeCreateManyZevInputEnvelope
+  set?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  disconnect?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  delete?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  connect?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  update?: Prisma.OwnershipStakeUpdateWithWhereUniqueWithoutZevInput | Prisma.OwnershipStakeUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.OwnershipStakeUpdateManyWithWhereWithoutZevInput | Prisma.OwnershipStakeUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.OwnershipStakeScalarWhereInput | Prisma.OwnershipStakeScalarWhereInput[]
+}
+
+export type OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutZevInput, Prisma.OwnershipStakeUncheckedCreateWithoutZevInput> | Prisma.OwnershipStakeCreateWithoutZevInput[] | Prisma.OwnershipStakeUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OwnershipStakeCreateOrConnectWithoutZevInput | Prisma.OwnershipStakeCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.OwnershipStakeUpsertWithWhereUniqueWithoutZevInput | Prisma.OwnershipStakeUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.OwnershipStakeCreateManyZevInputEnvelope
+  set?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  disconnect?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  delete?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  connect?: Prisma.OwnershipStakeWhereUniqueInput | Prisma.OwnershipStakeWhereUniqueInput[]
+  update?: Prisma.OwnershipStakeUpdateWithWhereUniqueWithoutZevInput | Prisma.OwnershipStakeUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.OwnershipStakeUpdateManyWithWhereWithoutZevInput | Prisma.OwnershipStakeUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.OwnershipStakeScalarWhereInput | Prisma.OwnershipStakeScalarWhereInput[]
+}
+
 export type OwnershipStakeCreateNestedManyWithoutUnitInput = {
   create?: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutUnitInput, Prisma.OwnershipStakeUncheckedCreateWithoutUnitInput> | Prisma.OwnershipStakeCreateWithoutUnitInput[] | Prisma.OwnershipStakeUncheckedCreateWithoutUnitInput[]
   connectOrCreate?: Prisma.OwnershipStakeCreateOrConnectWithoutUnitInput | Prisma.OwnershipStakeCreateOrConnectWithoutUnitInput[]
@@ -543,11 +609,13 @@ export type OwnershipStakeCreateWithoutOwnerInput = {
   acquisitionNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOwnershipStakesInput
   unit: Prisma.UnitCreateNestedOneWithoutOwnershipStakesInput
 }
 
 export type OwnershipStakeUncheckedCreateWithoutOwnerInput = {
   id?: string
+  zevId: string
   unitId: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom: Date | string
@@ -588,6 +656,7 @@ export type OwnershipStakeScalarWhereInput = {
   OR?: Prisma.OwnershipStakeScalarWhereInput[]
   NOT?: Prisma.OwnershipStakeScalarWhereInput | Prisma.OwnershipStakeScalarWhereInput[]
   id?: Prisma.StringFilter<"OwnershipStake"> | string
+  zevId?: Prisma.StringFilter<"OwnershipStake"> | string
   unitId?: Prisma.StringFilter<"OwnershipStake"> | string
   ownerId?: Prisma.StringFilter<"OwnershipStake"> | string
   sharePercent?: Prisma.DecimalFilter<"OwnershipStake"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -598,6 +667,56 @@ export type OwnershipStakeScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"OwnershipStake"> | Date | string
 }
 
+export type OwnershipStakeCreateWithoutZevInput = {
+  id?: string
+  sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validFrom: Date | string
+  validTo?: Date | string | null
+  acquisitionNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unit: Prisma.UnitCreateNestedOneWithoutOwnershipStakesInput
+  owner: Prisma.PartyCreateNestedOneWithoutOwnershipStakesInput
+}
+
+export type OwnershipStakeUncheckedCreateWithoutZevInput = {
+  id?: string
+  unitId: string
+  ownerId: string
+  sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validFrom: Date | string
+  validTo?: Date | string | null
+  acquisitionNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OwnershipStakeCreateOrConnectWithoutZevInput = {
+  where: Prisma.OwnershipStakeWhereUniqueInput
+  create: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutZevInput, Prisma.OwnershipStakeUncheckedCreateWithoutZevInput>
+}
+
+export type OwnershipStakeCreateManyZevInputEnvelope = {
+  data: Prisma.OwnershipStakeCreateManyZevInput | Prisma.OwnershipStakeCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type OwnershipStakeUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.OwnershipStakeWhereUniqueInput
+  update: Prisma.XOR<Prisma.OwnershipStakeUpdateWithoutZevInput, Prisma.OwnershipStakeUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.OwnershipStakeCreateWithoutZevInput, Prisma.OwnershipStakeUncheckedCreateWithoutZevInput>
+}
+
+export type OwnershipStakeUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.OwnershipStakeWhereUniqueInput
+  data: Prisma.XOR<Prisma.OwnershipStakeUpdateWithoutZevInput, Prisma.OwnershipStakeUncheckedUpdateWithoutZevInput>
+}
+
+export type OwnershipStakeUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.OwnershipStakeScalarWhereInput
+  data: Prisma.XOR<Prisma.OwnershipStakeUpdateManyMutationInput, Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevInput>
+}
+
 export type OwnershipStakeCreateWithoutUnitInput = {
   id?: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -606,11 +725,13 @@ export type OwnershipStakeCreateWithoutUnitInput = {
   acquisitionNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOwnershipStakesInput
   owner: Prisma.PartyCreateNestedOneWithoutOwnershipStakesInput
 }
 
 export type OwnershipStakeUncheckedCreateWithoutUnitInput = {
   id?: string
+  zevId: string
   ownerId: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom: Date | string
@@ -648,6 +769,7 @@ export type OwnershipStakeUpdateManyWithWhereWithoutUnitInput = {
 
 export type OwnershipStakeCreateManyOwnerInput = {
   id?: string
+  zevId: string
   unitId: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom: Date | string
@@ -665,11 +787,13 @@ export type OwnershipStakeUpdateWithoutOwnerInput = {
   acquisitionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOwnershipStakesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutOwnershipStakesNestedInput
 }
 
 export type OwnershipStakeUncheckedUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -681,7 +805,56 @@ export type OwnershipStakeUncheckedUpdateWithoutOwnerInput = {
 
 export type OwnershipStakeUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acquisitionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OwnershipStakeCreateManyZevInput = {
+  id?: string
+  unitId: string
+  ownerId: string
+  sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
+  validFrom: Date | string
+  validTo?: Date | string | null
+  acquisitionNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OwnershipStakeUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acquisitionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unit?: Prisma.UnitUpdateOneRequiredWithoutOwnershipStakesNestedInput
+  owner?: Prisma.PartyUpdateOneRequiredWithoutOwnershipStakesNestedInput
+}
+
+export type OwnershipStakeUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acquisitionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OwnershipStakeUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -692,6 +865,7 @@ export type OwnershipStakeUncheckedUpdateManyWithoutOwnerInput = {
 
 export type OwnershipStakeCreateManyUnitInput = {
   id?: string
+  zevId: string
   ownerId: string
   sharePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom: Date | string
@@ -709,11 +883,13 @@ export type OwnershipStakeUpdateWithoutUnitInput = {
   acquisitionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOwnershipStakesNestedInput
   owner?: Prisma.PartyUpdateOneRequiredWithoutOwnershipStakesNestedInput
 }
 
 export type OwnershipStakeUncheckedUpdateWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -725,6 +901,7 @@ export type OwnershipStakeUncheckedUpdateWithoutUnitInput = {
 
 export type OwnershipStakeUncheckedUpdateManyWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   sharePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -738,6 +915,7 @@ export type OwnershipStakeUncheckedUpdateManyWithoutUnitInput = {
 
 export type OwnershipStakeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   ownerId?: boolean
   sharePercent?: boolean
@@ -746,12 +924,14 @@ export type OwnershipStakeSelect<ExtArgs extends runtime.Types.Extensions.Intern
   acquisitionNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ownershipStake"]>
 
 export type OwnershipStakeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   ownerId?: boolean
   sharePercent?: boolean
@@ -760,12 +940,14 @@ export type OwnershipStakeSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   acquisitionNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ownershipStake"]>
 
 export type OwnershipStakeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   ownerId?: boolean
   sharePercent?: boolean
@@ -774,12 +956,14 @@ export type OwnershipStakeSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   acquisitionNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ownershipStake"]>
 
 export type OwnershipStakeSelectScalar = {
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   ownerId?: boolean
   sharePercent?: boolean
@@ -790,16 +974,19 @@ export type OwnershipStakeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OwnershipStakeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "unitId" | "ownerId" | "sharePercent" | "validFrom" | "validTo" | "acquisitionNote" | "createdAt" | "updatedAt", ExtArgs["result"]["ownershipStake"]>
+export type OwnershipStakeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "unitId" | "ownerId" | "sharePercent" | "validFrom" | "validTo" | "acquisitionNote" | "createdAt" | "updatedAt", ExtArgs["result"]["ownershipStake"]>
 export type OwnershipStakeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type OwnershipStakeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type OwnershipStakeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
@@ -807,11 +994,13 @@ export type OwnershipStakeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type $OwnershipStakePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OwnershipStake"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     unit: Prisma.$UnitPayload<ExtArgs>
     owner: Prisma.$PartyPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     unitId: string
     ownerId: string
     sharePercent: runtime.Decimal
@@ -1214,6 +1403,7 @@ readonly fields: OwnershipStakeFieldRefs;
  */
 export interface Prisma__OwnershipStakeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   unit<T extends Prisma.UnitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UnitDefaultArgs<ExtArgs>>): Prisma.Prisma__UnitClient<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   owner<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1246,6 +1436,7 @@ export interface Prisma__OwnershipStakeClient<T, Null = never, ExtArgs extends r
  */
 export interface OwnershipStakeFieldRefs {
   readonly id: Prisma.FieldRef<"OwnershipStake", 'String'>
+  readonly zevId: Prisma.FieldRef<"OwnershipStake", 'String'>
   readonly unitId: Prisma.FieldRef<"OwnershipStake", 'String'>
   readonly ownerId: Prisma.FieldRef<"OwnershipStake", 'String'>
   readonly sharePercent: Prisma.FieldRef<"OwnershipStake", 'Decimal'>

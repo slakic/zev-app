@@ -2,13 +2,14 @@
 // and planned-vs-actual comparison.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireAnyUser, type Actor } from "@/server/auth/guards";
+import { requireRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, sumDecimals } from "@/lib/money";
 import type { PlanKind, PlanItemType, ScopeType } from "@/generated/prisma/client";
 
 export async function listPlans(actor: Actor) {
   requireAnyUser(actor);
   return prisma.annualPlan.findMany({
+    where: { zevId: requireZev(actor) },
     include: { _count: { select: { items: true } } },
     orderBy: [{ year: "desc" }, { kind: "asc" }, { version: "desc" }],
   });
@@ -17,7 +18,7 @@ export async function listPlans(actor: Actor) {
 export async function getPlan(actor: Actor, id: string) {
   requireAnyUser(actor);
   return prisma.annualPlan.findUniqueOrThrow({
-    where: { id },
+    where: { id, zevId: requireZev(actor) },
     include: { items: { include: { scopeUnits: { include: { unit: true } } }, orderBy: { name: "asc" } } },
   });
 }
@@ -27,12 +28,13 @@ export async function createPlan(
   data: { year: number; kind: PlanKind; title: string; note?: string | null }
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const latest = await prisma.annualPlan.findFirst({
-    where: { year: data.year, kind: data.kind },
+    where: { zevId, year: data.year, kind: data.kind },
     orderBy: { version: "desc" },
   });
   const plan = await prisma.annualPlan.create({
-    data: { ...data, version: (latest?.version ?? 0) + 1 },
+    data: { ...data, zevId, version: (latest?.version ?? 0) + 1 },
   });
   await audit(actor, { action: "plan.create", targetType: "AnnualPlan", targetId: plan.id, after: { year: plan.year, kind: plan.kind, version: plan.version } });
   return plan;
@@ -41,10 +43,12 @@ export async function createPlan(
 /** New version of an existing plan (copies items; old version stays intact). */
 export async function createPlanRevision(actor: Actor, planId: string, reason: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   return prisma.$transaction(async (tx) => {
-    const old = await tx.annualPlan.findUniqueOrThrow({ where: { id: planId }, include: { items: { include: { scopeUnits: true } } } });
+    const old = await tx.annualPlan.findUniqueOrThrow({ where: { id: planId, zevId }, include: { items: { include: { scopeUnits: true } } } });
     const next = await tx.annualPlan.create({
       data: {
+        zevId,
         year: old.year,
         kind: old.kind,
         version: old.version + 1,
@@ -52,6 +56,7 @@ export async function createPlanRevision(actor: Actor, planId: string, reason: s
         note: old.note,
         items: {
           create: old.items.map((i) => ({
+            zevId,
             type: i.type,
             name: i.name,
             description: i.description,
@@ -69,7 +74,7 @@ export async function createPlanRevision(actor: Actor, planId: string, reason: s
       },
     });
     if (old.status === "DRAFT" || old.status === "PROPOSED") {
-      await tx.annualPlan.update({ where: { id: planId }, data: { status: "ARCHIVED" } });
+      await tx.annualPlan.update({ where: { id: planId, zevId }, data: { status: "ARCHIVED" } });
     }
     await audit(actor, {
       action: "plan.revise", targetType: "AnnualPlan", targetId: next.id,
@@ -98,14 +103,23 @@ export async function addPlanItem(
   }
 ) {
   requireRole(actor, "PRESIDENT");
-  const plan = await prisma.annualPlan.findUniqueOrThrow({ where: { id: data.planId } });
+  const zevId = requireZev(actor);
+  const plan = await prisma.annualPlan.findUniqueOrThrow({ where: { id: data.planId, zevId } });
   if (plan.status === "APPROVED" || plan.status === "ARCHIVED") {
     throw new Error("Usvojeni/arhivirani plan se mijenja samo kroz novu verziju.");
+  }
+  if (data.buildingId) await prisma.building.findUniqueOrThrow({ where: { id: data.buildingId, zevId } });
+  if (data.entranceId) await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
+  if (data.projectId) await prisma.project.findUniqueOrThrow({ where: { id: data.projectId, zevId } });
+  if (data.unitIds?.length) {
+    const count = await prisma.unit.count({ where: { zevId, id: { in: data.unitIds } } });
+    if (count !== new Set(data.unitIds).size) throw new Error("Jedna ili više jedinica ne pripadaju ovom ZEV-u.");
   }
   const { unitIds, ...rest } = data;
   const item = await prisma.planItem.create({
     data: {
       ...rest,
+      zevId,
       scopeType: data.scopeType ?? "ZEV",
       scopeUnits: unitIds?.length ? { create: unitIds.map((unitId) => ({ unitId })) } : undefined,
     },
@@ -116,7 +130,8 @@ export async function addPlanItem(
 
 export async function proposePlan(actor: Actor, planId: string) {
   requireRole(actor, "PRESIDENT");
-  const p = await prisma.annualPlan.update({ where: { id: planId }, data: { status: "PROPOSED" } });
+  const zevId = requireZev(actor);
+  const p = await prisma.annualPlan.update({ where: { id: planId, zevId }, data: { status: "PROPOSED" } });
   await audit(actor, { action: "plan.propose", targetType: "AnnualPlan", targetId: planId });
   return p;
 }
@@ -124,12 +139,13 @@ export async function proposePlan(actor: Actor, planId: string) {
 /** Approve a plan by linking the assembly decision (accepted proposal). */
 export async function approvePlan(actor: Actor, planId: string, proposalId: string) {
   requireRole(actor, "PRESIDENT");
-  const proposal = await prisma.proposal.findUniqueOrThrow({ where: { id: proposalId } });
+  const zevId = requireZev(actor);
+  const proposal = await prisma.proposal.findUniqueOrThrow({ where: { id: proposalId, zevId } });
   if (proposal.status !== "ACCEPTED") {
     throw new Error("Plan se može usvojiti samo na osnovu USVOJENOG prijedloga skupštine.");
   }
   const p = await prisma.annualPlan.update({
-    where: { id: planId },
+    where: { id: planId, zevId },
     data: { status: "APPROVED", approvedByProposalId: proposalId, approvedAt: new Date() },
   });
   await audit(actor, {
@@ -156,16 +172,17 @@ export type PlanVsActualRow = {
  */
 export async function planVsActual(actor: Actor, planId: string): Promise<{ rows: PlanVsActualRow[]; totalPlanned: string; totalActual: string }> {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const plan = await prisma.annualPlan.findUniqueOrThrow({ where: { id: planId }, include: { items: true } });
+  const zevId = requireZev(actor);
+  const plan = await prisma.annualPlan.findUniqueOrThrow({ where: { id: planId, zevId }, include: { items: true } });
   const rows: PlanVsActualRow[] = [];
   for (const item of plan.items) {
     const txs = await prisma.finTransaction.findMany({
-      where: { planItemId: item.id, status: "ACTIVE", type: "EXPENSE" },
+      where: { zevId, planItemId: item.id, status: "ACTIVE", type: "EXPENSE" },
     });
     let actual = sumDecimals(txs.map((t) => dec(t.amount.toString())));
     // Also count unpaid expenses committed against the item (obligations).
     const unpaidExpenses = await prisma.expense.findMany({
-      where: { planItemId: item.id, status: { in: ["UNPAID", "PARTIALLY_PAID"] } },
+      where: { zevId, planItemId: item.id, status: { in: ["UNPAID", "PARTIALLY_PAID"] } },
     });
     for (const e of unpaidExpenses) {
       actual = actual.plus(dec(e.amount.toString()).minus(dec(e.paidAmount.toString())));
@@ -189,12 +206,13 @@ export async function planVsActual(actor: Actor, planId: string): Promise<{ rows
 
 export async function listProjects(actor: Actor) {
   requireAnyUser(actor);
-  return prisma.project.findMany({ orderBy: { createdAt: "desc" } });
+  return prisma.project.findMany({ where: { zevId: requireZev(actor) }, orderBy: { createdAt: "desc" } });
 }
 
 export async function createProject(actor: Actor, data: { name: string; description?: string | null; estimatedCost?: string | null }) {
   requireRole(actor, "PRESIDENT");
-  const p = await prisma.project.create({ data });
+  const zevId = requireZev(actor);
+  const p = await prisma.project.create({ data: { ...data, zevId } });
   await audit(actor, { action: "project.create", targetType: "Project", targetId: p.id, after: { name: p.name } });
   return p;
 }

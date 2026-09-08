@@ -6,10 +6,13 @@ import { ForbiddenError } from "@/server/auth/guards";
 import { createFixture } from "./helpers";
 
 /**
- * The "don't strip the last active president" guard is a global invariant, not scoped
- * to one fixture — so to test it deterministically we must first neutralize every
- * OTHER active president left behind by earlier fixtures in this shared test database
- * (tests run sequentially in this file/suite — see vitest.config.ts's fileParallelism: false).
+ * The "don't strip the last active president" guard is now scoped per-ZEV (counted via
+ * Membership, not the legacy global User.roles — see assertNotLastActivePresident in
+ * users.ts), so another fixture's president in a different ZEV no longer affects this
+ * one. This helper is kept anyway as cheap extra insurance against any stray PRESIDENT
+ * left over in THIS fixture's own ZEV by a future change to createFixture, and is
+ * harmless to run — it only touches other users' global `active` flag, not their
+ * Membership rows, so it can't itself defeat the very check it's insuring against.
  */
 async function deactivateOtherPresidents(keepUserId: string) {
   await prisma.user.updateMany({
@@ -56,13 +59,25 @@ describe("user account administration (roles, activation)", () => {
 
   it("allows demoting/deactivating a president when another active president exists", async () => {
     const f = await createFixture("multi-pres");
+    // A "second president" must actually belong to this ZEV (a Party in it, plus a
+    // Membership) to count toward the guard at all now that it's scoped per-tenant —
+    // a bare orphan User with no Party/Membership wouldn't be found in this ZEV.
+    const secondParty = await prisma.party.create({
+      data: { zevId: f.zev.id, kind: "PERSON", firstName: "Drugi", lastName: `Predsjednik-${f.t}` },
+    });
     const secondPresident = await prisma.user.create({
-      data: { email: `second-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"] },
+      data: { email: `second-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"], partyId: secondParty.id },
     });
+    await prisma.membership.create({ data: { userId: secondPresident.id, zevId: f.zev.id, role: "PRESIDENT" } });
     await expect(updateUserRoles(f.president, secondPresident.id, ["OWNER"])).resolves.toBeTruthy();
-    const secondPresident2 = await prisma.user.create({
-      data: { email: `third-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"] },
+
+    const thirdParty = await prisma.party.create({
+      data: { zevId: f.zev.id, kind: "PERSON", firstName: "Treći", lastName: `Predsjednik2-${f.t}` },
     });
+    const secondPresident2 = await prisma.user.create({
+      data: { email: `third-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"], partyId: thirdParty.id },
+    });
+    await prisma.membership.create({ data: { userId: secondPresident2.id, zevId: f.zev.id, role: "PRESIDENT" } });
     await expect(deactivateUser(f.president, secondPresident2.id, "cleanup")).resolves.toBeTruthy();
   });
 

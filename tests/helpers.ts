@@ -24,20 +24,31 @@ export async function createFixture(tag: string) {
   const t = uid(tag);
   const pw = await hashPassword("Test1234!");
 
+  // Created before any Party: Party.zevId is a required FK (docs/multitenancy-plan.md §6.3)
+  // that falls back to a temporary DB default (the single globally-earliest Zev) when not set
+  // explicitly. On a freshly reset test DB with zero Zev rows, that default resolves to NULL —
+  // so creating Party first would crash on the very first fixture of the whole test run. Every
+  // Party below is also given this fixture's own zevId explicitly rather than relying on the
+  // default, so it isn't silently mis-attributed to whichever other (parallel-running) fixture's
+  // Zev happens to be globally earliest.
+  const zev = await prisma.zev.create({
+    data: { legalName: `ZEV Test ${t}`, jib: "4400000000000" },
+  });
+
   const presidentParty = await prisma.party.create({
-    data: { kind: "PERSON", firstName: "Petar", lastName: `Predsjednik-${t}`, email: `${t}-pres@example.com` },
+    data: { zevId: zev.id, kind: "PERSON", firstName: "Petar", lastName: `Predsjednik-${t}`, email: `${t}-pres@example.com` },
   });
   const accountantParty = await prisma.party.create({
-    data: { kind: "PERSON", firstName: "Rada", lastName: `Racun-${t}`, email: `${t}-acc@example.com` },
+    data: { zevId: zev.id, kind: "PERSON", firstName: "Rada", lastName: `Racun-${t}`, email: `${t}-acc@example.com` },
   });
   const ownerA = await prisma.party.create({
-    data: { kind: "PERSON", firstName: "Ana", lastName: `A-${t}`, email: `${t}-a@example.com` },
+    data: { zevId: zev.id, kind: "PERSON", firstName: "Ana", lastName: `A-${t}`, email: `${t}-a@example.com` },
   });
   const ownerB = await prisma.party.create({
-    data: { kind: "PERSON", firstName: "Boris", lastName: `B-${t}`, email: `${t}-b@example.com` },
+    data: { zevId: zev.id, kind: "PERSON", firstName: "Boris", lastName: `B-${t}`, email: `${t}-b@example.com` },
   });
   const ownerC = await prisma.party.create({
-    data: { kind: "PERSON", firstName: "Cvijeta", lastName: `C-${t}`, email: `${t}-c@example.com` },
+    data: { zevId: zev.id, kind: "PERSON", firstName: "Cvijeta", lastName: `C-${t}`, email: `${t}-c@example.com` },
   });
 
   const presidentUser = await prisma.user.create({
@@ -53,16 +64,25 @@ export async function createFixture(tag: string) {
     data: { email: `${t}-b@zev.test`, passwordHash: pw, roles: ["OWNER"], partyId: ownerB.id },
   });
 
-  const president: Actor = { userId: presidentUser.id, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id };
-  const accountant: Actor = { userId: accountantUser.id, roles: ["ACCOUNTANT"], partyId: accountantParty.id };
-  const actorA: Actor = { userId: ownerAUser.id, roles: ["OWNER"], partyId: ownerA.id };
-  const actorB: Actor = { userId: ownerBUser.id, roles: ["OWNER"], partyId: ownerB.id };
-
-  const zev = await prisma.zev.create({
-    data: { legalName: `ZEV Test ${t}`, jib: "4400000000000" },
+  // Membership rows mirroring each Actor's `roles` below — updateUserRoles/
+  // createUserForParty now require actor.zevId (see users.ts) and reconcile
+  // Membership on every call, so fixture actors need both.
+  await prisma.membership.createMany({
+    data: [
+      { userId: presidentUser.id, zevId: zev.id, role: "PRESIDENT" },
+      { userId: presidentUser.id, zevId: zev.id, role: "OWNER" },
+      { userId: accountantUser.id, zevId: zev.id, role: "ACCOUNTANT" },
+      { userId: ownerAUser.id, zevId: zev.id, role: "OWNER" },
+      { userId: ownerBUser.id, zevId: zev.id, role: "OWNER" },
+    ],
   });
-  const b1 = await property.createBuilding(president, { zevId: zev.id, name: `Zgrada 1 ${t}`, address: "Test 1" });
-  const b2 = await property.createBuilding(president, { zevId: zev.id, name: `Zgrada 2 ${t}`, address: "Test 2" });
+
+  const president: Actor = { userId: presidentUser.id, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id, zevId: zev.id };
+  const accountant: Actor = { userId: accountantUser.id, roles: ["ACCOUNTANT"], partyId: accountantParty.id, zevId: zev.id };
+  const actorA: Actor = { userId: ownerAUser.id, roles: ["OWNER"], partyId: ownerA.id, zevId: zev.id };
+  const actorB: Actor = { userId: ownerBUser.id, roles: ["OWNER"], partyId: ownerB.id, zevId: zev.id };
+  const b1 = await property.createBuilding(president, { name: `Zgrada 1 ${t}`, address: "Test 1" });
+  const b2 = await property.createBuilding(president, { name: `Zgrada 2 ${t}`, address: "Test 2" });
 
   // shares sum to 100 across the fixture's units
   const u1 = await property.createUnit(president, { buildingId: b1.id, type: "APARTMENT", label: `S1-${t}`, usableArea: "50.00", ownershipShare: "25.00", occupantCount: 2 });
@@ -80,7 +100,7 @@ export async function createFixture(tag: string) {
   await ownership.addOwnershipStake(president, { unitId: u4.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
 
   const account = await finance.createAccount(accountant, {
-    zevId: zev.id, type: "BANK", name: `Racun-${t}`, openingBalance: "1000.00", openingDate: past,
+    type: "BANK", name: `Racun-${t}`, openingBalance: "1000.00", openingDate: past,
   });
 
   const rule = await meetings.createVotingRule(president, {

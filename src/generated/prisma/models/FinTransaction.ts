@@ -36,6 +36,7 @@ export type FinTransactionSumAggregateOutputType = {
 
 export type FinTransactionMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   accountId: string | null
   date: Date | null
   type: $Enums.TxType | null
@@ -63,6 +64,7 @@ export type FinTransactionMinAggregateOutputType = {
 
 export type FinTransactionMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   accountId: string | null
   date: Date | null
   type: $Enums.TxType | null
@@ -90,6 +92,7 @@ export type FinTransactionMaxAggregateOutputType = {
 
 export type FinTransactionCountAggregateOutputType = {
   id: number
+  zevId: number
   accountId: number
   date: number
   type: number
@@ -127,6 +130,7 @@ export type FinTransactionSumAggregateInputType = {
 
 export type FinTransactionMinAggregateInputType = {
   id?: true
+  zevId?: true
   accountId?: true
   date?: true
   type?: true
@@ -154,6 +158,7 @@ export type FinTransactionMinAggregateInputType = {
 
 export type FinTransactionMaxAggregateInputType = {
   id?: true
+  zevId?: true
   accountId?: true
   date?: true
   type?: true
@@ -181,6 +186,7 @@ export type FinTransactionMaxAggregateInputType = {
 
 export type FinTransactionCountAggregateInputType = {
   id?: true
+  zevId?: true
   accountId?: true
   date?: true
   type?: true
@@ -295,6 +301,7 @@ export type FinTransactionGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 
 export type FinTransactionGroupByOutputType = {
   id: string
+  zevId: string
   accountId: string
   date: Date
   type: $Enums.TxType
@@ -345,6 +352,7 @@ export type FinTransactionWhereInput = {
   OR?: Prisma.FinTransactionWhereInput[]
   NOT?: Prisma.FinTransactionWhereInput | Prisma.FinTransactionWhereInput[]
   id?: Prisma.StringFilter<"FinTransaction"> | string
+  zevId?: Prisma.StringFilter<"FinTransaction"> | string
   accountId?: Prisma.StringFilter<"FinTransaction"> | string
   date?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
   type?: Prisma.EnumTxTypeFilter<"FinTransaction"> | $Enums.TxType
@@ -368,6 +376,7 @@ export type FinTransactionWhereInput = {
   cancelOfId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
   createdById?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   account?: Prisma.XOR<Prisma.MoneyAccountScalarRelationFilter, Prisma.MoneyAccountWhereInput>
   category?: Prisma.XOR<Prisma.TransactionCategoryNullableScalarRelationFilter, Prisma.TransactionCategoryWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
@@ -378,6 +387,7 @@ export type FinTransactionWhereInput = {
 
 export type FinTransactionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -401,6 +411,7 @@ export type FinTransactionOrderByWithRelationInput = {
   cancelOfId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   account?: Prisma.MoneyAccountOrderByWithRelationInput
   category?: Prisma.TransactionCategoryOrderByWithRelationInput
   payment?: Prisma.PaymentOrderByWithRelationInput
@@ -416,6 +427,7 @@ export type FinTransactionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.FinTransactionWhereInput | Prisma.FinTransactionWhereInput[]
   OR?: Prisma.FinTransactionWhereInput[]
   NOT?: Prisma.FinTransactionWhereInput | Prisma.FinTransactionWhereInput[]
+  zevId?: Prisma.StringFilter<"FinTransaction"> | string
   accountId?: Prisma.StringFilter<"FinTransaction"> | string
   date?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
   type?: Prisma.EnumTxTypeFilter<"FinTransaction"> | $Enums.TxType
@@ -437,6 +449,7 @@ export type FinTransactionWhereUniqueInput = Prisma.AtLeast<{
   cancelReason?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
   createdById?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   account?: Prisma.XOR<Prisma.MoneyAccountScalarRelationFilter, Prisma.MoneyAccountWhereInput>
   category?: Prisma.XOR<Prisma.TransactionCategoryNullableScalarRelationFilter, Prisma.TransactionCategoryWhereInput> | null
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
@@ -447,6 +460,7 @@ export type FinTransactionWhereUniqueInput = Prisma.AtLeast<{
 
 export type FinTransactionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -482,6 +496,7 @@ export type FinTransactionScalarWhereWithAggregatesInput = {
   OR?: Prisma.FinTransactionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.FinTransactionScalarWhereWithAggregatesInput | Prisma.FinTransactionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"FinTransaction"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"FinTransaction"> | string
   accountId?: Prisma.StringWithAggregatesFilter<"FinTransaction"> | string
   date?: Prisma.DateTimeWithAggregatesFilter<"FinTransaction"> | Date | string
   type?: Prisma.EnumTxTypeWithAggregatesFilter<"FinTransaction"> | $Enums.TxType
@@ -528,6 +543,7 @@ export type FinTransactionCreateInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
@@ -538,6 +554,7 @@ export type FinTransactionCreateInput = {
 
 export type FinTransactionUncheckedCreateInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -586,6 +603,7 @@ export type FinTransactionUpdateInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
@@ -596,6 +614,7 @@ export type FinTransactionUpdateInput = {
 
 export type FinTransactionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -625,6 +644,7 @@ export type FinTransactionUncheckedUpdateInput = {
 
 export type FinTransactionCreateManyInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -675,6 +695,7 @@ export type FinTransactionUpdateManyMutationInput = {
 
 export type FinTransactionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -717,6 +738,7 @@ export type FinTransactionNullableScalarRelationFilter = {
 
 export type FinTransactionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -748,6 +770,7 @@ export type FinTransactionAvgOrderByAggregateInput = {
 
 export type FinTransactionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -775,6 +798,7 @@ export type FinTransactionMaxOrderByAggregateInput = {
 
 export type FinTransactionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   date?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -802,6 +826,48 @@ export type FinTransactionMinOrderByAggregateInput = {
 
 export type FinTransactionSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
+}
+
+export type FinTransactionCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.FinTransactionCreateWithoutZevInput, Prisma.FinTransactionUncheckedCreateWithoutZevInput> | Prisma.FinTransactionCreateWithoutZevInput[] | Prisma.FinTransactionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.FinTransactionCreateOrConnectWithoutZevInput | Prisma.FinTransactionCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.FinTransactionCreateManyZevInputEnvelope
+  connect?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+}
+
+export type FinTransactionUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.FinTransactionCreateWithoutZevInput, Prisma.FinTransactionUncheckedCreateWithoutZevInput> | Prisma.FinTransactionCreateWithoutZevInput[] | Prisma.FinTransactionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.FinTransactionCreateOrConnectWithoutZevInput | Prisma.FinTransactionCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.FinTransactionCreateManyZevInputEnvelope
+  connect?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+}
+
+export type FinTransactionUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.FinTransactionCreateWithoutZevInput, Prisma.FinTransactionUncheckedCreateWithoutZevInput> | Prisma.FinTransactionCreateWithoutZevInput[] | Prisma.FinTransactionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.FinTransactionCreateOrConnectWithoutZevInput | Prisma.FinTransactionCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.FinTransactionUpsertWithWhereUniqueWithoutZevInput | Prisma.FinTransactionUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.FinTransactionCreateManyZevInputEnvelope
+  set?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  disconnect?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  delete?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  connect?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  update?: Prisma.FinTransactionUpdateWithWhereUniqueWithoutZevInput | Prisma.FinTransactionUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.FinTransactionUpdateManyWithWhereWithoutZevInput | Prisma.FinTransactionUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
+}
+
+export type FinTransactionUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.FinTransactionCreateWithoutZevInput, Prisma.FinTransactionUncheckedCreateWithoutZevInput> | Prisma.FinTransactionCreateWithoutZevInput[] | Prisma.FinTransactionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.FinTransactionCreateOrConnectWithoutZevInput | Prisma.FinTransactionCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.FinTransactionUpsertWithWhereUniqueWithoutZevInput | Prisma.FinTransactionUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.FinTransactionCreateManyZevInputEnvelope
+  set?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  disconnect?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  delete?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  connect?: Prisma.FinTransactionWhereUniqueInput | Prisma.FinTransactionWhereUniqueInput[]
+  update?: Prisma.FinTransactionUpdateWithWhereUniqueWithoutZevInput | Prisma.FinTransactionUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.FinTransactionUpdateManyWithWhereWithoutZevInput | Prisma.FinTransactionUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
 }
 
 export type FinTransactionCreateNestedManyWithoutAccountInput = {
@@ -1014,6 +1080,121 @@ export type FinTransactionUncheckedUpdateManyWithoutAttachmentsNestedInput = {
   deleteMany?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
 }
 
+export type FinTransactionCreateWithoutZevInput = {
+  id?: string
+  date: Date | string
+  type: $Enums.TxType
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  counterpartyName?: string | null
+  paymentMethod?: string | null
+  docRef?: string | null
+  description?: string | null
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  planItemId?: string | null
+  expenseId?: string | null
+  isReserveFund?: boolean
+  status?: $Enums.TxStatus
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
+  category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
+  cancelOf?: Prisma.FinTransactionCreateNestedOneWithoutCancelledByTxInput
+  cancelledByTx?: Prisma.FinTransactionCreateNestedOneWithoutCancelOfInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutTransactionsInput
+}
+
+export type FinTransactionUncheckedCreateWithoutZevInput = {
+  id?: string
+  accountId: string
+  date: Date | string
+  type: $Enums.TxType
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  counterpartyName?: string | null
+  categoryId?: string | null
+  paymentMethod?: string | null
+  docRef?: string | null
+  description?: string | null
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  planItemId?: string | null
+  expenseId?: string | null
+  paymentId?: string | null
+  isReserveFund?: boolean
+  status?: $Enums.TxStatus
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelOfId?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  cancelledByTx?: Prisma.FinTransactionUncheckedCreateNestedOneWithoutCancelOfInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutTransactionsInput
+}
+
+export type FinTransactionCreateOrConnectWithoutZevInput = {
+  where: Prisma.FinTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.FinTransactionCreateWithoutZevInput, Prisma.FinTransactionUncheckedCreateWithoutZevInput>
+}
+
+export type FinTransactionCreateManyZevInputEnvelope = {
+  data: Prisma.FinTransactionCreateManyZevInput | Prisma.FinTransactionCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type FinTransactionUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.FinTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.FinTransactionUpdateWithoutZevInput, Prisma.FinTransactionUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.FinTransactionCreateWithoutZevInput, Prisma.FinTransactionUncheckedCreateWithoutZevInput>
+}
+
+export type FinTransactionUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.FinTransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.FinTransactionUpdateWithoutZevInput, Prisma.FinTransactionUncheckedUpdateWithoutZevInput>
+}
+
+export type FinTransactionUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.FinTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.FinTransactionUpdateManyMutationInput, Prisma.FinTransactionUncheckedUpdateManyWithoutZevInput>
+}
+
+export type FinTransactionScalarWhereInput = {
+  AND?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
+  OR?: Prisma.FinTransactionScalarWhereInput[]
+  NOT?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
+  id?: Prisma.StringFilter<"FinTransaction"> | string
+  zevId?: Prisma.StringFilter<"FinTransaction"> | string
+  accountId?: Prisma.StringFilter<"FinTransaction"> | string
+  date?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
+  type?: Prisma.EnumTxTypeFilter<"FinTransaction"> | $Enums.TxType
+  amount?: Prisma.DecimalFilter<"FinTransaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFilter<"FinTransaction"> | string
+  counterpartyName?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  categoryId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  paymentMethod?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  docRef?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  description?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  buildingId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  entranceId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  projectId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  planItemId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  expenseId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  paymentId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  isReserveFund?: Prisma.BoolFilter<"FinTransaction"> | boolean
+  status?: Prisma.EnumTxStatusFilter<"FinTransaction"> | $Enums.TxStatus
+  cancelledAt?: Prisma.DateTimeNullableFilter<"FinTransaction"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  cancelOfId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  createdById?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
+}
+
 export type FinTransactionCreateWithoutAccountInput = {
   id?: string
   date: Date | string
@@ -1035,6 +1216,7 @@ export type FinTransactionCreateWithoutAccountInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   cancelOf?: Prisma.FinTransactionCreateNestedOneWithoutCancelledByTxInput
@@ -1044,6 +1226,7 @@ export type FinTransactionCreateWithoutAccountInput = {
 
 export type FinTransactionUncheckedCreateWithoutAccountInput = {
   id?: string
+  zevId: string
   date: Date | string
   type: $Enums.TxType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1096,36 +1279,6 @@ export type FinTransactionUpdateManyWithWhereWithoutAccountInput = {
   data: Prisma.XOR<Prisma.FinTransactionUpdateManyMutationInput, Prisma.FinTransactionUncheckedUpdateManyWithoutAccountInput>
 }
 
-export type FinTransactionScalarWhereInput = {
-  AND?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
-  OR?: Prisma.FinTransactionScalarWhereInput[]
-  NOT?: Prisma.FinTransactionScalarWhereInput | Prisma.FinTransactionScalarWhereInput[]
-  id?: Prisma.StringFilter<"FinTransaction"> | string
-  accountId?: Prisma.StringFilter<"FinTransaction"> | string
-  date?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
-  type?: Prisma.EnumTxTypeFilter<"FinTransaction"> | $Enums.TxType
-  amount?: Prisma.DecimalFilter<"FinTransaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  currency?: Prisma.StringFilter<"FinTransaction"> | string
-  counterpartyName?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  categoryId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  paymentMethod?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  docRef?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  description?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  buildingId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  entranceId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  projectId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  planItemId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  expenseId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  paymentId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  isReserveFund?: Prisma.BoolFilter<"FinTransaction"> | boolean
-  status?: Prisma.EnumTxStatusFilter<"FinTransaction"> | $Enums.TxStatus
-  cancelledAt?: Prisma.DateTimeNullableFilter<"FinTransaction"> | Date | string | null
-  cancelReason?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  cancelOfId?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  createdById?: Prisma.StringNullableFilter<"FinTransaction"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"FinTransaction"> | Date | string
-}
-
 export type FinTransactionCreateWithoutCategoryInput = {
   id?: string
   date: Date | string
@@ -1147,6 +1300,7 @@ export type FinTransactionCreateWithoutCategoryInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
   cancelOf?: Prisma.FinTransactionCreateNestedOneWithoutCancelledByTxInput
@@ -1156,6 +1310,7 @@ export type FinTransactionCreateWithoutCategoryInput = {
 
 export type FinTransactionUncheckedCreateWithoutCategoryInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -1229,6 +1384,7 @@ export type FinTransactionCreateWithoutCancelledByTxInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
@@ -1238,6 +1394,7 @@ export type FinTransactionCreateWithoutCancelledByTxInput = {
 
 export type FinTransactionUncheckedCreateWithoutCancelledByTxInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -1290,6 +1447,7 @@ export type FinTransactionCreateWithoutCancelOfInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
@@ -1299,6 +1457,7 @@ export type FinTransactionCreateWithoutCancelOfInput = {
 
 export type FinTransactionUncheckedCreateWithoutCancelOfInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -1362,6 +1521,7 @@ export type FinTransactionUpdateWithoutCancelledByTxInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
@@ -1371,6 +1531,7 @@ export type FinTransactionUpdateWithoutCancelledByTxInput = {
 
 export type FinTransactionUncheckedUpdateWithoutCancelledByTxInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -1429,6 +1590,7 @@ export type FinTransactionUpdateWithoutCancelOfInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
@@ -1438,6 +1600,7 @@ export type FinTransactionUpdateWithoutCancelOfInput = {
 
 export type FinTransactionUncheckedUpdateWithoutCancelOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -1485,6 +1648,7 @@ export type FinTransactionCreateWithoutPaymentInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
   cancelOf?: Prisma.FinTransactionCreateNestedOneWithoutCancelledByTxInput
@@ -1494,6 +1658,7 @@ export type FinTransactionCreateWithoutPaymentInput = {
 
 export type FinTransactionUncheckedCreateWithoutPaymentInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -1557,6 +1722,7 @@ export type FinTransactionUpdateWithoutPaymentInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
   cancelOf?: Prisma.FinTransactionUpdateOneWithoutCancelledByTxNestedInput
@@ -1566,6 +1732,7 @@ export type FinTransactionUpdateWithoutPaymentInput = {
 
 export type FinTransactionUncheckedUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -1613,6 +1780,7 @@ export type FinTransactionCreateWithoutAttachmentsInput = {
   cancelReason?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFinTransactionsInput
   account: Prisma.MoneyAccountCreateNestedOneWithoutTransactionsInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutTransactionsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutTransactionInput
@@ -1622,6 +1790,7 @@ export type FinTransactionCreateWithoutAttachmentsInput = {
 
 export type FinTransactionUncheckedCreateWithoutAttachmentsInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -1669,8 +1838,121 @@ export type FinTransactionUpdateManyWithWhereWithoutAttachmentsInput = {
   data: Prisma.XOR<Prisma.FinTransactionUpdateManyMutationInput, Prisma.FinTransactionUncheckedUpdateManyWithoutAttachmentsInput>
 }
 
+export type FinTransactionCreateManyZevInput = {
+  id?: string
+  accountId: string
+  date: Date | string
+  type: $Enums.TxType
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  counterpartyName?: string | null
+  categoryId?: string | null
+  paymentMethod?: string | null
+  docRef?: string | null
+  description?: string | null
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  planItemId?: string | null
+  expenseId?: string | null
+  paymentId?: string | null
+  isReserveFund?: boolean
+  status?: $Enums.TxStatus
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelOfId?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type FinTransactionUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  counterpartyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expenseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumTxStatusFieldUpdateOperationsInput | $Enums.TxStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
+  category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
+  cancelOf?: Prisma.FinTransactionUpdateOneWithoutCancelledByTxNestedInput
+  cancelledByTx?: Prisma.FinTransactionUpdateOneWithoutCancelOfNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutTransactionsNestedInput
+}
+
+export type FinTransactionUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  counterpartyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expenseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumTxStatusFieldUpdateOperationsInput | $Enums.TxStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelledByTx?: Prisma.FinTransactionUncheckedUpdateOneWithoutCancelOfNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutTransactionsNestedInput
+}
+
+export type FinTransactionUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  counterpartyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expenseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumTxStatusFieldUpdateOperationsInput | $Enums.TxStatus
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type FinTransactionCreateManyAccountInput = {
   id?: string
+  zevId: string
   date: Date | string
   type: $Enums.TxType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1716,6 +1998,7 @@ export type FinTransactionUpdateWithoutAccountInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   cancelOf?: Prisma.FinTransactionUpdateOneWithoutCancelledByTxNestedInput
@@ -1725,6 +2008,7 @@ export type FinTransactionUpdateWithoutAccountInput = {
 
 export type FinTransactionUncheckedUpdateWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1753,6 +2037,7 @@ export type FinTransactionUncheckedUpdateWithoutAccountInput = {
 
 export type FinTransactionUncheckedUpdateManyWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1779,6 +2064,7 @@ export type FinTransactionUncheckedUpdateManyWithoutAccountInput = {
 
 export type FinTransactionCreateManyCategoryInput = {
   id?: string
+  zevId: string
   accountId: string
   date: Date | string
   type: $Enums.TxType
@@ -1824,6 +2110,7 @@ export type FinTransactionUpdateWithoutCategoryInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
   cancelOf?: Prisma.FinTransactionUpdateOneWithoutCancelledByTxNestedInput
@@ -1833,6 +2120,7 @@ export type FinTransactionUpdateWithoutCategoryInput = {
 
 export type FinTransactionUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -1861,6 +2149,7 @@ export type FinTransactionUncheckedUpdateWithoutCategoryInput = {
 
 export type FinTransactionUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -1906,6 +2195,7 @@ export type FinTransactionUpdateWithoutAttachmentsInput = {
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFinTransactionsNestedInput
   account?: Prisma.MoneyAccountUpdateOneRequiredWithoutTransactionsNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutTransactionsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutTransactionNestedInput
@@ -1915,6 +2205,7 @@ export type FinTransactionUpdateWithoutAttachmentsInput = {
 
 export type FinTransactionUncheckedUpdateWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -1943,6 +2234,7 @@ export type FinTransactionUncheckedUpdateWithoutAttachmentsInput = {
 
 export type FinTransactionUncheckedUpdateManyWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   type?: Prisma.EnumTxTypeFieldUpdateOperationsInput | $Enums.TxType
@@ -2001,6 +2293,7 @@ export type FinTransactionCountOutputTypeCountAttachmentsArgs<ExtArgs extends ru
 
 export type FinTransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   accountId?: boolean
   date?: boolean
   type?: boolean
@@ -2024,6 +2317,7 @@ export type FinTransactionSelect<ExtArgs extends runtime.Types.Extensions.Intern
   cancelOfId?: boolean
   createdById?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.MoneyAccountDefaultArgs<ExtArgs>
   category?: boolean | Prisma.FinTransaction$categoryArgs<ExtArgs>
   payment?: boolean | Prisma.FinTransaction$paymentArgs<ExtArgs>
@@ -2035,6 +2329,7 @@ export type FinTransactionSelect<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type FinTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   accountId?: boolean
   date?: boolean
   type?: boolean
@@ -2058,6 +2353,7 @@ export type FinTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   cancelOfId?: boolean
   createdById?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.MoneyAccountDefaultArgs<ExtArgs>
   category?: boolean | Prisma.FinTransaction$categoryArgs<ExtArgs>
   payment?: boolean | Prisma.FinTransaction$paymentArgs<ExtArgs>
@@ -2066,6 +2362,7 @@ export type FinTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Type
 
 export type FinTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   accountId?: boolean
   date?: boolean
   type?: boolean
@@ -2089,6 +2386,7 @@ export type FinTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   cancelOfId?: boolean
   createdById?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.MoneyAccountDefaultArgs<ExtArgs>
   category?: boolean | Prisma.FinTransaction$categoryArgs<ExtArgs>
   payment?: boolean | Prisma.FinTransaction$paymentArgs<ExtArgs>
@@ -2097,6 +2395,7 @@ export type FinTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
 
 export type FinTransactionSelectScalar = {
   id?: boolean
+  zevId?: boolean
   accountId?: boolean
   date?: boolean
   type?: boolean
@@ -2122,8 +2421,9 @@ export type FinTransactionSelectScalar = {
   createdAt?: boolean
 }
 
-export type FinTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "date" | "type" | "amount" | "currency" | "counterpartyName" | "categoryId" | "paymentMethod" | "docRef" | "description" | "buildingId" | "entranceId" | "projectId" | "planItemId" | "expenseId" | "paymentId" | "isReserveFund" | "status" | "cancelledAt" | "cancelReason" | "cancelOfId" | "createdById" | "createdAt", ExtArgs["result"]["finTransaction"]>
+export type FinTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "accountId" | "date" | "type" | "amount" | "currency" | "counterpartyName" | "categoryId" | "paymentMethod" | "docRef" | "description" | "buildingId" | "entranceId" | "projectId" | "planItemId" | "expenseId" | "paymentId" | "isReserveFund" | "status" | "cancelledAt" | "cancelReason" | "cancelOfId" | "createdById" | "createdAt", ExtArgs["result"]["finTransaction"]>
 export type FinTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.MoneyAccountDefaultArgs<ExtArgs>
   category?: boolean | Prisma.FinTransaction$categoryArgs<ExtArgs>
   payment?: boolean | Prisma.FinTransaction$paymentArgs<ExtArgs>
@@ -2133,12 +2433,14 @@ export type FinTransactionInclude<ExtArgs extends runtime.Types.Extensions.Inter
   _count?: boolean | Prisma.FinTransactionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FinTransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.MoneyAccountDefaultArgs<ExtArgs>
   category?: boolean | Prisma.FinTransaction$categoryArgs<ExtArgs>
   payment?: boolean | Prisma.FinTransaction$paymentArgs<ExtArgs>
   cancelOf?: boolean | Prisma.FinTransaction$cancelOfArgs<ExtArgs>
 }
 export type FinTransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.MoneyAccountDefaultArgs<ExtArgs>
   category?: boolean | Prisma.FinTransaction$categoryArgs<ExtArgs>
   payment?: boolean | Prisma.FinTransaction$paymentArgs<ExtArgs>
@@ -2148,6 +2450,7 @@ export type FinTransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type $FinTransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FinTransaction"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     account: Prisma.$MoneyAccountPayload<ExtArgs>
     category: Prisma.$TransactionCategoryPayload<ExtArgs> | null
     payment: Prisma.$PaymentPayload<ExtArgs> | null
@@ -2157,6 +2460,7 @@ export type $FinTransactionPayload<ExtArgs extends runtime.Types.Extensions.Inte
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     accountId: string
     date: Date
     type: $Enums.TxType
@@ -2574,6 +2878,7 @@ readonly fields: FinTransactionFieldRefs;
  */
 export interface Prisma__FinTransactionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   account<T extends Prisma.MoneyAccountDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MoneyAccountDefaultArgs<ExtArgs>>): Prisma.Prisma__MoneyAccountClient<runtime.Types.Result.GetResult<Prisma.$MoneyAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.FinTransaction$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinTransaction$categoryArgs<ExtArgs>>): Prisma.Prisma__TransactionCategoryClient<runtime.Types.Result.GetResult<Prisma.$TransactionCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payment<T extends Prisma.FinTransaction$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinTransaction$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2610,6 +2915,7 @@ export interface Prisma__FinTransactionClient<T, Null = never, ExtArgs extends r
  */
 export interface FinTransactionFieldRefs {
   readonly id: Prisma.FieldRef<"FinTransaction", 'String'>
+  readonly zevId: Prisma.FieldRef<"FinTransaction", 'String'>
   readonly accountId: Prisma.FieldRef<"FinTransaction", 'String'>
   readonly date: Prisma.FieldRef<"FinTransaction", 'DateTime'>
   readonly type: Prisma.FieldRef<"FinTransaction", 'TxType'>

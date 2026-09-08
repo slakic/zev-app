@@ -38,6 +38,7 @@ export type VotingRuleSumAggregateOutputType = {
 
 export type VotingRuleMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   quorumType: $Enums.QuorumType | null
   quorumPercent: runtime.Decimal | null
@@ -50,6 +51,7 @@ export type VotingRuleMinAggregateOutputType = {
 
 export type VotingRuleMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   quorumType: $Enums.QuorumType | null
   quorumPercent: runtime.Decimal | null
@@ -62,6 +64,7 @@ export type VotingRuleMaxAggregateOutputType = {
 
 export type VotingRuleCountAggregateOutputType = {
   id: number
+  zevId: number
   name: number
   quorumType: number
   quorumPercent: number
@@ -86,6 +89,7 @@ export type VotingRuleSumAggregateInputType = {
 
 export type VotingRuleMinAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   quorumType?: true
   quorumPercent?: true
@@ -98,6 +102,7 @@ export type VotingRuleMinAggregateInputType = {
 
 export type VotingRuleMaxAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   quorumType?: true
   quorumPercent?: true
@@ -110,6 +115,7 @@ export type VotingRuleMaxAggregateInputType = {
 
 export type VotingRuleCountAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   quorumType?: true
   quorumPercent?: true
@@ -209,6 +215,7 @@ export type VotingRuleGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type VotingRuleGroupByOutputType = {
   id: string
+  zevId: string
   name: string
   quorumType: $Enums.QuorumType
   quorumPercent: runtime.Decimal | null
@@ -244,6 +251,7 @@ export type VotingRuleWhereInput = {
   OR?: Prisma.VotingRuleWhereInput[]
   NOT?: Prisma.VotingRuleWhereInput | Prisma.VotingRuleWhereInput[]
   id?: Prisma.StringFilter<"VotingRule"> | string
+  zevId?: Prisma.StringFilter<"VotingRule"> | string
   name?: Prisma.StringFilter<"VotingRule"> | string
   quorumType?: Prisma.EnumQuorumTypeFilter<"VotingRule"> | $Enums.QuorumType
   quorumPercent?: Prisma.DecimalNullableFilter<"VotingRule"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -252,11 +260,13 @@ export type VotingRuleWhereInput = {
   weightMethod?: Prisma.EnumWeightMethodFilter<"VotingRule"> | $Enums.WeightMethod
   note?: Prisma.StringNullableFilter<"VotingRule"> | string | null
   createdAt?: Prisma.DateTimeFilter<"VotingRule"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   proposals?: Prisma.ProposalListRelationFilter
 }
 
 export type VotingRuleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   quorumType?: Prisma.SortOrder
   quorumPercent?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -265,15 +275,18 @@ export type VotingRuleOrderByWithRelationInput = {
   weightMethod?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   proposals?: Prisma.ProposalOrderByRelationAggregateInput
 }
 
 export type VotingRuleWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  name?: string
+  zevId_name?: Prisma.VotingRuleZevIdNameCompoundUniqueInput
   AND?: Prisma.VotingRuleWhereInput | Prisma.VotingRuleWhereInput[]
   OR?: Prisma.VotingRuleWhereInput[]
   NOT?: Prisma.VotingRuleWhereInput | Prisma.VotingRuleWhereInput[]
+  zevId?: Prisma.StringFilter<"VotingRule"> | string
+  name?: Prisma.StringFilter<"VotingRule"> | string
   quorumType?: Prisma.EnumQuorumTypeFilter<"VotingRule"> | $Enums.QuorumType
   quorumPercent?: Prisma.DecimalNullableFilter<"VotingRule"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   majorityType?: Prisma.EnumMajorityTypeFilter<"VotingRule"> | $Enums.MajorityType
@@ -281,11 +294,13 @@ export type VotingRuleWhereUniqueInput = Prisma.AtLeast<{
   weightMethod?: Prisma.EnumWeightMethodFilter<"VotingRule"> | $Enums.WeightMethod
   note?: Prisma.StringNullableFilter<"VotingRule"> | string | null
   createdAt?: Prisma.DateTimeFilter<"VotingRule"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   proposals?: Prisma.ProposalListRelationFilter
-}, "id" | "name">
+}, "id" | "zevId_name">
 
 export type VotingRuleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   quorumType?: Prisma.SortOrder
   quorumPercent?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -306,6 +321,7 @@ export type VotingRuleScalarWhereWithAggregatesInput = {
   OR?: Prisma.VotingRuleScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VotingRuleScalarWhereWithAggregatesInput | Prisma.VotingRuleScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"VotingRule"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"VotingRule"> | string
   name?: Prisma.StringWithAggregatesFilter<"VotingRule"> | string
   quorumType?: Prisma.EnumQuorumTypeWithAggregatesFilter<"VotingRule"> | $Enums.QuorumType
   quorumPercent?: Prisma.DecimalNullableWithAggregatesFilter<"VotingRule"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -326,11 +342,13 @@ export type VotingRuleCreateInput = {
   weightMethod: $Enums.WeightMethod
   note?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutVotingRulesInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutVotingRuleInput
 }
 
 export type VotingRuleUncheckedCreateInput = {
   id?: string
+  zevId: string
   name: string
   quorumType: $Enums.QuorumType
   quorumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -352,11 +370,13 @@ export type VotingRuleUpdateInput = {
   weightMethod?: Prisma.EnumWeightMethodFieldUpdateOperationsInput | $Enums.WeightMethod
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotingRulesNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutVotingRuleNestedInput
 }
 
 export type VotingRuleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   quorumType?: Prisma.EnumQuorumTypeFieldUpdateOperationsInput | $Enums.QuorumType
   quorumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -370,6 +390,7 @@ export type VotingRuleUncheckedUpdateInput = {
 
 export type VotingRuleCreateManyInput = {
   id?: string
+  zevId: string
   name: string
   quorumType: $Enums.QuorumType
   quorumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -394,6 +415,7 @@ export type VotingRuleUpdateManyMutationInput = {
 
 export type VotingRuleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   quorumType?: Prisma.EnumQuorumTypeFieldUpdateOperationsInput | $Enums.QuorumType
   quorumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -404,8 +426,24 @@ export type VotingRuleUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type VotingRuleListRelationFilter = {
+  every?: Prisma.VotingRuleWhereInput
+  some?: Prisma.VotingRuleWhereInput
+  none?: Prisma.VotingRuleWhereInput
+}
+
+export type VotingRuleOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type VotingRuleZevIdNameCompoundUniqueInput = {
+  zevId: string
+  name: string
+}
+
 export type VotingRuleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   quorumType?: Prisma.SortOrder
   quorumPercent?: Prisma.SortOrder
@@ -423,6 +461,7 @@ export type VotingRuleAvgOrderByAggregateInput = {
 
 export type VotingRuleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   quorumType?: Prisma.SortOrder
   quorumPercent?: Prisma.SortOrder
@@ -435,6 +474,7 @@ export type VotingRuleMaxOrderByAggregateInput = {
 
 export type VotingRuleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   quorumType?: Prisma.SortOrder
   quorumPercent?: Prisma.SortOrder
@@ -453,6 +493,48 @@ export type VotingRuleSumOrderByAggregateInput = {
 export type VotingRuleNullableScalarRelationFilter = {
   is?: Prisma.VotingRuleWhereInput | null
   isNot?: Prisma.VotingRuleWhereInput | null
+}
+
+export type VotingRuleCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.VotingRuleCreateWithoutZevInput, Prisma.VotingRuleUncheckedCreateWithoutZevInput> | Prisma.VotingRuleCreateWithoutZevInput[] | Prisma.VotingRuleUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VotingRuleCreateOrConnectWithoutZevInput | Prisma.VotingRuleCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.VotingRuleCreateManyZevInputEnvelope
+  connect?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+}
+
+export type VotingRuleUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.VotingRuleCreateWithoutZevInput, Prisma.VotingRuleUncheckedCreateWithoutZevInput> | Prisma.VotingRuleCreateWithoutZevInput[] | Prisma.VotingRuleUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VotingRuleCreateOrConnectWithoutZevInput | Prisma.VotingRuleCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.VotingRuleCreateManyZevInputEnvelope
+  connect?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+}
+
+export type VotingRuleUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.VotingRuleCreateWithoutZevInput, Prisma.VotingRuleUncheckedCreateWithoutZevInput> | Prisma.VotingRuleCreateWithoutZevInput[] | Prisma.VotingRuleUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VotingRuleCreateOrConnectWithoutZevInput | Prisma.VotingRuleCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.VotingRuleUpsertWithWhereUniqueWithoutZevInput | Prisma.VotingRuleUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.VotingRuleCreateManyZevInputEnvelope
+  set?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  disconnect?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  delete?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  connect?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  update?: Prisma.VotingRuleUpdateWithWhereUniqueWithoutZevInput | Prisma.VotingRuleUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.VotingRuleUpdateManyWithWhereWithoutZevInput | Prisma.VotingRuleUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.VotingRuleScalarWhereInput | Prisma.VotingRuleScalarWhereInput[]
+}
+
+export type VotingRuleUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.VotingRuleCreateWithoutZevInput, Prisma.VotingRuleUncheckedCreateWithoutZevInput> | Prisma.VotingRuleCreateWithoutZevInput[] | Prisma.VotingRuleUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VotingRuleCreateOrConnectWithoutZevInput | Prisma.VotingRuleCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.VotingRuleUpsertWithWhereUniqueWithoutZevInput | Prisma.VotingRuleUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.VotingRuleCreateManyZevInputEnvelope
+  set?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  disconnect?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  delete?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  connect?: Prisma.VotingRuleWhereUniqueInput | Prisma.VotingRuleWhereUniqueInput[]
+  update?: Prisma.VotingRuleUpdateWithWhereUniqueWithoutZevInput | Prisma.VotingRuleUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.VotingRuleUpdateManyWithWhereWithoutZevInput | Prisma.VotingRuleUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.VotingRuleScalarWhereInput | Prisma.VotingRuleScalarWhereInput[]
 }
 
 export type EnumQuorumTypeFieldUpdateOperationsInput = {
@@ -491,6 +573,74 @@ export type VotingRuleUpdateOneWithoutProposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VotingRuleUpdateToOneWithWhereWithoutProposalsInput, Prisma.VotingRuleUpdateWithoutProposalsInput>, Prisma.VotingRuleUncheckedUpdateWithoutProposalsInput>
 }
 
+export type VotingRuleCreateWithoutZevInput = {
+  id?: string
+  name: string
+  quorumType: $Enums.QuorumType
+  quorumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType: $Enums.MajorityType
+  majorityPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod: $Enums.WeightMethod
+  note?: string | null
+  createdAt?: Date | string
+  proposals?: Prisma.ProposalCreateNestedManyWithoutVotingRuleInput
+}
+
+export type VotingRuleUncheckedCreateWithoutZevInput = {
+  id?: string
+  name: string
+  quorumType: $Enums.QuorumType
+  quorumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType: $Enums.MajorityType
+  majorityPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod: $Enums.WeightMethod
+  note?: string | null
+  createdAt?: Date | string
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutVotingRuleInput
+}
+
+export type VotingRuleCreateOrConnectWithoutZevInput = {
+  where: Prisma.VotingRuleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VotingRuleCreateWithoutZevInput, Prisma.VotingRuleUncheckedCreateWithoutZevInput>
+}
+
+export type VotingRuleCreateManyZevInputEnvelope = {
+  data: Prisma.VotingRuleCreateManyZevInput | Prisma.VotingRuleCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type VotingRuleUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.VotingRuleWhereUniqueInput
+  update: Prisma.XOR<Prisma.VotingRuleUpdateWithoutZevInput, Prisma.VotingRuleUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.VotingRuleCreateWithoutZevInput, Prisma.VotingRuleUncheckedCreateWithoutZevInput>
+}
+
+export type VotingRuleUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.VotingRuleWhereUniqueInput
+  data: Prisma.XOR<Prisma.VotingRuleUpdateWithoutZevInput, Prisma.VotingRuleUncheckedUpdateWithoutZevInput>
+}
+
+export type VotingRuleUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.VotingRuleScalarWhereInput
+  data: Prisma.XOR<Prisma.VotingRuleUpdateManyMutationInput, Prisma.VotingRuleUncheckedUpdateManyWithoutZevInput>
+}
+
+export type VotingRuleScalarWhereInput = {
+  AND?: Prisma.VotingRuleScalarWhereInput | Prisma.VotingRuleScalarWhereInput[]
+  OR?: Prisma.VotingRuleScalarWhereInput[]
+  NOT?: Prisma.VotingRuleScalarWhereInput | Prisma.VotingRuleScalarWhereInput[]
+  id?: Prisma.StringFilter<"VotingRule"> | string
+  zevId?: Prisma.StringFilter<"VotingRule"> | string
+  name?: Prisma.StringFilter<"VotingRule"> | string
+  quorumType?: Prisma.EnumQuorumTypeFilter<"VotingRule"> | $Enums.QuorumType
+  quorumPercent?: Prisma.DecimalNullableFilter<"VotingRule"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType?: Prisma.EnumMajorityTypeFilter<"VotingRule"> | $Enums.MajorityType
+  majorityPercent?: Prisma.DecimalNullableFilter<"VotingRule"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod?: Prisma.EnumWeightMethodFilter<"VotingRule"> | $Enums.WeightMethod
+  note?: Prisma.StringNullableFilter<"VotingRule"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"VotingRule"> | Date | string
+}
+
 export type VotingRuleCreateWithoutProposalsInput = {
   id?: string
   name: string
@@ -501,10 +651,12 @@ export type VotingRuleCreateWithoutProposalsInput = {
   weightMethod: $Enums.WeightMethod
   note?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutVotingRulesInput
 }
 
 export type VotingRuleUncheckedCreateWithoutProposalsInput = {
   id?: string
+  zevId: string
   name: string
   quorumType: $Enums.QuorumType
   quorumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -541,9 +693,61 @@ export type VotingRuleUpdateWithoutProposalsInput = {
   weightMethod?: Prisma.EnumWeightMethodFieldUpdateOperationsInput | $Enums.WeightMethod
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotingRulesNestedInput
 }
 
 export type VotingRuleUncheckedUpdateWithoutProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  quorumType?: Prisma.EnumQuorumTypeFieldUpdateOperationsInput | $Enums.QuorumType
+  quorumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType?: Prisma.EnumMajorityTypeFieldUpdateOperationsInput | $Enums.MajorityType
+  majorityPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod?: Prisma.EnumWeightMethodFieldUpdateOperationsInput | $Enums.WeightMethod
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VotingRuleCreateManyZevInput = {
+  id?: string
+  name: string
+  quorumType: $Enums.QuorumType
+  quorumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType: $Enums.MajorityType
+  majorityPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod: $Enums.WeightMethod
+  note?: string | null
+  createdAt?: Date | string
+}
+
+export type VotingRuleUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  quorumType?: Prisma.EnumQuorumTypeFieldUpdateOperationsInput | $Enums.QuorumType
+  quorumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType?: Prisma.EnumMajorityTypeFieldUpdateOperationsInput | $Enums.MajorityType
+  majorityPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod?: Prisma.EnumWeightMethodFieldUpdateOperationsInput | $Enums.WeightMethod
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  proposals?: Prisma.ProposalUpdateManyWithoutVotingRuleNestedInput
+}
+
+export type VotingRuleUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  quorumType?: Prisma.EnumQuorumTypeFieldUpdateOperationsInput | $Enums.QuorumType
+  quorumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  majorityType?: Prisma.EnumMajorityTypeFieldUpdateOperationsInput | $Enums.MajorityType
+  majorityPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  weightMethod?: Prisma.EnumWeightMethodFieldUpdateOperationsInput | $Enums.WeightMethod
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutVotingRuleNestedInput
+}
+
+export type VotingRuleUncheckedUpdateManyWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   quorumType?: Prisma.EnumQuorumTypeFieldUpdateOperationsInput | $Enums.QuorumType
@@ -588,6 +792,7 @@ export type VotingRuleCountOutputTypeCountProposalsArgs<ExtArgs extends runtime.
 
 export type VotingRuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   quorumType?: boolean
   quorumPercent?: boolean
@@ -596,12 +801,14 @@ export type VotingRuleSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   weightMethod?: boolean
   note?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposals?: boolean | Prisma.VotingRule$proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.VotingRuleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["votingRule"]>
 
 export type VotingRuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   quorumType?: boolean
   quorumPercent?: boolean
@@ -610,10 +817,12 @@ export type VotingRuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   weightMethod?: boolean
   note?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["votingRule"]>
 
 export type VotingRuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   quorumType?: boolean
   quorumPercent?: boolean
@@ -622,10 +831,12 @@ export type VotingRuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   weightMethod?: boolean
   note?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["votingRule"]>
 
 export type VotingRuleSelectScalar = {
   id?: boolean
+  zevId?: boolean
   name?: boolean
   quorumType?: boolean
   quorumPercent?: boolean
@@ -636,21 +847,28 @@ export type VotingRuleSelectScalar = {
   createdAt?: boolean
 }
 
-export type VotingRuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "quorumType" | "quorumPercent" | "majorityType" | "majorityPercent" | "weightMethod" | "note" | "createdAt", ExtArgs["result"]["votingRule"]>
+export type VotingRuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "quorumType" | "quorumPercent" | "majorityType" | "majorityPercent" | "weightMethod" | "note" | "createdAt", ExtArgs["result"]["votingRule"]>
 export type VotingRuleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposals?: boolean | Prisma.VotingRule$proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.VotingRuleCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type VotingRuleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type VotingRuleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type VotingRuleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type VotingRuleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $VotingRulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "VotingRule"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     proposals: Prisma.$ProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     name: string
     quorumType: $Enums.QuorumType
     quorumPercent: runtime.Decimal | null
@@ -1053,6 +1271,7 @@ readonly fields: VotingRuleFieldRefs;
  */
 export interface Prisma__VotingRuleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   proposals<T extends Prisma.VotingRule$proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VotingRule$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1084,6 +1303,7 @@ export interface Prisma__VotingRuleClient<T, Null = never, ExtArgs extends runti
  */
 export interface VotingRuleFieldRefs {
   readonly id: Prisma.FieldRef<"VotingRule", 'String'>
+  readonly zevId: Prisma.FieldRef<"VotingRule", 'String'>
   readonly name: Prisma.FieldRef<"VotingRule", 'String'>
   readonly quorumType: Prisma.FieldRef<"VotingRule", 'QuorumType'>
   readonly quorumPercent: Prisma.FieldRef<"VotingRule", 'Decimal'>
@@ -1346,6 +1566,10 @@ export type VotingRuleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    */
   data: Prisma.VotingRuleCreateManyInput | Prisma.VotingRuleCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VotingRuleIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1416,6 +1640,10 @@ export type VotingRuleUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many VotingRules to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VotingRuleIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -36,6 +36,7 @@ export type DocumentSumAggregateOutputType = {
 
 export type DocumentMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   type: $Enums.DocumentType | null
   number: string | null
   title: string | null
@@ -53,6 +54,7 @@ export type DocumentMinAggregateOutputType = {
 
 export type DocumentMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   type: $Enums.DocumentType | null
   number: string | null
   title: string | null
@@ -70,6 +72,7 @@ export type DocumentMaxAggregateOutputType = {
 
 export type DocumentCountAggregateOutputType = {
   id: number
+  zevId: number
   type: number
   number: number
   title: number
@@ -97,6 +100,7 @@ export type DocumentSumAggregateInputType = {
 
 export type DocumentMinAggregateInputType = {
   id?: true
+  zevId?: true
   type?: true
   number?: true
   title?: true
@@ -114,6 +118,7 @@ export type DocumentMinAggregateInputType = {
 
 export type DocumentMaxAggregateInputType = {
   id?: true
+  zevId?: true
   type?: true
   number?: true
   title?: true
@@ -131,6 +136,7 @@ export type DocumentMaxAggregateInputType = {
 
 export type DocumentCountAggregateInputType = {
   id?: true
+  zevId?: true
   type?: true
   number?: true
   title?: true
@@ -235,6 +241,7 @@ export type DocumentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type DocumentGroupByOutputType = {
   id: string
+  zevId: string
   type: $Enums.DocumentType
   number: string
   title: string
@@ -275,6 +282,7 @@ export type DocumentWhereInput = {
   OR?: Prisma.DocumentWhereInput[]
   NOT?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
   id?: Prisma.StringFilter<"Document"> | string
+  zevId?: Prisma.StringFilter<"Document"> | string
   type?: Prisma.EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
   number?: Prisma.StringFilter<"Document"> | string
   title?: Prisma.StringFilter<"Document"> | string
@@ -288,10 +296,12 @@ export type DocumentWhereInput = {
   createdById?: Prisma.StringNullableFilter<"Document"> | string | null
   finalizedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
 }
 
 export type DocumentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   number?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -305,14 +315,16 @@ export type DocumentOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   finalizedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
 }
 
 export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  type_number_version?: Prisma.DocumentTypeNumberVersionCompoundUniqueInput
+  zevId_type_number_version?: Prisma.DocumentZevIdTypeNumberVersionCompoundUniqueInput
   AND?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
   OR?: Prisma.DocumentWhereInput[]
   NOT?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
+  zevId?: Prisma.StringFilter<"Document"> | string
   type?: Prisma.EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
   number?: Prisma.StringFilter<"Document"> | string
   title?: Prisma.StringFilter<"Document"> | string
@@ -326,10 +338,12 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringNullableFilter<"Document"> | string | null
   finalizedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
-}, "id" | "type_number_version">
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
+}, "id" | "zevId_type_number_version">
 
 export type DocumentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   number?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -355,6 +369,7 @@ export type DocumentScalarWhereWithAggregatesInput = {
   OR?: Prisma.DocumentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DocumentScalarWhereWithAggregatesInput | Prisma.DocumentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Document"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Document"> | string
   type?: Prisma.EnumDocumentTypeWithAggregatesFilter<"Document"> | $Enums.DocumentType
   number?: Prisma.StringWithAggregatesFilter<"Document"> | string
   title?: Prisma.StringWithAggregatesFilter<"Document"> | string
@@ -385,10 +400,12 @@ export type DocumentCreateInput = {
   createdById?: string | null
   finalizedAt?: Date | string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutDocumentsInput
 }
 
 export type DocumentUncheckedCreateInput = {
   id?: string
+  zevId: string
   type: $Enums.DocumentType
   number: string
   title: string
@@ -419,10 +436,12 @@ export type DocumentUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutDocumentsNestedInput
 }
 
 export type DocumentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
   number?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -440,6 +459,7 @@ export type DocumentUncheckedUpdateInput = {
 
 export type DocumentCreateManyInput = {
   id?: string
+  zevId: string
   type: $Enums.DocumentType
   number: string
   title: string
@@ -474,6 +494,7 @@ export type DocumentUpdateManyMutationInput = {
 
 export type DocumentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
   number?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -489,7 +510,18 @@ export type DocumentUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type DocumentTypeNumberVersionCompoundUniqueInput = {
+export type DocumentListRelationFilter = {
+  every?: Prisma.DocumentWhereInput
+  some?: Prisma.DocumentWhereInput
+  none?: Prisma.DocumentWhereInput
+}
+
+export type DocumentOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type DocumentZevIdTypeNumberVersionCompoundUniqueInput = {
+  zevId: string
   type: $Enums.DocumentType
   number: string
   version: number
@@ -497,6 +529,7 @@ export type DocumentTypeNumberVersionCompoundUniqueInput = {
 
 export type DocumentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   number?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -518,6 +551,7 @@ export type DocumentAvgOrderByAggregateInput = {
 
 export type DocumentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   number?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -535,6 +569,7 @@ export type DocumentMaxOrderByAggregateInput = {
 
 export type DocumentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   number?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -554,6 +589,48 @@ export type DocumentSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
+export type DocumentCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput> | Prisma.DocumentCreateWithoutZevInput[] | Prisma.DocumentUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutZevInput | Prisma.DocumentCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.DocumentCreateManyZevInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput> | Prisma.DocumentCreateWithoutZevInput[] | Prisma.DocumentUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutZevInput | Prisma.DocumentCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.DocumentCreateManyZevInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput> | Prisma.DocumentCreateWithoutZevInput[] | Prisma.DocumentUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutZevInput | Prisma.DocumentCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutZevInput | Prisma.DocumentUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.DocumentCreateManyZevInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutZevInput | Prisma.DocumentUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutZevInput | Prisma.DocumentUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type DocumentUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput> | Prisma.DocumentCreateWithoutZevInput[] | Prisma.DocumentUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutZevInput | Prisma.DocumentCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutZevInput | Prisma.DocumentUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.DocumentCreateManyZevInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutZevInput | Prisma.DocumentUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutZevInput | Prisma.DocumentUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
 export type EnumDocumentTypeFieldUpdateOperationsInput = {
   set?: $Enums.DocumentType
 }
@@ -562,10 +639,160 @@ export type EnumDocumentStatusFieldUpdateOperationsInput = {
   set?: $Enums.DocumentStatus
 }
 
+export type DocumentCreateWithoutZevInput = {
+  id?: string
+  type: $Enums.DocumentType
+  number: string
+  title: string
+  status?: $Enums.DocumentStatus
+  version?: number
+  sourceType?: string | null
+  sourceId?: string | null
+  filePath: string
+  sha256: string
+  publishedToOwners?: boolean
+  createdById?: string | null
+  finalizedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type DocumentUncheckedCreateWithoutZevInput = {
+  id?: string
+  type: $Enums.DocumentType
+  number: string
+  title: string
+  status?: $Enums.DocumentStatus
+  version?: number
+  sourceType?: string | null
+  sourceId?: string | null
+  filePath: string
+  sha256: string
+  publishedToOwners?: boolean
+  createdById?: string | null
+  finalizedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type DocumentCreateOrConnectWithoutZevInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput>
+}
+
+export type DocumentCreateManyZevInputEnvelope = {
+  data: Prisma.DocumentCreateManyZevInput | Prisma.DocumentCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type DocumentUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.DocumentUpdateWithoutZevInput, Prisma.DocumentUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput>
+}
+
+export type DocumentUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.DocumentUpdateWithoutZevInput, Prisma.DocumentUncheckedUpdateWithoutZevInput>
+}
+
+export type DocumentUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.DocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.DocumentUpdateManyMutationInput, Prisma.DocumentUncheckedUpdateManyWithoutZevInput>
+}
+
+export type DocumentScalarWhereInput = {
+  AND?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+  OR?: Prisma.DocumentScalarWhereInput[]
+  NOT?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+  id?: Prisma.StringFilter<"Document"> | string
+  zevId?: Prisma.StringFilter<"Document"> | string
+  type?: Prisma.EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+  number?: Prisma.StringFilter<"Document"> | string
+  title?: Prisma.StringFilter<"Document"> | string
+  status?: Prisma.EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+  version?: Prisma.IntFilter<"Document"> | number
+  sourceType?: Prisma.StringNullableFilter<"Document"> | string | null
+  sourceId?: Prisma.StringNullableFilter<"Document"> | string | null
+  filePath?: Prisma.StringFilter<"Document"> | string
+  sha256?: Prisma.StringFilter<"Document"> | string
+  publishedToOwners?: Prisma.BoolFilter<"Document"> | boolean
+  createdById?: Prisma.StringNullableFilter<"Document"> | string | null
+  finalizedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+}
+
+export type DocumentCreateManyZevInput = {
+  id?: string
+  type: $Enums.DocumentType
+  number: string
+  title: string
+  status?: $Enums.DocumentStatus
+  version?: number
+  sourceType?: string | null
+  sourceId?: string | null
+  filePath: string
+  sha256: string
+  publishedToOwners?: boolean
+  createdById?: string | null
+  finalizedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type DocumentUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   type?: boolean
   number?: boolean
   title?: boolean
@@ -579,10 +806,12 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdById?: boolean
   finalizedAt?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   type?: boolean
   number?: boolean
   title?: boolean
@@ -596,10 +825,12 @@ export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdById?: boolean
   finalizedAt?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   type?: boolean
   number?: boolean
   title?: boolean
@@ -613,10 +844,12 @@ export type DocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdById?: boolean
   finalizedAt?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectScalar = {
   id?: boolean
+  zevId?: boolean
   type?: boolean
   number?: boolean
   title?: boolean
@@ -632,13 +865,25 @@ export type DocumentSelectScalar = {
   createdAt?: boolean
 }
 
-export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "number" | "title" | "status" | "version" | "sourceType" | "sourceId" | "filePath" | "sha256" | "publishedToOwners" | "createdById" | "finalizedAt" | "createdAt", ExtArgs["result"]["document"]>
+export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "type" | "number" | "title" | "status" | "version" | "sourceType" | "sourceId" | "filePath" | "sha256" | "publishedToOwners" | "createdById" | "finalizedAt" | "createdAt", ExtArgs["result"]["document"]>
+export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type DocumentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type DocumentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Document"
-  objects: {}
+  objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     type: $Enums.DocumentType
     number: string
     title: string
@@ -1046,6 +1291,7 @@ readonly fields: DocumentFieldRefs;
  */
 export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1076,6 +1322,7 @@ export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends runtime
  */
 export interface DocumentFieldRefs {
   readonly id: Prisma.FieldRef<"Document", 'String'>
+  readonly zevId: Prisma.FieldRef<"Document", 'String'>
   readonly type: Prisma.FieldRef<"Document", 'DocumentType'>
   readonly number: Prisma.FieldRef<"Document", 'String'>
   readonly title: Prisma.FieldRef<"Document", 'String'>
@@ -1106,6 +1353,10 @@ export type DocumentFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  /**
    * Filter, which Document to fetch.
    */
   where: Prisma.DocumentWhereUniqueInput
@@ -1124,6 +1375,10 @@ export type DocumentFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  /**
    * Filter, which Document to fetch.
    */
   where: Prisma.DocumentWhereUniqueInput
@@ -1141,6 +1396,10 @@ export type DocumentFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Document
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
   /**
    * Filter, which Document to fetch.
    */
@@ -1190,6 +1449,10 @@ export type DocumentFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  /**
    * Filter, which Document to fetch.
    */
   where?: Prisma.DocumentWhereInput
@@ -1237,6 +1500,10 @@ export type DocumentFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Document
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
   /**
    * Filter, which Documents to fetch.
    */
@@ -1286,6 +1553,10 @@ export type DocumentCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  /**
    * The data needed to create a Document.
    */
   data: Prisma.XOR<Prisma.DocumentCreateInput, Prisma.DocumentUncheckedCreateInput>
@@ -1319,6 +1590,10 @@ export type DocumentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.DocumentCreateManyInput | Prisma.DocumentCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1333,6 +1608,10 @@ export type DocumentUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Document
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
   /**
    * The data needed to update a Document.
    */
@@ -1385,6 +1664,10 @@ export type DocumentUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Documents to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1399,6 +1682,10 @@ export type DocumentUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Document
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
   /**
    * The filter to search for the Document to update in case it exists.
    */
@@ -1425,6 +1712,10 @@ export type DocumentDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Document
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
   /**
    * Filter which Document to delete.
    */
@@ -1457,4 +1748,8 @@ export type DocumentDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Document
    */
   omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
 }

@@ -38,6 +38,7 @@ export type AnnualPlanSumAggregateOutputType = {
 
 export type AnnualPlanMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   year: number | null
   kind: $Enums.PlanKind | null
   version: number | null
@@ -52,6 +53,7 @@ export type AnnualPlanMinAggregateOutputType = {
 
 export type AnnualPlanMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   year: number | null
   kind: $Enums.PlanKind | null
   version: number | null
@@ -66,6 +68,7 @@ export type AnnualPlanMaxAggregateOutputType = {
 
 export type AnnualPlanCountAggregateOutputType = {
   id: number
+  zevId: number
   year: number
   kind: number
   version: number
@@ -92,6 +95,7 @@ export type AnnualPlanSumAggregateInputType = {
 
 export type AnnualPlanMinAggregateInputType = {
   id?: true
+  zevId?: true
   year?: true
   kind?: true
   version?: true
@@ -106,6 +110,7 @@ export type AnnualPlanMinAggregateInputType = {
 
 export type AnnualPlanMaxAggregateInputType = {
   id?: true
+  zevId?: true
   year?: true
   kind?: true
   version?: true
@@ -120,6 +125,7 @@ export type AnnualPlanMaxAggregateInputType = {
 
 export type AnnualPlanCountAggregateInputType = {
   id?: true
+  zevId?: true
   year?: true
   kind?: true
   version?: true
@@ -221,6 +227,7 @@ export type AnnualPlanGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type AnnualPlanGroupByOutputType = {
   id: string
+  zevId: string
   year: number
   kind: $Enums.PlanKind
   version: number
@@ -258,6 +265,7 @@ export type AnnualPlanWhereInput = {
   OR?: Prisma.AnnualPlanWhereInput[]
   NOT?: Prisma.AnnualPlanWhereInput | Prisma.AnnualPlanWhereInput[]
   id?: Prisma.StringFilter<"AnnualPlan"> | string
+  zevId?: Prisma.StringFilter<"AnnualPlan"> | string
   year?: Prisma.IntFilter<"AnnualPlan"> | number
   kind?: Prisma.EnumPlanKindFilter<"AnnualPlan"> | $Enums.PlanKind
   version?: Prisma.IntFilter<"AnnualPlan"> | number
@@ -268,11 +276,13 @@ export type AnnualPlanWhereInput = {
   approvedAt?: Prisma.DateTimeNullableFilter<"AnnualPlan"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AnnualPlan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AnnualPlan"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   items?: Prisma.PlanItemListRelationFilter
 }
 
 export type AnnualPlanOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   year?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   version?: Prisma.SortOrder
@@ -283,15 +293,17 @@ export type AnnualPlanOrderByWithRelationInput = {
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   items?: Prisma.PlanItemOrderByRelationAggregateInput
 }
 
 export type AnnualPlanWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  year_kind_version?: Prisma.AnnualPlanYearKindVersionCompoundUniqueInput
+  zevId_year_kind_version?: Prisma.AnnualPlanZevIdYearKindVersionCompoundUniqueInput
   AND?: Prisma.AnnualPlanWhereInput | Prisma.AnnualPlanWhereInput[]
   OR?: Prisma.AnnualPlanWhereInput[]
   NOT?: Prisma.AnnualPlanWhereInput | Prisma.AnnualPlanWhereInput[]
+  zevId?: Prisma.StringFilter<"AnnualPlan"> | string
   year?: Prisma.IntFilter<"AnnualPlan"> | number
   kind?: Prisma.EnumPlanKindFilter<"AnnualPlan"> | $Enums.PlanKind
   version?: Prisma.IntFilter<"AnnualPlan"> | number
@@ -302,11 +314,13 @@ export type AnnualPlanWhereUniqueInput = Prisma.AtLeast<{
   approvedAt?: Prisma.DateTimeNullableFilter<"AnnualPlan"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AnnualPlan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AnnualPlan"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   items?: Prisma.PlanItemListRelationFilter
-}, "id" | "year_kind_version">
+}, "id" | "zevId_year_kind_version">
 
 export type AnnualPlanOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   year?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   version?: Prisma.SortOrder
@@ -329,6 +343,7 @@ export type AnnualPlanScalarWhereWithAggregatesInput = {
   OR?: Prisma.AnnualPlanScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AnnualPlanScalarWhereWithAggregatesInput | Prisma.AnnualPlanScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AnnualPlan"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"AnnualPlan"> | string
   year?: Prisma.IntWithAggregatesFilter<"AnnualPlan"> | number
   kind?: Prisma.EnumPlanKindWithAggregatesFilter<"AnnualPlan"> | $Enums.PlanKind
   version?: Prisma.IntWithAggregatesFilter<"AnnualPlan"> | number
@@ -353,11 +368,13 @@ export type AnnualPlanCreateInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutAnnualPlansInput
   items?: Prisma.PlanItemCreateNestedManyWithoutPlanInput
 }
 
 export type AnnualPlanUncheckedCreateInput = {
   id?: string
+  zevId: string
   year: number
   kind: $Enums.PlanKind
   version?: number
@@ -383,11 +400,13 @@ export type AnnualPlanUpdateInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutAnnualPlansNestedInput
   items?: Prisma.PlanItemUpdateManyWithoutPlanNestedInput
 }
 
 export type AnnualPlanUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
   kind?: Prisma.EnumPlanKindFieldUpdateOperationsInput | $Enums.PlanKind
   version?: Prisma.IntFieldUpdateOperationsInput | number
@@ -403,6 +422,7 @@ export type AnnualPlanUncheckedUpdateInput = {
 
 export type AnnualPlanCreateManyInput = {
   id?: string
+  zevId: string
   year: number
   kind: $Enums.PlanKind
   version?: number
@@ -431,6 +451,7 @@ export type AnnualPlanUpdateManyMutationInput = {
 
 export type AnnualPlanUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
   kind?: Prisma.EnumPlanKindFieldUpdateOperationsInput | $Enums.PlanKind
   version?: Prisma.IntFieldUpdateOperationsInput | number
@@ -443,7 +464,18 @@ export type AnnualPlanUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type AnnualPlanYearKindVersionCompoundUniqueInput = {
+export type AnnualPlanListRelationFilter = {
+  every?: Prisma.AnnualPlanWhereInput
+  some?: Prisma.AnnualPlanWhereInput
+  none?: Prisma.AnnualPlanWhereInput
+}
+
+export type AnnualPlanOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type AnnualPlanZevIdYearKindVersionCompoundUniqueInput = {
+  zevId: string
   year: number
   kind: $Enums.PlanKind
   version: number
@@ -451,6 +483,7 @@ export type AnnualPlanYearKindVersionCompoundUniqueInput = {
 
 export type AnnualPlanCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   year?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   version?: Prisma.SortOrder
@@ -470,6 +503,7 @@ export type AnnualPlanAvgOrderByAggregateInput = {
 
 export type AnnualPlanMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   year?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   version?: Prisma.SortOrder
@@ -484,6 +518,7 @@ export type AnnualPlanMaxOrderByAggregateInput = {
 
 export type AnnualPlanMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   year?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   version?: Prisma.SortOrder
@@ -504,6 +539,48 @@ export type AnnualPlanSumOrderByAggregateInput = {
 export type AnnualPlanScalarRelationFilter = {
   is?: Prisma.AnnualPlanWhereInput
   isNot?: Prisma.AnnualPlanWhereInput
+}
+
+export type AnnualPlanCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.AnnualPlanCreateWithoutZevInput, Prisma.AnnualPlanUncheckedCreateWithoutZevInput> | Prisma.AnnualPlanCreateWithoutZevInput[] | Prisma.AnnualPlanUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AnnualPlanCreateOrConnectWithoutZevInput | Prisma.AnnualPlanCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.AnnualPlanCreateManyZevInputEnvelope
+  connect?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+}
+
+export type AnnualPlanUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.AnnualPlanCreateWithoutZevInput, Prisma.AnnualPlanUncheckedCreateWithoutZevInput> | Prisma.AnnualPlanCreateWithoutZevInput[] | Prisma.AnnualPlanUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AnnualPlanCreateOrConnectWithoutZevInput | Prisma.AnnualPlanCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.AnnualPlanCreateManyZevInputEnvelope
+  connect?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+}
+
+export type AnnualPlanUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.AnnualPlanCreateWithoutZevInput, Prisma.AnnualPlanUncheckedCreateWithoutZevInput> | Prisma.AnnualPlanCreateWithoutZevInput[] | Prisma.AnnualPlanUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AnnualPlanCreateOrConnectWithoutZevInput | Prisma.AnnualPlanCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.AnnualPlanUpsertWithWhereUniqueWithoutZevInput | Prisma.AnnualPlanUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.AnnualPlanCreateManyZevInputEnvelope
+  set?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  disconnect?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  delete?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  connect?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  update?: Prisma.AnnualPlanUpdateWithWhereUniqueWithoutZevInput | Prisma.AnnualPlanUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.AnnualPlanUpdateManyWithWhereWithoutZevInput | Prisma.AnnualPlanUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.AnnualPlanScalarWhereInput | Prisma.AnnualPlanScalarWhereInput[]
+}
+
+export type AnnualPlanUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.AnnualPlanCreateWithoutZevInput, Prisma.AnnualPlanUncheckedCreateWithoutZevInput> | Prisma.AnnualPlanCreateWithoutZevInput[] | Prisma.AnnualPlanUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AnnualPlanCreateOrConnectWithoutZevInput | Prisma.AnnualPlanCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.AnnualPlanUpsertWithWhereUniqueWithoutZevInput | Prisma.AnnualPlanUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.AnnualPlanCreateManyZevInputEnvelope
+  set?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  disconnect?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  delete?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  connect?: Prisma.AnnualPlanWhereUniqueInput | Prisma.AnnualPlanWhereUniqueInput[]
+  update?: Prisma.AnnualPlanUpdateWithWhereUniqueWithoutZevInput | Prisma.AnnualPlanUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.AnnualPlanUpdateManyWithWhereWithoutZevInput | Prisma.AnnualPlanUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.AnnualPlanScalarWhereInput | Prisma.AnnualPlanScalarWhereInput[]
 }
 
 export type EnumPlanKindFieldUpdateOperationsInput = {
@@ -528,6 +605,80 @@ export type AnnualPlanUpdateOneRequiredWithoutItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AnnualPlanUpdateToOneWithWhereWithoutItemsInput, Prisma.AnnualPlanUpdateWithoutItemsInput>, Prisma.AnnualPlanUncheckedUpdateWithoutItemsInput>
 }
 
+export type AnnualPlanCreateWithoutZevInput = {
+  id?: string
+  year: number
+  kind: $Enums.PlanKind
+  version?: number
+  status?: $Enums.PlanStatus
+  title: string
+  note?: string | null
+  approvedByProposalId?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.PlanItemCreateNestedManyWithoutPlanInput
+}
+
+export type AnnualPlanUncheckedCreateWithoutZevInput = {
+  id?: string
+  year: number
+  kind: $Enums.PlanKind
+  version?: number
+  status?: $Enums.PlanStatus
+  title: string
+  note?: string | null
+  approvedByProposalId?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.PlanItemUncheckedCreateNestedManyWithoutPlanInput
+}
+
+export type AnnualPlanCreateOrConnectWithoutZevInput = {
+  where: Prisma.AnnualPlanWhereUniqueInput
+  create: Prisma.XOR<Prisma.AnnualPlanCreateWithoutZevInput, Prisma.AnnualPlanUncheckedCreateWithoutZevInput>
+}
+
+export type AnnualPlanCreateManyZevInputEnvelope = {
+  data: Prisma.AnnualPlanCreateManyZevInput | Prisma.AnnualPlanCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type AnnualPlanUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.AnnualPlanWhereUniqueInput
+  update: Prisma.XOR<Prisma.AnnualPlanUpdateWithoutZevInput, Prisma.AnnualPlanUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.AnnualPlanCreateWithoutZevInput, Prisma.AnnualPlanUncheckedCreateWithoutZevInput>
+}
+
+export type AnnualPlanUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.AnnualPlanWhereUniqueInput
+  data: Prisma.XOR<Prisma.AnnualPlanUpdateWithoutZevInput, Prisma.AnnualPlanUncheckedUpdateWithoutZevInput>
+}
+
+export type AnnualPlanUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.AnnualPlanScalarWhereInput
+  data: Prisma.XOR<Prisma.AnnualPlanUpdateManyMutationInput, Prisma.AnnualPlanUncheckedUpdateManyWithoutZevInput>
+}
+
+export type AnnualPlanScalarWhereInput = {
+  AND?: Prisma.AnnualPlanScalarWhereInput | Prisma.AnnualPlanScalarWhereInput[]
+  OR?: Prisma.AnnualPlanScalarWhereInput[]
+  NOT?: Prisma.AnnualPlanScalarWhereInput | Prisma.AnnualPlanScalarWhereInput[]
+  id?: Prisma.StringFilter<"AnnualPlan"> | string
+  zevId?: Prisma.StringFilter<"AnnualPlan"> | string
+  year?: Prisma.IntFilter<"AnnualPlan"> | number
+  kind?: Prisma.EnumPlanKindFilter<"AnnualPlan"> | $Enums.PlanKind
+  version?: Prisma.IntFilter<"AnnualPlan"> | number
+  status?: Prisma.EnumPlanStatusFilter<"AnnualPlan"> | $Enums.PlanStatus
+  title?: Prisma.StringFilter<"AnnualPlan"> | string
+  note?: Prisma.StringNullableFilter<"AnnualPlan"> | string | null
+  approvedByProposalId?: Prisma.StringNullableFilter<"AnnualPlan"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"AnnualPlan"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"AnnualPlan"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AnnualPlan"> | Date | string
+}
+
 export type AnnualPlanCreateWithoutItemsInput = {
   id?: string
   year: number
@@ -540,10 +691,12 @@ export type AnnualPlanCreateWithoutItemsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutAnnualPlansInput
 }
 
 export type AnnualPlanUncheckedCreateWithoutItemsInput = {
   id?: string
+  zevId: string
   year: number
   kind: $Enums.PlanKind
   version?: number
@@ -584,9 +737,69 @@ export type AnnualPlanUpdateWithoutItemsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutAnnualPlansNestedInput
 }
 
 export type AnnualPlanUncheckedUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  kind?: Prisma.EnumPlanKindFieldUpdateOperationsInput | $Enums.PlanKind
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByProposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AnnualPlanCreateManyZevInput = {
+  id?: string
+  year: number
+  kind: $Enums.PlanKind
+  version?: number
+  status?: $Enums.PlanStatus
+  title: string
+  note?: string | null
+  approvedByProposalId?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AnnualPlanUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  kind?: Prisma.EnumPlanKindFieldUpdateOperationsInput | $Enums.PlanKind
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByProposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.PlanItemUpdateManyWithoutPlanNestedInput
+}
+
+export type AnnualPlanUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  kind?: Prisma.EnumPlanKindFieldUpdateOperationsInput | $Enums.PlanKind
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByProposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.PlanItemUncheckedUpdateManyWithoutPlanNestedInput
+}
+
+export type AnnualPlanUncheckedUpdateManyWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
   kind?: Prisma.EnumPlanKindFieldUpdateOperationsInput | $Enums.PlanKind
@@ -633,6 +846,7 @@ export type AnnualPlanCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Type
 
 export type AnnualPlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   year?: boolean
   kind?: boolean
   version?: boolean
@@ -643,12 +857,14 @@ export type AnnualPlanSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   items?: boolean | Prisma.AnnualPlan$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.AnnualPlanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["annualPlan"]>
 
 export type AnnualPlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   year?: boolean
   kind?: boolean
   version?: boolean
@@ -659,10 +875,12 @@ export type AnnualPlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["annualPlan"]>
 
 export type AnnualPlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   year?: boolean
   kind?: boolean
   version?: boolean
@@ -673,10 +891,12 @@ export type AnnualPlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["annualPlan"]>
 
 export type AnnualPlanSelectScalar = {
   id?: boolean
+  zevId?: boolean
   year?: boolean
   kind?: boolean
   version?: boolean
@@ -689,21 +909,28 @@ export type AnnualPlanSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AnnualPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "year" | "kind" | "version" | "status" | "title" | "note" | "approvedByProposalId" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["annualPlan"]>
+export type AnnualPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "year" | "kind" | "version" | "status" | "title" | "note" | "approvedByProposalId" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["annualPlan"]>
 export type AnnualPlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   items?: boolean | Prisma.AnnualPlan$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.AnnualPlanCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type AnnualPlanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type AnnualPlanIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type AnnualPlanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type AnnualPlanIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $AnnualPlanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AnnualPlan"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     items: Prisma.$PlanItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     year: number
     kind: $Enums.PlanKind
     version: number
@@ -1108,6 +1335,7 @@ readonly fields: AnnualPlanFieldRefs;
  */
 export interface Prisma__AnnualPlanClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.AnnualPlan$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AnnualPlan$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1139,6 +1367,7 @@ export interface Prisma__AnnualPlanClient<T, Null = never, ExtArgs extends runti
  */
 export interface AnnualPlanFieldRefs {
   readonly id: Prisma.FieldRef<"AnnualPlan", 'String'>
+  readonly zevId: Prisma.FieldRef<"AnnualPlan", 'String'>
   readonly year: Prisma.FieldRef<"AnnualPlan", 'Int'>
   readonly kind: Prisma.FieldRef<"AnnualPlan", 'PlanKind'>
   readonly version: Prisma.FieldRef<"AnnualPlan", 'Int'>
@@ -1403,6 +1632,10 @@ export type AnnualPlanCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    */
   data: Prisma.AnnualPlanCreateManyInput | Prisma.AnnualPlanCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnnualPlanIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1473,6 +1706,10 @@ export type AnnualPlanUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many AnnualPlans to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnnualPlanIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -26,6 +26,7 @@ export type AggregateEntrance = {
 
 export type EntranceMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   buildingId: string | null
   name: string | null
   address: string | null
@@ -36,6 +37,7 @@ export type EntranceMinAggregateOutputType = {
 
 export type EntranceMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   buildingId: string | null
   name: string | null
   address: string | null
@@ -46,6 +48,7 @@ export type EntranceMaxAggregateOutputType = {
 
 export type EntranceCountAggregateOutputType = {
   id: number
+  zevId: number
   buildingId: number
   name: number
   address: number
@@ -58,6 +61,7 @@ export type EntranceCountAggregateOutputType = {
 
 export type EntranceMinAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   name?: true
   address?: true
@@ -68,6 +72,7 @@ export type EntranceMinAggregateInputType = {
 
 export type EntranceMaxAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   name?: true
   address?: true
@@ -78,6 +83,7 @@ export type EntranceMaxAggregateInputType = {
 
 export type EntranceCountAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   name?: true
   address?: true
@@ -161,6 +167,7 @@ export type EntranceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type EntranceGroupByOutputType = {
   id: string
+  zevId: string
   buildingId: string
   name: string
   address: string | null
@@ -192,24 +199,28 @@ export type EntranceWhereInput = {
   OR?: Prisma.EntranceWhereInput[]
   NOT?: Prisma.EntranceWhereInput | Prisma.EntranceWhereInput[]
   id?: Prisma.StringFilter<"Entrance"> | string
+  zevId?: Prisma.StringFilter<"Entrance"> | string
   buildingId?: Prisma.StringFilter<"Entrance"> | string
   name?: Prisma.StringFilter<"Entrance"> | string
   address?: Prisma.StringNullableFilter<"Entrance"> | string | null
   note?: Prisma.StringNullableFilter<"Entrance"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   building?: Prisma.XOR<Prisma.BuildingScalarRelationFilter, Prisma.BuildingWhereInput>
   units?: Prisma.UnitListRelationFilter
 }
 
 export type EntranceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   building?: Prisma.BuildingOrderByWithRelationInput
   units?: Prisma.UnitOrderByRelationAggregateInput
 }
@@ -219,18 +230,21 @@ export type EntranceWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EntranceWhereInput | Prisma.EntranceWhereInput[]
   OR?: Prisma.EntranceWhereInput[]
   NOT?: Prisma.EntranceWhereInput | Prisma.EntranceWhereInput[]
+  zevId?: Prisma.StringFilter<"Entrance"> | string
   buildingId?: Prisma.StringFilter<"Entrance"> | string
   name?: Prisma.StringFilter<"Entrance"> | string
   address?: Prisma.StringNullableFilter<"Entrance"> | string | null
   note?: Prisma.StringNullableFilter<"Entrance"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   building?: Prisma.XOR<Prisma.BuildingScalarRelationFilter, Prisma.BuildingWhereInput>
   units?: Prisma.UnitListRelationFilter
 }, "id">
 
 export type EntranceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -247,6 +261,7 @@ export type EntranceScalarWhereWithAggregatesInput = {
   OR?: Prisma.EntranceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EntranceScalarWhereWithAggregatesInput | Prisma.EntranceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Entrance"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Entrance"> | string
   buildingId?: Prisma.StringWithAggregatesFilter<"Entrance"> | string
   name?: Prisma.StringWithAggregatesFilter<"Entrance"> | string
   address?: Prisma.StringNullableWithAggregatesFilter<"Entrance"> | string | null
@@ -262,12 +277,14 @@ export type EntranceCreateInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutEntrancesInput
   building: Prisma.BuildingCreateNestedOneWithoutEntrancesInput
   units?: Prisma.UnitCreateNestedManyWithoutEntranceInput
 }
 
 export type EntranceUncheckedCreateInput = {
   id?: string
+  zevId: string
   buildingId: string
   name: string
   address?: string | null
@@ -284,12 +301,14 @@ export type EntranceUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutEntrancesNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutEntrancesNestedInput
   units?: Prisma.UnitUpdateManyWithoutEntranceNestedInput
 }
 
 export type EntranceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -301,6 +320,7 @@ export type EntranceUncheckedUpdateInput = {
 
 export type EntranceCreateManyInput = {
   id?: string
+  zevId: string
   buildingId: string
   name: string
   address?: string | null
@@ -320,6 +340,7 @@ export type EntranceUpdateManyMutationInput = {
 
 export type EntranceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -340,6 +361,7 @@ export type EntranceOrderByRelationAggregateInput = {
 
 export type EntranceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -350,6 +372,7 @@ export type EntranceCountOrderByAggregateInput = {
 
 export type EntranceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -360,6 +383,7 @@ export type EntranceMaxOrderByAggregateInput = {
 
 export type EntranceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -371,6 +395,48 @@ export type EntranceMinOrderByAggregateInput = {
 export type EntranceNullableScalarRelationFilter = {
   is?: Prisma.EntranceWhereInput | null
   isNot?: Prisma.EntranceWhereInput | null
+}
+
+export type EntranceCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.EntranceCreateWithoutZevInput, Prisma.EntranceUncheckedCreateWithoutZevInput> | Prisma.EntranceCreateWithoutZevInput[] | Prisma.EntranceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.EntranceCreateOrConnectWithoutZevInput | Prisma.EntranceCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.EntranceCreateManyZevInputEnvelope
+  connect?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+}
+
+export type EntranceUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.EntranceCreateWithoutZevInput, Prisma.EntranceUncheckedCreateWithoutZevInput> | Prisma.EntranceCreateWithoutZevInput[] | Prisma.EntranceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.EntranceCreateOrConnectWithoutZevInput | Prisma.EntranceCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.EntranceCreateManyZevInputEnvelope
+  connect?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+}
+
+export type EntranceUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.EntranceCreateWithoutZevInput, Prisma.EntranceUncheckedCreateWithoutZevInput> | Prisma.EntranceCreateWithoutZevInput[] | Prisma.EntranceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.EntranceCreateOrConnectWithoutZevInput | Prisma.EntranceCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.EntranceUpsertWithWhereUniqueWithoutZevInput | Prisma.EntranceUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.EntranceCreateManyZevInputEnvelope
+  set?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  disconnect?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  delete?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  connect?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  update?: Prisma.EntranceUpdateWithWhereUniqueWithoutZevInput | Prisma.EntranceUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.EntranceUpdateManyWithWhereWithoutZevInput | Prisma.EntranceUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.EntranceScalarWhereInput | Prisma.EntranceScalarWhereInput[]
+}
+
+export type EntranceUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.EntranceCreateWithoutZevInput, Prisma.EntranceUncheckedCreateWithoutZevInput> | Prisma.EntranceCreateWithoutZevInput[] | Prisma.EntranceUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.EntranceCreateOrConnectWithoutZevInput | Prisma.EntranceCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.EntranceUpsertWithWhereUniqueWithoutZevInput | Prisma.EntranceUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.EntranceCreateManyZevInputEnvelope
+  set?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  disconnect?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  delete?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  connect?: Prisma.EntranceWhereUniqueInput | Prisma.EntranceWhereUniqueInput[]
+  update?: Prisma.EntranceUpdateWithWhereUniqueWithoutZevInput | Prisma.EntranceUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.EntranceUpdateManyWithWhereWithoutZevInput | Prisma.EntranceUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.EntranceScalarWhereInput | Prisma.EntranceScalarWhereInput[]
 }
 
 export type EntranceCreateNestedManyWithoutBuildingInput = {
@@ -431,6 +497,68 @@ export type EntranceUpdateOneWithoutUnitsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EntranceUpdateToOneWithWhereWithoutUnitsInput, Prisma.EntranceUpdateWithoutUnitsInput>, Prisma.EntranceUncheckedUpdateWithoutUnitsInput>
 }
 
+export type EntranceCreateWithoutZevInput = {
+  id?: string
+  name: string
+  address?: string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  building: Prisma.BuildingCreateNestedOneWithoutEntrancesInput
+  units?: Prisma.UnitCreateNestedManyWithoutEntranceInput
+}
+
+export type EntranceUncheckedCreateWithoutZevInput = {
+  id?: string
+  buildingId: string
+  name: string
+  address?: string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutEntranceInput
+}
+
+export type EntranceCreateOrConnectWithoutZevInput = {
+  where: Prisma.EntranceWhereUniqueInput
+  create: Prisma.XOR<Prisma.EntranceCreateWithoutZevInput, Prisma.EntranceUncheckedCreateWithoutZevInput>
+}
+
+export type EntranceCreateManyZevInputEnvelope = {
+  data: Prisma.EntranceCreateManyZevInput | Prisma.EntranceCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type EntranceUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.EntranceWhereUniqueInput
+  update: Prisma.XOR<Prisma.EntranceUpdateWithoutZevInput, Prisma.EntranceUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.EntranceCreateWithoutZevInput, Prisma.EntranceUncheckedCreateWithoutZevInput>
+}
+
+export type EntranceUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.EntranceWhereUniqueInput
+  data: Prisma.XOR<Prisma.EntranceUpdateWithoutZevInput, Prisma.EntranceUncheckedUpdateWithoutZevInput>
+}
+
+export type EntranceUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.EntranceScalarWhereInput
+  data: Prisma.XOR<Prisma.EntranceUpdateManyMutationInput, Prisma.EntranceUncheckedUpdateManyWithoutZevInput>
+}
+
+export type EntranceScalarWhereInput = {
+  AND?: Prisma.EntranceScalarWhereInput | Prisma.EntranceScalarWhereInput[]
+  OR?: Prisma.EntranceScalarWhereInput[]
+  NOT?: Prisma.EntranceScalarWhereInput | Prisma.EntranceScalarWhereInput[]
+  id?: Prisma.StringFilter<"Entrance"> | string
+  zevId?: Prisma.StringFilter<"Entrance"> | string
+  buildingId?: Prisma.StringFilter<"Entrance"> | string
+  name?: Prisma.StringFilter<"Entrance"> | string
+  address?: Prisma.StringNullableFilter<"Entrance"> | string | null
+  note?: Prisma.StringNullableFilter<"Entrance"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
+}
+
 export type EntranceCreateWithoutBuildingInput = {
   id?: string
   name: string
@@ -438,11 +566,13 @@ export type EntranceCreateWithoutBuildingInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutEntrancesInput
   units?: Prisma.UnitCreateNestedManyWithoutEntranceInput
 }
 
 export type EntranceUncheckedCreateWithoutBuildingInput = {
   id?: string
+  zevId: string
   name: string
   address?: string | null
   note?: string | null
@@ -477,19 +607,6 @@ export type EntranceUpdateManyWithWhereWithoutBuildingInput = {
   data: Prisma.XOR<Prisma.EntranceUpdateManyMutationInput, Prisma.EntranceUncheckedUpdateManyWithoutBuildingInput>
 }
 
-export type EntranceScalarWhereInput = {
-  AND?: Prisma.EntranceScalarWhereInput | Prisma.EntranceScalarWhereInput[]
-  OR?: Prisma.EntranceScalarWhereInput[]
-  NOT?: Prisma.EntranceScalarWhereInput | Prisma.EntranceScalarWhereInput[]
-  id?: Prisma.StringFilter<"Entrance"> | string
-  buildingId?: Prisma.StringFilter<"Entrance"> | string
-  name?: Prisma.StringFilter<"Entrance"> | string
-  address?: Prisma.StringNullableFilter<"Entrance"> | string | null
-  note?: Prisma.StringNullableFilter<"Entrance"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Entrance"> | Date | string
-}
-
 export type EntranceCreateWithoutUnitsInput = {
   id?: string
   name: string
@@ -497,11 +614,13 @@ export type EntranceCreateWithoutUnitsInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutEntrancesInput
   building: Prisma.BuildingCreateNestedOneWithoutEntrancesInput
 }
 
 export type EntranceUncheckedCreateWithoutUnitsInput = {
   id?: string
+  zevId: string
   buildingId: string
   name: string
   address?: string | null
@@ -533,10 +652,54 @@ export type EntranceUpdateWithoutUnitsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutEntrancesNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutEntrancesNestedInput
 }
 
 export type EntranceUncheckedUpdateWithoutUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EntranceCreateManyZevInput = {
+  id?: string
+  buildingId: string
+  name: string
+  address?: string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EntranceUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  building?: Prisma.BuildingUpdateOneRequiredWithoutEntrancesNestedInput
+  units?: Prisma.UnitUpdateManyWithoutEntranceNestedInput
+}
+
+export type EntranceUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  units?: Prisma.UnitUncheckedUpdateManyWithoutEntranceNestedInput
+}
+
+export type EntranceUncheckedUpdateManyWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -548,6 +711,7 @@ export type EntranceUncheckedUpdateWithoutUnitsInput = {
 
 export type EntranceCreateManyBuildingInput = {
   id?: string
+  zevId: string
   name: string
   address?: string | null
   note?: string | null
@@ -562,11 +726,13 @@ export type EntranceUpdateWithoutBuildingInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutEntrancesNestedInput
   units?: Prisma.UnitUpdateManyWithoutEntranceNestedInput
 }
 
 export type EntranceUncheckedUpdateWithoutBuildingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -577,6 +743,7 @@ export type EntranceUncheckedUpdateWithoutBuildingInput = {
 
 export type EntranceUncheckedUpdateManyWithoutBuildingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -617,12 +784,14 @@ export type EntranceCountOutputTypeCountUnitsArgs<ExtArgs extends runtime.Types.
 
 export type EntranceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   name?: boolean
   address?: boolean
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   units?: boolean | Prisma.Entrance$unitsArgs<ExtArgs>
   _count?: boolean | Prisma.EntranceCountOutputTypeDefaultArgs<ExtArgs>
@@ -630,28 +799,33 @@ export type EntranceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 
 export type EntranceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   name?: boolean
   address?: boolean
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["entrance"]>
 
 export type EntranceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   name?: boolean
   address?: boolean
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["entrance"]>
 
 export type EntranceSelectScalar = {
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   name?: boolean
   address?: boolean
@@ -660,27 +834,32 @@ export type EntranceSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EntranceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "buildingId" | "name" | "address" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["entrance"]>
+export type EntranceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "buildingId" | "name" | "address" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["entrance"]>
 export type EntranceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   units?: boolean | Prisma.Entrance$unitsArgs<ExtArgs>
   _count?: boolean | Prisma.EntranceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EntranceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
 }
 export type EntranceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
 }
 
 export type $EntrancePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Entrance"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     building: Prisma.$BuildingPayload<ExtArgs>
     units: Prisma.$UnitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     buildingId: string
     name: string
     address: string | null
@@ -1081,6 +1260,7 @@ readonly fields: EntranceFieldRefs;
  */
 export interface Prisma__EntranceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   building<T extends Prisma.BuildingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BuildingDefaultArgs<ExtArgs>>): Prisma.Prisma__BuildingClient<runtime.Types.Result.GetResult<Prisma.$BuildingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   units<T extends Prisma.Entrance$unitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Entrance$unitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1113,6 +1293,7 @@ export interface Prisma__EntranceClient<T, Null = never, ExtArgs extends runtime
  */
 export interface EntranceFieldRefs {
   readonly id: Prisma.FieldRef<"Entrance", 'String'>
+  readonly zevId: Prisma.FieldRef<"Entrance", 'String'>
   readonly buildingId: Prisma.FieldRef<"Entrance", 'String'>
   readonly name: Prisma.FieldRef<"Entrance", 'String'>
   readonly address: Prisma.FieldRef<"Entrance", 'String'>

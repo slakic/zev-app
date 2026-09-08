@@ -2,7 +2,7 @@
 // regenerating creates a new version row; files are content-hashed.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireSelfOrRole, requireAnyUser, type Actor } from "@/server/auth/guards";
+import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import { formatMoney, formatWeight } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { partyDisplayName } from "./ownership";
@@ -48,8 +48,8 @@ async function renderPdf(build: PdfBuild): Promise<Buffer> {
   return done;
 }
 
-async function zevHeader(doc: PDFKit.PDFDocument, meta: { number: string; title: string; issueDate: Date }) {
-  const zev = await prisma.zev.findFirst();
+async function zevHeader(doc: PDFKit.PDFDocument, zevId: string, meta: { number: string; title: string; issueDate: Date }) {
+  const zev = await prisma.zev.findUnique({ where: { id: zevId } });
   doc.font("bold").fontSize(12).text(zev?.legalName ?? "Zajednica etažnih vlasnika");
   doc.font("reg").fontSize(9)
     .text(zev?.registeredAddress ?? "")
@@ -72,9 +72,9 @@ function docFooter(doc: PDFKit.PDFDocument, info: { sourceRef: string; version: 
     .fillColor("#000");
 }
 
-async function nextDocNumber(type: DocumentType): Promise<string> {
+async function nextDocNumber(zevId: string, type: DocumentType): Promise<string> {
   const year = new Date().getFullYear();
-  const count = await prisma.document.count({ where: { type, createdAt: { gte: new Date(`${year}-01-01`) } } });
+  const count = await prisma.document.count({ where: { zevId, type, createdAt: { gte: new Date(`${year}-01-01`) } } });
   const prefixes: Partial<Record<DocumentType, string>> = {
     MINUTES: "ZAP", DECISION: "ODL", MEETING_INVITATION: "POZ", INVOICE: "FAK",
     OWNER_STATEMENT: "KART", PAYMENT_REMINDER: "OPM", WORK_ORDER: "RN",
@@ -103,20 +103,26 @@ export async function storeDocument(
     number?: string;
   }
 ) {
+  // storeDocument is typed to accept a null actor (some future system-generated
+  // document might have none) but every current caller passes a real one, and a
+  // Document row always needs a tenant — requireZev() throws for a null actor,
+  // same as every other guard in this file.
+  const zevId = requireZev(actor);
   const existing = input.sourceId
     ? await prisma.document.findFirst({
-        where: { type: input.type, sourceId: input.sourceId },
+        where: { zevId, type: input.type, sourceId: input.sourceId },
         orderBy: { version: "desc" },
       })
     : null;
   const version = (existing?.version ?? 0) + 1;
-  const number = input.number ?? existing?.number ?? (await nextDocNumber(input.type));
+  const number = input.number ?? existing?.number ?? (await nextDocNumber(zevId, input.type));
   const hash = createHash("sha256").update(input.buffer).digest("hex");
   const filename = `${number.replace(/[^\w-]/g, "_")}_v${version}.pdf`;
   const filePath = path.join(storageDir(), filename);
   fs.writeFileSync(filePath, input.buffer);
   const docRow = await prisma.document.create({
     data: {
+      zevId,
       type: input.type,
       number,
       title: input.title,
@@ -142,9 +148,10 @@ export async function storeDocument(
 
 export async function listDocuments(actor: Actor) {
   requireAnyUser(actor);
+  const zevId = requireZev(actor);
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   return prisma.document.findMany({
-    where: isManagement ? {} : { publishedToOwners: true },
+    where: isManagement ? { zevId } : { zevId, publishedToOwners: true },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -152,13 +159,14 @@ export async function listDocuments(actor: Actor) {
 /** Read a document file with access control (owners: published docs + own invoices/statements). */
 export async function readDocumentFile(actor: Actor, documentId: string): Promise<{ doc: { title: string; number: string }; buffer: Buffer }> {
   requireAnyUser(actor);
-  const d = await prisma.document.findUniqueOrThrow({ where: { id: documentId } });
+  const zevId = requireZev(actor);
+  const d = await prisma.document.findUniqueOrThrow({ where: { id: documentId, zevId } });
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   if (!isManagement && !d.publishedToOwners) {
     // Owners can read documents about their own records (invoice, statement, reminder).
     let allowed = false;
     if (d.sourceType === "Invoice" && d.sourceId) {
-      const inv = await prisma.invoice.findUnique({ where: { id: d.sourceId } });
+      const inv = await prisma.invoice.findUnique({ where: { id: d.sourceId, zevId } });
       allowed = !!inv && inv.debtorId === actor.partyId;
     } else if (d.sourceType === "Party" && d.sourceId) {
       allowed = d.sourceId === actor.partyId;
@@ -174,7 +182,8 @@ export async function readDocumentFile(actor: Actor, documentId: string): Promis
 
 export async function publishDocument(actor: Actor, documentId: string) {
   requireRole(actor, "PRESIDENT");
-  const d = await prisma.document.update({ where: { id: documentId }, data: { publishedToOwners: true } });
+  const zevId = requireZev(actor);
+  const d = await prisma.document.update({ where: { id: documentId, zevId }, data: { publishedToOwners: true } });
   await audit(actor, { action: "document.publish", targetType: "Document", targetId: documentId });
   return d;
 }
@@ -184,16 +193,17 @@ export async function publishDocument(actor: Actor, documentId: string) {
 // ---------------------------------------------------------------------------
 
 export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
+  const zevId = requireZev(actor);
   const inv = await prisma.invoice.findUniqueOrThrow({
-    where: { id: invoiceId },
+    where: { id: invoiceId, zevId },
     include: { unit: { include: { building: true } }, debtor: true, lines: { orderBy: { order: "asc" } } },
   });
   requireSelfOrRole(actor, inv.debtorId, "PRESIDENT", "ACCOUNTANT");
-  const zev = await prisma.zev.findFirst({ include: { accounts: { where: { type: "BANK", active: true } } } });
+  const zev = await prisma.zev.findUnique({ where: { id: zevId }, include: { accounts: { where: { type: "BANK", active: true } } } });
   const bank = zev?.accounts[0];
 
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: inv.number, title: `FAKTURA ${inv.number}`, issueDate: inv.issueDate });
+    await zevHeader(doc, zevId, { number: inv.number, title: `FAKTURA ${inv.number}`, issueDate: inv.issueDate });
     doc.font("bold").fontSize(10).text("Primalac (dužnik):");
     doc.font("reg")
       .text(partyDisplayName(inv.debtor))
@@ -250,15 +260,16 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
     buffer,
     finalize: true,
   });
-  await prisma.invoice.update({ where: { id: inv.id }, data: { documentId: stored.id } });
+  await prisma.invoice.update({ where: { id: inv.id, zevId }, data: { documentId: stored.id } });
   return stored;
 }
 
 export async function generateOwnerStatementPdf(actor: Actor, partyId: string, asOf?: Date) {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
-  const party = await prisma.party.findUniqueOrThrow({ where: { id: partyId } });
+  const zevId = requireZev(actor);
+  const party = await prisma.party.findUniqueOrThrow({ where: { id: partyId, zevId } });
   const invoices = await prisma.invoice.findMany({
-    where: { debtorId: partyId, status: { in: ["ISSUED", "PAID", "CORRECTED", "CANCELLED"] } },
+    where: { zevId, debtorId: partyId, status: { in: ["ISSUED", "PAID", "CORRECTED", "CANCELLED"] } },
     include: { allocations: true, unit: true },
     orderBy: { issueDate: "asc" },
   });
@@ -266,7 +277,7 @@ export async function generateOwnerStatementPdf(actor: Actor, partyId: string, a
   const balance = await ownerBalance(actor, partyId, asOf);
 
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, {
+    await zevHeader(doc, zevId, {
       number: `KART-${partyId.slice(-6).toUpperCase()}`,
       title: "KARTICA VLASNIKA — PREGLED ZADUŽENJA I UPLATA",
       issueDate: asOf ?? new Date(),
@@ -321,14 +332,15 @@ export async function generateOwnerStatementPdf(actor: Actor, partyId: string, a
  */
 export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Promise<Buffer> {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const party = await prisma.party.findUniqueOrThrow({
-    where: { id: partyId },
+    where: { id: partyId, zevId },
     include: {
       ownershipStakes: { where: { validTo: null }, include: { unit: { include: { building: true } } } },
       user: { select: { email: true } },
     },
   });
-  const zev = await prisma.zev.findFirst();
+  const zev = await prisma.zev.findUnique({ where: { id: zevId } });
   const ownerName = partyDisplayName(party);
   const email = party.user?.email ?? party.email ?? "";
   const unitAddresses = party.ownershipStakes
@@ -461,7 +473,7 @@ export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Pr
   // already-decided SIGNED or REVOKED status, so re-printing a copy can't silently reopen it.
   if (party.eVoteConsentStatus === "NONE" || party.eVoteConsentStatus === "PENDING") {
     await prisma.party.update({
-      where: { id: partyId },
+      where: { id: partyId, zevId },
       data: { eVoteConsentStatus: "PENDING", eVoteConsentEmail: email || null },
     });
   }
@@ -477,12 +489,13 @@ export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Pr
 
 export async function generateMeetingInvitationPdf(actor: Actor, meetingId: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const meeting = await prisma.meeting.findUniqueOrThrow({
-    where: { id: meetingId },
+    where: { id: meetingId, zevId },
     include: { agendaItems: { orderBy: { order: "asc" } } },
   });
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: await nextDocNumber("MEETING_INVITATION"), title: "POZIV NA SJEDNICU SKUPŠTINE", issueDate: new Date() });
+    await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "MEETING_INVITATION"), title: "POZIV NA SJEDNICU SKUPŠTINE", issueDate: new Date() });
     doc.text(`Sjednica: ${meeting.title} (${tEnum("meetingType", meeting.type)})`);
     doc.text(`Mjesto: ${meeting.location ?? "—"}`);
     doc.text(`Vrijeme: ${formatDateTime(meeting.scheduledAt)}`);
@@ -507,8 +520,9 @@ export async function generateMeetingInvitationPdf(actor: Actor, meetingId: stri
 
 export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?: { finalize?: boolean }) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const meeting = await prisma.meeting.findUniqueOrThrow({
-    where: { id: meetingId },
+    where: { id: meetingId, zevId },
     include: {
       agendaItems: { orderBy: { order: "asc" } },
       attendances: { include: { party: true } },
@@ -516,7 +530,7 @@ export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?:
     },
   });
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: await nextDocNumber("MINUTES"), title: "ZAPISNIK SA SJEDNICE SKUPŠTINE", issueDate: new Date() });
+    await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "MINUTES"), title: "ZAPISNIK SA SJEDNICE SKUPŠTINE", issueDate: new Date() });
     doc.text(`Sjednica: ${meeting.title}`);
     doc.text(`Vrijeme: ${formatDateTime(meeting.scheduledAt)}   Mjesto: ${meeting.location ?? "—"}`);
     doc.moveDown().font("bold").text("Prisutni:").font("reg");
@@ -559,11 +573,12 @@ export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?:
 
 export async function generateDecisionPdf(actor: Actor, proposalId: string) {
   requireRole(actor, "PRESIDENT");
-  const p = await prisma.proposal.findUniqueOrThrow({ where: { id: proposalId }, include: { meeting: true } });
+  const zevId = requireZev(actor);
+  const p = await prisma.proposal.findUniqueOrThrow({ where: { id: proposalId, zevId }, include: { meeting: true } });
   if (p.status !== "ACCEPTED" && p.status !== "REJECTED") throw new Error("Odluka se generiše nakon zatvaranja glasanja.");
   const r = p.resultSummary as { approveWeight?: string; rejectWeight?: string; abstainWeight?: string; totalEligibleWeight?: string; accepted?: boolean } | null;
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: p.decisionNumber ?? (await nextDocNumber("DECISION")), title: "ODLUKA SKUPŠTINE ZAJEDNICE ETAŽNIH VLASNIKA", issueDate: new Date() });
+    await zevHeader(doc, zevId, { number: p.decisionNumber ?? (await nextDocNumber(zevId, "DECISION")), title: "ODLUKA SKUPŠTINE ZAJEDNICE ETAŽNIH VLASNIKA", issueDate: new Date() });
     doc.text(`Na osnovu izjašnjavanja o prijedlogu ${p.code} (verzija ${p.version}) na sjednici „${p.meeting.title}",`);
     doc.text(`skupština ZEV donosi sljedeću odluku:`);
     doc.moveDown().font("bold").text(p.title).font("reg").moveDown(0.3);
@@ -593,12 +608,13 @@ export async function generateDecisionPdf(actor: Actor, proposalId: string) {
 
 export async function generateVotingListPdf(actor: Actor, proposalId: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const p = await prisma.proposal.findUniqueOrThrow({
-    where: { id: proposalId },
+    where: { id: proposalId, zevId },
     include: { eligibleVoters: { include: { owner: true, proxy: true, votes: { where: { invalid: false } } } } },
   });
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: await nextDocNumber("VOTING_LIST"), title: `GLASAČKA LISTA — ${p.code} v${p.version}`, issueDate: new Date() });
+    await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "VOTING_LIST"), title: `GLASAČKA LISTA — ${p.code} v${p.version}`, issueDate: new Date() });
     doc.font("bold");
     const y0 = doc.y;
     doc.text("Vlasnik", 50, y0, { width: 180 });
@@ -629,11 +645,12 @@ export async function generateVotingListPdf(actor: Actor, proposalId: string) {
 
 export async function generatePlanPdf(actor: Actor, planId: string) {
   requireRole(actor, "PRESIDENT");
-  const plan = await prisma.annualPlan.findUniqueOrThrow({ where: { id: planId }, include: { items: true } });
+  const zevId = requireZev(actor);
+  const plan = await prisma.annualPlan.findUniqueOrThrow({ where: { id: planId, zevId }, include: { items: true } });
   const type = plan.kind === "MAINTENANCE" ? "ANNUAL_MAINTENANCE_PLAN" : "ANNUAL_FINANCIAL_PLAN";
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, {
-      number: await nextDocNumber(type),
+    await zevHeader(doc, zevId, {
+      number: await nextDocNumber(zevId, type),
       title: `${plan.kind === "MAINTENANCE" ? "GODIŠNJI PLAN ODRŽAVANJA" : "GODIŠNJI FINANSIJSKI PLAN"} — ${plan.year}. (verzija ${plan.version})`,
       issueDate: new Date(),
     });
@@ -662,13 +679,14 @@ export async function generatePlanPdf(actor: Actor, planId: string) {
 
 export async function generatePaymentReminderPdf(actor: Actor, partyId: string) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
-  const party = await prisma.party.findUniqueOrThrow({ where: { id: partyId } });
+  const zevId = requireZev(actor);
+  const party = await prisma.party.findUniqueOrThrow({ where: { id: partyId, zevId } });
   const overdue = await prisma.invoice.findMany({
-    where: { debtorId: partyId, status: "ISSUED", dueDate: { lt: new Date() } },
+    where: { zevId, debtorId: partyId, status: "ISSUED", dueDate: { lt: new Date() } },
     include: { allocations: true, unit: true },
   });
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: await nextDocNumber("PAYMENT_REMINDER"), title: "OPOMENA ZA PLAĆANJE", issueDate: new Date() });
+    await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "PAYMENT_REMINDER"), title: "OPOMENA ZA PLAĆANJE", issueDate: new Date() });
     doc.text(`Poštovani ${partyDisplayName(party)},`);
     doc.moveDown(0.5).text("evidentirali smo sljedeće dospjele, a neplaćene fakture:");
     doc.moveDown(0.5);
@@ -696,12 +714,13 @@ export async function generatePaymentReminderPdf(actor: Actor, partyId: string) 
 
 export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const wo = await prisma.workOrder.findUniqueOrThrow({
-    where: { id: workOrderId },
+    where: { id: workOrderId, zevId },
     include: { supplier: true, issue: { include: { unit: true } } },
   });
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, { number: wo.number, title: `RADNI NALOG ${wo.number}`, issueDate: wo.createdAt });
+    await zevHeader(doc, zevId, { number: wo.number, title: `RADNI NALOG ${wo.number}`, issueDate: wo.createdAt });
     doc.text(`Izvođač: ${wo.supplier.name} (JIB: ${wo.supplier.jib ?? "—"})`);
     doc.text(`Prijava: ${wo.issue.title}`);
     doc.text(`Lokacija: ${wo.issue.locationNote ?? wo.issue.unit?.label ?? "—"}`);
@@ -720,7 +739,7 @@ export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
     buffer,
     finalize: true,
   });
-  await prisma.workOrder.update({ where: { id: wo.id }, data: { documentId: stored.id } });
+  await prisma.workOrder.update({ where: { id: wo.id, zevId }, data: { documentId: stored.id } });
   return stored;
 }
 
@@ -775,6 +794,7 @@ function pdfTable(doc: PDFKit.PDFDocument, cols: PdfCol[], rows: string[][], emp
  */
 export async function generateFinancialReportPdf(actor: Actor, range?: DateRange) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const [cashFlow, incExp, receivables, suppliers, supplierUnpaid, fund, byBuilding, byProject] = await Promise.all([
     cashFlowReport(actor, range),
     incomeExpenseReport(actor, range),
@@ -792,8 +812,8 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
   const section = pdfSection;
   const table = pdfTable;
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, {
-      number: await nextDocNumber("ANNUAL_REPORT"),
+    await zevHeader(doc, zevId, {
+      number: await nextDocNumber(zevId, "ANNUAL_REPORT"),
       title: "FINANSIJSKI IZVJEŠTAJ",
       issueDate: new Date(),
     });
@@ -912,6 +932,7 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
  */
 export async function generateOwnerDebtReportPdf(actor: Actor, opts: { asOf: Date; partyIds?: string[] }) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const report = await ownerDebtReport(actor, opts);
   const scopeLabel =
     opts.partyIds && opts.partyIds.length > 0
@@ -919,8 +940,8 @@ export async function generateOwnerDebtReportPdf(actor: Actor, opts: { asOf: Dat
       : "svi vlasnici";
 
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, {
-      number: await nextDocNumber("DEBT_STATEMENT"),
+    await zevHeader(doc, zevId, {
+      number: await nextDocNumber(zevId, "DEBT_STATEMENT"),
       title: "IZVJEŠTAJ DUGOVANJA PO VLASNICIMA",
       issueDate: new Date(),
     });
@@ -928,21 +949,38 @@ export async function generateOwnerDebtReportPdf(actor: Actor, opts: { asOf: Dat
       width: 495,
       align: "center",
     });
+    doc.fontSize(7.5).fillColor("#555")
+      .text(
+        "Prethodno = saldo prije izabranog dana; Zaduženo/Plaćeno/Korekcije = promjene knjižene na izabrani dan. " +
+          "Pozitivan saldo = vlasnik duguje; negativan = preplata (kredit); 0,00 = izmireno.",
+        50, doc.y, { width: 495, align: "center" }
+      )
+      .fillColor("#000").fontSize(9);
     doc.moveDown();
 
     pdfTable(
       doc,
       [
-        { label: "Vlasnik", x: 50, width: 135 },
-        { label: "Jedinica(e)", x: 190, width: 130 },
-        { label: "Zaduženo", x: 325, width: 65, right: true },
-        { label: "Plaćeno", x: 395, width: 65, right: true },
-        { label: "Saldo (duguje)", x: 465, width: 80, right: true },
+        { label: "Vlasnik", x: 50, width: 85 },
+        { label: "Jedinica(e)", x: 140, width: 75 },
+        { label: "Prethodno", x: 220, width: 60, right: true },
+        { label: "Zaduženo", x: 285, width: 55, right: true },
+        { label: "Plaćeno", x: 345, width: 55, right: true },
+        { label: "Korekcije", x: 405, width: 60, right: true },
+        { label: "Saldo", x: 470, width: 75, right: true },
       ],
-      report.rows.map((r) => [r.name, r.units, formatMoney(r.charged, ""), formatMoney(r.paid, ""), formatMoney(r.balance, "")]),
+      report.rows.map((r) => [
+        r.name,
+        r.units,
+        formatMoney(r.previousBalance, ""),
+        formatMoney(r.chargedToday, ""),
+        formatMoney(r.paidToday, ""),
+        formatMoney(r.correctionsToday, ""),
+        formatMoney(r.balance, ""),
+      ]),
       "Nema vlasnika u odabranom obuhvatu."
     );
-    doc.font("bold").fontSize(9).text(`UKUPNO SALDO: ${formatMoney(report.totalBalance)}`, 50, doc.y, { width: 495, align: "right" });
+    doc.font("bold").fontSize(9).text(`UKUPNO PRETHODNO: ${formatMoney(report.totalPreviousBalance)}   UKUPNO SALDO: ${formatMoney(report.totalBalance)}`, 50, doc.y, { width: 495, align: "right" });
     doc.font("reg");
 
     docFooter(doc, { sourceRef: `Owner debt report ${formatDate(opts.asOf)}`, version: 1, status: "FINAL" });

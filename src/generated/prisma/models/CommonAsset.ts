@@ -26,6 +26,7 @@ export type AggregateCommonAsset = {
 
 export type CommonAssetMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   buildingId: string | null
   kind: $Enums.CommonAssetKind | null
   name: string | null
@@ -38,6 +39,7 @@ export type CommonAssetMinAggregateOutputType = {
 
 export type CommonAssetMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   buildingId: string | null
   kind: $Enums.CommonAssetKind | null
   name: string | null
@@ -50,6 +52,7 @@ export type CommonAssetMaxAggregateOutputType = {
 
 export type CommonAssetCountAggregateOutputType = {
   id: number
+  zevId: number
   buildingId: number
   kind: number
   name: number
@@ -64,6 +67,7 @@ export type CommonAssetCountAggregateOutputType = {
 
 export type CommonAssetMinAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   kind?: true
   name?: true
@@ -76,6 +80,7 @@ export type CommonAssetMinAggregateInputType = {
 
 export type CommonAssetMaxAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   kind?: true
   name?: true
@@ -88,6 +93,7 @@ export type CommonAssetMaxAggregateInputType = {
 
 export type CommonAssetCountAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   kind?: true
   name?: true
@@ -173,6 +179,7 @@ export type CommonAssetGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type CommonAssetGroupByOutputType = {
   id: string
+  zevId: string
   buildingId: string | null
   kind: $Enums.CommonAssetKind
   name: string
@@ -206,6 +213,7 @@ export type CommonAssetWhereInput = {
   OR?: Prisma.CommonAssetWhereInput[]
   NOT?: Prisma.CommonAssetWhereInput | Prisma.CommonAssetWhereInput[]
   id?: Prisma.StringFilter<"CommonAsset"> | string
+  zevId?: Prisma.StringFilter<"CommonAsset"> | string
   buildingId?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
   kind?: Prisma.EnumCommonAssetKindFilter<"CommonAsset"> | $Enums.CommonAssetKind
   name?: Prisma.StringFilter<"CommonAsset"> | string
@@ -214,11 +222,13 @@ export type CommonAssetWhereInput = {
   note?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   building?: Prisma.XOR<Prisma.BuildingNullableScalarRelationFilter, Prisma.BuildingWhereInput> | null
 }
 
 export type CommonAssetOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrderInput | Prisma.SortOrder
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -227,6 +237,7 @@ export type CommonAssetOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   building?: Prisma.BuildingOrderByWithRelationInput
 }
 
@@ -235,6 +246,7 @@ export type CommonAssetWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CommonAssetWhereInput | Prisma.CommonAssetWhereInput[]
   OR?: Prisma.CommonAssetWhereInput[]
   NOT?: Prisma.CommonAssetWhereInput | Prisma.CommonAssetWhereInput[]
+  zevId?: Prisma.StringFilter<"CommonAsset"> | string
   buildingId?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
   kind?: Prisma.EnumCommonAssetKindFilter<"CommonAsset"> | $Enums.CommonAssetKind
   name?: Prisma.StringFilter<"CommonAsset"> | string
@@ -243,11 +255,13 @@ export type CommonAssetWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   building?: Prisma.XOR<Prisma.BuildingNullableScalarRelationFilter, Prisma.BuildingWhereInput> | null
 }, "id">
 
 export type CommonAssetOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrderInput | Prisma.SortOrder
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -266,6 +280,7 @@ export type CommonAssetScalarWhereWithAggregatesInput = {
   OR?: Prisma.CommonAssetScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CommonAssetScalarWhereWithAggregatesInput | Prisma.CommonAssetScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"CommonAsset"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"CommonAsset"> | string
   buildingId?: Prisma.StringNullableWithAggregatesFilter<"CommonAsset"> | string | null
   kind?: Prisma.EnumCommonAssetKindWithAggregatesFilter<"CommonAsset"> | $Enums.CommonAssetKind
   name?: Prisma.StringWithAggregatesFilter<"CommonAsset"> | string
@@ -285,11 +300,13 @@ export type CommonAssetCreateInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutCommonAssetsInput
   building?: Prisma.BuildingCreateNestedOneWithoutCommonAssetsInput
 }
 
 export type CommonAssetUncheckedCreateInput = {
   id?: string
+  zevId: string
   buildingId?: string | null
   kind: $Enums.CommonAssetKind
   name: string
@@ -309,11 +326,13 @@ export type CommonAssetUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutCommonAssetsNestedInput
   building?: Prisma.BuildingUpdateOneWithoutCommonAssetsNestedInput
 }
 
 export type CommonAssetUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -326,6 +345,7 @@ export type CommonAssetUncheckedUpdateInput = {
 
 export type CommonAssetCreateManyInput = {
   id?: string
+  zevId: string
   buildingId?: string | null
   kind: $Enums.CommonAssetKind
   name: string
@@ -349,6 +369,7 @@ export type CommonAssetUpdateManyMutationInput = {
 
 export type CommonAssetUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -371,6 +392,7 @@ export type CommonAssetOrderByRelationAggregateInput = {
 
 export type CommonAssetCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -383,6 +405,7 @@ export type CommonAssetCountOrderByAggregateInput = {
 
 export type CommonAssetMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -395,6 +418,7 @@ export type CommonAssetMaxOrderByAggregateInput = {
 
 export type CommonAssetMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -403,6 +427,48 @@ export type CommonAssetMinOrderByAggregateInput = {
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CommonAssetCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.CommonAssetCreateWithoutZevInput, Prisma.CommonAssetUncheckedCreateWithoutZevInput> | Prisma.CommonAssetCreateWithoutZevInput[] | Prisma.CommonAssetUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.CommonAssetCreateOrConnectWithoutZevInput | Prisma.CommonAssetCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.CommonAssetCreateManyZevInputEnvelope
+  connect?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+}
+
+export type CommonAssetUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.CommonAssetCreateWithoutZevInput, Prisma.CommonAssetUncheckedCreateWithoutZevInput> | Prisma.CommonAssetCreateWithoutZevInput[] | Prisma.CommonAssetUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.CommonAssetCreateOrConnectWithoutZevInput | Prisma.CommonAssetCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.CommonAssetCreateManyZevInputEnvelope
+  connect?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+}
+
+export type CommonAssetUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.CommonAssetCreateWithoutZevInput, Prisma.CommonAssetUncheckedCreateWithoutZevInput> | Prisma.CommonAssetCreateWithoutZevInput[] | Prisma.CommonAssetUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.CommonAssetCreateOrConnectWithoutZevInput | Prisma.CommonAssetCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.CommonAssetUpsertWithWhereUniqueWithoutZevInput | Prisma.CommonAssetUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.CommonAssetCreateManyZevInputEnvelope
+  set?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  disconnect?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  delete?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  connect?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  update?: Prisma.CommonAssetUpdateWithWhereUniqueWithoutZevInput | Prisma.CommonAssetUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.CommonAssetUpdateManyWithWhereWithoutZevInput | Prisma.CommonAssetUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.CommonAssetScalarWhereInput | Prisma.CommonAssetScalarWhereInput[]
+}
+
+export type CommonAssetUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.CommonAssetCreateWithoutZevInput, Prisma.CommonAssetUncheckedCreateWithoutZevInput> | Prisma.CommonAssetCreateWithoutZevInput[] | Prisma.CommonAssetUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.CommonAssetCreateOrConnectWithoutZevInput | Prisma.CommonAssetCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.CommonAssetUpsertWithWhereUniqueWithoutZevInput | Prisma.CommonAssetUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.CommonAssetCreateManyZevInputEnvelope
+  set?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  disconnect?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  delete?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  connect?: Prisma.CommonAssetWhereUniqueInput | Prisma.CommonAssetWhereUniqueInput[]
+  update?: Prisma.CommonAssetUpdateWithWhereUniqueWithoutZevInput | Prisma.CommonAssetUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.CommonAssetUpdateManyWithWhereWithoutZevInput | Prisma.CommonAssetUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.CommonAssetScalarWhereInput | Prisma.CommonAssetScalarWhereInput[]
 }
 
 export type CommonAssetCreateNestedManyWithoutBuildingInput = {
@@ -451,8 +517,21 @@ export type EnumCommonAssetKindFieldUpdateOperationsInput = {
   set?: $Enums.CommonAssetKind
 }
 
-export type CommonAssetCreateWithoutBuildingInput = {
+export type CommonAssetCreateWithoutZevInput = {
   id?: string
+  kind: $Enums.CommonAssetKind
+  name: string
+  description?: string | null
+  warrantyUntil?: Date | string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  building?: Prisma.BuildingCreateNestedOneWithoutCommonAssetsInput
+}
+
+export type CommonAssetUncheckedCreateWithoutZevInput = {
+  id?: string
+  buildingId?: string | null
   kind: $Enums.CommonAssetKind
   name: string
   description?: string | null
@@ -462,8 +541,63 @@ export type CommonAssetCreateWithoutBuildingInput = {
   updatedAt?: Date | string
 }
 
+export type CommonAssetCreateOrConnectWithoutZevInput = {
+  where: Prisma.CommonAssetWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommonAssetCreateWithoutZevInput, Prisma.CommonAssetUncheckedCreateWithoutZevInput>
+}
+
+export type CommonAssetCreateManyZevInputEnvelope = {
+  data: Prisma.CommonAssetCreateManyZevInput | Prisma.CommonAssetCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type CommonAssetUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.CommonAssetWhereUniqueInput
+  update: Prisma.XOR<Prisma.CommonAssetUpdateWithoutZevInput, Prisma.CommonAssetUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.CommonAssetCreateWithoutZevInput, Prisma.CommonAssetUncheckedCreateWithoutZevInput>
+}
+
+export type CommonAssetUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.CommonAssetWhereUniqueInput
+  data: Prisma.XOR<Prisma.CommonAssetUpdateWithoutZevInput, Prisma.CommonAssetUncheckedUpdateWithoutZevInput>
+}
+
+export type CommonAssetUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.CommonAssetScalarWhereInput
+  data: Prisma.XOR<Prisma.CommonAssetUpdateManyMutationInput, Prisma.CommonAssetUncheckedUpdateManyWithoutZevInput>
+}
+
+export type CommonAssetScalarWhereInput = {
+  AND?: Prisma.CommonAssetScalarWhereInput | Prisma.CommonAssetScalarWhereInput[]
+  OR?: Prisma.CommonAssetScalarWhereInput[]
+  NOT?: Prisma.CommonAssetScalarWhereInput | Prisma.CommonAssetScalarWhereInput[]
+  id?: Prisma.StringFilter<"CommonAsset"> | string
+  zevId?: Prisma.StringFilter<"CommonAsset"> | string
+  buildingId?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
+  kind?: Prisma.EnumCommonAssetKindFilter<"CommonAsset"> | $Enums.CommonAssetKind
+  name?: Prisma.StringFilter<"CommonAsset"> | string
+  description?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
+  warrantyUntil?: Prisma.DateTimeNullableFilter<"CommonAsset"> | Date | string | null
+  note?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
+}
+
+export type CommonAssetCreateWithoutBuildingInput = {
+  id?: string
+  kind: $Enums.CommonAssetKind
+  name: string
+  description?: string | null
+  warrantyUntil?: Date | string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutCommonAssetsInput
+}
+
 export type CommonAssetUncheckedCreateWithoutBuildingInput = {
   id?: string
+  zevId: string
   kind: $Enums.CommonAssetKind
   name: string
   description?: string | null
@@ -499,23 +633,57 @@ export type CommonAssetUpdateManyWithWhereWithoutBuildingInput = {
   data: Prisma.XOR<Prisma.CommonAssetUpdateManyMutationInput, Prisma.CommonAssetUncheckedUpdateManyWithoutBuildingInput>
 }
 
-export type CommonAssetScalarWhereInput = {
-  AND?: Prisma.CommonAssetScalarWhereInput | Prisma.CommonAssetScalarWhereInput[]
-  OR?: Prisma.CommonAssetScalarWhereInput[]
-  NOT?: Prisma.CommonAssetScalarWhereInput | Prisma.CommonAssetScalarWhereInput[]
-  id?: Prisma.StringFilter<"CommonAsset"> | string
-  buildingId?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
-  kind?: Prisma.EnumCommonAssetKindFilter<"CommonAsset"> | $Enums.CommonAssetKind
-  name?: Prisma.StringFilter<"CommonAsset"> | string
-  description?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
-  warrantyUntil?: Prisma.DateTimeNullableFilter<"CommonAsset"> | Date | string | null
-  note?: Prisma.StringNullableFilter<"CommonAsset"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"CommonAsset"> | Date | string
+export type CommonAssetCreateManyZevInput = {
+  id?: string
+  buildingId?: string | null
+  kind: $Enums.CommonAssetKind
+  name: string
+  description?: string | null
+  warrantyUntil?: Date | string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CommonAssetUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warrantyUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  building?: Prisma.BuildingUpdateOneWithoutCommonAssetsNestedInput
+}
+
+export type CommonAssetUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warrantyUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CommonAssetUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warrantyUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CommonAssetCreateManyBuildingInput = {
   id?: string
+  zevId: string
   kind: $Enums.CommonAssetKind
   name: string
   description?: string | null
@@ -534,10 +702,12 @@ export type CommonAssetUpdateWithoutBuildingInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutCommonAssetsNestedInput
 }
 
 export type CommonAssetUncheckedUpdateWithoutBuildingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -549,6 +719,7 @@ export type CommonAssetUncheckedUpdateWithoutBuildingInput = {
 
 export type CommonAssetUncheckedUpdateManyWithoutBuildingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumCommonAssetKindFieldUpdateOperationsInput | $Enums.CommonAssetKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -562,6 +733,7 @@ export type CommonAssetUncheckedUpdateManyWithoutBuildingInput = {
 
 export type CommonAssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   kind?: boolean
   name?: boolean
@@ -570,11 +742,13 @@ export type CommonAssetSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.CommonAsset$buildingArgs<ExtArgs>
 }, ExtArgs["result"]["commonAsset"]>
 
 export type CommonAssetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   kind?: boolean
   name?: boolean
@@ -583,11 +757,13 @@ export type CommonAssetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.CommonAsset$buildingArgs<ExtArgs>
 }, ExtArgs["result"]["commonAsset"]>
 
 export type CommonAssetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   kind?: boolean
   name?: boolean
@@ -596,11 +772,13 @@ export type CommonAssetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.CommonAsset$buildingArgs<ExtArgs>
 }, ExtArgs["result"]["commonAsset"]>
 
 export type CommonAssetSelectScalar = {
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   kind?: boolean
   name?: boolean
@@ -611,24 +789,29 @@ export type CommonAssetSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CommonAssetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "buildingId" | "kind" | "name" | "description" | "warrantyUntil" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["commonAsset"]>
+export type CommonAssetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "buildingId" | "kind" | "name" | "description" | "warrantyUntil" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["commonAsset"]>
 export type CommonAssetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.CommonAsset$buildingArgs<ExtArgs>
 }
 export type CommonAssetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.CommonAsset$buildingArgs<ExtArgs>
 }
 export type CommonAssetIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.CommonAsset$buildingArgs<ExtArgs>
 }
 
 export type $CommonAssetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CommonAsset"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     building: Prisma.$BuildingPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     buildingId: string | null
     kind: $Enums.CommonAssetKind
     name: string
@@ -1031,6 +1214,7 @@ readonly fields: CommonAssetFieldRefs;
  */
 export interface Prisma__CommonAssetClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   building<T extends Prisma.CommonAsset$buildingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CommonAsset$buildingArgs<ExtArgs>>): Prisma.Prisma__BuildingClient<runtime.Types.Result.GetResult<Prisma.$BuildingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1062,6 +1246,7 @@ export interface Prisma__CommonAssetClient<T, Null = never, ExtArgs extends runt
  */
 export interface CommonAssetFieldRefs {
   readonly id: Prisma.FieldRef<"CommonAsset", 'String'>
+  readonly zevId: Prisma.FieldRef<"CommonAsset", 'String'>
   readonly buildingId: Prisma.FieldRef<"CommonAsset", 'String'>
   readonly kind: Prisma.FieldRef<"CommonAsset", 'CommonAssetKind'>
   readonly name: Prisma.FieldRef<"CommonAsset", 'String'>

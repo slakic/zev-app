@@ -7,7 +7,7 @@
 // already carries createdAt/reason/before/after for free.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireSelfOrRole, type Actor } from "@/server/auth/guards";
+import { requireRole, requireSelfOrRole, requireZev, type Actor } from "@/server/auth/guards";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
 
 export const EVOTE_CONSENT_STATUSES = ["NONE", "PENDING", "SIGNED", "REVOKED"] as const;
@@ -25,8 +25,9 @@ export type ScannedConsentInput = Pick<UploadInput, "buffer" | "filename" | "mim
  */
 export async function markEVoteConsentSigned(actor: Actor, partyId: string, scan: ScannedConsentInput) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const before = await prisma.party.findUniqueOrThrow({
-    where: { id: partyId },
+    where: { id: partyId, zevId },
     select: { eVoteConsentStatus: true },
   });
 
@@ -40,7 +41,7 @@ export async function markEVoteConsentSigned(actor: Actor, partyId: string, scan
       linkedId: partyId,
     });
     const party = await tx.party.update({
-      where: { id: partyId },
+      where: { id: partyId, zevId },
       data: { eVoteConsentStatus: "SIGNED", eVoteConsentDocumentId: attachment.id },
     });
     return { attachment, party };
@@ -65,15 +66,16 @@ export async function markEVoteConsentSigned(actor: Actor, partyId: string, scan
  */
 export async function revokeEVoteConsent(actor: Actor, partyId: string, reason?: string | null) {
   requireSelfOrRole(actor, partyId, "PRESIDENT");
+  const zevId = requireZev(actor);
   const before = await prisma.party.findUniqueOrThrow({
-    where: { id: partyId },
+    where: { id: partyId, zevId },
     select: { eVoteConsentStatus: true },
   });
   if (before.eVoteConsentStatus === "NONE") {
     throw new Error("Saglasnost nije ni data — nema šta da se povuče.");
   }
   const party = await prisma.party.update({
-    where: { id: partyId },
+    where: { id: partyId, zevId },
     data: { eVoteConsentStatus: "REVOKED" },
   });
   await audit(actor, {
@@ -90,8 +92,12 @@ export async function revokeEVoteConsent(actor: Actor, partyId: string, reason?:
 /** Signed-on / revoked-on / revoke-reason, read back from the audit trail for display. */
 export async function getEVoteConsentHistory(actor: Actor, partyId: string) {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  // Also confirms the party belongs to this tenant before returning its history.
+  await prisma.party.findUniqueOrThrow({ where: { id: partyId, zevId }, select: { id: true } });
   const events = await prisma.auditEvent.findMany({
     where: {
+      zevId,
       targetType: "Party",
       targetId: partyId,
       action: { in: ["party.evote_consent.sign", "party.evote_consent.revoke"] },

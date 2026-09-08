@@ -26,60 +26,66 @@ export type AggregateBankImportBatch = {
 
 export type BankImportBatchMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   filename: string | null
-  importedAt: Date | null
   sourceType: string | null
-  importedById: string | null
   rawText: string | null
+  importedAt: Date | null
+  importedById: string | null
 }
 
 export type BankImportBatchMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   filename: string | null
-  importedAt: Date | null
   sourceType: string | null
-  importedById: string | null
   rawText: string | null
+  importedAt: Date | null
+  importedById: string | null
 }
 
 export type BankImportBatchCountAggregateOutputType = {
   id: number
+  zevId: number
   filename: number
   mapping: number
-  importedAt: number
   sourceType: number
-  importedById: number
   rawText: number
+  importedAt: number
+  importedById: number
   _all: number
 }
 
 
 export type BankImportBatchMinAggregateInputType = {
   id?: true
+  zevId?: true
   filename?: true
-  importedAt?: true
   sourceType?: true
-  importedById?: true
   rawText?: true
+  importedAt?: true
+  importedById?: true
 }
 
 export type BankImportBatchMaxAggregateInputType = {
   id?: true
+  zevId?: true
   filename?: true
-  importedAt?: true
   sourceType?: true
-  importedById?: true
   rawText?: true
+  importedAt?: true
+  importedById?: true
 }
 
 export type BankImportBatchCountAggregateInputType = {
   id?: true
+  zevId?: true
   filename?: true
   mapping?: true
-  importedAt?: true
   sourceType?: true
-  importedById?: true
   rawText?: true
+  importedAt?: true
+  importedById?: true
   _all?: true
 }
 
@@ -157,12 +163,13 @@ export type BankImportBatchGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type BankImportBatchGroupByOutputType = {
   id: string
+  zevId: string
   filename: string
   mapping: runtime.JsonValue
-  importedAt: Date
   sourceType: string
-  importedById: string | null
   rawText: string | null
+  importedAt: Date
+  importedById: string | null
   _count: BankImportBatchCountAggregateOutputType | null
   _min: BankImportBatchMinAggregateOutputType | null
   _max: BankImportBatchMaxAggregateOutputType | null
@@ -188,23 +195,27 @@ export type BankImportBatchWhereInput = {
   OR?: Prisma.BankImportBatchWhereInput[]
   NOT?: Prisma.BankImportBatchWhereInput | Prisma.BankImportBatchWhereInput[]
   id?: Prisma.StringFilter<"BankImportBatch"> | string
+  zevId?: Prisma.StringFilter<"BankImportBatch"> | string
   filename?: Prisma.StringFilter<"BankImportBatch"> | string
   mapping?: Prisma.JsonFilter<"BankImportBatch">
-  importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
   sourceType?: Prisma.StringFilter<"BankImportBatch"> | string
-  importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
   rawText?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
+  importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   payments?: Prisma.PaymentListRelationFilter
 }
 
 export type BankImportBatchOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   filename?: Prisma.SortOrder
   mapping?: Prisma.SortOrder
-  importedAt?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
-  importedById?: Prisma.SortOrderInput | Prisma.SortOrder
   rawText?: Prisma.SortOrderInput | Prisma.SortOrder
+  importedAt?: Prisma.SortOrder
+  importedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
@@ -213,23 +224,26 @@ export type BankImportBatchWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BankImportBatchWhereInput | Prisma.BankImportBatchWhereInput[]
   OR?: Prisma.BankImportBatchWhereInput[]
   NOT?: Prisma.BankImportBatchWhereInput | Prisma.BankImportBatchWhereInput[]
+  zevId?: Prisma.StringFilter<"BankImportBatch"> | string
   filename?: Prisma.StringFilter<"BankImportBatch"> | string
   mapping?: Prisma.JsonFilter<"BankImportBatch">
-  importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
   sourceType?: Prisma.StringFilter<"BankImportBatch"> | string
-  importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
   rawText?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
+  importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   payments?: Prisma.PaymentListRelationFilter
 }, "id">
 
 export type BankImportBatchOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   filename?: Prisma.SortOrder
   mapping?: Prisma.SortOrder
-  importedAt?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
-  importedById?: Prisma.SortOrderInput | Prisma.SortOrder
   rawText?: Prisma.SortOrderInput | Prisma.SortOrder
+  importedAt?: Prisma.SortOrder
+  importedById?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.BankImportBatchCountOrderByAggregateInput
   _max?: Prisma.BankImportBatchMaxOrderByAggregateInput
   _min?: Prisma.BankImportBatchMinOrderByAggregateInput
@@ -240,33 +254,36 @@ export type BankImportBatchScalarWhereWithAggregatesInput = {
   OR?: Prisma.BankImportBatchScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BankImportBatchScalarWhereWithAggregatesInput | Prisma.BankImportBatchScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BankImportBatch"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"BankImportBatch"> | string
   filename?: Prisma.StringWithAggregatesFilter<"BankImportBatch"> | string
   mapping?: Prisma.JsonWithAggregatesFilter<"BankImportBatch">
-  importedAt?: Prisma.DateTimeWithAggregatesFilter<"BankImportBatch"> | Date | string
   sourceType?: Prisma.StringWithAggregatesFilter<"BankImportBatch"> | string
-  importedById?: Prisma.StringNullableWithAggregatesFilter<"BankImportBatch"> | string | null
   rawText?: Prisma.StringNullableWithAggregatesFilter<"BankImportBatch"> | string | null
+  importedAt?: Prisma.DateTimeWithAggregatesFilter<"BankImportBatch"> | Date | string
+  importedById?: Prisma.StringNullableWithAggregatesFilter<"BankImportBatch"> | string | null
 }
 
 export type BankImportBatchCreateInput = {
   id?: string
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Date | string
   sourceType?: string
-  importedById?: string | null
   rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutBankImportBatchesInput
   payments?: Prisma.PaymentCreateNestedManyWithoutImportBatchInput
 }
 
 export type BankImportBatchUncheckedCreateInput = {
   id?: string
+  zevId: string
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Date | string
   sourceType?: string
-  importedById?: string | null
   rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutImportBatchInput
 }
 
@@ -274,85 +291,144 @@ export type BankImportBatchUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceType?: Prisma.StringFieldUpdateOperationsInput | string
-  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutBankImportBatchesNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutImportBatchNestedInput
 }
 
 export type BankImportBatchUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceType?: Prisma.StringFieldUpdateOperationsInput | string
-  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutImportBatchNestedInput
 }
 
 export type BankImportBatchCreateManyInput = {
   id?: string
+  zevId: string
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Date | string
   sourceType?: string
-  importedById?: string | null
   rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
 }
 
 export type BankImportBatchUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceType?: Prisma.StringFieldUpdateOperationsInput | string
-  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BankImportBatchUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceType?: Prisma.StringFieldUpdateOperationsInput | string
-  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type BankImportBatchListRelationFilter = {
+  every?: Prisma.BankImportBatchWhereInput
+  some?: Prisma.BankImportBatchWhereInput
+  none?: Prisma.BankImportBatchWhereInput
+}
+
+export type BankImportBatchOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type BankImportBatchCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   filename?: Prisma.SortOrder
   mapping?: Prisma.SortOrder
-  importedAt?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
-  importedById?: Prisma.SortOrder
   rawText?: Prisma.SortOrder
+  importedAt?: Prisma.SortOrder
+  importedById?: Prisma.SortOrder
 }
 
 export type BankImportBatchMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   filename?: Prisma.SortOrder
-  importedAt?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
-  importedById?: Prisma.SortOrder
   rawText?: Prisma.SortOrder
+  importedAt?: Prisma.SortOrder
+  importedById?: Prisma.SortOrder
 }
 
 export type BankImportBatchMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   filename?: Prisma.SortOrder
-  importedAt?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
-  importedById?: Prisma.SortOrder
   rawText?: Prisma.SortOrder
+  importedAt?: Prisma.SortOrder
+  importedById?: Prisma.SortOrder
 }
 
 export type BankImportBatchNullableScalarRelationFilter = {
   is?: Prisma.BankImportBatchWhereInput | null
   isNot?: Prisma.BankImportBatchWhereInput | null
+}
+
+export type BankImportBatchCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.BankImportBatchCreateWithoutZevInput, Prisma.BankImportBatchUncheckedCreateWithoutZevInput> | Prisma.BankImportBatchCreateWithoutZevInput[] | Prisma.BankImportBatchUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BankImportBatchCreateOrConnectWithoutZevInput | Prisma.BankImportBatchCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.BankImportBatchCreateManyZevInputEnvelope
+  connect?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+}
+
+export type BankImportBatchUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.BankImportBatchCreateWithoutZevInput, Prisma.BankImportBatchUncheckedCreateWithoutZevInput> | Prisma.BankImportBatchCreateWithoutZevInput[] | Prisma.BankImportBatchUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BankImportBatchCreateOrConnectWithoutZevInput | Prisma.BankImportBatchCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.BankImportBatchCreateManyZevInputEnvelope
+  connect?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+}
+
+export type BankImportBatchUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.BankImportBatchCreateWithoutZevInput, Prisma.BankImportBatchUncheckedCreateWithoutZevInput> | Prisma.BankImportBatchCreateWithoutZevInput[] | Prisma.BankImportBatchUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BankImportBatchCreateOrConnectWithoutZevInput | Prisma.BankImportBatchCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.BankImportBatchUpsertWithWhereUniqueWithoutZevInput | Prisma.BankImportBatchUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.BankImportBatchCreateManyZevInputEnvelope
+  set?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  disconnect?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  delete?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  connect?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  update?: Prisma.BankImportBatchUpdateWithWhereUniqueWithoutZevInput | Prisma.BankImportBatchUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.BankImportBatchUpdateManyWithWhereWithoutZevInput | Prisma.BankImportBatchUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.BankImportBatchScalarWhereInput | Prisma.BankImportBatchScalarWhereInput[]
+}
+
+export type BankImportBatchUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.BankImportBatchCreateWithoutZevInput, Prisma.BankImportBatchUncheckedCreateWithoutZevInput> | Prisma.BankImportBatchCreateWithoutZevInput[] | Prisma.BankImportBatchUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BankImportBatchCreateOrConnectWithoutZevInput | Prisma.BankImportBatchCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.BankImportBatchUpsertWithWhereUniqueWithoutZevInput | Prisma.BankImportBatchUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.BankImportBatchCreateManyZevInputEnvelope
+  set?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  disconnect?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  delete?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  connect?: Prisma.BankImportBatchWhereUniqueInput | Prisma.BankImportBatchWhereUniqueInput[]
+  update?: Prisma.BankImportBatchUpdateWithWhereUniqueWithoutZevInput | Prisma.BankImportBatchUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.BankImportBatchUpdateManyWithWhereWithoutZevInput | Prisma.BankImportBatchUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.BankImportBatchScalarWhereInput | Prisma.BankImportBatchScalarWhereInput[]
 }
 
 export type BankImportBatchCreateNestedOneWithoutPaymentsInput = {
@@ -371,24 +447,88 @@ export type BankImportBatchUpdateOneWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BankImportBatchUpdateToOneWithWhereWithoutPaymentsInput, Prisma.BankImportBatchUpdateWithoutPaymentsInput>, Prisma.BankImportBatchUncheckedUpdateWithoutPaymentsInput>
 }
 
+export type BankImportBatchCreateWithoutZevInput = {
+  id?: string
+  filename: string
+  mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sourceType?: string
+  rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
+  payments?: Prisma.PaymentCreateNestedManyWithoutImportBatchInput
+}
+
+export type BankImportBatchUncheckedCreateWithoutZevInput = {
+  id?: string
+  filename: string
+  mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sourceType?: string
+  rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutImportBatchInput
+}
+
+export type BankImportBatchCreateOrConnectWithoutZevInput = {
+  where: Prisma.BankImportBatchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BankImportBatchCreateWithoutZevInput, Prisma.BankImportBatchUncheckedCreateWithoutZevInput>
+}
+
+export type BankImportBatchCreateManyZevInputEnvelope = {
+  data: Prisma.BankImportBatchCreateManyZevInput | Prisma.BankImportBatchCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type BankImportBatchUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.BankImportBatchWhereUniqueInput
+  update: Prisma.XOR<Prisma.BankImportBatchUpdateWithoutZevInput, Prisma.BankImportBatchUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.BankImportBatchCreateWithoutZevInput, Prisma.BankImportBatchUncheckedCreateWithoutZevInput>
+}
+
+export type BankImportBatchUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.BankImportBatchWhereUniqueInput
+  data: Prisma.XOR<Prisma.BankImportBatchUpdateWithoutZevInput, Prisma.BankImportBatchUncheckedUpdateWithoutZevInput>
+}
+
+export type BankImportBatchUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.BankImportBatchScalarWhereInput
+  data: Prisma.XOR<Prisma.BankImportBatchUpdateManyMutationInput, Prisma.BankImportBatchUncheckedUpdateManyWithoutZevInput>
+}
+
+export type BankImportBatchScalarWhereInput = {
+  AND?: Prisma.BankImportBatchScalarWhereInput | Prisma.BankImportBatchScalarWhereInput[]
+  OR?: Prisma.BankImportBatchScalarWhereInput[]
+  NOT?: Prisma.BankImportBatchScalarWhereInput | Prisma.BankImportBatchScalarWhereInput[]
+  id?: Prisma.StringFilter<"BankImportBatch"> | string
+  zevId?: Prisma.StringFilter<"BankImportBatch"> | string
+  filename?: Prisma.StringFilter<"BankImportBatch"> | string
+  mapping?: Prisma.JsonFilter<"BankImportBatch">
+  sourceType?: Prisma.StringFilter<"BankImportBatch"> | string
+  rawText?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+  importedAt?: Prisma.DateTimeFilter<"BankImportBatch"> | Date | string
+  importedById?: Prisma.StringNullableFilter<"BankImportBatch"> | string | null
+}
+
 export type BankImportBatchCreateWithoutPaymentsInput = {
   id?: string
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Date | string
   sourceType?: string
-  importedById?: string | null
   rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutBankImportBatchesInput
 }
 
 export type BankImportBatchUncheckedCreateWithoutPaymentsInput = {
   id?: string
+  zevId: string
   filename: string
   mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Date | string
   sourceType?: string
-  importedById?: string | null
   rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
 }
 
 export type BankImportBatchCreateOrConnectWithoutPaymentsInput = {
@@ -411,20 +551,64 @@ export type BankImportBatchUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceType?: Prisma.StringFieldUpdateOperationsInput | string
-  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutBankImportBatchesNestedInput
 }
 
 export type BankImportBatchUncheckedUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   filename?: Prisma.StringFieldUpdateOperationsInput | string
   mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceType?: Prisma.StringFieldUpdateOperationsInput | string
-  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type BankImportBatchCreateManyZevInput = {
+  id?: string
+  filename: string
+  mapping: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sourceType?: string
+  rawText?: string | null
+  importedAt?: Date | string
+  importedById?: string | null
+}
+
+export type BankImportBatchUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.PaymentUpdateManyWithoutImportBatchNestedInput
+}
+
+export type BankImportBatchUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutImportBatchNestedInput
+}
+
+export type BankImportBatchUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  mapping?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sourceType?: Prisma.StringFieldUpdateOperationsInput | string
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  importedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -460,67 +644,81 @@ export type BankImportBatchCountOutputTypeCountPaymentsArgs<ExtArgs extends runt
 
 export type BankImportBatchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   filename?: boolean
   mapping?: boolean
-  importedAt?: boolean
   sourceType?: boolean
-  importedById?: boolean
   rawText?: boolean
+  importedAt?: boolean
+  importedById?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   payments?: boolean | Prisma.BankImportBatch$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.BankImportBatchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankImportBatch"]>
 
 export type BankImportBatchSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   filename?: boolean
   mapping?: boolean
-  importedAt?: boolean
   sourceType?: boolean
-  importedById?: boolean
   rawText?: boolean
+  importedAt?: boolean
+  importedById?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankImportBatch"]>
 
 export type BankImportBatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   filename?: boolean
   mapping?: boolean
-  importedAt?: boolean
   sourceType?: boolean
-  importedById?: boolean
   rawText?: boolean
+  importedAt?: boolean
+  importedById?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankImportBatch"]>
 
 export type BankImportBatchSelectScalar = {
   id?: boolean
+  zevId?: boolean
   filename?: boolean
   mapping?: boolean
-  importedAt?: boolean
   sourceType?: boolean
-  importedById?: boolean
   rawText?: boolean
+  importedAt?: boolean
+  importedById?: boolean
 }
 
-export type BankImportBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "filename" | "mapping" | "sourceType" | "rawText" | "importedAt" | "importedById", ExtArgs["result"]["bankImportBatch"]>
+export type BankImportBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "filename" | "mapping" | "sourceType" | "rawText" | "importedAt" | "importedById", ExtArgs["result"]["bankImportBatch"]>
 export type BankImportBatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   payments?: boolean | Prisma.BankImportBatch$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.BankImportBatchCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type BankImportBatchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type BankImportBatchIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type BankImportBatchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type BankImportBatchIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $BankImportBatchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BankImportBatch"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     payments: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     filename: string
     mapping: runtime.JsonValue
-    importedAt: Date
     sourceType: string
-    importedById: string | null
     rawText: string | null
+    importedAt: Date
+    importedById: string | null
   }, ExtArgs["result"]["bankImportBatch"]>
   composites: {}
 }
@@ -915,6 +1113,7 @@ readonly fields: BankImportBatchFieldRefs;
  */
 export interface Prisma__BankImportBatchClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   payments<T extends Prisma.BankImportBatch$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BankImportBatch$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -946,12 +1145,13 @@ export interface Prisma__BankImportBatchClient<T, Null = never, ExtArgs extends 
  */
 export interface BankImportBatchFieldRefs {
   readonly id: Prisma.FieldRef<"BankImportBatch", 'String'>
+  readonly zevId: Prisma.FieldRef<"BankImportBatch", 'String'>
   readonly filename: Prisma.FieldRef<"BankImportBatch", 'String'>
   readonly mapping: Prisma.FieldRef<"BankImportBatch", 'Json'>
-  readonly importedAt: Prisma.FieldRef<"BankImportBatch", 'DateTime'>
   readonly sourceType: Prisma.FieldRef<"BankImportBatch", 'String'>
-  readonly importedById: Prisma.FieldRef<"BankImportBatch", 'String'>
   readonly rawText: Prisma.FieldRef<"BankImportBatch", 'String'>
+  readonly importedAt: Prisma.FieldRef<"BankImportBatch", 'DateTime'>
+  readonly importedById: Prisma.FieldRef<"BankImportBatch", 'String'>
 }
     
 
@@ -1206,6 +1406,10 @@ export type BankImportBatchCreateManyAndReturnArgs<ExtArgs extends runtime.Types
    */
   data: Prisma.BankImportBatchCreateManyInput | Prisma.BankImportBatchCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BankImportBatchIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1276,6 +1480,10 @@ export type BankImportBatchUpdateManyAndReturnArgs<ExtArgs extends runtime.Types
    * Limit how many BankImportBatches to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BankImportBatchIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

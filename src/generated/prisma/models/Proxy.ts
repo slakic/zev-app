@@ -26,6 +26,7 @@ export type AggregateProxy = {
 
 export type ProxyMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   grantorId: string | null
   holderId: string | null
   scope: $Enums.ProxyScope | null
@@ -42,6 +43,7 @@ export type ProxyMinAggregateOutputType = {
 
 export type ProxyMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   grantorId: string | null
   holderId: string | null
   scope: $Enums.ProxyScope | null
@@ -58,6 +60,7 @@ export type ProxyMaxAggregateOutputType = {
 
 export type ProxyCountAggregateOutputType = {
   id: number
+  zevId: number
   grantorId: number
   holderId: number
   scope: number
@@ -76,6 +79,7 @@ export type ProxyCountAggregateOutputType = {
 
 export type ProxyMinAggregateInputType = {
   id?: true
+  zevId?: true
   grantorId?: true
   holderId?: true
   scope?: true
@@ -92,6 +96,7 @@ export type ProxyMinAggregateInputType = {
 
 export type ProxyMaxAggregateInputType = {
   id?: true
+  zevId?: true
   grantorId?: true
   holderId?: true
   scope?: true
@@ -108,6 +113,7 @@ export type ProxyMaxAggregateInputType = {
 
 export type ProxyCountAggregateInputType = {
   id?: true
+  zevId?: true
   grantorId?: true
   holderId?: true
   scope?: true
@@ -197,6 +203,7 @@ export type ProxyGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type ProxyGroupByOutputType = {
   id: string
+  zevId: string
   grantorId: string
   holderId: string
   scope: $Enums.ProxyScope
@@ -234,6 +241,7 @@ export type ProxyWhereInput = {
   OR?: Prisma.ProxyWhereInput[]
   NOT?: Prisma.ProxyWhereInput | Prisma.ProxyWhereInput[]
   id?: Prisma.StringFilter<"Proxy"> | string
+  zevId?: Prisma.StringFilter<"Proxy"> | string
   grantorId?: Prisma.StringFilter<"Proxy"> | string
   holderId?: Prisma.StringFilter<"Proxy"> | string
   scope?: Prisma.EnumProxyScopeFilter<"Proxy"> | $Enums.ProxyScope
@@ -246,6 +254,7 @@ export type ProxyWhereInput = {
   revokedReason?: Prisma.StringNullableFilter<"Proxy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Proxy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Proxy"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   grantor?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   holder?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   meeting?: Prisma.XOR<Prisma.MeetingNullableScalarRelationFilter, Prisma.MeetingWhereInput> | null
@@ -253,6 +262,7 @@ export type ProxyWhereInput = {
 
 export type ProxyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   grantorId?: Prisma.SortOrder
   holderId?: Prisma.SortOrder
   scope?: Prisma.SortOrder
@@ -265,6 +275,7 @@ export type ProxyOrderByWithRelationInput = {
   revokedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   grantor?: Prisma.PartyOrderByWithRelationInput
   holder?: Prisma.PartyOrderByWithRelationInput
   meeting?: Prisma.MeetingOrderByWithRelationInput
@@ -275,6 +286,7 @@ export type ProxyWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ProxyWhereInput | Prisma.ProxyWhereInput[]
   OR?: Prisma.ProxyWhereInput[]
   NOT?: Prisma.ProxyWhereInput | Prisma.ProxyWhereInput[]
+  zevId?: Prisma.StringFilter<"Proxy"> | string
   grantorId?: Prisma.StringFilter<"Proxy"> | string
   holderId?: Prisma.StringFilter<"Proxy"> | string
   scope?: Prisma.EnumProxyScopeFilter<"Proxy"> | $Enums.ProxyScope
@@ -287,6 +299,7 @@ export type ProxyWhereUniqueInput = Prisma.AtLeast<{
   revokedReason?: Prisma.StringNullableFilter<"Proxy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Proxy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Proxy"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   grantor?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   holder?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   meeting?: Prisma.XOR<Prisma.MeetingNullableScalarRelationFilter, Prisma.MeetingWhereInput> | null
@@ -294,6 +307,7 @@ export type ProxyWhereUniqueInput = Prisma.AtLeast<{
 
 export type ProxyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   grantorId?: Prisma.SortOrder
   holderId?: Prisma.SortOrder
   scope?: Prisma.SortOrder
@@ -316,6 +330,7 @@ export type ProxyScalarWhereWithAggregatesInput = {
   OR?: Prisma.ProxyScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProxyScalarWhereWithAggregatesInput | Prisma.ProxyScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Proxy"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Proxy"> | string
   grantorId?: Prisma.StringWithAggregatesFilter<"Proxy"> | string
   holderId?: Prisma.StringWithAggregatesFilter<"Proxy"> | string
   scope?: Prisma.EnumProxyScopeWithAggregatesFilter<"Proxy"> | $Enums.ProxyScope
@@ -341,6 +356,7 @@ export type ProxyCreateInput = {
   revokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProxiesInput
   grantor: Prisma.PartyCreateNestedOneWithoutProxiesGivenInput
   holder: Prisma.PartyCreateNestedOneWithoutProxiesHeldInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutProxiesInput
@@ -348,6 +364,7 @@ export type ProxyCreateInput = {
 
 export type ProxyUncheckedCreateInput = {
   id?: string
+  zevId: string
   grantorId: string
   holderId: string
   scope: $Enums.ProxyScope
@@ -373,6 +390,7 @@ export type ProxyUpdateInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProxiesNestedInput
   grantor?: Prisma.PartyUpdateOneRequiredWithoutProxiesGivenNestedInput
   holder?: Prisma.PartyUpdateOneRequiredWithoutProxiesHeldNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutProxiesNestedInput
@@ -380,6 +398,7 @@ export type ProxyUpdateInput = {
 
 export type ProxyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   grantorId?: Prisma.StringFieldUpdateOperationsInput | string
   holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
@@ -396,6 +415,7 @@ export type ProxyUncheckedUpdateInput = {
 
 export type ProxyCreateManyInput = {
   id?: string
+  zevId: string
   grantorId: string
   holderId: string
   scope: $Enums.ProxyScope
@@ -425,6 +445,7 @@ export type ProxyUpdateManyMutationInput = {
 
 export type ProxyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   grantorId?: Prisma.StringFieldUpdateOperationsInput | string
   holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
@@ -451,6 +472,7 @@ export type ProxyOrderByRelationAggregateInput = {
 
 export type ProxyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   grantorId?: Prisma.SortOrder
   holderId?: Prisma.SortOrder
   scope?: Prisma.SortOrder
@@ -467,6 +489,7 @@ export type ProxyCountOrderByAggregateInput = {
 
 export type ProxyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   grantorId?: Prisma.SortOrder
   holderId?: Prisma.SortOrder
   scope?: Prisma.SortOrder
@@ -483,6 +506,7 @@ export type ProxyMaxOrderByAggregateInput = {
 
 export type ProxyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   grantorId?: Prisma.SortOrder
   holderId?: Prisma.SortOrder
   scope?: Prisma.SortOrder
@@ -581,6 +605,48 @@ export type ProxyUncheckedUpdateManyWithoutHolderNestedInput = {
   deleteMany?: Prisma.ProxyScalarWhereInput | Prisma.ProxyScalarWhereInput[]
 }
 
+export type ProxyCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ProxyCreateWithoutZevInput, Prisma.ProxyUncheckedCreateWithoutZevInput> | Prisma.ProxyCreateWithoutZevInput[] | Prisma.ProxyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProxyCreateOrConnectWithoutZevInput | Prisma.ProxyCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ProxyCreateManyZevInputEnvelope
+  connect?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+}
+
+export type ProxyUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ProxyCreateWithoutZevInput, Prisma.ProxyUncheckedCreateWithoutZevInput> | Prisma.ProxyCreateWithoutZevInput[] | Prisma.ProxyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProxyCreateOrConnectWithoutZevInput | Prisma.ProxyCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ProxyCreateManyZevInputEnvelope
+  connect?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+}
+
+export type ProxyUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ProxyCreateWithoutZevInput, Prisma.ProxyUncheckedCreateWithoutZevInput> | Prisma.ProxyCreateWithoutZevInput[] | Prisma.ProxyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProxyCreateOrConnectWithoutZevInput | Prisma.ProxyCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ProxyUpsertWithWhereUniqueWithoutZevInput | Prisma.ProxyUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ProxyCreateManyZevInputEnvelope
+  set?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  disconnect?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  delete?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  connect?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  update?: Prisma.ProxyUpdateWithWhereUniqueWithoutZevInput | Prisma.ProxyUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ProxyUpdateManyWithWhereWithoutZevInput | Prisma.ProxyUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ProxyScalarWhereInput | Prisma.ProxyScalarWhereInput[]
+}
+
+export type ProxyUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ProxyCreateWithoutZevInput, Prisma.ProxyUncheckedCreateWithoutZevInput> | Prisma.ProxyCreateWithoutZevInput[] | Prisma.ProxyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProxyCreateOrConnectWithoutZevInput | Prisma.ProxyCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ProxyUpsertWithWhereUniqueWithoutZevInput | Prisma.ProxyUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ProxyCreateManyZevInputEnvelope
+  set?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  disconnect?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  delete?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  connect?: Prisma.ProxyWhereUniqueInput | Prisma.ProxyWhereUniqueInput[]
+  update?: Prisma.ProxyUpdateWithWhereUniqueWithoutZevInput | Prisma.ProxyUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ProxyUpdateManyWithWhereWithoutZevInput | Prisma.ProxyUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ProxyScalarWhereInput | Prisma.ProxyScalarWhereInput[]
+}
+
 export type EnumProxyScopeFieldUpdateOperationsInput = {
   set?: $Enums.ProxyScope
 }
@@ -638,12 +704,14 @@ export type ProxyCreateWithoutGrantorInput = {
   revokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProxiesInput
   holder: Prisma.PartyCreateNestedOneWithoutProxiesHeldInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutProxiesInput
 }
 
 export type ProxyUncheckedCreateWithoutGrantorInput = {
   id?: string
+  zevId: string
   holderId: string
   scope: $Enums.ProxyScope
   meetingId?: string | null
@@ -678,12 +746,14 @@ export type ProxyCreateWithoutHolderInput = {
   revokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProxiesInput
   grantor: Prisma.PartyCreateNestedOneWithoutProxiesGivenInput
   meeting?: Prisma.MeetingCreateNestedOneWithoutProxiesInput
 }
 
 export type ProxyUncheckedCreateWithoutHolderInput = {
   id?: string
+  zevId: string
   grantorId: string
   scope: $Enums.ProxyScope
   meetingId?: string | null
@@ -728,6 +798,7 @@ export type ProxyScalarWhereInput = {
   OR?: Prisma.ProxyScalarWhereInput[]
   NOT?: Prisma.ProxyScalarWhereInput | Prisma.ProxyScalarWhereInput[]
   id?: Prisma.StringFilter<"Proxy"> | string
+  zevId?: Prisma.StringFilter<"Proxy"> | string
   grantorId?: Prisma.StringFilter<"Proxy"> | string
   holderId?: Prisma.StringFilter<"Proxy"> | string
   scope?: Prisma.EnumProxyScopeFilter<"Proxy"> | $Enums.ProxyScope
@@ -758,7 +829,7 @@ export type ProxyUpdateManyWithWhereWithoutHolderInput = {
   data: Prisma.XOR<Prisma.ProxyUpdateManyMutationInput, Prisma.ProxyUncheckedUpdateManyWithoutHolderInput>
 }
 
-export type ProxyCreateWithoutMeetingInput = {
+export type ProxyCreateWithoutZevInput = {
   id?: string
   scope: $Enums.ProxyScope
   proposalId?: string | null
@@ -771,10 +842,70 @@ export type ProxyCreateWithoutMeetingInput = {
   updatedAt?: Date | string
   grantor: Prisma.PartyCreateNestedOneWithoutProxiesGivenInput
   holder: Prisma.PartyCreateNestedOneWithoutProxiesHeldInput
+  meeting?: Prisma.MeetingCreateNestedOneWithoutProxiesInput
+}
+
+export type ProxyUncheckedCreateWithoutZevInput = {
+  id?: string
+  grantorId: string
+  holderId: string
+  scope: $Enums.ProxyScope
+  meetingId?: string | null
+  proposalId?: string | null
+  documentRef?: string | null
+  validFrom: Date | string
+  validTo?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProxyCreateOrConnectWithoutZevInput = {
+  where: Prisma.ProxyWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProxyCreateWithoutZevInput, Prisma.ProxyUncheckedCreateWithoutZevInput>
+}
+
+export type ProxyCreateManyZevInputEnvelope = {
+  data: Prisma.ProxyCreateManyZevInput | Prisma.ProxyCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProxyUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ProxyWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProxyUpdateWithoutZevInput, Prisma.ProxyUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.ProxyCreateWithoutZevInput, Prisma.ProxyUncheckedCreateWithoutZevInput>
+}
+
+export type ProxyUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ProxyWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProxyUpdateWithoutZevInput, Prisma.ProxyUncheckedUpdateWithoutZevInput>
+}
+
+export type ProxyUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.ProxyScalarWhereInput
+  data: Prisma.XOR<Prisma.ProxyUpdateManyMutationInput, Prisma.ProxyUncheckedUpdateManyWithoutZevInput>
+}
+
+export type ProxyCreateWithoutMeetingInput = {
+  id?: string
+  scope: $Enums.ProxyScope
+  proposalId?: string | null
+  documentRef?: string | null
+  validFrom: Date | string
+  validTo?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProxiesInput
+  grantor: Prisma.PartyCreateNestedOneWithoutProxiesGivenInput
+  holder: Prisma.PartyCreateNestedOneWithoutProxiesHeldInput
 }
 
 export type ProxyUncheckedCreateWithoutMeetingInput = {
   id?: string
+  zevId: string
   grantorId: string
   holderId: string
   scope: $Enums.ProxyScope
@@ -816,6 +947,7 @@ export type ProxyUpdateManyWithWhereWithoutMeetingInput = {
 
 export type ProxyCreateManyGrantorInput = {
   id?: string
+  zevId: string
   holderId: string
   scope: $Enums.ProxyScope
   meetingId?: string | null
@@ -831,6 +963,7 @@ export type ProxyCreateManyGrantorInput = {
 
 export type ProxyCreateManyHolderInput = {
   id?: string
+  zevId: string
   grantorId: string
   scope: $Enums.ProxyScope
   meetingId?: string | null
@@ -855,12 +988,14 @@ export type ProxyUpdateWithoutGrantorInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProxiesNestedInput
   holder?: Prisma.PartyUpdateOneRequiredWithoutProxiesHeldNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutProxiesNestedInput
 }
 
 export type ProxyUncheckedUpdateWithoutGrantorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
   meetingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -876,6 +1011,7 @@ export type ProxyUncheckedUpdateWithoutGrantorInput = {
 
 export type ProxyUncheckedUpdateManyWithoutGrantorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
   meetingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -900,12 +1036,14 @@ export type ProxyUpdateWithoutHolderInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProxiesNestedInput
   grantor?: Prisma.PartyUpdateOneRequiredWithoutProxiesGivenNestedInput
   meeting?: Prisma.MeetingUpdateOneWithoutProxiesNestedInput
 }
 
 export type ProxyUncheckedUpdateWithoutHolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   grantorId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
   meetingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -921,7 +1059,72 @@ export type ProxyUncheckedUpdateWithoutHolderInput = {
 
 export type ProxyUncheckedUpdateManyWithoutHolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   grantorId?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
+  meetingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProxyCreateManyZevInput = {
+  id?: string
+  grantorId: string
+  holderId: string
+  scope: $Enums.ProxyScope
+  meetingId?: string | null
+  proposalId?: string | null
+  documentRef?: string | null
+  validFrom: Date | string
+  validTo?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProxyUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
+  proposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  grantor?: Prisma.PartyUpdateOneRequiredWithoutProxiesGivenNestedInput
+  holder?: Prisma.PartyUpdateOneRequiredWithoutProxiesHeldNestedInput
+  meeting?: Prisma.MeetingUpdateOneWithoutProxiesNestedInput
+}
+
+export type ProxyUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grantorId?: Prisma.StringFieldUpdateOperationsInput | string
+  holderId?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
+  meetingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProxyUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grantorId?: Prisma.StringFieldUpdateOperationsInput | string
+  holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
   meetingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   proposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -936,6 +1139,7 @@ export type ProxyUncheckedUpdateManyWithoutHolderInput = {
 
 export type ProxyCreateManyMeetingInput = {
   id?: string
+  zevId: string
   grantorId: string
   holderId: string
   scope: $Enums.ProxyScope
@@ -960,12 +1164,14 @@ export type ProxyUpdateWithoutMeetingInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProxiesNestedInput
   grantor?: Prisma.PartyUpdateOneRequiredWithoutProxiesGivenNestedInput
   holder?: Prisma.PartyUpdateOneRequiredWithoutProxiesHeldNestedInput
 }
 
 export type ProxyUncheckedUpdateWithoutMeetingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   grantorId?: Prisma.StringFieldUpdateOperationsInput | string
   holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
@@ -981,6 +1187,7 @@ export type ProxyUncheckedUpdateWithoutMeetingInput = {
 
 export type ProxyUncheckedUpdateManyWithoutMeetingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   grantorId?: Prisma.StringFieldUpdateOperationsInput | string
   holderId?: Prisma.StringFieldUpdateOperationsInput | string
   scope?: Prisma.EnumProxyScopeFieldUpdateOperationsInput | $Enums.ProxyScope
@@ -998,6 +1205,7 @@ export type ProxyUncheckedUpdateManyWithoutMeetingInput = {
 
 export type ProxySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   grantorId?: boolean
   holderId?: boolean
   scope?: boolean
@@ -1010,6 +1218,7 @@ export type ProxySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   revokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   grantor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   holder?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.Proxy$meetingArgs<ExtArgs>
@@ -1017,6 +1226,7 @@ export type ProxySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 
 export type ProxySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   grantorId?: boolean
   holderId?: boolean
   scope?: boolean
@@ -1029,6 +1239,7 @@ export type ProxySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   revokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   grantor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   holder?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.Proxy$meetingArgs<ExtArgs>
@@ -1036,6 +1247,7 @@ export type ProxySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type ProxySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   grantorId?: boolean
   holderId?: boolean
   scope?: boolean
@@ -1048,6 +1260,7 @@ export type ProxySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   revokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   grantor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   holder?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.Proxy$meetingArgs<ExtArgs>
@@ -1055,6 +1268,7 @@ export type ProxySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type ProxySelectScalar = {
   id?: boolean
+  zevId?: boolean
   grantorId?: boolean
   holderId?: boolean
   scope?: boolean
@@ -1069,18 +1283,21 @@ export type ProxySelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProxyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "grantorId" | "holderId" | "scope" | "meetingId" | "proposalId" | "documentRef" | "validFrom" | "validTo" | "revokedAt" | "revokedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["proxy"]>
+export type ProxyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "grantorId" | "holderId" | "scope" | "meetingId" | "proposalId" | "documentRef" | "validFrom" | "validTo" | "revokedAt" | "revokedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["proxy"]>
 export type ProxyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   grantor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   holder?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.Proxy$meetingArgs<ExtArgs>
 }
 export type ProxyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   grantor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   holder?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.Proxy$meetingArgs<ExtArgs>
 }
 export type ProxyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   grantor?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   holder?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.Proxy$meetingArgs<ExtArgs>
@@ -1089,12 +1306,14 @@ export type ProxyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type $ProxyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Proxy"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     grantor: Prisma.$PartyPayload<ExtArgs>
     holder: Prisma.$PartyPayload<ExtArgs>
     meeting: Prisma.$MeetingPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     grantorId: string
     holderId: string
     scope: $Enums.ProxyScope
@@ -1501,6 +1720,7 @@ readonly fields: ProxyFieldRefs;
  */
 export interface Prisma__ProxyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   grantor<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   holder<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   meeting<T extends Prisma.Proxy$meetingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Proxy$meetingArgs<ExtArgs>>): Prisma.Prisma__MeetingClient<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -1534,6 +1754,7 @@ export interface Prisma__ProxyClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface ProxyFieldRefs {
   readonly id: Prisma.FieldRef<"Proxy", 'String'>
+  readonly zevId: Prisma.FieldRef<"Proxy", 'String'>
   readonly grantorId: Prisma.FieldRef<"Proxy", 'String'>
   readonly holderId: Prisma.FieldRef<"Proxy", 'String'>
   readonly scope: Prisma.FieldRef<"Proxy", 'ProxyScope'>

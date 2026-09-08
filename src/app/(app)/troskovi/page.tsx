@@ -29,7 +29,7 @@ async function addExpenseAction(formData: FormData) {
   const categoryName = (formData.get("categoryName") as string) || null;
   let categoryId: string | null = null;
   if (categoryName) {
-    categoryId = (await ensureCategory(categoryName, "EXPENSE")).id;
+    categoryId = (await ensureCategory(actor, categoryName, "EXPENSE")).id;
   }
   try {
     await createExpense(actor, {

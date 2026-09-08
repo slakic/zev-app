@@ -1,30 +1,32 @@
 // Money accounts, operational transactions, account balances.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, type Actor } from "@/server/auth/guards";
+import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, sumDecimals } from "@/lib/money";
 import type { AccountType, TxType } from "@/generated/prisma/client";
 
 export async function listAccounts(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  return prisma.moneyAccount.findMany({ orderBy: { name: "asc" } });
+  return prisma.moneyAccount.findMany({ where: { zevId: requireZev(actor) }, orderBy: { name: "asc" } });
 }
 
 export async function createAccount(
   actor: Actor,
-  data: { zevId: string; type: AccountType; name: string; bankName?: string | null; iban?: string | null; openingBalance: string; openingDate: Date }
+  data: { type: AccountType; name: string; bankName?: string | null; iban?: string | null; openingBalance: string; openingDate: Date }
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
-  const a = await prisma.moneyAccount.create({ data });
+  const zevId = requireZev(actor);
+  const a = await prisma.moneyAccount.create({ data: { ...data, zevId } });
   await audit(actor, { action: "account.create", targetType: "MoneyAccount", targetId: a.id, after: { name: a.name, type: a.type } });
   return a;
 }
 
 export async function accountBalance(actor: Actor, accountId: string, asOf?: Date): Promise<string> {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const account = await prisma.moneyAccount.findUniqueOrThrow({ where: { id: accountId } });
+  const zevId = requireZev(actor);
+  const account = await prisma.moneyAccount.findUniqueOrThrow({ where: { id: accountId, zevId } });
   const txs = await prisma.finTransaction.findMany({
-    where: { accountId, status: "ACTIVE", date: asOf ? { lte: asOf } : undefined },
+    where: { zevId, accountId, status: "ACTIVE", date: asOf ? { lte: asOf } : undefined },
   });
   let bal = dec(account.openingBalance.toString());
   for (const t of txs) {
@@ -38,7 +40,8 @@ export async function accountBalance(actor: Actor, accountId: string, asOf?: Dat
 
 export async function totalCash(actor: Actor, asOf?: Date): Promise<string> {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const accounts = await prisma.moneyAccount.findMany({ where: { active: true } });
+  const zevId = requireZev(actor);
+  const accounts = await prisma.moneyAccount.findMany({ where: { zevId, active: true } });
   let total = ZERO;
   for (const a of accounts) {
     total = total.plus(dec(await accountBalance(actor, a.id, asOf)));
@@ -67,9 +70,11 @@ export async function enterTransaction(
   }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (dec(data.amount).lessThanOrEqualTo(0)) throw new Error("Iznos mora biti pozitivan.");
+  await prisma.moneyAccount.findUniqueOrThrow({ where: { id: data.accountId, zevId } });
   const t = await prisma.finTransaction.create({
-    data: { ...data, createdById: actor.userId },
+    data: { ...data, zevId, createdById: actor.userId },
   });
   await audit(actor, {
     action: "transaction.enter", targetType: "FinTransaction", targetId: t.id,
@@ -81,11 +86,12 @@ export async function enterTransaction(
 /** Cancel (storno) a transaction — original remains visible. */
 export async function cancelTransaction(actor: Actor, id: string, reason: string) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storno zahtijeva razlog.");
-  const before = await prisma.finTransaction.findUniqueOrThrow({ where: { id } });
+  const before = await prisma.finTransaction.findUniqueOrThrow({ where: { id, zevId } });
   if (before.status === "CANCELLED") throw new Error("Transakcija je već stornirana.");
   const t = await prisma.finTransaction.update({
-    where: { id },
+    where: { id, zevId },
     data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: reason },
   });
   await audit(actor, {
@@ -102,6 +108,7 @@ export async function listTransactions(
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   return prisma.finTransaction.findMany({
     where: {
+      zevId: requireZev(actor),
       accountId: filter?.accountId,
       type: filter?.type,
       buildingId: filter?.buildingId,
@@ -113,22 +120,21 @@ export async function listTransactions(
   });
 }
 
-export async function listCategories() {
-  return prisma.transactionCategory.findMany({ orderBy: { name: "asc" } });
+export async function listCategories(actor: Actor) {
+  return prisma.transactionCategory.findMany({ where: { zevId: requireZev(actor) }, orderBy: { name: "asc" } });
 }
 
-export async function ensureCategory(name: string, kind: "INCOME" | "EXPENSE") {
-  return prisma.transactionCategory.upsert({
-    where: { name },
-    create: { name, kind },
-    update: {},
-  });
+export async function ensureCategory(actor: Actor, name: string, kind: "INCOME" | "EXPENSE") {
+  const zevId = requireZev(actor);
+  const existing = await prisma.transactionCategory.findFirst({ where: { zevId, name } });
+  if (existing) return existing;
+  return prisma.transactionCategory.create({ data: { zevId, name, kind } });
 }
 
 /** Maintenance-fund running balance (flagged charge income minus flagged spending). */
 export async function reserveFundBalance(actor: Actor): Promise<{ income: string; spent: string; balance: string }> {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const txs = await prisma.finTransaction.findMany({ where: { isReserveFund: true, status: "ACTIVE" } });
+  const txs = await prisma.finTransaction.findMany({ where: { zevId: requireZev(actor), isReserveFund: true, status: "ACTIVE" } });
   const income = sumDecimals(txs.filter((t) => t.type === "INCOME").map((t) => dec(t.amount.toString())));
   const spent = sumDecimals(txs.filter((t) => t.type === "EXPENSE").map((t) => dec(t.amount.toString())));
   return { income: income.toFixed(2), spent: spent.toFixed(2), balance: income.minus(spent).toFixed(2) };

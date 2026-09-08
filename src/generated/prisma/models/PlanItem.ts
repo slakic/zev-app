@@ -38,6 +38,7 @@ export type PlanItemSumAggregateOutputType = {
 
 export type PlanItemMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   planId: string | null
   type: $Enums.PlanItemType | null
   name: string | null
@@ -55,6 +56,7 @@ export type PlanItemMinAggregateOutputType = {
 
 export type PlanItemMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   planId: string | null
   type: $Enums.PlanItemType | null
   name: string | null
@@ -72,6 +74,7 @@ export type PlanItemMaxAggregateOutputType = {
 
 export type PlanItemCountAggregateOutputType = {
   id: number
+  zevId: number
   planId: number
   type: number
   name: number
@@ -101,6 +104,7 @@ export type PlanItemSumAggregateInputType = {
 
 export type PlanItemMinAggregateInputType = {
   id?: true
+  zevId?: true
   planId?: true
   type?: true
   name?: true
@@ -118,6 +122,7 @@ export type PlanItemMinAggregateInputType = {
 
 export type PlanItemMaxAggregateInputType = {
   id?: true
+  zevId?: true
   planId?: true
   type?: true
   name?: true
@@ -135,6 +140,7 @@ export type PlanItemMaxAggregateInputType = {
 
 export type PlanItemCountAggregateInputType = {
   id?: true
+  zevId?: true
   planId?: true
   type?: true
   name?: true
@@ -239,6 +245,7 @@ export type PlanItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type PlanItemGroupByOutputType = {
   id: string
+  zevId: string
   planId: string
   type: $Enums.PlanItemType
   name: string
@@ -279,6 +286,7 @@ export type PlanItemWhereInput = {
   OR?: Prisma.PlanItemWhereInput[]
   NOT?: Prisma.PlanItemWhereInput | Prisma.PlanItemWhereInput[]
   id?: Prisma.StringFilter<"PlanItem"> | string
+  zevId?: Prisma.StringFilter<"PlanItem"> | string
   planId?: Prisma.StringFilter<"PlanItem"> | string
   type?: Prisma.EnumPlanItemTypeFilter<"PlanItem"> | $Enums.PlanItemType
   name?: Prisma.StringFilter<"PlanItem"> | string
@@ -292,12 +300,14 @@ export type PlanItemWhereInput = {
   categoryName?: Prisma.StringNullableFilter<"PlanItem"> | string | null
   scheduledDate?: Prisma.DateTimeNullableFilter<"PlanItem"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PlanItem"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   plan?: Prisma.XOR<Prisma.AnnualPlanScalarRelationFilter, Prisma.AnnualPlanWhereInput>
   scopeUnits?: Prisma.PlanItemUnitListRelationFilter
 }
 
 export type PlanItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -311,6 +321,7 @@ export type PlanItemOrderByWithRelationInput = {
   categoryName?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledDate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   plan?: Prisma.AnnualPlanOrderByWithRelationInput
   scopeUnits?: Prisma.PlanItemUnitOrderByRelationAggregateInput
 }
@@ -320,6 +331,7 @@ export type PlanItemWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PlanItemWhereInput | Prisma.PlanItemWhereInput[]
   OR?: Prisma.PlanItemWhereInput[]
   NOT?: Prisma.PlanItemWhereInput | Prisma.PlanItemWhereInput[]
+  zevId?: Prisma.StringFilter<"PlanItem"> | string
   planId?: Prisma.StringFilter<"PlanItem"> | string
   type?: Prisma.EnumPlanItemTypeFilter<"PlanItem"> | $Enums.PlanItemType
   name?: Prisma.StringFilter<"PlanItem"> | string
@@ -333,12 +345,14 @@ export type PlanItemWhereUniqueInput = Prisma.AtLeast<{
   categoryName?: Prisma.StringNullableFilter<"PlanItem"> | string | null
   scheduledDate?: Prisma.DateTimeNullableFilter<"PlanItem"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PlanItem"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   plan?: Prisma.XOR<Prisma.AnnualPlanScalarRelationFilter, Prisma.AnnualPlanWhereInput>
   scopeUnits?: Prisma.PlanItemUnitListRelationFilter
 }, "id">
 
 export type PlanItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -364,6 +378,7 @@ export type PlanItemScalarWhereWithAggregatesInput = {
   OR?: Prisma.PlanItemScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PlanItemScalarWhereWithAggregatesInput | Prisma.PlanItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"PlanItem"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"PlanItem"> | string
   planId?: Prisma.StringWithAggregatesFilter<"PlanItem"> | string
   type?: Prisma.EnumPlanItemTypeWithAggregatesFilter<"PlanItem"> | $Enums.PlanItemType
   name?: Prisma.StringWithAggregatesFilter<"PlanItem"> | string
@@ -393,12 +408,14 @@ export type PlanItemCreateInput = {
   categoryName?: string | null
   scheduledDate?: Date | string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPlanItemsInput
   plan: Prisma.AnnualPlanCreateNestedOneWithoutItemsInput
   scopeUnits?: Prisma.PlanItemUnitCreateNestedManyWithoutPlanItemInput
 }
 
 export type PlanItemUncheckedCreateInput = {
   id?: string
+  zevId: string
   planId: string
   type: $Enums.PlanItemType
   name: string
@@ -429,12 +446,14 @@ export type PlanItemUpdateInput = {
   categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPlanItemsNestedInput
   plan?: Prisma.AnnualPlanUpdateOneRequiredWithoutItemsNestedInput
   scopeUnits?: Prisma.PlanItemUnitUpdateManyWithoutPlanItemNestedInput
 }
 
 export type PlanItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -453,6 +472,7 @@ export type PlanItemUncheckedUpdateInput = {
 
 export type PlanItemCreateManyInput = {
   id?: string
+  zevId: string
   planId: string
   type: $Enums.PlanItemType
   name: string
@@ -486,6 +506,7 @@ export type PlanItemUpdateManyMutationInput = {
 
 export type PlanItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -513,6 +534,7 @@ export type PlanItemOrderByRelationAggregateInput = {
 
 export type PlanItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -535,6 +557,7 @@ export type PlanItemAvgOrderByAggregateInput = {
 
 export type PlanItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -552,6 +575,7 @@ export type PlanItemMaxOrderByAggregateInput = {
 
 export type PlanItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -575,6 +599,48 @@ export type PlanItemSumOrderByAggregateInput = {
 export type PlanItemScalarRelationFilter = {
   is?: Prisma.PlanItemWhereInput
   isNot?: Prisma.PlanItemWhereInput
+}
+
+export type PlanItemCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.PlanItemCreateWithoutZevInput, Prisma.PlanItemUncheckedCreateWithoutZevInput> | Prisma.PlanItemCreateWithoutZevInput[] | Prisma.PlanItemUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.PlanItemCreateOrConnectWithoutZevInput | Prisma.PlanItemCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.PlanItemCreateManyZevInputEnvelope
+  connect?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+}
+
+export type PlanItemUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.PlanItemCreateWithoutZevInput, Prisma.PlanItemUncheckedCreateWithoutZevInput> | Prisma.PlanItemCreateWithoutZevInput[] | Prisma.PlanItemUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.PlanItemCreateOrConnectWithoutZevInput | Prisma.PlanItemCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.PlanItemCreateManyZevInputEnvelope
+  connect?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+}
+
+export type PlanItemUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.PlanItemCreateWithoutZevInput, Prisma.PlanItemUncheckedCreateWithoutZevInput> | Prisma.PlanItemCreateWithoutZevInput[] | Prisma.PlanItemUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.PlanItemCreateOrConnectWithoutZevInput | Prisma.PlanItemCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.PlanItemUpsertWithWhereUniqueWithoutZevInput | Prisma.PlanItemUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.PlanItemCreateManyZevInputEnvelope
+  set?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  disconnect?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  delete?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  connect?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  update?: Prisma.PlanItemUpdateWithWhereUniqueWithoutZevInput | Prisma.PlanItemUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.PlanItemUpdateManyWithWhereWithoutZevInput | Prisma.PlanItemUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.PlanItemScalarWhereInput | Prisma.PlanItemScalarWhereInput[]
+}
+
+export type PlanItemUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.PlanItemCreateWithoutZevInput, Prisma.PlanItemUncheckedCreateWithoutZevInput> | Prisma.PlanItemCreateWithoutZevInput[] | Prisma.PlanItemUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.PlanItemCreateOrConnectWithoutZevInput | Prisma.PlanItemCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.PlanItemUpsertWithWhereUniqueWithoutZevInput | Prisma.PlanItemUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.PlanItemCreateManyZevInputEnvelope
+  set?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  disconnect?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  delete?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  connect?: Prisma.PlanItemWhereUniqueInput | Prisma.PlanItemWhereUniqueInput[]
+  update?: Prisma.PlanItemUpdateWithWhereUniqueWithoutZevInput | Prisma.PlanItemUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.PlanItemUpdateManyWithWhereWithoutZevInput | Prisma.PlanItemUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.PlanItemScalarWhereInput | Prisma.PlanItemScalarWhereInput[]
 }
 
 export type PlanItemCreateNestedManyWithoutPlanInput = {
@@ -637,6 +703,89 @@ export type PlanItemUpdateOneRequiredWithoutScopeUnitsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PlanItemUpdateToOneWithWhereWithoutScopeUnitsInput, Prisma.PlanItemUpdateWithoutScopeUnitsInput>, Prisma.PlanItemUncheckedUpdateWithoutScopeUnitsInput>
 }
 
+export type PlanItemCreateWithoutZevInput = {
+  id?: string
+  type: $Enums.PlanItemType
+  name: string
+  description?: string | null
+  plannedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: number | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  categoryName?: string | null
+  scheduledDate?: Date | string | null
+  createdAt?: Date | string
+  plan: Prisma.AnnualPlanCreateNestedOneWithoutItemsInput
+  scopeUnits?: Prisma.PlanItemUnitCreateNestedManyWithoutPlanItemInput
+}
+
+export type PlanItemUncheckedCreateWithoutZevInput = {
+  id?: string
+  planId: string
+  type: $Enums.PlanItemType
+  name: string
+  description?: string | null
+  plannedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: number | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  categoryName?: string | null
+  scheduledDate?: Date | string | null
+  createdAt?: Date | string
+  scopeUnits?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutPlanItemInput
+}
+
+export type PlanItemCreateOrConnectWithoutZevInput = {
+  where: Prisma.PlanItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlanItemCreateWithoutZevInput, Prisma.PlanItemUncheckedCreateWithoutZevInput>
+}
+
+export type PlanItemCreateManyZevInputEnvelope = {
+  data: Prisma.PlanItemCreateManyZevInput | Prisma.PlanItemCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type PlanItemUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.PlanItemWhereUniqueInput
+  update: Prisma.XOR<Prisma.PlanItemUpdateWithoutZevInput, Prisma.PlanItemUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.PlanItemCreateWithoutZevInput, Prisma.PlanItemUncheckedCreateWithoutZevInput>
+}
+
+export type PlanItemUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.PlanItemWhereUniqueInput
+  data: Prisma.XOR<Prisma.PlanItemUpdateWithoutZevInput, Prisma.PlanItemUncheckedUpdateWithoutZevInput>
+}
+
+export type PlanItemUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.PlanItemScalarWhereInput
+  data: Prisma.XOR<Prisma.PlanItemUpdateManyMutationInput, Prisma.PlanItemUncheckedUpdateManyWithoutZevInput>
+}
+
+export type PlanItemScalarWhereInput = {
+  AND?: Prisma.PlanItemScalarWhereInput | Prisma.PlanItemScalarWhereInput[]
+  OR?: Prisma.PlanItemScalarWhereInput[]
+  NOT?: Prisma.PlanItemScalarWhereInput | Prisma.PlanItemScalarWhereInput[]
+  id?: Prisma.StringFilter<"PlanItem"> | string
+  zevId?: Prisma.StringFilter<"PlanItem"> | string
+  planId?: Prisma.StringFilter<"PlanItem"> | string
+  type?: Prisma.EnumPlanItemTypeFilter<"PlanItem"> | $Enums.PlanItemType
+  name?: Prisma.StringFilter<"PlanItem"> | string
+  description?: Prisma.StringNullableFilter<"PlanItem"> | string | null
+  plannedAmount?: Prisma.DecimalFilter<"PlanItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: Prisma.IntNullableFilter<"PlanItem"> | number | null
+  scopeType?: Prisma.EnumScopeTypeFilter<"PlanItem"> | $Enums.ScopeType
+  buildingId?: Prisma.StringNullableFilter<"PlanItem"> | string | null
+  entranceId?: Prisma.StringNullableFilter<"PlanItem"> | string | null
+  projectId?: Prisma.StringNullableFilter<"PlanItem"> | string | null
+  categoryName?: Prisma.StringNullableFilter<"PlanItem"> | string | null
+  scheduledDate?: Prisma.DateTimeNullableFilter<"PlanItem"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"PlanItem"> | Date | string
+}
+
 export type PlanItemCreateWithoutPlanInput = {
   id?: string
   type: $Enums.PlanItemType
@@ -651,11 +800,13 @@ export type PlanItemCreateWithoutPlanInput = {
   categoryName?: string | null
   scheduledDate?: Date | string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPlanItemsInput
   scopeUnits?: Prisma.PlanItemUnitCreateNestedManyWithoutPlanItemInput
 }
 
 export type PlanItemUncheckedCreateWithoutPlanInput = {
   id?: string
+  zevId: string
   type: $Enums.PlanItemType
   name: string
   description?: string | null
@@ -697,26 +848,6 @@ export type PlanItemUpdateManyWithWhereWithoutPlanInput = {
   data: Prisma.XOR<Prisma.PlanItemUpdateManyMutationInput, Prisma.PlanItemUncheckedUpdateManyWithoutPlanInput>
 }
 
-export type PlanItemScalarWhereInput = {
-  AND?: Prisma.PlanItemScalarWhereInput | Prisma.PlanItemScalarWhereInput[]
-  OR?: Prisma.PlanItemScalarWhereInput[]
-  NOT?: Prisma.PlanItemScalarWhereInput | Prisma.PlanItemScalarWhereInput[]
-  id?: Prisma.StringFilter<"PlanItem"> | string
-  planId?: Prisma.StringFilter<"PlanItem"> | string
-  type?: Prisma.EnumPlanItemTypeFilter<"PlanItem"> | $Enums.PlanItemType
-  name?: Prisma.StringFilter<"PlanItem"> | string
-  description?: Prisma.StringNullableFilter<"PlanItem"> | string | null
-  plannedAmount?: Prisma.DecimalFilter<"PlanItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  month?: Prisma.IntNullableFilter<"PlanItem"> | number | null
-  scopeType?: Prisma.EnumScopeTypeFilter<"PlanItem"> | $Enums.ScopeType
-  buildingId?: Prisma.StringNullableFilter<"PlanItem"> | string | null
-  entranceId?: Prisma.StringNullableFilter<"PlanItem"> | string | null
-  projectId?: Prisma.StringNullableFilter<"PlanItem"> | string | null
-  categoryName?: Prisma.StringNullableFilter<"PlanItem"> | string | null
-  scheduledDate?: Prisma.DateTimeNullableFilter<"PlanItem"> | Date | string | null
-  createdAt?: Prisma.DateTimeFilter<"PlanItem"> | Date | string
-}
-
 export type PlanItemCreateWithoutScopeUnitsInput = {
   id?: string
   type: $Enums.PlanItemType
@@ -731,11 +862,13 @@ export type PlanItemCreateWithoutScopeUnitsInput = {
   categoryName?: string | null
   scheduledDate?: Date | string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPlanItemsInput
   plan: Prisma.AnnualPlanCreateNestedOneWithoutItemsInput
 }
 
 export type PlanItemUncheckedCreateWithoutScopeUnitsInput = {
   id?: string
+  zevId: string
   planId: string
   type: $Enums.PlanItemType
   name: string
@@ -781,10 +914,82 @@ export type PlanItemUpdateWithoutScopeUnitsInput = {
   categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPlanItemsNestedInput
   plan?: Prisma.AnnualPlanUpdateOneRequiredWithoutItemsNestedInput
 }
 
 export type PlanItemUncheckedUpdateWithoutScopeUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PlanItemCreateManyZevInput = {
+  id?: string
+  planId: string
+  type: $Enums.PlanItemType
+  name: string
+  description?: string | null
+  plannedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: number | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  categoryName?: string | null
+  scheduledDate?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type PlanItemUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.AnnualPlanUpdateOneRequiredWithoutItemsNestedInput
+  scopeUnits?: Prisma.PlanItemUnitUpdateManyWithoutPlanItemNestedInput
+}
+
+export type PlanItemUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  month?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  scopeUnits?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutPlanItemNestedInput
+}
+
+export type PlanItemUncheckedUpdateManyWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
@@ -803,6 +1008,7 @@ export type PlanItemUncheckedUpdateWithoutScopeUnitsInput = {
 
 export type PlanItemCreateManyPlanInput = {
   id?: string
+  zevId: string
   type: $Enums.PlanItemType
   name: string
   description?: string | null
@@ -831,11 +1037,13 @@ export type PlanItemUpdateWithoutPlanInput = {
   categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPlanItemsNestedInput
   scopeUnits?: Prisma.PlanItemUnitUpdateManyWithoutPlanItemNestedInput
 }
 
 export type PlanItemUncheckedUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -853,6 +1061,7 @@ export type PlanItemUncheckedUpdateWithoutPlanInput = {
 
 export type PlanItemUncheckedUpdateManyWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPlanItemTypeFieldUpdateOperationsInput | $Enums.PlanItemType
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -900,6 +1109,7 @@ export type PlanItemCountOutputTypeCountScopeUnitsArgs<ExtArgs extends runtime.T
 
 export type PlanItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   planId?: boolean
   type?: boolean
   name?: boolean
@@ -913,6 +1123,7 @@ export type PlanItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   categoryName?: boolean
   scheduledDate?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.AnnualPlanDefaultArgs<ExtArgs>
   scopeUnits?: boolean | Prisma.PlanItem$scopeUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.PlanItemCountOutputTypeDefaultArgs<ExtArgs>
@@ -920,6 +1131,7 @@ export type PlanItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 
 export type PlanItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   planId?: boolean
   type?: boolean
   name?: boolean
@@ -933,11 +1145,13 @@ export type PlanItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   categoryName?: boolean
   scheduledDate?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.AnnualPlanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["planItem"]>
 
 export type PlanItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   planId?: boolean
   type?: boolean
   name?: boolean
@@ -951,11 +1165,13 @@ export type PlanItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   categoryName?: boolean
   scheduledDate?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.AnnualPlanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["planItem"]>
 
 export type PlanItemSelectScalar = {
   id?: boolean
+  zevId?: boolean
   planId?: boolean
   type?: boolean
   name?: boolean
@@ -971,27 +1187,32 @@ export type PlanItemSelectScalar = {
   createdAt?: boolean
 }
 
-export type PlanItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "planId" | "type" | "name" | "description" | "plannedAmount" | "month" | "scopeType" | "buildingId" | "entranceId" | "projectId" | "categoryName" | "scheduledDate" | "createdAt", ExtArgs["result"]["planItem"]>
+export type PlanItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "planId" | "type" | "name" | "description" | "plannedAmount" | "month" | "scopeType" | "buildingId" | "entranceId" | "projectId" | "categoryName" | "scheduledDate" | "createdAt", ExtArgs["result"]["planItem"]>
 export type PlanItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.AnnualPlanDefaultArgs<ExtArgs>
   scopeUnits?: boolean | Prisma.PlanItem$scopeUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.PlanItemCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PlanItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.AnnualPlanDefaultArgs<ExtArgs>
 }
 export type PlanItemIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.AnnualPlanDefaultArgs<ExtArgs>
 }
 
 export type $PlanItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PlanItem"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     plan: Prisma.$AnnualPlanPayload<ExtArgs>
     scopeUnits: Prisma.$PlanItemUnitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     planId: string
     type: $Enums.PlanItemType
     name: string
@@ -1399,6 +1620,7 @@ readonly fields: PlanItemFieldRefs;
  */
 export interface Prisma__PlanItemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   plan<T extends Prisma.AnnualPlanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AnnualPlanDefaultArgs<ExtArgs>>): Prisma.Prisma__AnnualPlanClient<runtime.Types.Result.GetResult<Prisma.$AnnualPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   scopeUnits<T extends Prisma.PlanItem$scopeUnitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PlanItem$scopeUnitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanItemUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1431,6 +1653,7 @@ export interface Prisma__PlanItemClient<T, Null = never, ExtArgs extends runtime
  */
 export interface PlanItemFieldRefs {
   readonly id: Prisma.FieldRef<"PlanItem", 'String'>
+  readonly zevId: Prisma.FieldRef<"PlanItem", 'String'>
   readonly planId: Prisma.FieldRef<"PlanItem", 'String'>
   readonly type: Prisma.FieldRef<"PlanItem", 'PlanItemType'>
   readonly name: Prisma.FieldRef<"PlanItem", 'String'>

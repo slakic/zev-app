@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { issueBatch, type UnitCalculation } from "@/server/services/billing";
 import { generateInvoicePdf } from "@/server/services/documents";
 import { queueNotification } from "@/server/notifications/service";
@@ -16,11 +17,13 @@ async function issueBatchAction(formData: FormData) {
   try {
     const invoices = await issueBatch(actor, batchId);
     // Generate PDFs and queue e-mail delivery for each invoice.
+    const zevId = requireZev(actor);
     for (const inv of invoices) {
       await generateInvoicePdf(actor, inv.id);
-      const debtor = await prisma.party.findUnique({ where: { id: inv.debtorId } });
+      const debtor = await prisma.party.findUnique({ where: { id: inv.debtorId, zevId } });
       if (debtor?.email) {
         await queueNotification({
+          zevId,
           channel: "EMAIL",
           recipientId: debtor.id,
           toAddress: debtor.email,
@@ -30,7 +33,7 @@ async function issueBatchAction(formData: FormData) {
           relatedType: "Invoice",
           relatedId: inv.id,
         });
-        await prisma.invoice.update({ where: { id: inv.id }, data: { deliveryStatus: "SENT" } });
+        await prisma.invoice.update({ where: { id: inv.id, zevId }, data: { deliveryStatus: "SENT" } });
       }
     }
   } catch (e) {

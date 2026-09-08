@@ -150,14 +150,14 @@ describe("secure electronic approval", () => {
     // Only A votes (35%): quorum of 50% NOT reached
     const lA = links.find((x) => x.toAddress === f.ownerA.email)!;
     await submitVote({ tokenPlain: lA.token, verificationCode: lA.code, choice: "APPROVE" });
-    let result = await computeProposalResult(proposal.id);
+    let result = await computeProposalResult(f.zev.id, proposal.id);
     expect(result.quorumReached).toBe(false);
     expect(result.weightCast.toFixed(2)).toBe("35.00");
 
     // B votes REJECT (50%): quorum reached (85 >= 50); approve 35 vs reject 50 -> rejected
     const lB = links.find((x) => x.toAddress === f.ownerB.email)!;
     await submitVote({ tokenPlain: lB.token, verificationCode: lB.code, choice: "REJECT" });
-    result = await computeProposalResult(proposal.id);
+    result = await computeProposalResult(f.zev.id, proposal.id);
     expect(result.quorumReached).toBe(true);
     expect(result.approveWeight.toFixed(2)).toBe("35.00");
     expect(result.rejectWeight.toFixed(2)).toBe("50.00");
@@ -183,7 +183,7 @@ describe("secure electronic approval", () => {
       const res = await submitVote({ tokenPlain: l.token, verificationCode: l.code, choice: "APPROVE" });
       expect(res.ok).toBe(true);
     }
-    const result = await computeProposalResult(proposal.id);
+    const result = await computeProposalResult(f.zev.id, proposal.id);
     expect(result.approveWeight.toFixed(0)).toBe("3");
     expect(result.accepted).toBe(true);
   });
@@ -205,10 +205,10 @@ describe("secure electronic approval", () => {
 
   it("tenant/occupant without ownership never enters the eligible voting base", async () => {
     const tenant = await prisma.party.create({
-      data: { kind: "PERSON", firstName: "Zak", lastName: `Upac-${f.t}`, email: `${f.t}-tenant@example.com` },
+      data: { zevId: f.zev.id, kind: "PERSON", firstName: "Zak", lastName: `Upac-${f.t}`, email: `${f.t}-tenant@example.com` },
     });
     await prisma.occupancy.create({
-      data: { unitId: f.u1.id, partyId: tenant.id, type: "TENANT", validFrom: new Date("2023-01-01") },
+      data: { zevId: f.zev.id, unitId: f.u1.id, partyId: tenant.id, type: "TENANT", validFrom: new Date("2023-01-01") },
     });
     const { proposal } = await createProposalFixture(f);
     await openVotingWithLinks(f, proposal.id);

@@ -26,6 +26,7 @@ export type AggregateAllocationGroup = {
 
 export type AllocationGroupMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   note: string | null
   createdAt: Date | null
@@ -33,6 +34,7 @@ export type AllocationGroupMinAggregateOutputType = {
 
 export type AllocationGroupMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   note: string | null
   createdAt: Date | null
@@ -40,6 +42,7 @@ export type AllocationGroupMaxAggregateOutputType = {
 
 export type AllocationGroupCountAggregateOutputType = {
   id: number
+  zevId: number
   name: number
   note: number
   createdAt: number
@@ -49,6 +52,7 @@ export type AllocationGroupCountAggregateOutputType = {
 
 export type AllocationGroupMinAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   note?: true
   createdAt?: true
@@ -56,6 +60,7 @@ export type AllocationGroupMinAggregateInputType = {
 
 export type AllocationGroupMaxAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   note?: true
   createdAt?: true
@@ -63,6 +68,7 @@ export type AllocationGroupMaxAggregateInputType = {
 
 export type AllocationGroupCountAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   note?: true
   createdAt?: true
@@ -143,6 +149,7 @@ export type AllocationGroupGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type AllocationGroupGroupByOutputType = {
   id: string
+  zevId: string
   name: string
   note: string | null
   createdAt: Date
@@ -171,33 +178,41 @@ export type AllocationGroupWhereInput = {
   OR?: Prisma.AllocationGroupWhereInput[]
   NOT?: Prisma.AllocationGroupWhereInput | Prisma.AllocationGroupWhereInput[]
   id?: Prisma.StringFilter<"AllocationGroup"> | string
+  zevId?: Prisma.StringFilter<"AllocationGroup"> | string
   name?: Prisma.StringFilter<"AllocationGroup"> | string
   note?: Prisma.StringNullableFilter<"AllocationGroup"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AllocationGroup"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   members?: Prisma.AllocationGroupMemberListRelationFilter
 }
 
 export type AllocationGroupOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   members?: Prisma.AllocationGroupMemberOrderByRelationAggregateInput
 }
 
 export type AllocationGroupWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  name?: string
+  zevId_name?: Prisma.AllocationGroupZevIdNameCompoundUniqueInput
   AND?: Prisma.AllocationGroupWhereInput | Prisma.AllocationGroupWhereInput[]
   OR?: Prisma.AllocationGroupWhereInput[]
   NOT?: Prisma.AllocationGroupWhereInput | Prisma.AllocationGroupWhereInput[]
+  zevId?: Prisma.StringFilter<"AllocationGroup"> | string
+  name?: Prisma.StringFilter<"AllocationGroup"> | string
   note?: Prisma.StringNullableFilter<"AllocationGroup"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AllocationGroup"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   members?: Prisma.AllocationGroupMemberListRelationFilter
-}, "id" | "name">
+}, "id" | "zevId_name">
 
 export type AllocationGroupOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -211,6 +226,7 @@ export type AllocationGroupScalarWhereWithAggregatesInput = {
   OR?: Prisma.AllocationGroupScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AllocationGroupScalarWhereWithAggregatesInput | Prisma.AllocationGroupScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AllocationGroup"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"AllocationGroup"> | string
   name?: Prisma.StringWithAggregatesFilter<"AllocationGroup"> | string
   note?: Prisma.StringNullableWithAggregatesFilter<"AllocationGroup"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AllocationGroup"> | Date | string
@@ -221,11 +237,13 @@ export type AllocationGroupCreateInput = {
   name: string
   note?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutAllocationGroupsInput
   members?: Prisma.AllocationGroupMemberCreateNestedManyWithoutGroupInput
 }
 
 export type AllocationGroupUncheckedCreateInput = {
   id?: string
+  zevId: string
   name: string
   note?: string | null
   createdAt?: Date | string
@@ -237,11 +255,13 @@ export type AllocationGroupUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutAllocationGroupsNestedInput
   members?: Prisma.AllocationGroupMemberUpdateManyWithoutGroupNestedInput
 }
 
 export type AllocationGroupUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -250,6 +270,7 @@ export type AllocationGroupUncheckedUpdateInput = {
 
 export type AllocationGroupCreateManyInput = {
   id?: string
+  zevId: string
   name: string
   note?: string | null
   createdAt?: Date | string
@@ -264,13 +285,30 @@ export type AllocationGroupUpdateManyMutationInput = {
 
 export type AllocationGroupUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type AllocationGroupListRelationFilter = {
+  every?: Prisma.AllocationGroupWhereInput
+  some?: Prisma.AllocationGroupWhereInput
+  none?: Prisma.AllocationGroupWhereInput
+}
+
+export type AllocationGroupOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type AllocationGroupZevIdNameCompoundUniqueInput = {
+  zevId: string
+  name: string
+}
+
 export type AllocationGroupCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -278,6 +316,7 @@ export type AllocationGroupCountOrderByAggregateInput = {
 
 export type AllocationGroupMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -285,6 +324,7 @@ export type AllocationGroupMaxOrderByAggregateInput = {
 
 export type AllocationGroupMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -293,6 +333,48 @@ export type AllocationGroupMinOrderByAggregateInput = {
 export type AllocationGroupScalarRelationFilter = {
   is?: Prisma.AllocationGroupWhereInput
   isNot?: Prisma.AllocationGroupWhereInput
+}
+
+export type AllocationGroupCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.AllocationGroupCreateWithoutZevInput, Prisma.AllocationGroupUncheckedCreateWithoutZevInput> | Prisma.AllocationGroupCreateWithoutZevInput[] | Prisma.AllocationGroupUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AllocationGroupCreateOrConnectWithoutZevInput | Prisma.AllocationGroupCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.AllocationGroupCreateManyZevInputEnvelope
+  connect?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+}
+
+export type AllocationGroupUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.AllocationGroupCreateWithoutZevInput, Prisma.AllocationGroupUncheckedCreateWithoutZevInput> | Prisma.AllocationGroupCreateWithoutZevInput[] | Prisma.AllocationGroupUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AllocationGroupCreateOrConnectWithoutZevInput | Prisma.AllocationGroupCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.AllocationGroupCreateManyZevInputEnvelope
+  connect?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+}
+
+export type AllocationGroupUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.AllocationGroupCreateWithoutZevInput, Prisma.AllocationGroupUncheckedCreateWithoutZevInput> | Prisma.AllocationGroupCreateWithoutZevInput[] | Prisma.AllocationGroupUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AllocationGroupCreateOrConnectWithoutZevInput | Prisma.AllocationGroupCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.AllocationGroupUpsertWithWhereUniqueWithoutZevInput | Prisma.AllocationGroupUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.AllocationGroupCreateManyZevInputEnvelope
+  set?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  disconnect?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  delete?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  connect?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  update?: Prisma.AllocationGroupUpdateWithWhereUniqueWithoutZevInput | Prisma.AllocationGroupUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.AllocationGroupUpdateManyWithWhereWithoutZevInput | Prisma.AllocationGroupUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.AllocationGroupScalarWhereInput | Prisma.AllocationGroupScalarWhereInput[]
+}
+
+export type AllocationGroupUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.AllocationGroupCreateWithoutZevInput, Prisma.AllocationGroupUncheckedCreateWithoutZevInput> | Prisma.AllocationGroupCreateWithoutZevInput[] | Prisma.AllocationGroupUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AllocationGroupCreateOrConnectWithoutZevInput | Prisma.AllocationGroupCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.AllocationGroupUpsertWithWhereUniqueWithoutZevInput | Prisma.AllocationGroupUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.AllocationGroupCreateManyZevInputEnvelope
+  set?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  disconnect?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  delete?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  connect?: Prisma.AllocationGroupWhereUniqueInput | Prisma.AllocationGroupWhereUniqueInput[]
+  update?: Prisma.AllocationGroupUpdateWithWhereUniqueWithoutZevInput | Prisma.AllocationGroupUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.AllocationGroupUpdateManyWithWhereWithoutZevInput | Prisma.AllocationGroupUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.AllocationGroupScalarWhereInput | Prisma.AllocationGroupScalarWhereInput[]
 }
 
 export type AllocationGroupCreateNestedOneWithoutMembersInput = {
@@ -309,15 +391,70 @@ export type AllocationGroupUpdateOneRequiredWithoutMembersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AllocationGroupUpdateToOneWithWhereWithoutMembersInput, Prisma.AllocationGroupUpdateWithoutMembersInput>, Prisma.AllocationGroupUncheckedUpdateWithoutMembersInput>
 }
 
+export type AllocationGroupCreateWithoutZevInput = {
+  id?: string
+  name: string
+  note?: string | null
+  createdAt?: Date | string
+  members?: Prisma.AllocationGroupMemberCreateNestedManyWithoutGroupInput
+}
+
+export type AllocationGroupUncheckedCreateWithoutZevInput = {
+  id?: string
+  name: string
+  note?: string | null
+  createdAt?: Date | string
+  members?: Prisma.AllocationGroupMemberUncheckedCreateNestedManyWithoutGroupInput
+}
+
+export type AllocationGroupCreateOrConnectWithoutZevInput = {
+  where: Prisma.AllocationGroupWhereUniqueInput
+  create: Prisma.XOR<Prisma.AllocationGroupCreateWithoutZevInput, Prisma.AllocationGroupUncheckedCreateWithoutZevInput>
+}
+
+export type AllocationGroupCreateManyZevInputEnvelope = {
+  data: Prisma.AllocationGroupCreateManyZevInput | Prisma.AllocationGroupCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type AllocationGroupUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.AllocationGroupWhereUniqueInput
+  update: Prisma.XOR<Prisma.AllocationGroupUpdateWithoutZevInput, Prisma.AllocationGroupUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.AllocationGroupCreateWithoutZevInput, Prisma.AllocationGroupUncheckedCreateWithoutZevInput>
+}
+
+export type AllocationGroupUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.AllocationGroupWhereUniqueInput
+  data: Prisma.XOR<Prisma.AllocationGroupUpdateWithoutZevInput, Prisma.AllocationGroupUncheckedUpdateWithoutZevInput>
+}
+
+export type AllocationGroupUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.AllocationGroupScalarWhereInput
+  data: Prisma.XOR<Prisma.AllocationGroupUpdateManyMutationInput, Prisma.AllocationGroupUncheckedUpdateManyWithoutZevInput>
+}
+
+export type AllocationGroupScalarWhereInput = {
+  AND?: Prisma.AllocationGroupScalarWhereInput | Prisma.AllocationGroupScalarWhereInput[]
+  OR?: Prisma.AllocationGroupScalarWhereInput[]
+  NOT?: Prisma.AllocationGroupScalarWhereInput | Prisma.AllocationGroupScalarWhereInput[]
+  id?: Prisma.StringFilter<"AllocationGroup"> | string
+  zevId?: Prisma.StringFilter<"AllocationGroup"> | string
+  name?: Prisma.StringFilter<"AllocationGroup"> | string
+  note?: Prisma.StringNullableFilter<"AllocationGroup"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"AllocationGroup"> | Date | string
+}
+
 export type AllocationGroupCreateWithoutMembersInput = {
   id?: string
   name: string
   note?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutAllocationGroupsInput
 }
 
 export type AllocationGroupUncheckedCreateWithoutMembersInput = {
   id?: string
+  zevId: string
   name: string
   note?: string | null
   createdAt?: Date | string
@@ -344,9 +481,41 @@ export type AllocationGroupUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutAllocationGroupsNestedInput
 }
 
 export type AllocationGroupUncheckedUpdateWithoutMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AllocationGroupCreateManyZevInput = {
+  id?: string
+  name: string
+  note?: string | null
+  createdAt?: Date | string
+}
+
+export type AllocationGroupUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.AllocationGroupMemberUpdateManyWithoutGroupNestedInput
+}
+
+export type AllocationGroupUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.AllocationGroupMemberUncheckedUpdateManyWithoutGroupNestedInput
+}
+
+export type AllocationGroupUncheckedUpdateManyWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -386,49 +555,63 @@ export type AllocationGroupCountOutputTypeCountMembersArgs<ExtArgs extends runti
 
 export type AllocationGroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   note?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   members?: boolean | Prisma.AllocationGroup$membersArgs<ExtArgs>
   _count?: boolean | Prisma.AllocationGroupCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["allocationGroup"]>
 
 export type AllocationGroupSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   note?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["allocationGroup"]>
 
 export type AllocationGroupSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   note?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["allocationGroup"]>
 
 export type AllocationGroupSelectScalar = {
   id?: boolean
+  zevId?: boolean
   name?: boolean
   note?: boolean
   createdAt?: boolean
 }
 
-export type AllocationGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "note" | "createdAt", ExtArgs["result"]["allocationGroup"]>
+export type AllocationGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "note" | "createdAt", ExtArgs["result"]["allocationGroup"]>
 export type AllocationGroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   members?: boolean | Prisma.AllocationGroup$membersArgs<ExtArgs>
   _count?: boolean | Prisma.AllocationGroupCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type AllocationGroupIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type AllocationGroupIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type AllocationGroupIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type AllocationGroupIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $AllocationGroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AllocationGroup"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     members: Prisma.$AllocationGroupMemberPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     name: string
     note: string | null
     createdAt: Date
@@ -826,6 +1009,7 @@ readonly fields: AllocationGroupFieldRefs;
  */
 export interface Prisma__AllocationGroupClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   members<T extends Prisma.AllocationGroup$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AllocationGroup$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllocationGroupMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -857,6 +1041,7 @@ export interface Prisma__AllocationGroupClient<T, Null = never, ExtArgs extends 
  */
 export interface AllocationGroupFieldRefs {
   readonly id: Prisma.FieldRef<"AllocationGroup", 'String'>
+  readonly zevId: Prisma.FieldRef<"AllocationGroup", 'String'>
   readonly name: Prisma.FieldRef<"AllocationGroup", 'String'>
   readonly note: Prisma.FieldRef<"AllocationGroup", 'String'>
   readonly createdAt: Prisma.FieldRef<"AllocationGroup", 'DateTime'>
@@ -1114,6 +1299,10 @@ export type AllocationGroupCreateManyAndReturnArgs<ExtArgs extends runtime.Types
    */
   data: Prisma.AllocationGroupCreateManyInput | Prisma.AllocationGroupCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AllocationGroupIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1184,6 +1373,10 @@ export type AllocationGroupUpdateManyAndReturnArgs<ExtArgs extends runtime.Types
    * Limit how many AllocationGroups to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AllocationGroupIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

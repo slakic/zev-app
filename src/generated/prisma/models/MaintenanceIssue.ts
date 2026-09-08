@@ -38,6 +38,7 @@ export type MaintenanceIssueSumAggregateOutputType = {
 
 export type MaintenanceIssueMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   title: string | null
   description: string | null
   reporterId: string | null
@@ -67,6 +68,7 @@ export type MaintenanceIssueMinAggregateOutputType = {
 
 export type MaintenanceIssueMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   title: string | null
   description: string | null
   reporterId: string | null
@@ -96,6 +98,7 @@ export type MaintenanceIssueMaxAggregateOutputType = {
 
 export type MaintenanceIssueCountAggregateOutputType = {
   id: number
+  zevId: number
   title: number
   description: number
   reporterId: number
@@ -137,6 +140,7 @@ export type MaintenanceIssueSumAggregateInputType = {
 
 export type MaintenanceIssueMinAggregateInputType = {
   id?: true
+  zevId?: true
   title?: true
   description?: true
   reporterId?: true
@@ -166,6 +170,7 @@ export type MaintenanceIssueMinAggregateInputType = {
 
 export type MaintenanceIssueMaxAggregateInputType = {
   id?: true
+  zevId?: true
   title?: true
   description?: true
   reporterId?: true
@@ -195,6 +200,7 @@ export type MaintenanceIssueMaxAggregateInputType = {
 
 export type MaintenanceIssueCountAggregateInputType = {
   id?: true
+  zevId?: true
   title?: true
   description?: true
   reporterId?: true
@@ -311,6 +317,7 @@ export type MaintenanceIssueGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type MaintenanceIssueGroupByOutputType = {
   id: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -363,6 +370,7 @@ export type MaintenanceIssueWhereInput = {
   OR?: Prisma.MaintenanceIssueWhereInput[]
   NOT?: Prisma.MaintenanceIssueWhereInput | Prisma.MaintenanceIssueWhereInput[]
   id?: Prisma.StringFilter<"MaintenanceIssue"> | string
+  zevId?: Prisma.StringFilter<"MaintenanceIssue"> | string
   title?: Prisma.StringFilter<"MaintenanceIssue"> | string
   description?: Prisma.StringFilter<"MaintenanceIssue"> | string
   reporterId?: Prisma.StringFilter<"MaintenanceIssue"> | string
@@ -388,6 +396,7 @@ export type MaintenanceIssueWhereInput = {
   planItemId?: Prisma.StringNullableFilter<"MaintenanceIssue"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MaintenanceIssue"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceIssue"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   reporter?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   unit?: Prisma.XOR<Prisma.UnitNullableScalarRelationFilter, Prisma.UnitWhereInput> | null
   responsible?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
@@ -401,6 +410,7 @@ export type MaintenanceIssueWhereInput = {
 
 export type MaintenanceIssueOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   reporterId?: Prisma.SortOrder
@@ -426,6 +436,7 @@ export type MaintenanceIssueOrderByWithRelationInput = {
   planItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   reporter?: Prisma.PartyOrderByWithRelationInput
   unit?: Prisma.UnitOrderByWithRelationInput
   responsible?: Prisma.PartyOrderByWithRelationInput
@@ -442,6 +453,7 @@ export type MaintenanceIssueWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MaintenanceIssueWhereInput | Prisma.MaintenanceIssueWhereInput[]
   OR?: Prisma.MaintenanceIssueWhereInput[]
   NOT?: Prisma.MaintenanceIssueWhereInput | Prisma.MaintenanceIssueWhereInput[]
+  zevId?: Prisma.StringFilter<"MaintenanceIssue"> | string
   title?: Prisma.StringFilter<"MaintenanceIssue"> | string
   description?: Prisma.StringFilter<"MaintenanceIssue"> | string
   reporterId?: Prisma.StringFilter<"MaintenanceIssue"> | string
@@ -467,6 +479,7 @@ export type MaintenanceIssueWhereUniqueInput = Prisma.AtLeast<{
   planItemId?: Prisma.StringNullableFilter<"MaintenanceIssue"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MaintenanceIssue"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceIssue"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   reporter?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   unit?: Prisma.XOR<Prisma.UnitNullableScalarRelationFilter, Prisma.UnitWhereInput> | null
   responsible?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
@@ -480,6 +493,7 @@ export type MaintenanceIssueWhereUniqueInput = Prisma.AtLeast<{
 
 export type MaintenanceIssueOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   reporterId?: Prisma.SortOrder
@@ -517,6 +531,7 @@ export type MaintenanceIssueScalarWhereWithAggregatesInput = {
   OR?: Prisma.MaintenanceIssueScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MaintenanceIssueScalarWhereWithAggregatesInput | Prisma.MaintenanceIssueScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"MaintenanceIssue"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"MaintenanceIssue"> | string
   title?: Prisma.StringWithAggregatesFilter<"MaintenanceIssue"> | string
   description?: Prisma.StringWithAggregatesFilter<"MaintenanceIssue"> | string
   reporterId?: Prisma.StringWithAggregatesFilter<"MaintenanceIssue"> | string
@@ -568,6 +583,7 @@ export type MaintenanceIssueCreateInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -581,6 +597,7 @@ export type MaintenanceIssueCreateInput = {
 
 export type MaintenanceIssueUncheckedCreateInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -638,6 +655,7 @@ export type MaintenanceIssueUpdateInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -651,6 +669,7 @@ export type MaintenanceIssueUpdateInput = {
 
 export type MaintenanceIssueUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -686,6 +705,7 @@ export type MaintenanceIssueUncheckedUpdateInput = {
 
 export type MaintenanceIssueCreateManyInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -741,6 +761,7 @@ export type MaintenanceIssueUpdateManyMutationInput = {
 
 export type MaintenanceIssueUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -785,6 +806,7 @@ export type MaintenanceIssueNullableScalarRelationFilter = {
 
 export type MaintenanceIssueCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   reporterId?: Prisma.SortOrder
@@ -819,6 +841,7 @@ export type MaintenanceIssueAvgOrderByAggregateInput = {
 
 export type MaintenanceIssueMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   reporterId?: Prisma.SortOrder
@@ -848,6 +871,7 @@ export type MaintenanceIssueMaxOrderByAggregateInput = {
 
 export type MaintenanceIssueMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   reporterId?: Prisma.SortOrder
@@ -966,6 +990,48 @@ export type MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput = {
   connect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
   update?: Prisma.MaintenanceIssueUpdateWithWhereUniqueWithoutResponsibleInput | Prisma.MaintenanceIssueUpdateWithWhereUniqueWithoutResponsibleInput[]
   updateMany?: Prisma.MaintenanceIssueUpdateManyWithWhereWithoutResponsibleInput | Prisma.MaintenanceIssueUpdateManyWithWhereWithoutResponsibleInput[]
+  deleteMany?: Prisma.MaintenanceIssueScalarWhereInput | Prisma.MaintenanceIssueScalarWhereInput[]
+}
+
+export type MaintenanceIssueCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.MaintenanceIssueCreateWithoutZevInput, Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput> | Prisma.MaintenanceIssueCreateWithoutZevInput[] | Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput | Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.MaintenanceIssueCreateManyZevInputEnvelope
+  connect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+}
+
+export type MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.MaintenanceIssueCreateWithoutZevInput, Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput> | Prisma.MaintenanceIssueCreateWithoutZevInput[] | Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput | Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.MaintenanceIssueCreateManyZevInputEnvelope
+  connect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+}
+
+export type MaintenanceIssueUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.MaintenanceIssueCreateWithoutZevInput, Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput> | Prisma.MaintenanceIssueCreateWithoutZevInput[] | Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput | Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.MaintenanceIssueUpsertWithWhereUniqueWithoutZevInput | Prisma.MaintenanceIssueUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.MaintenanceIssueCreateManyZevInputEnvelope
+  set?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  disconnect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  delete?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  connect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  update?: Prisma.MaintenanceIssueUpdateWithWhereUniqueWithoutZevInput | Prisma.MaintenanceIssueUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.MaintenanceIssueUpdateManyWithWhereWithoutZevInput | Prisma.MaintenanceIssueUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.MaintenanceIssueScalarWhereInput | Prisma.MaintenanceIssueScalarWhereInput[]
+}
+
+export type MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.MaintenanceIssueCreateWithoutZevInput, Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput> | Prisma.MaintenanceIssueCreateWithoutZevInput[] | Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput | Prisma.MaintenanceIssueCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.MaintenanceIssueUpsertWithWhereUniqueWithoutZevInput | Prisma.MaintenanceIssueUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.MaintenanceIssueCreateManyZevInputEnvelope
+  set?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  disconnect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  delete?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  connect?: Prisma.MaintenanceIssueWhereUniqueInput | Prisma.MaintenanceIssueWhereUniqueInput[]
+  update?: Prisma.MaintenanceIssueUpdateWithWhereUniqueWithoutZevInput | Prisma.MaintenanceIssueUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.MaintenanceIssueUpdateManyWithWhereWithoutZevInput | Prisma.MaintenanceIssueUpdateManyWithWhereWithoutZevInput[]
   deleteMany?: Prisma.MaintenanceIssueScalarWhereInput | Prisma.MaintenanceIssueScalarWhereInput[]
 }
 
@@ -1153,6 +1219,7 @@ export type MaintenanceIssueCreateWithoutReporterInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
   comments?: Prisma.IssueCommentCreateNestedManyWithoutIssueInput
@@ -1165,6 +1232,7 @@ export type MaintenanceIssueCreateWithoutReporterInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutReporterInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   buildingId?: string | null
@@ -1231,6 +1299,7 @@ export type MaintenanceIssueCreateWithoutResponsibleInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   comments?: Prisma.IssueCommentCreateNestedManyWithoutIssueInput
@@ -1243,6 +1312,7 @@ export type MaintenanceIssueCreateWithoutResponsibleInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutResponsibleInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -1306,6 +1376,7 @@ export type MaintenanceIssueScalarWhereInput = {
   OR?: Prisma.MaintenanceIssueScalarWhereInput[]
   NOT?: Prisma.MaintenanceIssueScalarWhereInput | Prisma.MaintenanceIssueScalarWhereInput[]
   id?: Prisma.StringFilter<"MaintenanceIssue"> | string
+  zevId?: Prisma.StringFilter<"MaintenanceIssue"> | string
   title?: Prisma.StringFilter<"MaintenanceIssue"> | string
   description?: Prisma.StringFilter<"MaintenanceIssue"> | string
   reporterId?: Prisma.StringFilter<"MaintenanceIssue"> | string
@@ -1349,7 +1420,7 @@ export type MaintenanceIssueUpdateManyWithWhereWithoutResponsibleInput = {
   data: Prisma.XOR<Prisma.MaintenanceIssueUpdateManyMutationInput, Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleInput>
 }
 
-export type MaintenanceIssueCreateWithoutUnitInput = {
+export type MaintenanceIssueCreateWithoutZevInput = {
   id?: string
   title: string
   description: string
@@ -1374,6 +1445,103 @@ export type MaintenanceIssueCreateWithoutUnitInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
+  unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
+  responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
+  comments?: Prisma.IssueCommentCreateNestedManyWithoutIssueInput
+  statusEvents?: Prisma.IssueStatusEventCreateNestedManyWithoutIssueInput
+  offers?: Prisma.ContractorOfferCreateNestedManyWithoutIssueInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutIssueInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutMaintenanceIssueInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutIssuesInput
+}
+
+export type MaintenanceIssueUncheckedCreateWithoutZevInput = {
+  id?: string
+  title: string
+  description: string
+  reporterId: string
+  buildingId?: string | null
+  entranceId?: string | null
+  unitId?: string | null
+  locationNote?: string | null
+  category?: string | null
+  urgency?: $Enums.IssueUrgency
+  isEmergency?: boolean
+  safetyImpact?: boolean
+  status?: $Enums.IssueStatus
+  responsibleId?: string | null
+  approvalProposalId?: string | null
+  emergencyReason?: string | null
+  emergencyAuthorizedBy?: string | null
+  emergencyAuthority?: string | null
+  emergencyRatifiedRef?: string | null
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  actualCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  warrantyUntil?: Date | string | null
+  recurrenceNote?: string | null
+  planItemId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  comments?: Prisma.IssueCommentUncheckedCreateNestedManyWithoutIssueInput
+  statusEvents?: Prisma.IssueStatusEventUncheckedCreateNestedManyWithoutIssueInput
+  offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutIssueInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutIssueInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutMaintenanceIssueInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutIssuesInput
+}
+
+export type MaintenanceIssueCreateOrConnectWithoutZevInput = {
+  where: Prisma.MaintenanceIssueWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaintenanceIssueCreateWithoutZevInput, Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput>
+}
+
+export type MaintenanceIssueCreateManyZevInputEnvelope = {
+  data: Prisma.MaintenanceIssueCreateManyZevInput | Prisma.MaintenanceIssueCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type MaintenanceIssueUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.MaintenanceIssueWhereUniqueInput
+  update: Prisma.XOR<Prisma.MaintenanceIssueUpdateWithoutZevInput, Prisma.MaintenanceIssueUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.MaintenanceIssueCreateWithoutZevInput, Prisma.MaintenanceIssueUncheckedCreateWithoutZevInput>
+}
+
+export type MaintenanceIssueUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.MaintenanceIssueWhereUniqueInput
+  data: Prisma.XOR<Prisma.MaintenanceIssueUpdateWithoutZevInput, Prisma.MaintenanceIssueUncheckedUpdateWithoutZevInput>
+}
+
+export type MaintenanceIssueUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.MaintenanceIssueScalarWhereInput
+  data: Prisma.XOR<Prisma.MaintenanceIssueUpdateManyMutationInput, Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevInput>
+}
+
+export type MaintenanceIssueCreateWithoutUnitInput = {
+  id?: string
+  title: string
+  description: string
+  buildingId?: string | null
+  entranceId?: string | null
+  locationNote?: string | null
+  category?: string | null
+  urgency?: $Enums.IssueUrgency
+  isEmergency?: boolean
+  safetyImpact?: boolean
+  status?: $Enums.IssueStatus
+  approvalProposalId?: string | null
+  emergencyReason?: string | null
+  emergencyAuthorizedBy?: string | null
+  emergencyAuthority?: string | null
+  emergencyRatifiedRef?: string | null
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  actualCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  warrantyUntil?: Date | string | null
+  recurrenceNote?: string | null
+  planItemId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
+  reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
   comments?: Prisma.IssueCommentCreateNestedManyWithoutIssueInput
   statusEvents?: Prisma.IssueStatusEventCreateNestedManyWithoutIssueInput
@@ -1385,6 +1553,7 @@ export type MaintenanceIssueCreateWithoutUnitInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutUnitInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -1467,6 +1636,7 @@ export type MaintenanceIssueCreateWithoutExpensesInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -1479,6 +1649,7 @@ export type MaintenanceIssueCreateWithoutExpensesInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutExpensesInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -1551,6 +1722,7 @@ export type MaintenanceIssueUpdateWithoutExpensesInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -1563,6 +1735,7 @@ export type MaintenanceIssueUpdateWithoutExpensesInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutExpensesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1619,6 +1792,7 @@ export type MaintenanceIssueCreateWithoutCommentsInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -1631,6 +1805,7 @@ export type MaintenanceIssueCreateWithoutCommentsInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutCommentsInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -1703,6 +1878,7 @@ export type MaintenanceIssueUpdateWithoutCommentsInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -1715,6 +1891,7 @@ export type MaintenanceIssueUpdateWithoutCommentsInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1771,6 +1948,7 @@ export type MaintenanceIssueCreateWithoutStatusEventsInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -1783,6 +1961,7 @@ export type MaintenanceIssueCreateWithoutStatusEventsInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutStatusEventsInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -1855,6 +2034,7 @@ export type MaintenanceIssueUpdateWithoutStatusEventsInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -1867,6 +2047,7 @@ export type MaintenanceIssueUpdateWithoutStatusEventsInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutStatusEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1923,6 +2104,7 @@ export type MaintenanceIssueCreateWithoutOffersInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -1935,6 +2117,7 @@ export type MaintenanceIssueCreateWithoutOffersInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutOffersInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -2007,6 +2190,7 @@ export type MaintenanceIssueUpdateWithoutOffersInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -2019,6 +2203,7 @@ export type MaintenanceIssueUpdateWithoutOffersInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2075,6 +2260,7 @@ export type MaintenanceIssueCreateWithoutWorkOrdersInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -2087,6 +2273,7 @@ export type MaintenanceIssueCreateWithoutWorkOrdersInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutWorkOrdersInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -2159,6 +2346,7 @@ export type MaintenanceIssueUpdateWithoutWorkOrdersInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -2171,6 +2359,7 @@ export type MaintenanceIssueUpdateWithoutWorkOrdersInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutWorkOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2227,6 +2416,7 @@ export type MaintenanceIssueCreateWithoutAttachmentsInput = {
   planItemId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMaintenanceIssuesInput
   reporter: Prisma.PartyCreateNestedOneWithoutReportedIssuesInput
   unit?: Prisma.UnitCreateNestedOneWithoutMaintenanceIssuesInput
   responsible?: Prisma.PartyCreateNestedOneWithoutResponsibleForIssuesInput
@@ -2239,6 +2429,7 @@ export type MaintenanceIssueCreateWithoutAttachmentsInput = {
 
 export type MaintenanceIssueUncheckedCreateWithoutAttachmentsInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -2294,6 +2485,7 @@ export type MaintenanceIssueUpdateManyWithWhereWithoutAttachmentsInput = {
 
 export type MaintenanceIssueCreateManyReporterInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   buildingId?: string | null
@@ -2322,6 +2514,7 @@ export type MaintenanceIssueCreateManyReporterInput = {
 
 export type MaintenanceIssueCreateManyResponsibleInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -2372,6 +2565,7 @@ export type MaintenanceIssueUpdateWithoutReporterInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
   comments?: Prisma.IssueCommentUpdateManyWithoutIssueNestedInput
@@ -2384,6 +2578,7 @@ export type MaintenanceIssueUpdateWithoutReporterInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutReporterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2418,6 +2613,7 @@ export type MaintenanceIssueUncheckedUpdateWithoutReporterInput = {
 
 export type MaintenanceIssueUncheckedUpdateManyWithoutReporterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2468,6 +2664,7 @@ export type MaintenanceIssueUpdateWithoutResponsibleInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   comments?: Prisma.IssueCommentUpdateManyWithoutIssueNestedInput
@@ -2480,6 +2677,7 @@ export type MaintenanceIssueUpdateWithoutResponsibleInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutResponsibleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2514,6 +2712,7 @@ export type MaintenanceIssueUncheckedUpdateWithoutResponsibleInput = {
 
 export type MaintenanceIssueUncheckedUpdateManyWithoutResponsibleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2540,8 +2739,137 @@ export type MaintenanceIssueUncheckedUpdateManyWithoutResponsibleInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type MaintenanceIssueCreateManyZevInput = {
+  id?: string
+  title: string
+  description: string
+  reporterId: string
+  buildingId?: string | null
+  entranceId?: string | null
+  unitId?: string | null
+  locationNote?: string | null
+  category?: string | null
+  urgency?: $Enums.IssueUrgency
+  isEmergency?: boolean
+  safetyImpact?: boolean
+  status?: $Enums.IssueStatus
+  responsibleId?: string | null
+  approvalProposalId?: string | null
+  emergencyReason?: string | null
+  emergencyAuthorizedBy?: string | null
+  emergencyAuthority?: string | null
+  emergencyRatifiedRef?: string | null
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  actualCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  warrantyUntil?: Date | string | null
+  recurrenceNote?: string | null
+  planItemId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MaintenanceIssueUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  urgency?: Prisma.EnumIssueUrgencyFieldUpdateOperationsInput | $Enums.IssueUrgency
+  isEmergency?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safetyImpact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+  approvalProposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyAuthorizedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyRatifiedRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  actualCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  warrantyUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrenceNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
+  unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
+  responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
+  comments?: Prisma.IssueCommentUpdateManyWithoutIssueNestedInput
+  statusEvents?: Prisma.IssueStatusEventUpdateManyWithoutIssueNestedInput
+  offers?: Prisma.ContractorOfferUpdateManyWithoutIssueNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutIssueNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutMaintenanceIssueNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutIssuesNestedInput
+}
+
+export type MaintenanceIssueUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  reporterId?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  urgency?: Prisma.EnumIssueUrgencyFieldUpdateOperationsInput | $Enums.IssueUrgency
+  isEmergency?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safetyImpact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+  responsibleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvalProposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyAuthorizedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyRatifiedRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  actualCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  warrantyUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrenceNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.IssueCommentUncheckedUpdateManyWithoutIssueNestedInput
+  statusEvents?: Prisma.IssueStatusEventUncheckedUpdateManyWithoutIssueNestedInput
+  offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutIssueNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutIssueNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutMaintenanceIssueNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutIssuesNestedInput
+}
+
+export type MaintenanceIssueUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  reporterId?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  urgency?: Prisma.EnumIssueUrgencyFieldUpdateOperationsInput | $Enums.IssueUrgency
+  isEmergency?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safetyImpact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+  responsibleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvalProposalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyAuthorizedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyRatifiedRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  actualCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  warrantyUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrenceNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type MaintenanceIssueCreateManyUnitInput = {
   id?: string
+  zevId: string
   title: string
   description: string
   reporterId: string
@@ -2592,6 +2920,7 @@ export type MaintenanceIssueUpdateWithoutUnitInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
   comments?: Prisma.IssueCommentUpdateManyWithoutIssueNestedInput
@@ -2604,6 +2933,7 @@ export type MaintenanceIssueUpdateWithoutUnitInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2638,6 +2968,7 @@ export type MaintenanceIssueUncheckedUpdateWithoutUnitInput = {
 
 export type MaintenanceIssueUncheckedUpdateManyWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2688,6 +3019,7 @@ export type MaintenanceIssueUpdateWithoutAttachmentsInput = {
   planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMaintenanceIssuesNestedInput
   reporter?: Prisma.PartyUpdateOneRequiredWithoutReportedIssuesNestedInput
   unit?: Prisma.UnitUpdateOneWithoutMaintenanceIssuesNestedInput
   responsible?: Prisma.PartyUpdateOneWithoutResponsibleForIssuesNestedInput
@@ -2700,6 +3032,7 @@ export type MaintenanceIssueUpdateWithoutAttachmentsInput = {
 
 export type MaintenanceIssueUncheckedUpdateWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2734,6 +3067,7 @@ export type MaintenanceIssueUncheckedUpdateWithoutAttachmentsInput = {
 
 export type MaintenanceIssueUncheckedUpdateManyWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2839,6 +3173,7 @@ export type MaintenanceIssueCountOutputTypeCountAttachmentsArgs<ExtArgs extends 
 
 export type MaintenanceIssueSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   title?: boolean
   description?: boolean
   reporterId?: boolean
@@ -2864,6 +3199,7 @@ export type MaintenanceIssueSelect<ExtArgs extends runtime.Types.Extensions.Inte
   planItemId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   reporter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.MaintenanceIssue$unitArgs<ExtArgs>
   responsible?: boolean | Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>
@@ -2878,6 +3214,7 @@ export type MaintenanceIssueSelect<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type MaintenanceIssueSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   title?: boolean
   description?: boolean
   reporterId?: boolean
@@ -2903,6 +3240,7 @@ export type MaintenanceIssueSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   planItemId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   reporter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.MaintenanceIssue$unitArgs<ExtArgs>
   responsible?: boolean | Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>
@@ -2910,6 +3248,7 @@ export type MaintenanceIssueSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type MaintenanceIssueSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   title?: boolean
   description?: boolean
   reporterId?: boolean
@@ -2935,6 +3274,7 @@ export type MaintenanceIssueSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   planItemId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   reporter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.MaintenanceIssue$unitArgs<ExtArgs>
   responsible?: boolean | Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>
@@ -2942,6 +3282,7 @@ export type MaintenanceIssueSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type MaintenanceIssueSelectScalar = {
   id?: boolean
+  zevId?: boolean
   title?: boolean
   description?: boolean
   reporterId?: boolean
@@ -2969,8 +3310,9 @@ export type MaintenanceIssueSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MaintenanceIssueOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "reporterId" | "buildingId" | "entranceId" | "unitId" | "locationNote" | "category" | "urgency" | "isEmergency" | "safetyImpact" | "status" | "responsibleId" | "approvalProposalId" | "emergencyReason" | "emergencyAuthorizedBy" | "emergencyAuthority" | "emergencyRatifiedRef" | "estimatedCost" | "actualCost" | "warrantyUntil" | "recurrenceNote" | "planItemId" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceIssue"]>
+export type MaintenanceIssueOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "title" | "description" | "reporterId" | "buildingId" | "entranceId" | "unitId" | "locationNote" | "category" | "urgency" | "isEmergency" | "safetyImpact" | "status" | "responsibleId" | "approvalProposalId" | "emergencyReason" | "emergencyAuthorizedBy" | "emergencyAuthority" | "emergencyRatifiedRef" | "estimatedCost" | "actualCost" | "warrantyUntil" | "recurrenceNote" | "planItemId" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceIssue"]>
 export type MaintenanceIssueInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   reporter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.MaintenanceIssue$unitArgs<ExtArgs>
   responsible?: boolean | Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>
@@ -2983,11 +3325,13 @@ export type MaintenanceIssueInclude<ExtArgs extends runtime.Types.Extensions.Int
   _count?: boolean | Prisma.MaintenanceIssueCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MaintenanceIssueIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   reporter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.MaintenanceIssue$unitArgs<ExtArgs>
   responsible?: boolean | Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>
 }
 export type MaintenanceIssueIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   reporter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.MaintenanceIssue$unitArgs<ExtArgs>
   responsible?: boolean | Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>
@@ -2996,6 +3340,7 @@ export type MaintenanceIssueIncludeUpdateManyAndReturn<ExtArgs extends runtime.T
 export type $MaintenanceIssuePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MaintenanceIssue"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     reporter: Prisma.$PartyPayload<ExtArgs>
     unit: Prisma.$UnitPayload<ExtArgs> | null
     responsible: Prisma.$PartyPayload<ExtArgs> | null
@@ -3008,6 +3353,7 @@ export type $MaintenanceIssuePayload<ExtArgs extends runtime.Types.Extensions.In
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     title: string
     description: string
     reporterId: string
@@ -3427,6 +3773,7 @@ readonly fields: MaintenanceIssueFieldRefs;
  */
 export interface Prisma__MaintenanceIssueClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reporter<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   unit<T extends Prisma.MaintenanceIssue$unitArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaintenanceIssue$unitArgs<ExtArgs>>): Prisma.Prisma__UnitClient<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   responsible<T extends Prisma.MaintenanceIssue$responsibleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaintenanceIssue$responsibleArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3466,6 +3813,7 @@ export interface Prisma__MaintenanceIssueClient<T, Null = never, ExtArgs extends
  */
 export interface MaintenanceIssueFieldRefs {
   readonly id: Prisma.FieldRef<"MaintenanceIssue", 'String'>
+  readonly zevId: Prisma.FieldRef<"MaintenanceIssue", 'String'>
   readonly title: Prisma.FieldRef<"MaintenanceIssue", 'String'>
   readonly description: Prisma.FieldRef<"MaintenanceIssue", 'String'>
   readonly reporterId: Prisma.FieldRef<"MaintenanceIssue", 'String'>

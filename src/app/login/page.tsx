@@ -29,6 +29,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     err === "invalid" ? t("auth.invalidCredentials")
     : err === "deactivated" ? t("auth.accountDisabled")
     : err === "rate_limited" ? "Previše pokušaja prijave. Pokušajte ponovo za 15 minuta."
+    : err === "zev_suspended" ? "Vaš ZEV nalog je trenutno suspendovan. Obratite se administratoru."
     : undefined;
   const okMsg = msg === "password_reset_done" ? "Lozinka je uspješno promijenjena. Prijavite se novom lozinkom." : undefined;
   return (

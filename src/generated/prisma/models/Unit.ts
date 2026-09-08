@@ -44,6 +44,7 @@ export type UnitSumAggregateOutputType = {
 
 export type UnitMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   buildingId: string | null
   entranceId: string | null
   type: $Enums.UnitType | null
@@ -63,6 +64,7 @@ export type UnitMinAggregateOutputType = {
 
 export type UnitMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   buildingId: string | null
   entranceId: string | null
   type: $Enums.UnitType | null
@@ -82,6 +84,7 @@ export type UnitMaxAggregateOutputType = {
 
 export type UnitCountAggregateOutputType = {
   id: number
+  zevId: number
   buildingId: number
   entranceId: number
   type: number
@@ -119,6 +122,7 @@ export type UnitSumAggregateInputType = {
 
 export type UnitMinAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   entranceId?: true
   type?: true
@@ -138,6 +142,7 @@ export type UnitMinAggregateInputType = {
 
 export type UnitMaxAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   entranceId?: true
   type?: true
@@ -157,6 +162,7 @@ export type UnitMaxAggregateInputType = {
 
 export type UnitCountAggregateInputType = {
   id?: true
+  zevId?: true
   buildingId?: true
   entranceId?: true
   type?: true
@@ -263,6 +269,7 @@ export type UnitGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type UnitGroupByOutputType = {
   id: string
+  zevId: string
   buildingId: string
   entranceId: string | null
   type: $Enums.UnitType
@@ -305,6 +312,7 @@ export type UnitWhereInput = {
   OR?: Prisma.UnitWhereInput[]
   NOT?: Prisma.UnitWhereInput | Prisma.UnitWhereInput[]
   id?: Prisma.StringFilter<"Unit"> | string
+  zevId?: Prisma.StringFilter<"Unit"> | string
   buildingId?: Prisma.StringFilter<"Unit"> | string
   entranceId?: Prisma.StringNullableFilter<"Unit"> | string | null
   type?: Prisma.EnumUnitTypeFilter<"Unit"> | $Enums.UnitType
@@ -320,6 +328,7 @@ export type UnitWhereInput = {
   correspondenceContactId?: Prisma.StringNullableFilter<"Unit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   building?: Prisma.XOR<Prisma.BuildingScalarRelationFilter, Prisma.BuildingWhereInput>
   entrance?: Prisma.XOR<Prisma.EntranceNullableScalarRelationFilter, Prisma.EntranceWhereInput> | null
   invoiceRecipient?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
@@ -337,6 +346,7 @@ export type UnitWhereInput = {
 
 export type UnitOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   entranceId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -352,6 +362,7 @@ export type UnitOrderByWithRelationInput = {
   correspondenceContactId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   building?: Prisma.BuildingOrderByWithRelationInput
   entrance?: Prisma.EntranceOrderByWithRelationInput
   invoiceRecipient?: Prisma.PartyOrderByWithRelationInput
@@ -373,6 +384,7 @@ export type UnitWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UnitWhereInput | Prisma.UnitWhereInput[]
   OR?: Prisma.UnitWhereInput[]
   NOT?: Prisma.UnitWhereInput | Prisma.UnitWhereInput[]
+  zevId?: Prisma.StringFilter<"Unit"> | string
   buildingId?: Prisma.StringFilter<"Unit"> | string
   entranceId?: Prisma.StringNullableFilter<"Unit"> | string | null
   type?: Prisma.EnumUnitTypeFilter<"Unit"> | $Enums.UnitType
@@ -388,6 +400,7 @@ export type UnitWhereUniqueInput = Prisma.AtLeast<{
   correspondenceContactId?: Prisma.StringNullableFilter<"Unit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   building?: Prisma.XOR<Prisma.BuildingScalarRelationFilter, Prisma.BuildingWhereInput>
   entrance?: Prisma.XOR<Prisma.EntranceNullableScalarRelationFilter, Prisma.EntranceWhereInput> | null
   invoiceRecipient?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
@@ -405,6 +418,7 @@ export type UnitWhereUniqueInput = Prisma.AtLeast<{
 
 export type UnitOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   entranceId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -432,6 +446,7 @@ export type UnitScalarWhereWithAggregatesInput = {
   OR?: Prisma.UnitScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UnitScalarWhereWithAggregatesInput | Prisma.UnitScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Unit"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Unit"> | string
   buildingId?: Prisma.StringWithAggregatesFilter<"Unit"> | string
   entranceId?: Prisma.StringNullableWithAggregatesFilter<"Unit"> | string | null
   type?: Prisma.EnumUnitTypeWithAggregatesFilter<"Unit"> | $Enums.UnitType
@@ -462,6 +477,7 @@ export type UnitCreateInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -479,6 +495,7 @@ export type UnitCreateInput = {
 
 export type UnitUncheckedCreateInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -518,6 +535,7 @@ export type UnitUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -535,6 +553,7 @@ export type UnitUpdateInput = {
 
 export type UnitUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -563,6 +582,7 @@ export type UnitUncheckedUpdateInput = {
 
 export type UnitCreateManyInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -597,6 +617,7 @@ export type UnitUpdateManyMutationInput = {
 
 export type UnitUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -631,6 +652,7 @@ export type UnitBuildingIdLabelCompoundUniqueInput = {
 
 export type UnitCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   entranceId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -658,6 +680,7 @@ export type UnitAvgOrderByAggregateInput = {
 
 export type UnitMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   entranceId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -677,6 +700,7 @@ export type UnitMaxOrderByAggregateInput = {
 
 export type UnitMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   buildingId?: Prisma.SortOrder
   entranceId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -793,6 +817,48 @@ export type UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput = {
   connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
   update?: Prisma.UnitUpdateWithWhereUniqueWithoutCorrespondenceContactInput | Prisma.UnitUpdateWithWhereUniqueWithoutCorrespondenceContactInput[]
   updateMany?: Prisma.UnitUpdateManyWithWhereWithoutCorrespondenceContactInput | Prisma.UnitUpdateManyWithWhereWithoutCorrespondenceContactInput[]
+  deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
+}
+
+export type UnitCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutZevInput, Prisma.UnitUncheckedCreateWithoutZevInput> | Prisma.UnitCreateWithoutZevInput[] | Prisma.UnitUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutZevInput | Prisma.UnitCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.UnitCreateManyZevInputEnvelope
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+}
+
+export type UnitUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutZevInput, Prisma.UnitUncheckedCreateWithoutZevInput> | Prisma.UnitCreateWithoutZevInput[] | Prisma.UnitUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutZevInput | Prisma.UnitCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.UnitCreateManyZevInputEnvelope
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+}
+
+export type UnitUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutZevInput, Prisma.UnitUncheckedCreateWithoutZevInput> | Prisma.UnitCreateWithoutZevInput[] | Prisma.UnitUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutZevInput | Prisma.UnitCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.UnitUpsertWithWhereUniqueWithoutZevInput | Prisma.UnitUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.UnitCreateManyZevInputEnvelope
+  set?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  disconnect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  delete?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  update?: Prisma.UnitUpdateWithWhereUniqueWithoutZevInput | Prisma.UnitUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.UnitUpdateManyWithWhereWithoutZevInput | Prisma.UnitUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
+}
+
+export type UnitUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutZevInput, Prisma.UnitUncheckedCreateWithoutZevInput> | Prisma.UnitCreateWithoutZevInput[] | Prisma.UnitUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutZevInput | Prisma.UnitCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.UnitUpsertWithWhereUniqueWithoutZevInput | Prisma.UnitUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.UnitCreateManyZevInputEnvelope
+  set?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  disconnect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  delete?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  update?: Prisma.UnitUpdateWithWhereUniqueWithoutZevInput | Prisma.UnitUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.UnitUpdateManyWithWhereWithoutZevInput | Prisma.UnitUpdateManyWithWhereWithoutZevInput[]
   deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
 }
 
@@ -1041,6 +1107,7 @@ export type UnitCreateWithoutInvoiceRecipientInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
@@ -1057,6 +1124,7 @@ export type UnitCreateWithoutInvoiceRecipientInput = {
 
 export type UnitUncheckedCreateWithoutInvoiceRecipientInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1105,6 +1173,7 @@ export type UnitCreateWithoutCorrespondenceContactInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -1121,6 +1190,7 @@ export type UnitCreateWithoutCorrespondenceContactInput = {
 
 export type UnitUncheckedCreateWithoutCorrespondenceContactInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1177,6 +1247,7 @@ export type UnitScalarWhereInput = {
   OR?: Prisma.UnitScalarWhereInput[]
   NOT?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
   id?: Prisma.StringFilter<"Unit"> | string
+  zevId?: Prisma.StringFilter<"Unit"> | string
   buildingId?: Prisma.StringFilter<"Unit"> | string
   entranceId?: Prisma.StringNullableFilter<"Unit"> | string | null
   type?: Prisma.EnumUnitTypeFilter<"Unit"> | $Enums.UnitType
@@ -1210,6 +1281,88 @@ export type UnitUpdateManyWithWhereWithoutCorrespondenceContactInput = {
   data: Prisma.XOR<Prisma.UnitUpdateManyMutationInput, Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactInput>
 }
 
+export type UnitCreateWithoutZevInput = {
+  id?: string
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
+  entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
+  invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
+  correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
+  allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUnitInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutUnitInput
+  meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutUnitInput
+  proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
+  planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+}
+
+export type UnitUncheckedCreateWithoutZevInput = {
+  id?: string
+  buildingId: string
+  entranceId?: string | null
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  invoiceRecipientId?: string | null
+  correspondenceContactId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutUnitInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUncheckedCreateNestedManyWithoutUnitInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUnitInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutUnitInput
+  meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutUnitInput
+  proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
+  planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+}
+
+export type UnitCreateOrConnectWithoutZevInput = {
+  where: Prisma.UnitWhereUniqueInput
+  create: Prisma.XOR<Prisma.UnitCreateWithoutZevInput, Prisma.UnitUncheckedCreateWithoutZevInput>
+}
+
+export type UnitCreateManyZevInputEnvelope = {
+  data: Prisma.UnitCreateManyZevInput | Prisma.UnitCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type UnitUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.UnitWhereUniqueInput
+  update: Prisma.XOR<Prisma.UnitUpdateWithoutZevInput, Prisma.UnitUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.UnitCreateWithoutZevInput, Prisma.UnitUncheckedCreateWithoutZevInput>
+}
+
+export type UnitUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.UnitWhereUniqueInput
+  data: Prisma.XOR<Prisma.UnitUpdateWithoutZevInput, Prisma.UnitUncheckedUpdateWithoutZevInput>
+}
+
+export type UnitUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.UnitScalarWhereInput
+  data: Prisma.XOR<Prisma.UnitUpdateManyMutationInput, Prisma.UnitUncheckedUpdateManyWithoutZevInput>
+}
+
 export type UnitCreateWithoutBuildingInput = {
   id?: string
   type: $Enums.UnitType
@@ -1223,6 +1376,7 @@ export type UnitCreateWithoutBuildingInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
@@ -1239,6 +1393,7 @@ export type UnitCreateWithoutBuildingInput = {
 
 export type UnitUncheckedCreateWithoutBuildingInput = {
   id?: string
+  zevId: string
   entranceId?: string | null
   type: $Enums.UnitType
   label: string
@@ -1303,6 +1458,7 @@ export type UnitCreateWithoutEntranceInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
@@ -1319,6 +1475,7 @@ export type UnitCreateWithoutEntranceInput = {
 
 export type UnitUncheckedCreateWithoutEntranceInput = {
   id?: string
+  zevId: string
   buildingId: string
   type: $Enums.UnitType
   label: string
@@ -1383,6 +1540,7 @@ export type UnitCreateWithoutOwnershipStakesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -1399,6 +1557,7 @@ export type UnitCreateWithoutOwnershipStakesInput = {
 
 export type UnitUncheckedCreateWithoutOwnershipStakesInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1453,6 +1612,7 @@ export type UnitUpdateWithoutOwnershipStakesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -1469,6 +1629,7 @@ export type UnitUpdateWithoutOwnershipStakesInput = {
 
 export type UnitUncheckedUpdateWithoutOwnershipStakesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -1507,6 +1668,7 @@ export type UnitCreateWithoutOccupanciesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -1523,6 +1685,7 @@ export type UnitCreateWithoutOccupanciesInput = {
 
 export type UnitUncheckedCreateWithoutOccupanciesInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1577,6 +1740,7 @@ export type UnitUpdateWithoutOccupanciesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -1593,6 +1757,7 @@ export type UnitUpdateWithoutOccupanciesInput = {
 
 export type UnitUncheckedUpdateWithoutOccupanciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -1631,6 +1796,7 @@ export type UnitCreateWithoutAllocationMembershipsInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -1647,6 +1813,7 @@ export type UnitCreateWithoutAllocationMembershipsInput = {
 
 export type UnitUncheckedCreateWithoutAllocationMembershipsInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1701,6 +1868,7 @@ export type UnitUpdateWithoutAllocationMembershipsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -1717,6 +1885,7 @@ export type UnitUpdateWithoutAllocationMembershipsInput = {
 
 export type UnitUncheckedUpdateWithoutAllocationMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -1755,6 +1924,7 @@ export type UnitCreateWithoutProposalScopesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -1771,6 +1941,7 @@ export type UnitCreateWithoutProposalScopesInput = {
 
 export type UnitUncheckedCreateWithoutProposalScopesInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1825,6 +1996,7 @@ export type UnitUpdateWithoutProposalScopesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -1841,6 +2013,7 @@ export type UnitUpdateWithoutProposalScopesInput = {
 
 export type UnitUncheckedUpdateWithoutProposalScopesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -1879,6 +2052,7 @@ export type UnitCreateWithoutChargeExceptionsInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -1895,6 +2069,7 @@ export type UnitCreateWithoutChargeExceptionsInput = {
 
 export type UnitUncheckedCreateWithoutChargeExceptionsInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -1949,6 +2124,7 @@ export type UnitUpdateWithoutChargeExceptionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -1965,6 +2141,7 @@ export type UnitUpdateWithoutChargeExceptionsInput = {
 
 export type UnitUncheckedUpdateWithoutChargeExceptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2003,6 +2180,7 @@ export type UnitCreateWithoutMeterReadingsInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -2019,6 +2197,7 @@ export type UnitCreateWithoutMeterReadingsInput = {
 
 export type UnitUncheckedCreateWithoutMeterReadingsInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -2073,6 +2252,7 @@ export type UnitUpdateWithoutMeterReadingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -2089,6 +2269,7 @@ export type UnitUpdateWithoutMeterReadingsInput = {
 
 export type UnitUncheckedUpdateWithoutMeterReadingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2127,6 +2308,7 @@ export type UnitCreateWithoutInvoicesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -2143,6 +2325,7 @@ export type UnitCreateWithoutInvoicesInput = {
 
 export type UnitUncheckedCreateWithoutInvoicesInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -2197,6 +2380,7 @@ export type UnitUpdateWithoutInvoicesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -2213,6 +2397,7 @@ export type UnitUpdateWithoutInvoicesInput = {
 
 export type UnitUncheckedUpdateWithoutInvoicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2251,6 +2436,7 @@ export type UnitCreateWithoutPlanItemScopesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -2267,6 +2453,7 @@ export type UnitCreateWithoutPlanItemScopesInput = {
 
 export type UnitUncheckedCreateWithoutPlanItemScopesInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -2321,6 +2508,7 @@ export type UnitUpdateWithoutPlanItemScopesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -2337,6 +2525,7 @@ export type UnitUpdateWithoutPlanItemScopesInput = {
 
 export type UnitUncheckedUpdateWithoutPlanItemScopesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2375,6 +2564,7 @@ export type UnitCreateWithoutMaintenanceIssuesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
@@ -2391,6 +2581,7 @@ export type UnitCreateWithoutMaintenanceIssuesInput = {
 
 export type UnitUncheckedCreateWithoutMaintenanceIssuesInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -2445,6 +2636,7 @@ export type UnitUpdateWithoutMaintenanceIssuesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -2461,6 +2653,7 @@ export type UnitUpdateWithoutMaintenanceIssuesInput = {
 
 export type UnitUncheckedUpdateWithoutMaintenanceIssuesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2488,6 +2681,7 @@ export type UnitUncheckedUpdateWithoutMaintenanceIssuesInput = {
 
 export type UnitCreateManyInvoiceRecipientInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -2506,6 +2700,7 @@ export type UnitCreateManyInvoiceRecipientInput = {
 
 export type UnitCreateManyCorrespondenceContactInput = {
   id?: string
+  zevId: string
   buildingId: string
   entranceId?: string | null
   type: $Enums.UnitType
@@ -2535,6 +2730,7 @@ export type UnitUpdateWithoutInvoiceRecipientInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
@@ -2551,6 +2747,7 @@ export type UnitUpdateWithoutInvoiceRecipientInput = {
 
 export type UnitUncheckedUpdateWithoutInvoiceRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2578,6 +2775,7 @@ export type UnitUncheckedUpdateWithoutInvoiceRecipientInput = {
 
 export type UnitUncheckedUpdateManyWithoutInvoiceRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2607,6 +2805,7 @@ export type UnitUpdateWithoutCorrespondenceContactInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
@@ -2623,6 +2822,7 @@ export type UnitUpdateWithoutCorrespondenceContactInput = {
 
 export type UnitUncheckedUpdateWithoutCorrespondenceContactInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2650,6 +2850,7 @@ export type UnitUncheckedUpdateWithoutCorrespondenceContactInput = {
 
 export type UnitUncheckedUpdateManyWithoutCorrespondenceContactInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
@@ -2666,8 +2867,103 @@ export type UnitUncheckedUpdateManyWithoutCorrespondenceContactInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type UnitCreateManyZevInput = {
+  id?: string
+  buildingId: string
+  entranceId?: string | null
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  invoiceRecipientId?: string | null
+  correspondenceContactId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UnitUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
+  entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
+  invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
+  correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUnitNestedInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUpdateManyWithoutUnitNestedInput
+  meterReadings?: Prisma.MeterReadingUpdateManyWithoutUnitNestedInput
+  proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
+  planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+}
+
+export type UnitUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutUnitNestedInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUncheckedUpdateManyWithoutUnitNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUnitNestedInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutUnitNestedInput
+  meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutUnitNestedInput
+  proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
+  planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+}
+
+export type UnitUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type UnitCreateManyBuildingInput = {
   id?: string
+  zevId: string
   entranceId?: string | null
   type: $Enums.UnitType
   label: string
@@ -2697,6 +2993,7 @@ export type UnitUpdateWithoutBuildingInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
@@ -2713,6 +3010,7 @@ export type UnitUpdateWithoutBuildingInput = {
 
 export type UnitUncheckedUpdateWithoutBuildingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2740,6 +3038,7 @@ export type UnitUncheckedUpdateWithoutBuildingInput = {
 
 export type UnitUncheckedUpdateManyWithoutBuildingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2758,6 +3057,7 @@ export type UnitUncheckedUpdateManyWithoutBuildingInput = {
 
 export type UnitCreateManyEntranceInput = {
   id?: string
+  zevId: string
   buildingId: string
   type: $Enums.UnitType
   label: string
@@ -2787,6 +3087,7 @@ export type UnitUpdateWithoutEntranceInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
@@ -2803,6 +3104,7 @@ export type UnitUpdateWithoutEntranceInput = {
 
 export type UnitUncheckedUpdateWithoutEntranceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2830,6 +3132,7 @@ export type UnitUncheckedUpdateWithoutEntranceInput = {
 
 export type UnitUncheckedUpdateManyWithoutEntranceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   buildingId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2951,6 +3254,7 @@ export type UnitCountOutputTypeCountPlanItemScopesArgs<ExtArgs extends runtime.T
 
 export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   entranceId?: boolean
   type?: boolean
@@ -2966,6 +3270,7 @@ export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   correspondenceContactId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
@@ -2984,6 +3289,7 @@ export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 
 export type UnitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   entranceId?: boolean
   type?: boolean
@@ -2999,6 +3305,7 @@ export type UnitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   correspondenceContactId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
@@ -3007,6 +3314,7 @@ export type UnitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 
 export type UnitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   entranceId?: boolean
   type?: boolean
@@ -3022,6 +3330,7 @@ export type UnitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   correspondenceContactId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
@@ -3030,6 +3339,7 @@ export type UnitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 
 export type UnitSelectScalar = {
   id?: boolean
+  zevId?: boolean
   buildingId?: boolean
   entranceId?: boolean
   type?: boolean
@@ -3047,8 +3357,9 @@ export type UnitSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UnitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "buildingId" | "entranceId" | "type" | "label" | "floor" | "usableArea" | "ownershipShare" | "occupantCount" | "typeCoefficient" | "active" | "note" | "invoiceRecipientId" | "correspondenceContactId" | "createdAt" | "updatedAt", ExtArgs["result"]["unit"]>
+export type UnitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "buildingId" | "entranceId" | "type" | "label" | "floor" | "usableArea" | "ownershipShare" | "occupantCount" | "typeCoefficient" | "active" | "note" | "invoiceRecipientId" | "correspondenceContactId" | "createdAt" | "updatedAt", ExtArgs["result"]["unit"]>
 export type UnitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
@@ -3065,12 +3376,14 @@ export type UnitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   _count?: boolean | Prisma.UnitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UnitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
 }
 export type UnitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
@@ -3080,6 +3393,7 @@ export type UnitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UnitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Unit"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     building: Prisma.$BuildingPayload<ExtArgs>
     entrance: Prisma.$EntrancePayload<ExtArgs> | null
     invoiceRecipient: Prisma.$PartyPayload<ExtArgs> | null
@@ -3096,6 +3410,7 @@ export type $UnitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     buildingId: string
     entranceId: string | null
     type: $Enums.UnitType
@@ -3505,6 +3820,7 @@ readonly fields: UnitFieldRefs;
  */
 export interface Prisma__UnitClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   building<T extends Prisma.BuildingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BuildingDefaultArgs<ExtArgs>>): Prisma.Prisma__BuildingClient<runtime.Types.Result.GetResult<Prisma.$BuildingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   entrance<T extends Prisma.Unit$entranceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$entranceArgs<ExtArgs>>): Prisma.Prisma__EntranceClient<runtime.Types.Result.GetResult<Prisma.$EntrancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invoiceRecipient<T extends Prisma.Unit$invoiceRecipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$invoiceRecipientArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3548,6 +3864,7 @@ export interface Prisma__UnitClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface UnitFieldRefs {
   readonly id: Prisma.FieldRef<"Unit", 'String'>
+  readonly zevId: Prisma.FieldRef<"Unit", 'String'>
   readonly buildingId: Prisma.FieldRef<"Unit", 'String'>
   readonly entranceId: Prisma.FieldRef<"Unit", 'String'>
   readonly type: Prisma.FieldRef<"Unit", 'UnitType'>

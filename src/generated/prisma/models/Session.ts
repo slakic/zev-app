@@ -27,6 +27,7 @@ export type AggregateSession = {
 export type SessionMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  activeZevId: string | null
   expiresAt: Date | null
   revokedAt: Date | null
   ip: string | null
@@ -37,6 +38,7 @@ export type SessionMinAggregateOutputType = {
 export type SessionMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  activeZevId: string | null
   expiresAt: Date | null
   revokedAt: Date | null
   ip: string | null
@@ -47,6 +49,7 @@ export type SessionMaxAggregateOutputType = {
 export type SessionCountAggregateOutputType = {
   id: number
   userId: number
+  activeZevId: number
   expiresAt: number
   revokedAt: number
   ip: number
@@ -59,6 +62,7 @@ export type SessionCountAggregateOutputType = {
 export type SessionMinAggregateInputType = {
   id?: true
   userId?: true
+  activeZevId?: true
   expiresAt?: true
   revokedAt?: true
   ip?: true
@@ -69,6 +73,7 @@ export type SessionMinAggregateInputType = {
 export type SessionMaxAggregateInputType = {
   id?: true
   userId?: true
+  activeZevId?: true
   expiresAt?: true
   revokedAt?: true
   ip?: true
@@ -79,6 +84,7 @@ export type SessionMaxAggregateInputType = {
 export type SessionCountAggregateInputType = {
   id?: true
   userId?: true
+  activeZevId?: true
   expiresAt?: true
   revokedAt?: true
   ip?: true
@@ -162,6 +168,7 @@ export type SessionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type SessionGroupByOutputType = {
   id: string
   userId: string
+  activeZevId: string | null
   expiresAt: Date
   revokedAt: Date | null
   ip: string | null
@@ -193,23 +200,27 @@ export type SessionWhereInput = {
   NOT?: Prisma.SessionWhereInput | Prisma.SessionWhereInput[]
   id?: Prisma.StringFilter<"Session"> | string
   userId?: Prisma.StringFilter<"Session"> | string
+  activeZevId?: Prisma.StringNullableFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   ip?: Prisma.StringNullableFilter<"Session"> | string | null
   userAgent?: Prisma.StringNullableFilter<"Session"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  activeZev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
 }
 
 export type SessionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  activeZevId?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ip?: Prisma.SortOrderInput | Prisma.SortOrder
   userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  activeZev?: Prisma.ZevOrderByWithRelationInput
 }
 
 export type SessionWhereUniqueInput = Prisma.AtLeast<{
@@ -218,17 +229,20 @@ export type SessionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.SessionWhereInput[]
   NOT?: Prisma.SessionWhereInput | Prisma.SessionWhereInput[]
   userId?: Prisma.StringFilter<"Session"> | string
+  activeZevId?: Prisma.StringNullableFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   ip?: Prisma.StringNullableFilter<"Session"> | string | null
   userAgent?: Prisma.StringNullableFilter<"Session"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  activeZev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
 }, "id">
 
 export type SessionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  activeZevId?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ip?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -245,6 +259,7 @@ export type SessionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SessionScalarWhereWithAggregatesInput | Prisma.SessionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Session"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Session"> | string
+  activeZevId?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
   ip?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
@@ -260,11 +275,13 @@ export type SessionCreateInput = {
   userAgent?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSessionsInput
+  activeZev?: Prisma.ZevCreateNestedOneWithoutSessionsInput
 }
 
 export type SessionUncheckedCreateInput = {
   id?: string
   userId: string
+  activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
   ip?: string | null
@@ -280,11 +297,13 @@ export type SessionUpdateInput = {
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSessionsNestedInput
+  activeZev?: Prisma.ZevUpdateOneWithoutSessionsNestedInput
 }
 
 export type SessionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -295,6 +314,7 @@ export type SessionUncheckedUpdateInput = {
 export type SessionCreateManyInput = {
   id?: string
   userId: string
+  activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
   ip?: string | null
@@ -314,6 +334,7 @@ export type SessionUpdateManyMutationInput = {
 export type SessionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -334,6 +355,7 @@ export type SessionOrderByRelationAggregateInput = {
 export type SessionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  activeZevId?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   ip?: Prisma.SortOrder
@@ -344,6 +366,7 @@ export type SessionCountOrderByAggregateInput = {
 export type SessionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  activeZevId?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   ip?: Prisma.SortOrder
@@ -354,6 +377,7 @@ export type SessionMaxOrderByAggregateInput = {
 export type SessionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  activeZevId?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   ip?: Prisma.SortOrder
@@ -403,6 +427,48 @@ export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.SessionScalarWhereInput | Prisma.SessionScalarWhereInput[]
 }
 
+export type SessionCreateNestedManyWithoutActiveZevInput = {
+  create?: Prisma.XOR<Prisma.SessionCreateWithoutActiveZevInput, Prisma.SessionUncheckedCreateWithoutActiveZevInput> | Prisma.SessionCreateWithoutActiveZevInput[] | Prisma.SessionUncheckedCreateWithoutActiveZevInput[]
+  connectOrCreate?: Prisma.SessionCreateOrConnectWithoutActiveZevInput | Prisma.SessionCreateOrConnectWithoutActiveZevInput[]
+  createMany?: Prisma.SessionCreateManyActiveZevInputEnvelope
+  connect?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+}
+
+export type SessionUncheckedCreateNestedManyWithoutActiveZevInput = {
+  create?: Prisma.XOR<Prisma.SessionCreateWithoutActiveZevInput, Prisma.SessionUncheckedCreateWithoutActiveZevInput> | Prisma.SessionCreateWithoutActiveZevInput[] | Prisma.SessionUncheckedCreateWithoutActiveZevInput[]
+  connectOrCreate?: Prisma.SessionCreateOrConnectWithoutActiveZevInput | Prisma.SessionCreateOrConnectWithoutActiveZevInput[]
+  createMany?: Prisma.SessionCreateManyActiveZevInputEnvelope
+  connect?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+}
+
+export type SessionUpdateManyWithoutActiveZevNestedInput = {
+  create?: Prisma.XOR<Prisma.SessionCreateWithoutActiveZevInput, Prisma.SessionUncheckedCreateWithoutActiveZevInput> | Prisma.SessionCreateWithoutActiveZevInput[] | Prisma.SessionUncheckedCreateWithoutActiveZevInput[]
+  connectOrCreate?: Prisma.SessionCreateOrConnectWithoutActiveZevInput | Prisma.SessionCreateOrConnectWithoutActiveZevInput[]
+  upsert?: Prisma.SessionUpsertWithWhereUniqueWithoutActiveZevInput | Prisma.SessionUpsertWithWhereUniqueWithoutActiveZevInput[]
+  createMany?: Prisma.SessionCreateManyActiveZevInputEnvelope
+  set?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  disconnect?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  delete?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  connect?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  update?: Prisma.SessionUpdateWithWhereUniqueWithoutActiveZevInput | Prisma.SessionUpdateWithWhereUniqueWithoutActiveZevInput[]
+  updateMany?: Prisma.SessionUpdateManyWithWhereWithoutActiveZevInput | Prisma.SessionUpdateManyWithWhereWithoutActiveZevInput[]
+  deleteMany?: Prisma.SessionScalarWhereInput | Prisma.SessionScalarWhereInput[]
+}
+
+export type SessionUncheckedUpdateManyWithoutActiveZevNestedInput = {
+  create?: Prisma.XOR<Prisma.SessionCreateWithoutActiveZevInput, Prisma.SessionUncheckedCreateWithoutActiveZevInput> | Prisma.SessionCreateWithoutActiveZevInput[] | Prisma.SessionUncheckedCreateWithoutActiveZevInput[]
+  connectOrCreate?: Prisma.SessionCreateOrConnectWithoutActiveZevInput | Prisma.SessionCreateOrConnectWithoutActiveZevInput[]
+  upsert?: Prisma.SessionUpsertWithWhereUniqueWithoutActiveZevInput | Prisma.SessionUpsertWithWhereUniqueWithoutActiveZevInput[]
+  createMany?: Prisma.SessionCreateManyActiveZevInputEnvelope
+  set?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  disconnect?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  delete?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  connect?: Prisma.SessionWhereUniqueInput | Prisma.SessionWhereUniqueInput[]
+  update?: Prisma.SessionUpdateWithWhereUniqueWithoutActiveZevInput | Prisma.SessionUpdateWithWhereUniqueWithoutActiveZevInput[]
+  updateMany?: Prisma.SessionUpdateManyWithWhereWithoutActiveZevInput | Prisma.SessionUpdateManyWithWhereWithoutActiveZevInput[]
+  deleteMany?: Prisma.SessionScalarWhereInput | Prisma.SessionScalarWhereInput[]
+}
+
 export type SessionCreateWithoutUserInput = {
   id?: string
   expiresAt: Date | string
@@ -410,10 +476,12 @@ export type SessionCreateWithoutUserInput = {
   ip?: string | null
   userAgent?: string | null
   createdAt?: Date | string
+  activeZev?: Prisma.ZevCreateNestedOneWithoutSessionsInput
 }
 
 export type SessionUncheckedCreateWithoutUserInput = {
   id?: string
+  activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
   ip?: string | null
@@ -453,6 +521,7 @@ export type SessionScalarWhereInput = {
   NOT?: Prisma.SessionScalarWhereInput | Prisma.SessionScalarWhereInput[]
   id?: Prisma.StringFilter<"Session"> | string
   userId?: Prisma.StringFilter<"Session"> | string
+  activeZevId?: Prisma.StringNullableFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   ip?: Prisma.StringNullableFilter<"Session"> | string | null
@@ -460,8 +529,55 @@ export type SessionScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
 }
 
+export type SessionCreateWithoutActiveZevInput = {
+  id?: string
+  expiresAt: Date | string
+  revokedAt?: Date | string | null
+  ip?: string | null
+  userAgent?: string | null
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutSessionsInput
+}
+
+export type SessionUncheckedCreateWithoutActiveZevInput = {
+  id?: string
+  userId: string
+  expiresAt: Date | string
+  revokedAt?: Date | string | null
+  ip?: string | null
+  userAgent?: string | null
+  createdAt?: Date | string
+}
+
+export type SessionCreateOrConnectWithoutActiveZevInput = {
+  where: Prisma.SessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.SessionCreateWithoutActiveZevInput, Prisma.SessionUncheckedCreateWithoutActiveZevInput>
+}
+
+export type SessionCreateManyActiveZevInputEnvelope = {
+  data: Prisma.SessionCreateManyActiveZevInput | Prisma.SessionCreateManyActiveZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type SessionUpsertWithWhereUniqueWithoutActiveZevInput = {
+  where: Prisma.SessionWhereUniqueInput
+  update: Prisma.XOR<Prisma.SessionUpdateWithoutActiveZevInput, Prisma.SessionUncheckedUpdateWithoutActiveZevInput>
+  create: Prisma.XOR<Prisma.SessionCreateWithoutActiveZevInput, Prisma.SessionUncheckedCreateWithoutActiveZevInput>
+}
+
+export type SessionUpdateWithWhereUniqueWithoutActiveZevInput = {
+  where: Prisma.SessionWhereUniqueInput
+  data: Prisma.XOR<Prisma.SessionUpdateWithoutActiveZevInput, Prisma.SessionUncheckedUpdateWithoutActiveZevInput>
+}
+
+export type SessionUpdateManyWithWhereWithoutActiveZevInput = {
+  where: Prisma.SessionScalarWhereInput
+  data: Prisma.XOR<Prisma.SessionUpdateManyMutationInput, Prisma.SessionUncheckedUpdateManyWithoutActiveZevInput>
+}
+
 export type SessionCreateManyUserInput = {
   id?: string
+  activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
   ip?: string | null
@@ -476,10 +592,12 @@ export type SessionUpdateWithoutUserInput = {
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activeZev?: Prisma.ZevUpdateOneWithoutSessionsNestedInput
 }
 
 export type SessionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -489,6 +607,47 @@ export type SessionUncheckedUpdateWithoutUserInput = {
 
 export type SessionUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SessionCreateManyActiveZevInput = {
+  id?: string
+  userId: string
+  expiresAt: Date | string
+  revokedAt?: Date | string | null
+  ip?: string | null
+  userAgent?: string | null
+  createdAt?: Date | string
+}
+
+export type SessionUpdateWithoutActiveZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutSessionsNestedInput
+}
+
+export type SessionUncheckedUpdateWithoutActiveZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SessionUncheckedUpdateManyWithoutActiveZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -501,39 +660,46 @@ export type SessionUncheckedUpdateManyWithoutUserInput = {
 export type SessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
   ip?: boolean
   userAgent?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
 }, ExtArgs["result"]["session"]>
 
 export type SessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
   ip?: boolean
   userAgent?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
 }, ExtArgs["result"]["session"]>
 
 export type SessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
   ip?: boolean
   userAgent?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
 }, ExtArgs["result"]["session"]>
 
 export type SessionSelectScalar = {
   id?: boolean
   userId?: boolean
+  activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
   ip?: boolean
@@ -541,25 +707,36 @@ export type SessionSelectScalar = {
   createdAt?: boolean
 }
 
-export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "expiresAt" | "revokedAt" | "ip" | "userAgent" | "createdAt", ExtArgs["result"]["session"]>
+export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "activeZevId" | "expiresAt" | "revokedAt" | "ip" | "userAgent" | "createdAt", ExtArgs["result"]["session"]>
 export type SessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
 }
 export type SessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
 }
 export type SessionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
 }
 
 export type $SessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Session"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    /**
+     * Which ZEV this session is currently acting within. Null right after login until
+     * resolved (see getAuthContext in session.ts): auto-picked when the user has exactly
+     * one Membership, left null for a user with none (e.g. a super admin with no chosen
+     * tenant yet). Nulled automatically if that Zev is ever deleted.
+     */
+    activeZev: Prisma.$ZevPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
+    activeZevId: string | null
     expiresAt: Date
     revokedAt: Date | null
     ip: string | null
@@ -960,6 +1137,7 @@ readonly fields: SessionFieldRefs;
 export interface Prisma__SessionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  activeZev<T extends Prisma.Session$activeZevArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Session$activeZevArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -991,6 +1169,7 @@ export interface Prisma__SessionClient<T, Null = never, ExtArgs extends runtime.
 export interface SessionFieldRefs {
   readonly id: Prisma.FieldRef<"Session", 'String'>
   readonly userId: Prisma.FieldRef<"Session", 'String'>
+  readonly activeZevId: Prisma.FieldRef<"Session", 'String'>
   readonly expiresAt: Prisma.FieldRef<"Session", 'DateTime'>
   readonly revokedAt: Prisma.FieldRef<"Session", 'DateTime'>
   readonly ip: Prisma.FieldRef<"Session", 'String'>
@@ -1394,6 +1573,25 @@ export type SessionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Sessions to delete.
    */
   limit?: number
+}
+
+/**
+ * Session.activeZev
+ */
+export type Session$activeZevArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Zev
+   */
+  select?: Prisma.ZevSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Zev
+   */
+  omit?: Prisma.ZevOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevInclude<ExtArgs> | null
+  where?: Prisma.ZevWhereInput
 }
 
 /**

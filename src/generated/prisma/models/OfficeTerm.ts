@@ -14,7 +14,13 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model OfficeTerm
- * Effective-dated office holders (president mandate, accountant engagement)
+ * Effective-dated office holders (president mandate, accountant engagement,
+ * upravni odbor membership). PRESIDENT and ACCOUNTANT are single-holder
+ * roles (setting a new term closes the previous one); BOARD_MEMBER is
+ * multi-holder — several rows may be concurrently open. See
+ * LEGAL_AND_FINANCIAL_ASSUMPTIONS.md §Organi ZEV for the legal basis and
+ * the assumptions flagged for review (board size, mandate length, whether
+ * the ZEV "predsjednik" tracked here is also predsjednik upravnog odbora).
  */
 export type OfficeTermModel = runtime.Types.Result.DefaultSelection<Prisma.$OfficeTermPayload>
 
@@ -26,6 +32,7 @@ export type AggregateOfficeTerm = {
 
 export type OfficeTermMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   role: $Enums.OfficeRole | null
   partyId: string | null
   validFrom: Date | null
@@ -36,6 +43,7 @@ export type OfficeTermMinAggregateOutputType = {
 
 export type OfficeTermMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   role: $Enums.OfficeRole | null
   partyId: string | null
   validFrom: Date | null
@@ -46,6 +54,7 @@ export type OfficeTermMaxAggregateOutputType = {
 
 export type OfficeTermCountAggregateOutputType = {
   id: number
+  zevId: number
   role: number
   partyId: number
   validFrom: number
@@ -58,6 +67,7 @@ export type OfficeTermCountAggregateOutputType = {
 
 export type OfficeTermMinAggregateInputType = {
   id?: true
+  zevId?: true
   role?: true
   partyId?: true
   validFrom?: true
@@ -68,6 +78,7 @@ export type OfficeTermMinAggregateInputType = {
 
 export type OfficeTermMaxAggregateInputType = {
   id?: true
+  zevId?: true
   role?: true
   partyId?: true
   validFrom?: true
@@ -78,6 +89,7 @@ export type OfficeTermMaxAggregateInputType = {
 
 export type OfficeTermCountAggregateInputType = {
   id?: true
+  zevId?: true
   role?: true
   partyId?: true
   validFrom?: true
@@ -161,6 +173,7 @@ export type OfficeTermGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type OfficeTermGroupByOutputType = {
   id: string
+  zevId: string
   role: $Enums.OfficeRole
   partyId: string
   validFrom: Date
@@ -192,23 +205,27 @@ export type OfficeTermWhereInput = {
   OR?: Prisma.OfficeTermWhereInput[]
   NOT?: Prisma.OfficeTermWhereInput | Prisma.OfficeTermWhereInput[]
   id?: Prisma.StringFilter<"OfficeTerm"> | string
+  zevId?: Prisma.StringFilter<"OfficeTerm"> | string
   role?: Prisma.EnumOfficeRoleFilter<"OfficeTerm"> | $Enums.OfficeRole
   partyId?: Prisma.StringFilter<"OfficeTerm"> | string
   validFrom?: Prisma.DateTimeFilter<"OfficeTerm"> | Date | string
   validTo?: Prisma.DateTimeNullableFilter<"OfficeTerm"> | Date | string | null
   decisionRef?: Prisma.StringNullableFilter<"OfficeTerm"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OfficeTerm"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }
 
 export type OfficeTermOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
   validTo?: Prisma.SortOrderInput | Prisma.SortOrder
   decisionRef?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   party?: Prisma.PartyOrderByWithRelationInput
 }
 
@@ -217,17 +234,20 @@ export type OfficeTermWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OfficeTermWhereInput | Prisma.OfficeTermWhereInput[]
   OR?: Prisma.OfficeTermWhereInput[]
   NOT?: Prisma.OfficeTermWhereInput | Prisma.OfficeTermWhereInput[]
+  zevId?: Prisma.StringFilter<"OfficeTerm"> | string
   role?: Prisma.EnumOfficeRoleFilter<"OfficeTerm"> | $Enums.OfficeRole
   partyId?: Prisma.StringFilter<"OfficeTerm"> | string
   validFrom?: Prisma.DateTimeFilter<"OfficeTerm"> | Date | string
   validTo?: Prisma.DateTimeNullableFilter<"OfficeTerm"> | Date | string | null
   decisionRef?: Prisma.StringNullableFilter<"OfficeTerm"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OfficeTerm"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }, "id">
 
 export type OfficeTermOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
@@ -244,6 +264,7 @@ export type OfficeTermScalarWhereWithAggregatesInput = {
   OR?: Prisma.OfficeTermScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OfficeTermScalarWhereWithAggregatesInput | Prisma.OfficeTermScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"OfficeTerm"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"OfficeTerm"> | string
   role?: Prisma.EnumOfficeRoleWithAggregatesFilter<"OfficeTerm"> | $Enums.OfficeRole
   partyId?: Prisma.StringWithAggregatesFilter<"OfficeTerm"> | string
   validFrom?: Prisma.DateTimeWithAggregatesFilter<"OfficeTerm"> | Date | string
@@ -259,11 +280,13 @@ export type OfficeTermCreateInput = {
   validTo?: Date | string | null
   decisionRef?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOfficeTermsInput
   party: Prisma.PartyCreateNestedOneWithoutOfficeTermsInput
 }
 
 export type OfficeTermUncheckedCreateInput = {
   id?: string
+  zevId: string
   role: $Enums.OfficeRole
   partyId: string
   validFrom: Date | string
@@ -279,11 +302,13 @@ export type OfficeTermUpdateInput = {
   validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOfficeTermsNestedInput
   party?: Prisma.PartyUpdateOneRequiredWithoutOfficeTermsNestedInput
 }
 
 export type OfficeTermUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -294,6 +319,7 @@ export type OfficeTermUncheckedUpdateInput = {
 
 export type OfficeTermCreateManyInput = {
   id?: string
+  zevId: string
   role: $Enums.OfficeRole
   partyId: string
   validFrom: Date | string
@@ -313,6 +339,7 @@ export type OfficeTermUpdateManyMutationInput = {
 
 export type OfficeTermUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,6 +360,7 @@ export type OfficeTermOrderByRelationAggregateInput = {
 
 export type OfficeTermCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
@@ -343,6 +371,7 @@ export type OfficeTermCountOrderByAggregateInput = {
 
 export type OfficeTermMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
@@ -353,6 +382,7 @@ export type OfficeTermMaxOrderByAggregateInput = {
 
 export type OfficeTermMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   validFrom?: Prisma.SortOrder
@@ -403,6 +433,48 @@ export type OfficeTermUncheckedUpdateManyWithoutPartyNestedInput = {
   deleteMany?: Prisma.OfficeTermScalarWhereInput | Prisma.OfficeTermScalarWhereInput[]
 }
 
+export type OfficeTermCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.OfficeTermCreateWithoutZevInput, Prisma.OfficeTermUncheckedCreateWithoutZevInput> | Prisma.OfficeTermCreateWithoutZevInput[] | Prisma.OfficeTermUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OfficeTermCreateOrConnectWithoutZevInput | Prisma.OfficeTermCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.OfficeTermCreateManyZevInputEnvelope
+  connect?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+}
+
+export type OfficeTermUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.OfficeTermCreateWithoutZevInput, Prisma.OfficeTermUncheckedCreateWithoutZevInput> | Prisma.OfficeTermCreateWithoutZevInput[] | Prisma.OfficeTermUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OfficeTermCreateOrConnectWithoutZevInput | Prisma.OfficeTermCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.OfficeTermCreateManyZevInputEnvelope
+  connect?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+}
+
+export type OfficeTermUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.OfficeTermCreateWithoutZevInput, Prisma.OfficeTermUncheckedCreateWithoutZevInput> | Prisma.OfficeTermCreateWithoutZevInput[] | Prisma.OfficeTermUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OfficeTermCreateOrConnectWithoutZevInput | Prisma.OfficeTermCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.OfficeTermUpsertWithWhereUniqueWithoutZevInput | Prisma.OfficeTermUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.OfficeTermCreateManyZevInputEnvelope
+  set?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  disconnect?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  delete?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  connect?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  update?: Prisma.OfficeTermUpdateWithWhereUniqueWithoutZevInput | Prisma.OfficeTermUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.OfficeTermUpdateManyWithWhereWithoutZevInput | Prisma.OfficeTermUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.OfficeTermScalarWhereInput | Prisma.OfficeTermScalarWhereInput[]
+}
+
+export type OfficeTermUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.OfficeTermCreateWithoutZevInput, Prisma.OfficeTermUncheckedCreateWithoutZevInput> | Prisma.OfficeTermCreateWithoutZevInput[] | Prisma.OfficeTermUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OfficeTermCreateOrConnectWithoutZevInput | Prisma.OfficeTermCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.OfficeTermUpsertWithWhereUniqueWithoutZevInput | Prisma.OfficeTermUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.OfficeTermCreateManyZevInputEnvelope
+  set?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  disconnect?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  delete?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  connect?: Prisma.OfficeTermWhereUniqueInput | Prisma.OfficeTermWhereUniqueInput[]
+  update?: Prisma.OfficeTermUpdateWithWhereUniqueWithoutZevInput | Prisma.OfficeTermUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.OfficeTermUpdateManyWithWhereWithoutZevInput | Prisma.OfficeTermUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.OfficeTermScalarWhereInput | Prisma.OfficeTermScalarWhereInput[]
+}
+
 export type EnumOfficeRoleFieldUpdateOperationsInput = {
   set?: $Enums.OfficeRole
 }
@@ -414,10 +486,12 @@ export type OfficeTermCreateWithoutPartyInput = {
   validTo?: Date | string | null
   decisionRef?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOfficeTermsInput
 }
 
 export type OfficeTermUncheckedCreateWithoutPartyInput = {
   id?: string
+  zevId: string
   role: $Enums.OfficeRole
   validFrom: Date | string
   validTo?: Date | string | null
@@ -456,6 +530,7 @@ export type OfficeTermScalarWhereInput = {
   OR?: Prisma.OfficeTermScalarWhereInput[]
   NOT?: Prisma.OfficeTermScalarWhereInput | Prisma.OfficeTermScalarWhereInput[]
   id?: Prisma.StringFilter<"OfficeTerm"> | string
+  zevId?: Prisma.StringFilter<"OfficeTerm"> | string
   role?: Prisma.EnumOfficeRoleFilter<"OfficeTerm"> | $Enums.OfficeRole
   partyId?: Prisma.StringFilter<"OfficeTerm"> | string
   validFrom?: Prisma.DateTimeFilter<"OfficeTerm"> | Date | string
@@ -464,8 +539,55 @@ export type OfficeTermScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"OfficeTerm"> | Date | string
 }
 
+export type OfficeTermCreateWithoutZevInput = {
+  id?: string
+  role: $Enums.OfficeRole
+  validFrom: Date | string
+  validTo?: Date | string | null
+  decisionRef?: string | null
+  createdAt?: Date | string
+  party: Prisma.PartyCreateNestedOneWithoutOfficeTermsInput
+}
+
+export type OfficeTermUncheckedCreateWithoutZevInput = {
+  id?: string
+  role: $Enums.OfficeRole
+  partyId: string
+  validFrom: Date | string
+  validTo?: Date | string | null
+  decisionRef?: string | null
+  createdAt?: Date | string
+}
+
+export type OfficeTermCreateOrConnectWithoutZevInput = {
+  where: Prisma.OfficeTermWhereUniqueInput
+  create: Prisma.XOR<Prisma.OfficeTermCreateWithoutZevInput, Prisma.OfficeTermUncheckedCreateWithoutZevInput>
+}
+
+export type OfficeTermCreateManyZevInputEnvelope = {
+  data: Prisma.OfficeTermCreateManyZevInput | Prisma.OfficeTermCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type OfficeTermUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.OfficeTermWhereUniqueInput
+  update: Prisma.XOR<Prisma.OfficeTermUpdateWithoutZevInput, Prisma.OfficeTermUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.OfficeTermCreateWithoutZevInput, Prisma.OfficeTermUncheckedCreateWithoutZevInput>
+}
+
+export type OfficeTermUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.OfficeTermWhereUniqueInput
+  data: Prisma.XOR<Prisma.OfficeTermUpdateWithoutZevInput, Prisma.OfficeTermUncheckedUpdateWithoutZevInput>
+}
+
+export type OfficeTermUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.OfficeTermScalarWhereInput
+  data: Prisma.XOR<Prisma.OfficeTermUpdateManyMutationInput, Prisma.OfficeTermUncheckedUpdateManyWithoutZevInput>
+}
+
 export type OfficeTermCreateManyPartyInput = {
   id?: string
+  zevId: string
   role: $Enums.OfficeRole
   validFrom: Date | string
   validTo?: Date | string | null
@@ -480,10 +602,12 @@ export type OfficeTermUpdateWithoutPartyInput = {
   validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOfficeTermsNestedInput
 }
 
 export type OfficeTermUncheckedUpdateWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -493,7 +617,48 @@ export type OfficeTermUncheckedUpdateWithoutPartyInput = {
 
 export type OfficeTermUncheckedUpdateManyWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OfficeTermCreateManyZevInput = {
+  id?: string
+  role: $Enums.OfficeRole
+  partyId: string
+  validFrom: Date | string
+  validTo?: Date | string | null
+  decisionRef?: string | null
+  createdAt?: Date | string
+}
+
+export type OfficeTermUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  party?: Prisma.PartyUpdateOneRequiredWithoutOfficeTermsNestedInput
+}
+
+export type OfficeTermUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
+  partyId?: Prisma.StringFieldUpdateOperationsInput | string
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OfficeTermUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumOfficeRoleFieldUpdateOperationsInput | $Enums.OfficeRole
+  partyId?: Prisma.StringFieldUpdateOperationsInput | string
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -504,39 +669,46 @@ export type OfficeTermUncheckedUpdateManyWithoutPartyInput = {
 
 export type OfficeTermSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   role?: boolean
   partyId?: boolean
   validFrom?: boolean
   validTo?: boolean
   decisionRef?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["officeTerm"]>
 
 export type OfficeTermSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   role?: boolean
   partyId?: boolean
   validFrom?: boolean
   validTo?: boolean
   decisionRef?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["officeTerm"]>
 
 export type OfficeTermSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   role?: boolean
   partyId?: boolean
   validFrom?: boolean
   validTo?: boolean
   decisionRef?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["officeTerm"]>
 
 export type OfficeTermSelectScalar = {
   id?: boolean
+  zevId?: boolean
   role?: boolean
   partyId?: boolean
   validFrom?: boolean
@@ -545,24 +717,29 @@ export type OfficeTermSelectScalar = {
   createdAt?: boolean
 }
 
-export type OfficeTermOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "partyId" | "validFrom" | "validTo" | "decisionRef" | "createdAt", ExtArgs["result"]["officeTerm"]>
+export type OfficeTermOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "role" | "partyId" | "validFrom" | "validTo" | "decisionRef" | "createdAt", ExtArgs["result"]["officeTerm"]>
 export type OfficeTermInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type OfficeTermIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type OfficeTermIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 
 export type $OfficeTermPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OfficeTerm"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     party: Prisma.$PartyPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     role: $Enums.OfficeRole
     partyId: string
     validFrom: Date
@@ -963,6 +1140,7 @@ readonly fields: OfficeTermFieldRefs;
  */
 export interface Prisma__OfficeTermClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   party<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -994,6 +1172,7 @@ export interface Prisma__OfficeTermClient<T, Null = never, ExtArgs extends runti
  */
 export interface OfficeTermFieldRefs {
   readonly id: Prisma.FieldRef<"OfficeTerm", 'String'>
+  readonly zevId: Prisma.FieldRef<"OfficeTerm", 'String'>
   readonly role: Prisma.FieldRef<"OfficeTerm", 'OfficeRole'>
   readonly partyId: Prisma.FieldRef<"OfficeTerm", 'String'>
   readonly validFrom: Prisma.FieldRef<"OfficeTerm", 'DateTime'>

@@ -38,6 +38,7 @@ export type ExpenseSumAggregateOutputType = {
 
 export type ExpenseMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   supplierId: string | null
   invoiceNumber: string | null
   invoiceDate: Date | null
@@ -66,6 +67,7 @@ export type ExpenseMinAggregateOutputType = {
 
 export type ExpenseMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   supplierId: string | null
   invoiceNumber: string | null
   invoiceDate: Date | null
@@ -94,6 +96,7 @@ export type ExpenseMaxAggregateOutputType = {
 
 export type ExpenseCountAggregateOutputType = {
   id: number
+  zevId: number
   supplierId: number
   invoiceNumber: number
   invoiceDate: number
@@ -134,6 +137,7 @@ export type ExpenseSumAggregateInputType = {
 
 export type ExpenseMinAggregateInputType = {
   id?: true
+  zevId?: true
   supplierId?: true
   invoiceNumber?: true
   invoiceDate?: true
@@ -162,6 +166,7 @@ export type ExpenseMinAggregateInputType = {
 
 export type ExpenseMaxAggregateInputType = {
   id?: true
+  zevId?: true
   supplierId?: true
   invoiceNumber?: true
   invoiceDate?: true
@@ -190,6 +195,7 @@ export type ExpenseMaxAggregateInputType = {
 
 export type ExpenseCountAggregateInputType = {
   id?: true
+  zevId?: true
   supplierId?: true
   invoiceNumber?: true
   invoiceDate?: true
@@ -305,6 +311,7 @@ export type ExpenseGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type ExpenseGroupByOutputType = {
   id: string
+  zevId: string
   supplierId: string | null
   invoiceNumber: string | null
   invoiceDate: Date | null
@@ -356,6 +363,7 @@ export type ExpenseWhereInput = {
   OR?: Prisma.ExpenseWhereInput[]
   NOT?: Prisma.ExpenseWhereInput | Prisma.ExpenseWhereInput[]
   id?: Prisma.StringFilter<"Expense"> | string
+  zevId?: Prisma.StringFilter<"Expense"> | string
   supplierId?: Prisma.StringNullableFilter<"Expense"> | string | null
   invoiceNumber?: Prisma.StringNullableFilter<"Expense"> | string | null
   invoiceDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
@@ -380,6 +388,7 @@ export type ExpenseWhereInput = {
   createdById?: Prisma.StringNullableFilter<"Expense"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   category?: Prisma.XOR<Prisma.TransactionCategoryNullableScalarRelationFilter, Prisma.TransactionCategoryWhereInput> | null
   maintenanceIssue?: Prisma.XOR<Prisma.MaintenanceIssueNullableScalarRelationFilter, Prisma.MaintenanceIssueWhereInput> | null
@@ -388,6 +397,7 @@ export type ExpenseWhereInput = {
 
 export type ExpenseOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   supplierId?: Prisma.SortOrderInput | Prisma.SortOrder
   invoiceNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   invoiceDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -412,6 +422,7 @@ export type ExpenseOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   supplier?: Prisma.SupplierOrderByWithRelationInput
   category?: Prisma.TransactionCategoryOrderByWithRelationInput
   maintenanceIssue?: Prisma.MaintenanceIssueOrderByWithRelationInput
@@ -423,6 +434,7 @@ export type ExpenseWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ExpenseWhereInput | Prisma.ExpenseWhereInput[]
   OR?: Prisma.ExpenseWhereInput[]
   NOT?: Prisma.ExpenseWhereInput | Prisma.ExpenseWhereInput[]
+  zevId?: Prisma.StringFilter<"Expense"> | string
   supplierId?: Prisma.StringNullableFilter<"Expense"> | string | null
   invoiceNumber?: Prisma.StringNullableFilter<"Expense"> | string | null
   invoiceDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
@@ -447,6 +459,7 @@ export type ExpenseWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringNullableFilter<"Expense"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   category?: Prisma.XOR<Prisma.TransactionCategoryNullableScalarRelationFilter, Prisma.TransactionCategoryWhereInput> | null
   maintenanceIssue?: Prisma.XOR<Prisma.MaintenanceIssueNullableScalarRelationFilter, Prisma.MaintenanceIssueWhereInput> | null
@@ -455,6 +468,7 @@ export type ExpenseWhereUniqueInput = Prisma.AtLeast<{
 
 export type ExpenseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   supplierId?: Prisma.SortOrderInput | Prisma.SortOrder
   invoiceNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   invoiceDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -491,6 +505,7 @@ export type ExpenseScalarWhereWithAggregatesInput = {
   OR?: Prisma.ExpenseScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ExpenseScalarWhereWithAggregatesInput | Prisma.ExpenseScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Expense"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Expense"> | string
   supplierId?: Prisma.StringNullableWithAggregatesFilter<"Expense"> | string | null
   invoiceNumber?: Prisma.StringNullableWithAggregatesFilter<"Expense"> | string | null
   invoiceDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Expense"> | Date | string | null
@@ -540,6 +555,7 @@ export type ExpenseCreateInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutExpensesInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutExpensesInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutExpensesInput
   maintenanceIssue?: Prisma.MaintenanceIssueCreateNestedOneWithoutExpensesInput
@@ -548,6 +564,7 @@ export type ExpenseCreateInput = {
 
 export type ExpenseUncheckedCreateInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -598,6 +615,7 @@ export type ExpenseUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutExpensesNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutExpensesNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutExpensesNestedInput
   maintenanceIssue?: Prisma.MaintenanceIssueUpdateOneWithoutExpensesNestedInput
@@ -606,6 +624,7 @@ export type ExpenseUpdateInput = {
 
 export type ExpenseUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -635,6 +654,7 @@ export type ExpenseUncheckedUpdateInput = {
 
 export type ExpenseCreateManyInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -688,6 +708,7 @@ export type ExpenseUpdateManyMutationInput = {
 
 export type ExpenseUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -726,6 +747,7 @@ export type ExpenseOrderByRelationAggregateInput = {
 
 export type ExpenseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   supplierId?: Prisma.SortOrder
   invoiceNumber?: Prisma.SortOrder
   invoiceDate?: Prisma.SortOrder
@@ -759,6 +781,7 @@ export type ExpenseAvgOrderByAggregateInput = {
 
 export type ExpenseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   supplierId?: Prisma.SortOrder
   invoiceNumber?: Prisma.SortOrder
   invoiceDate?: Prisma.SortOrder
@@ -787,6 +810,7 @@ export type ExpenseMaxOrderByAggregateInput = {
 
 export type ExpenseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   supplierId?: Prisma.SortOrder
   invoiceNumber?: Prisma.SortOrder
   invoiceDate?: Prisma.SortOrder
@@ -816,6 +840,48 @@ export type ExpenseMinOrderByAggregateInput = {
 export type ExpenseSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   paidAmount?: Prisma.SortOrder
+}
+
+export type ExpenseCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutZevInput, Prisma.ExpenseUncheckedCreateWithoutZevInput> | Prisma.ExpenseCreateWithoutZevInput[] | Prisma.ExpenseUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutZevInput | Prisma.ExpenseCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ExpenseCreateManyZevInputEnvelope
+  connect?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+}
+
+export type ExpenseUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutZevInput, Prisma.ExpenseUncheckedCreateWithoutZevInput> | Prisma.ExpenseCreateWithoutZevInput[] | Prisma.ExpenseUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutZevInput | Prisma.ExpenseCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ExpenseCreateManyZevInputEnvelope
+  connect?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+}
+
+export type ExpenseUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutZevInput, Prisma.ExpenseUncheckedCreateWithoutZevInput> | Prisma.ExpenseCreateWithoutZevInput[] | Prisma.ExpenseUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutZevInput | Prisma.ExpenseCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ExpenseUpsertWithWhereUniqueWithoutZevInput | Prisma.ExpenseUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ExpenseCreateManyZevInputEnvelope
+  set?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  disconnect?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  delete?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  connect?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  update?: Prisma.ExpenseUpdateWithWhereUniqueWithoutZevInput | Prisma.ExpenseUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ExpenseUpdateManyWithWhereWithoutZevInput | Prisma.ExpenseUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
+}
+
+export type ExpenseUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ExpenseCreateWithoutZevInput, Prisma.ExpenseUncheckedCreateWithoutZevInput> | Prisma.ExpenseCreateWithoutZevInput[] | Prisma.ExpenseUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ExpenseCreateOrConnectWithoutZevInput | Prisma.ExpenseCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ExpenseUpsertWithWhereUniqueWithoutZevInput | Prisma.ExpenseUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ExpenseCreateManyZevInputEnvelope
+  set?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  disconnect?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  delete?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  connect?: Prisma.ExpenseWhereUniqueInput | Prisma.ExpenseWhereUniqueInput[]
+  update?: Prisma.ExpenseUpdateWithWhereUniqueWithoutZevInput | Prisma.ExpenseUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ExpenseUpdateManyWithWhereWithoutZevInput | Prisma.ExpenseUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
 }
 
 export type ExpenseCreateNestedManyWithoutCategoryInput = {
@@ -986,7 +1052,7 @@ export type ExpenseUncheckedUpdateManyWithoutAttachmentsNestedInput = {
   deleteMany?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
 }
 
-export type ExpenseCreateWithoutCategoryInput = {
+export type ExpenseCreateWithoutZevInput = {
   id?: string
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -1010,12 +1076,130 @@ export type ExpenseCreateWithoutCategoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supplier?: Prisma.SupplierCreateNestedOneWithoutExpensesInput
+  category?: Prisma.TransactionCategoryCreateNestedOneWithoutExpensesInput
+  maintenanceIssue?: Prisma.MaintenanceIssueCreateNestedOneWithoutExpensesInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutExpensesInput
+}
+
+export type ExpenseUncheckedCreateWithoutZevInput = {
+  id?: string
+  supplierId?: string | null
+  invoiceNumber?: string | null
+  invoiceDate?: Date | string | null
+  categoryId?: string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  dueDate?: Date | string | null
+  status?: $Enums.ExpenseStatus
+  paidDate?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  planItemId?: string | null
+  maintenanceIssueId?: string | null
+  workOrderId?: string | null
+  description?: string | null
+  recurring?: boolean
+  recurrenceRule?: string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutExpensesInput
+}
+
+export type ExpenseCreateOrConnectWithoutZevInput = {
+  where: Prisma.ExpenseWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExpenseCreateWithoutZevInput, Prisma.ExpenseUncheckedCreateWithoutZevInput>
+}
+
+export type ExpenseCreateManyZevInputEnvelope = {
+  data: Prisma.ExpenseCreateManyZevInput | Prisma.ExpenseCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type ExpenseUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ExpenseWhereUniqueInput
+  update: Prisma.XOR<Prisma.ExpenseUpdateWithoutZevInput, Prisma.ExpenseUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.ExpenseCreateWithoutZevInput, Prisma.ExpenseUncheckedCreateWithoutZevInput>
+}
+
+export type ExpenseUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ExpenseWhereUniqueInput
+  data: Prisma.XOR<Prisma.ExpenseUpdateWithoutZevInput, Prisma.ExpenseUncheckedUpdateWithoutZevInput>
+}
+
+export type ExpenseUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.ExpenseScalarWhereInput
+  data: Prisma.XOR<Prisma.ExpenseUpdateManyMutationInput, Prisma.ExpenseUncheckedUpdateManyWithoutZevInput>
+}
+
+export type ExpenseScalarWhereInput = {
+  AND?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
+  OR?: Prisma.ExpenseScalarWhereInput[]
+  NOT?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
+  id?: Prisma.StringFilter<"Expense"> | string
+  zevId?: Prisma.StringFilter<"Expense"> | string
+  supplierId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  invoiceNumber?: Prisma.StringNullableFilter<"Expense"> | string | null
+  invoiceDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
+  categoryId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  amount?: Prisma.DecimalFilter<"Expense"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFilter<"Expense"> | string
+  dueDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
+  status?: Prisma.EnumExpenseStatusFilter<"Expense"> | $Enums.ExpenseStatus
+  paidDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
+  paidAmount?: Prisma.DecimalFilter<"Expense"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  entranceId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  projectId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  planItemId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  maintenanceIssueId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  workOrderId?: Prisma.StringNullableFilter<"Expense"> | string | null
+  description?: Prisma.StringNullableFilter<"Expense"> | string | null
+  recurring?: Prisma.BoolFilter<"Expense"> | boolean
+  recurrenceRule?: Prisma.StringNullableFilter<"Expense"> | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Expense"> | string | null
+  createdById?: Prisma.StringNullableFilter<"Expense"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
+}
+
+export type ExpenseCreateWithoutCategoryInput = {
+  id?: string
+  invoiceNumber?: string | null
+  invoiceDate?: Date | string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  dueDate?: Date | string | null
+  status?: $Enums.ExpenseStatus
+  paidDate?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  planItemId?: string | null
+  workOrderId?: string | null
+  description?: string | null
+  recurring?: boolean
+  recurrenceRule?: string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutExpensesInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutExpensesInput
   maintenanceIssue?: Prisma.MaintenanceIssueCreateNestedOneWithoutExpensesInput
   attachments?: Prisma.AttachmentCreateNestedManyWithoutExpensesInput
 }
 
 export type ExpenseUncheckedCreateWithoutCategoryInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -1068,37 +1252,6 @@ export type ExpenseUpdateManyWithWhereWithoutCategoryInput = {
   data: Prisma.XOR<Prisma.ExpenseUpdateManyMutationInput, Prisma.ExpenseUncheckedUpdateManyWithoutCategoryInput>
 }
 
-export type ExpenseScalarWhereInput = {
-  AND?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
-  OR?: Prisma.ExpenseScalarWhereInput[]
-  NOT?: Prisma.ExpenseScalarWhereInput | Prisma.ExpenseScalarWhereInput[]
-  id?: Prisma.StringFilter<"Expense"> | string
-  supplierId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  invoiceNumber?: Prisma.StringNullableFilter<"Expense"> | string | null
-  invoiceDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
-  categoryId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  amount?: Prisma.DecimalFilter<"Expense"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  currency?: Prisma.StringFilter<"Expense"> | string
-  dueDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
-  status?: Prisma.EnumExpenseStatusFilter<"Expense"> | $Enums.ExpenseStatus
-  paidDate?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
-  paidAmount?: Prisma.DecimalFilter<"Expense"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  buildingId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  entranceId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  projectId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  planItemId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  maintenanceIssueId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  workOrderId?: Prisma.StringNullableFilter<"Expense"> | string | null
-  description?: Prisma.StringNullableFilter<"Expense"> | string | null
-  recurring?: Prisma.BoolFilter<"Expense"> | boolean
-  recurrenceRule?: Prisma.StringNullableFilter<"Expense"> | string | null
-  cancelledAt?: Prisma.DateTimeNullableFilter<"Expense"> | Date | string | null
-  cancelReason?: Prisma.StringNullableFilter<"Expense"> | string | null
-  createdById?: Prisma.StringNullableFilter<"Expense"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Expense"> | Date | string
-}
-
 export type ExpenseCreateWithoutSupplierInput = {
   id?: string
   invoiceNumber?: string | null
@@ -1122,6 +1275,7 @@ export type ExpenseCreateWithoutSupplierInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutExpensesInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutExpensesInput
   maintenanceIssue?: Prisma.MaintenanceIssueCreateNestedOneWithoutExpensesInput
   attachments?: Prisma.AttachmentCreateNestedManyWithoutExpensesInput
@@ -1129,6 +1283,7 @@ export type ExpenseCreateWithoutSupplierInput = {
 
 export type ExpenseUncheckedCreateWithoutSupplierInput = {
   id?: string
+  zevId: string
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
   categoryId?: string | null
@@ -1204,6 +1359,7 @@ export type ExpenseCreateWithoutMaintenanceIssueInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutExpensesInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutExpensesInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutExpensesInput
   attachments?: Prisma.AttachmentCreateNestedManyWithoutExpensesInput
@@ -1211,6 +1367,7 @@ export type ExpenseCreateWithoutMaintenanceIssueInput = {
 
 export type ExpenseUncheckedCreateWithoutMaintenanceIssueInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -1286,6 +1443,7 @@ export type ExpenseCreateWithoutAttachmentsInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutExpensesInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutExpensesInput
   category?: Prisma.TransactionCategoryCreateNestedOneWithoutExpensesInput
   maintenanceIssue?: Prisma.MaintenanceIssueCreateNestedOneWithoutExpensesInput
@@ -1293,6 +1451,7 @@ export type ExpenseCreateWithoutAttachmentsInput = {
 
 export type ExpenseUncheckedCreateWithoutAttachmentsInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -1340,8 +1499,123 @@ export type ExpenseUpdateManyWithWhereWithoutAttachmentsInput = {
   data: Prisma.XOR<Prisma.ExpenseUpdateManyMutationInput, Prisma.ExpenseUncheckedUpdateManyWithoutAttachmentsInput>
 }
 
+export type ExpenseCreateManyZevInput = {
+  id?: string
+  supplierId?: string | null
+  invoiceNumber?: string | null
+  invoiceDate?: Date | string | null
+  categoryId?: string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  dueDate?: Date | string | null
+  status?: $Enums.ExpenseStatus
+  paidDate?: Date | string | null
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: string | null
+  entranceId?: string | null
+  projectId?: string | null
+  planItemId?: string | null
+  maintenanceIssueId?: string | null
+  workOrderId?: string | null
+  description?: string | null
+  recurring?: boolean
+  recurrenceRule?: string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ExpenseUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumExpenseStatusFieldUpdateOperationsInput | $Enums.ExpenseStatus
+  paidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recurring?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurrenceRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  supplier?: Prisma.SupplierUpdateOneWithoutExpensesNestedInput
+  category?: Prisma.TransactionCategoryUpdateOneWithoutExpensesNestedInput
+  maintenanceIssue?: Prisma.MaintenanceIssueUpdateOneWithoutExpensesNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutExpensesNestedInput
+}
+
+export type ExpenseUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumExpenseStatusFieldUpdateOperationsInput | $Enums.ExpenseStatus
+  paidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceIssueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recurring?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurrenceRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutExpensesNestedInput
+}
+
+export type ExpenseUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumExpenseStatusFieldUpdateOperationsInput | $Enums.ExpenseStatus
+  paidDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceIssueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recurring?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurrenceRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ExpenseCreateManyCategoryInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -1390,6 +1664,7 @@ export type ExpenseUpdateWithoutCategoryInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutExpensesNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutExpensesNestedInput
   maintenanceIssue?: Prisma.MaintenanceIssueUpdateOneWithoutExpensesNestedInput
   attachments?: Prisma.AttachmentUpdateManyWithoutExpensesNestedInput
@@ -1397,6 +1672,7 @@ export type ExpenseUpdateWithoutCategoryInput = {
 
 export type ExpenseUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1425,6 +1701,7 @@ export type ExpenseUncheckedUpdateWithoutCategoryInput = {
 
 export type ExpenseUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1452,6 +1729,7 @@ export type ExpenseUncheckedUpdateManyWithoutCategoryInput = {
 
 export type ExpenseCreateManySupplierInput = {
   id?: string
+  zevId: string
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
   categoryId?: string | null
@@ -1500,6 +1778,7 @@ export type ExpenseUpdateWithoutSupplierInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutExpensesNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutExpensesNestedInput
   maintenanceIssue?: Prisma.MaintenanceIssueUpdateOneWithoutExpensesNestedInput
   attachments?: Prisma.AttachmentUpdateManyWithoutExpensesNestedInput
@@ -1507,6 +1786,7 @@ export type ExpenseUpdateWithoutSupplierInput = {
 
 export type ExpenseUncheckedUpdateWithoutSupplierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1535,6 +1815,7 @@ export type ExpenseUncheckedUpdateWithoutSupplierInput = {
 
 export type ExpenseUncheckedUpdateManyWithoutSupplierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1562,6 +1843,7 @@ export type ExpenseUncheckedUpdateManyWithoutSupplierInput = {
 
 export type ExpenseCreateManyMaintenanceIssueInput = {
   id?: string
+  zevId: string
   supplierId?: string | null
   invoiceNumber?: string | null
   invoiceDate?: Date | string | null
@@ -1610,6 +1892,7 @@ export type ExpenseUpdateWithoutMaintenanceIssueInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutExpensesNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutExpensesNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutExpensesNestedInput
   attachments?: Prisma.AttachmentUpdateManyWithoutExpensesNestedInput
@@ -1617,6 +1900,7 @@ export type ExpenseUpdateWithoutMaintenanceIssueInput = {
 
 export type ExpenseUncheckedUpdateWithoutMaintenanceIssueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1645,6 +1929,7 @@ export type ExpenseUncheckedUpdateWithoutMaintenanceIssueInput = {
 
 export type ExpenseUncheckedUpdateManyWithoutMaintenanceIssueInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1693,6 +1978,7 @@ export type ExpenseUpdateWithoutAttachmentsInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutExpensesNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutExpensesNestedInput
   category?: Prisma.TransactionCategoryUpdateOneWithoutExpensesNestedInput
   maintenanceIssue?: Prisma.MaintenanceIssueUpdateOneWithoutExpensesNestedInput
@@ -1700,6 +1986,7 @@ export type ExpenseUpdateWithoutAttachmentsInput = {
 
 export type ExpenseUncheckedUpdateWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1728,6 +2015,7 @@ export type ExpenseUncheckedUpdateWithoutAttachmentsInput = {
 
 export type ExpenseUncheckedUpdateManyWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1787,6 +2075,7 @@ export type ExpenseCountOutputTypeCountAttachmentsArgs<ExtArgs extends runtime.T
 
 export type ExpenseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   supplierId?: boolean
   invoiceNumber?: boolean
   invoiceDate?: boolean
@@ -1811,6 +2100,7 @@ export type ExpenseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Expense$supplierArgs<ExtArgs>
   category?: boolean | Prisma.Expense$categoryArgs<ExtArgs>
   maintenanceIssue?: boolean | Prisma.Expense$maintenanceIssueArgs<ExtArgs>
@@ -1820,6 +2110,7 @@ export type ExpenseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 
 export type ExpenseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   supplierId?: boolean
   invoiceNumber?: boolean
   invoiceDate?: boolean
@@ -1844,6 +2135,7 @@ export type ExpenseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Expense$supplierArgs<ExtArgs>
   category?: boolean | Prisma.Expense$categoryArgs<ExtArgs>
   maintenanceIssue?: boolean | Prisma.Expense$maintenanceIssueArgs<ExtArgs>
@@ -1851,6 +2143,7 @@ export type ExpenseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ExpenseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   supplierId?: boolean
   invoiceNumber?: boolean
   invoiceDate?: boolean
@@ -1875,6 +2168,7 @@ export type ExpenseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Expense$supplierArgs<ExtArgs>
   category?: boolean | Prisma.Expense$categoryArgs<ExtArgs>
   maintenanceIssue?: boolean | Prisma.Expense$maintenanceIssueArgs<ExtArgs>
@@ -1882,6 +2176,7 @@ export type ExpenseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ExpenseSelectScalar = {
   id?: boolean
+  zevId?: boolean
   supplierId?: boolean
   invoiceNumber?: boolean
   invoiceDate?: boolean
@@ -1908,8 +2203,9 @@ export type ExpenseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ExpenseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "supplierId" | "invoiceNumber" | "invoiceDate" | "categoryId" | "amount" | "currency" | "dueDate" | "status" | "paidDate" | "paidAmount" | "buildingId" | "entranceId" | "projectId" | "planItemId" | "maintenanceIssueId" | "workOrderId" | "description" | "recurring" | "recurrenceRule" | "cancelledAt" | "cancelReason" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["expense"]>
+export type ExpenseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "supplierId" | "invoiceNumber" | "invoiceDate" | "categoryId" | "amount" | "currency" | "dueDate" | "status" | "paidDate" | "paidAmount" | "buildingId" | "entranceId" | "projectId" | "planItemId" | "maintenanceIssueId" | "workOrderId" | "description" | "recurring" | "recurrenceRule" | "cancelledAt" | "cancelReason" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["expense"]>
 export type ExpenseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Expense$supplierArgs<ExtArgs>
   category?: boolean | Prisma.Expense$categoryArgs<ExtArgs>
   maintenanceIssue?: boolean | Prisma.Expense$maintenanceIssueArgs<ExtArgs>
@@ -1917,11 +2213,13 @@ export type ExpenseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   _count?: boolean | Prisma.ExpenseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ExpenseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Expense$supplierArgs<ExtArgs>
   category?: boolean | Prisma.Expense$categoryArgs<ExtArgs>
   maintenanceIssue?: boolean | Prisma.Expense$maintenanceIssueArgs<ExtArgs>
 }
 export type ExpenseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Expense$supplierArgs<ExtArgs>
   category?: boolean | Prisma.Expense$categoryArgs<ExtArgs>
   maintenanceIssue?: boolean | Prisma.Expense$maintenanceIssueArgs<ExtArgs>
@@ -1930,6 +2228,7 @@ export type ExpenseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $ExpensePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Expense"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     supplier: Prisma.$SupplierPayload<ExtArgs> | null
     category: Prisma.$TransactionCategoryPayload<ExtArgs> | null
     maintenanceIssue: Prisma.$MaintenanceIssuePayload<ExtArgs> | null
@@ -1937,6 +2236,7 @@ export type $ExpensePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     supplierId: string | null
     invoiceNumber: string | null
     invoiceDate: Date | null
@@ -2355,6 +2655,7 @@ readonly fields: ExpenseFieldRefs;
  */
 export interface Prisma__ExpenseClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   supplier<T extends Prisma.Expense$supplierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expense$supplierArgs<ExtArgs>>): Prisma.Prisma__SupplierClient<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.Expense$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expense$categoryArgs<ExtArgs>>): Prisma.Prisma__TransactionCategoryClient<runtime.Types.Result.GetResult<Prisma.$TransactionCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   maintenanceIssue<T extends Prisma.Expense$maintenanceIssueArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expense$maintenanceIssueArgs<ExtArgs>>): Prisma.Prisma__MaintenanceIssueClient<runtime.Types.Result.GetResult<Prisma.$MaintenanceIssuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2389,6 +2690,7 @@ export interface Prisma__ExpenseClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface ExpenseFieldRefs {
   readonly id: Prisma.FieldRef<"Expense", 'String'>
+  readonly zevId: Prisma.FieldRef<"Expense", 'String'>
   readonly supplierId: Prisma.FieldRef<"Expense", 'String'>
   readonly invoiceNumber: Prisma.FieldRef<"Expense", 'String'>
   readonly invoiceDate: Prisma.FieldRef<"Expense", 'DateTime'>

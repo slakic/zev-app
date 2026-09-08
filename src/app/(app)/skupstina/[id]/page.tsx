@@ -2,6 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, recordAttendance } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
 import { listParties, partyDisplayName, listOfficeHolders } from "@/server/services/ownership";
@@ -48,6 +49,7 @@ async function addProposalAction(formData: FormData) {
 async function statusAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
+  const zevId = requireZev(actor);
   const meetingId = String(formData.get("meetingId"));
   const to = String(formData.get("to")) as MeetingStatus;
   try {
@@ -56,7 +58,10 @@ async function statusAction(formData: FormData) {
       await generateMeetingInvitationPdf(actor, meetingId);
     }
     if (to === "INVITATIONS_SENT") {
-      const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId } });
+      // Was previously an unscoped lookup/findMany here — a real cross-tenant leak
+      // (would have emailed meeting invitations to owners of every ZEV, not just this
+      // one). Fixed while touching this call site for the queueNotification zevId change.
+      const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
       let owners;
       if (meeting.body === "BOARD") {
         const holders = await listOfficeHolders(actor);
@@ -66,11 +71,12 @@ async function statusAction(formData: FormData) {
         owners = boardParties.filter((p) => p.email && !seen.has(p.id) && seen.add(p.id));
       } else {
         owners = await prisma.party.findMany({
-          where: { active: true, email: { not: null }, ownershipStakes: { some: { validTo: null } } },
+          where: { zevId, active: true, email: { not: null }, ownershipStakes: { some: { validTo: null } } },
         });
       }
       for (const o of owners) {
         await queueNotification({
+          zevId,
           channel: "EMAIL",
           recipientId: o.id,
           toAddress: o.email!,

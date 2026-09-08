@@ -38,6 +38,7 @@ export type ProposalSumAggregateOutputType = {
 
 export type ProposalMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   meetingId: string | null
   agendaItemId: string | null
   code: string | null
@@ -64,6 +65,7 @@ export type ProposalMinAggregateOutputType = {
 
 export type ProposalMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   meetingId: string | null
   agendaItemId: string | null
   code: string | null
@@ -90,6 +92,7 @@ export type ProposalMaxAggregateOutputType = {
 
 export type ProposalCountAggregateOutputType = {
   id: number
+  zevId: number
   meetingId: number
   agendaItemId: number
   code: number
@@ -130,6 +133,7 @@ export type ProposalSumAggregateInputType = {
 
 export type ProposalMinAggregateInputType = {
   id?: true
+  zevId?: true
   meetingId?: true
   agendaItemId?: true
   code?: true
@@ -156,6 +160,7 @@ export type ProposalMinAggregateInputType = {
 
 export type ProposalMaxAggregateInputType = {
   id?: true
+  zevId?: true
   meetingId?: true
   agendaItemId?: true
   code?: true
@@ -182,6 +187,7 @@ export type ProposalMaxAggregateInputType = {
 
 export type ProposalCountAggregateInputType = {
   id?: true
+  zevId?: true
   meetingId?: true
   agendaItemId?: true
   code?: true
@@ -297,6 +303,7 @@ export type ProposalGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type ProposalGroupByOutputType = {
   id: string
+  zevId: string
   meetingId: string
   agendaItemId: string | null
   code: string
@@ -348,6 +355,7 @@ export type ProposalWhereInput = {
   OR?: Prisma.ProposalWhereInput[]
   NOT?: Prisma.ProposalWhereInput | Prisma.ProposalWhereInput[]
   id?: Prisma.StringFilter<"Proposal"> | string
+  zevId?: Prisma.StringFilter<"Proposal"> | string
   meetingId?: Prisma.StringFilter<"Proposal"> | string
   agendaItemId?: Prisma.StringNullableFilter<"Proposal"> | string | null
   code?: Prisma.StringFilter<"Proposal"> | string
@@ -372,6 +380,7 @@ export type ProposalWhereInput = {
   decisionNumber?: Prisma.StringNullableFilter<"Proposal"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   meeting?: Prisma.XOR<Prisma.MeetingScalarRelationFilter, Prisma.MeetingWhereInput>
   agendaItem?: Prisma.XOR<Prisma.AgendaItemNullableScalarRelationFilter, Prisma.AgendaItemWhereInput> | null
   supersedes?: Prisma.XOR<Prisma.ProposalNullableScalarRelationFilter, Prisma.ProposalWhereInput> | null
@@ -385,6 +394,7 @@ export type ProposalWhereInput = {
 
 export type ProposalOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   meetingId?: Prisma.SortOrder
   agendaItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   code?: Prisma.SortOrder
@@ -409,6 +419,7 @@ export type ProposalOrderByWithRelationInput = {
   decisionNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   meeting?: Prisma.MeetingOrderByWithRelationInput
   agendaItem?: Prisma.AgendaItemOrderByWithRelationInput
   supersedes?: Prisma.ProposalOrderByWithRelationInput
@@ -423,10 +434,11 @@ export type ProposalOrderByWithRelationInput = {
 export type ProposalWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   supersedesId?: string
-  code_version?: Prisma.ProposalCodeVersionCompoundUniqueInput
+  zevId_code_version?: Prisma.ProposalZevIdCodeVersionCompoundUniqueInput
   AND?: Prisma.ProposalWhereInput | Prisma.ProposalWhereInput[]
   OR?: Prisma.ProposalWhereInput[]
   NOT?: Prisma.ProposalWhereInput | Prisma.ProposalWhereInput[]
+  zevId?: Prisma.StringFilter<"Proposal"> | string
   meetingId?: Prisma.StringFilter<"Proposal"> | string
   agendaItemId?: Prisma.StringNullableFilter<"Proposal"> | string | null
   code?: Prisma.StringFilter<"Proposal"> | string
@@ -450,6 +462,7 @@ export type ProposalWhereUniqueInput = Prisma.AtLeast<{
   decisionNumber?: Prisma.StringNullableFilter<"Proposal"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   meeting?: Prisma.XOR<Prisma.MeetingScalarRelationFilter, Prisma.MeetingWhereInput>
   agendaItem?: Prisma.XOR<Prisma.AgendaItemNullableScalarRelationFilter, Prisma.AgendaItemWhereInput> | null
   supersedes?: Prisma.XOR<Prisma.ProposalNullableScalarRelationFilter, Prisma.ProposalWhereInput> | null
@@ -459,10 +472,11 @@ export type ProposalWhereUniqueInput = Prisma.AtLeast<{
   eligibleVoters?: Prisma.EligibleVoterListRelationFilter
   votes?: Prisma.VoteListRelationFilter
   attachments?: Prisma.AttachmentListRelationFilter
-}, "id" | "supersedesId" | "code_version">
+}, "id" | "supersedesId" | "zevId_code_version">
 
 export type ProposalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   meetingId?: Prisma.SortOrder
   agendaItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   code?: Prisma.SortOrder
@@ -499,6 +513,7 @@ export type ProposalScalarWhereWithAggregatesInput = {
   OR?: Prisma.ProposalScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProposalScalarWhereWithAggregatesInput | Prisma.ProposalScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Proposal"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Proposal"> | string
   meetingId?: Prisma.StringWithAggregatesFilter<"Proposal"> | string
   agendaItemId?: Prisma.StringNullableWithAggregatesFilter<"Proposal"> | string | null
   code?: Prisma.StringWithAggregatesFilter<"Proposal"> | string
@@ -547,6 +562,7 @@ export type ProposalCreateInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -560,6 +576,7 @@ export type ProposalCreateInput = {
 
 export type ProposalUncheckedCreateInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -613,6 +630,7 @@ export type ProposalUpdateInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -626,6 +644,7 @@ export type ProposalUpdateInput = {
 
 export type ProposalUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -659,6 +678,7 @@ export type ProposalUncheckedUpdateInput = {
 
 export type ProposalCreateManyInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -711,6 +731,7 @@ export type ProposalUpdateManyMutationInput = {
 
 export type ProposalUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -752,13 +773,15 @@ export type ProposalNullableScalarRelationFilter = {
   isNot?: Prisma.ProposalWhereInput | null
 }
 
-export type ProposalCodeVersionCompoundUniqueInput = {
+export type ProposalZevIdCodeVersionCompoundUniqueInput = {
+  zevId: string
   code: string
   version: number
 }
 
 export type ProposalCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   meetingId?: Prisma.SortOrder
   agendaItemId?: Prisma.SortOrder
   code?: Prisma.SortOrder
@@ -792,6 +815,7 @@ export type ProposalAvgOrderByAggregateInput = {
 
 export type ProposalMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   meetingId?: Prisma.SortOrder
   agendaItemId?: Prisma.SortOrder
   code?: Prisma.SortOrder
@@ -818,6 +842,7 @@ export type ProposalMaxOrderByAggregateInput = {
 
 export type ProposalMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   meetingId?: Prisma.SortOrder
   agendaItemId?: Prisma.SortOrder
   code?: Prisma.SortOrder
@@ -850,6 +875,48 @@ export type ProposalSumOrderByAggregateInput = {
 export type ProposalScalarRelationFilter = {
   is?: Prisma.ProposalWhereInput
   isNot?: Prisma.ProposalWhereInput
+}
+
+export type ProposalCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ProposalCreateWithoutZevInput, Prisma.ProposalUncheckedCreateWithoutZevInput> | Prisma.ProposalCreateWithoutZevInput[] | Prisma.ProposalUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProposalCreateOrConnectWithoutZevInput | Prisma.ProposalCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ProposalCreateManyZevInputEnvelope
+  connect?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+}
+
+export type ProposalUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ProposalCreateWithoutZevInput, Prisma.ProposalUncheckedCreateWithoutZevInput> | Prisma.ProposalCreateWithoutZevInput[] | Prisma.ProposalUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProposalCreateOrConnectWithoutZevInput | Prisma.ProposalCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ProposalCreateManyZevInputEnvelope
+  connect?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+}
+
+export type ProposalUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ProposalCreateWithoutZevInput, Prisma.ProposalUncheckedCreateWithoutZevInput> | Prisma.ProposalCreateWithoutZevInput[] | Prisma.ProposalUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProposalCreateOrConnectWithoutZevInput | Prisma.ProposalCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ProposalUpsertWithWhereUniqueWithoutZevInput | Prisma.ProposalUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ProposalCreateManyZevInputEnvelope
+  set?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  disconnect?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  delete?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  connect?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  update?: Prisma.ProposalUpdateWithWhereUniqueWithoutZevInput | Prisma.ProposalUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ProposalUpdateManyWithWhereWithoutZevInput | Prisma.ProposalUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
+}
+
+export type ProposalUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ProposalCreateWithoutZevInput, Prisma.ProposalUncheckedCreateWithoutZevInput> | Prisma.ProposalCreateWithoutZevInput[] | Prisma.ProposalUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProposalCreateOrConnectWithoutZevInput | Prisma.ProposalCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ProposalUpsertWithWhereUniqueWithoutZevInput | Prisma.ProposalUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ProposalCreateManyZevInputEnvelope
+  set?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  disconnect?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  delete?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  connect?: Prisma.ProposalWhereUniqueInput | Prisma.ProposalWhereUniqueInput[]
+  update?: Prisma.ProposalUpdateWithWhereUniqueWithoutZevInput | Prisma.ProposalUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ProposalUpdateManyWithWhereWithoutZevInput | Prisma.ProposalUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
 }
 
 export type ProposalCreateNestedManyWithoutMeetingInput = {
@@ -1114,6 +1181,130 @@ export type ProposalUncheckedUpdateManyWithoutAttachmentsNestedInput = {
   deleteMany?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
 }
 
+export type ProposalCreateWithoutZevInput = {
+  id?: string
+  code: string
+  version?: number
+  title: string
+  text: string
+  rationale?: string | null
+  financialImpact?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  allocationGroupId?: string | null
+  status?: $Enums.ProposalStatus
+  ruleSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contentHash?: string | null
+  votingOpensAt?: Date | string | null
+  votingClosesAt?: Date | string | null
+  frozenAt?: Date | string | null
+  resultSummary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  decisionNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
+  agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
+  supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.ProposalCreateNestedOneWithoutSupersedesInput
+  scopeUnits?: Prisma.ProposalUnitCreateNestedManyWithoutProposalInput
+  votingRule?: Prisma.VotingRuleCreateNestedOneWithoutProposalsInput
+  eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutProposalInput
+  votes?: Prisma.VoteCreateNestedManyWithoutProposalInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutProposalsInput
+}
+
+export type ProposalUncheckedCreateWithoutZevInput = {
+  id?: string
+  meetingId: string
+  agendaItemId?: string | null
+  code: string
+  version?: number
+  supersedesId?: string | null
+  title: string
+  text: string
+  rationale?: string | null
+  financialImpact?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  allocationGroupId?: string | null
+  status?: $Enums.ProposalStatus
+  votingRuleId?: string | null
+  ruleSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contentHash?: string | null
+  votingOpensAt?: Date | string | null
+  votingClosesAt?: Date | string | null
+  frozenAt?: Date | string | null
+  resultSummary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  decisionNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  supersededBy?: Prisma.ProposalUncheckedCreateNestedOneWithoutSupersedesInput
+  scopeUnits?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutProposalInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProposalInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutProposalInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutProposalsInput
+}
+
+export type ProposalCreateOrConnectWithoutZevInput = {
+  where: Prisma.ProposalWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProposalCreateWithoutZevInput, Prisma.ProposalUncheckedCreateWithoutZevInput>
+}
+
+export type ProposalCreateManyZevInputEnvelope = {
+  data: Prisma.ProposalCreateManyZevInput | Prisma.ProposalCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProposalUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ProposalWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProposalUpdateWithoutZevInput, Prisma.ProposalUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.ProposalCreateWithoutZevInput, Prisma.ProposalUncheckedCreateWithoutZevInput>
+}
+
+export type ProposalUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ProposalWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProposalUpdateWithoutZevInput, Prisma.ProposalUncheckedUpdateWithoutZevInput>
+}
+
+export type ProposalUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.ProposalScalarWhereInput
+  data: Prisma.XOR<Prisma.ProposalUpdateManyMutationInput, Prisma.ProposalUncheckedUpdateManyWithoutZevInput>
+}
+
+export type ProposalScalarWhereInput = {
+  AND?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
+  OR?: Prisma.ProposalScalarWhereInput[]
+  NOT?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
+  id?: Prisma.StringFilter<"Proposal"> | string
+  zevId?: Prisma.StringFilter<"Proposal"> | string
+  meetingId?: Prisma.StringFilter<"Proposal"> | string
+  agendaItemId?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  code?: Prisma.StringFilter<"Proposal"> | string
+  version?: Prisma.IntFilter<"Proposal"> | number
+  supersedesId?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  title?: Prisma.StringFilter<"Proposal"> | string
+  text?: Prisma.StringFilter<"Proposal"> | string
+  rationale?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  financialImpact?: Prisma.DecimalNullableFilter<"Proposal"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: Prisma.EnumScopeTypeFilter<"Proposal"> | $Enums.ScopeType
+  buildingId?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  entranceId?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  allocationGroupId?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  status?: Prisma.EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+  votingRuleId?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  ruleSnapshot?: Prisma.JsonNullableFilter<"Proposal">
+  contentHash?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  votingOpensAt?: Prisma.DateTimeNullableFilter<"Proposal"> | Date | string | null
+  votingClosesAt?: Prisma.DateTimeNullableFilter<"Proposal"> | Date | string | null
+  frozenAt?: Prisma.DateTimeNullableFilter<"Proposal"> | Date | string | null
+  resultSummary?: Prisma.JsonNullableFilter<"Proposal">
+  decisionNumber?: Prisma.StringNullableFilter<"Proposal"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
+}
+
 export type ProposalCreateWithoutMeetingInput = {
   id?: string
   code: string
@@ -1136,6 +1327,7 @@ export type ProposalCreateWithoutMeetingInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.ProposalCreateNestedOneWithoutSupersedesInput
@@ -1148,6 +1340,7 @@ export type ProposalCreateWithoutMeetingInput = {
 
 export type ProposalUncheckedCreateWithoutMeetingInput = {
   id?: string
+  zevId: string
   agendaItemId?: string | null
   code: string
   version?: number
@@ -1204,37 +1397,6 @@ export type ProposalUpdateManyWithWhereWithoutMeetingInput = {
   data: Prisma.XOR<Prisma.ProposalUpdateManyMutationInput, Prisma.ProposalUncheckedUpdateManyWithoutMeetingInput>
 }
 
-export type ProposalScalarWhereInput = {
-  AND?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
-  OR?: Prisma.ProposalScalarWhereInput[]
-  NOT?: Prisma.ProposalScalarWhereInput | Prisma.ProposalScalarWhereInput[]
-  id?: Prisma.StringFilter<"Proposal"> | string
-  meetingId?: Prisma.StringFilter<"Proposal"> | string
-  agendaItemId?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  code?: Prisma.StringFilter<"Proposal"> | string
-  version?: Prisma.IntFilter<"Proposal"> | number
-  supersedesId?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  title?: Prisma.StringFilter<"Proposal"> | string
-  text?: Prisma.StringFilter<"Proposal"> | string
-  rationale?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  financialImpact?: Prisma.DecimalNullableFilter<"Proposal"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  scopeType?: Prisma.EnumScopeTypeFilter<"Proposal"> | $Enums.ScopeType
-  buildingId?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  entranceId?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  allocationGroupId?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  status?: Prisma.EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
-  votingRuleId?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  ruleSnapshot?: Prisma.JsonNullableFilter<"Proposal">
-  contentHash?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  votingOpensAt?: Prisma.DateTimeNullableFilter<"Proposal"> | Date | string | null
-  votingClosesAt?: Prisma.DateTimeNullableFilter<"Proposal"> | Date | string | null
-  frozenAt?: Prisma.DateTimeNullableFilter<"Proposal"> | Date | string | null
-  resultSummary?: Prisma.JsonNullableFilter<"Proposal">
-  decisionNumber?: Prisma.StringNullableFilter<"Proposal"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Proposal"> | Date | string
-}
-
 export type ProposalCreateWithoutAgendaItemInput = {
   id?: string
   code: string
@@ -1257,6 +1419,7 @@ export type ProposalCreateWithoutAgendaItemInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.ProposalCreateNestedOneWithoutSupersedesInput
@@ -1269,6 +1432,7 @@ export type ProposalCreateWithoutAgendaItemInput = {
 
 export type ProposalUncheckedCreateWithoutAgendaItemInput = {
   id?: string
+  zevId: string
   meetingId: string
   code: string
   version?: number
@@ -1347,6 +1511,7 @@ export type ProposalCreateWithoutVotingRuleInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -1359,6 +1524,7 @@ export type ProposalCreateWithoutVotingRuleInput = {
 
 export type ProposalUncheckedCreateWithoutVotingRuleInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -1437,6 +1603,7 @@ export type ProposalCreateWithoutSupersededByInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -1449,6 +1616,7 @@ export type ProposalCreateWithoutSupersededByInput = {
 
 export type ProposalUncheckedCreateWithoutSupersededByInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -1506,6 +1674,7 @@ export type ProposalCreateWithoutSupersedesInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersededBy?: Prisma.ProposalCreateNestedOneWithoutSupersedesInput
@@ -1518,6 +1687,7 @@ export type ProposalCreateWithoutSupersedesInput = {
 
 export type ProposalUncheckedCreateWithoutSupersedesInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -1586,6 +1756,7 @@ export type ProposalUpdateWithoutSupersededByInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -1598,6 +1769,7 @@ export type ProposalUpdateWithoutSupersededByInput = {
 
 export type ProposalUncheckedUpdateWithoutSupersededByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1661,6 +1833,7 @@ export type ProposalUpdateWithoutSupersedesInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersededBy?: Prisma.ProposalUpdateOneWithoutSupersedesNestedInput
@@ -1673,6 +1846,7 @@ export type ProposalUpdateWithoutSupersedesInput = {
 
 export type ProposalUncheckedUpdateWithoutSupersedesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1725,6 +1899,7 @@ export type ProposalCreateWithoutScopeUnitsInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -1737,6 +1912,7 @@ export type ProposalCreateWithoutScopeUnitsInput = {
 
 export type ProposalUncheckedCreateWithoutScopeUnitsInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -1805,6 +1981,7 @@ export type ProposalUpdateWithoutScopeUnitsInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -1817,6 +1994,7 @@ export type ProposalUpdateWithoutScopeUnitsInput = {
 
 export type ProposalUncheckedUpdateWithoutScopeUnitsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1869,6 +2047,7 @@ export type ProposalCreateWithoutEligibleVotersInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -1881,6 +2060,7 @@ export type ProposalCreateWithoutEligibleVotersInput = {
 
 export type ProposalUncheckedCreateWithoutEligibleVotersInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -1949,6 +2129,7 @@ export type ProposalUpdateWithoutEligibleVotersInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -1961,6 +2142,7 @@ export type ProposalUpdateWithoutEligibleVotersInput = {
 
 export type ProposalUncheckedUpdateWithoutEligibleVotersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2013,6 +2195,7 @@ export type ProposalCreateWithoutVotesInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -2025,6 +2208,7 @@ export type ProposalCreateWithoutVotesInput = {
 
 export type ProposalUncheckedCreateWithoutVotesInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -2093,6 +2277,7 @@ export type ProposalUpdateWithoutVotesInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -2105,6 +2290,7 @@ export type ProposalUpdateWithoutVotesInput = {
 
 export type ProposalUncheckedUpdateWithoutVotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2157,6 +2343,7 @@ export type ProposalCreateWithoutAttachmentsInput = {
   decisionNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProposalsInput
   meeting: Prisma.MeetingCreateNestedOneWithoutProposalsInput
   agendaItem?: Prisma.AgendaItemCreateNestedOneWithoutProposalsInput
   supersedes?: Prisma.ProposalCreateNestedOneWithoutSupersededByInput
@@ -2169,6 +2356,7 @@ export type ProposalCreateWithoutAttachmentsInput = {
 
 export type ProposalUncheckedCreateWithoutAttachmentsInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -2220,8 +2408,131 @@ export type ProposalUpdateManyWithWhereWithoutAttachmentsInput = {
   data: Prisma.XOR<Prisma.ProposalUpdateManyMutationInput, Prisma.ProposalUncheckedUpdateManyWithoutAttachmentsInput>
 }
 
+export type ProposalCreateManyZevInput = {
+  id?: string
+  meetingId: string
+  agendaItemId?: string | null
+  code: string
+  version?: number
+  supersedesId?: string | null
+  title: string
+  text: string
+  rationale?: string | null
+  financialImpact?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  allocationGroupId?: string | null
+  status?: $Enums.ProposalStatus
+  votingRuleId?: string | null
+  ruleSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contentHash?: string | null
+  votingOpensAt?: Date | string | null
+  votingClosesAt?: Date | string | null
+  frozenAt?: Date | string | null
+  resultSummary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  decisionNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProposalUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  text?: Prisma.StringFieldUpdateOperationsInput | string
+  rationale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  financialImpact?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allocationGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+  ruleSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  frozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultSummary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
+  agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
+  supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.ProposalUpdateOneWithoutSupersedesNestedInput
+  scopeUnits?: Prisma.ProposalUnitUpdateManyWithoutProposalNestedInput
+  votingRule?: Prisma.VotingRuleUpdateOneWithoutProposalsNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutProposalNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutProposalsNestedInput
+}
+
+export type ProposalUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingId?: Prisma.StringFieldUpdateOperationsInput | string
+  agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  text?: Prisma.StringFieldUpdateOperationsInput | string
+  rationale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  financialImpact?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allocationGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+  votingRuleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  frozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultSummary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  supersededBy?: Prisma.ProposalUncheckedUpdateOneWithoutSupersedesNestedInput
+  scopeUnits?: Prisma.ProposalUnitUncheckedUpdateManyWithoutProposalNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProposalNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutProposalNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutProposalsNestedInput
+}
+
+export type ProposalUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingId?: Prisma.StringFieldUpdateOperationsInput | string
+  agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  text?: Prisma.StringFieldUpdateOperationsInput | string
+  rationale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  financialImpact?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allocationGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+  votingRuleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  frozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultSummary?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ProposalCreateManyMeetingInput = {
   id?: string
+  zevId: string
   agendaItemId?: string | null
   code: string
   version?: number
@@ -2269,6 +2580,7 @@ export type ProposalUpdateWithoutMeetingInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.ProposalUpdateOneWithoutSupersedesNestedInput
@@ -2281,6 +2593,7 @@ export type ProposalUpdateWithoutMeetingInput = {
 
 export type ProposalUncheckedUpdateWithoutMeetingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2313,6 +2626,7 @@ export type ProposalUncheckedUpdateWithoutMeetingInput = {
 
 export type ProposalUncheckedUpdateManyWithoutMeetingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2340,6 +2654,7 @@ export type ProposalUncheckedUpdateManyWithoutMeetingInput = {
 
 export type ProposalCreateManyAgendaItemInput = {
   id?: string
+  zevId: string
   meetingId: string
   code: string
   version?: number
@@ -2387,6 +2702,7 @@ export type ProposalUpdateWithoutAgendaItemInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.ProposalUpdateOneWithoutSupersedesNestedInput
@@ -2399,6 +2715,7 @@ export type ProposalUpdateWithoutAgendaItemInput = {
 
 export type ProposalUncheckedUpdateWithoutAgendaItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2431,6 +2748,7 @@ export type ProposalUncheckedUpdateWithoutAgendaItemInput = {
 
 export type ProposalUncheckedUpdateManyWithoutAgendaItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2458,6 +2776,7 @@ export type ProposalUncheckedUpdateManyWithoutAgendaItemInput = {
 
 export type ProposalCreateManyVotingRuleInput = {
   id?: string
+  zevId: string
   meetingId: string
   agendaItemId?: string | null
   code: string
@@ -2505,6 +2824,7 @@ export type ProposalUpdateWithoutVotingRuleInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -2517,6 +2837,7 @@ export type ProposalUpdateWithoutVotingRuleInput = {
 
 export type ProposalUncheckedUpdateWithoutVotingRuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2549,6 +2870,7 @@ export type ProposalUncheckedUpdateWithoutVotingRuleInput = {
 
 export type ProposalUncheckedUpdateManyWithoutVotingRuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2596,6 +2918,7 @@ export type ProposalUpdateWithoutAttachmentsInput = {
   decisionNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProposalsNestedInput
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutProposalsNestedInput
   agendaItem?: Prisma.AgendaItemUpdateOneWithoutProposalsNestedInput
   supersedes?: Prisma.ProposalUpdateOneWithoutSupersededByNestedInput
@@ -2608,6 +2931,7 @@ export type ProposalUpdateWithoutAttachmentsInput = {
 
 export type ProposalUncheckedUpdateWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2640,6 +2964,7 @@ export type ProposalUncheckedUpdateWithoutAttachmentsInput = {
 
 export type ProposalUncheckedUpdateManyWithoutAttachmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   meetingId?: Prisma.StringFieldUpdateOperationsInput | string
   agendaItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2726,6 +3051,7 @@ export type ProposalCountOutputTypeCountAttachmentsArgs<ExtArgs extends runtime.
 
 export type ProposalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   meetingId?: boolean
   agendaItemId?: boolean
   code?: boolean
@@ -2750,6 +3076,7 @@ export type ProposalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   decisionNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   agendaItem?: boolean | Prisma.Proposal$agendaItemArgs<ExtArgs>
   supersedes?: boolean | Prisma.Proposal$supersedesArgs<ExtArgs>
@@ -2764,6 +3091,7 @@ export type ProposalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 
 export type ProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   meetingId?: boolean
   agendaItemId?: boolean
   code?: boolean
@@ -2788,6 +3116,7 @@ export type ProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   decisionNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   agendaItem?: boolean | Prisma.Proposal$agendaItemArgs<ExtArgs>
   supersedes?: boolean | Prisma.Proposal$supersedesArgs<ExtArgs>
@@ -2796,6 +3125,7 @@ export type ProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 
 export type ProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   meetingId?: boolean
   agendaItemId?: boolean
   code?: boolean
@@ -2820,6 +3150,7 @@ export type ProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   decisionNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   agendaItem?: boolean | Prisma.Proposal$agendaItemArgs<ExtArgs>
   supersedes?: boolean | Prisma.Proposal$supersedesArgs<ExtArgs>
@@ -2828,6 +3159,7 @@ export type ProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 
 export type ProposalSelectScalar = {
   id?: boolean
+  zevId?: boolean
   meetingId?: boolean
   agendaItemId?: boolean
   code?: boolean
@@ -2854,8 +3186,9 @@ export type ProposalSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProposalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "meetingId" | "agendaItemId" | "code" | "version" | "supersedesId" | "title" | "text" | "rationale" | "financialImpact" | "scopeType" | "buildingId" | "entranceId" | "allocationGroupId" | "status" | "votingRuleId" | "ruleSnapshot" | "contentHash" | "votingOpensAt" | "votingClosesAt" | "frozenAt" | "resultSummary" | "decisionNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
+export type ProposalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "meetingId" | "agendaItemId" | "code" | "version" | "supersedesId" | "title" | "text" | "rationale" | "financialImpact" | "scopeType" | "buildingId" | "entranceId" | "allocationGroupId" | "status" | "votingRuleId" | "ruleSnapshot" | "contentHash" | "votingOpensAt" | "votingClosesAt" | "frozenAt" | "resultSummary" | "decisionNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
 export type ProposalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   agendaItem?: boolean | Prisma.Proposal$agendaItemArgs<ExtArgs>
   supersedes?: boolean | Prisma.Proposal$supersedesArgs<ExtArgs>
@@ -2868,12 +3201,14 @@ export type ProposalInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   _count?: boolean | Prisma.ProposalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   agendaItem?: boolean | Prisma.Proposal$agendaItemArgs<ExtArgs>
   supersedes?: boolean | Prisma.Proposal$supersedesArgs<ExtArgs>
   votingRule?: boolean | Prisma.Proposal$votingRuleArgs<ExtArgs>
 }
 export type ProposalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   agendaItem?: boolean | Prisma.Proposal$agendaItemArgs<ExtArgs>
   supersedes?: boolean | Prisma.Proposal$supersedesArgs<ExtArgs>
@@ -2883,6 +3218,7 @@ export type ProposalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $ProposalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Proposal"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     meeting: Prisma.$MeetingPayload<ExtArgs>
     agendaItem: Prisma.$AgendaItemPayload<ExtArgs> | null
     supersedes: Prisma.$ProposalPayload<ExtArgs> | null
@@ -2895,6 +3231,7 @@ export type $ProposalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     meetingId: string
     agendaItemId: string | null
     code: string
@@ -3316,6 +3653,7 @@ readonly fields: ProposalFieldRefs;
  */
 export interface Prisma__ProposalClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   meeting<T extends Prisma.MeetingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MeetingDefaultArgs<ExtArgs>>): Prisma.Prisma__MeetingClient<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   agendaItem<T extends Prisma.Proposal$agendaItemArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Proposal$agendaItemArgs<ExtArgs>>): Prisma.Prisma__AgendaItemClient<runtime.Types.Result.GetResult<Prisma.$AgendaItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   supersedes<T extends Prisma.Proposal$supersedesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Proposal$supersedesArgs<ExtArgs>>): Prisma.Prisma__ProposalClient<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3355,6 +3693,7 @@ export interface Prisma__ProposalClient<T, Null = never, ExtArgs extends runtime
  */
 export interface ProposalFieldRefs {
   readonly id: Prisma.FieldRef<"Proposal", 'String'>
+  readonly zevId: Prisma.FieldRef<"Proposal", 'String'>
   readonly meetingId: Prisma.FieldRef<"Proposal", 'String'>
   readonly agendaItemId: Prisma.FieldRef<"Proposal", 'String'>
   readonly code: Prisma.FieldRef<"Proposal", 'String'>

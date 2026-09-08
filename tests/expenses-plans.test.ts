@@ -35,7 +35,7 @@ describe("expenses, suppliers and annual planning", () => {
 
   it("expense allocation by building and project shows up in the allocation summary", async () => {
     const project = await createProject(f.president, { name: `Projekat-${f.t}` });
-    const catId = (await ensureCategory(`Kat-${f.t}`, "EXPENSE")).id;
+    const catId = (await ensureCategory(f.accountant, `Kat-${f.t}`, "EXPENSE")).id;
     const e1 = await createExpense(f.accountant, {
       supplierId, invoiceNumber: "R-200", amount: "150.00", buildingId: f.b1.id, categoryId: catId,
     });

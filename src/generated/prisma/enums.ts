@@ -26,6 +26,15 @@ export const PartyKind = {
 export type PartyKind = (typeof PartyKind)[keyof typeof PartyKind]
 
 
+export const ZevTier = {
+  BASIC: 'BASIC',
+  BASIC_FINANCE: 'BASIC_FINANCE',
+  FULL: 'FULL'
+} as const
+
+export type ZevTier = (typeof ZevTier)[keyof typeof ZevTier]
+
+
 export const UnitType = {
   APARTMENT: 'APARTMENT',
   BUSINESS: 'BUSINESS',

@@ -4,7 +4,7 @@
 // Document.sourceType/sourceId) or stand alone as a general library item (both null).
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireAnyUser, ForbiddenError, type Actor } from "@/server/auth/guards";
+import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import type { Prisma } from "@/generated/prisma/client";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
@@ -83,9 +83,11 @@ function stageFile(input: { buffer: Buffer; filename: string }): { filePath: str
  */
 export async function createLinkedAttachmentTx(tx: Tx, actor: Actor, input: UploadInput) {
   assertUploadable(input);
+  const zevId = requireZev(actor);
   const { filePath, sha256 } = stageFile(input);
   const row = await tx.attachment.create({
     data: {
+      zevId,
       filename: input.filename,
       mime: input.mime,
       size: input.buffer.length,
@@ -110,9 +112,11 @@ export async function createLinkedAttachmentTx(tx: Tx, actor: Actor, input: Uplo
 export async function uploadAttachment(actor: Actor, input: UploadInput) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   assertUploadable(input);
+  const zevId = requireZev(actor);
   const { filePath, sha256 } = stageFile(input);
   const row = await prisma.attachment.create({
     data: {
+      zevId,
       filename: input.filename,
       mime: input.mime,
       size: input.buffer.length,
@@ -137,6 +141,7 @@ export async function listAttachments(actor: Actor, filter?: { category?: string
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   return prisma.attachment.findMany({
     where: {
+      zevId: requireZev(actor),
       category: filter?.category || undefined,
       linkedType: filter?.linkedType,
       linkedId: filter?.linkedId,
@@ -150,7 +155,7 @@ export async function listOwnershipProofsByStakeIds(actor: Actor, stakeIds: stri
   requireAnyUser(actor);
   if (stakeIds.length === 0) return new Map();
   const rows = await prisma.attachment.findMany({
-    where: { category: "OWNERSHIP_PROOF", linkedType: "OwnershipStake", linkedId: { in: stakeIds } },
+    where: { zevId: requireZev(actor), category: "OWNERSHIP_PROOF", linkedType: "OwnershipStake", linkedId: { in: stakeIds } },
     select: { id: true, filename: true, linkedId: true },
   });
   return new Map(rows.map((r) => [r.linkedId as string, { id: r.id, filename: r.filename }]));
@@ -163,12 +168,13 @@ export async function listOwnershipProofsByStakeIds(actor: Actor, stakeIds: stri
  */
 export async function readAttachmentFile(actor: Actor, id: string): Promise<{ attachment: { filename: string; mime: string }; buffer: Buffer }> {
   requireAnyUser(actor);
-  const a = await prisma.attachment.findUniqueOrThrow({ where: { id } });
+  const zevId = requireZev(actor);
+  const a = await prisma.attachment.findUniqueOrThrow({ where: { id, zevId } });
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   if (!isManagement) {
     let allowed = false;
     if (a.category === "OWNERSHIP_PROOF" && a.linkedType === "OwnershipStake" && a.linkedId) {
-      const stake = await prisma.ownershipStake.findUnique({ where: { id: a.linkedId } });
+      const stake = await prisma.ownershipStake.findUnique({ where: { id: a.linkedId, zevId } });
       allowed = !!stake && stake.ownerId === actor.partyId;
     }
     if (a.category === "CONSENT" && a.linkedType === "Party" && a.linkedId) {

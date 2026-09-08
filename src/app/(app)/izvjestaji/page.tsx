@@ -5,9 +5,23 @@ import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
 import { formatDate, endOfDay } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, BtnLink } from "@/components/ui";
+import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * Label a signed balance ("prethodni saldo" or the final "saldo") in plain
+ * words, since the sign alone (+/-) reads as ambiguous to an accountant
+ * scanning a table: positive = the owner owes the ZEV (duguje), negative =
+ * the owner has overpaid / has credit (preplata), zero = settled (izmireno).
+ */
+function balanceStatus(balance: string): { text: string; cls: string } {
+  const n = Number(balance);
+  if (n > 0) return { text: "duguje", cls: "text-red-700" };
+  if (n < 0) return { text: "preplata", cls: "text-emerald-700" };
+  return { text: "izmireno", cls: "text-slate-400" };
 }
 
 export default async function ReportsPage({
@@ -64,30 +78,47 @@ export default async function ReportsPage({
             Stanje na dan{" "}
             <input type="date" name="asOf" defaultValue={asOfStr} className="ml-1 rounded border border-slate-300 px-2 py-1" />
           </label>
-          <label className="text-sm">
-            Vlasnici{" "}
-            <select name="owner" multiple size={6} defaultValue={ownerIds} className="ml-1 min-w-[280px] rounded border border-slate-300 px-2 py-1">
-              {owners.map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p className="text-xs text-slate-500">Ne biraj nijednog za sve vlasnike; Ctrl/Cmd + klik za više njih.</p>
+          <OwnerMultiSelect
+            name="owner"
+            label="Vlasnici"
+            options={owners}
+            defaultSelected={ownerIds}
+            helperText="Prazan izbor (ili dugme „Obriši izbor”) = svi vlasnici."
+          />
           <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Prikaži</button>
         </form>
-        <Table headers={["Vlasnik", "Jedinica(e)", "Zaduženo", "Plaćeno", "Korekcije", "Saldo (duguje)"]} empty={debt.rows.length === 0}>
-          {debt.rows.map((r) => (
-            <tr key={r.partyId}>
-              <Td>{r.name}</Td>
-              <Td>{r.units}</Td>
-              <Td right>{formatMoney(r.charged, "")}</Td>
-              <Td right>{formatMoney(r.paid, "")}</Td>
-              <Td right>{formatMoney(r.corrections, "")}</Td>
-              <Td right className="font-semibold">{formatMoney(r.balance, "")}</Td>
-            </tr>
-          ))}
+        <p className="mb-2 text-xs text-slate-500">
+          <strong>Prethodni saldo</strong> = ukupno stanje vlasnika prije izabranog dana. <strong>Zaduženo / Plaćeno /
+          Korekcije</strong> = promjene knjižene na taj dan (ako ih nema, saldo ostaje jednak prethodnom).{" "}
+          <strong>Pozitivan iznos</strong> znači da vlasnik duguje ZEV-u, <strong>negativan</strong> da ima preplatu
+          (kredit/avans), a <strong>0,00</strong> da je stanje izmireno — isto važi i za prethodni saldo i za konačni
+          saldo.
+        </p>
+        <Table
+          headers={["Vlasnik", "Jedinica(e)", "Prethodni saldo", "Zaduženo (taj dan)", "Plaćeno (taj dan)", "Korekcije (taj dan)", "Saldo"]}
+          empty={debt.rows.length === 0}
+        >
+          {debt.rows.map((r) => {
+            const prevStatus = balanceStatus(r.previousBalance);
+            const status = balanceStatus(r.balance);
+            return (
+              <tr key={r.partyId}>
+                <Td>{r.name}</Td>
+                <Td>{r.units}</Td>
+                <Td right>
+                  {formatMoney(r.previousBalance, "")}
+                  <span className={`ml-1.5 text-xs ${prevStatus.cls}`}>({prevStatus.text})</span>
+                </Td>
+                <Td right>{formatMoney(r.chargedToday, "")}</Td>
+                <Td right>{formatMoney(r.paidToday, "")}</Td>
+                <Td right>{formatMoney(r.correctionsToday, "")}</Td>
+                <Td right className="font-semibold">
+                  {formatMoney(r.balance, "")}
+                  <span className={`ml-1.5 text-xs font-normal ${status.cls}`}>({status.text})</span>
+                </Td>
+              </tr>
+            );
+          })}
         </Table>
         <div className="mt-2">
           <BtnLink href={`/api/izvjestaji/dugovanja${debtQ}`} variant="secondary">

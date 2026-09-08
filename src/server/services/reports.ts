@@ -1,6 +1,6 @@
 // Operational financial reports with date ranges and CSV export.
 import { prisma } from "@/lib/prisma";
-import { requireRole, type Actor } from "@/server/auth/guards";
+import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, sumDecimals } from "@/lib/money";
 import { partyDisplayName } from "./ownership";
 import { accountBalance } from "./finance";
@@ -14,11 +14,12 @@ function inRange(range?: DateRange) {
 /** Cash-flow: income vs expenses per account over a period. */
 export async function cashFlowReport(actor: Actor, range?: DateRange) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const accounts = await prisma.moneyAccount.findMany({ where: { active: true } });
+  const zevId = requireZev(actor);
+  const accounts = await prisma.moneyAccount.findMany({ where: { zevId, active: true } });
   const rows = [];
   for (const a of accounts) {
     const txs = await prisma.finTransaction.findMany({
-      where: { accountId: a.id, status: "ACTIVE", date: inRange(range) },
+      where: { zevId, accountId: a.id, status: "ACTIVE", date: inRange(range) },
     });
     const income = sumDecimals(txs.filter((t) => t.type === "INCOME").map((t) => dec(t.amount.toString())));
     const expense = sumDecimals(txs.filter((t) => t.type === "EXPENSE").map((t) => dec(t.amount.toString())));
@@ -39,7 +40,7 @@ export async function cashFlowReport(actor: Actor, range?: DateRange) {
 export async function incomeExpenseReport(actor: Actor, range?: DateRange) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const txs = await prisma.finTransaction.findMany({
-    where: { status: "ACTIVE", date: inRange(range) },
+    where: { zevId: requireZev(actor), status: "ACTIVE", date: inRange(range) },
     include: { category: true },
   });
   const byCat = new Map<string, { category: string; kind: string; total: ReturnType<typeof dec> }>();
@@ -57,7 +58,7 @@ export async function incomeExpenseReport(actor: Actor, range?: DateRange) {
 export async function receivablesReport(actor: Actor, asOf: Date = new Date()) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const invoices = await prisma.invoice.findMany({
-    where: { status: "ISSUED", issueDate: { lte: asOf } },
+    where: { zevId: requireZev(actor), status: "ISSUED", issueDate: { lte: asOf } },
     include: { allocations: true, debtor: true, unit: true },
   });
   const rows = invoices
@@ -88,7 +89,7 @@ export async function receivablesReport(actor: Actor, asOf: Date = new Date()) {
 export async function supplierReport(actor: Actor, range?: DateRange) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const expenses = await prisma.expense.findMany({
-    where: { status: { not: "CANCELLED" }, createdAt: inRange(range) },
+    where: { zevId: requireZev(actor), status: { not: "CANCELLED" }, createdAt: inRange(range) },
     include: { supplier: true },
   });
   const bySupplier = new Map<string, { supplier: string; total: ReturnType<typeof dec>; unpaid: ReturnType<typeof dec>; count: number }>();
@@ -106,7 +107,7 @@ export async function supplierReport(actor: Actor, range?: DateRange) {
 export async function unpaidSupplierInvoices(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   return prisma.expense.findMany({
-    where: { status: { in: ["UNPAID", "PARTIALLY_PAID"] } },
+    where: { zevId: requireZev(actor), status: { in: ["UNPAID", "PARTIALLY_PAID"] } },
     include: { supplier: true },
     orderBy: { dueDate: "asc" },
   });
@@ -115,13 +116,14 @@ export async function unpaidSupplierInvoices(actor: Actor) {
 /** Financial summary grouped by building / entrance / project. */
 export async function allocationSummary(actor: Actor, groupBy: "building" | "entrance" | "project", range?: DateRange) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const txs = await prisma.finTransaction.findMany({ where: { status: "ACTIVE", date: inRange(range) } });
+  const zevId = requireZev(actor);
+  const txs = await prisma.finTransaction.findMany({ where: { zevId, status: "ACTIVE", date: inRange(range) } });
   const keyOf = (t: (typeof txs)[number]) =>
     groupBy === "building" ? t.buildingId : groupBy === "entrance" ? t.entranceId : t.projectId;
   const names = new Map<string, string>();
-  if (groupBy === "building") for (const b of await prisma.building.findMany()) names.set(b.id, b.name);
-  if (groupBy === "entrance") for (const e of await prisma.entrance.findMany()) names.set(e.id, e.name);
-  if (groupBy === "project") for (const p of await prisma.project.findMany()) names.set(p.id, p.name);
+  if (groupBy === "building") for (const b of await prisma.building.findMany({ where: { zevId } })) names.set(b.id, b.name);
+  if (groupBy === "entrance") for (const e of await prisma.entrance.findMany({ where: { zevId } })) names.set(e.id, e.name);
+  if (groupBy === "project") for (const p of await prisma.project.findMany({ where: { zevId } })) names.set(p.id, p.name);
   const grouped = new Map<string, { income: ReturnType<typeof dec>; expense: ReturnType<typeof dec> }>();
   for (const t of txs) {
     const k = keyOf(t) ?? "__none__";
@@ -140,18 +142,23 @@ export async function allocationSummary(actor: Actor, groupBy: "building" | "ent
 }
 
 /**
- * Per-owner debt/balance snapshot as of a given date — zaduženo/plaćeno/korekcije/saldo
- * per owner, either for every current owner or for a chosen subset. Backs the
- * "Dugovanja po vlasnicima" report and its PDF export.
+ * Per-owner debt/balance statement as of a given date — the balance carried
+ * over from before that day ("prethodni saldo"), that day's own charges/
+ * payments/corrections, and the resulting saldo — either for every current
+ * owner or for a chosen subset. On a day with no activity, chargedToday/
+ * paidToday/correctionsToday are all zero and balance equals previousBalance,
+ * so the statement reads as "just the running balance" the way an accountant
+ * expects. Backs the "Dugovanja po vlasnicima" report and its PDF export.
  */
 export async function ownerDebtReport(actor: Actor, opts: { asOf: Date; partyIds?: string[] }) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  const { ownerBalance } = await import("./payments");
+  const zevId = requireZev(actor);
+  const { ownerBalanceBreakdown } = await import("./payments");
   const parties = await prisma.party.findMany({
     where:
       opts.partyIds && opts.partyIds.length > 0
-        ? { active: true, id: { in: opts.partyIds } }
-        : { active: true, ownershipStakes: { some: { validTo: null } } },
+        ? { zevId, active: true, id: { in: opts.partyIds } }
+        : { zevId, active: true, ownershipStakes: { some: { validTo: null } } },
     include: {
       ownershipStakes: { where: { validTo: null }, include: { unit: { include: { building: true } } } },
     },
@@ -159,22 +166,24 @@ export async function ownerDebtReport(actor: Actor, opts: { asOf: Date; partyIds
   });
   const rows = [];
   for (const p of parties) {
-    const bal = await ownerBalance(actor, p.id, opts.asOf);
+    const bal = await ownerBalanceBreakdown(actor, p.id, opts.asOf);
     const units =
       p.ownershipStakes.map((s) => `${s.unit.building.name}, ${s.unit.label}`).join("; ") || "—";
     rows.push({
       partyId: p.id,
       name: partyDisplayName(p),
       units,
-      charged: bal.charged,
-      paid: bal.paid,
-      corrections: bal.corrections,
+      previousBalance: bal.previousBalance,
+      chargedToday: bal.chargedToday,
+      paidToday: bal.paidToday,
+      correctionsToday: bal.correctionsToday,
       balance: bal.balance,
     });
   }
   rows.sort((a, b) => dec(b.balance).comparedTo(dec(a.balance)));
   const totalBalance = sumDecimals(rows.map((r) => dec(r.balance)));
-  return { asOf: opts.asOf, rows, totalBalance: totalBalance.toFixed(2) };
+  const totalPreviousBalance = sumDecimals(rows.map((r) => dec(r.previousBalance)));
+  return { asOf: opts.asOf, rows, totalBalance: totalBalance.toFixed(2), totalPreviousBalance: totalPreviousBalance.toFixed(2) };
 }
 
 // ---- CSV export ----

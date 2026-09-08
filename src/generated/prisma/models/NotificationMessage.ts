@@ -36,6 +36,7 @@ export type NotificationMessageSumAggregateOutputType = {
 
 export type NotificationMessageMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   channel: $Enums.NotifChannel | null
   recipientId: string | null
   toAddress: string | null
@@ -53,6 +54,7 @@ export type NotificationMessageMinAggregateOutputType = {
 
 export type NotificationMessageMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   channel: $Enums.NotifChannel | null
   recipientId: string | null
   toAddress: string | null
@@ -70,6 +72,7 @@ export type NotificationMessageMaxAggregateOutputType = {
 
 export type NotificationMessageCountAggregateOutputType = {
   id: number
+  zevId: number
   channel: number
   recipientId: number
   toAddress: number
@@ -98,6 +101,7 @@ export type NotificationMessageSumAggregateInputType = {
 
 export type NotificationMessageMinAggregateInputType = {
   id?: true
+  zevId?: true
   channel?: true
   recipientId?: true
   toAddress?: true
@@ -115,6 +119,7 @@ export type NotificationMessageMinAggregateInputType = {
 
 export type NotificationMessageMaxAggregateInputType = {
   id?: true
+  zevId?: true
   channel?: true
   recipientId?: true
   toAddress?: true
@@ -132,6 +137,7 @@ export type NotificationMessageMaxAggregateInputType = {
 
 export type NotificationMessageCountAggregateInputType = {
   id?: true
+  zevId?: true
   channel?: true
   recipientId?: true
   toAddress?: true
@@ -237,6 +243,7 @@ export type NotificationMessageGroupByArgs<ExtArgs extends runtime.Types.Extensi
 
 export type NotificationMessageGroupByOutputType = {
   id: string
+  zevId: string | null
   channel: $Enums.NotifChannel
   recipientId: string | null
   toAddress: string
@@ -278,6 +285,7 @@ export type NotificationMessageWhereInput = {
   OR?: Prisma.NotificationMessageWhereInput[]
   NOT?: Prisma.NotificationMessageWhereInput | Prisma.NotificationMessageWhereInput[]
   id?: Prisma.StringFilter<"NotificationMessage"> | string
+  zevId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   channel?: Prisma.EnumNotifChannelFilter<"NotificationMessage"> | $Enums.NotifChannel
   recipientId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   toAddress?: Prisma.StringFilter<"NotificationMessage"> | string
@@ -292,11 +300,13 @@ export type NotificationMessageWhereInput = {
   relatedId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NotificationMessage"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
   recipient?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
 }
 
 export type NotificationMessageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrderInput | Prisma.SortOrder
   channel?: Prisma.SortOrder
   recipientId?: Prisma.SortOrderInput | Prisma.SortOrder
   toAddress?: Prisma.SortOrder
@@ -311,6 +321,7 @@ export type NotificationMessageOrderByWithRelationInput = {
   relatedId?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   recipient?: Prisma.PartyOrderByWithRelationInput
 }
 
@@ -319,6 +330,7 @@ export type NotificationMessageWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.NotificationMessageWhereInput | Prisma.NotificationMessageWhereInput[]
   OR?: Prisma.NotificationMessageWhereInput[]
   NOT?: Prisma.NotificationMessageWhereInput | Prisma.NotificationMessageWhereInput[]
+  zevId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   channel?: Prisma.EnumNotifChannelFilter<"NotificationMessage"> | $Enums.NotifChannel
   recipientId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   toAddress?: Prisma.StringFilter<"NotificationMessage"> | string
@@ -333,11 +345,13 @@ export type NotificationMessageWhereUniqueInput = Prisma.AtLeast<{
   relatedId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NotificationMessage"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
   recipient?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
 }, "id">
 
 export type NotificationMessageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrderInput | Prisma.SortOrder
   channel?: Prisma.SortOrder
   recipientId?: Prisma.SortOrderInput | Prisma.SortOrder
   toAddress?: Prisma.SortOrder
@@ -364,6 +378,7 @@ export type NotificationMessageScalarWhereWithAggregatesInput = {
   OR?: Prisma.NotificationMessageScalarWhereWithAggregatesInput[]
   NOT?: Prisma.NotificationMessageScalarWhereWithAggregatesInput | Prisma.NotificationMessageScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"NotificationMessage"> | string
+  zevId?: Prisma.StringNullableWithAggregatesFilter<"NotificationMessage"> | string | null
   channel?: Prisma.EnumNotifChannelWithAggregatesFilter<"NotificationMessage"> | $Enums.NotifChannel
   recipientId?: Prisma.StringNullableWithAggregatesFilter<"NotificationMessage"> | string | null
   toAddress?: Prisma.StringWithAggregatesFilter<"NotificationMessage"> | string
@@ -395,11 +410,13 @@ export type NotificationMessageCreateInput = {
   relatedId?: string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
+  zev?: Prisma.ZevCreateNestedOneWithoutNotificationMessagesInput
   recipient?: Prisma.PartyCreateNestedOneWithoutNotificationsInput
 }
 
 export type NotificationMessageUncheckedCreateInput = {
   id?: string
+  zevId?: string | null
   channel: $Enums.NotifChannel
   recipientId?: string | null
   toAddress: string
@@ -431,11 +448,13 @@ export type NotificationMessageUpdateInput = {
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneWithoutNotificationMessagesNestedInput
   recipient?: Prisma.PartyUpdateOneWithoutNotificationsNestedInput
 }
 
 export type NotificationMessageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
   recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toAddress?: Prisma.StringFieldUpdateOperationsInput | string
@@ -454,6 +473,7 @@ export type NotificationMessageUncheckedUpdateInput = {
 
 export type NotificationMessageCreateManyInput = {
   id?: string
+  zevId?: string | null
   channel: $Enums.NotifChannel
   recipientId?: string | null
   toAddress: string
@@ -489,6 +509,7 @@ export type NotificationMessageUpdateManyMutationInput = {
 
 export type NotificationMessageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
   recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toAddress?: Prisma.StringFieldUpdateOperationsInput | string
@@ -517,6 +538,7 @@ export type NotificationMessageOrderByRelationAggregateInput = {
 
 export type NotificationMessageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   recipientId?: Prisma.SortOrder
   toAddress?: Prisma.SortOrder
@@ -539,6 +561,7 @@ export type NotificationMessageAvgOrderByAggregateInput = {
 
 export type NotificationMessageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   recipientId?: Prisma.SortOrder
   toAddress?: Prisma.SortOrder
@@ -556,6 +579,7 @@ export type NotificationMessageMaxOrderByAggregateInput = {
 
 export type NotificationMessageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   recipientId?: Prisma.SortOrder
   toAddress?: Prisma.SortOrder
@@ -617,6 +641,48 @@ export type NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput = 
   deleteMany?: Prisma.NotificationMessageScalarWhereInput | Prisma.NotificationMessageScalarWhereInput[]
 }
 
+export type NotificationMessageCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.NotificationMessageCreateWithoutZevInput, Prisma.NotificationMessageUncheckedCreateWithoutZevInput> | Prisma.NotificationMessageCreateWithoutZevInput[] | Prisma.NotificationMessageUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.NotificationMessageCreateOrConnectWithoutZevInput | Prisma.NotificationMessageCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.NotificationMessageCreateManyZevInputEnvelope
+  connect?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+}
+
+export type NotificationMessageUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.NotificationMessageCreateWithoutZevInput, Prisma.NotificationMessageUncheckedCreateWithoutZevInput> | Prisma.NotificationMessageCreateWithoutZevInput[] | Prisma.NotificationMessageUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.NotificationMessageCreateOrConnectWithoutZevInput | Prisma.NotificationMessageCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.NotificationMessageCreateManyZevInputEnvelope
+  connect?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+}
+
+export type NotificationMessageUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationMessageCreateWithoutZevInput, Prisma.NotificationMessageUncheckedCreateWithoutZevInput> | Prisma.NotificationMessageCreateWithoutZevInput[] | Prisma.NotificationMessageUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.NotificationMessageCreateOrConnectWithoutZevInput | Prisma.NotificationMessageCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.NotificationMessageUpsertWithWhereUniqueWithoutZevInput | Prisma.NotificationMessageUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.NotificationMessageCreateManyZevInputEnvelope
+  set?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  disconnect?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  delete?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  connect?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  update?: Prisma.NotificationMessageUpdateWithWhereUniqueWithoutZevInput | Prisma.NotificationMessageUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.NotificationMessageUpdateManyWithWhereWithoutZevInput | Prisma.NotificationMessageUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.NotificationMessageScalarWhereInput | Prisma.NotificationMessageScalarWhereInput[]
+}
+
+export type NotificationMessageUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationMessageCreateWithoutZevInput, Prisma.NotificationMessageUncheckedCreateWithoutZevInput> | Prisma.NotificationMessageCreateWithoutZevInput[] | Prisma.NotificationMessageUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.NotificationMessageCreateOrConnectWithoutZevInput | Prisma.NotificationMessageCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.NotificationMessageUpsertWithWhereUniqueWithoutZevInput | Prisma.NotificationMessageUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.NotificationMessageCreateManyZevInputEnvelope
+  set?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  disconnect?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  delete?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  connect?: Prisma.NotificationMessageWhereUniqueInput | Prisma.NotificationMessageWhereUniqueInput[]
+  update?: Prisma.NotificationMessageUpdateWithWhereUniqueWithoutZevInput | Prisma.NotificationMessageUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.NotificationMessageUpdateManyWithWhereWithoutZevInput | Prisma.NotificationMessageUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.NotificationMessageScalarWhereInput | Prisma.NotificationMessageScalarWhereInput[]
+}
+
 export type EnumNotifChannelFieldUpdateOperationsInput = {
   set?: $Enums.NotifChannel
 }
@@ -640,10 +706,12 @@ export type NotificationMessageCreateWithoutRecipientInput = {
   relatedId?: string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
+  zev?: Prisma.ZevCreateNestedOneWithoutNotificationMessagesInput
 }
 
 export type NotificationMessageUncheckedCreateWithoutRecipientInput = {
   id?: string
+  zevId?: string | null
   channel: $Enums.NotifChannel
   toAddress: string
   template?: string | null
@@ -690,6 +758,7 @@ export type NotificationMessageScalarWhereInput = {
   OR?: Prisma.NotificationMessageScalarWhereInput[]
   NOT?: Prisma.NotificationMessageScalarWhereInput | Prisma.NotificationMessageScalarWhereInput[]
   id?: Prisma.StringFilter<"NotificationMessage"> | string
+  zevId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   channel?: Prisma.EnumNotifChannelFilter<"NotificationMessage"> | $Enums.NotifChannel
   recipientId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   toAddress?: Prisma.StringFilter<"NotificationMessage"> | string
@@ -706,8 +775,71 @@ export type NotificationMessageScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"NotificationMessage"> | Date | string
 }
 
+export type NotificationMessageCreateWithoutZevInput = {
+  id?: string
+  channel: $Enums.NotifChannel
+  toAddress: string
+  template?: string | null
+  subject?: string | null
+  body: string
+  status?: $Enums.NotifStatus
+  attempts?: number
+  lastError?: string | null
+  events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  relatedType?: string | null
+  relatedId?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  recipient?: Prisma.PartyCreateNestedOneWithoutNotificationsInput
+}
+
+export type NotificationMessageUncheckedCreateWithoutZevInput = {
+  id?: string
+  channel: $Enums.NotifChannel
+  recipientId?: string | null
+  toAddress: string
+  template?: string | null
+  subject?: string | null
+  body: string
+  status?: $Enums.NotifStatus
+  attempts?: number
+  lastError?: string | null
+  events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  relatedType?: string | null
+  relatedId?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type NotificationMessageCreateOrConnectWithoutZevInput = {
+  where: Prisma.NotificationMessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.NotificationMessageCreateWithoutZevInput, Prisma.NotificationMessageUncheckedCreateWithoutZevInput>
+}
+
+export type NotificationMessageCreateManyZevInputEnvelope = {
+  data: Prisma.NotificationMessageCreateManyZevInput | Prisma.NotificationMessageCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type NotificationMessageUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.NotificationMessageWhereUniqueInput
+  update: Prisma.XOR<Prisma.NotificationMessageUpdateWithoutZevInput, Prisma.NotificationMessageUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.NotificationMessageCreateWithoutZevInput, Prisma.NotificationMessageUncheckedCreateWithoutZevInput>
+}
+
+export type NotificationMessageUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.NotificationMessageWhereUniqueInput
+  data: Prisma.XOR<Prisma.NotificationMessageUpdateWithoutZevInput, Prisma.NotificationMessageUncheckedUpdateWithoutZevInput>
+}
+
+export type NotificationMessageUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.NotificationMessageScalarWhereInput
+  data: Prisma.XOR<Prisma.NotificationMessageUpdateManyMutationInput, Prisma.NotificationMessageUncheckedUpdateManyWithoutZevInput>
+}
+
 export type NotificationMessageCreateManyRecipientInput = {
   id?: string
+  zevId?: string | null
   channel: $Enums.NotifChannel
   toAddress: string
   template?: string | null
@@ -738,10 +870,12 @@ export type NotificationMessageUpdateWithoutRecipientInput = {
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneWithoutNotificationMessagesNestedInput
 }
 
 export type NotificationMessageUncheckedUpdateWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
   toAddress?: Prisma.StringFieldUpdateOperationsInput | string
   template?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -759,7 +893,80 @@ export type NotificationMessageUncheckedUpdateWithoutRecipientInput = {
 
 export type NotificationMessageUncheckedUpdateManyWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
+  toAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  template?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumNotifStatusFieldUpdateOperationsInput | $Enums.NotifStatus
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NotificationMessageCreateManyZevInput = {
+  id?: string
+  channel: $Enums.NotifChannel
+  recipientId?: string | null
+  toAddress: string
+  template?: string | null
+  subject?: string | null
+  body: string
+  status?: $Enums.NotifStatus
+  attempts?: number
+  lastError?: string | null
+  events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  relatedType?: string | null
+  relatedId?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type NotificationMessageUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
+  toAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  template?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumNotifStatusFieldUpdateOperationsInput | $Enums.NotifStatus
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipient?: Prisma.PartyUpdateOneWithoutNotificationsNestedInput
+}
+
+export type NotificationMessageUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  template?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumNotifStatusFieldUpdateOperationsInput | $Enums.NotifStatus
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NotificationMessageUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumNotifChannelFieldUpdateOperationsInput | $Enums.NotifChannel
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toAddress?: Prisma.StringFieldUpdateOperationsInput | string
   template?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -778,6 +985,7 @@ export type NotificationMessageUncheckedUpdateManyWithoutRecipientInput = {
 
 export type NotificationMessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   channel?: boolean
   recipientId?: boolean
   toAddress?: boolean
@@ -792,11 +1000,13 @@ export type NotificationMessageSelect<ExtArgs extends runtime.Types.Extensions.I
   relatedId?: boolean
   sentAt?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["notificationMessage"]>
 
 export type NotificationMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   channel?: boolean
   recipientId?: boolean
   toAddress?: boolean
@@ -811,11 +1021,13 @@ export type NotificationMessageSelectCreateManyAndReturn<ExtArgs extends runtime
   relatedId?: boolean
   sentAt?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["notificationMessage"]>
 
 export type NotificationMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   channel?: boolean
   recipientId?: boolean
   toAddress?: boolean
@@ -830,11 +1042,13 @@ export type NotificationMessageSelectUpdateManyAndReturn<ExtArgs extends runtime
   relatedId?: boolean
   sentAt?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["notificationMessage"]>
 
 export type NotificationMessageSelectScalar = {
   id?: boolean
+  zevId?: boolean
   channel?: boolean
   recipientId?: boolean
   toAddress?: boolean
@@ -851,24 +1065,29 @@ export type NotificationMessageSelectScalar = {
   createdAt?: boolean
 }
 
-export type NotificationMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "channel" | "recipientId" | "toAddress" | "template" | "subject" | "body" | "status" | "attempts" | "lastError" | "events" | "relatedType" | "relatedId" | "sentAt" | "createdAt", ExtArgs["result"]["notificationMessage"]>
+export type NotificationMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "channel" | "recipientId" | "toAddress" | "template" | "subject" | "body" | "status" | "attempts" | "lastError" | "events" | "relatedType" | "relatedId" | "sentAt" | "createdAt", ExtArgs["result"]["notificationMessage"]>
 export type NotificationMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
 }
 export type NotificationMessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
 }
 export type NotificationMessageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
 }
 
 export type $NotificationMessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "NotificationMessage"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs> | null
     recipient: Prisma.$PartyPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string | null
     channel: $Enums.NotifChannel
     recipientId: string | null
     toAddress: string
@@ -1277,6 +1496,7 @@ readonly fields: NotificationMessageFieldRefs;
  */
 export interface Prisma__NotificationMessageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.NotificationMessage$zevArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NotificationMessage$zevArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   recipient<T extends Prisma.NotificationMessage$recipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NotificationMessage$recipientArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1308,6 +1528,7 @@ export interface Prisma__NotificationMessageClient<T, Null = never, ExtArgs exte
  */
 export interface NotificationMessageFieldRefs {
   readonly id: Prisma.FieldRef<"NotificationMessage", 'String'>
+  readonly zevId: Prisma.FieldRef<"NotificationMessage", 'String'>
   readonly channel: Prisma.FieldRef<"NotificationMessage", 'NotifChannel'>
   readonly recipientId: Prisma.FieldRef<"NotificationMessage", 'String'>
   readonly toAddress: Prisma.FieldRef<"NotificationMessage", 'String'>
@@ -1720,6 +1941,25 @@ export type NotificationMessageDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many NotificationMessages to delete.
    */
   limit?: number
+}
+
+/**
+ * NotificationMessage.zev
+ */
+export type NotificationMessage$zevArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Zev
+   */
+  select?: Prisma.ZevSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Zev
+   */
+  omit?: Prisma.ZevOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevInclude<ExtArgs> | null
+  where?: Prisma.ZevWhereInput
 }
 
 /**

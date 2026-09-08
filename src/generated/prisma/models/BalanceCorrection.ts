@@ -36,6 +36,7 @@ export type BalanceCorrectionSumAggregateOutputType = {
 
 export type BalanceCorrectionMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   partyId: string | null
   unitId: string | null
   amount: runtime.Decimal | null
@@ -47,6 +48,7 @@ export type BalanceCorrectionMinAggregateOutputType = {
 
 export type BalanceCorrectionMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   partyId: string | null
   unitId: string | null
   amount: runtime.Decimal | null
@@ -58,6 +60,7 @@ export type BalanceCorrectionMaxAggregateOutputType = {
 
 export type BalanceCorrectionCountAggregateOutputType = {
   id: number
+  zevId: number
   partyId: number
   unitId: number
   amount: number
@@ -79,6 +82,7 @@ export type BalanceCorrectionSumAggregateInputType = {
 
 export type BalanceCorrectionMinAggregateInputType = {
   id?: true
+  zevId?: true
   partyId?: true
   unitId?: true
   amount?: true
@@ -90,6 +94,7 @@ export type BalanceCorrectionMinAggregateInputType = {
 
 export type BalanceCorrectionMaxAggregateInputType = {
   id?: true
+  zevId?: true
   partyId?: true
   unitId?: true
   amount?: true
@@ -101,6 +106,7 @@ export type BalanceCorrectionMaxAggregateInputType = {
 
 export type BalanceCorrectionCountAggregateInputType = {
   id?: true
+  zevId?: true
   partyId?: true
   unitId?: true
   amount?: true
@@ -199,6 +205,7 @@ export type BalanceCorrectionGroupByArgs<ExtArgs extends runtime.Types.Extension
 
 export type BalanceCorrectionGroupByOutputType = {
   id: string
+  zevId: string
   partyId: string
   unitId: string | null
   amount: runtime.Decimal
@@ -233,6 +240,7 @@ export type BalanceCorrectionWhereInput = {
   OR?: Prisma.BalanceCorrectionWhereInput[]
   NOT?: Prisma.BalanceCorrectionWhereInput | Prisma.BalanceCorrectionWhereInput[]
   id?: Prisma.StringFilter<"BalanceCorrection"> | string
+  zevId?: Prisma.StringFilter<"BalanceCorrection"> | string
   partyId?: Prisma.StringFilter<"BalanceCorrection"> | string
   unitId?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   amount?: Prisma.DecimalFilter<"BalanceCorrection"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -240,11 +248,13 @@ export type BalanceCorrectionWhereInput = {
   authority?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   createdById?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BalanceCorrection"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }
 
 export type BalanceCorrectionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   unitId?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -252,6 +262,7 @@ export type BalanceCorrectionOrderByWithRelationInput = {
   authority?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   party?: Prisma.PartyOrderByWithRelationInput
 }
 
@@ -260,6 +271,7 @@ export type BalanceCorrectionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BalanceCorrectionWhereInput | Prisma.BalanceCorrectionWhereInput[]
   OR?: Prisma.BalanceCorrectionWhereInput[]
   NOT?: Prisma.BalanceCorrectionWhereInput | Prisma.BalanceCorrectionWhereInput[]
+  zevId?: Prisma.StringFilter<"BalanceCorrection"> | string
   partyId?: Prisma.StringFilter<"BalanceCorrection"> | string
   unitId?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   amount?: Prisma.DecimalFilter<"BalanceCorrection"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -267,11 +279,13 @@ export type BalanceCorrectionWhereUniqueInput = Prisma.AtLeast<{
   authority?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   createdById?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BalanceCorrection"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }, "id">
 
 export type BalanceCorrectionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   unitId?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -291,6 +305,7 @@ export type BalanceCorrectionScalarWhereWithAggregatesInput = {
   OR?: Prisma.BalanceCorrectionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BalanceCorrectionScalarWhereWithAggregatesInput | Prisma.BalanceCorrectionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BalanceCorrection"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"BalanceCorrection"> | string
   partyId?: Prisma.StringWithAggregatesFilter<"BalanceCorrection"> | string
   unitId?: Prisma.StringNullableWithAggregatesFilter<"BalanceCorrection"> | string | null
   amount?: Prisma.DecimalWithAggregatesFilter<"BalanceCorrection"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -308,11 +323,13 @@ export type BalanceCorrectionCreateInput = {
   authority?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutBalanceCorrectionsInput
   party: Prisma.PartyCreateNestedOneWithoutBalanceCorrectionsInput
 }
 
 export type BalanceCorrectionUncheckedCreateInput = {
   id?: string
+  zevId: string
   partyId: string
   unitId?: string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -330,11 +347,13 @@ export type BalanceCorrectionUpdateInput = {
   authority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutBalanceCorrectionsNestedInput
   party?: Prisma.PartyUpdateOneRequiredWithoutBalanceCorrectionsNestedInput
 }
 
 export type BalanceCorrectionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -346,6 +365,7 @@ export type BalanceCorrectionUncheckedUpdateInput = {
 
 export type BalanceCorrectionCreateManyInput = {
   id?: string
+  zevId: string
   partyId: string
   unitId?: string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -367,6 +387,7 @@ export type BalanceCorrectionUpdateManyMutationInput = {
 
 export type BalanceCorrectionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -388,6 +409,7 @@ export type BalanceCorrectionOrderByRelationAggregateInput = {
 
 export type BalanceCorrectionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -403,6 +425,7 @@ export type BalanceCorrectionAvgOrderByAggregateInput = {
 
 export type BalanceCorrectionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -414,6 +437,7 @@ export type BalanceCorrectionMaxOrderByAggregateInput = {
 
 export type BalanceCorrectionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -469,6 +493,48 @@ export type BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput = {
   deleteMany?: Prisma.BalanceCorrectionScalarWhereInput | Prisma.BalanceCorrectionScalarWhereInput[]
 }
 
+export type BalanceCorrectionCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.BalanceCorrectionCreateWithoutZevInput, Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput> | Prisma.BalanceCorrectionCreateWithoutZevInput[] | Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput | Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.BalanceCorrectionCreateManyZevInputEnvelope
+  connect?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+}
+
+export type BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.BalanceCorrectionCreateWithoutZevInput, Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput> | Prisma.BalanceCorrectionCreateWithoutZevInput[] | Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput | Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.BalanceCorrectionCreateManyZevInputEnvelope
+  connect?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+}
+
+export type BalanceCorrectionUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.BalanceCorrectionCreateWithoutZevInput, Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput> | Prisma.BalanceCorrectionCreateWithoutZevInput[] | Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput | Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.BalanceCorrectionUpsertWithWhereUniqueWithoutZevInput | Prisma.BalanceCorrectionUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.BalanceCorrectionCreateManyZevInputEnvelope
+  set?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  disconnect?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  delete?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  connect?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  update?: Prisma.BalanceCorrectionUpdateWithWhereUniqueWithoutZevInput | Prisma.BalanceCorrectionUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.BalanceCorrectionUpdateManyWithWhereWithoutZevInput | Prisma.BalanceCorrectionUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.BalanceCorrectionScalarWhereInput | Prisma.BalanceCorrectionScalarWhereInput[]
+}
+
+export type BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.BalanceCorrectionCreateWithoutZevInput, Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput> | Prisma.BalanceCorrectionCreateWithoutZevInput[] | Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput | Prisma.BalanceCorrectionCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.BalanceCorrectionUpsertWithWhereUniqueWithoutZevInput | Prisma.BalanceCorrectionUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.BalanceCorrectionCreateManyZevInputEnvelope
+  set?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  disconnect?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  delete?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  connect?: Prisma.BalanceCorrectionWhereUniqueInput | Prisma.BalanceCorrectionWhereUniqueInput[]
+  update?: Prisma.BalanceCorrectionUpdateWithWhereUniqueWithoutZevInput | Prisma.BalanceCorrectionUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.BalanceCorrectionUpdateManyWithWhereWithoutZevInput | Prisma.BalanceCorrectionUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.BalanceCorrectionScalarWhereInput | Prisma.BalanceCorrectionScalarWhereInput[]
+}
+
 export type BalanceCorrectionCreateWithoutPartyInput = {
   id?: string
   unitId?: string | null
@@ -477,10 +543,12 @@ export type BalanceCorrectionCreateWithoutPartyInput = {
   authority?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutBalanceCorrectionsInput
 }
 
 export type BalanceCorrectionUncheckedCreateWithoutPartyInput = {
   id?: string
+  zevId: string
   unitId?: string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   reason: string
@@ -520,6 +588,7 @@ export type BalanceCorrectionScalarWhereInput = {
   OR?: Prisma.BalanceCorrectionScalarWhereInput[]
   NOT?: Prisma.BalanceCorrectionScalarWhereInput | Prisma.BalanceCorrectionScalarWhereInput[]
   id?: Prisma.StringFilter<"BalanceCorrection"> | string
+  zevId?: Prisma.StringFilter<"BalanceCorrection"> | string
   partyId?: Prisma.StringFilter<"BalanceCorrection"> | string
   unitId?: Prisma.StringNullableFilter<"BalanceCorrection"> | string | null
   amount?: Prisma.DecimalFilter<"BalanceCorrection"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -529,8 +598,57 @@ export type BalanceCorrectionScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"BalanceCorrection"> | Date | string
 }
 
+export type BalanceCorrectionCreateWithoutZevInput = {
+  id?: string
+  unitId?: string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason: string
+  authority?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  party: Prisma.PartyCreateNestedOneWithoutBalanceCorrectionsInput
+}
+
+export type BalanceCorrectionUncheckedCreateWithoutZevInput = {
+  id?: string
+  partyId: string
+  unitId?: string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason: string
+  authority?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type BalanceCorrectionCreateOrConnectWithoutZevInput = {
+  where: Prisma.BalanceCorrectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.BalanceCorrectionCreateWithoutZevInput, Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput>
+}
+
+export type BalanceCorrectionCreateManyZevInputEnvelope = {
+  data: Prisma.BalanceCorrectionCreateManyZevInput | Prisma.BalanceCorrectionCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type BalanceCorrectionUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.BalanceCorrectionWhereUniqueInput
+  update: Prisma.XOR<Prisma.BalanceCorrectionUpdateWithoutZevInput, Prisma.BalanceCorrectionUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.BalanceCorrectionCreateWithoutZevInput, Prisma.BalanceCorrectionUncheckedCreateWithoutZevInput>
+}
+
+export type BalanceCorrectionUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.BalanceCorrectionWhereUniqueInput
+  data: Prisma.XOR<Prisma.BalanceCorrectionUpdateWithoutZevInput, Prisma.BalanceCorrectionUncheckedUpdateWithoutZevInput>
+}
+
+export type BalanceCorrectionUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.BalanceCorrectionScalarWhereInput
+  data: Prisma.XOR<Prisma.BalanceCorrectionUpdateManyMutationInput, Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevInput>
+}
+
 export type BalanceCorrectionCreateManyPartyInput = {
   id?: string
+  zevId: string
   unitId?: string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   reason: string
@@ -547,10 +665,12 @@ export type BalanceCorrectionUpdateWithoutPartyInput = {
   authority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutBalanceCorrectionsNestedInput
 }
 
 export type BalanceCorrectionUncheckedUpdateWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
@@ -561,6 +681,51 @@ export type BalanceCorrectionUncheckedUpdateWithoutPartyInput = {
 
 export type BalanceCorrectionUncheckedUpdateManyWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  authority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BalanceCorrectionCreateManyZevInput = {
+  id?: string
+  partyId: string
+  unitId?: string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason: string
+  authority?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type BalanceCorrectionUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  authority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  party?: Prisma.PartyUpdateOneRequiredWithoutBalanceCorrectionsNestedInput
+}
+
+export type BalanceCorrectionUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  partyId?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  authority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BalanceCorrectionUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  partyId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
@@ -573,6 +738,7 @@ export type BalanceCorrectionUncheckedUpdateManyWithoutPartyInput = {
 
 export type BalanceCorrectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   partyId?: boolean
   unitId?: boolean
   amount?: boolean
@@ -580,11 +746,13 @@ export type BalanceCorrectionSelect<ExtArgs extends runtime.Types.Extensions.Int
   authority?: boolean
   createdById?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["balanceCorrection"]>
 
 export type BalanceCorrectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   partyId?: boolean
   unitId?: boolean
   amount?: boolean
@@ -592,11 +760,13 @@ export type BalanceCorrectionSelectCreateManyAndReturn<ExtArgs extends runtime.T
   authority?: boolean
   createdById?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["balanceCorrection"]>
 
 export type BalanceCorrectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   partyId?: boolean
   unitId?: boolean
   amount?: boolean
@@ -604,11 +774,13 @@ export type BalanceCorrectionSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   authority?: boolean
   createdById?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["balanceCorrection"]>
 
 export type BalanceCorrectionSelectScalar = {
   id?: boolean
+  zevId?: boolean
   partyId?: boolean
   unitId?: boolean
   amount?: boolean
@@ -618,24 +790,29 @@ export type BalanceCorrectionSelectScalar = {
   createdAt?: boolean
 }
 
-export type BalanceCorrectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partyId" | "unitId" | "amount" | "reason" | "authority" | "createdById" | "createdAt", ExtArgs["result"]["balanceCorrection"]>
+export type BalanceCorrectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "partyId" | "unitId" | "amount" | "reason" | "authority" | "createdById" | "createdAt", ExtArgs["result"]["balanceCorrection"]>
 export type BalanceCorrectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type BalanceCorrectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type BalanceCorrectionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 
 export type $BalanceCorrectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BalanceCorrection"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     party: Prisma.$PartyPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     partyId: string
     unitId: string | null
     amount: runtime.Decimal
@@ -1037,6 +1214,7 @@ readonly fields: BalanceCorrectionFieldRefs;
  */
 export interface Prisma__BalanceCorrectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   party<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1068,6 +1246,7 @@ export interface Prisma__BalanceCorrectionClient<T, Null = never, ExtArgs extend
  */
 export interface BalanceCorrectionFieldRefs {
   readonly id: Prisma.FieldRef<"BalanceCorrection", 'String'>
+  readonly zevId: Prisma.FieldRef<"BalanceCorrection", 'String'>
   readonly partyId: Prisma.FieldRef<"BalanceCorrection", 'String'>
   readonly unitId: Prisma.FieldRef<"BalanceCorrection", 'String'>
   readonly amount: Prisma.FieldRef<"BalanceCorrection", 'Decimal'>

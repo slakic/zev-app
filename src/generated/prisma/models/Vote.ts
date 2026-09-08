@@ -39,6 +39,7 @@ export type VoteSumAggregateOutputType = {
 
 export type VoteMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   proposalId: string | null
   proposalVersion: number | null
   eligibleVoterId: string | null
@@ -68,6 +69,7 @@ export type VoteMinAggregateOutputType = {
 
 export type VoteMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   proposalId: string | null
   proposalVersion: number | null
   eligibleVoterId: string | null
@@ -97,6 +99,7 @@ export type VoteMaxAggregateOutputType = {
 
 export type VoteCountAggregateOutputType = {
   id: number
+  zevId: number
   proposalId: number
   proposalVersion: number
   eligibleVoterId: number
@@ -138,6 +141,7 @@ export type VoteSumAggregateInputType = {
 
 export type VoteMinAggregateInputType = {
   id?: true
+  zevId?: true
   proposalId?: true
   proposalVersion?: true
   eligibleVoterId?: true
@@ -167,6 +171,7 @@ export type VoteMinAggregateInputType = {
 
 export type VoteMaxAggregateInputType = {
   id?: true
+  zevId?: true
   proposalId?: true
   proposalVersion?: true
   eligibleVoterId?: true
@@ -196,6 +201,7 @@ export type VoteMaxAggregateInputType = {
 
 export type VoteCountAggregateInputType = {
   id?: true
+  zevId?: true
   proposalId?: true
   proposalVersion?: true
   eligibleVoterId?: true
@@ -312,6 +318,7 @@ export type VoteGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type VoteGroupByOutputType = {
   id: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -364,6 +371,7 @@ export type VoteWhereInput = {
   OR?: Prisma.VoteWhereInput[]
   NOT?: Prisma.VoteWhereInput | Prisma.VoteWhereInput[]
   id?: Prisma.StringFilter<"Vote"> | string
+  zevId?: Prisma.StringFilter<"Vote"> | string
   proposalId?: Prisma.StringFilter<"Vote"> | string
   proposalVersion?: Prisma.IntFilter<"Vote"> | number
   eligibleVoterId?: Prisma.StringFilter<"Vote"> | string
@@ -389,6 +397,7 @@ export type VoteWhereInput = {
   correctionOfId?: Prisma.StringNullableFilter<"Vote"> | string | null
   correctionReason?: Prisma.StringNullableFilter<"Vote"> | string | null
   correctionAuthority?: Prisma.StringNullableFilter<"Vote"> | string | null
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   proposal?: Prisma.XOR<Prisma.ProposalScalarRelationFilter, Prisma.ProposalWhereInput>
   eligibleVoter?: Prisma.XOR<Prisma.EligibleVoterScalarRelationFilter, Prisma.EligibleVoterWhereInput>
   voter?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -400,6 +409,7 @@ export type VoteWhereInput = {
 
 export type VoteOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   proposalId?: Prisma.SortOrder
   proposalVersion?: Prisma.SortOrder
   eligibleVoterId?: Prisma.SortOrder
@@ -425,6 +435,7 @@ export type VoteOrderByWithRelationInput = {
   correctionOfId?: Prisma.SortOrderInput | Prisma.SortOrder
   correctionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   correctionAuthority?: Prisma.SortOrderInput | Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   proposal?: Prisma.ProposalOrderByWithRelationInput
   eligibleVoter?: Prisma.EligibleVoterOrderByWithRelationInput
   voter?: Prisma.PartyOrderByWithRelationInput
@@ -442,6 +453,7 @@ export type VoteWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.VoteWhereInput | Prisma.VoteWhereInput[]
   OR?: Prisma.VoteWhereInput[]
   NOT?: Prisma.VoteWhereInput | Prisma.VoteWhereInput[]
+  zevId?: Prisma.StringFilter<"Vote"> | string
   proposalId?: Prisma.StringFilter<"Vote"> | string
   proposalVersion?: Prisma.IntFilter<"Vote"> | number
   eligibleVoterId?: Prisma.StringFilter<"Vote"> | string
@@ -465,6 +477,7 @@ export type VoteWhereUniqueInput = Prisma.AtLeast<{
   invalidReason?: Prisma.StringNullableFilter<"Vote"> | string | null
   correctionReason?: Prisma.StringNullableFilter<"Vote"> | string | null
   correctionAuthority?: Prisma.StringNullableFilter<"Vote"> | string | null
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   proposal?: Prisma.XOR<Prisma.ProposalScalarRelationFilter, Prisma.ProposalWhereInput>
   eligibleVoter?: Prisma.XOR<Prisma.EligibleVoterScalarRelationFilter, Prisma.EligibleVoterWhereInput>
   voter?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -476,6 +489,7 @@ export type VoteWhereUniqueInput = Prisma.AtLeast<{
 
 export type VoteOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   proposalId?: Prisma.SortOrder
   proposalVersion?: Prisma.SortOrder
   eligibleVoterId?: Prisma.SortOrder
@@ -513,6 +527,7 @@ export type VoteScalarWhereWithAggregatesInput = {
   OR?: Prisma.VoteScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VoteScalarWhereWithAggregatesInput | Prisma.VoteScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Vote"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Vote"> | string
   proposalId?: Prisma.StringWithAggregatesFilter<"Vote"> | string
   proposalVersion?: Prisma.IntWithAggregatesFilter<"Vote"> | number
   eligibleVoterId?: Prisma.StringWithAggregatesFilter<"Vote"> | string
@@ -561,6 +576,7 @@ export type VoteCreateInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
@@ -572,6 +588,7 @@ export type VoteCreateInput = {
 
 export type VoteUncheckedCreateInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -621,6 +638,7 @@ export type VoteUpdateInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
@@ -632,6 +650,7 @@ export type VoteUpdateInput = {
 
 export type VoteUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -662,6 +681,7 @@ export type VoteUncheckedUpdateInput = {
 
 export type VoteCreateManyInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -714,6 +734,7 @@ export type VoteUpdateManyMutationInput = {
 
 export type VoteUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -764,6 +785,7 @@ export type VoteProposalIdEligibleVoterIdCorrectionOfIdCompoundUniqueInput = {
 
 export type VoteCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   proposalId?: Prisma.SortOrder
   proposalVersion?: Prisma.SortOrder
   eligibleVoterId?: Prisma.SortOrder
@@ -798,6 +820,7 @@ export type VoteAvgOrderByAggregateInput = {
 
 export type VoteMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   proposalId?: Prisma.SortOrder
   proposalVersion?: Prisma.SortOrder
   eligibleVoterId?: Prisma.SortOrder
@@ -827,6 +850,7 @@ export type VoteMaxOrderByAggregateInput = {
 
 export type VoteMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   proposalId?: Prisma.SortOrder
   proposalVersion?: Prisma.SortOrder
   eligibleVoterId?: Prisma.SortOrder
@@ -940,6 +964,48 @@ export type VoteUncheckedUpdateManyWithoutRepresentedNestedInput = {
   connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
   update?: Prisma.VoteUpdateWithWhereUniqueWithoutRepresentedInput | Prisma.VoteUpdateWithWhereUniqueWithoutRepresentedInput[]
   updateMany?: Prisma.VoteUpdateManyWithWhereWithoutRepresentedInput | Prisma.VoteUpdateManyWithWhereWithoutRepresentedInput[]
+  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
+}
+
+export type VoteCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutZevInput, Prisma.VoteUncheckedCreateWithoutZevInput> | Prisma.VoteCreateWithoutZevInput[] | Prisma.VoteUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutZevInput | Prisma.VoteCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.VoteCreateManyZevInputEnvelope
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+}
+
+export type VoteUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutZevInput, Prisma.VoteUncheckedCreateWithoutZevInput> | Prisma.VoteCreateWithoutZevInput[] | Prisma.VoteUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutZevInput | Prisma.VoteCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.VoteCreateManyZevInputEnvelope
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+}
+
+export type VoteUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutZevInput, Prisma.VoteUncheckedCreateWithoutZevInput> | Prisma.VoteCreateWithoutZevInput[] | Prisma.VoteUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutZevInput | Prisma.VoteCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutZevInput | Prisma.VoteUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.VoteCreateManyZevInputEnvelope
+  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  update?: Prisma.VoteUpdateWithWhereUniqueWithoutZevInput | Prisma.VoteUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutZevInput | Prisma.VoteUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
+}
+
+export type VoteUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutZevInput, Prisma.VoteUncheckedCreateWithoutZevInput> | Prisma.VoteCreateWithoutZevInput[] | Prisma.VoteUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutZevInput | Prisma.VoteCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutZevInput | Prisma.VoteUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.VoteCreateManyZevInputEnvelope
+  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  update?: Prisma.VoteUpdateWithWhereUniqueWithoutZevInput | Prisma.VoteUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutZevInput | Prisma.VoteUpdateManyWithWhereWithoutZevInput[]
   deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
 }
 
@@ -1136,6 +1202,7 @@ export type VoteCreateWithoutVoterInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   represented?: Prisma.PartyCreateNestedOneWithoutVotesRepresentedInput
@@ -1146,6 +1213,7 @@ export type VoteCreateWithoutVoterInput = {
 
 export type VoteUncheckedCreateWithoutVoterInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1204,6 +1272,7 @@ export type VoteCreateWithoutRepresentedInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
@@ -1214,6 +1283,7 @@ export type VoteCreateWithoutRepresentedInput = {
 
 export type VoteUncheckedCreateWithoutRepresentedInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1272,6 +1342,7 @@ export type VoteScalarWhereInput = {
   OR?: Prisma.VoteScalarWhereInput[]
   NOT?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
   id?: Prisma.StringFilter<"Vote"> | string
+  zevId?: Prisma.StringFilter<"Vote"> | string
   proposalId?: Prisma.StringFilter<"Vote"> | string
   proposalVersion?: Prisma.IntFilter<"Vote"> | number
   eligibleVoterId?: Prisma.StringFilter<"Vote"> | string
@@ -1315,6 +1386,92 @@ export type VoteUpdateManyWithWhereWithoutRepresentedInput = {
   data: Prisma.XOR<Prisma.VoteUpdateManyMutationInput, Prisma.VoteUncheckedUpdateManyWithoutRepresentedInput>
 }
 
+export type VoteCreateWithoutZevInput = {
+  id?: string
+  proposalVersion: number
+  proxyRecordId?: string | null
+  choice: $Enums.VoteChoice
+  channel: $Enums.VoteChannel
+  weight: runtime.Decimal | runtime.DecimalJsLike | number | string
+  countsForQuorum?: boolean
+  proposalHash: string
+  acknowledgementText: string
+  ipHash?: string | null
+  userAgent?: string | null
+  issuedAt?: Date | string | null
+  openedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  submittedAt?: Date | string
+  deliveryChannel?: string | null
+  invalid?: boolean
+  invalidReason?: string | null
+  correctionReason?: string | null
+  correctionAuthority?: string | null
+  proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
+  eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
+  voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
+  represented?: Prisma.PartyCreateNestedOneWithoutVotesRepresentedInput
+  token?: Prisma.ApprovalTokenCreateNestedOneWithoutVoteInput
+  correctionOf?: Prisma.VoteCreateNestedOneWithoutCorrectedByInput
+  correctedBy?: Prisma.VoteCreateNestedOneWithoutCorrectionOfInput
+}
+
+export type VoteUncheckedCreateWithoutZevInput = {
+  id?: string
+  proposalId: string
+  proposalVersion: number
+  eligibleVoterId: string
+  voterId: string
+  representedId?: string | null
+  proxyRecordId?: string | null
+  choice: $Enums.VoteChoice
+  channel: $Enums.VoteChannel
+  weight: runtime.Decimal | runtime.DecimalJsLike | number | string
+  countsForQuorum?: boolean
+  tokenId?: string | null
+  proposalHash: string
+  acknowledgementText: string
+  ipHash?: string | null
+  userAgent?: string | null
+  issuedAt?: Date | string | null
+  openedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  submittedAt?: Date | string
+  deliveryChannel?: string | null
+  invalid?: boolean
+  invalidReason?: string | null
+  correctionOfId?: string | null
+  correctionReason?: string | null
+  correctionAuthority?: string | null
+  correctedBy?: Prisma.VoteUncheckedCreateNestedOneWithoutCorrectionOfInput
+}
+
+export type VoteCreateOrConnectWithoutZevInput = {
+  where: Prisma.VoteWhereUniqueInput
+  create: Prisma.XOR<Prisma.VoteCreateWithoutZevInput, Prisma.VoteUncheckedCreateWithoutZevInput>
+}
+
+export type VoteCreateManyZevInputEnvelope = {
+  data: Prisma.VoteCreateManyZevInput | Prisma.VoteCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type VoteUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.VoteWhereUniqueInput
+  update: Prisma.XOR<Prisma.VoteUpdateWithoutZevInput, Prisma.VoteUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.VoteCreateWithoutZevInput, Prisma.VoteUncheckedCreateWithoutZevInput>
+}
+
+export type VoteUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.VoteWhereUniqueInput
+  data: Prisma.XOR<Prisma.VoteUpdateWithoutZevInput, Prisma.VoteUncheckedUpdateWithoutZevInput>
+}
+
+export type VoteUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.VoteScalarWhereInput
+  data: Prisma.XOR<Prisma.VoteUpdateManyMutationInput, Prisma.VoteUncheckedUpdateManyWithoutZevInput>
+}
+
 export type VoteCreateWithoutProposalInput = {
   id?: string
   proposalVersion: number
@@ -1336,6 +1493,7 @@ export type VoteCreateWithoutProposalInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
   represented?: Prisma.PartyCreateNestedOneWithoutVotesRepresentedInput
@@ -1346,6 +1504,7 @@ export type VoteCreateWithoutProposalInput = {
 
 export type VoteUncheckedCreateWithoutProposalInput = {
   id?: string
+  zevId: string
   proposalVersion: number
   eligibleVoterId: string
   voterId: string
@@ -1420,6 +1579,7 @@ export type VoteCreateWithoutEligibleVoterInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
   represented?: Prisma.PartyCreateNestedOneWithoutVotesRepresentedInput
@@ -1430,6 +1590,7 @@ export type VoteCreateWithoutEligibleVoterInput = {
 
 export type VoteUncheckedCreateWithoutEligibleVoterInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   voterId: string
@@ -1504,6 +1665,7 @@ export type VoteCreateWithoutTokenInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
@@ -1514,6 +1676,7 @@ export type VoteCreateWithoutTokenInput = {
 
 export type VoteUncheckedCreateWithoutTokenInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1578,6 +1741,7 @@ export type VoteUpdateWithoutTokenInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
@@ -1588,6 +1752,7 @@ export type VoteUpdateWithoutTokenInput = {
 
 export type VoteUncheckedUpdateWithoutTokenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1636,6 +1801,7 @@ export type VoteCreateWithoutCorrectedByInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
@@ -1646,6 +1812,7 @@ export type VoteCreateWithoutCorrectedByInput = {
 
 export type VoteUncheckedCreateWithoutCorrectedByInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1699,6 +1866,7 @@ export type VoteCreateWithoutCorrectionOfInput = {
   invalidReason?: string | null
   correctionReason?: string | null
   correctionAuthority?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutVotesInput
   proposal: Prisma.ProposalCreateNestedOneWithoutVotesInput
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutVotesInput
   voter: Prisma.PartyCreateNestedOneWithoutVotesCastInput
@@ -1709,6 +1877,7 @@ export type VoteCreateWithoutCorrectionOfInput = {
 
 export type VoteUncheckedCreateWithoutCorrectionOfInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1773,6 +1942,7 @@ export type VoteUpdateWithoutCorrectedByInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
@@ -1783,6 +1953,7 @@ export type VoteUpdateWithoutCorrectedByInput = {
 
 export type VoteUncheckedUpdateWithoutCorrectedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1842,6 +2013,7 @@ export type VoteUpdateWithoutCorrectionOfInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
@@ -1852,6 +2024,7 @@ export type VoteUpdateWithoutCorrectionOfInput = {
 
 export type VoteUncheckedUpdateWithoutCorrectionOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1881,6 +2054,7 @@ export type VoteUncheckedUpdateWithoutCorrectionOfInput = {
 
 export type VoteCreateManyVoterInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1909,6 +2083,7 @@ export type VoteCreateManyVoterInput = {
 
 export type VoteCreateManyRepresentedInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   eligibleVoterId: string
@@ -1956,6 +2131,7 @@ export type VoteUpdateWithoutVoterInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   represented?: Prisma.PartyUpdateOneWithoutVotesRepresentedNestedInput
@@ -1966,6 +2142,7 @@ export type VoteUpdateWithoutVoterInput = {
 
 export type VoteUncheckedUpdateWithoutVoterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1995,6 +2172,7 @@ export type VoteUncheckedUpdateWithoutVoterInput = {
 
 export type VoteUncheckedUpdateManyWithoutVoterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2042,6 +2220,7 @@ export type VoteUpdateWithoutRepresentedInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
@@ -2052,6 +2231,7 @@ export type VoteUpdateWithoutRepresentedInput = {
 
 export type VoteUncheckedUpdateWithoutRepresentedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2081,6 +2261,7 @@ export type VoteUncheckedUpdateWithoutRepresentedInput = {
 
 export type VoteUncheckedUpdateManyWithoutRepresentedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2107,8 +2288,127 @@ export type VoteUncheckedUpdateManyWithoutRepresentedInput = {
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type VoteCreateManyZevInput = {
+  id?: string
+  proposalId: string
+  proposalVersion: number
+  eligibleVoterId: string
+  voterId: string
+  representedId?: string | null
+  proxyRecordId?: string | null
+  choice: $Enums.VoteChoice
+  channel: $Enums.VoteChannel
+  weight: runtime.Decimal | runtime.DecimalJsLike | number | string
+  countsForQuorum?: boolean
+  tokenId?: string | null
+  proposalHash: string
+  acknowledgementText: string
+  ipHash?: string | null
+  userAgent?: string | null
+  issuedAt?: Date | string | null
+  openedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  submittedAt?: Date | string
+  deliveryChannel?: string | null
+  invalid?: boolean
+  invalidReason?: string | null
+  correctionOfId?: string | null
+  correctionReason?: string | null
+  correctionAuthority?: string | null
+}
+
+export type VoteUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  choice?: Prisma.EnumVoteChoiceFieldUpdateOperationsInput | $Enums.VoteChoice
+  channel?: Prisma.EnumVoteChannelFieldUpdateOperationsInput | $Enums.VoteChannel
+  weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  countsForQuorum?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  proposalHash?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgementText?: Prisma.StringFieldUpdateOperationsInput | string
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  issuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveryChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invalid?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
+  eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
+  voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
+  represented?: Prisma.PartyUpdateOneWithoutVotesRepresentedNestedInput
+  token?: Prisma.ApprovalTokenUpdateOneWithoutVoteNestedInput
+  correctionOf?: Prisma.VoteUpdateOneWithoutCorrectedByNestedInput
+  correctedBy?: Prisma.VoteUpdateOneWithoutCorrectionOfNestedInput
+}
+
+export type VoteUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposalId?: Prisma.StringFieldUpdateOperationsInput | string
+  proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
+  voterId?: Prisma.StringFieldUpdateOperationsInput | string
+  representedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  choice?: Prisma.EnumVoteChoiceFieldUpdateOperationsInput | $Enums.VoteChoice
+  channel?: Prisma.EnumVoteChannelFieldUpdateOperationsInput | $Enums.VoteChannel
+  weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  countsForQuorum?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tokenId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposalHash?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgementText?: Prisma.StringFieldUpdateOperationsInput | string
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  issuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveryChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invalid?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctedBy?: Prisma.VoteUncheckedUpdateOneWithoutCorrectionOfNestedInput
+}
+
+export type VoteUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposalId?: Prisma.StringFieldUpdateOperationsInput | string
+  proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
+  voterId?: Prisma.StringFieldUpdateOperationsInput | string
+  representedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  choice?: Prisma.EnumVoteChoiceFieldUpdateOperationsInput | $Enums.VoteChoice
+  channel?: Prisma.EnumVoteChannelFieldUpdateOperationsInput | $Enums.VoteChannel
+  weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  countsForQuorum?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tokenId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposalHash?: Prisma.StringFieldUpdateOperationsInput | string
+  acknowledgementText?: Prisma.StringFieldUpdateOperationsInput | string
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  issuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveryChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invalid?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type VoteCreateManyProposalInput = {
   id?: string
+  zevId: string
   proposalVersion: number
   eligibleVoterId: string
   voterId: string
@@ -2156,6 +2456,7 @@ export type VoteUpdateWithoutProposalInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
   represented?: Prisma.PartyUpdateOneWithoutVotesRepresentedNestedInput
@@ -2166,6 +2467,7 @@ export type VoteUpdateWithoutProposalInput = {
 
 export type VoteUncheckedUpdateWithoutProposalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
   voterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2195,6 +2497,7 @@ export type VoteUncheckedUpdateWithoutProposalInput = {
 
 export type VoteUncheckedUpdateManyWithoutProposalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
   voterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2223,6 +2526,7 @@ export type VoteUncheckedUpdateManyWithoutProposalInput = {
 
 export type VoteCreateManyEligibleVoterInput = {
   id?: string
+  zevId: string
   proposalId: string
   proposalVersion: number
   voterId: string
@@ -2270,6 +2574,7 @@ export type VoteUpdateWithoutEligibleVoterInput = {
   invalidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correctionAuthority?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutVotesNestedInput
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutVotesNestedInput
   voter?: Prisma.PartyUpdateOneRequiredWithoutVotesCastNestedInput
   represented?: Prisma.PartyUpdateOneWithoutVotesRepresentedNestedInput
@@ -2280,6 +2585,7 @@ export type VoteUpdateWithoutEligibleVoterInput = {
 
 export type VoteUncheckedUpdateWithoutEligibleVoterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   voterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2309,6 +2615,7 @@ export type VoteUncheckedUpdateWithoutEligibleVoterInput = {
 
 export type VoteUncheckedUpdateManyWithoutEligibleVoterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalId?: Prisma.StringFieldUpdateOperationsInput | string
   proposalVersion?: Prisma.IntFieldUpdateOperationsInput | number
   voterId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2339,6 +2646,7 @@ export type VoteUncheckedUpdateManyWithoutEligibleVoterInput = {
 
 export type VoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   proposalId?: boolean
   proposalVersion?: boolean
   eligibleVoterId?: boolean
@@ -2364,6 +2672,7 @@ export type VoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   correctionOfId?: boolean
   correctionReason?: boolean
   correctionAuthority?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   voter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2375,6 +2684,7 @@ export type VoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 
 export type VoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   proposalId?: boolean
   proposalVersion?: boolean
   eligibleVoterId?: boolean
@@ -2400,6 +2710,7 @@ export type VoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   correctionOfId?: boolean
   correctionReason?: boolean
   correctionAuthority?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   voter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2410,6 +2721,7 @@ export type VoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 
 export type VoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   proposalId?: boolean
   proposalVersion?: boolean
   eligibleVoterId?: boolean
@@ -2435,6 +2747,7 @@ export type VoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   correctionOfId?: boolean
   correctionReason?: boolean
   correctionAuthority?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   voter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2445,6 +2758,7 @@ export type VoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 
 export type VoteSelectScalar = {
   id?: boolean
+  zevId?: boolean
   proposalId?: boolean
   proposalVersion?: boolean
   eligibleVoterId?: boolean
@@ -2472,8 +2786,9 @@ export type VoteSelectScalar = {
   correctionAuthority?: boolean
 }
 
-export type VoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "proposalId" | "proposalVersion" | "eligibleVoterId" | "voterId" | "representedId" | "proxyRecordId" | "choice" | "channel" | "weight" | "countsForQuorum" | "tokenId" | "proposalHash" | "acknowledgementText" | "ipHash" | "userAgent" | "issuedAt" | "openedAt" | "confirmedAt" | "submittedAt" | "deliveryChannel" | "invalid" | "invalidReason" | "correctionOfId" | "correctionReason" | "correctionAuthority", ExtArgs["result"]["vote"]>
+export type VoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "proposalId" | "proposalVersion" | "eligibleVoterId" | "voterId" | "representedId" | "proxyRecordId" | "choice" | "channel" | "weight" | "countsForQuorum" | "tokenId" | "proposalHash" | "acknowledgementText" | "ipHash" | "userAgent" | "issuedAt" | "openedAt" | "confirmedAt" | "submittedAt" | "deliveryChannel" | "invalid" | "invalidReason" | "correctionOfId" | "correctionReason" | "correctionAuthority", ExtArgs["result"]["vote"]>
 export type VoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   voter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2483,6 +2798,7 @@ export type VoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   correctedBy?: boolean | Prisma.Vote$correctedByArgs<ExtArgs>
 }
 export type VoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   voter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2491,6 +2807,7 @@ export type VoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   correctionOf?: boolean | Prisma.Vote$correctionOfArgs<ExtArgs>
 }
 export type VoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   voter?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -2502,6 +2819,7 @@ export type VoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $VotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Vote"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     proposal: Prisma.$ProposalPayload<ExtArgs>
     eligibleVoter: Prisma.$EligibleVoterPayload<ExtArgs>
     voter: Prisma.$PartyPayload<ExtArgs>
@@ -2512,6 +2830,7 @@ export type $VotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     proposalId: string
     proposalVersion: number
     eligibleVoterId: string
@@ -2931,6 +3250,7 @@ readonly fields: VoteFieldRefs;
  */
 export interface Prisma__VoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   proposal<T extends Prisma.ProposalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProposalDefaultArgs<ExtArgs>>): Prisma.Prisma__ProposalClient<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   eligibleVoter<T extends Prisma.EligibleVoterDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EligibleVoterDefaultArgs<ExtArgs>>): Prisma.Prisma__EligibleVoterClient<runtime.Types.Result.GetResult<Prisma.$EligibleVoterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   voter<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -2968,6 +3288,7 @@ export interface Prisma__VoteClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface VoteFieldRefs {
   readonly id: Prisma.FieldRef<"Vote", 'String'>
+  readonly zevId: Prisma.FieldRef<"Vote", 'String'>
   readonly proposalId: Prisma.FieldRef<"Vote", 'String'>
   readonly proposalVersion: Prisma.FieldRef<"Vote", 'Int'>
   readonly eligibleVoterId: Prisma.FieldRef<"Vote", 'String'>

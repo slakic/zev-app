@@ -145,7 +145,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
     );
   }
 
-  const result = p.ruleSnapshot ? serializeResult(await computeProposalResult(p.id)) : null;
+  const result = p.ruleSnapshot ? serializeResult(await computeProposalResult(p.zevId, p.id)) : null;
   const rule = p.ruleSnapshot as { ruleName?: string; quorumType?: string; quorumPercent?: string; majorityType?: string; majorityPercent?: string; weightMethod?: string } | null;
 
   return (

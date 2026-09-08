@@ -26,18 +26,21 @@ export type AggregateTransactionCategory = {
 
 export type TransactionCategoryMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   kind: string | null
 }
 
 export type TransactionCategoryMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   kind: string | null
 }
 
 export type TransactionCategoryCountAggregateOutputType = {
   id: number
+  zevId: number
   name: number
   kind: number
   _all: number
@@ -46,18 +49,21 @@ export type TransactionCategoryCountAggregateOutputType = {
 
 export type TransactionCategoryMinAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   kind?: true
 }
 
 export type TransactionCategoryMaxAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   kind?: true
 }
 
 export type TransactionCategoryCountAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   kind?: true
   _all?: true
@@ -137,6 +143,7 @@ export type TransactionCategoryGroupByArgs<ExtArgs extends runtime.Types.Extensi
 
 export type TransactionCategoryGroupByOutputType = {
   id: string
+  zevId: string
   name: string
   kind: string
   _count: TransactionCategoryCountAggregateOutputType | null
@@ -164,33 +171,41 @@ export type TransactionCategoryWhereInput = {
   OR?: Prisma.TransactionCategoryWhereInput[]
   NOT?: Prisma.TransactionCategoryWhereInput | Prisma.TransactionCategoryWhereInput[]
   id?: Prisma.StringFilter<"TransactionCategory"> | string
+  zevId?: Prisma.StringFilter<"TransactionCategory"> | string
   name?: Prisma.StringFilter<"TransactionCategory"> | string
   kind?: Prisma.StringFilter<"TransactionCategory"> | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   transactions?: Prisma.FinTransactionListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
 }
 
 export type TransactionCategoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   transactions?: Prisma.FinTransactionOrderByRelationAggregateInput
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
 }
 
 export type TransactionCategoryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  name?: string
+  zevId_name?: Prisma.TransactionCategoryZevIdNameCompoundUniqueInput
   AND?: Prisma.TransactionCategoryWhereInput | Prisma.TransactionCategoryWhereInput[]
   OR?: Prisma.TransactionCategoryWhereInput[]
   NOT?: Prisma.TransactionCategoryWhereInput | Prisma.TransactionCategoryWhereInput[]
+  zevId?: Prisma.StringFilter<"TransactionCategory"> | string
+  name?: Prisma.StringFilter<"TransactionCategory"> | string
   kind?: Prisma.StringFilter<"TransactionCategory"> | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   transactions?: Prisma.FinTransactionListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
-}, "id" | "name">
+}, "id" | "zevId_name">
 
 export type TransactionCategoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   _count?: Prisma.TransactionCategoryCountOrderByAggregateInput
@@ -203,6 +218,7 @@ export type TransactionCategoryScalarWhereWithAggregatesInput = {
   OR?: Prisma.TransactionCategoryScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TransactionCategoryScalarWhereWithAggregatesInput | Prisma.TransactionCategoryScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TransactionCategory"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"TransactionCategory"> | string
   name?: Prisma.StringWithAggregatesFilter<"TransactionCategory"> | string
   kind?: Prisma.StringWithAggregatesFilter<"TransactionCategory"> | string
 }
@@ -211,12 +227,14 @@ export type TransactionCategoryCreateInput = {
   id?: string
   name: string
   kind: string
+  zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateInput = {
   id?: string
+  zevId: string
   name: string
   kind: string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
@@ -227,12 +245,14 @@ export type TransactionCategoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
   transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
@@ -241,6 +261,7 @@ export type TransactionCategoryUncheckedUpdateInput = {
 
 export type TransactionCategoryCreateManyInput = {
   id?: string
+  zevId: string
   name: string
   kind: string
 }
@@ -253,24 +274,43 @@ export type TransactionCategoryUpdateManyMutationInput = {
 
 export type TransactionCategoryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
+export type TransactionCategoryListRelationFilter = {
+  every?: Prisma.TransactionCategoryWhereInput
+  some?: Prisma.TransactionCategoryWhereInput
+  none?: Prisma.TransactionCategoryWhereInput
+}
+
+export type TransactionCategoryOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type TransactionCategoryZevIdNameCompoundUniqueInput = {
+  zevId: string
+  name: string
+}
+
 export type TransactionCategoryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
 }
 
 export type TransactionCategoryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
 }
 
 export type TransactionCategoryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
 }
@@ -278,6 +318,48 @@ export type TransactionCategoryMinOrderByAggregateInput = {
 export type TransactionCategoryNullableScalarRelationFilter = {
   is?: Prisma.TransactionCategoryWhereInput | null
   isNot?: Prisma.TransactionCategoryWhereInput | null
+}
+
+export type TransactionCategoryCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutZevInput, Prisma.TransactionCategoryUncheckedCreateWithoutZevInput> | Prisma.TransactionCategoryCreateWithoutZevInput[] | Prisma.TransactionCategoryUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.TransactionCategoryCreateOrConnectWithoutZevInput | Prisma.TransactionCategoryCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.TransactionCategoryCreateManyZevInputEnvelope
+  connect?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+}
+
+export type TransactionCategoryUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutZevInput, Prisma.TransactionCategoryUncheckedCreateWithoutZevInput> | Prisma.TransactionCategoryCreateWithoutZevInput[] | Prisma.TransactionCategoryUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.TransactionCategoryCreateOrConnectWithoutZevInput | Prisma.TransactionCategoryCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.TransactionCategoryCreateManyZevInputEnvelope
+  connect?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+}
+
+export type TransactionCategoryUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutZevInput, Prisma.TransactionCategoryUncheckedCreateWithoutZevInput> | Prisma.TransactionCategoryCreateWithoutZevInput[] | Prisma.TransactionCategoryUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.TransactionCategoryCreateOrConnectWithoutZevInput | Prisma.TransactionCategoryCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.TransactionCategoryUpsertWithWhereUniqueWithoutZevInput | Prisma.TransactionCategoryUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.TransactionCategoryCreateManyZevInputEnvelope
+  set?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  disconnect?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  delete?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  connect?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  update?: Prisma.TransactionCategoryUpdateWithWhereUniqueWithoutZevInput | Prisma.TransactionCategoryUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.TransactionCategoryUpdateManyWithWhereWithoutZevInput | Prisma.TransactionCategoryUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.TransactionCategoryScalarWhereInput | Prisma.TransactionCategoryScalarWhereInput[]
+}
+
+export type TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutZevInput, Prisma.TransactionCategoryUncheckedCreateWithoutZevInput> | Prisma.TransactionCategoryCreateWithoutZevInput[] | Prisma.TransactionCategoryUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.TransactionCategoryCreateOrConnectWithoutZevInput | Prisma.TransactionCategoryCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.TransactionCategoryUpsertWithWhereUniqueWithoutZevInput | Prisma.TransactionCategoryUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.TransactionCategoryCreateManyZevInputEnvelope
+  set?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  disconnect?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  delete?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  connect?: Prisma.TransactionCategoryWhereUniqueInput | Prisma.TransactionCategoryWhereUniqueInput[]
+  update?: Prisma.TransactionCategoryUpdateWithWhereUniqueWithoutZevInput | Prisma.TransactionCategoryUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.TransactionCategoryUpdateManyWithWhereWithoutZevInput | Prisma.TransactionCategoryUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.TransactionCategoryScalarWhereInput | Prisma.TransactionCategoryScalarWhereInput[]
 }
 
 export type TransactionCategoryCreateNestedOneWithoutTransactionsInput = {
@@ -312,15 +394,69 @@ export type TransactionCategoryUpdateOneWithoutExpensesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TransactionCategoryUpdateToOneWithWhereWithoutExpensesInput, Prisma.TransactionCategoryUpdateWithoutExpensesInput>, Prisma.TransactionCategoryUncheckedUpdateWithoutExpensesInput>
 }
 
+export type TransactionCategoryCreateWithoutZevInput = {
+  id?: string
+  name: string
+  kind: string
+  transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
+}
+
+export type TransactionCategoryUncheckedCreateWithoutZevInput = {
+  id?: string
+  name: string
+  kind: string
+  transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCategoryInput
+}
+
+export type TransactionCategoryCreateOrConnectWithoutZevInput = {
+  where: Prisma.TransactionCategoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutZevInput, Prisma.TransactionCategoryUncheckedCreateWithoutZevInput>
+}
+
+export type TransactionCategoryCreateManyZevInputEnvelope = {
+  data: Prisma.TransactionCategoryCreateManyZevInput | Prisma.TransactionCategoryCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type TransactionCategoryUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.TransactionCategoryWhereUniqueInput
+  update: Prisma.XOR<Prisma.TransactionCategoryUpdateWithoutZevInput, Prisma.TransactionCategoryUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutZevInput, Prisma.TransactionCategoryUncheckedCreateWithoutZevInput>
+}
+
+export type TransactionCategoryUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.TransactionCategoryWhereUniqueInput
+  data: Prisma.XOR<Prisma.TransactionCategoryUpdateWithoutZevInput, Prisma.TransactionCategoryUncheckedUpdateWithoutZevInput>
+}
+
+export type TransactionCategoryUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.TransactionCategoryScalarWhereInput
+  data: Prisma.XOR<Prisma.TransactionCategoryUpdateManyMutationInput, Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevInput>
+}
+
+export type TransactionCategoryScalarWhereInput = {
+  AND?: Prisma.TransactionCategoryScalarWhereInput | Prisma.TransactionCategoryScalarWhereInput[]
+  OR?: Prisma.TransactionCategoryScalarWhereInput[]
+  NOT?: Prisma.TransactionCategoryScalarWhereInput | Prisma.TransactionCategoryScalarWhereInput[]
+  id?: Prisma.StringFilter<"TransactionCategory"> | string
+  zevId?: Prisma.StringFilter<"TransactionCategory"> | string
+  name?: Prisma.StringFilter<"TransactionCategory"> | string
+  kind?: Prisma.StringFilter<"TransactionCategory"> | string
+}
+
 export type TransactionCategoryCreateWithoutTransactionsInput = {
   id?: string
   name: string
   kind: string
+  zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateWithoutTransactionsInput = {
   id?: string
+  zevId: string
   name: string
   kind: string
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCategoryInput
@@ -346,11 +482,13 @@ export type TransactionCategoryUpdateWithoutTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateWithoutTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCategoryNestedInput
@@ -360,11 +498,13 @@ export type TransactionCategoryCreateWithoutExpensesInput = {
   id?: string
   name: string
   kind: string
+  zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateWithoutExpensesInput = {
   id?: string
+  zevId: string
   name: string
   kind: string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
@@ -390,14 +530,44 @@ export type TransactionCategoryUpdateWithoutExpensesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
   transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateWithoutExpensesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+export type TransactionCategoryCreateManyZevInput = {
+  id?: string
+  name: string
+  kind: string
+}
+
+export type TransactionCategoryUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
+  transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
+}
+
+export type TransactionCategoryUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
+  transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+export type TransactionCategoryUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -442,8 +612,10 @@ export type TransactionCategoryCountOutputTypeCountExpensesArgs<ExtArgs extends 
 
 export type TransactionCategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   kind?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   transactions?: boolean | Prisma.TransactionCategory$transactionsArgs<ExtArgs>
   expenses?: boolean | Prisma.TransactionCategory$expensesArgs<ExtArgs>
   _count?: boolean | Prisma.TransactionCategoryCountOutputTypeDefaultArgs<ExtArgs>
@@ -451,39 +623,51 @@ export type TransactionCategorySelect<ExtArgs extends runtime.Types.Extensions.I
 
 export type TransactionCategorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   kind?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transactionCategory"]>
 
 export type TransactionCategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   kind?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transactionCategory"]>
 
 export type TransactionCategorySelectScalar = {
   id?: boolean
+  zevId?: boolean
   name?: boolean
   kind?: boolean
 }
 
-export type TransactionCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "kind", ExtArgs["result"]["transactionCategory"]>
+export type TransactionCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "kind", ExtArgs["result"]["transactionCategory"]>
 export type TransactionCategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   transactions?: boolean | Prisma.TransactionCategory$transactionsArgs<ExtArgs>
   expenses?: boolean | Prisma.TransactionCategory$expensesArgs<ExtArgs>
   _count?: boolean | Prisma.TransactionCategoryCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type TransactionCategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type TransactionCategoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TransactionCategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type TransactionCategoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $TransactionCategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TransactionCategory"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     transactions: Prisma.$FinTransactionPayload<ExtArgs>[]
     expenses: Prisma.$ExpensePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     name: string
     kind: string
   }, ExtArgs["result"]["transactionCategory"]>
@@ -880,6 +1064,7 @@ readonly fields: TransactionCategoryFieldRefs;
  */
 export interface Prisma__TransactionCategoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   transactions<T extends Prisma.TransactionCategory$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TransactionCategory$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   expenses<T extends Prisma.TransactionCategory$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TransactionCategory$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -912,6 +1097,7 @@ export interface Prisma__TransactionCategoryClient<T, Null = never, ExtArgs exte
  */
 export interface TransactionCategoryFieldRefs {
   readonly id: Prisma.FieldRef<"TransactionCategory", 'String'>
+  readonly zevId: Prisma.FieldRef<"TransactionCategory", 'String'>
   readonly name: Prisma.FieldRef<"TransactionCategory", 'String'>
   readonly kind: Prisma.FieldRef<"TransactionCategory", 'String'>
 }
@@ -1168,6 +1354,10 @@ export type TransactionCategoryCreateManyAndReturnArgs<ExtArgs extends runtime.T
    */
   data: Prisma.TransactionCategoryCreateManyInput | Prisma.TransactionCategoryCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TransactionCategoryIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1238,6 +1428,10 @@ export type TransactionCategoryUpdateManyAndReturnArgs<ExtArgs extends runtime.T
    * Limit how many TransactionCategories to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TransactionCategoryIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

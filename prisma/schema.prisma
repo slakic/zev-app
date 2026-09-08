@@ -25,7 +25,12 @@ model User {
   id           String    @id @default(cuid())
   email        String    @unique
   passwordHash String
-  roles        Role[]
+  roles        Role[]    // TODO(multitenancy): superseded by Membership.role once the auth layer
+                          // is cut over (see docs/multitenancy-plan.md) — kept for now so existing
+                          // auth code keeps working unchanged; not yet read by anything new.
+  /// Platform-level super admin (creates tenants, unrelated to any single Zev). Not a Membership
+  /// row — see docs/multitenancy-plan.md §4.3.
+  isSuperAdmin Boolean   @default(false)
   active       Boolean   @default(true)
   deactivatedAt DateTime?
   passwordResetTokenHash String?   // sha256(token); cleared on use, overwritten by a new request
@@ -33,6 +38,7 @@ model User {
   party        Party?    @relation(fields: [partyId], references: [id])
   partyId      String?   @unique
   sessions     Session[]
+  memberships  Membership[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
@@ -41,6 +47,12 @@ model Session {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
+  /// Which ZEV this session is currently acting within. Null right after login until
+  /// resolved (see getAuthContext in session.ts): auto-picked when the user has exactly
+  /// one Membership, left null for a user with none (e.g. a super admin with no chosen
+  /// tenant yet). Nulled automatically if that Zev is ever deleted.
+  activeZev   Zev?     @relation(fields: [activeZevId], references: [id], onDelete: SetNull)
+  activeZevId String?
   expiresAt DateTime
   revokedAt DateTime?
   ip        String?
@@ -48,6 +60,7 @@ model Session {
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@index([activeZevId])
 }
 
 enum PartyKind {
@@ -58,6 +71,9 @@ enum PartyKind {
 /// A natural person or legal entity. Owners, occupants, proxies, officers all reference Party.
 model Party {
   id                    String     @id @default(cuid())
+  // A Party always belongs to exactly one Zev (confirmed decision, docs/multitenancy-plan.md §8.3).
+  zev                   Zev        @relation(fields: [zevId], references: [id])
+  zevId                 String
   kind                  PartyKind
   firstName             String?
   lastName              String?
@@ -103,6 +119,16 @@ model Party {
 // ZEV, buildings, units
 // ---------------------------------------------------------------------------
 
+/// Feature package assigned to a tenant (Zev). Fixed tiers, not granular per-feature
+/// toggles (confirmed decision, docs/multitenancy-plan.md §3) — each tier is a superset
+/// of the previous one. The mapping of tier -> enabled features lives in application code
+/// (not the DB), so adding a feature to an existing tier never needs a migration.
+enum ZevTier {
+  BASIC          // zgrade/jedinice/vlasnici, skupština i odluke, organi, dokumenti, održavanje
+  BASIC_FINANCE  // + fakturisanje, uplate, troškovi, planovi, finansijski izvještaji
+  FULL           // + elektronsko glasanje
+}
+
 model Zev {
   id                 String   @id @default(cuid())
   legalName          String
@@ -115,10 +141,106 @@ model Zev {
   foundingDate       DateTime?
   registrationDate   DateTime?
   note               String?
+  /// Feature package — see ZevTier. Existing (pre-multitenancy) tenant defaults to FULL so
+  /// nothing it already uses (finance + e-glasanje) becomes newly gated.
+  tier               ZevTier  @default(FULL)
+  /// Soft-disable a tenant without deleting its data (e.g. suspended account).
+  active             Boolean  @default(true)
   buildings          Building[]
   accounts           MoneyAccount[]
+  memberships        Membership[]
+  sessions           Session[]
+  // Back-relations for the 32 models that gained a zevId FK in the NOT NULL + FK step
+  // (docs/multitenancy-plan.md §6.3). Not actively queried from the Zev side today —
+  // required by Prisma for a two-sided relation, kept here rather than declared one-sided.
+  // 30 of the 32 kept that FK required; NotificationMessage and AuditEvent had it loosened
+  // back to optional in the Korak 5 addendum (2026-09-08) — see those models' own comments.
+  parties               Party[]
+  entrances             Entrance[]
+  units                 Unit[]
+  ownershipStakes       OwnershipStake[]
+  occupancies           Occupancy[]
+  proxies               Proxy[]
+  officeTerms           OfficeTerm[]
+  allocationGroups      AllocationGroup[]
+  commonAssets          CommonAsset[]
+  meetings              Meeting[]
+  votingRules           VotingRule[]
+  proposals             Proposal[]
+  votes                 Vote[]
+  transactionCategories TransactionCategory[]
+  finTransactions       FinTransaction[]
+  chargeItems           ChargeItem[]
+  invoiceBatches        InvoiceBatch[]
+  invoices              Invoice[]
+  bankImportBatches     BankImportBatch[]
+  payments              Payment[]
+  balanceCorrections    BalanceCorrection[]
+  suppliers             Supplier[]
+  expenses              Expense[]
+  annualPlans           AnnualPlan[]
+  planItems             PlanItem[]
+  projects              Project[]
+  maintenanceIssues     MaintenanceIssue[]
+  workOrders            WorkOrder[]
+  documents             Document[]
+  attachments           Attachment[]
+  notificationMessages  NotificationMessage[]
+  auditEvents           AuditEvent[]
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Multitenancy — see docs/multitenancy-plan.md for the full plan.
+//
+// Every pre-existing model that participates in tenant scoping now has a
+// real `zevId` column with a real `@relation` FK to Zev (matching
+// Membership/Building/MoneyAccount, which were wired this way from the
+// start). This landed in three steps:
+//   1. schema + data backfill: the column started as a *soft* `zevId
+//      String?` — a plain scalar, no FK, no NOT NULL — so the migration
+//      changed no runtime behavior (docs/multitenancy-plan.md §6.1).
+//   2. NOT NULL + real FK (§6.3): the column became required and
+//      FK-enforced. Crucially, the service layer did not yet set `zevId`
+//      explicitly on writes at that point (that was step 5, the big
+//      mechanical pass through every `src/server/services/*` function) — so
+//      each of these fields temporarily carried
+//      `@default(dbgenerated("default_zev_id()"))`, where `default_zev_id()`
+//      was a SQL function (defined in that step's migration) that resolved
+//      to the single pre-existing tenant. This kept every existing
+//      `.create()` call working unchanged while the column was enforced at
+//      the DB level. The default was a stopgap for a still-single-tenant
+//      app, not a real multi-tenant mechanism.
+//   3. Default removed (§6.4 end-of-Korak-5 addendum, 2026-09-08): once
+//      every write path set `zevId` explicitly from `actor.zevId`, the
+//      temporary default (and the `default_zev_id()` function itself) was
+//      dropped for 30 of the 32 models — a caller that now forgets to set
+//      `zevId` fails loudly (NOT NULL violation) instead of silently
+//      misattributing the row to tenant #1. `NotificationMessage` and
+//      `AuditEvent` were the exception: while removing the default, a real,
+//      previously-undiscovered gap surfaced (`audit()` never set `zevId` on
+//      any `AuditEvent` it created, for any caller, ever — see the fixed
+//      doc comment on `audit()` in src/server/audit.ts) alongside the
+//      already-known `queueNotification` gap (§6.4 Modul 6). Both models'
+//      `zevId` became genuinely optional instead, for the handful of events
+//      that legitimately have no single tenant (anonymous rate-limiting,
+//      revoked/expired/unknown token lookups, and the login/password-reset
+//      moments before a session's active ZEV is resolved) — see each
+//      model's own comment below.
+// ---------------------------------------------------------------------------
+
+model Membership {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  zev       Zev      @relation(fields: [zevId], references: [id])
+  zevId     String
+  role      Role     // PRESIDENT | ACCOUNTANT | OWNER — scoped to this Zev, not global
+  createdAt DateTime @default(now())
+
+  @@unique([userId, zevId, role])
+  @@index([zevId])
 }
 
 model Building {
@@ -141,6 +263,8 @@ model Building {
 /// Entrance or functional section of a building
 model Entrance {
   id         String   @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   building   Building @relation(fields: [buildingId], references: [id])
   buildingId String
   name       String
@@ -160,6 +284,8 @@ enum UnitType {
 
 model Unit {
   id                     String    @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   building               Building  @relation(fields: [buildingId], references: [id])
   buildingId             String
   entrance               Entrance? @relation(fields: [entranceId], references: [id])
@@ -195,6 +321,8 @@ model Unit {
 /// Effective-dated ownership. Co-ownership = several stakes on same unit whose shares sum to 100.
 model OwnershipStake {
   id           String    @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   unit         Unit      @relation(fields: [unitId], references: [id])
   unitId       String
   owner        Party     @relation(fields: [ownerId], references: [id])
@@ -218,6 +346,8 @@ enum OccupancyType {
 
 model Occupancy {
   id        String        @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   unit      Unit          @relation(fields: [unitId], references: [id])
   unitId    String
   party     Party         @relation(fields: [partyId], references: [id])
@@ -242,6 +372,8 @@ enum ProxyScope {
 /// Authorization of a proxy to vote for an owner. Effective-dated, revocable.
 model Proxy {
   id          String     @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   grantor     Party      @relation("ProxyGrantor", fields: [grantorId], references: [id])
   grantorId   String
   holder      Party      @relation("ProxyHolder", fields: [holderId], references: [id])
@@ -276,6 +408,8 @@ enum OfficeRole {
 /// the ZEV "predsjednik" tracked here is also predsjednik upravnog odbora).
 model OfficeTerm {
   id        String     @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   role      OfficeRole
   party     Party      @relation(fields: [partyId], references: [id])
   partyId   String
@@ -287,10 +421,14 @@ model OfficeTerm {
 
 model AllocationGroup {
   id        String                  @id @default(cuid())
-  name      String                  @unique
+  zev       Zev                     @relation(fields: [zevId], references: [id])
+  zevId     String
+  name      String
   note      String?
   members   AllocationGroupMember[]
   createdAt DateTime                @default(now())
+
+  @@unique([zevId, name])
 }
 
 model AllocationGroupMember {
@@ -312,6 +450,8 @@ enum CommonAssetKind {
 
 model CommonAsset {
   id            String          @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   building      Building?       @relation(fields: [buildingId], references: [id])
   buildingId    String?
   kind          CommonAssetKind
@@ -370,6 +510,8 @@ enum MeetingBody {
 
 model Meeting {
   id             String        @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   title          String
   type           MeetingType
   body           MeetingBody   @default(ASSEMBLY)
@@ -443,7 +585,9 @@ enum WeightMethod {
 /// Reusable, configurable voting rule presets
 model VotingRule {
   id            String       @id @default(cuid())
-  name          String       @unique
+  zev           Zev          @relation(fields: [zevId], references: [id])
+  zevId         String
+  name          String
   quorumType    QuorumType
   quorumPercent Decimal?     @db.Decimal(6, 3)
   majorityType  MajorityType
@@ -452,10 +596,14 @@ model VotingRule {
   note          String?
   proposals     Proposal[]
   createdAt     DateTime     @default(now())
+
+  @@unique([zevId, name])
 }
 
 model Proposal {
   id                String         @id @default(cuid())
+  zev               Zev            @relation(fields: [zevId], references: [id])
+  zevId             String
   meeting           Meeting        @relation(fields: [meetingId], references: [id])
   meetingId         String
   agendaItem        AgendaItem?    @relation(fields: [agendaItemId], references: [id])
@@ -491,7 +639,7 @@ model Proposal {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
-  @@unique([code, version])
+  @@unique([zevId, code, version])
 }
 
 model ProposalUnit {
@@ -571,6 +719,8 @@ enum VoteChannel {
 /// Corrections are separate rows referencing correctionOfId with a reason.
 model Vote {
   id                 String      @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   proposal           Proposal    @relation(fields: [proposalId], references: [id])
   proposalId         String
   proposalVersion    Int
@@ -634,11 +784,15 @@ model MoneyAccount {
 }
 
 model TransactionCategory {
-  id    String @id @default(cuid())
-  name  String @unique
+  id    String  @id @default(cuid())
+  zev   Zev     @relation(fields: [zevId], references: [id])
+  zevId String
+  name  String
   kind  String // INCOME | EXPENSE
   transactions FinTransaction[]
   expenses     Expense[]
+
+  @@unique([zevId, name])
 }
 
 enum TxType {
@@ -655,6 +809,8 @@ enum TxStatus {
 /// Operational cash movement on an account (non-double-entry).
 model FinTransaction {
   id             String    @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   account        MoneyAccount @relation(fields: [accountId], references: [id])
   accountId      String
   date           DateTime
@@ -714,6 +870,8 @@ enum RoundingMethod {
 
 model ChargeItem {
   id                String         @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   name              String
   description       String?
   scopeType         ScopeType      @default(ZEV)
@@ -775,6 +933,8 @@ enum BatchStatus {
 
 model InvoiceBatch {
   id          String      @id @default(cuid())
+  zev         Zev         @relation(fields: [zevId], references: [id])
+  zevId       String
   period      String      // "2026-08" or label for one-time
   description String?
   status      BatchStatus @default(DRAFT)
@@ -784,7 +944,7 @@ model InvoiceBatch {
   invoices    Invoice[]
   createdAt   DateTime    @default(now())
 
-  @@unique([period, status], name: "one_issued_batch_per_period")
+  @@unique([zevId, period, status], name: "one_issued_batch_per_period")
 }
 
 enum InvoiceStatus {
@@ -797,7 +957,9 @@ enum InvoiceStatus {
 
 model Invoice {
   id             String        @id @default(cuid())
-  number         String        @unique // "FAK-2026-000123"
+  zev            Zev           @relation(fields: [zevId], references: [id])
+  zevId          String
+  number         String        // "FAK-2026-000123"
   batch          InvoiceBatch? @relation(fields: [batchId], references: [id])
   batchId        String?
   unit           Unit          @relation(fields: [unitId], references: [id])
@@ -824,6 +986,7 @@ model Invoice {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
+  @@unique([zevId, number])
   @@index([debtorId])
   @@index([unitId])
 }
@@ -849,6 +1012,8 @@ enum PaymentStatus {
 
 model BankImportBatch {
   id          String    @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   filename    String
   mapping     Json      // column mapping used
   sourceType  String    @default("CSV") // CSV | PDF
@@ -860,6 +1025,8 @@ model BankImportBatch {
 
 model Payment {
   id            String        @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   account       MoneyAccount  @relation(fields: [accountId], references: [id])
   accountId     String
   date          DateTime
@@ -908,6 +1075,8 @@ model PaymentAllocation {
 /// Explicit audited owner-balance correction (e.g. authorized debt transfer)
 model BalanceCorrection {
   id          String   @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   party       Party    @relation(fields: [partyId], references: [id])
   partyId     String
   unitId      String?
@@ -924,6 +1093,8 @@ model BalanceCorrection {
 
 model Supplier {
   id        String    @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   name      String
   jib       String?
   address   String?
@@ -949,6 +1120,8 @@ enum ExpenseStatus {
 
 model Expense {
   id             String        @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   supplier       Supplier?     @relation(fields: [supplierId], references: [id])
   supplierId     String?
   invoiceNumber  String?
@@ -999,6 +1172,8 @@ enum PlanStatus {
 
 model AnnualPlan {
   id         String     @id @default(cuid())
+  zev        Zev        @relation(fields: [zevId], references: [id])
+  zevId      String
   year       Int
   kind       PlanKind
   version    Int        @default(1)
@@ -1011,7 +1186,7 @@ model AnnualPlan {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 
-  @@unique([year, kind, version])
+  @@unique([zevId, year, kind, version])
 }
 
 enum PlanItemType {
@@ -1027,6 +1202,8 @@ enum PlanItemType {
 
 model PlanItem {
   id            String       @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   plan          AnnualPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
   planId        String
   type          PlanItemType
@@ -1056,6 +1233,8 @@ model PlanItemUnit {
 
 model Project {
   id            String   @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   name          String
   description   String?
   status        String   @default("PLANNED") // PLANNED | ACTIVE | COMPLETED | CANCELLED
@@ -1093,6 +1272,8 @@ enum IssueUrgency {
 
 model MaintenanceIssue {
   id                 String       @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   title              String
   description        String
   reporter           Party        @relation("IssueReporter", fields: [reporterId], references: [id])
@@ -1164,9 +1345,11 @@ model ContractorOffer {
 
 model WorkOrder {
   id             String           @id @default(cuid())
+  zev            Zev              @relation(fields: [zevId], references: [id])
+  zevId          String
   issue          MaintenanceIssue @relation(fields: [issueId], references: [id])
   issueId        String
-  number         String           @unique
+  number         String
   supplier       Supplier         @relation(fields: [supplierId], references: [id])
   supplierId     String
   description    String
@@ -1177,6 +1360,8 @@ model WorkOrder {
   completedAt    DateTime?
   documentId     String?
   createdAt      DateTime         @default(now())
+
+  @@unique([zevId, number])
 }
 
 // ---------------------------------------------------------------------------
@@ -1214,6 +1399,8 @@ enum DocumentStatus {
 /// Generated PDF documents. FINAL documents are immutable; a change = new version row.
 model Document {
   id          String         @id @default(cuid())
+  zev         Zev            @relation(fields: [zevId], references: [id])
+  zevId       String
   type        DocumentType
   number      String
   title       String
@@ -1228,7 +1415,7 @@ model Document {
   finalizedAt DateTime?
   createdAt   DateTime       @default(now())
 
-  @@unique([type, number, version])
+  @@unique([zevId, type, number, version])
   @@index([sourceType, sourceId])
 }
 
@@ -1239,6 +1426,8 @@ model Document {
 /// "OwnershipStake"), mirroring Document.sourceType/sourceId; both null = general library item.
 model Attachment {
   id          String   @id @default(cuid())
+  zev   Zev    @relation(fields: [zevId], references: [id])
+  zevId String
   filename    String
   mime        String
   size        Int
@@ -1273,6 +1462,12 @@ enum NotifStatus {
 
 model NotificationMessage {
   id           String       @id @default(cuid())
+  // Nullable on purpose (Korak 5 addendum, 2026-09-08): a handful of notifications are
+  // genuinely account-level, not tied to any one tenant (e.g. a password-reset e-mail
+  // for a user who may hold memberships in several ZEVs or none) — see queueNotification
+  // in src/server/notifications/service.ts. Every other caller passes a real zevId.
+  zev   Zev?    @relation(fields: [zevId], references: [id])
+  zevId String?
   channel      NotifChannel
   recipient    Party?       @relation(fields: [recipientId], references: [id])
   recipientId  String?
@@ -1307,6 +1502,14 @@ model ViberSubscriber {
 /// Append-only audit trail. UPDATE/DELETE blocked by DB trigger.
 model AuditEvent {
   id         String   @id @default(cuid())
+  // Nullable on purpose (Korak 5 addendum, 2026-09-08): audit() derives zevId from the
+  // acting actor whenever one is available, but a few events genuinely predate/lack a
+  // resolved tenant — anonymous rate-limiting on an email that may not even exist,
+  // revoked/expired/unknown token lookups, and the login/password-reset moments before
+  // a session's active ZEV is resolved. Those get a real NULL here instead of being
+  // silently misattributed to whichever ZEV happens to be oldest in the database.
+  zev   Zev?    @relation(fields: [zevId], references: [id])
+  zevId String?
   actorId    String?  // User.id
   actorLabel String?  // denormalized display, or "system"
   action     String   // e.g. "vote.submit", "invoice.issue"

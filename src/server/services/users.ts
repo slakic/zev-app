@@ -3,7 +3,7 @@ import { hashPassword, verifyPassword } from "@/server/auth/password";
 import { generateToken, sha256 } from "@/server/auth/tokens";
 import { queueNotification } from "@/server/notifications/service";
 import { audit } from "@/server/audit";
-import { requireRole, type Actor } from "@/server/auth/guards";
+import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import type { Role } from "@/generated/prisma/client";
 
 const MAX_FAILED_WINDOW_MS = 15 * 60 * 1000;
@@ -60,6 +60,13 @@ export async function createUserForParty(
   input: { partyId: string; email: string; password: string; roles: Role[] }
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  // Confirmed invariant (docs/multitenancy-plan.md §8.3): a Party always belongs to
+  // exactly one ZEV. Party.zevId has been a required, backfilled column since Korak 3
+  // (no longer the soft/nullable field this check used to worry about) — scoping the
+  // lookup itself is enough; a mismatched or foreign party now surfaces as "not found"
+  // rather than a separate ForbiddenError branch.
+  await prisma.party.findUniqueOrThrow({ where: { id: input.partyId, zevId } });
   const user = await prisma.user.create({
     data: {
       email: input.email.toLowerCase(),
@@ -68,6 +75,12 @@ export async function createUserForParty(
       partyId: input.partyId,
     },
   });
+  if (input.roles.length > 0) {
+    await prisma.membership.createMany({
+      data: input.roles.map((role) => ({ userId: user.id, zevId, role })),
+      skipDuplicates: true,
+    });
+  }
   await audit(actor, {
     action: "user.create",
     targetType: "User",
@@ -125,6 +138,10 @@ export async function requestPasswordReset(email: string, appUrl: string, ipHash
     data: { passwordResetTokenHash: sha256(token), passwordResetExpiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS) },
   });
   await audit({ userId: user.id }, { action: "password_reset.requested", targetType: "User", targetId: user.id, ipHash });
+  // No zevId here on purpose: a password reset is account-level, not tied to any one
+  // ZEV, and this user may hold memberships in several (or none) — see queueNotification's
+  // own doc comment and docs/multitenancy-plan.md §6.4 Modul 6 for the open question this
+  // leaves (the row falls back to the temporary default_zev_id() DB default).
   await queueNotification({
     channel: "EMAIL",
     recipientId: user.partyId,
@@ -168,23 +185,52 @@ export async function resetPassword(token: string, newPassword: string): Promise
   return { ok: true };
 }
 
+// User is deliberately NOT tenant-scoped (docs/multitenancy-plan.md §4.3/§5) — one
+// account can hold Memberships in several ZEVs, or none, so there's no zevId column
+// on User itself to filter by. Every function below that acts on a specific userId
+// must instead confirm that user belongs to the *acting* president's own tenant —
+// via their linked Party, same invariant createUserForParty already relies on
+// (§8.3: a Party always belongs to exactly one ZEV) — before touching anything.
+// Getting this wrong would let a PRESIDENT of one ZEV manage a user who has no
+// relationship to it at all.
+async function assertUserInZev(zevId: string, userId: string) {
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, include: { party: true } });
+  if (!user.party || user.party.zevId !== zevId) {
+    throw new Error("Korisnik nije pronađen u ovom ZEV-u.");
+  }
+  return user;
+}
+
 // A President account is what lets anyone administer the ZEV at all — locking every
 // one of them out (by deactivating the last one, or stripping its last PRESIDENT role)
-// would be an unrecoverable dead end with no admin left to undo it. Guard both paths.
-async function assertNotLastActivePresident(userId: string, action: string) {
-  const others = await prisma.user.count({
-    where: { id: { not: userId }, active: true, roles: { has: "PRESIDENT" } },
+// would be an unrecoverable dead end with no admin left to undo it. Counted via
+// Membership (not the legacy User.roles) and scoped to zevId — the previous, global
+// (cross-tenant) count would have let ZEV B's roster of presidents mask ZEV A losing
+// its only one, an actual bug this Korak-5 pass fixes, not just a filter added for
+// consistency.
+async function assertNotLastActivePresident(zevId: string, userId: string, action: string) {
+  const others = await prisma.membership.count({
+    where: { zevId, role: "PRESIDENT", userId: { not: userId }, user: { active: true } },
   });
   if (others === 0) {
     throw new Error(`Ne može se ${action} — ovo je jedini aktivni nalog sa rolom Predsjednik.`);
   }
 }
 
+// NOTE (known limitation, flagged not fixed by Korak 5 — see docs/multitenancy-plan.md
+// §6.4 Modul 6): deactivateUser/activateUser toggle User.active, a GLOBAL flag. For a
+// user whose account holds Memberships in more than one ZEV, a PRESIDENT of ZEV A
+// deactivating them here also locks them out of ZEV B. Closing that gap means deciding
+// what "deactivate" should mean for a multi-ZEV account (per-membership vs. per-account)
+// — a product decision, not a query-scoping fix, so it's surfaced here rather than
+// resolved unilaterally.
+
 export async function deactivateUser(actor: Actor, userId: string, reason: string) {
   requireRole(actor, "PRESIDENT");
-  const before = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  const zevId = requireZev(actor);
+  const before = await assertUserInZev(zevId, userId);
   if (before.roles.includes("PRESIDENT")) {
-    await assertNotLastActivePresident(userId, "deaktivirati ovaj nalog");
+    await assertNotLastActivePresident(zevId, userId, "deaktivirati ovaj nalog");
   }
   const user = await prisma.user.update({
     where: { id: userId },
@@ -204,7 +250,8 @@ export async function deactivateUser(actor: Actor, userId: string, reason: strin
 
 export async function activateUser(actor: Actor, userId: string, reason: string) {
   requireRole(actor, "PRESIDENT");
-  const before = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  const zevId = requireZev(actor);
+  const before = await assertUserInZev(zevId, userId);
   const user = await prisma.user.update({
     where: { id: userId },
     data: { active: true, deactivatedAt: null },
@@ -223,11 +270,26 @@ export async function activateUser(actor: Actor, userId: string, reason: string)
 export async function updateUserRoles(actor: Actor, userId: string, roles: Role[]) {
   requireRole(actor, "PRESIDENT");
   if (roles.length === 0) throw new Error("Nalog mora imati bar jednu rolu.");
-  const before = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  const zevId = requireZev(actor);
+  const before = await assertUserInZev(zevId, userId);
   if (before.roles.includes("PRESIDENT") && !roles.includes("PRESIDENT")) {
-    await assertNotLastActivePresident(userId, "ukloniti rolu Predsjednik sa ovog naloga");
+    await assertNotLastActivePresident(zevId, userId, "ukloniti rolu Predsjednik sa ovog naloga");
   }
-  const user = await prisma.user.update({ where: { id: userId }, data: { roles } });
+  // Keep User.roles (still read directly by a couple of display spots, e.g. the role
+  // checkboxes on the owner detail page) and Membership (the actual source auth reads,
+  // see session.ts) in lockstep — reconcile Membership to exactly this role set for the
+  // actor's ZEV rather than assuming this is the user's only tenant.
+  const [user] = await prisma.$transaction([
+    prisma.user.update({ where: { id: userId }, data: { roles } }),
+    prisma.membership.deleteMany({ where: { userId, zevId, role: { notIn: roles } } }),
+    ...roles.map((role) =>
+      prisma.membership.upsert({
+        where: { userId_zevId_role: { userId, zevId, role } },
+        create: { userId, zevId, role },
+        update: {},
+      })
+    ),
+  ]);
   await audit(actor, {
     action: "user.update_roles",
     targetType: "User",

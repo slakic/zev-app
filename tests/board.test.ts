@@ -69,7 +69,7 @@ describe("Organi ZEV — upravni odbor (board) membership", () => {
     await addBoardMember(f.president, { partyId: f.ownerA.id, validFrom: new Date("2024-01-01") });
     await addBoardMember(f.president, { partyId: f.ownerB.id, validFrom: new Date("2024-01-01") });
 
-    const basis = await boardVotingBasis();
+    const basis = await boardVotingBasis(f.zev.id);
     const ownerIds = basis.map((b) => b.ownerId).sort();
     expect(ownerIds).toEqual([f.presidentParty.id, f.ownerA.id, f.ownerB.id].sort());
     // Ownership-share fields are irrelevant for board voting (PER_OWNER weight method).

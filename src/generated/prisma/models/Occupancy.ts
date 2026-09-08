@@ -36,6 +36,7 @@ export type OccupancySumAggregateOutputType = {
 
 export type OccupancyMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   unitId: string | null
   partyId: string | null
   type: $Enums.OccupancyType | null
@@ -49,6 +50,7 @@ export type OccupancyMinAggregateOutputType = {
 
 export type OccupancyMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   unitId: string | null
   partyId: string | null
   type: $Enums.OccupancyType | null
@@ -62,6 +64,7 @@ export type OccupancyMaxAggregateOutputType = {
 
 export type OccupancyCountAggregateOutputType = {
   id: number
+  zevId: number
   unitId: number
   partyId: number
   type: number
@@ -85,6 +88,7 @@ export type OccupancySumAggregateInputType = {
 
 export type OccupancyMinAggregateInputType = {
   id?: true
+  zevId?: true
   unitId?: true
   partyId?: true
   type?: true
@@ -98,6 +102,7 @@ export type OccupancyMinAggregateInputType = {
 
 export type OccupancyMaxAggregateInputType = {
   id?: true
+  zevId?: true
   unitId?: true
   partyId?: true
   type?: true
@@ -111,6 +116,7 @@ export type OccupancyMaxAggregateInputType = {
 
 export type OccupancyCountAggregateInputType = {
   id?: true
+  zevId?: true
   unitId?: true
   partyId?: true
   type?: true
@@ -211,6 +217,7 @@ export type OccupancyGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type OccupancyGroupByOutputType = {
   id: string
+  zevId: string
   unitId: string
   partyId: string
   type: $Enums.OccupancyType
@@ -247,6 +254,7 @@ export type OccupancyWhereInput = {
   OR?: Prisma.OccupancyWhereInput[]
   NOT?: Prisma.OccupancyWhereInput | Prisma.OccupancyWhereInput[]
   id?: Prisma.StringFilter<"Occupancy"> | string
+  zevId?: Prisma.StringFilter<"Occupancy"> | string
   unitId?: Prisma.StringFilter<"Occupancy"> | string
   partyId?: Prisma.StringFilter<"Occupancy"> | string
   type?: Prisma.EnumOccupancyTypeFilter<"Occupancy"> | $Enums.OccupancyType
@@ -256,12 +264,14 @@ export type OccupancyWhereInput = {
   note?: Prisma.StringNullableFilter<"Occupancy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Occupancy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Occupancy"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   unit?: Prisma.XOR<Prisma.UnitScalarRelationFilter, Prisma.UnitWhereInput>
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }
 
 export type OccupancyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -271,6 +281,7 @@ export type OccupancyOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   unit?: Prisma.UnitOrderByWithRelationInput
   party?: Prisma.PartyOrderByWithRelationInput
 }
@@ -280,6 +291,7 @@ export type OccupancyWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OccupancyWhereInput | Prisma.OccupancyWhereInput[]
   OR?: Prisma.OccupancyWhereInput[]
   NOT?: Prisma.OccupancyWhereInput | Prisma.OccupancyWhereInput[]
+  zevId?: Prisma.StringFilter<"Occupancy"> | string
   unitId?: Prisma.StringFilter<"Occupancy"> | string
   partyId?: Prisma.StringFilter<"Occupancy"> | string
   type?: Prisma.EnumOccupancyTypeFilter<"Occupancy"> | $Enums.OccupancyType
@@ -289,12 +301,14 @@ export type OccupancyWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"Occupancy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Occupancy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Occupancy"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   unit?: Prisma.XOR<Prisma.UnitScalarRelationFilter, Prisma.UnitWhereInput>
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
 }, "id">
 
 export type OccupancyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -316,6 +330,7 @@ export type OccupancyScalarWhereWithAggregatesInput = {
   OR?: Prisma.OccupancyScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OccupancyScalarWhereWithAggregatesInput | Prisma.OccupancyScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Occupancy"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Occupancy"> | string
   unitId?: Prisma.StringWithAggregatesFilter<"Occupancy"> | string
   partyId?: Prisma.StringWithAggregatesFilter<"Occupancy"> | string
   type?: Prisma.EnumOccupancyTypeWithAggregatesFilter<"Occupancy"> | $Enums.OccupancyType
@@ -336,12 +351,14 @@ export type OccupancyCreateInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOccupanciesInput
   unit: Prisma.UnitCreateNestedOneWithoutOccupanciesInput
   party: Prisma.PartyCreateNestedOneWithoutOccupanciesInput
 }
 
 export type OccupancyUncheckedCreateInput = {
   id?: string
+  zevId: string
   unitId: string
   partyId: string
   type: $Enums.OccupancyType
@@ -362,12 +379,14 @@ export type OccupancyUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOccupanciesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutOccupanciesNestedInput
   party?: Prisma.PartyUpdateOneRequiredWithoutOccupanciesNestedInput
 }
 
 export type OccupancyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
@@ -381,6 +400,7 @@ export type OccupancyUncheckedUpdateInput = {
 
 export type OccupancyCreateManyInput = {
   id?: string
+  zevId: string
   unitId: string
   partyId: string
   type: $Enums.OccupancyType
@@ -405,6 +425,7 @@ export type OccupancyUpdateManyMutationInput = {
 
 export type OccupancyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
@@ -428,6 +449,7 @@ export type OccupancyOrderByRelationAggregateInput = {
 
 export type OccupancyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -445,6 +467,7 @@ export type OccupancyAvgOrderByAggregateInput = {
 
 export type OccupancyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -458,6 +481,7 @@ export type OccupancyMaxOrderByAggregateInput = {
 
 export type OccupancyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   unitId?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -512,6 +536,48 @@ export type OccupancyUncheckedUpdateManyWithoutPartyNestedInput = {
   connect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
   update?: Prisma.OccupancyUpdateWithWhereUniqueWithoutPartyInput | Prisma.OccupancyUpdateWithWhereUniqueWithoutPartyInput[]
   updateMany?: Prisma.OccupancyUpdateManyWithWhereWithoutPartyInput | Prisma.OccupancyUpdateManyWithWhereWithoutPartyInput[]
+  deleteMany?: Prisma.OccupancyScalarWhereInput | Prisma.OccupancyScalarWhereInput[]
+}
+
+export type OccupancyCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.OccupancyCreateWithoutZevInput, Prisma.OccupancyUncheckedCreateWithoutZevInput> | Prisma.OccupancyCreateWithoutZevInput[] | Prisma.OccupancyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OccupancyCreateOrConnectWithoutZevInput | Prisma.OccupancyCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.OccupancyCreateManyZevInputEnvelope
+  connect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+}
+
+export type OccupancyUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.OccupancyCreateWithoutZevInput, Prisma.OccupancyUncheckedCreateWithoutZevInput> | Prisma.OccupancyCreateWithoutZevInput[] | Prisma.OccupancyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OccupancyCreateOrConnectWithoutZevInput | Prisma.OccupancyCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.OccupancyCreateManyZevInputEnvelope
+  connect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+}
+
+export type OccupancyUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.OccupancyCreateWithoutZevInput, Prisma.OccupancyUncheckedCreateWithoutZevInput> | Prisma.OccupancyCreateWithoutZevInput[] | Prisma.OccupancyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OccupancyCreateOrConnectWithoutZevInput | Prisma.OccupancyCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.OccupancyUpsertWithWhereUniqueWithoutZevInput | Prisma.OccupancyUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.OccupancyCreateManyZevInputEnvelope
+  set?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  disconnect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  delete?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  connect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  update?: Prisma.OccupancyUpdateWithWhereUniqueWithoutZevInput | Prisma.OccupancyUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.OccupancyUpdateManyWithWhereWithoutZevInput | Prisma.OccupancyUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.OccupancyScalarWhereInput | Prisma.OccupancyScalarWhereInput[]
+}
+
+export type OccupancyUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.OccupancyCreateWithoutZevInput, Prisma.OccupancyUncheckedCreateWithoutZevInput> | Prisma.OccupancyCreateWithoutZevInput[] | Prisma.OccupancyUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.OccupancyCreateOrConnectWithoutZevInput | Prisma.OccupancyCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.OccupancyUpsertWithWhereUniqueWithoutZevInput | Prisma.OccupancyUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.OccupancyCreateManyZevInputEnvelope
+  set?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  disconnect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  delete?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  connect?: Prisma.OccupancyWhereUniqueInput | Prisma.OccupancyWhereUniqueInput[]
+  update?: Prisma.OccupancyUpdateWithWhereUniqueWithoutZevInput | Prisma.OccupancyUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.OccupancyUpdateManyWithWhereWithoutZevInput | Prisma.OccupancyUpdateManyWithWhereWithoutZevInput[]
   deleteMany?: Prisma.OccupancyScalarWhereInput | Prisma.OccupancyScalarWhereInput[]
 }
 
@@ -570,11 +636,13 @@ export type OccupancyCreateWithoutPartyInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOccupanciesInput
   unit: Prisma.UnitCreateNestedOneWithoutOccupanciesInput
 }
 
 export type OccupancyUncheckedCreateWithoutPartyInput = {
   id?: string
+  zevId: string
   unitId: string
   type: $Enums.OccupancyType
   headcount?: number
@@ -616,6 +684,7 @@ export type OccupancyScalarWhereInput = {
   OR?: Prisma.OccupancyScalarWhereInput[]
   NOT?: Prisma.OccupancyScalarWhereInput | Prisma.OccupancyScalarWhereInput[]
   id?: Prisma.StringFilter<"Occupancy"> | string
+  zevId?: Prisma.StringFilter<"Occupancy"> | string
   unitId?: Prisma.StringFilter<"Occupancy"> | string
   partyId?: Prisma.StringFilter<"Occupancy"> | string
   type?: Prisma.EnumOccupancyTypeFilter<"Occupancy"> | $Enums.OccupancyType
@@ -627,6 +696,58 @@ export type OccupancyScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Occupancy"> | Date | string
 }
 
+export type OccupancyCreateWithoutZevInput = {
+  id?: string
+  type: $Enums.OccupancyType
+  headcount?: number
+  validFrom: Date | string
+  validTo?: Date | string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unit: Prisma.UnitCreateNestedOneWithoutOccupanciesInput
+  party: Prisma.PartyCreateNestedOneWithoutOccupanciesInput
+}
+
+export type OccupancyUncheckedCreateWithoutZevInput = {
+  id?: string
+  unitId: string
+  partyId: string
+  type: $Enums.OccupancyType
+  headcount?: number
+  validFrom: Date | string
+  validTo?: Date | string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OccupancyCreateOrConnectWithoutZevInput = {
+  where: Prisma.OccupancyWhereUniqueInput
+  create: Prisma.XOR<Prisma.OccupancyCreateWithoutZevInput, Prisma.OccupancyUncheckedCreateWithoutZevInput>
+}
+
+export type OccupancyCreateManyZevInputEnvelope = {
+  data: Prisma.OccupancyCreateManyZevInput | Prisma.OccupancyCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type OccupancyUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.OccupancyWhereUniqueInput
+  update: Prisma.XOR<Prisma.OccupancyUpdateWithoutZevInput, Prisma.OccupancyUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.OccupancyCreateWithoutZevInput, Prisma.OccupancyUncheckedCreateWithoutZevInput>
+}
+
+export type OccupancyUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.OccupancyWhereUniqueInput
+  data: Prisma.XOR<Prisma.OccupancyUpdateWithoutZevInput, Prisma.OccupancyUncheckedUpdateWithoutZevInput>
+}
+
+export type OccupancyUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.OccupancyScalarWhereInput
+  data: Prisma.XOR<Prisma.OccupancyUpdateManyMutationInput, Prisma.OccupancyUncheckedUpdateManyWithoutZevInput>
+}
+
 export type OccupancyCreateWithoutUnitInput = {
   id?: string
   type: $Enums.OccupancyType
@@ -636,11 +757,13 @@ export type OccupancyCreateWithoutUnitInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutOccupanciesInput
   party: Prisma.PartyCreateNestedOneWithoutOccupanciesInput
 }
 
 export type OccupancyUncheckedCreateWithoutUnitInput = {
   id?: string
+  zevId: string
   partyId: string
   type: $Enums.OccupancyType
   headcount?: number
@@ -679,6 +802,7 @@ export type OccupancyUpdateManyWithWhereWithoutUnitInput = {
 
 export type OccupancyCreateManyPartyInput = {
   id?: string
+  zevId: string
   unitId: string
   type: $Enums.OccupancyType
   headcount?: number
@@ -698,11 +822,13 @@ export type OccupancyUpdateWithoutPartyInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOccupanciesNestedInput
   unit?: Prisma.UnitUpdateOneRequiredWithoutOccupanciesNestedInput
 }
 
 export type OccupancyUncheckedUpdateWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
   headcount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -715,7 +841,60 @@ export type OccupancyUncheckedUpdateWithoutPartyInput = {
 
 export type OccupancyUncheckedUpdateManyWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
+  headcount?: Prisma.IntFieldUpdateOperationsInput | number
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OccupancyCreateManyZevInput = {
+  id?: string
+  unitId: string
+  partyId: string
+  type: $Enums.OccupancyType
+  headcount?: number
+  validFrom: Date | string
+  validTo?: Date | string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OccupancyUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
+  headcount?: Prisma.IntFieldUpdateOperationsInput | number
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unit?: Prisma.UnitUpdateOneRequiredWithoutOccupanciesNestedInput
+  party?: Prisma.PartyUpdateOneRequiredWithoutOccupanciesNestedInput
+}
+
+export type OccupancyUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  partyId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
+  headcount?: Prisma.IntFieldUpdateOperationsInput | number
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OccupancyUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  partyId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
   headcount?: Prisma.IntFieldUpdateOperationsInput | number
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -727,6 +906,7 @@ export type OccupancyUncheckedUpdateManyWithoutPartyInput = {
 
 export type OccupancyCreateManyUnitInput = {
   id?: string
+  zevId: string
   partyId: string
   type: $Enums.OccupancyType
   headcount?: number
@@ -746,11 +926,13 @@ export type OccupancyUpdateWithoutUnitInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutOccupanciesNestedInput
   party?: Prisma.PartyUpdateOneRequiredWithoutOccupanciesNestedInput
 }
 
 export type OccupancyUncheckedUpdateWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
   headcount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -763,6 +945,7 @@ export type OccupancyUncheckedUpdateWithoutUnitInput = {
 
 export type OccupancyUncheckedUpdateManyWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumOccupancyTypeFieldUpdateOperationsInput | $Enums.OccupancyType
   headcount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -777,6 +960,7 @@ export type OccupancyUncheckedUpdateManyWithoutUnitInput = {
 
 export type OccupancySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   partyId?: boolean
   type?: boolean
@@ -786,12 +970,14 @@ export type OccupancySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["occupancy"]>
 
 export type OccupancySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   partyId?: boolean
   type?: boolean
@@ -801,12 +987,14 @@ export type OccupancySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["occupancy"]>
 
 export type OccupancySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   partyId?: boolean
   type?: boolean
@@ -816,12 +1004,14 @@ export type OccupancySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["occupancy"]>
 
 export type OccupancySelectScalar = {
   id?: boolean
+  zevId?: boolean
   unitId?: boolean
   partyId?: boolean
   type?: boolean
@@ -833,16 +1023,19 @@ export type OccupancySelectScalar = {
   updatedAt?: boolean
 }
 
-export type OccupancyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "unitId" | "partyId" | "type" | "headcount" | "validFrom" | "validTo" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["occupancy"]>
+export type OccupancyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "unitId" | "partyId" | "type" | "headcount" | "validFrom" | "validTo" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["occupancy"]>
 export type OccupancyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type OccupancyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
 export type OccupancyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
@@ -850,11 +1043,13 @@ export type OccupancyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type $OccupancyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Occupancy"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     unit: Prisma.$UnitPayload<ExtArgs>
     party: Prisma.$PartyPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     unitId: string
     partyId: string
     type: $Enums.OccupancyType
@@ -1258,6 +1453,7 @@ readonly fields: OccupancyFieldRefs;
  */
 export interface Prisma__OccupancyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   unit<T extends Prisma.UnitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UnitDefaultArgs<ExtArgs>>): Prisma.Prisma__UnitClient<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   party<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1290,6 +1486,7 @@ export interface Prisma__OccupancyClient<T, Null = never, ExtArgs extends runtim
  */
 export interface OccupancyFieldRefs {
   readonly id: Prisma.FieldRef<"Occupancy", 'String'>
+  readonly zevId: Prisma.FieldRef<"Occupancy", 'String'>
   readonly unitId: Prisma.FieldRef<"Occupancy", 'String'>
   readonly partyId: Prisma.FieldRef<"Occupancy", 'String'>
   readonly type: Prisma.FieldRef<"Occupancy", 'OccupancyType'>

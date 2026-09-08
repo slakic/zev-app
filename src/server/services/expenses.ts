@@ -1,7 +1,7 @@
 // Suppliers and expenses, duplicate-invoice warning, payment of expenses.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, type Actor } from "@/server/auth/guards";
+import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec } from "@/lib/money";
 import type { Prisma } from "@/generated/prisma/client";
 
@@ -9,7 +9,7 @@ import type { Prisma } from "@/generated/prisma/client";
 
 export async function listSuppliers(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
-  return prisma.supplier.findMany({ where: { active: true }, orderBy: { name: "asc" } });
+  return prisma.supplier.findMany({ where: { zevId: requireZev(actor), active: true }, orderBy: { name: "asc" } });
 }
 
 export async function createSupplier(
@@ -17,7 +17,8 @@ export async function createSupplier(
   data: { name: string; jib?: string | null; address?: string | null; iban?: string | null; contactName?: string | null; email?: string | null; phone?: string | null; note?: string | null }
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
-  const s = await prisma.supplier.create({ data });
+  const zevId = requireZev(actor);
+  const s = await prisma.supplier.create({ data: { ...data, zevId } });
   await audit(actor, { action: "supplier.create", targetType: "Supplier", targetId: s.id, after: { name: s.name, jib: s.jib } });
   return s;
 }
@@ -33,6 +34,7 @@ export async function findDuplicateExpenses(
   if (!data.supplierId) return [];
   const candidates = await prisma.expense.findMany({
     where: {
+      zevId: requireZev(actor),
       supplierId: data.supplierId,
       status: { not: "CANCELLED" },
       OR: [
@@ -67,6 +69,7 @@ export async function createExpense(
   }
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
   if (dec(data.amount).lessThanOrEqualTo(0)) throw new Error("Iznos mora biti pozitivan.");
   if (!data.allowDuplicate) {
     const dups = await findDuplicateExpenses(actor, data);
@@ -74,9 +77,19 @@ export async function createExpense(
       throw new DuplicateExpenseWarning(dups.map((d) => ({ id: d.id, invoiceNumber: d.invoiceNumber, amount: d.amount.toString() })));
     }
   }
+  // Every optional FK on Expense points at another tenant-scoped model —
+  // validate each one that's actually supplied before writing.
+  if (data.supplierId) await prisma.supplier.findUniqueOrThrow({ where: { id: data.supplierId, zevId } });
+  if (data.categoryId) await prisma.transactionCategory.findUniqueOrThrow({ where: { id: data.categoryId, zevId } });
+  if (data.buildingId) await prisma.building.findUniqueOrThrow({ where: { id: data.buildingId, zevId } });
+  if (data.entranceId) await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
+  if (data.projectId) await prisma.project.findUniqueOrThrow({ where: { id: data.projectId, zevId } });
+  if (data.planItemId) await prisma.planItem.findUniqueOrThrow({ where: { id: data.planItemId, zevId } });
+  if (data.maintenanceIssueId) await prisma.maintenanceIssue.findUniqueOrThrow({ where: { id: data.maintenanceIssueId, zevId } });
+  if (data.workOrderId) await prisma.workOrder.findUniqueOrThrow({ where: { id: data.workOrderId, zevId } });
   const { allowDuplicate, ...rest } = data;
   void allowDuplicate;
-  const e = await prisma.expense.create({ data: { ...rest, createdById: actor.userId } });
+  const e = await prisma.expense.create({ data: { ...rest, zevId, createdById: actor.userId } });
   await audit(actor, {
     action: "expense.create", targetType: "Expense", targetId: e.id,
     after: { supplierId: e.supplierId, invoiceNumber: e.invoiceNumber, amount: e.amount.toString() },
@@ -93,11 +106,12 @@ export class DuplicateExpenseWarning extends Error {
 
 export async function updateExpense(actor: Actor, id: string, data: Prisma.ExpenseUncheckedUpdateInput, reason?: string) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
-  const before = await prisma.expense.findUniqueOrThrow({ where: { id } });
+  const zevId = requireZev(actor);
+  const before = await prisma.expense.findUniqueOrThrow({ where: { id, zevId } });
   if (before.status === "PAID" && !reason) {
     throw new Error("Izmjena plaćenog troška zahtijeva razlog.");
   }
-  const e = await prisma.expense.update({ where: { id }, data });
+  const e = await prisma.expense.update({ where: { id, zevId }, data });
   await audit(actor, {
     action: "expense.update", targetType: "Expense", targetId: id,
     before: { amount: before.amount.toString(), status: before.status },
@@ -113,15 +127,18 @@ export async function payExpense(
   data: { expenseId: string; accountId: string; date: Date; amount?: string }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   return prisma.$transaction(async (tx) => {
-    const exp = await tx.expense.findUniqueOrThrow({ where: { id: data.expenseId }, include: { supplier: true } });
+    const exp = await tx.expense.findUniqueOrThrow({ where: { id: data.expenseId, zevId }, include: { supplier: true } });
     if (exp.status === "CANCELLED") throw new Error("Storniran trošak se ne može platiti.");
+    await tx.moneyAccount.findUniqueOrThrow({ where: { id: data.accountId, zevId } });
     const amount = dec(data.amount ?? dec(exp.amount.toString()).minus(dec(exp.paidAmount.toString())).toFixed(2));
     if (amount.lessThanOrEqualTo(0)) throw new Error("Iznos plaćanja mora biti pozitivan.");
     const newPaid = dec(exp.paidAmount.toString()).plus(amount);
     if (newPaid.greaterThan(dec(exp.amount.toString()))) throw new Error("Plaćanje prelazi iznos troška.");
     const t = await tx.finTransaction.create({
       data: {
+        zevId,
         accountId: data.accountId,
         date: data.date,
         type: "EXPENSE",
@@ -140,7 +157,7 @@ export async function payExpense(
       },
     });
     const updated = await tx.expense.update({
-      where: { id: exp.id },
+      where: { id: exp.id, zevId },
       data: {
         paidAmount: newPaid.toFixed(2),
         status: newPaid.greaterThanOrEqualTo(dec(exp.amount.toString())) ? "PAID" : "PARTIALLY_PAID",
@@ -157,13 +174,14 @@ export async function payExpense(
 
 export async function cancelExpense(actor: Actor, id: string, reason: string) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storno zahtijeva razlog.");
-  const before = await prisma.expense.findUniqueOrThrow({ where: { id } });
+  const before = await prisma.expense.findUniqueOrThrow({ where: { id, zevId } });
   if (!dec(before.paidAmount.toString()).isZero()) {
     throw new Error("Trošak sa evidentiranim plaćanjem ne može se stornirati — prvo stornirajte transakciju.");
   }
   const e = await prisma.expense.update({
-    where: { id },
+    where: { id, zevId },
     data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: reason },
   });
   await audit(actor, { action: "expense.cancel", targetType: "Expense", targetId: id, before: { status: before.status }, reason });
@@ -174,6 +192,7 @@ export async function listExpenses(actor: Actor, filter?: { status?: string; sup
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   return prisma.expense.findMany({
     where: {
+      zevId: requireZev(actor),
       status: filter?.status as never,
       supplierId: filter?.supplierId,
       buildingId: filter?.buildingId,

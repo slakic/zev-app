@@ -8,6 +8,16 @@ import type { NotifChannel, Prisma } from "@/generated/prisma/client";
 
 export async function queueNotification(input: {
   channel: NotifChannel;
+  /**
+   * The tenant this notification belongs to. Pass it whenever the caller has one
+   * (almost every caller does — see docs/multitenancy-plan.md §6.4 Modul 6). Left
+   * optional only for account-level flows with no single tenant to attribute to —
+   * e.g. a password-reset e-mail, where the target user may hold memberships in
+   * several ZEVs or none. `NotificationMessage.zevId` is a genuinely nullable
+   * column (confirmed with the user, §6.4 end-of-Korak-5 addendum) for exactly
+   * this case — omitting it here stores a real `NULL`, not a fallback tenant.
+   */
+  zevId?: string;
   recipientId?: string | null;
   toAddress: string;
   template?: string | null;
@@ -18,6 +28,7 @@ export async function queueNotification(input: {
 }) {
   const msg = await prisma.notificationMessage.create({
     data: {
+      zevId: input.zevId ?? null,
       channel: input.channel,
       recipientId: input.recipientId ?? null,
       toAddress: input.toAddress,
@@ -112,13 +123,20 @@ export async function setViberOptIn(partyId: string, viberId: string, optIn: boo
   });
 }
 
-/** Broadcast to all opted-in Viber subscribers (e.g. meeting announcement). */
-export async function viberBroadcast(text: string, relatedType?: string, relatedId?: string) {
-  const subs = await prisma.viberSubscriber.findMany({ where: { optIn: true } });
+/**
+ * Broadcast to all opted-in Viber subscribers of one ZEV (e.g. meeting announcement).
+ * ViberSubscriber has no zevId column of its own — scoped indirectly through its Party.
+ * No caller exists yet (fixed for correctness/forward-compatibility, same as other
+ * not-yet-wired functions touched elsewhere in Korak 5) — a real caller must pass the
+ * zevId of the ZEV doing the broadcasting, never let it be inferred from subscriber data.
+ */
+export async function viberBroadcast(zevId: string, text: string, relatedType?: string, relatedId?: string) {
+  const subs = await prisma.viberSubscriber.findMany({ where: { optIn: true, party: { zevId } } });
   const out = [];
   for (const s of subs) {
     out.push(
       await queueNotification({
+        zevId,
         channel: "VIBER",
         recipientId: s.partyId,
         toAddress: s.viberId,

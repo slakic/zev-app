@@ -2,7 +2,7 @@
 // PaymentAllocation rows are append-only (DB trigger); reversals are negative rows.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireSelfOrRole, requireAnyUser, type Actor } from "@/server/auth/guards";
+import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, sumDecimals, type Decimal } from "@/lib/money";
 import type { Prisma } from "@/generated/prisma/client";
 import { extractPdfText, parseNovaBankaStatement, extractUnitNumberCandidates } from "@/server/services/bankStatementPdf";
@@ -24,10 +24,14 @@ export async function enterPayment(
   }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (dec(data.amount).lessThanOrEqualTo(0)) throw new Error("Iznos uplate mora biti pozitivan.");
+  await prisma.moneyAccount.findUniqueOrThrow({ where: { id: data.accountId, zevId } });
+  if (data.payerId) await prisma.party.findUniqueOrThrow({ where: { id: data.payerId, zevId } });
   const p = await prisma.$transaction(async (tx) => {
     const payment = await tx.payment.create({
       data: {
+        zevId,
         accountId: data.accountId,
         date: data.date,
         amount: data.amount,
@@ -41,6 +45,7 @@ export async function enterPayment(
     });
     await tx.finTransaction.create({
       data: {
+        zevId,
         accountId: data.accountId,
         date: data.date,
         type: "INCOME",
@@ -117,6 +122,8 @@ export async function importBankCsv(
   input: { accountId: string; filename: string; content: string; mapping?: Partial<CsvMapping> }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId, zevId } });
   const mapping: CsvMapping = { ...DEFAULT_CSV_MAPPING, ...input.mapping };
   const lines = input.content.split(/\r?\n/).filter((l) => l.trim().length > 0).slice(mapping.skipRows);
   const rows: { date: Date; amount: Decimal; payer: string; reference: string; purpose: string }[] = [];
@@ -142,6 +149,7 @@ export async function importBankCsv(
   const batch = await prisma.$transaction(async (tx) => {
     const b = await tx.bankImportBatch.create({
       data: {
+        zevId,
         filename: input.filename,
         mapping: mapping as unknown as Prisma.InputJsonValue,
         importedById: actor.userId,
@@ -150,6 +158,7 @@ export async function importBankCsv(
     for (const r of rows) {
       const payment = await tx.payment.create({
         data: {
+          zevId,
           accountId: input.accountId,
           date: r.date,
           amount: r.amount.toFixed(2),
@@ -163,6 +172,7 @@ export async function importBankCsv(
       });
       await tx.finTransaction.create({
         data: {
+          zevId,
           accountId: input.accountId,
           date: r.date,
           type: "INCOME",
@@ -232,18 +242,19 @@ export async function importPdfPreview(
   input: { accountId: string; filename: string; buffer: Buffer }
 ): Promise<PdfImportPreview> {
   requireRole(actor, "ACCOUNTANT");
-  const account = await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId } });
+  const zevId = requireZev(actor);
+  const account = await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId, zevId } });
   const text = await extractPdfText(input.buffer);
   const parsed = parseNovaBankaStatement(text);
 
-  const invoiceCandidates = await fetchOpenInvoiceCandidates();
+  const invoiceCandidates = await fetchOpenInvoiceCandidates(zevId);
   const invoiceOptions = invoiceCandidates.map(({ inv, open }) => ({
     id: inv.id,
     label: `${inv.number} — ${partyDisplayName(inv.debtor)} (${inv.unit.label}) — otvoreno ${open.toFixed(2)} KM`,
   }));
 
   const unpaidExpenses = await prisma.expense.findMany({
-    where: { status: { in: ["UNPAID", "PARTIALLY_PAID"] } },
+    where: { zevId, status: { in: ["UNPAID", "PARTIALLY_PAID"] } },
     include: { supplier: true },
   });
   const expenseOptions = unpaidExpenses.map((e) => {
@@ -344,13 +355,15 @@ export async function commitPdfImport(
   }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (input.rows.length === 0) throw new Error("Nema stavki za uvoz.");
+  await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId, zevId } });
 
   // Never partially commit a batch: if a chosen expense would end up overpaid, fail the
   // whole commit up front with a clear message so the reviewer can fix that one row.
   for (const r of input.rows) {
     if (r.direction === "OUT" && r.expenseId) {
-      const exp = await prisma.expense.findUniqueOrThrow({ where: { id: r.expenseId } });
+      const exp = await prisma.expense.findUniqueOrThrow({ where: { id: r.expenseId, zevId } });
       const open = dec(exp.amount.toString()).minus(dec(exp.paidAmount.toString()));
       if (dec(r.amount).greaterThan(open)) {
         throw new Error(
@@ -363,6 +376,7 @@ export async function commitPdfImport(
   const batch = await prisma.$transaction(async (tx) => {
     const b = await tx.bankImportBatch.create({
       data: {
+        zevId,
         filename: input.filename,
         mapping: { source: "pdf-nova-banka" } as unknown as Prisma.InputJsonValue,
         sourceType: "PDF",
@@ -384,13 +398,13 @@ export async function commitPdfImport(
         let categoryId: string | null = null;
         const categoryName = r.categoryName?.trim();
         if (categoryName) {
-          const cat = await tx.transactionCategory.upsert({
-            where: { name: categoryName }, create: { name: categoryName, kind: "EXPENSE" }, update: {},
-          });
+          const existingCat = await tx.transactionCategory.findFirst({ where: { zevId, name: categoryName } });
+          const cat = existingCat ?? await tx.transactionCategory.create({ data: { zevId, name: categoryName, kind: "EXPENSE" } });
           categoryId = cat.id;
         }
         const t = await tx.finTransaction.create({
           data: {
+            zevId,
             accountId: input.accountId,
             date,
             type: "EXPENSE",
@@ -404,10 +418,10 @@ export async function commitPdfImport(
           },
         });
         if (r.expenseId) {
-          const exp = await tx.expense.findUniqueOrThrow({ where: { id: r.expenseId } });
+          const exp = await tx.expense.findUniqueOrThrow({ where: { id: r.expenseId, zevId } });
           const newPaid = dec(exp.paidAmount.toString()).plus(amount);
           await tx.expense.update({
-            where: { id: exp.id },
+            where: { id: exp.id, zevId },
             data: {
               paidAmount: newPaid.toFixed(2),
               status: newPaid.greaterThanOrEqualTo(dec(exp.amount.toString())) ? "PAID" : "PARTIALLY_PAID",
@@ -425,6 +439,7 @@ export async function commitPdfImport(
 
       const payment = await tx.payment.create({
         data: {
+          zevId,
           accountId: input.accountId,
           date,
           amount: amount.toFixed(2),
@@ -438,6 +453,7 @@ export async function commitPdfImport(
       });
       await tx.finTransaction.create({
         data: {
+          zevId,
           accountId: input.accountId,
           date,
           type: "INCOME",
@@ -450,7 +466,7 @@ export async function commitPdfImport(
         },
       });
       if (r.invoiceId) {
-        const invoice = await tx.invoice.findUnique({ where: { id: r.invoiceId }, include: { allocations: true } });
+        const invoice = await tx.invoice.findUnique({ where: { id: r.invoiceId, zevId }, include: { allocations: true } });
         if (invoice && invoice.status !== "CANCELLED" && invoice.status !== "DRAFT") {
           const invoicePaid = sumDecimals(invoice.allocations.map((a) => dec(a.amount.toString())));
           const invoiceOpen = dec(invoice.total.toString()).minus(invoicePaid);
@@ -462,7 +478,7 @@ export async function commitPdfImport(
                 reason: "Automatski uparen pri uvozu PDF izvoda", createdById: actor.userId,
               },
             });
-            await refreshInvoiceStatus(tx, invoice.id);
+            await refreshInvoiceStatus(tx, zevId, invoice.id);
             await audit(actor, {
               action: "payment.allocate", targetType: "PaymentAllocation", targetId: alloc.id,
               after: { paymentId: payment.id, invoiceId: invoice.id, amount: allocAmount.toFixed(2), source: "pdf_import" },
@@ -470,7 +486,7 @@ export async function commitPdfImport(
           }
         }
       }
-      await refreshPaymentStatus(tx, payment.id);
+      await refreshPaymentStatus(tx, zevId, payment.id);
       importedIn++;
     }
 
@@ -504,10 +520,11 @@ type OpenInvoiceCandidate = {
 };
 
 /** All ISSUED invoices with a remaining open balance, for matching against payments (or,
- *  pre-commit, against parsed PDF rows that aren't Payments yet). */
-async function fetchOpenInvoiceCandidates(): Promise<OpenInvoiceCandidate[]> {
+ *  pre-commit, against parsed PDF rows that aren't Payments yet). Callers must pass the
+ *  actor's own zevId — never a caller-supplied one — see requireZev(). */
+async function fetchOpenInvoiceCandidates(zevId: string): Promise<OpenInvoiceCandidate[]> {
   const openInvoices = await prisma.invoice.findMany({
-    where: { status: "ISSUED" },
+    where: { zevId, status: "ISSUED" },
     include: { allocations: true, debtor: true, unit: true },
     orderBy: { number: "asc" },
   });
@@ -579,8 +596,9 @@ function scoreExpenseMatch(
  *  by what the payer actually wrote in "svrha uplate"). */
 export async function suggestMatches(actor: Actor, paymentId: string) {
   requireRole(actor, "ACCOUNTANT");
-  const payment = await prisma.payment.findUniqueOrThrow({ where: { id: paymentId }, include: { payer: true } });
-  const candidates = await fetchOpenInvoiceCandidates();
+  const zevId = requireZev(actor);
+  const payment = await prisma.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { payer: true } });
+  const candidates = await fetchOpenInvoiceCandidates(zevId);
   const signal = {
     reference: payment.reference,
     payerId: payment.payerId,
@@ -594,8 +612,9 @@ export async function suggestMatches(actor: Actor, paymentId: string) {
 
 // ---- Allocation (transactional) ----
 
-async function refreshPaymentStatus(tx: Prisma.TransactionClient, paymentId: string) {
-  const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId }, include: { allocations: true } });
+/** Callers must pass the actor's own zevId — never a caller-supplied one. */
+async function refreshPaymentStatus(tx: Prisma.TransactionClient, zevId: string, paymentId: string) {
+  const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { allocations: true } });
   const allocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
   const amount = dec(payment.amount.toString());
   const status = payment.reversedAt
@@ -605,16 +624,17 @@ async function refreshPaymentStatus(tx: Prisma.TransactionClient, paymentId: str
       : allocated.greaterThanOrEqualTo(amount)
         ? "APPLIED"
         : "PARTIALLY_APPLIED";
-  await tx.payment.update({ where: { id: paymentId }, data: { status } });
+  await tx.payment.update({ where: { id: paymentId, zevId }, data: { status } });
   return { allocated, amount };
 }
 
-async function refreshInvoiceStatus(tx: Prisma.TransactionClient, invoiceId: string) {
-  const inv = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId }, include: { allocations: true } });
+/** Callers must pass the actor's own zevId — never a caller-supplied one. */
+async function refreshInvoiceStatus(tx: Prisma.TransactionClient, zevId: string, invoiceId: string) {
+  const inv = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { allocations: true } });
   if (inv.status === "CANCELLED" || inv.status === "CORRECTED" || inv.status === "DRAFT") return;
   const paid = sumDecimals(inv.allocations.map((a) => dec(a.amount.toString())));
   const status = paid.greaterThanOrEqualTo(dec(inv.total.toString())) && !dec(inv.total.toString()).isZero() ? "PAID" : "ISSUED";
-  await tx.invoice.update({ where: { id: invoiceId }, data: { status } });
+  await tx.invoice.update({ where: { id: invoiceId, zevId }, data: { status } });
 }
 
 /**
@@ -627,12 +647,13 @@ export async function allocatePayment(
   data: { paymentId: string; invoiceId: string; amount: string; reason?: string }
 ) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const amount = dec(data.amount);
   if (amount.lessThanOrEqualTo(0)) throw new Error("Iznos alokacije mora biti pozitivan.");
   return prisma.$transaction(async (tx) => {
-    const payment = await tx.payment.findUniqueOrThrow({ where: { id: data.paymentId }, include: { allocations: true } });
+    const payment = await tx.payment.findUniqueOrThrow({ where: { id: data.paymentId, zevId }, include: { allocations: true } });
     if (payment.reversedAt) throw new Error("Stornirana uplata se ne može raspoređivati.");
-    const invoice = await tx.invoice.findUniqueOrThrow({ where: { id: data.invoiceId }, include: { allocations: true } });
+    const invoice = await tx.invoice.findUniqueOrThrow({ where: { id: data.invoiceId, zevId }, include: { allocations: true } });
     if (invoice.status === "CANCELLED" || invoice.status === "DRAFT") throw new Error("Faktura nije raspoloživa za uplate.");
 
     const paymentAllocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
@@ -655,8 +676,8 @@ export async function allocatePayment(
         createdById: actor.userId,
       },
     });
-    await refreshPaymentStatus(tx, data.paymentId);
-    await refreshInvoiceStatus(tx, data.invoiceId);
+    await refreshPaymentStatus(tx, zevId, data.paymentId);
+    await refreshInvoiceStatus(tx, zevId, data.invoiceId);
     await audit(actor, {
       action: "payment.allocate", targetType: "PaymentAllocation", targetId: alloc.id,
       after: { paymentId: data.paymentId, invoiceId: data.invoiceId, amount: amount.toFixed(2) },
@@ -665,12 +686,16 @@ export async function allocatePayment(
   });
 }
 
-/** Reverse an allocation: append-only negative allocation row. */
+/** Reverse an allocation: append-only negative allocation row.
+ *  PaymentAllocation has no zevId column of its own (see prisma/schema.prisma) — tenant
+ *  ownership is checked indirectly through the allocation's parent Payment. */
 export async function reverseAllocation(actor: Actor, allocationId: string, reason: string) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje alokacije zahtijeva razlog.");
   return prisma.$transaction(async (tx) => {
-    const orig = await tx.paymentAllocation.findUniqueOrThrow({ where: { id: allocationId } });
+    const orig = await tx.paymentAllocation.findUniqueOrThrow({ where: { id: allocationId }, include: { payment: true } });
+    if (orig.payment.zevId !== zevId) throw new Error("Alokacija nije pronađena.");
     if (dec(orig.amount.toString()).lessThanOrEqualTo(0)) throw new Error("Storno zapis se ne može stornirati.");
     const already = await tx.paymentAllocation.findUnique({ where: { reversalOfId: allocationId } });
     if (already) throw new Error("Alokacija je već stornirana.");
@@ -684,8 +709,8 @@ export async function reverseAllocation(actor: Actor, allocationId: string, reas
         createdById: actor.userId,
       },
     });
-    await refreshPaymentStatus(tx, orig.paymentId);
-    await refreshInvoiceStatus(tx, orig.invoiceId);
+    await refreshPaymentStatus(tx, zevId, orig.paymentId);
+    await refreshInvoiceStatus(tx, zevId, orig.invoiceId);
     await audit(actor, {
       action: "payment.allocation.reverse", targetType: "PaymentAllocation", targetId: rev.id,
       before: { originalAllocationId: allocationId, amount: orig.amount.toString() },
@@ -698,9 +723,10 @@ export async function reverseAllocation(actor: Actor, allocationId: string, reas
 /** Reverse a whole payment (e.g. bank recall). All its allocations are reversed too. */
 export async function reversePayment(actor: Actor, paymentId: string, reason: string) {
   requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje uplate zahtijeva razlog.");
   return prisma.$transaction(async (tx) => {
-    const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId }, include: { allocations: true, transaction: true } });
+    const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { allocations: true, transaction: true } });
     if (payment.reversedAt) throw new Error("Uplata je već stornirana.");
     // Reverse outstanding allocations.
     const net = new Map<string, Decimal>();
@@ -719,16 +745,16 @@ export async function reversePayment(actor: Actor, paymentId: string, reason: st
             createdById: actor.userId,
           },
         });
-        await refreshInvoiceStatus(tx, invoiceId);
+        await refreshInvoiceStatus(tx, zevId, invoiceId);
       }
     }
     const updated = await tx.payment.update({
-      where: { id: paymentId },
+      where: { id: paymentId, zevId },
       data: { reversedAt: new Date(), reversalReason: reason, status: "REVERSED" },
     });
     if (payment.transaction) {
       await tx.finTransaction.update({
-        where: { id: payment.transaction.id },
+        where: { id: payment.transaction.id, zevId },
         data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: `Storno uplate: ${reason}` },
       });
     }
@@ -743,10 +769,11 @@ export async function reversePayment(actor: Actor, paymentId: string, reason: st
 
 export async function listPayments(actor: Actor, filter?: { status?: string; payerId?: string }) {
   requireAnyUser(actor);
+  const zevId = requireZev(actor);
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   const payerId = isManagement ? filter?.payerId : actor.partyId ?? "__none__";
   return prisma.payment.findMany({
-    where: { status: filter?.status as never, payerId: payerId ?? undefined },
+    where: { zevId, status: filter?.status as never, payerId: payerId ?? undefined },
     include: { payer: true, account: true, allocations: { include: { invoice: true } } },
     orderBy: { date: "desc" },
   });
@@ -769,15 +796,16 @@ export type OwnerBalance = {
  */
 export async function ownerBalance(actor: Actor, partyId: string, asOf?: Date): Promise<OwnerBalance> {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const dateFilter = asOf ? { lte: asOf } : undefined;
   const invoices = await prisma.invoice.findMany({
-    where: { debtorId: partyId, status: { in: ["ISSUED", "PAID"] }, issueDate: dateFilter },
+    where: { zevId, debtorId: partyId, status: { in: ["ISSUED", "PAID"] }, issueDate: dateFilter },
     include: { allocations: asOf ? { where: { createdAt: { lte: asOf } } } : true },
   });
   const charged = sumDecimals(invoices.map((i) => dec(i.total.toString())));
   const paid = sumDecimals(invoices.flatMap((i) => i.allocations.map((a) => dec(a.amount.toString()))));
   const correctionsRows = await prisma.balanceCorrection.findMany({
-    where: { partyId, createdAt: dateFilter },
+    where: { zevId, partyId, createdAt: dateFilter },
   });
   const corrections = sumDecimals(correctionsRows.map((c) => dec(c.amount.toString())));
   const balance = charged.minus(paid).plus(corrections);
@@ -790,11 +818,67 @@ export async function ownerBalance(actor: Actor, partyId: string, asOf?: Date): 
   };
 }
 
+/**
+ * Owner balance as of a given day, split into the balance carried over from
+ * before that day ("prethodni saldo") and the charges/payments/corrections
+ * booked on that specific calendar day — for the "Dugovanja po vlasnicima"
+ * statement, where an accountant needs to see the running balance even on a
+ * day with no activity, not just that day's transactions.
+ *
+ * `asOf` must be an end-of-day Date for the chosen day (see `endOfDay` in
+ * `src/lib/i18n`) — the day boundary is derived from its own y/m/d, so pass
+ * the same value used elsewhere for that day, not an arbitrary timestamp.
+ */
+export async function ownerBalanceBreakdown(
+  actor: Actor,
+  partyId: string,
+  asOf: Date
+): Promise<{
+  partyId: string;
+  previousBalance: string;
+  chargedToday: string;
+  paidToday: string;
+  correctionsToday: string;
+  balance: string;
+}> {
+  requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const dayStart = new Date(asOf.getFullYear(), asOf.getMonth(), asOf.getDate(), 0, 0, 0, 0);
+
+  const prevInvoices = await prisma.invoice.findMany({
+    where: { zevId, debtorId: partyId, status: { in: ["ISSUED", "PAID"] }, issueDate: { lt: dayStart } },
+    include: { allocations: { where: { createdAt: { lt: dayStart } } } },
+  });
+  const prevCharged = sumDecimals(prevInvoices.map((i) => dec(i.total.toString())));
+  const prevPaid = sumDecimals(prevInvoices.flatMap((i) => i.allocations.map((a) => dec(a.amount.toString()))));
+  const prevCorrectionsRows = await prisma.balanceCorrection.findMany({
+    where: { zevId, partyId, createdAt: { lt: dayStart } },
+  });
+  const prevCorrections = sumDecimals(prevCorrectionsRows.map((c) => dec(c.amount.toString())));
+  const previousBalance = prevCharged.minus(prevPaid).plus(prevCorrections);
+
+  // Cumulative totals through the end of the chosen day (same logic as ownerBalance).
+  const full = await ownerBalance(actor, partyId, asOf);
+  const chargedToday = dec(full.charged).minus(prevCharged);
+  const paidToday = dec(full.paid).minus(prevPaid);
+  const correctionsToday = dec(full.corrections).minus(prevCorrections);
+
+  return {
+    partyId,
+    previousBalance: previousBalance.toFixed(2),
+    chargedToday: chargedToday.toFixed(2),
+    paidToday: paidToday.toFixed(2),
+    correctionsToday: correctionsToday.toFixed(2),
+    balance: full.balance,
+  };
+}
+
 /** Unapplied (advance) amount standing on a payer's payments. */
 export async function ownerAdvance(actor: Actor, partyId: string): Promise<string> {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const payments = await prisma.payment.findMany({
-    where: { payerId: partyId, reversedAt: null },
+    where: { zevId, payerId: partyId, reversedAt: null },
     include: { allocations: true },
   });
   let free = ZERO;
@@ -811,9 +895,11 @@ export async function addBalanceCorrection(
   data: { partyId: string; unitId?: string | null; amount: string; reason: string; authority?: string | null }
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
   if (!data.reason.trim()) throw new Error("Korekcija salda zahtijeva razlog.");
+  await prisma.party.findUniqueOrThrow({ where: { id: data.partyId, zevId } });
   const c = await prisma.balanceCorrection.create({
-    data: { ...data, createdById: actor.userId },
+    data: { ...data, zevId, createdById: actor.userId },
   });
   await audit(actor, {
     action: "balance.correction", targetType: "BalanceCorrection", targetId: c.id,

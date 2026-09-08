@@ -2,7 +2,7 @@
 // work orders, emergency path with mandatory justification.
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireAnyUser, ForbiddenError, type Actor } from "@/server/auth/guards";
+import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import type { IssueStatus, IssueUrgency } from "@/generated/prisma/client";
 
 const FLOW: IssueStatus[] = [
@@ -16,7 +16,7 @@ export async function listIssues(actor: Actor, filter?: { status?: IssueStatus; 
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   const reporterId = !isManagement || filter?.mineOnly ? actor.partyId ?? "__none__" : undefined;
   return prisma.maintenanceIssue.findMany({
-    where: { status: filter?.status, reporterId },
+    where: { zevId: requireZev(actor), status: filter?.status, reporterId },
     include: { reporter: true, unit: true, responsible: true, offers: true },
     orderBy: { createdAt: "desc" },
   });
@@ -25,7 +25,7 @@ export async function listIssues(actor: Actor, filter?: { status?: IssueStatus; 
 export async function getIssue(actor: Actor, id: string) {
   requireAnyUser(actor);
   const issue = await prisma.maintenanceIssue.findUniqueOrThrow({
-    where: { id },
+    where: { id, zevId: requireZev(actor) },
     include: {
       reporter: true,
       unit: { include: { building: true } },
@@ -61,10 +61,15 @@ export async function reportIssue(
   }
 ) {
   requireAnyUser(actor);
+  const zevId = requireZev(actor);
   if (!actor.partyId) throw new ForbiddenError("Nalog nije povezan sa licem.");
+  if (data.buildingId) await prisma.building.findUniqueOrThrow({ where: { id: data.buildingId, zevId } });
+  if (data.entranceId) await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
+  if (data.unitId) await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
   const issue = await prisma.maintenanceIssue.create({
     data: {
       ...data,
+      zevId,
       urgency: data.urgency ?? "NORMAL",
       safetyImpact: data.safetyImpact ?? false,
       reporterId: actor.partyId,
@@ -77,7 +82,11 @@ export async function reportIssue(
 
 export async function addIssueComment(actor: Actor, issueId: string, text: string) {
   // Reporter or management can comment.
-  const issue = await prisma.maintenanceIssue.findUniqueOrThrow({ where: { id: issueId } });
+  requireAnyUser(actor);
+  const zevId = requireZev(actor);
+  // IssueComment has no zevId column of its own — tenant checked indirectly
+  // through its issue.
+  const issue = await prisma.maintenanceIssue.findUniqueOrThrow({ where: { id: issueId, zevId } });
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   if (!isManagement && issue.reporterId !== actor.partyId) throw new ForbiddenError();
   return prisma.issueComment.create({ data: { issueId, authorId: actor.userId, text } });
@@ -90,8 +99,9 @@ export async function transitionIssue(
   opts?: { note?: string; responsibleId?: string; estimatedCost?: string; actualCost?: string; approvalProposalId?: string }
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   return prisma.$transaction(async (tx) => {
-    const issue = await tx.maintenanceIssue.findUniqueOrThrow({ where: { id: issueId } });
+    const issue = await tx.maintenanceIssue.findUniqueOrThrow({ where: { id: issueId, zevId } });
     const fromIdx = FLOW.indexOf(issue.status);
     const toIdx = FLOW.indexOf(to);
     if (to !== "REJECTED" && toIdx < 0) throw new Error("Nepoznat status.");
@@ -99,7 +109,7 @@ export async function transitionIssue(
       throw new Error("Vraćanje statusa unazad zahtijeva napomenu (evidentira se).");
     }
     const updated = await tx.maintenanceIssue.update({
-      where: { id: issueId },
+      where: { id: issueId, zevId },
       data: {
         status: to,
         responsibleId: opts?.responsibleId ?? undefined,
@@ -124,11 +134,12 @@ export async function markEmergency(
   data: { reason: string; authorizedBy: string; authority: string; estimatedCost?: string }
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   if (!data.reason.trim() || !data.authorizedBy.trim() || !data.authority.trim()) {
     throw new Error("Hitna intervencija zahtijeva razlog, ovlašćeno lice i osnov ovlašćenja.");
   }
   const issue = await prisma.maintenanceIssue.update({
-    where: { id: issueId },
+    where: { id: issueId, zevId },
     data: {
       isEmergency: true,
       urgency: "EMERGENCY",
@@ -151,8 +162,9 @@ export async function markEmergency(
 /** Ratification of an emergency intervention by a later assembly decision. */
 export async function ratifyEmergency(actor: Actor, issueId: string, ref: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const issue = await prisma.maintenanceIssue.update({
-    where: { id: issueId },
+    where: { id: issueId, zevId },
     data: { emergencyRatifiedRef: ref },
   });
   await audit(actor, { action: "issue.emergency.ratify", targetType: "MaintenanceIssue", targetId: issueId, after: { ref } });
@@ -166,6 +178,11 @@ export async function addOffer(
   data: { issueId: string; supplierId: string; amount: string; description?: string | null; validUntil?: Date | null }
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  // ContractorOffer has no zevId column of its own — validate its parents
+  // (issue and supplier) belong to this tenant before writing.
+  await prisma.maintenanceIssue.findUniqueOrThrow({ where: { id: data.issueId, zevId } });
+  await prisma.supplier.findUniqueOrThrow({ where: { id: data.supplierId, zevId } });
   const o = await prisma.contractorOffer.create({ data });
   await audit(actor, { action: "issue.offer.add", targetType: "ContractorOffer", targetId: o.id, after: { supplierId: data.supplierId, amount: data.amount } });
   return o;
@@ -173,12 +190,16 @@ export async function addOffer(
 
 export async function selectOffer(actor: Actor, offerId: string, note?: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   return prisma.$transaction(async (tx) => {
-    const offer = await tx.contractorOffer.findUniqueOrThrow({ where: { id: offerId } });
+    // ContractorOffer has no zevId column of its own — tenant checked
+    // indirectly through its issue.
+    const offer = await tx.contractorOffer.findUniqueOrThrow({ where: { id: offerId }, include: { issue: true } });
+    if (offer.issue.zevId !== zevId) throw new Error("Ponuda nije pronađena.");
     await tx.contractorOffer.updateMany({ where: { issueId: offer.issueId }, data: { selected: false } });
     const sel = await tx.contractorOffer.update({ where: { id: offerId }, data: { selected: true } });
     await tx.maintenanceIssue.update({
-      where: { id: offer.issueId },
+      where: { id: offer.issueId, zevId },
       data: {
         status: "CONTRACTOR_SELECTED",
         estimatedCost: offer.amount,
@@ -199,11 +220,14 @@ export async function createWorkOrder(
   data: { issueId: string; supplierId: string; description: string; scheduledFrom?: Date | null; scheduledTo?: Date | null }
 ) {
   requireRole(actor, "PRESIDENT");
-  const count = await prisma.workOrder.count();
+  const zevId = requireZev(actor);
+  await prisma.maintenanceIssue.findUniqueOrThrow({ where: { id: data.issueId, zevId } });
+  await prisma.supplier.findUniqueOrThrow({ where: { id: data.supplierId, zevId } });
+  const count = await prisma.workOrder.count({ where: { zevId } });
   const number = `RN-${new Date().getFullYear()}-${String(count + 1).padStart(4, "0")}`;
-  const wo = await prisma.workOrder.create({ data: { ...data, number } });
+  const wo = await prisma.workOrder.create({ data: { ...data, zevId, number } });
   await prisma.maintenanceIssue.update({
-    where: { id: data.issueId },
+    where: { id: data.issueId, zevId },
     data: {
       status: "SCHEDULED",
       statusEvents: { create: [{ to: "SCHEDULED", actorId: actor.userId, note: `Radni nalog ${number}` }] },
@@ -215,12 +239,13 @@ export async function createWorkOrder(
 
 export async function completeWorkOrder(actor: Actor, workOrderId: string, completionNote: string) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   const wo = await prisma.workOrder.update({
-    where: { id: workOrderId },
+    where: { id: workOrderId, zevId },
     data: { status: "COMPLETED", completionNote, completedAt: new Date() },
   });
   await prisma.maintenanceIssue.update({
-    where: { id: wo.issueId },
+    where: { id: wo.issueId, zevId },
     data: {
       status: "COMPLETED",
       statusEvents: { create: [{ to: "COMPLETED", actorId: actor.userId, note: completionNote }] },

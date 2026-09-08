@@ -36,6 +36,7 @@ export type ProjectSumAggregateOutputType = {
 
 export type ProjectMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   description: string | null
   status: string | null
@@ -45,6 +46,7 @@ export type ProjectMinAggregateOutputType = {
 
 export type ProjectMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   name: string | null
   description: string | null
   status: string | null
@@ -54,6 +56,7 @@ export type ProjectMaxAggregateOutputType = {
 
 export type ProjectCountAggregateOutputType = {
   id: number
+  zevId: number
   name: number
   description: number
   status: number
@@ -73,6 +76,7 @@ export type ProjectSumAggregateInputType = {
 
 export type ProjectMinAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   description?: true
   status?: true
@@ -82,6 +86,7 @@ export type ProjectMinAggregateInputType = {
 
 export type ProjectMaxAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   description?: true
   status?: true
@@ -91,6 +96,7 @@ export type ProjectMaxAggregateInputType = {
 
 export type ProjectCountAggregateInputType = {
   id?: true
+  zevId?: true
   name?: true
   description?: true
   status?: true
@@ -187,6 +193,7 @@ export type ProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type ProjectGroupByOutputType = {
   id: string
+  zevId: string
   name: string
   description: string | null
   status: string
@@ -219,20 +226,24 @@ export type ProjectWhereInput = {
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   id?: Prisma.StringFilter<"Project"> | string
+  zevId?: Prisma.StringFilter<"Project"> | string
   name?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.StringFilter<"Project"> | string
   estimatedCost?: Prisma.DecimalNullableFilter<"Project"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
 }
 
 export type ProjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   estimatedCost?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -240,15 +251,18 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
+  zevId?: Prisma.StringFilter<"Project"> | string
   name?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.StringFilter<"Project"> | string
   estimatedCost?: Prisma.DecimalNullableFilter<"Project"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
 }, "id">
 
 export type ProjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -266,6 +280,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   OR?: Prisma.ProjectScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProjectScalarWhereWithAggregatesInput | Prisma.ProjectScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Project"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Project"> | string
   name?: Prisma.StringWithAggregatesFilter<"Project"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Project"> | string
@@ -280,10 +295,12 @@ export type ProjectCreateInput = {
   status?: string
   estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProjectsInput
 }
 
 export type ProjectUncheckedCreateInput = {
   id?: string
+  zevId: string
   name: string
   description?: string | null
   status?: string
@@ -298,10 +315,12 @@ export type ProjectUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProjectsNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -311,6 +330,7 @@ export type ProjectUncheckedUpdateInput = {
 
 export type ProjectCreateManyInput = {
   id?: string
+  zevId: string
   name: string
   description?: string | null
   status?: string
@@ -329,6 +349,7 @@ export type ProjectUpdateManyMutationInput = {
 
 export type ProjectUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -336,8 +357,19 @@ export type ProjectUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type ProjectListRelationFilter = {
+  every?: Prisma.ProjectWhereInput
+  some?: Prisma.ProjectWhereInput
+  none?: Prisma.ProjectWhereInput
+}
+
+export type ProjectOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type ProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -351,6 +383,7 @@ export type ProjectAvgOrderByAggregateInput = {
 
 export type ProjectMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -360,6 +393,7 @@ export type ProjectMaxOrderByAggregateInput = {
 
 export type ProjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -371,37 +405,179 @@ export type ProjectSumOrderByAggregateInput = {
   estimatedCost?: Prisma.SortOrder
 }
 
+export type ProjectCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput> | Prisma.ProjectCreateWithoutZevInput[] | Prisma.ProjectUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutZevInput | Prisma.ProjectCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ProjectCreateManyZevInputEnvelope
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+}
+
+export type ProjectUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput> | Prisma.ProjectCreateWithoutZevInput[] | Prisma.ProjectUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutZevInput | Prisma.ProjectCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.ProjectCreateManyZevInputEnvelope
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+}
+
+export type ProjectUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput> | Prisma.ProjectCreateWithoutZevInput[] | Prisma.ProjectUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutZevInput | Prisma.ProjectCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ProjectUpsertWithWhereUniqueWithoutZevInput | Prisma.ProjectUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ProjectCreateManyZevInputEnvelope
+  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  disconnect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  update?: Prisma.ProjectUpdateWithWhereUniqueWithoutZevInput | Prisma.ProjectUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ProjectUpdateManyWithWhereWithoutZevInput | Prisma.ProjectUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+}
+
+export type ProjectUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput> | Prisma.ProjectCreateWithoutZevInput[] | Prisma.ProjectUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutZevInput | Prisma.ProjectCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.ProjectUpsertWithWhereUniqueWithoutZevInput | Prisma.ProjectUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.ProjectCreateManyZevInputEnvelope
+  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  disconnect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  update?: Prisma.ProjectUpdateWithWhereUniqueWithoutZevInput | Prisma.ProjectUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.ProjectUpdateManyWithWhereWithoutZevInput | Prisma.ProjectUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+}
+
+export type ProjectCreateWithoutZevInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: string
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+}
+
+export type ProjectUncheckedCreateWithoutZevInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: string
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+}
+
+export type ProjectCreateOrConnectWithoutZevInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput>
+}
+
+export type ProjectCreateManyZevInputEnvelope = {
+  data: Prisma.ProjectCreateManyZevInput | Prisma.ProjectCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProjectUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutZevInput, Prisma.ProjectUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput>
+}
+
+export type ProjectUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutZevInput, Prisma.ProjectUncheckedUpdateWithoutZevInput>
+}
+
+export type ProjectUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.ProjectScalarWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateManyMutationInput, Prisma.ProjectUncheckedUpdateManyWithoutZevInput>
+}
+
+export type ProjectScalarWhereInput = {
+  AND?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+  OR?: Prisma.ProjectScalarWhereInput[]
+  NOT?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+  id?: Prisma.StringFilter<"Project"> | string
+  zevId?: Prisma.StringFilter<"Project"> | string
+  name?: Prisma.StringFilter<"Project"> | string
+  description?: Prisma.StringNullableFilter<"Project"> | string | null
+  status?: Prisma.StringFilter<"Project"> | string
+  estimatedCost?: Prisma.DecimalNullableFilter<"Project"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+}
+
+export type ProjectCreateManyZevInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: string
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+}
+
+export type ProjectUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProjectUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProjectUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   estimatedCost?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   estimatedCost?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   estimatedCost?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectScalar = {
   id?: boolean
+  zevId?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
@@ -409,13 +585,25 @@ export type ProjectSelectScalar = {
   createdAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "status" | "estimatedCost" | "createdAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "description" | "status" | "estimatedCost" | "createdAt", ExtArgs["result"]["project"]>
+export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Project"
-  objects: {}
+  objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     name: string
     description: string | null
     status: string
@@ -815,6 +1003,7 @@ readonly fields: ProjectFieldRefs;
  */
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -845,6 +1034,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface ProjectFieldRefs {
   readonly id: Prisma.FieldRef<"Project", 'String'>
+  readonly zevId: Prisma.FieldRef<"Project", 'String'>
   readonly name: Prisma.FieldRef<"Project", 'String'>
   readonly description: Prisma.FieldRef<"Project", 'String'>
   readonly status: Prisma.FieldRef<"Project", 'String'>
@@ -867,6 +1057,10 @@ export type ProjectFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  /**
    * Filter, which Project to fetch.
    */
   where: Prisma.ProjectWhereUniqueInput
@@ -885,6 +1079,10 @@ export type ProjectFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  /**
    * Filter, which Project to fetch.
    */
   where: Prisma.ProjectWhereUniqueInput
@@ -902,6 +1100,10 @@ export type ProjectFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Project
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
   /**
    * Filter, which Project to fetch.
    */
@@ -951,6 +1153,10 @@ export type ProjectFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  /**
    * Filter, which Project to fetch.
    */
   where?: Prisma.ProjectWhereInput
@@ -998,6 +1204,10 @@ export type ProjectFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Project
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
   /**
    * Filter, which Projects to fetch.
    */
@@ -1047,6 +1257,10 @@ export type ProjectCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  /**
    * The data needed to create a Project.
    */
   data: Prisma.XOR<Prisma.ProjectCreateInput, Prisma.ProjectUncheckedCreateInput>
@@ -1080,6 +1294,10 @@ export type ProjectCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.ProjectCreateManyInput | Prisma.ProjectCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1094,6 +1312,10 @@ export type ProjectUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Project
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
   /**
    * The data needed to update a Project.
    */
@@ -1146,6 +1368,10 @@ export type ProjectUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Projects to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1160,6 +1386,10 @@ export type ProjectUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Project
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
   /**
    * The filter to search for the Project to update in case it exists.
    */
@@ -1186,6 +1416,10 @@ export type ProjectDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Project
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
   /**
    * Filter which Project to delete.
    */
@@ -1218,4 +1452,8 @@ export type ProjectDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Project
    */
   omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
 }

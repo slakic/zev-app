@@ -26,8 +26,10 @@ export type AggregateMeeting = {
 
 export type MeetingMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   title: string | null
   type: $Enums.MeetingType | null
+  body: $Enums.MeetingBody | null
   status: $Enums.MeetingStatus | null
   location: string | null
   scheduledAt: Date | null
@@ -40,8 +42,10 @@ export type MeetingMinAggregateOutputType = {
 
 export type MeetingMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   title: string | null
   type: $Enums.MeetingType | null
+  body: $Enums.MeetingBody | null
   status: $Enums.MeetingStatus | null
   location: string | null
   scheduledAt: Date | null
@@ -54,8 +58,10 @@ export type MeetingMaxAggregateOutputType = {
 
 export type MeetingCountAggregateOutputType = {
   id: number
+  zevId: number
   title: number
   type: number
+  body: number
   status: number
   location: number
   scheduledAt: number
@@ -70,8 +76,10 @@ export type MeetingCountAggregateOutputType = {
 
 export type MeetingMinAggregateInputType = {
   id?: true
+  zevId?: true
   title?: true
   type?: true
+  body?: true
   status?: true
   location?: true
   scheduledAt?: true
@@ -84,8 +92,10 @@ export type MeetingMinAggregateInputType = {
 
 export type MeetingMaxAggregateInputType = {
   id?: true
+  zevId?: true
   title?: true
   type?: true
+  body?: true
   status?: true
   location?: true
   scheduledAt?: true
@@ -98,8 +108,10 @@ export type MeetingMaxAggregateInputType = {
 
 export type MeetingCountAggregateInputType = {
   id?: true
+  zevId?: true
   title?: true
   type?: true
+  body?: true
   status?: true
   location?: true
   scheduledAt?: true
@@ -185,8 +197,10 @@ export type MeetingGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type MeetingGroupByOutputType = {
   id: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
+  body: $Enums.MeetingBody
   status: $Enums.MeetingStatus
   location: string | null
   scheduledAt: Date | null
@@ -220,9 +234,10 @@ export type MeetingWhereInput = {
   OR?: Prisma.MeetingWhereInput[]
   NOT?: Prisma.MeetingWhereInput | Prisma.MeetingWhereInput[]
   id?: Prisma.StringFilter<"Meeting"> | string
+  zevId?: Prisma.StringFilter<"Meeting"> | string
   title?: Prisma.StringFilter<"Meeting"> | string
   type?: Prisma.EnumMeetingTypeFilter<"Meeting"> | $Enums.MeetingType
-  body?: $Enums.MeetingBody | { equals?: $Enums.MeetingBody; in?: $Enums.MeetingBody[] }
+  body?: Prisma.EnumMeetingBodyFilter<"Meeting"> | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFilter<"Meeting"> | $Enums.MeetingStatus
   location?: Prisma.StringNullableFilter<"Meeting"> | string | null
   scheduledAt?: Prisma.DateTimeNullableFilter<"Meeting"> | Date | string | null
@@ -231,6 +246,7 @@ export type MeetingWhereInput = {
   discussionNotes?: Prisma.StringNullableFilter<"Meeting"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   agendaItems?: Prisma.AgendaItemListRelationFilter
   proposals?: Prisma.ProposalListRelationFilter
   attendances?: Prisma.AttendanceListRelationFilter
@@ -239,8 +255,10 @@ export type MeetingWhereInput = {
 
 export type MeetingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  body?: Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -249,6 +267,7 @@ export type MeetingOrderByWithRelationInput = {
   discussionNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
   agendaItems?: Prisma.AgendaItemOrderByRelationAggregateInput
   proposals?: Prisma.ProposalOrderByRelationAggregateInput
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
@@ -260,9 +279,10 @@ export type MeetingWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MeetingWhereInput | Prisma.MeetingWhereInput[]
   OR?: Prisma.MeetingWhereInput[]
   NOT?: Prisma.MeetingWhereInput | Prisma.MeetingWhereInput[]
+  zevId?: Prisma.StringFilter<"Meeting"> | string
   title?: Prisma.StringFilter<"Meeting"> | string
   type?: Prisma.EnumMeetingTypeFilter<"Meeting"> | $Enums.MeetingType
-  body?: $Enums.MeetingBody | { equals?: $Enums.MeetingBody; in?: $Enums.MeetingBody[] }
+  body?: Prisma.EnumMeetingBodyFilter<"Meeting"> | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFilter<"Meeting"> | $Enums.MeetingStatus
   location?: Prisma.StringNullableFilter<"Meeting"> | string | null
   scheduledAt?: Prisma.DateTimeNullableFilter<"Meeting"> | Date | string | null
@@ -271,6 +291,7 @@ export type MeetingWhereUniqueInput = Prisma.AtLeast<{
   discussionNotes?: Prisma.StringNullableFilter<"Meeting"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   agendaItems?: Prisma.AgendaItemListRelationFilter
   proposals?: Prisma.ProposalListRelationFilter
   attendances?: Prisma.AttendanceListRelationFilter
@@ -279,8 +300,10 @@ export type MeetingWhereUniqueInput = Prisma.AtLeast<{
 
 export type MeetingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  body?: Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -299,8 +322,10 @@ export type MeetingScalarWhereWithAggregatesInput = {
   OR?: Prisma.MeetingScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MeetingScalarWhereWithAggregatesInput | Prisma.MeetingScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Meeting"> | string
+  zevId?: Prisma.StringWithAggregatesFilter<"Meeting"> | string
   title?: Prisma.StringWithAggregatesFilter<"Meeting"> | string
   type?: Prisma.EnumMeetingTypeWithAggregatesFilter<"Meeting"> | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyWithAggregatesFilter<"Meeting"> | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusWithAggregatesFilter<"Meeting"> | $Enums.MeetingStatus
   location?: Prisma.StringNullableWithAggregatesFilter<"Meeting"> | string | null
   scheduledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Meeting"> | Date | string | null
@@ -324,6 +349,7 @@ export type MeetingCreateInput = {
   discussionNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMeetingsInput
   agendaItems?: Prisma.AgendaItemCreateNestedManyWithoutMeetingInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutMeetingInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
@@ -332,6 +358,7 @@ export type MeetingCreateInput = {
 
 export type MeetingUncheckedCreateInput = {
   id?: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
   body?: $Enums.MeetingBody
@@ -353,7 +380,7 @@ export type MeetingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
-  body?: $Enums.MeetingBody
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -362,6 +389,7 @@ export type MeetingUpdateInput = {
   discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMeetingsNestedInput
   agendaItems?: Prisma.AgendaItemUpdateManyWithoutMeetingNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutMeetingNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
@@ -370,8 +398,10 @@ export type MeetingUpdateInput = {
 
 export type MeetingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -388,8 +418,10 @@ export type MeetingUncheckedUpdateInput = {
 
 export type MeetingCreateManyInput = {
   id?: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -404,6 +436,7 @@ export type MeetingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -416,8 +449,10 @@ export type MeetingUpdateManyMutationInput = {
 
 export type MeetingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -428,6 +463,16 @@ export type MeetingUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type MeetingListRelationFilter = {
+  every?: Prisma.MeetingWhereInput
+  some?: Prisma.MeetingWhereInput
+  none?: Prisma.MeetingWhereInput
+}
+
+export type MeetingOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type MeetingNullableScalarRelationFilter = {
   is?: Prisma.MeetingWhereInput | null
   isNot?: Prisma.MeetingWhereInput | null
@@ -435,8 +480,10 @@ export type MeetingNullableScalarRelationFilter = {
 
 export type MeetingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  body?: Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
@@ -449,8 +496,10 @@ export type MeetingCountOrderByAggregateInput = {
 
 export type MeetingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  body?: Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
@@ -463,8 +512,10 @@ export type MeetingMaxOrderByAggregateInput = {
 
 export type MeetingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  body?: Prisma.SortOrder
   status?: Prisma.SortOrder
   location?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
@@ -478,6 +529,48 @@ export type MeetingMinOrderByAggregateInput = {
 export type MeetingScalarRelationFilter = {
   is?: Prisma.MeetingWhereInput
   isNot?: Prisma.MeetingWhereInput
+}
+
+export type MeetingCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.MeetingCreateWithoutZevInput, Prisma.MeetingUncheckedCreateWithoutZevInput> | Prisma.MeetingCreateWithoutZevInput[] | Prisma.MeetingUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MeetingCreateOrConnectWithoutZevInput | Prisma.MeetingCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.MeetingCreateManyZevInputEnvelope
+  connect?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+}
+
+export type MeetingUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.MeetingCreateWithoutZevInput, Prisma.MeetingUncheckedCreateWithoutZevInput> | Prisma.MeetingCreateWithoutZevInput[] | Prisma.MeetingUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MeetingCreateOrConnectWithoutZevInput | Prisma.MeetingCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.MeetingCreateManyZevInputEnvelope
+  connect?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+}
+
+export type MeetingUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.MeetingCreateWithoutZevInput, Prisma.MeetingUncheckedCreateWithoutZevInput> | Prisma.MeetingCreateWithoutZevInput[] | Prisma.MeetingUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MeetingCreateOrConnectWithoutZevInput | Prisma.MeetingCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.MeetingUpsertWithWhereUniqueWithoutZevInput | Prisma.MeetingUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.MeetingCreateManyZevInputEnvelope
+  set?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  disconnect?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  delete?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  connect?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  update?: Prisma.MeetingUpdateWithWhereUniqueWithoutZevInput | Prisma.MeetingUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.MeetingUpdateManyWithWhereWithoutZevInput | Prisma.MeetingUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.MeetingScalarWhereInput | Prisma.MeetingScalarWhereInput[]
+}
+
+export type MeetingUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.MeetingCreateWithoutZevInput, Prisma.MeetingUncheckedCreateWithoutZevInput> | Prisma.MeetingCreateWithoutZevInput[] | Prisma.MeetingUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.MeetingCreateOrConnectWithoutZevInput | Prisma.MeetingCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.MeetingUpsertWithWhereUniqueWithoutZevInput | Prisma.MeetingUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.MeetingCreateManyZevInputEnvelope
+  set?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  disconnect?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  delete?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  connect?: Prisma.MeetingWhereUniqueInput | Prisma.MeetingWhereUniqueInput[]
+  update?: Prisma.MeetingUpdateWithWhereUniqueWithoutZevInput | Prisma.MeetingUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.MeetingUpdateManyWithWhereWithoutZevInput | Prisma.MeetingUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.MeetingScalarWhereInput | Prisma.MeetingScalarWhereInput[]
 }
 
 export type MeetingCreateNestedOneWithoutProxiesInput = {
@@ -498,6 +591,10 @@ export type MeetingUpdateOneWithoutProxiesNestedInput = {
 
 export type EnumMeetingTypeFieldUpdateOperationsInput = {
   set?: $Enums.MeetingType
+}
+
+export type EnumMeetingBodyFieldUpdateOperationsInput = {
+  set?: $Enums.MeetingBody
 }
 
 export type EnumMeetingStatusFieldUpdateOperationsInput = {
@@ -546,10 +643,11 @@ export type MeetingUpdateOneRequiredWithoutProposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MeetingUpdateToOneWithWhereWithoutProposalsInput, Prisma.MeetingUpdateWithoutProposalsInput>, Prisma.MeetingUncheckedUpdateWithoutProposalsInput>
 }
 
-export type MeetingCreateWithoutProxiesInput = {
+export type MeetingCreateWithoutZevInput = {
   id?: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -561,12 +659,98 @@ export type MeetingCreateWithoutProxiesInput = {
   agendaItems?: Prisma.AgendaItemCreateNestedManyWithoutMeetingInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutMeetingInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutMeetingInput
+}
+
+export type MeetingUncheckedCreateWithoutZevInput = {
+  id?: string
+  title: string
+  type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
+  status?: $Enums.MeetingStatus
+  location?: string | null
+  scheduledAt?: Date | string | null
+  eVoteOpensAt?: Date | string | null
+  eVoteClosesAt?: Date | string | null
+  discussionNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agendaItems?: Prisma.AgendaItemUncheckedCreateNestedManyWithoutMeetingInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMeetingInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutMeetingInput
+}
+
+export type MeetingCreateOrConnectWithoutZevInput = {
+  where: Prisma.MeetingWhereUniqueInput
+  create: Prisma.XOR<Prisma.MeetingCreateWithoutZevInput, Prisma.MeetingUncheckedCreateWithoutZevInput>
+}
+
+export type MeetingCreateManyZevInputEnvelope = {
+  data: Prisma.MeetingCreateManyZevInput | Prisma.MeetingCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type MeetingUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.MeetingWhereUniqueInput
+  update: Prisma.XOR<Prisma.MeetingUpdateWithoutZevInput, Prisma.MeetingUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.MeetingCreateWithoutZevInput, Prisma.MeetingUncheckedCreateWithoutZevInput>
+}
+
+export type MeetingUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.MeetingWhereUniqueInput
+  data: Prisma.XOR<Prisma.MeetingUpdateWithoutZevInput, Prisma.MeetingUncheckedUpdateWithoutZevInput>
+}
+
+export type MeetingUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.MeetingScalarWhereInput
+  data: Prisma.XOR<Prisma.MeetingUpdateManyMutationInput, Prisma.MeetingUncheckedUpdateManyWithoutZevInput>
+}
+
+export type MeetingScalarWhereInput = {
+  AND?: Prisma.MeetingScalarWhereInput | Prisma.MeetingScalarWhereInput[]
+  OR?: Prisma.MeetingScalarWhereInput[]
+  NOT?: Prisma.MeetingScalarWhereInput | Prisma.MeetingScalarWhereInput[]
+  id?: Prisma.StringFilter<"Meeting"> | string
+  zevId?: Prisma.StringFilter<"Meeting"> | string
+  title?: Prisma.StringFilter<"Meeting"> | string
+  type?: Prisma.EnumMeetingTypeFilter<"Meeting"> | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFilter<"Meeting"> | $Enums.MeetingBody
+  status?: Prisma.EnumMeetingStatusFilter<"Meeting"> | $Enums.MeetingStatus
+  location?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  scheduledAt?: Prisma.DateTimeNullableFilter<"Meeting"> | Date | string | null
+  eVoteOpensAt?: Prisma.DateTimeNullableFilter<"Meeting"> | Date | string | null
+  eVoteClosesAt?: Prisma.DateTimeNullableFilter<"Meeting"> | Date | string | null
+  discussionNotes?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
+}
+
+export type MeetingCreateWithoutProxiesInput = {
+  id?: string
+  title: string
+  type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
+  status?: $Enums.MeetingStatus
+  location?: string | null
+  scheduledAt?: Date | string | null
+  eVoteOpensAt?: Date | string | null
+  eVoteClosesAt?: Date | string | null
+  discussionNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMeetingsInput
+  agendaItems?: Prisma.AgendaItemCreateNestedManyWithoutMeetingInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
 }
 
 export type MeetingUncheckedCreateWithoutProxiesInput = {
   id?: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -600,6 +784,7 @@ export type MeetingUpdateWithoutProxiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -608,6 +793,7 @@ export type MeetingUpdateWithoutProxiesInput = {
   discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMeetingsNestedInput
   agendaItems?: Prisma.AgendaItemUpdateManyWithoutMeetingNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutMeetingNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
@@ -615,8 +801,10 @@ export type MeetingUpdateWithoutProxiesInput = {
 
 export type MeetingUncheckedUpdateWithoutProxiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -634,6 +822,7 @@ export type MeetingCreateWithoutAgendaItemsInput = {
   id?: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -642,6 +831,7 @@ export type MeetingCreateWithoutAgendaItemsInput = {
   discussionNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMeetingsInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutMeetingInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
   proxies?: Prisma.ProxyCreateNestedManyWithoutMeetingInput
@@ -649,8 +839,10 @@ export type MeetingCreateWithoutAgendaItemsInput = {
 
 export type MeetingUncheckedCreateWithoutAgendaItemsInput = {
   id?: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -684,6 +876,7 @@ export type MeetingUpdateWithoutAgendaItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -692,6 +885,7 @@ export type MeetingUpdateWithoutAgendaItemsInput = {
   discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMeetingsNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutMeetingNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
   proxies?: Prisma.ProxyUpdateManyWithoutMeetingNestedInput
@@ -699,8 +893,10 @@ export type MeetingUpdateWithoutAgendaItemsInput = {
 
 export type MeetingUncheckedUpdateWithoutAgendaItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -718,6 +914,7 @@ export type MeetingCreateWithoutAttendancesInput = {
   id?: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -726,6 +923,7 @@ export type MeetingCreateWithoutAttendancesInput = {
   discussionNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMeetingsInput
   agendaItems?: Prisma.AgendaItemCreateNestedManyWithoutMeetingInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutMeetingInput
   proxies?: Prisma.ProxyCreateNestedManyWithoutMeetingInput
@@ -733,8 +931,10 @@ export type MeetingCreateWithoutAttendancesInput = {
 
 export type MeetingUncheckedCreateWithoutAttendancesInput = {
   id?: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -768,6 +968,7 @@ export type MeetingUpdateWithoutAttendancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -776,6 +977,7 @@ export type MeetingUpdateWithoutAttendancesInput = {
   discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMeetingsNestedInput
   agendaItems?: Prisma.AgendaItemUpdateManyWithoutMeetingNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutMeetingNestedInput
   proxies?: Prisma.ProxyUpdateManyWithoutMeetingNestedInput
@@ -783,8 +985,10 @@ export type MeetingUpdateWithoutAttendancesInput = {
 
 export type MeetingUncheckedUpdateWithoutAttendancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -802,6 +1006,7 @@ export type MeetingCreateWithoutProposalsInput = {
   id?: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -810,6 +1015,7 @@ export type MeetingCreateWithoutProposalsInput = {
   discussionNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutMeetingsInput
   agendaItems?: Prisma.AgendaItemCreateNestedManyWithoutMeetingInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
   proxies?: Prisma.ProxyCreateNestedManyWithoutMeetingInput
@@ -817,8 +1023,10 @@ export type MeetingCreateWithoutProposalsInput = {
 
 export type MeetingUncheckedCreateWithoutProposalsInput = {
   id?: string
+  zevId: string
   title: string
   type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
   status?: $Enums.MeetingStatus
   location?: string | null
   scheduledAt?: Date | string | null
@@ -852,6 +1060,7 @@ export type MeetingUpdateWithoutProposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -860,6 +1069,7 @@ export type MeetingUpdateWithoutProposalsInput = {
   discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutMeetingsNestedInput
   agendaItems?: Prisma.AgendaItemUpdateManyWithoutMeetingNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
   proxies?: Prisma.ProxyUpdateManyWithoutMeetingNestedInput
@@ -867,8 +1077,10 @@ export type MeetingUpdateWithoutProposalsInput = {
 
 export type MeetingUncheckedUpdateWithoutProposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -880,6 +1092,74 @@ export type MeetingUncheckedUpdateWithoutProposalsInput = {
   agendaItems?: Prisma.AgendaItemUncheckedUpdateManyWithoutMeetingNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
   proxies?: Prisma.ProxyUncheckedUpdateManyWithoutMeetingNestedInput
+}
+
+export type MeetingCreateManyZevInput = {
+  id?: string
+  title: string
+  type: $Enums.MeetingType
+  body?: $Enums.MeetingBody
+  status?: $Enums.MeetingStatus
+  location?: string | null
+  scheduledAt?: Date | string | null
+  eVoteOpensAt?: Date | string | null
+  eVoteClosesAt?: Date | string | null
+  discussionNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MeetingUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eVoteOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eVoteClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agendaItems?: Prisma.AgendaItemUpdateManyWithoutMeetingNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutMeetingNestedInput
+}
+
+export type MeetingUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eVoteOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eVoteClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agendaItems?: Prisma.AgendaItemUncheckedUpdateManyWithoutMeetingNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutMeetingNestedInput
+}
+
+export type MeetingUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMeetingTypeFieldUpdateOperationsInput | $Enums.MeetingType
+  body?: Prisma.EnumMeetingBodyFieldUpdateOperationsInput | $Enums.MeetingBody
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eVoteOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eVoteClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  discussionNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -942,6 +1222,7 @@ export type MeetingCountOutputTypeCountProxiesArgs<ExtArgs extends runtime.Types
 
 export type MeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   title?: boolean
   type?: boolean
   body?: boolean
@@ -953,6 +1234,7 @@ export type MeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   discussionNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   agendaItems?: boolean | Prisma.Meeting$agendaItemsArgs<ExtArgs>
   proposals?: boolean | Prisma.Meeting$proposalsArgs<ExtArgs>
   attendances?: boolean | Prisma.Meeting$attendancesArgs<ExtArgs>
@@ -962,6 +1244,7 @@ export type MeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 
 export type MeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   title?: boolean
   type?: boolean
   body?: boolean
@@ -973,10 +1256,12 @@ export type MeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   discussionNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["meeting"]>
 
 export type MeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   title?: boolean
   type?: boolean
   body?: boolean
@@ -988,10 +1273,12 @@ export type MeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   discussionNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["meeting"]>
 
 export type MeetingSelectScalar = {
   id?: boolean
+  zevId?: boolean
   title?: boolean
   type?: boolean
   body?: boolean
@@ -1005,20 +1292,26 @@ export type MeetingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "type" | "status" | "location" | "scheduledAt" | "eVoteOpensAt" | "eVoteClosesAt" | "discussionNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["meeting"]>
+export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "title" | "type" | "body" | "status" | "location" | "scheduledAt" | "eVoteOpensAt" | "eVoteClosesAt" | "discussionNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["meeting"]>
 export type MeetingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   agendaItems?: boolean | Prisma.Meeting$agendaItemsArgs<ExtArgs>
   proposals?: boolean | Prisma.Meeting$proposalsArgs<ExtArgs>
   attendances?: boolean | Prisma.Meeting$attendancesArgs<ExtArgs>
   proxies?: boolean | Prisma.Meeting$proxiesArgs<ExtArgs>
   _count?: boolean | Prisma.MeetingCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type MeetingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type MeetingIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type MeetingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
+export type MeetingIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+}
 
 export type $MeetingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Meeting"
   objects: {
+    zev: Prisma.$ZevPayload<ExtArgs>
     agendaItems: Prisma.$AgendaItemPayload<ExtArgs>[]
     proposals: Prisma.$ProposalPayload<ExtArgs>[]
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
@@ -1026,6 +1319,7 @@ export type $MeetingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string
     title: string
     type: $Enums.MeetingType
     body: $Enums.MeetingBody
@@ -1431,6 +1725,7 @@ readonly fields: MeetingFieldRefs;
  */
 export interface Prisma__MeetingClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   agendaItems<T extends Prisma.Meeting$agendaItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Meeting$agendaItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgendaItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proposals<T extends Prisma.Meeting$proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Meeting$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attendances<T extends Prisma.Meeting$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Meeting$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1465,8 +1760,10 @@ export interface Prisma__MeetingClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface MeetingFieldRefs {
   readonly id: Prisma.FieldRef<"Meeting", 'String'>
+  readonly zevId: Prisma.FieldRef<"Meeting", 'String'>
   readonly title: Prisma.FieldRef<"Meeting", 'String'>
   readonly type: Prisma.FieldRef<"Meeting", 'MeetingType'>
+  readonly body: Prisma.FieldRef<"Meeting", 'MeetingBody'>
   readonly status: Prisma.FieldRef<"Meeting", 'MeetingStatus'>
   readonly location: Prisma.FieldRef<"Meeting", 'String'>
   readonly scheduledAt: Prisma.FieldRef<"Meeting", 'DateTime'>
@@ -1729,6 +2026,10 @@ export type MeetingCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.MeetingCreateManyInput | Prisma.MeetingCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1799,6 +2100,10 @@ export type MeetingUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Meetings to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

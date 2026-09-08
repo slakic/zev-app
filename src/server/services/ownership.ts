@@ -3,7 +3,7 @@
 // (validTo) and opens a new one (validFrom).
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
-import { requireRole, requireSelfOrRole, requireAnyUser, ForbiddenError, type Actor } from "@/server/auth/guards";
+import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, type Decimal } from "@/lib/money";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
 import type { PartyKind, OccupancyType, ProxyScope, Prisma } from "@/generated/prisma/client";
@@ -22,7 +22,7 @@ export function partyDisplayName(p: { kind: PartyKind; firstName: string | null;
 export async function listParties(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   return prisma.party.findMany({
-    where: { active: true },
+    where: { zevId: requireZev(actor), active: true },
     include: {
       ownershipStakes: { where: { validTo: null }, include: { unit: true } },
       user: { select: { id: true, email: true, roles: true, active: true } },
@@ -34,7 +34,7 @@ export async function listParties(actor: Actor) {
 export async function getParty(actor: Actor, partyId: string) {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
   return prisma.party.findUniqueOrThrow({
-    where: { id: partyId },
+    where: { id: partyId, zevId: requireZev(actor) },
     include: {
       ownershipStakes: { include: { unit: { include: { building: true } } }, orderBy: { validFrom: "desc" } },
       occupancies: { include: { unit: true } },
@@ -61,14 +61,16 @@ export async function createParty(
   }
 ) {
   requireRole(actor, "PRESIDENT");
-  const p = await prisma.party.create({ data });
+  const zevId = requireZev(actor);
+  const p = await prisma.party.create({ data: { ...data, zevId } });
   await audit(actor, { action: "party.create", targetType: "Party", targetId: p.id, after: { name: partyDisplayName(p), kind: p.kind } });
   return p;
 }
 
 export async function updateParty(actor: Actor, id: string, data: Prisma.PartyUpdateInput) {
   requireSelfOrRole(actor, id, "PRESIDENT");
-  const before = await prisma.party.findUniqueOrThrow({ where: { id } });
+  const zevId = requireZev(actor);
+  const before = await prisma.party.findUniqueOrThrow({ where: { id, zevId } });
   // Owners may update their own contact data only.
   if (actor.partyId === id && !actor.roles.includes("PRESIDENT")) {
     const allowed = new Set(["email", "phone", "correspondenceAddress"]);
@@ -76,7 +78,7 @@ export async function updateParty(actor: Actor, id: string, data: Prisma.PartyUp
       if (!allowed.has(k)) throw new ForbiddenError("Možete mijenjati samo svoje kontakt podatke.");
     }
   }
-  const p = await prisma.party.update({ where: { id }, data });
+  const p = await prisma.party.update({ where: { id, zevId }, data });
   await audit(actor, {
     action: "party.update", targetType: "Party", targetId: id,
     before: { email: before.email, phone: before.phone, address: before.address },
@@ -87,9 +89,10 @@ export async function updateParty(actor: Actor, id: string, data: Prisma.PartyUp
 
 // ---- Ownership stakes (effective-dated) ----
 
-export async function currentStakesForUnit(unitId: string, asOf: Date = new Date()) {
+export async function currentStakesForUnit(zevId: string, unitId: string, asOf: Date = new Date()) {
   return prisma.ownershipStake.findMany({
     where: {
+      zevId,
       unitId,
       validFrom: { lte: asOf },
       OR: [{ validTo: null }, { validTo: { gt: asOf } }],
@@ -110,20 +113,23 @@ export async function addOwnershipStake(
   proof: OwnershipProofInput
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   if (!proof || !proof.buffer || proof.buffer.length === 0) {
     throw new Error("Dokaz o vlasništvu (dokument) je obavezan za dodavanje vlasničkog udjela.");
   }
+  await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
+  await prisma.party.findUniqueOrThrow({ where: { id: data.ownerId, zevId } });
   const share = dec(data.sharePercent);
   if (share.lessThanOrEqualTo(0) || share.greaterThan(100)) {
     throw new Error("Udio mora biti u rasponu (0, 100].");
   }
-  const existing = await currentStakesForUnit(data.unitId, data.validFrom);
+  const existing = await currentStakesForUnit(zevId, data.unitId, data.validFrom);
   const sum = existing.reduce((a, s) => a.plus(dec(s.sharePercent.toString())), share);
   if (sum.greaterThan(dec(100).plus(dec("0.0001")))) {
     throw new Error(`Zbir udjela za jedinicu prelazi 100% (${sum.toFixed(4)}%).`);
   }
   const stake = await prisma.$transaction(async (tx) => {
-    const s = await tx.ownershipStake.create({ data });
+    const s = await tx.ownershipStake.create({ data: { ...data, zevId } });
     await createLinkedAttachmentTx(tx, actor, {
       ...proof,
       category: "OWNERSHIP_PROOF",
@@ -156,20 +162,23 @@ export async function transferOwnership(
   proof: OwnershipProofInput
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
   if (!proof || !proof.buffer || proof.buffer.length === 0) {
     throw new Error("Dokaz o vlasništvu (dokument) je obavezan za promjenu vlasništva.");
   }
+  await prisma.party.findUniqueOrThrow({ where: { id: data.toOwnerId, zevId } });
   return prisma.$transaction(async (tx) => {
     const stake = await tx.ownershipStake.findFirst({
-      where: { unitId: data.unitId, ownerId: data.fromOwnerId, validTo: null },
+      where: { zevId, unitId: data.unitId, ownerId: data.fromOwnerId, validTo: null },
     });
     if (!stake) throw new Error("Prodavac nema aktivan udio na ovoj jedinici.");
     await tx.ownershipStake.update({
-      where: { id: stake.id },
+      where: { id: stake.id, zevId },
       data: { validTo: data.effectiveDate },
     });
     const newStake = await tx.ownershipStake.create({
       data: {
+        zevId,
         unitId: data.unitId,
         ownerId: data.toOwnerId,
         sharePercent: stake.sharePercent,
@@ -202,14 +211,18 @@ export async function setOccupancy(
   data: { unitId: string; partyId: string; type: OccupancyType; headcount: number; validFrom: Date; note?: string | null }
 ) {
   requireRole(actor, "PRESIDENT");
-  const o = await prisma.occupancy.create({ data });
+  const zevId = requireZev(actor);
+  await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
+  await prisma.party.findUniqueOrThrow({ where: { id: data.partyId, zevId } });
+  const o = await prisma.occupancy.create({ data: { ...data, zevId } });
   await audit(actor, { action: "occupancy.create", targetType: "Occupancy", targetId: o.id, after: { unitId: data.unitId, partyId: data.partyId, type: data.type } });
   return o;
 }
 
 export async function endOccupancy(actor: Actor, id: string, validTo: Date) {
   requireRole(actor, "PRESIDENT");
-  const o = await prisma.occupancy.update({ where: { id }, data: { validTo } });
+  const zevId = requireZev(actor);
+  const o = await prisma.occupancy.update({ where: { id, zevId }, data: { validTo } });
   await audit(actor, { action: "occupancy.end", targetType: "Occupancy", targetId: id, after: { validTo: validTo.toISOString() } });
   return o;
 }
@@ -229,12 +242,16 @@ export async function grantProxy(
     validTo?: Date | null;
   }
 ) {
+  const zevId = requireZev(actor);
   // The president records proxies; an owner may record a proxy they grant themselves.
   if (!actor.roles.includes("PRESIDENT") && actor.partyId !== data.grantorId) {
     throw new ForbiddenError("Punomoć može evidentirati predsjednik ili sam davalac punomoći.");
   }
   if (data.grantorId === data.holderId) throw new Error("Davalac i primalac punomoći ne mogu biti ista osoba.");
-  const p = await prisma.proxy.create({ data });
+  await prisma.party.findUniqueOrThrow({ where: { id: data.grantorId, zevId } });
+  await prisma.party.findUniqueOrThrow({ where: { id: data.holderId, zevId } });
+  if (data.meetingId) await prisma.meeting.findUniqueOrThrow({ where: { id: data.meetingId, zevId } });
+  const p = await prisma.proxy.create({ data: { ...data, zevId } });
   await audit(actor, {
     action: "proxy.grant", targetType: "Proxy", targetId: p.id,
     after: { grantorId: data.grantorId, holderId: data.holderId, scope: data.scope, meetingId: data.meetingId ?? null },
@@ -243,12 +260,13 @@ export async function grantProxy(
 }
 
 export async function revokeProxy(actor: Actor, proxyId: string, reason: string) {
-  const proxy = await prisma.proxy.findUniqueOrThrow({ where: { id: proxyId } });
+  const zevId = requireZev(actor);
+  const proxy = await prisma.proxy.findUniqueOrThrow({ where: { id: proxyId, zevId } });
   if (!actor.roles.includes("PRESIDENT") && actor.partyId !== proxy.grantorId) {
     throw new ForbiddenError();
   }
   const p = await prisma.proxy.update({
-    where: { id: proxyId },
+    where: { id: proxyId, zevId },
     data: { revokedAt: new Date(), revokedReason: reason },
   });
   await audit(actor, { action: "proxy.revoke", targetType: "Proxy", targetId: proxyId, reason });
@@ -256,9 +274,10 @@ export async function revokeProxy(actor: Actor, proxyId: string, reason: string)
 }
 
 /** Active proxy for an owner in the context of a meeting/proposal, if any. */
-export async function activeProxyFor(ownerId: string, meetingId: string | null, asOf: Date = new Date()) {
+export async function activeProxyFor(zevId: string, ownerId: string, meetingId: string | null, asOf: Date = new Date()) {
   return prisma.proxy.findFirst({
     where: {
+      zevId,
       grantorId: ownerId,
       revokedAt: null,
       validFrom: { lte: asOf },
@@ -283,11 +302,13 @@ export async function setOfficeTerm(
   data: { role: "PRESIDENT" | "ACCOUNTANT"; partyId: string; validFrom: Date; validTo?: Date | null; decisionRef?: string | null }
 ) {
   requireRole(actor, "PRESIDENT");
-  const current = await prisma.officeTerm.findFirst({ where: { role: data.role, validTo: null } });
+  const zevId = requireZev(actor);
+  await prisma.party.findUniqueOrThrow({ where: { id: data.partyId, zevId } });
+  const current = await prisma.officeTerm.findFirst({ where: { zevId, role: data.role, validTo: null } });
   if (current) {
-    await prisma.officeTerm.update({ where: { id: current.id }, data: { validTo: data.validFrom } });
+    await prisma.officeTerm.update({ where: { id: current.id, zevId }, data: { validTo: data.validFrom } });
   }
-  const term = await prisma.officeTerm.create({ data });
+  const term = await prisma.officeTerm.create({ data: { ...data, zevId } });
   await audit(actor, {
     action: "office.term.set", targetType: "OfficeTerm", targetId: term.id,
     before: current ? { partyId: current.partyId } : undefined,
@@ -310,7 +331,7 @@ export async function setOfficeTerm(
 export async function listOfficeHolders(actor: Actor, asOf: Date = new Date()) {
   requireAnyUser(actor);
   const terms = await prisma.officeTerm.findMany({
-    where: { validFrom: { lte: asOf }, OR: [{ validTo: null }, { validTo: { gt: asOf } }] },
+    where: { zevId: requireZev(actor), validFrom: { lte: asOf }, OR: [{ validTo: null }, { validTo: { gt: asOf } }] },
     include: { party: true },
     orderBy: { validFrom: "asc" },
   });
@@ -324,7 +345,11 @@ export async function listOfficeHolders(actor: Actor, asOf: Date = new Date()) {
 /** Full history of office terms (past and present), most recent first. */
 export async function listOfficeHistory(actor: Actor) {
   requireAnyUser(actor);
-  return prisma.officeTerm.findMany({ include: { party: true }, orderBy: { validFrom: "desc" } });
+  return prisma.officeTerm.findMany({
+    where: { zevId: requireZev(actor) },
+    include: { party: true },
+    orderBy: { validFrom: "desc" },
+  });
 }
 
 export async function addBoardMember(
@@ -332,12 +357,14 @@ export async function addBoardMember(
   data: { partyId: string; validFrom: Date; decisionRef?: string | null }
 ) {
   requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  await prisma.party.findUniqueOrThrow({ where: { id: data.partyId, zevId } });
   const already = await prisma.officeTerm.findFirst({
-    where: { role: "BOARD_MEMBER", partyId: data.partyId, validTo: null },
+    where: { zevId, role: "BOARD_MEMBER", partyId: data.partyId, validTo: null },
   });
   if (already) throw new Error("Ovo lice je već aktivan član upravnog odbora.");
   const term = await prisma.officeTerm.create({
-    data: { role: "BOARD_MEMBER", partyId: data.partyId, validFrom: data.validFrom, decisionRef: data.decisionRef ?? null },
+    data: { zevId, role: "BOARD_MEMBER", partyId: data.partyId, validFrom: data.validFrom, decisionRef: data.decisionRef ?? null },
   });
   await audit(actor, {
     action: "office.board_member.add", targetType: "OfficeTerm", targetId: term.id,
@@ -348,10 +375,11 @@ export async function addBoardMember(
 
 export async function endBoardMembership(actor: Actor, termId: string, validTo: Date, reason?: string | null) {
   requireRole(actor, "PRESIDENT");
-  const before = await prisma.officeTerm.findUniqueOrThrow({ where: { id: termId } });
+  const zevId = requireZev(actor);
+  const before = await prisma.officeTerm.findUniqueOrThrow({ where: { id: termId, zevId } });
   if (before.role !== "BOARD_MEMBER") throw new Error("Ovo nije mandat člana upravnog odbora.");
   if (before.validTo) throw new Error("Mandat je već okončan.");
-  const term = await prisma.officeTerm.update({ where: { id: termId }, data: { validTo } });
+  const term = await prisma.officeTerm.update({ where: { id: termId, zevId }, data: { validTo } });
   await audit(actor, {
     action: "office.board_member.end", targetType: "OfficeTerm", targetId: termId,
     before: { partyId: before.partyId }, reason: reason ?? null,
@@ -366,9 +394,10 @@ export async function endBoardMembership(actor: Actor, termId: string, validTo: 
  * Shaped like ownersVotingBasis() so it plugs into the same voting engine
  * (use a VotingRule with weightMethod PER_OWNER for board proposals).
  */
-export async function boardVotingBasis(asOf: Date = new Date()) {
+export async function boardVotingBasis(zevId: string, asOf: Date = new Date()) {
   const terms = await prisma.officeTerm.findMany({
     where: {
+      zevId,
       role: { in: ["PRESIDENT", "BOARD_MEMBER"] },
       validFrom: { lte: asOf },
       OR: [{ validTo: null }, { validTo: { gt: asOf } }],
@@ -396,9 +425,10 @@ export async function boardVotingBasis(asOf: Date = new Date()) {
  * Current voting base: for each owner party, the sum of ownership-share
  * percentages (unit share × unit ownershipShare in ZEV) and areas they hold.
  */
-export async function ownersVotingBasis(unitIds?: string[], asOf: Date = new Date()) {
+export async function ownersVotingBasis(zevId: string, unitIds?: string[], asOf: Date = new Date()) {
   const stakes = await prisma.ownershipStake.findMany({
     where: {
+      zevId,
       validFrom: { lte: asOf },
       OR: [{ validTo: null }, { validTo: { gt: asOf } }],
       unitId: unitIds ? { in: unitIds } : undefined,

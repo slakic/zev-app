@@ -39,9 +39,32 @@ async function main() {
   const period = `${prevMonth.getFullYear()}-${String(prevMonth.getMonth() + 1).padStart(2, "0")}`;
   const yearStart = new Date(Date.UTC(year, 0, 1));
 
+  // --- ZEV ------------------------------------------------------------------
+  // Created directly via Prisma, not property.upsertZev(): that service function
+  // requires actor.zevId to already be set (see requireZev in guards.ts) because
+  // in the real product a Zev is only ever created by a super admin (Faza 1,
+  // not built yet) before any Membership/session can reference it. The seed
+  // script stands in for that not-yet-built bootstrap step, so it creates the
+  // very first Zev row itself, then builds its actors around the resulting id.
+  // Moved ahead of Party/User creation (Korak 5 addendum, 2026-09-08): Party.zevId
+  // is now required with no DB-level fallback (the old default_zev_id() stopgap is
+  // gone), so every Party created below must be given a real zevId at insert time
+  // — the Zev this seed builds around has to exist first.
+  const zev = await prisma.zev.create({
+    data: {
+      legalName: 'Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka',
+      shortName: "ZEV VM 10-12",
+      registrationNumber: "REG-035/2019",
+      jib: "4512345670001",
+      registeredAddress: "Ulica Vojvode Mišića 10, 78000 Banja Luka",
+      city: "Banja Luka",
+      municipality: "Banja Luka",
+    },
+  });
+
   // --- Parties -------------------------------------------------------------
   const mkPerson = (firstName: string, lastName: string, email: string, extra?: object) =>
-    prisma.party.create({ data: { kind: "PERSON", firstName, lastName, email, phone: "+38765000000", address: "Ulica Vojvode Mišića 10, Banja Luka", ...extra } });
+    prisma.party.create({ data: { zevId: zev.id, kind: "PERSON", firstName, lastName, email, phone: "+38765000000", address: "Ulica Vojvode Mišića 10, Banja Luka", ...extra } });
 
   const presidentParty = await mkPerson("Milan", "Petrović", "milan.petrovic@example.com");
   const accountantParty = await mkPerson("Jelena", "Kovačević", "jelena.kovacevic@example.com");
@@ -52,7 +75,7 @@ async function main() {
   const tenantIvana = await mkPerson("Ivana", "Tomić", "ivana.tomic@example.com"); // tenant, NO voting rights
   const proxyDragan = await mkPerson("Dragan", "Babić", "dragan.babic@example.com"); // proxy for Ana
   const ownerFirma = await prisma.party.create({
-    data: { kind: "ORGANIZATION", orgName: "Apoteka Zdravlje d.o.o.", orgIdNumber: "4400000000000", email: "info@apoteka-zdravlje.example", address: "Gunduliceva 2, Banja Luka" },
+    data: { zevId: zev.id, kind: "ORGANIZATION", orgName: "Apoteka Zdravlje d.o.o.", orgIdNumber: "4400000000000", email: "info@apoteka-zdravlje.example", address: "Gunduliceva 2, Banja Luka" },
   });
 
   // --- Users ---------------------------------------------------------------
@@ -66,29 +89,35 @@ async function main() {
   const anaUser = await prisma.user.create({
     data: { email: "vlasnik@zev.ba", passwordHash: pw, roles: ["OWNER"], partyId: ownerAna.id },
   });
-  await prisma.user.create({
+  const markoUser = await prisma.user.create({
     data: { email: "marko@zev.ba", passwordHash: pw, roles: ["OWNER"], partyId: ownerMarko.id },
   });
-  await prisma.user.create({
+  const nikolaUser = await prisma.user.create({
     data: { email: "nikola@zev.ba", passwordHash: pw, roles: ["OWNER"], partyId: ownerNikola.id },
   });
 
-  const president: Actor = { userId: presidentUser.id, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id };
-  const accountant: Actor = { userId: accountantUser.id, roles: ["ACCOUNTANT"], partyId: accountantParty.id };
+  const president: Actor = { userId: presidentUser.id, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id, zevId: zev.id };
+  const accountant: Actor = { userId: accountantUser.id, roles: ["ACCOUNTANT"], partyId: accountantParty.id, zevId: zev.id };
 
-  // --- ZEV, buildings, entrances, units -------------------------------------
-  const zev = await property.upsertZev(president, {
-    legalName: 'Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka',
-    shortName: "ZEV VM 10-12",
-    registrationNumber: "REG-035/2019",
-    jib: "4512345670001",
-    registeredAddress: "Ulica Vojvode Mišića 10, 78000 Banja Luka",
-    city: "Banja Luka",
-    municipality: "Banja Luka",
+  // --- Buildings, entrances, units -------------------------------------------
+
+  // Membership rows mirroring each user's `roles` array above — this is what auth
+  // actually reads now (see resolveActiveZev in src/server/auth/session.ts).
+  // User.roles is kept in sync too (still read by a couple of display spots) but is no
+  // longer the source of truth.
+  await prisma.membership.createMany({
+    data: [
+      { userId: presidentUser.id, zevId: zev.id, role: "PRESIDENT" },
+      { userId: presidentUser.id, zevId: zev.id, role: "OWNER" },
+      { userId: accountantUser.id, zevId: zev.id, role: "ACCOUNTANT" },
+      { userId: anaUser.id, zevId: zev.id, role: "OWNER" },
+      { userId: markoUser.id, zevId: zev.id, role: "OWNER" },
+      { userId: nikolaUser.id, zevId: zev.id, role: "OWNER" },
+    ],
   });
 
-  const zgradaA = await property.createBuilding(president, { zevId: zev.id, name: "Zgrada A (Vojvode Mišića 10)", address: "Vojvode Mišića 10, Banja Luka", yearBuilt: 1987 });
-  const zgradaB = await property.createBuilding(president, { zevId: zev.id, name: "Zgrada B (Vojvode Mišića 12)", address: "Vojvode Mišića 12, Banja Luka", yearBuilt: 1990 });
+  const zgradaA = await property.createBuilding(president, { name: "Zgrada A (Vojvode Mišića 10)", address: "Vojvode Mišića 10, Banja Luka", yearBuilt: 1987 });
+  const zgradaB = await property.createBuilding(president, { name: "Zgrada B (Vojvode Mišića 12)", address: "Vojvode Mišića 12, Banja Luka", yearBuilt: 1990 });
   const ulazA1 = await property.createEntrance(president, { buildingId: zgradaA.id, name: "Ulaz A1" });
   const ulazA2 = await property.createEntrance(president, { buildingId: zgradaA.id, name: "Ulaz A2" });
   const ulazB1 = await property.createEntrance(president, { buildingId: zgradaB.id, name: "Ulaz B1" });
@@ -151,11 +180,11 @@ async function main() {
 
   // --- Money accounts -------------------------------------------------------
   const bankAcc = await finance.createAccount(accountant, {
-    zevId: zev.id, type: "BANK", name: "Glavni račun — NLB banka", bankName: "NLB Banka a.d. Banja Luka",
+    type: "BANK", name: "Glavni račun — NLB banka", bankName: "NLB Banka a.d. Banja Luka",
     iban: "5620990000123456", openingBalance: "2450.00", openingDate: yearStart,
   });
   await finance.createAccount(accountant, {
-    zevId: zev.id, type: "CASH", name: "Blagajna", openingBalance: "150.00", openingDate: yearStart,
+    type: "CASH", name: "Blagajna", openingBalance: "150.00", openingDate: yearStart,
   });
 
   // --- Charge items (different formulas) -------------------------------------
@@ -234,7 +263,7 @@ async function main() {
 
   const expLift = await expenses.createExpense(accountant, {
     supplierId: dobavljacLift.id, invoiceNumber: `LS-${year}-081`, invoiceDate: new Date(),
-    categoryId: (await finance.ensureCategory("Održavanje lifta", "EXPENSE")).id,
+    categoryId: (await finance.ensureCategory(accountant, "Održavanje lifta", "EXPENSE")).id,
     amount: "120.00", dueDate: new Date(Date.now() + 20 * 86400000), buildingId: zgradaA.id,
     description: "Mjesečno održavanje lifta", recurring: true, recurrenceRule: "MONTHLY",
   });
@@ -242,7 +271,7 @@ async function main() {
 
   await expenses.createExpense(accountant, {
     supplierId: dobavljacCistoca.id, invoiceNumber: `CP-${year}-330`, invoiceDate: new Date(),
-    categoryId: (await finance.ensureCategory("Čišćenje", "EXPENSE")).id,
+    categoryId: (await finance.ensureCategory(accountant, "Čišćenje", "EXPENSE")).id,
     amount: "160.00", dueDate: new Date(Date.now() + 10 * 86400000),
     description: "Čišćenje zajedničkih prostorija", recurring: true, recurrenceRule: "MONTHLY",
   }); // stays UNPAID
@@ -414,7 +443,7 @@ async function main() {
   // left open for live demo — links/codes visible in Podešavanja → Poslate poruke
 
   // --- Maintenance issues --------------------------------------------------------
-  const anaActor: Actor = { userId: anaUser.id, roles: ["OWNER"], partyId: ownerAna.id };
+  const anaActor: Actor = { userId: anaUser.id, roles: ["OWNER"], partyId: ownerAna.id, zevId: zev.id };
   const issueRoof = await maintenance.reportIssue(anaActor, {
     title: "Prokišnjavanje krova — Zgrada B",
     description: "Poslije jakih padavina voda ulazi u hodnik trećeg sprata.",
@@ -440,7 +469,7 @@ async function main() {
   await documents.generateWorkOrderPdf(president, wo.id);
   await expenses.createExpense(accountant, {
     supplierId: dobavljacLift.id, invoiceNumber: `LS-${year}-095`, invoiceDate: new Date(),
-    categoryId: (await finance.ensureCategory("Sanacije", "EXPENSE")).id,
+    categoryId: (await finance.ensureCategory(accountant, "Sanacije", "EXPENSE")).id,
     amount: "4650.00", dueDate: new Date(Date.now() + 30 * 86400000),
     buildingId: zgradaB.id, maintenanceIssueId: issueRoof.id, planItemId: piKrov.id,
     description: "Sanacija krova — Zgrada B (avansna situacija)",
@@ -464,7 +493,7 @@ async function main() {
   await maintenance.ratifyEmergency(president, issueBurst.id, `Zapisnik ${year}-01, tačka Razno`);
   const expBurst = await expenses.createExpense(accountant, {
     supplierId: dobavljacVodo.id, invoiceNumber: `VP-${year}-12`, invoiceDate: new Date(),
-    categoryId: (await finance.ensureCategory("Hitne intervencije", "EXPENSE")).id,
+    categoryId: (await finance.ensureCategory(accountant, "Hitne intervencije", "EXPENSE")).id,
     amount: "175.00", buildingId: zgradaA.id, maintenanceIssueId: issueBurst.id,
     description: "Hitna zamjena pukle cijevi",
   });

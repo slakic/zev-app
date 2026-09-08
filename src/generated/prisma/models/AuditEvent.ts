@@ -26,6 +26,7 @@ export type AggregateAuditEvent = {
 
 export type AuditEventMinAggregateOutputType = {
   id: string | null
+  zevId: string | null
   actorId: string | null
   actorLabel: string | null
   action: string | null
@@ -38,6 +39,7 @@ export type AuditEventMinAggregateOutputType = {
 
 export type AuditEventMaxAggregateOutputType = {
   id: string | null
+  zevId: string | null
   actorId: string | null
   actorLabel: string | null
   action: string | null
@@ -50,6 +52,7 @@ export type AuditEventMaxAggregateOutputType = {
 
 export type AuditEventCountAggregateOutputType = {
   id: number
+  zevId: number
   actorId: number
   actorLabel: number
   action: number
@@ -66,6 +69,7 @@ export type AuditEventCountAggregateOutputType = {
 
 export type AuditEventMinAggregateInputType = {
   id?: true
+  zevId?: true
   actorId?: true
   actorLabel?: true
   action?: true
@@ -78,6 +82,7 @@ export type AuditEventMinAggregateInputType = {
 
 export type AuditEventMaxAggregateInputType = {
   id?: true
+  zevId?: true
   actorId?: true
   actorLabel?: true
   action?: true
@@ -90,6 +95,7 @@ export type AuditEventMaxAggregateInputType = {
 
 export type AuditEventCountAggregateInputType = {
   id?: true
+  zevId?: true
   actorId?: true
   actorLabel?: true
   action?: true
@@ -177,6 +183,7 @@ export type AuditEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type AuditEventGroupByOutputType = {
   id: string
+  zevId: string | null
   actorId: string | null
   actorLabel: string | null
   action: string
@@ -212,6 +219,7 @@ export type AuditEventWhereInput = {
   OR?: Prisma.AuditEventWhereInput[]
   NOT?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
   id?: Prisma.StringFilter<"AuditEvent"> | string
+  zevId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   actorId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   actorLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   action?: Prisma.StringFilter<"AuditEvent"> | string
@@ -222,10 +230,12 @@ export type AuditEventWhereInput = {
   reason?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   ipHash?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
 }
 
 export type AuditEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrderInput | Prisma.SortOrder
   actorId?: Prisma.SortOrderInput | Prisma.SortOrder
   actorLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
@@ -236,6 +246,7 @@ export type AuditEventOrderByWithRelationInput = {
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   ipHash?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  zev?: Prisma.ZevOrderByWithRelationInput
 }
 
 export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
@@ -243,6 +254,7 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
   OR?: Prisma.AuditEventWhereInput[]
   NOT?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
+  zevId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   actorId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   actorLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   action?: Prisma.StringFilter<"AuditEvent"> | string
@@ -253,10 +265,12 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   reason?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   ipHash?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
+  zev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
 }, "id">
 
 export type AuditEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrderInput | Prisma.SortOrder
   actorId?: Prisma.SortOrderInput | Prisma.SortOrder
   actorLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
@@ -277,6 +291,7 @@ export type AuditEventScalarWhereWithAggregatesInput = {
   OR?: Prisma.AuditEventScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AuditEventScalarWhereWithAggregatesInput | Prisma.AuditEventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
+  zevId?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   actorId?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   actorLabel?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   action?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
@@ -301,10 +316,12 @@ export type AuditEventCreateInput = {
   reason?: string | null
   ipHash?: string | null
   createdAt?: Date | string
+  zev?: Prisma.ZevCreateNestedOneWithoutAuditEventsInput
 }
 
 export type AuditEventUncheckedCreateInput = {
   id?: string
+  zevId?: string | null
   actorId?: string | null
   actorLabel?: string | null
   action: string
@@ -329,10 +346,12 @@ export type AuditEventUpdateInput = {
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneWithoutAuditEventsNestedInput
 }
 
 export type AuditEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
@@ -347,6 +366,7 @@ export type AuditEventUncheckedUpdateInput = {
 
 export type AuditEventCreateManyInput = {
   id?: string
+  zevId?: string | null
   actorId?: string | null
   actorLabel?: string | null
   action: string
@@ -375,6 +395,7 @@ export type AuditEventUpdateManyMutationInput = {
 
 export type AuditEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
@@ -387,8 +408,19 @@ export type AuditEventUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type AuditEventListRelationFilter = {
+  every?: Prisma.AuditEventWhereInput
+  some?: Prisma.AuditEventWhereInput
+  none?: Prisma.AuditEventWhereInput
+}
+
+export type AuditEventOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type AuditEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrder
   action?: Prisma.SortOrder
@@ -403,6 +435,7 @@ export type AuditEventCountOrderByAggregateInput = {
 
 export type AuditEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrder
   action?: Prisma.SortOrder
@@ -415,6 +448,7 @@ export type AuditEventMaxOrderByAggregateInput = {
 
 export type AuditEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  zevId?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrder
   action?: Prisma.SortOrder
@@ -425,10 +459,181 @@ export type AuditEventMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type AuditEventCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutZevInput, Prisma.AuditEventUncheckedCreateWithoutZevInput> | Prisma.AuditEventCreateWithoutZevInput[] | Prisma.AuditEventUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutZevInput | Prisma.AuditEventCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.AuditEventCreateManyZevInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUncheckedCreateNestedManyWithoutZevInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutZevInput, Prisma.AuditEventUncheckedCreateWithoutZevInput> | Prisma.AuditEventCreateWithoutZevInput[] | Prisma.AuditEventUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutZevInput | Prisma.AuditEventCreateOrConnectWithoutZevInput[]
+  createMany?: Prisma.AuditEventCreateManyZevInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutZevInput, Prisma.AuditEventUncheckedCreateWithoutZevInput> | Prisma.AuditEventCreateWithoutZevInput[] | Prisma.AuditEventUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutZevInput | Prisma.AuditEventCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutZevInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.AuditEventCreateManyZevInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutZevInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutZevInput | Prisma.AuditEventUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
+export type AuditEventUncheckedUpdateManyWithoutZevNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutZevInput, Prisma.AuditEventUncheckedCreateWithoutZevInput> | Prisma.AuditEventCreateWithoutZevInput[] | Prisma.AuditEventUncheckedCreateWithoutZevInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutZevInput | Prisma.AuditEventCreateOrConnectWithoutZevInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutZevInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutZevInput[]
+  createMany?: Prisma.AuditEventCreateManyZevInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutZevInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutZevInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutZevInput | Prisma.AuditEventUpdateManyWithWhereWithoutZevInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
+export type AuditEventCreateWithoutZevInput = {
+  id?: string
+  actorId?: string | null
+  actorLabel?: string | null
+  action: string
+  targetType: string
+  targetId?: string | null
+  before?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  after?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  ipHash?: string | null
+  createdAt?: Date | string
+}
+
+export type AuditEventUncheckedCreateWithoutZevInput = {
+  id?: string
+  actorId?: string | null
+  actorLabel?: string | null
+  action: string
+  targetType: string
+  targetId?: string | null
+  before?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  after?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  ipHash?: string | null
+  createdAt?: Date | string
+}
+
+export type AuditEventCreateOrConnectWithoutZevInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutZevInput, Prisma.AuditEventUncheckedCreateWithoutZevInput>
+}
+
+export type AuditEventCreateManyZevInputEnvelope = {
+  data: Prisma.AuditEventCreateManyZevInput | Prisma.AuditEventCreateManyZevInput[]
+  skipDuplicates?: boolean
+}
+
+export type AuditEventUpsertWithWhereUniqueWithoutZevInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  update: Prisma.XOR<Prisma.AuditEventUpdateWithoutZevInput, Prisma.AuditEventUncheckedUpdateWithoutZevInput>
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutZevInput, Prisma.AuditEventUncheckedCreateWithoutZevInput>
+}
+
+export type AuditEventUpdateWithWhereUniqueWithoutZevInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateWithoutZevInput, Prisma.AuditEventUncheckedUpdateWithoutZevInput>
+}
+
+export type AuditEventUpdateManyWithWhereWithoutZevInput = {
+  where: Prisma.AuditEventScalarWhereInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateManyMutationInput, Prisma.AuditEventUncheckedUpdateManyWithoutZevInput>
+}
+
+export type AuditEventScalarWhereInput = {
+  AND?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+  OR?: Prisma.AuditEventScalarWhereInput[]
+  NOT?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+  id?: Prisma.StringFilter<"AuditEvent"> | string
+  zevId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  actorId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  actorLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  action?: Prisma.StringFilter<"AuditEvent"> | string
+  targetType?: Prisma.StringFilter<"AuditEvent"> | string
+  targetId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  before?: Prisma.JsonNullableFilter<"AuditEvent">
+  after?: Prisma.JsonNullableFilter<"AuditEvent">
+  reason?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  ipHash?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
+}
+
+export type AuditEventCreateManyZevInput = {
+  id?: string
+  actorId?: string | null
+  actorLabel?: string | null
+  action: string
+  targetType: string
+  targetId?: string | null
+  before?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  after?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  ipHash?: string | null
+  createdAt?: Date | string
+}
+
+export type AuditEventUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  targetType?: Prisma.StringFieldUpdateOperationsInput | string
+  targetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  before?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  after?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventUncheckedUpdateWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  targetType?: Prisma.StringFieldUpdateOperationsInput | string
+  targetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  before?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  after?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  targetType?: Prisma.StringFieldUpdateOperationsInput | string
+  targetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  before?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  after?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   actorId?: boolean
   actorLabel?: boolean
   action?: boolean
@@ -439,10 +644,12 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   reason?: boolean
   ipHash?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.AuditEvent$zevArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   actorId?: boolean
   actorLabel?: boolean
   action?: boolean
@@ -453,10 +660,12 @@ export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   reason?: boolean
   ipHash?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.AuditEvent$zevArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  zevId?: boolean
   actorId?: boolean
   actorLabel?: boolean
   action?: boolean
@@ -467,10 +676,12 @@ export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   reason?: boolean
   ipHash?: boolean
   createdAt?: boolean
+  zev?: boolean | Prisma.AuditEvent$zevArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectScalar = {
   id?: boolean
+  zevId?: boolean
   actorId?: boolean
   actorLabel?: boolean
   action?: boolean
@@ -483,13 +694,25 @@ export type AuditEventSelectScalar = {
   createdAt?: boolean
 }
 
-export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "actorId" | "actorLabel" | "action" | "targetType" | "targetId" | "before" | "after" | "reason" | "ipHash" | "createdAt", ExtArgs["result"]["auditEvent"]>
+export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "actorId" | "actorLabel" | "action" | "targetType" | "targetId" | "before" | "after" | "reason" | "ipHash" | "createdAt", ExtArgs["result"]["auditEvent"]>
+export type AuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.AuditEvent$zevArgs<ExtArgs>
+}
+export type AuditEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.AuditEvent$zevArgs<ExtArgs>
+}
+export type AuditEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  zev?: boolean | Prisma.AuditEvent$zevArgs<ExtArgs>
+}
 
 export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AuditEvent"
-  objects: {}
+  objects: {
+    zev: Prisma.$ZevPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    zevId: string | null
     actorId: string | null
     actorLabel: string | null
     action: string
@@ -894,6 +1117,7 @@ readonly fields: AuditEventFieldRefs;
  */
 export interface Prisma__AuditEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  zev<T extends Prisma.AuditEvent$zevArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditEvent$zevArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -924,6 +1148,7 @@ export interface Prisma__AuditEventClient<T, Null = never, ExtArgs extends runti
  */
 export interface AuditEventFieldRefs {
   readonly id: Prisma.FieldRef<"AuditEvent", 'String'>
+  readonly zevId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly actorId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly actorLabel: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly action: Prisma.FieldRef<"AuditEvent", 'String'>
@@ -951,6 +1176,10 @@ export type AuditEventFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  /**
    * Filter, which AuditEvent to fetch.
    */
   where: Prisma.AuditEventWhereUniqueInput
@@ -969,6 +1198,10 @@ export type AuditEventFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  /**
    * Filter, which AuditEvent to fetch.
    */
   where: Prisma.AuditEventWhereUniqueInput
@@ -986,6 +1219,10 @@ export type AuditEventFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the AuditEvent
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
   /**
    * Filter, which AuditEvent to fetch.
    */
@@ -1035,6 +1272,10 @@ export type AuditEventFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  /**
    * Filter, which AuditEvent to fetch.
    */
   where?: Prisma.AuditEventWhereInput
@@ -1082,6 +1323,10 @@ export type AuditEventFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the AuditEvent
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
   /**
    * Filter, which AuditEvents to fetch.
    */
@@ -1131,6 +1376,10 @@ export type AuditEventCreateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  /**
    * The data needed to create a AuditEvent.
    */
   data: Prisma.XOR<Prisma.AuditEventCreateInput, Prisma.AuditEventUncheckedCreateInput>
@@ -1164,6 +1413,10 @@ export type AuditEventCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    */
   data: Prisma.AuditEventCreateManyInput | Prisma.AuditEventCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1178,6 +1431,10 @@ export type AuditEventUpdateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the AuditEvent
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
   /**
    * The data needed to update a AuditEvent.
    */
@@ -1230,6 +1487,10 @@ export type AuditEventUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many AuditEvents to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1244,6 +1505,10 @@ export type AuditEventUpsertArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the AuditEvent
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
   /**
    * The filter to search for the AuditEvent to update in case it exists.
    */
@@ -1271,6 +1536,10 @@ export type AuditEventDeleteArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  /**
    * Filter which AuditEvent to delete.
    */
   where: Prisma.AuditEventWhereUniqueInput
@@ -1291,6 +1560,25 @@ export type AuditEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
+ * AuditEvent.zev
+ */
+export type AuditEvent$zevArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Zev
+   */
+  select?: Prisma.ZevSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Zev
+   */
+  omit?: Prisma.ZevOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevInclude<ExtArgs> | null
+  where?: Prisma.ZevWhereInput
+}
+
+/**
  * AuditEvent without action
  */
 export type AuditEventDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1302,4 +1590,8 @@ export type AuditEventDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the AuditEvent
    */
   omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
 }
