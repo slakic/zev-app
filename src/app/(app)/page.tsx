@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireActor, isManagement } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { totalCash, reserveFundBalance } from "@/server/services/finance";
 import { receivablesReport, unpaidSupplierInvoices } from "@/server/services/reports";
@@ -21,6 +22,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
 async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<ReturnType<typeof requireActor>>; actorRoles: string[] }) {
   const isPresident = actorRoles.includes("PRESIDENT");
+  const zevId = requireZev(actor);
   const [cash, receivables, supplierUnpaid, fund] = await Promise.all([
     totalCash(actor),
     receivablesReport(actor),
@@ -29,18 +31,27 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
   ]);
   const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
 
+  // BUG FIXED HERE (2026-09-09, discovered while building the second real tenant):
+  // every query below was missing its zevId filter — invisible with one tenant, but
+  // with two it means this dashboard silently mixes in another tenant's meetings,
+  // votes, maintenance issues, draft invoice batches and unmatched payments. See
+  // docs/multitenancy-plan.md, Faza 1 "Napredak" addendum.
   const [upcomingMeetings, openProposals, openIssues, draftBatches, unmatchedPayments] = await Promise.all([
-    prisma.meeting.findMany({ where: { status: { in: ["SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
-    prisma.proposal.findMany({ where: { status: "VOTING_OPEN" }, include: { eligibleVoters: { include: { votes: true } } }, take: 5 }),
-    prisma.maintenanceIssue.findMany({ where: { status: { notIn: ["CLOSED", "REJECTED", "PAID"] } }, orderBy: { createdAt: "desc" }, take: 6, include: { reporter: true } }),
-    prisma.invoiceBatch.findMany({ where: { status: "DRAFT" }, take: 3 }),
-    prisma.payment.findMany({ where: { status: { in: ["UNAPPLIED", "PARTIALLY_APPLIED"] }, reversedAt: null }, take: 6 }),
+    prisma.meeting.findMany({ where: { zevId, status: { in: ["SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
+    prisma.proposal.findMany({ where: { zevId, status: "VOTING_OPEN" }, include: { eligibleVoters: { include: { votes: true } } }, take: 5 }),
+    prisma.maintenanceIssue.findMany({ where: { zevId, status: { notIn: ["CLOSED", "REJECTED", "PAID"] } }, orderBy: { createdAt: "desc" }, take: 6, include: { reporter: true } }),
+    prisma.invoiceBatch.findMany({ where: { zevId, status: "DRAFT" }, take: 3 }),
+    prisma.payment.findMany({ where: { zevId, status: { in: ["UNAPPLIED", "PARTIALLY_APPLIED"] }, reversedAt: null }, take: 6 }),
   ]);
 
-  const approvedPlan = await prisma.annualPlan.findFirst({ where: { status: "APPROVED", year: new Date().getFullYear() }, orderBy: { version: "desc" } });
+  // The most severe instance of the same bug: an unscoped findFirst() picking "the
+  // first approved plan in the whole database" — a president in tenant A could get
+  // tenant B's plan id fed into planVsActual(), which correctly rejects it as
+  // "not found" for the wrong zevId, crashing the dashboard on login.
+  const approvedPlan = await prisma.annualPlan.findFirst({ where: { zevId, status: "APPROVED", year: new Date().getFullYear() }, orderBy: { version: "desc" } });
   const pva = approvedPlan ? await planVsActual(actor, approvedPlan.id) : null;
   const inspections = await prisma.planItem.findMany({
-    where: { type: { in: ["INSPECTION", "PREVENTIVE_MAINTENANCE"] }, scheduledDate: { gte: new Date() } },
+    where: { zevId, type: { in: ["INSPECTION", "PREVENTIVE_MAINTENANCE"] }, scheduledDate: { gte: new Date() } },
     orderBy: { scheduledDate: "asc" }, take: 5,
   });
 
@@ -133,10 +144,15 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
   if (!partyId) {
     return <p className="text-slate-500">Vaš nalog nije povezan sa evidencijom vlasnika. Obratite se predsjedniku ZEV.</p>;
   }
+  const zevId = requireZev(actor);
   const [balance, advance] = await Promise.all([
     ownerBalance(actor, partyId),
     ownerAdvance(actor, partyId),
   ]);
+  // invoice/payment/eligibleVoter/maintenanceIssue queries below are filtered by
+  // partyId, which is itself tenant-unique (a Party belongs to exactly one Zev), so
+  // they can't cross tenants even without an explicit zevId — meeting/document below
+  // have no such implicit scoping and did need the fix (see ManagementDashboard above).
   const [unpaid, recentPayments, openVoting, meetings, decisions, myIssues] = await Promise.all([
     prisma.invoice.findMany({ where: { debtorId: partyId, status: "ISSUED" }, include: { allocations: true, unit: true }, orderBy: { dueDate: "asc" } }),
     prisma.payment.findMany({ where: { payerId: partyId, reversedAt: null }, orderBy: { date: "desc" }, take: 5 }),
@@ -144,8 +160,8 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
       where: { OR: [{ ownerId: partyId }, { proxyId: partyId }], proposal: { status: "VOTING_OPEN" } },
       include: { proposal: true, votes: { where: { invalid: false } } },
     }),
-    prisma.meeting.findMany({ where: { status: { in: ["SCHEDULED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
-    prisma.document.findMany({ where: { type: "DECISION", publishedToOwners: true }, orderBy: { createdAt: "desc" }, take: 5 }),
+    prisma.meeting.findMany({ where: { zevId, status: { in: ["SCHEDULED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
+    prisma.document.findMany({ where: { zevId, type: "DECISION", publishedToOwners: true }, orderBy: { createdAt: "desc" }, take: 5 }),
     prisma.maintenanceIssue.findMany({ where: { reporterId: partyId }, orderBy: { createdAt: "desc" }, take: 5 }),
   ]);
   return (

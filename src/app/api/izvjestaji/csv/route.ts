@@ -6,7 +6,7 @@ import { audit } from "@/server/audit";
 export async function GET(req: NextRequest) {
   const session = await getAuthContext();
   if (!session) return NextResponse.redirect(new URL("/login", req.url));
-  const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId };
+  const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId, zevId: session.zevId, isSuperAdmin: session.isSuperAdmin };
   if (!actor.roles.some((r) => r === "PRESIDENT" || r === "ACCOUNTANT")) {
     return new NextResponse("Zabranjen pristup.", { status: 403 });
   }

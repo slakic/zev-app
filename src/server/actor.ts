@@ -21,6 +21,7 @@ export async function requireActor(...roles: Role[]): Promise<Actor & { displayN
     partyId: ctx.partyId,
     zevId: ctx.zevId,
     isSuperAdmin: ctx.isSuperAdmin,
+    sessionId: ctx.sessionId,
     displayName: ctx.displayName,
     email: ctx.email,
   };
@@ -28,6 +29,29 @@ export async function requireActor(...roles: Role[]): Promise<Actor & { displayN
     redirect("/?err=forbidden");
   }
   return actor;
+}
+
+/**
+ * Resolve the Actor for /admin server components / actions. Redirects to /login when
+ * not signed in, and to / (not /login) when signed in but not a super admin — this
+ * mirrors requireActor()'s "?err=forbidden" pattern rather than treating a regular
+ * user visiting /admin as unauthenticated. Deliberately skips the zevSuspended check:
+ * /admin operates at the platform level, not within any one tenant.
+ */
+export async function requireSuperAdminActor(): Promise<Actor & { displayName: string; email: string }> {
+  const ctx = await getAuthContext();
+  if (!ctx) redirect("/login");
+  if (!ctx.isSuperAdmin) redirect("/?err=forbidden");
+  return {
+    userId: ctx.userId,
+    roles: ctx.roles,
+    partyId: ctx.partyId,
+    zevId: ctx.zevId,
+    isSuperAdmin: ctx.isSuperAdmin,
+    sessionId: ctx.sessionId,
+    displayName: ctx.displayName,
+    email: ctx.email,
+  };
 }
 
 export async function maybeActor(): Promise<(Actor & { displayName: string }) | null> {
@@ -39,6 +63,7 @@ export async function maybeActor(): Promise<(Actor & { displayName: string }) | 
     partyId: ctx.partyId,
     zevId: ctx.zevId,
     isSuperAdmin: ctx.isSuperAdmin,
+    sessionId: ctx.sessionId,
     displayName: ctx.displayName,
   };
 }

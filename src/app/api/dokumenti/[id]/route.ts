@@ -8,7 +8,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
   if (!session) return NextResponse.redirect(new URL("/login", _req.url));
   try {
     const { doc, buffer } = await readDocumentFile(
-      { userId: session.userId, roles: session.roles, partyId: session.partyId },
+      { userId: session.userId, roles: session.roles, partyId: session.partyId, zevId: session.zevId, isSuperAdmin: session.isSuperAdmin },
       id
     );
     return new NextResponse(new Uint8Array(buffer), {

@@ -46,7 +46,8 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
   const { id } = await params;
   const { err } = await searchParams;
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
-  const batch = await prisma.invoiceBatch.findUniqueOrThrow({ where: { id }, include: { invoices: true } });
+  const zevId = requireZev(actor);
+  const batch = await prisma.invoiceBatch.findUniqueOrThrow({ where: { id, zevId }, include: { invoices: true } });
   const preview = (batch.previewData as unknown as UnitCalculation[]) ?? [];
   const grandTotal = preview.reduce((a, c) => a + Number(c.total), 0);
 

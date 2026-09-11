@@ -1,11 +1,18 @@
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge } from "@/components/ui";
 
 export default async function MessagesPage() {
-  await requireActor("PRESIDENT", "ACCOUNTANT");
+  const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  // zevId added 2026-09-09 — was unscoped, showing every tenant's outbox. A handful of
+  // NotificationMessage rows are legitimately account-level (NULL zevId, e.g. a
+  // password-reset e-mail) — those are intentionally excluded from this per-tenant view.
+  // See docs/multitenancy-plan.md addendum.
   const messages = await prisma.notificationMessage.findMany({
+    where: { zevId },
     orderBy: { createdAt: "desc" },
     take: 200,
     include: { recipient: true },

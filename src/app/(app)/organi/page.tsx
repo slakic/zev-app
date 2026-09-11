@@ -5,7 +5,7 @@ import {
   listOfficeHolders, listOfficeHistory, addBoardMember, endBoardMembership, setOfficeTerm,
   listParties, partyDisplayName,
 } from "@/server/services/ownership";
-import { prisma } from "@/lib/prisma";
+import { getSettings } from "@/server/services/settings";
 import { formatDate } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
 
@@ -64,12 +64,11 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
   const [holders, history, settings] = await Promise.all([
     listOfficeHolders(actor),
     listOfficeHistory(actor),
-    prisma.setting.findMany({ where: { key: { in: ["board.size", "board.termYears", "board.presidentIsBoardPresident"] } } }),
+    getSettings(actor),
   ]);
   const parties = isPresident ? await listParties(actor) : [];
-  const settingsMap = new Map(settings.map((s) => [s.key, String(s.value)]));
-  const boardSize = settingsMap.get("board.size") ?? "3";
-  const termYears = settingsMap.get("board.termYears") ?? "4";
+  const boardSize = settings["board.size"];
+  const termYears = settings["board.termYears"];
 
   return (
     <div className="space-y-6">

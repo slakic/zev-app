@@ -298,6 +298,7 @@ export type ZevWhereInput = {
   attachments?: Prisma.AttachmentListRelationFilter
   notificationMessages?: Prisma.NotificationMessageListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  settings?: Prisma.SettingListRelationFilter
 }
 
 export type ZevOrderByWithRelationInput = {
@@ -352,6 +353,7 @@ export type ZevOrderByWithRelationInput = {
   attachments?: Prisma.AttachmentOrderByRelationAggregateInput
   notificationMessages?: Prisma.NotificationMessageOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
+  settings?: Prisma.SettingOrderByRelationAggregateInput
 }
 
 export type ZevWhereUniqueInput = Prisma.AtLeast<{
@@ -409,6 +411,7 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   attachments?: Prisma.AttachmentListRelationFilter
   notificationMessages?: Prisma.NotificationMessageListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  settings?: Prisma.SettingListRelationFilter
 }, "id">
 
 export type ZevOrderByWithAggregationInput = {
@@ -505,6 +508,7 @@ export type ZevCreateInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateInput = {
@@ -559,6 +563,7 @@ export type ZevUncheckedCreateInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevUpdateInput = {
@@ -613,6 +618,7 @@ export type ZevUpdateInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateInput = {
@@ -667,6 +673,7 @@ export type ZevUncheckedUpdateInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateManyInput = {
@@ -1301,6 +1308,20 @@ export type ZevUpdateOneWithoutAuditEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutAuditEventsInput, Prisma.ZevUpdateWithoutAuditEventsInput>, Prisma.ZevUncheckedUpdateWithoutAuditEventsInput>
 }
 
+export type ZevCreateNestedOneWithoutSettingsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutSettingsInput, Prisma.ZevUncheckedCreateWithoutSettingsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutSettingsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutSettingsInput, Prisma.ZevUncheckedCreateWithoutSettingsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutSettingsInput
+  upsert?: Prisma.ZevUpsertWithoutSettingsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutSettingsInput, Prisma.ZevUpdateWithoutSettingsInput>, Prisma.ZevUncheckedUpdateWithoutSettingsInput>
+}
+
 export type ZevCreateWithoutSessionsInput = {
   id?: string
   legalName: string
@@ -1352,6 +1373,7 @@ export type ZevCreateWithoutSessionsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutSessionsInput = {
@@ -1405,6 +1427,7 @@ export type ZevUncheckedCreateWithoutSessionsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutSessionsInput = {
@@ -1474,6 +1497,7 @@ export type ZevUpdateWithoutSessionsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutSessionsInput = {
@@ -1527,6 +1551,7 @@ export type ZevUncheckedUpdateWithoutSessionsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutPartiesInput = {
@@ -1580,6 +1605,7 @@ export type ZevCreateWithoutPartiesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutPartiesInput = {
@@ -1633,6 +1659,7 @@ export type ZevUncheckedCreateWithoutPartiesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutPartiesInput = {
@@ -1702,6 +1729,7 @@ export type ZevUpdateWithoutPartiesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutPartiesInput = {
@@ -1755,6 +1783,7 @@ export type ZevUncheckedUpdateWithoutPartiesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMembershipsInput = {
@@ -1808,6 +1837,7 @@ export type ZevCreateWithoutMembershipsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMembershipsInput = {
@@ -1861,6 +1891,7 @@ export type ZevUncheckedCreateWithoutMembershipsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMembershipsInput = {
@@ -1930,6 +1961,7 @@ export type ZevUpdateWithoutMembershipsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMembershipsInput = {
@@ -1983,6 +2015,7 @@ export type ZevUncheckedUpdateWithoutMembershipsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBuildingsInput = {
@@ -2036,6 +2069,7 @@ export type ZevCreateWithoutBuildingsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBuildingsInput = {
@@ -2089,6 +2123,7 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBuildingsInput = {
@@ -2158,6 +2193,7 @@ export type ZevUpdateWithoutBuildingsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBuildingsInput = {
@@ -2211,6 +2247,7 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutEntrancesInput = {
@@ -2264,6 +2301,7 @@ export type ZevCreateWithoutEntrancesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutEntrancesInput = {
@@ -2317,6 +2355,7 @@ export type ZevUncheckedCreateWithoutEntrancesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutEntrancesInput = {
@@ -2386,6 +2425,7 @@ export type ZevUpdateWithoutEntrancesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutEntrancesInput = {
@@ -2439,6 +2479,7 @@ export type ZevUncheckedUpdateWithoutEntrancesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutUnitsInput = {
@@ -2492,6 +2533,7 @@ export type ZevCreateWithoutUnitsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutUnitsInput = {
@@ -2545,6 +2587,7 @@ export type ZevUncheckedCreateWithoutUnitsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutUnitsInput = {
@@ -2614,6 +2657,7 @@ export type ZevUpdateWithoutUnitsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutUnitsInput = {
@@ -2667,6 +2711,7 @@ export type ZevUncheckedUpdateWithoutUnitsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutOwnershipStakesInput = {
@@ -2720,6 +2765,7 @@ export type ZevCreateWithoutOwnershipStakesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
@@ -2773,6 +2819,7 @@ export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutOwnershipStakesInput = {
@@ -2842,6 +2889,7 @@ export type ZevUpdateWithoutOwnershipStakesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
@@ -2895,6 +2943,7 @@ export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutOccupanciesInput = {
@@ -2948,6 +2997,7 @@ export type ZevCreateWithoutOccupanciesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutOccupanciesInput = {
@@ -3001,6 +3051,7 @@ export type ZevUncheckedCreateWithoutOccupanciesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutOccupanciesInput = {
@@ -3070,6 +3121,7 @@ export type ZevUpdateWithoutOccupanciesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutOccupanciesInput = {
@@ -3123,6 +3175,7 @@ export type ZevUncheckedUpdateWithoutOccupanciesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutProxiesInput = {
@@ -3176,6 +3229,7 @@ export type ZevCreateWithoutProxiesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutProxiesInput = {
@@ -3229,6 +3283,7 @@ export type ZevUncheckedCreateWithoutProxiesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutProxiesInput = {
@@ -3298,6 +3353,7 @@ export type ZevUpdateWithoutProxiesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutProxiesInput = {
@@ -3351,6 +3407,7 @@ export type ZevUncheckedUpdateWithoutProxiesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutOfficeTermsInput = {
@@ -3404,6 +3461,7 @@ export type ZevCreateWithoutOfficeTermsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutOfficeTermsInput = {
@@ -3457,6 +3515,7 @@ export type ZevUncheckedCreateWithoutOfficeTermsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutOfficeTermsInput = {
@@ -3526,6 +3585,7 @@ export type ZevUpdateWithoutOfficeTermsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
@@ -3579,6 +3639,7 @@ export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAllocationGroupsInput = {
@@ -3632,6 +3693,7 @@ export type ZevCreateWithoutAllocationGroupsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
@@ -3685,6 +3747,7 @@ export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAllocationGroupsInput = {
@@ -3754,6 +3817,7 @@ export type ZevUpdateWithoutAllocationGroupsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
@@ -3807,6 +3871,7 @@ export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutCommonAssetsInput = {
@@ -3860,6 +3925,7 @@ export type ZevCreateWithoutCommonAssetsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutCommonAssetsInput = {
@@ -3913,6 +3979,7 @@ export type ZevUncheckedCreateWithoutCommonAssetsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutCommonAssetsInput = {
@@ -3982,6 +4049,7 @@ export type ZevUpdateWithoutCommonAssetsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
@@ -4035,6 +4103,7 @@ export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMeetingsInput = {
@@ -4088,6 +4157,7 @@ export type ZevCreateWithoutMeetingsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMeetingsInput = {
@@ -4141,6 +4211,7 @@ export type ZevUncheckedCreateWithoutMeetingsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMeetingsInput = {
@@ -4210,6 +4281,7 @@ export type ZevUpdateWithoutMeetingsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMeetingsInput = {
@@ -4263,6 +4335,7 @@ export type ZevUncheckedUpdateWithoutMeetingsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutVotingRulesInput = {
@@ -4316,6 +4389,7 @@ export type ZevCreateWithoutVotingRulesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutVotingRulesInput = {
@@ -4369,6 +4443,7 @@ export type ZevUncheckedCreateWithoutVotingRulesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutVotingRulesInput = {
@@ -4438,6 +4513,7 @@ export type ZevUpdateWithoutVotingRulesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutVotingRulesInput = {
@@ -4491,6 +4567,7 @@ export type ZevUncheckedUpdateWithoutVotingRulesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutProposalsInput = {
@@ -4544,6 +4621,7 @@ export type ZevCreateWithoutProposalsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutProposalsInput = {
@@ -4597,6 +4675,7 @@ export type ZevUncheckedCreateWithoutProposalsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutProposalsInput = {
@@ -4666,6 +4745,7 @@ export type ZevUpdateWithoutProposalsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutProposalsInput = {
@@ -4719,6 +4799,7 @@ export type ZevUncheckedUpdateWithoutProposalsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutVotesInput = {
@@ -4772,6 +4853,7 @@ export type ZevCreateWithoutVotesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutVotesInput = {
@@ -4825,6 +4907,7 @@ export type ZevUncheckedCreateWithoutVotesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutVotesInput = {
@@ -4894,6 +4977,7 @@ export type ZevUpdateWithoutVotesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutVotesInput = {
@@ -4947,6 +5031,7 @@ export type ZevUncheckedUpdateWithoutVotesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAccountsInput = {
@@ -5000,6 +5085,7 @@ export type ZevCreateWithoutAccountsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAccountsInput = {
@@ -5053,6 +5139,7 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAccountsInput = {
@@ -5122,6 +5209,7 @@ export type ZevUpdateWithoutAccountsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAccountsInput = {
@@ -5175,6 +5263,7 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutTransactionCategoriesInput = {
@@ -5228,6 +5317,7 @@ export type ZevCreateWithoutTransactionCategoriesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
@@ -5281,6 +5371,7 @@ export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutTransactionCategoriesInput = {
@@ -5350,6 +5441,7 @@ export type ZevUpdateWithoutTransactionCategoriesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
@@ -5403,6 +5495,7 @@ export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutFinTransactionsInput = {
@@ -5456,6 +5549,7 @@ export type ZevCreateWithoutFinTransactionsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutFinTransactionsInput = {
@@ -5509,6 +5603,7 @@ export type ZevUncheckedCreateWithoutFinTransactionsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutFinTransactionsInput = {
@@ -5578,6 +5673,7 @@ export type ZevUpdateWithoutFinTransactionsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
@@ -5631,6 +5727,7 @@ export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutChargeItemsInput = {
@@ -5684,6 +5781,7 @@ export type ZevCreateWithoutChargeItemsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutChargeItemsInput = {
@@ -5737,6 +5835,7 @@ export type ZevUncheckedCreateWithoutChargeItemsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutChargeItemsInput = {
@@ -5806,6 +5905,7 @@ export type ZevUpdateWithoutChargeItemsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutChargeItemsInput = {
@@ -5859,6 +5959,7 @@ export type ZevUncheckedUpdateWithoutChargeItemsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutInvoiceBatchesInput = {
@@ -5912,6 +6013,7 @@ export type ZevCreateWithoutInvoiceBatchesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
@@ -5965,6 +6067,7 @@ export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutInvoiceBatchesInput = {
@@ -6034,6 +6137,7 @@ export type ZevUpdateWithoutInvoiceBatchesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
@@ -6087,6 +6191,7 @@ export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutInvoicesInput = {
@@ -6140,6 +6245,7 @@ export type ZevCreateWithoutInvoicesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutInvoicesInput = {
@@ -6193,6 +6299,7 @@ export type ZevUncheckedCreateWithoutInvoicesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutInvoicesInput = {
@@ -6262,6 +6369,7 @@ export type ZevUpdateWithoutInvoicesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutInvoicesInput = {
@@ -6315,6 +6423,7 @@ export type ZevUncheckedUpdateWithoutInvoicesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBankImportBatchesInput = {
@@ -6368,6 +6477,7 @@ export type ZevCreateWithoutBankImportBatchesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
@@ -6421,6 +6531,7 @@ export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBankImportBatchesInput = {
@@ -6490,6 +6601,7 @@ export type ZevUpdateWithoutBankImportBatchesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
@@ -6543,6 +6655,7 @@ export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutPaymentsInput = {
@@ -6596,6 +6709,7 @@ export type ZevCreateWithoutPaymentsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutPaymentsInput = {
@@ -6649,6 +6763,7 @@ export type ZevUncheckedCreateWithoutPaymentsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutPaymentsInput = {
@@ -6718,6 +6833,7 @@ export type ZevUpdateWithoutPaymentsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutPaymentsInput = {
@@ -6771,6 +6887,7 @@ export type ZevUncheckedUpdateWithoutPaymentsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBalanceCorrectionsInput = {
@@ -6824,6 +6941,7 @@ export type ZevCreateWithoutBalanceCorrectionsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
@@ -6877,6 +6995,7 @@ export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBalanceCorrectionsInput = {
@@ -6946,6 +7065,7 @@ export type ZevUpdateWithoutBalanceCorrectionsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
@@ -6999,6 +7119,7 @@ export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutSuppliersInput = {
@@ -7052,6 +7173,7 @@ export type ZevCreateWithoutSuppliersInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutSuppliersInput = {
@@ -7105,6 +7227,7 @@ export type ZevUncheckedCreateWithoutSuppliersInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutSuppliersInput = {
@@ -7174,6 +7297,7 @@ export type ZevUpdateWithoutSuppliersInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutSuppliersInput = {
@@ -7227,6 +7351,7 @@ export type ZevUncheckedUpdateWithoutSuppliersInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutExpensesInput = {
@@ -7280,6 +7405,7 @@ export type ZevCreateWithoutExpensesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutExpensesInput = {
@@ -7333,6 +7459,7 @@ export type ZevUncheckedCreateWithoutExpensesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutExpensesInput = {
@@ -7402,6 +7529,7 @@ export type ZevUpdateWithoutExpensesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutExpensesInput = {
@@ -7455,6 +7583,7 @@ export type ZevUncheckedUpdateWithoutExpensesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAnnualPlansInput = {
@@ -7508,6 +7637,7 @@ export type ZevCreateWithoutAnnualPlansInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAnnualPlansInput = {
@@ -7561,6 +7691,7 @@ export type ZevUncheckedCreateWithoutAnnualPlansInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAnnualPlansInput = {
@@ -7630,6 +7761,7 @@ export type ZevUpdateWithoutAnnualPlansInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
@@ -7683,6 +7815,7 @@ export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutPlanItemsInput = {
@@ -7736,6 +7869,7 @@ export type ZevCreateWithoutPlanItemsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutPlanItemsInput = {
@@ -7789,6 +7923,7 @@ export type ZevUncheckedCreateWithoutPlanItemsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutPlanItemsInput = {
@@ -7858,6 +7993,7 @@ export type ZevUpdateWithoutPlanItemsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutPlanItemsInput = {
@@ -7911,6 +8047,7 @@ export type ZevUncheckedUpdateWithoutPlanItemsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutProjectsInput = {
@@ -7964,6 +8101,7 @@ export type ZevCreateWithoutProjectsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutProjectsInput = {
@@ -8017,6 +8155,7 @@ export type ZevUncheckedCreateWithoutProjectsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutProjectsInput = {
@@ -8086,6 +8225,7 @@ export type ZevUpdateWithoutProjectsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutProjectsInput = {
@@ -8139,6 +8279,7 @@ export type ZevUncheckedUpdateWithoutProjectsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMaintenanceIssuesInput = {
@@ -8192,6 +8333,7 @@ export type ZevCreateWithoutMaintenanceIssuesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
@@ -8245,6 +8387,7 @@ export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMaintenanceIssuesInput = {
@@ -8314,6 +8457,7 @@ export type ZevUpdateWithoutMaintenanceIssuesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
@@ -8367,6 +8511,7 @@ export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutWorkOrdersInput = {
@@ -8420,6 +8565,7 @@ export type ZevCreateWithoutWorkOrdersInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutWorkOrdersInput = {
@@ -8473,6 +8619,7 @@ export type ZevUncheckedCreateWithoutWorkOrdersInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutWorkOrdersInput = {
@@ -8542,6 +8689,7 @@ export type ZevUpdateWithoutWorkOrdersInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
@@ -8595,6 +8743,7 @@ export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutDocumentsInput = {
@@ -8648,6 +8797,7 @@ export type ZevCreateWithoutDocumentsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutDocumentsInput = {
@@ -8701,6 +8851,7 @@ export type ZevUncheckedCreateWithoutDocumentsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutDocumentsInput = {
@@ -8770,6 +8921,7 @@ export type ZevUpdateWithoutDocumentsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutDocumentsInput = {
@@ -8823,6 +8975,7 @@ export type ZevUncheckedUpdateWithoutDocumentsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAttachmentsInput = {
@@ -8876,6 +9029,7 @@ export type ZevCreateWithoutAttachmentsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAttachmentsInput = {
@@ -8929,6 +9083,7 @@ export type ZevUncheckedCreateWithoutAttachmentsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAttachmentsInput = {
@@ -8998,6 +9153,7 @@ export type ZevUpdateWithoutAttachmentsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAttachmentsInput = {
@@ -9051,6 +9207,7 @@ export type ZevUncheckedUpdateWithoutAttachmentsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutNotificationMessagesInput = {
@@ -9104,6 +9261,7 @@ export type ZevCreateWithoutNotificationMessagesInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
@@ -9157,6 +9315,7 @@ export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutNotificationMessagesInput = {
@@ -9226,6 +9385,7 @@ export type ZevUpdateWithoutNotificationMessagesInput = {
   documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
@@ -9279,6 +9439,7 @@ export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAuditEventsInput = {
@@ -9332,6 +9493,7 @@ export type ZevCreateWithoutAuditEventsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAuditEventsInput = {
@@ -9385,6 +9547,7 @@ export type ZevUncheckedCreateWithoutAuditEventsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAuditEventsInput = {
@@ -9454,6 +9617,7 @@ export type ZevUpdateWithoutAuditEventsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAuditEventsInput = {
@@ -9507,6 +9671,239 @@ export type ZevUncheckedUpdateWithoutAuditEventsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutSettingsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutSettingsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutSettingsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutSettingsInput, Prisma.ZevUncheckedCreateWithoutSettingsInput>
+}
+
+export type ZevUpsertWithoutSettingsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutSettingsInput, Prisma.ZevUncheckedUpdateWithoutSettingsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutSettingsInput, Prisma.ZevUncheckedCreateWithoutSettingsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutSettingsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutSettingsInput, Prisma.ZevUncheckedUpdateWithoutSettingsInput>
+}
+
+export type ZevUpdateWithoutSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
 }
 
 
@@ -9551,6 +9948,7 @@ export type ZevCountOutputType = {
   attachments: number
   notificationMessages: number
   auditEvents: number
+  settings: number
 }
 
 export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -9590,6 +9988,7 @@ export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.In
   attachments?: boolean | ZevCountOutputTypeCountAttachmentsArgs
   notificationMessages?: boolean | ZevCountOutputTypeCountNotificationMessagesArgs
   auditEvents?: boolean | ZevCountOutputTypeCountAuditEventsArgs
+  settings?: boolean | ZevCountOutputTypeCountSettingsArgs
 }
 
 /**
@@ -9854,6 +10253,13 @@ export type ZevCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Types
   where?: Prisma.AuditEventWhereInput
 }
 
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SettingWhereInput
+}
+
 
 export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -9907,6 +10313,7 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   attachments?: boolean | Prisma.Zev$attachmentsArgs<ExtArgs>
   notificationMessages?: boolean | Prisma.Zev$notificationMessagesArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Zev$auditEventsArgs<ExtArgs>
+  settings?: boolean | Prisma.Zev$settingsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["zev"]>
 
@@ -10002,6 +10409,7 @@ export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   attachments?: boolean | Prisma.Zev$attachmentsArgs<ExtArgs>
   notificationMessages?: boolean | Prisma.Zev$notificationMessagesArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Zev$auditEventsArgs<ExtArgs>
+  settings?: boolean | Prisma.Zev$settingsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ZevIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -10046,6 +10454,7 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     attachments: Prisma.$AttachmentPayload<ExtArgs>[]
     notificationMessages: Prisma.$NotificationMessagePayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
+    settings: Prisma.$SettingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -10500,6 +10909,7 @@ export interface Prisma__ZevClient<T, Null = never, ExtArgs extends runtime.Type
   attachments<T extends Prisma.Zev$attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notificationMessages<T extends Prisma.Zev$notificationMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$notificationMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.Zev$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  settings<T extends Prisma.Zev$settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$settingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11798,6 +12208,30 @@ export type Zev$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
+}
+
+/**
+ * Zev.settings
+ */
+export type Zev$settingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Setting
+   */
+  select?: Prisma.SettingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Setting
+   */
+  omit?: Prisma.SettingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SettingInclude<ExtArgs> | null
+  where?: Prisma.SettingWhereInput
+  orderBy?: Prisma.SettingOrderByWithRelationInput | Prisma.SettingOrderByWithRelationInput[]
+  cursor?: Prisma.SettingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SettingScalarFieldEnum | Prisma.SettingScalarFieldEnum[]
 }
 
 /**

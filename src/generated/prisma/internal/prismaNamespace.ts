@@ -5444,6 +5444,7 @@ export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof
 
 
 export const SettingScalarFieldEnum = {
+  zevId: 'zevId',
   key: 'key',
   value: 'value',
   updatedAt: 'updatedAt'

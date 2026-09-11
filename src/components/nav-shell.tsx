@@ -8,8 +8,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { NAV_ICONS, IconDot, IconChevronLeft } from "@/components/nav-icons";
+import { t } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
+export type TenantOption = { zevId: string; label: string };
 
 const COLLAPSE_STORAGE_KEY = "zev-nav-collapsed";
 
@@ -29,6 +31,9 @@ export function NavShell({
   logoutAction,
   settingsHref = "/podesavanja",
   settingsLabel = "Podešavanja",
+  tenants,
+  activeZevId,
+  switchZevAction,
   children,
 }: {
   appName: string;
@@ -39,10 +44,18 @@ export function NavShell({
   logoutAction: () => void | Promise<void>;
   settingsHref?: string;
   settingsLabel?: string;
+  /** Every ZEV the signed-in user holds a Membership in. The switcher (below) and the
+   * active-ZEV chip only render when there's more than one — a single-membership user
+   * (practically everyone today) sees no change at all. */
+  tenants?: TenantOption[];
+  activeZevId?: string | null;
+  switchZevAction?: (formData: FormData) => void | Promise<void>;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const showSwitcher = Boolean(tenants && tenants.length > 1 && switchZevAction);
+  const activeTenant = tenants?.find((tt) => tt.zevId === activeZevId);
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Desktop-only "icon rail" collapse. Defaults to expanded (visible) on every
   // fresh load; a remembered preference (if any) is applied after mount so
@@ -193,6 +206,12 @@ export function NavShell({
           </button>
           <div className="flex-1" />
 
+          {showSwitcher && activeTenant && (
+            <span className="hidden truncate rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline-block">
+              {activeTenant.label}
+            </span>
+          )}
+
           <div className="relative" ref={menuRef}>
             <button
               type="button"
@@ -213,6 +232,44 @@ export function NavShell({
                   <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
                   <div className="truncate text-xs text-slate-400">{rolesText}</div>
                 </div>
+                {showSwitcher && (
+                  <div className="border-b border-slate-100 py-1">
+                    <div className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                      {t("tenant.switcherHeading")}
+                    </div>
+                    {tenants!.map((tt) => {
+                      const isActive = tt.zevId === activeZevId;
+                      return (
+                        <form key={tt.zevId} action={switchZevAction}>
+                          <input type="hidden" name="zevId" value={tt.zevId} />
+                          <button
+                            type="submit"
+                            role="menuitem"
+                            disabled={isActive}
+                            // Deliberately NOT closing the menu synchronously here: this is a
+                            // type="submit" button, and unmounting the dropdown (which contains
+                            // this very form) inside its own onClick — before the browser gets to
+                            // run the click's default action — cancels the form submission
+                            // entirely. The click silently "closes the menu" and switchActiveZev
+                            // never runs. Deferring to the next tick lets the native submit fire
+                            // first; the redirect that follows re-renders NavShell with fresh
+                            // props anyway, so the menu ends up reflecting the new active tenant
+                            // regardless of whether it stayed open for one extra frame.
+                            onClick={() => setTimeout(() => setMenuOpen(false), 0)}
+                            className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                              isActive
+                                ? "cursor-default font-medium text-blue-700"
+                                : "text-slate-700 hover:bg-blue-50 hover:text-blue-700"
+                            }`}
+                          >
+                            <span className="truncate">{tt.label}</span>
+                            {isActive && <span className="shrink-0 text-xs">({t("tenant.active")})</span>}
+                          </button>
+                        </form>
+                      );
+                    })}
+                  </div>
+                )}
                 <Link
                   href={settingsHref}
                   role="menuitem"

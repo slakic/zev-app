@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { listParties, createParty, partyDisplayName, addOwnershipStake, setOccupancy, grantProxy, transferOwnership } from "@/server/services/ownership";
 import { createUserForParty } from "@/server/services/users";
 import { listUnits } from "@/server/services/property";
@@ -8,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDate } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
 async function addPartyAction(formData: FormData) {
@@ -109,12 +111,13 @@ async function grantProxyAction(formData: FormData) {
 
 export default async function OwnersPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const isPresident = actor.roles.includes("PRESIDENT");
   const { err } = await searchParams;
   const [parties, units, proxies] = await Promise.all([
     listParties(actor),
     listUnits(actor),
-    prisma.proxy.findMany({ where: { revokedAt: null }, include: { grantor: true, holder: true } }),
+    prisma.proxy.findMany({ where: { zevId, revokedAt: null }, include: { grantor: true, holder: true } }),
   ]);
   return (
     <div>
@@ -151,7 +154,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               <Field label="Adresa nekretnine"><input name="address" className={inputCls} /></Field>
               <Field label="Adresa za prepisku (ako je različita)"><input name="correspondenceAddress" className={inputCls} /></Field>
               <Field label="Korisnički nalog — e-mail (opciono)"><input name="accountEmail" type="email" className={inputCls} /></Field>
-              <Field label="Početna lozinka"><input name="accountPassword" type="text" className={inputCls} /></Field>
+              <Field label="Početna lozinka" hint="bar 8 znakova"><PasswordField name="accountPassword" /></Field>
               <div className="flex items-end"><SubmitBtn>Sačuvaj lice</SubmitBtn></div>
             </form>
           </details>

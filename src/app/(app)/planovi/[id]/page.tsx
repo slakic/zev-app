@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { getPlan, addPlanItem, proposePlan, approvePlan, planVsActual, createPlanRevision, listProjects } from "@/server/services/plans";
 import { generatePlanPdf } from "@/server/services/documents";
 import { listBuildings } from "@/server/services/property";
@@ -58,6 +59,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const { id } = await params;
   const { err } = await searchParams;
   const actor = await requireActor();
+  const zevId = requireZev(actor);
   const management = isManagement(actor);
   const plan = await getPlan(actor, id);
   const isPresident = actor.roles.includes("PRESIDENT");
@@ -66,7 +68,10 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     ? await Promise.all([
         listBuildings(actor),
         listProjects(actor),
-        prisma.proposal.findMany({ where: { status: "ACCEPTED" } }),
+        // zevId added 2026-09-09 — was unscoped, populating this dropdown with every
+        // tenant's accepted proposals (approvePlan itself validates zevId, so this was
+        // a UI-only leak — see docs/multitenancy-plan.md addendum).
+        prisma.proposal.findMany({ where: { zevId, status: "ACCEPTED" } }),
       ])
     : [[], [], []];
   return (

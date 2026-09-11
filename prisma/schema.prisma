@@ -187,6 +187,7 @@ model Zev {
   attachments           Attachment[]
   notificationMessages  NotificationMessage[]
   auditEvents           AuditEvent[]
+  settings              Setting[]
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 }
@@ -1525,8 +1526,17 @@ model AuditEvent {
   @@index([action])
 }
 
+// Tenant-scoped since 2026-09-09 (Faza 1 addendum — see docs/multitenancy-plan.md).
+// Deliberately uses a composite PK (zevId, key) instead of this schema's usual
+// surrogate `id` + `@@unique([zevId, key])`: unlike every other tenant-scoped model,
+// Setting is never referenced by FK from anywhere else and is only ever looked up by
+// (tenant, key) — a surrogate id here would be a dead column.
 model Setting {
-  key       String   @id
+  zev       Zev      @relation(fields: [zevId], references: [id])
+  zevId     String
+  key       String
   value     Json
   updatedAt DateTime @updatedAt
+
+  @@id([zevId, key])
 }

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { hashPassword, verifyPassword } from "@/server/auth/password";
+import { hashPassword, verifyPassword, assertPasswordStrong } from "@/server/auth/password";
 import { generateToken, sha256 } from "@/server/auth/tokens";
 import { queueNotification } from "@/server/notifications/service";
 import { audit } from "@/server/audit";
@@ -67,6 +67,7 @@ export async function createUserForParty(
   // lookup itself is enough; a mismatched or foreign party now surfaces as "not found"
   // rather than a separate ForbiddenError branch.
   await prisma.party.findUniqueOrThrow({ where: { id: input.partyId, zevId } });
+  assertPasswordStrong(input.password);
   const user = await prisma.user.create({
     data: {
       email: input.email.toLowerCase(),
@@ -168,7 +169,11 @@ export async function inspectPasswordResetToken(token: string): Promise<{ ok: tr
 export type ResetPasswordResult = { ok: true } | { ok: false; error: "invalid" | "expired" | "weak" };
 
 export async function resetPassword(token: string, newPassword: string): Promise<ResetPasswordResult> {
-  if (newPassword.length < 8) return { ok: false, error: "weak" };
+  try {
+    assertPasswordStrong(newPassword);
+  } catch {
+    return { ok: false, error: "weak" };
+  }
   const user = await prisma.user.findFirst({ where: { passwordResetTokenHash: sha256(token) } });
   if (!user) return { ok: false, error: "invalid" };
   if (!user.passwordResetExpiresAt || user.passwordResetExpiresAt < new Date()) return { ok: false, error: "expired" };
@@ -208,7 +213,13 @@ async function assertUserInZev(zevId: string, userId: string) {
 // (cross-tenant) count would have let ZEV B's roster of presidents mask ZEV A losing
 // its only one, an actual bug this Korak-5 pass fixes, not just a filter added for
 // consistency.
-async function assertNotLastActivePresident(zevId: string, userId: string, action: string) {
+//
+// Exported (Plans/tenant-switching-admin-accounts-plan.md §7, Korak 3) so
+// admin.ts's revokeMembership() can reuse the exact same count instead of writing a
+// second, drift-prone copy of this query — a PRESIDENT Membership is a PRESIDENT
+// Membership whether it's being removed by the tenant's own president or by a
+// platform admin from /admin.
+export async function assertNotLastActivePresident(zevId: string, userId: string, action: string) {
   const others = await prisma.membership.count({
     where: { zevId, role: "PRESIDENT", userId: { not: userId }, user: { active: true } },
   });

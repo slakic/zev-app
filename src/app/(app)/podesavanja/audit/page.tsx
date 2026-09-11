@@ -1,18 +1,28 @@
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td } from "@/components/ui";
 
 export default async function AuditPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  await requireActor("PRESIDENT", "ACCOUNTANT");
+  const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   const { q } = await searchParams;
+  // zevId scoping added 2026-09-09 — this page was unscoped on both queries: it showed
+  // every tenant's audit trail, AND (more sensitively) the email lookup below queried
+  // every platform user, not just this tenant's members. See docs/multitenancy-plan.md
+  // addendum. Events with a NULL zevId (pre-auth/system-level) are intentionally excluded
+  // here — they're platform-internal, not this tenant's business.
   const events = await prisma.auditEvent.findMany({
-    where: q ? { OR: [{ action: { contains: q } }, { targetType: { contains: q } }] } : undefined,
+    where: {
+      zevId,
+      ...(q ? { OR: [{ action: { contains: q } }, { targetType: { contains: q } }] } : {}),
+    },
     orderBy: { createdAt: "desc" },
     take: 200,
   });
-  const users = await prisma.user.findMany({ select: { id: true, email: true } });
-  const emailById = new Map(users.map((u) => [u.id, u.email]));
+  const memberships = await prisma.membership.findMany({ where: { zevId }, include: { user: { select: { id: true, email: true } } } });
+  const emailById = new Map(memberships.map((m) => [m.user.id, m.user.email]));
   return (
     <div>
       <PageHeader title="Revizorski trag" subtitle="Append-only zapis svih bitnih radnji (UPDATE/DELETE blokiran na nivou baze)" />

@@ -1142,6 +1142,91 @@ Faza 0 smatra završenom (vidi zahtjev na početku sekcije 6, stavka 6) — ne
    fakture/vlasnike prije nego pređeš na stvarne podatke, ili za test
    tenant koji ponovo koristiš).
 
+#### Napredak (2026-09-08/09)
+
+Stavke 1-3 iznad su implementirane redom: `scripts/promote-super-admin.ts`
+(jednokratna skripta, potvrđeno §8.2), `requireSuperAdmin`/
+`requireSuperAdminActor` guard-ovi + zaseban `/admin` route group (van
+`(app)` stabla — vidi 4.3), i `src/server/services/admin.ts`
+(`listTenants`/`getTenant`/`createTenant`) sa `/admin` (lista + forma) i
+`/admin/[zevId]` (detalji) stranicama. Stavka 4 (brisanje svih podataka
+jednog tenanta) namjerno ostavljena za kraj — jedina nepovratna operacija u
+aplikaciji, traži najviše opreza.
+
+**Stavka 4 — odluka (2026-09-09): `wipeTenantData` se NE gradi.** Prije
+implementacije urađena je planska analiza (Opus model, plan-only prolaz,
+vidi metodologiju u skill-u `opus-plan-sonnet-code`). Nalaz je promijenio
+zaključak:
+
+- Pored `AuditEvent` i `Vote`, i `PaymentAllocation` je append-only
+  (isti DB triger, `forbid_update_delete()`,
+  `prisma/migrations/20260823180200_append_only_guards`). Čim tenant ima
+  ijednu alociranu uplatu ili dat glas, taj append-only zapis preko
+  `RESTRICT` FK-ova blokira brisanje skoro cijelog preostalog stabla
+  (fakture, uplate, jedinice, zgrade, prijedlozi, sastanci...).
+- `Zev` red je strukturno nemoguće trajno obrisati dok god postoji ijedan
+  `AuditEvent` sa tim `zevId` (RESTRICT + trigerom zabranjen i UPDATE i
+  DELETE) — a svaki tenant kreiran kroz `createTenant()` odmah dobija
+  `admin.tenant.create` audit zapis, pa je ovo trajno tačno za svaki
+  budući tenant, ne samo za trenutni.
+- Trenutni tenant #1 (seed podaci) ima i alociranu uplatu i dat glas —
+  dakle čak i sužena verzija alata (koja bi odbijala rad na tenantu sa bilo
+  kojim glasom/uplatom) ne bi mogla riješiti originalni motivišući slučaj
+  iz stavke 4 ("zadrži zgrade, ukloni demo fakture/vlasnike").
+- Jedina realna alternativa (privremeno gašenje append-only trigera unutar
+  transakcije) bi oslabila garanciju koju sam sistem opisuje kao apsolutnu
+  ("ne mogu se mijenjati/brisati ni greškom aplikacije ni privilegovanom
+  ulogom") — odbačeno.
+
+**Umjesto toga izgrađeno:** `setTenantActive(actor, zevId, active, reason)`
+u `admin.ts` — suspenduje/reaktivira tenant bez brisanja ijednog podatka
+(oslanja se na već postojeću `zevSuspended` provjeru u `requireActor()`,
+koja odmah odjavljuje svaku sesiju tog tenanta na sljedećem zahtjevu), sa
+formom na `/admin/[zevId]`. Preporučeni tok za tenant #1: suspenduj ga
+(audit trag ostaje netaknut), kreiraj svjež prazan tenant za stvarne
+podatke kroz postojeći `createTenant()`. Time je Faza 1 u cijelosti
+zaključena bez ijedne nove nepovratne operacije u aplikaciji.
+
+Kreiranje prvog stvarnog drugog tenanta (test) je otkrilo dvije klase
+propusta koje su postojale otkako je multitenancy migracija urađena, ali su
+bile nevidljive dok je postojao samo jedan tenant:
+
+- **Dashboard (`(app)/page.tsx`) i šest API ruta nikad nisu dobili `zevId`
+  filter.** Konkretno, `annualPlan.findFirst()` na dashboard-u je bez
+  filtera birao "prvi odobreni plan u bazi" — sa dva tenanta to znači da
+  predsjednik tenanta A može dobiti plan tenanta B, što `planVsActual()`
+  (koji ISPRAVNO filtrira po `zevId`) onda odbija sa "nije pronađen" —
+  neuhvaćena greška odmah nakon prijave. Isti obrazac (upit bez `zevId`
+  filtera) nađen je i u ostatku dashboard-a (sjednice, prijedlozi, prijave
+  održavanja, serije faktura, uplate, odluke), u šest API ruta
+  (`/api/izvjestaji/*`, `/api/dokumenti/*`, `/api/prilozi/*` — actor se
+  tamo ručno sastavlja i `zevId`/`isSuperAdmin` su ispušteni iako ih
+  `getAuthContext()` vraća), i u nekoliko stranica (troškovi, vlasnici,
+  fakture, planovi, podešavanja/revizorski-trag — potonji je pokazivao
+  e-mail adrese SVIH korisnika na platformi, ne samo ovog tenanta).
+  Ispravke idu u tri isporuke: (1) hitno — dashboard-ov `findFirst` i šest
+  API ruta, (2) šira sanacija preostalih stranica, (3) `Setting` migracija
+  (dolje) kao zaseban zadatak.
+- **`Setting` model** (§2, "51 model bez zevId veze") nikad nije dobio
+  `zevId` — jedini preostali model bez tenant-svijesti. Ispravljeno
+  2026-09-09: `Setting` sada ima composite `@@id([zevId, key])` +
+  `@relation` ka `Zev` (jedino namjerno odstupanje od uobičajene
+  surogatnog-id konvencije u ovoj šemi — `Setting` se nikad ne referencira
+  FK-om odnekud drugo, samo se traži po (tenant, ključ)). Provjereno prije
+  migracije (upit protiv žive baze): postoji tačno jedan `Zev` i nula
+  `Setting` redova — nema rizika kontaminacije niti stvarnih "trenutnih
+  vrijednosti" za očuvanje. "Postavi trenutna podešavanja kao podrazumijevana
+  za sve tenante" (korisnikova odluka) se time svodi na: svi tenanti (i
+  postojeći i budući) kreću od istog baznog seta u
+  `src/lib/settings-defaults.ts`, koji je zamijenio dva ranije razdvojena
+  hardkodirana izvora (`LEGAL_SETTINGS` niz u `podesavanja/page.tsx` i
+  inline `?? "3"`/`?? "4"` u `organi/page.tsx`). Novi
+  `src/server/services/settings.ts` (`getSettings`/`setSetting`/
+  `seedDefaultSettings`) je jedino mjesto koje dira `prisma.setting` —
+  `createTenant()` i `prisma/seed.ts` sada dijele isti
+  `seedDefaultSettings()` poziv, umjesto da `seed.ts` ručno piše samo 3 od
+  8 ključeva kako je ranije radio.
+
 ### Faza 2 — feature paketi
 
 1. `Zev.tier` + mapa "koje funkcije uključuje svaki nivo" u kodu (ne u
@@ -1155,6 +1240,45 @@ Faza 0 smatra završenom (vidi zahtjev na početku sekcije 6, stavka 6) — ne
 
 1. Izbornik aktivnog ZEV-a za korisnike sa više članstava.
 2. Cross-tenant pregledi za super admina (opciono, niži prioritet).
+
+**Napomena (2026-09-10):** stavke 1-2 gore se razrađuju u
+`Plans/tenant-switching-admin-accounts-plan.md` (prebacivanje aktivnog ZEV-a
++ administrativni nalozi preko tenanta + popravka lozinke), sada u toku
+implementacije.
+
+- **Korak 1 (v2.3.0) — POTVRĐENO na korisnikovoj mašini** (puni pipeline
+  `typecheck && lint && test && build` prošao čisto, uključujući novi
+  `tests/admin.test.ts`): `assertPasswordStrong()` zatvara rupu gdje
+  `createUserForParty` nije provjeravala jačinu lozinke; `createTenant()`
+  više ne pravi nasumičnu, nikad saopštenu lozinku iza reset-token toka koji
+  je predsjednika bez ijednog članstva ostavljao bez izlaza (§1.3 tog plana)
+  — super admin sada direktno unosi početnu lozinku predsjednika.
+- **Korak 2 (v2.4.0) — POTVRĐENO na korisnikovoj mašini** (puni pipeline
+  `typecheck && lint && test && build` prošao čisto, 186/186 testova):
+  `switchActiveZev`/`listMyTenants` (novi `src/server/services/memberships.ts`)
+  + `setSessionActiveZev` (`session.ts`) + `Actor.sessionId?` — prebacivanje
+  validirano isključivo preko `Membership`, bez izuzetka za super admina.
+  Prekidač u `NavShell` meniju + trajni chip aktivnog ZEV-a (oboje samo kad
+  ima više od jednog tenanta), i dugme "Uđi" na `/admin` gdje god super admin
+  već ima članstvo.
+- **Korak 3 (v2.5.0) — isporučen, NEPROVJERENO lokalno** (isti dugogodišnji
+  razlog kao svaki raniji korak: sandbox nema mrežni pristup za `npx prisma
+  generate`, pa lokalni `tsc`/`test`/`build` rade protiv zastarjelog
+  generisanog klijenta — čeka se pipeline na korisnikovoj mašini). Cross-tenant
+  administracija naloga: `createTenantAccount` (nov `Party`+`User`+`Membership`
+  u tuđem tenantu, rola ograničena na Predsjednik/Računovođa — §5.2),
+  `grantMembership` (postojeći korisnik dobija `Membership`, uklj. sopstveni
+  pristup super admina — `admin.membership.grant_self` vs `.grant` u
+  revizorskom tragu), `revokeMembership` (briše `Membership`, čuva
+  posljednjeg aktivnog predsjednika preko izvezene `assertNotLastActivePresident`
+  iz `users.ts`). UI na `/admin/[zevId]`: značka "Platformski admin", upozorenje
+  kad nema aktivnog predsjednika koji nije platformski admin, dugme "Ukloni
+  pristup" po članstvu, kartice "Dodaj novi nalog" / "Dodaj postojeći nalog" /
+  "Moj pristup". Popravljen i rizik iz §8 stavke 5: `setTenantActive()` sad
+  čisti sopstveni `Session.activeZevId` prije suspenzije tenanta u kojem je
+  super admin trenutno aktivan, umjesto da ga to odjavi na sljedećem zahtjevu.
+  Time je `Plans/tenant-switching-admin-accounts-plan.md` u potpunosti
+  implementiran (koraci 1-3; Korak 4 je svjesno odložen, po planu §7).
 
 ## 7. Najveći rizici
 

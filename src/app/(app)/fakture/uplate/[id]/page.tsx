@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { suggestMatches, allocatePayment, reverseAllocation, reversePayment } from "@/server/services/payments";
 import { prisma } from "@/lib/prisma";
 import { partyDisplayName } from "@/server/services/ownership";
@@ -52,15 +53,16 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
   const { id } = await params;
   const { err } = await searchParams;
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
   const payment = await prisma.payment.findUniqueOrThrow({
-    where: { id },
+    where: { id, zevId },
     include: { payer: true, account: true, allocations: { include: { invoice: true }, orderBy: { createdAt: "asc" } } },
   });
   const allocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
   const free = dec(payment.amount.toString()).minus(allocated);
   const suggestions = payment.status !== "REVERSED" && free.greaterThan(0) ? await suggestMatches(actor, id) : [];
   const openInvoices = await prisma.invoice.findMany({
-    where: { status: "ISSUED" },
+    where: { zevId, status: "ISSUED" },
     include: { allocations: true, debtor: true, unit: true },
     orderBy: { number: "asc" },
   });

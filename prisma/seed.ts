@@ -21,6 +21,7 @@ import * as expenses from "../src/server/services/expenses";
 import * as plans from "../src/server/services/plans";
 import * as maintenance from "../src/server/services/maintenance";
 import * as documents from "../src/server/services/documents";
+import { seedDefaultSettings } from "../src/server/services/settings";
 
 const PASSWORD = "Lozinka123!";
 
@@ -170,13 +171,10 @@ async function main() {
   // plus two elected members. See LEGAL_AND_FINANCIAL_ASSUMPTIONS.md §Organi ZEV.
   await ownership.addBoardMember(president, { partyId: ownerMarko.id, validFrom: new Date(Date.UTC(2023, 3, 15)), decisionRef: "Odluka skupštine 02/2023" });
   await ownership.addBoardMember(president, { partyId: ownerNikola.id, validFrom: new Date(Date.UTC(2023, 3, 15)), decisionRef: "Odluka skupštine 02/2023" });
-  await prisma.setting.createMany({
-    data: [
-      { key: "board.size", value: "3" },
-      { key: "board.termYears", value: "4" },
-      { key: "board.presidentIsBoardPresident", value: "true" },
-    ],
-  });
+  // All 8 default settings, not just the 3 board.* ones this seed used to hand-write —
+  // consolidated in settings-defaults.ts (2026-09-09 Setting tenant-scoping addendum),
+  // shared with createTenant()'s identical seeding step.
+  await seedDefaultSettings(prisma, zev.id);
 
   // --- Money accounts -------------------------------------------------------
   const bankAcc = await finance.createAccount(accountant, {

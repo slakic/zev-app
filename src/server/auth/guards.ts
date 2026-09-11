@@ -21,10 +21,14 @@ export type Actor = {
    * fixtures/mocks that predate multitenancy still type-check.
    */
   zevId?: string | null;
-  /** Platform-level super admin — unrelated to any single ZEV. Not yet used by any
-   * guard below (the /admin area is Faza 1); carried on Actor so it's available once
-   * that lands without another Actor shape change. */
+  /** Platform-level super admin — unrelated to any single ZEV. Checked by
+   * requireSuperAdmin() below, for the /admin area (Faza 1). */
   isSuperAdmin?: boolean;
+  /** The current session's id, when this Actor was built from one (see actor.ts) — needed
+   * only by switchActiveZev() (src/server/services/memberships.ts) to know which Session
+   * row to update. Optional so fixtures/mocks that don't go through a real session (most
+   * tests) still type-check without carrying one. */
+  sessionId?: string;
 };
 
 export class AuthError extends Error {
@@ -69,6 +73,17 @@ export function requireZev(actor: Actor | null | undefined): string {
   if (!actor) throw new AuthError();
   if (!actor.zevId) throw new ForbiddenError("Nalog nema aktivan ZEV.");
   return actor.zevId;
+}
+
+/**
+ * Platform-level guard for the /admin area (see docs/multitenancy-plan.md §4.3/§8).
+ * isSuperAdmin is a User-level flag unrelated to any Membership/zevId — a super
+ * admin need not (and normally does not) belong to any ZEV at all.
+ */
+export function requireSuperAdmin(actor: Actor | null | undefined): Actor {
+  if (!actor) throw new AuthError();
+  if (!actor.isSuperAdmin) throw new ForbiddenError();
+  return actor;
 }
 
 /**

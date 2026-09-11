@@ -2,6 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount } from "@/server/services/billing";
 import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
@@ -70,7 +71,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
   const [chargeItems, batches, buildings] = management
     ? await Promise.all([
         listChargeItems(actor),
-        prisma.invoiceBatch.findMany({ orderBy: { createdAt: "desc" }, take: 10, include: { _count: { select: { invoices: true } } } }),
+        prisma.invoiceBatch.findMany({ where: { zevId: requireZev(actor) }, orderBy: { createdAt: "desc" }, take: 10, include: { _count: { select: { invoices: true } } } }),
         listBuildings(actor),
       ])
     : [[], [], []];

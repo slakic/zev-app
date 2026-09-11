@@ -18,7 +18,8 @@
 //      other tenant's data.
 import { describe, it, expect, beforeAll } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { createFixture, createAreaCharges, createProposalFixture, openVotingWithLinks, type Fixture } from "./helpers";
+import { createFixture, createAreaCharges, createProposalFixture, openVotingWithLinks, createSuperAdminActor, type Fixture } from "./helpers";
+import * as memberships from "@/server/services/memberships";
 
 import * as property from "@/server/services/property";
 import * as ownership from "@/server/services/ownership";
@@ -34,6 +35,7 @@ import * as maintenance from "@/server/services/maintenance";
 import * as reports from "@/server/services/reports";
 import * as users from "@/server/services/users";
 import * as evoteConsent from "@/server/services/evoteConsent";
+import * as settings from "@/server/services/settings";
 
 const proof = { buffer: Buffer.from("dokaz o vlasnistvu"), filename: "dokaz.pdf", mime: "application/pdf" };
 
@@ -612,6 +614,24 @@ describe("tenant isolation — no service function may read or write another ten
   });
 
   // ---------------------------------------------------------------------
+  // settings.ts
+  // ---------------------------------------------------------------------
+  describe("settings", () => {
+    it("setSetting on tenant A never affects tenant B's reads (each starts from the same default)", async () => {
+      expect((await settings.getSettings(a.president))["board.size"]).toBe("3");
+      expect((await settings.getSettings(b.president))["board.size"]).toBe("3");
+      await settings.setSetting(a.president, "board.size", "7");
+      expect((await settings.getSettings(a.president))["board.size"]).toBe("7");
+      expect((await settings.getSettings(b.president))["board.size"]).toBe("3");
+    });
+
+    it("setSetting rejects an unknown key and a non-PRESIDENT caller", async () => {
+      await expectBlocked(() => settings.setSetting(a.president, "evil.key", "x"));
+      await expectBlocked(() => settings.setSetting(a.accountant, "board.size", "9"));
+    });
+  });
+
+  // ---------------------------------------------------------------------
   // evoteConsent.ts
   // ---------------------------------------------------------------------
   describe("evoteConsent", () => {
@@ -620,5 +640,72 @@ describe("tenant isolation — no service function may read or write another ten
       await expectBlocked(() => evoteConsent.revokeEVoteConsent(a.president, b.ownerA.id, "razlog"));
       await expectBlocked(() => evoteConsent.getEVoteConsentHistory(a.president, b.ownerA.id));
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// switchActiveZev / listMyTenants (Korak 2, tenant-switching-admin-accounts-plan.md
+// §2) — the only code in the app that legitimately changes actor.zevId, so its tests
+// live here rather than under a fixture-isolation describe block above.
+// ---------------------------------------------------------------------------
+describe("session/membership switching (switchActiveZev, listMyTenants)", () => {
+  it("rejects switching into a tenant where the caller has no membership", async () => {
+    const x = await createFixture("switch-nomember-a");
+    const y = await createFixture("switch-nomember-b");
+    const session = await prisma.session.create({ data: { userId: x.president.userId, expiresAt: new Date(Date.now() + 3600_000) } });
+    const actor = { ...x.president, sessionId: session.id };
+    await expectBlocked(() => memberships.switchActiveZev(actor, y.zev.id));
+    // No session mutation on a rejected attempt.
+    const unchanged = await prisma.session.findUniqueOrThrow({ where: { id: session.id } });
+    expect(unchanged.activeZevId).toBeNull();
+  });
+
+  it("rejects switching into a suspended tenant, even with a valid membership there", async () => {
+    const x = await createFixture("switch-susp-a");
+    const y = await createFixture("switch-susp-b");
+    await prisma.membership.create({ data: { userId: x.president.userId, zevId: y.zev.id, role: "OWNER" } });
+    await prisma.zev.update({ where: { id: y.zev.id }, data: { active: false } });
+    const session = await prisma.session.create({ data: { userId: x.president.userId, expiresAt: new Date(Date.now() + 3600_000) } });
+    const actor = { ...x.president, sessionId: session.id };
+    await expectBlocked(() => memberships.switchActiveZev(actor, y.zev.id));
+  });
+
+  it("a valid switch updates Session.activeZevId and listMyTenants reports the target's own roles, not the source's", async () => {
+    const x = await createFixture("switch-ok-a");
+    const y = await createFixture("switch-ok-b");
+    await prisma.membership.create({ data: { userId: x.president.userId, zevId: y.zev.id, role: "ACCOUNTANT" } });
+    const session = await prisma.session.create({ data: { userId: x.president.userId, expiresAt: new Date(Date.now() + 3600_000) } });
+    const actor = { ...x.president, sessionId: session.id };
+
+    await memberships.switchActiveZev(actor, y.zev.id);
+
+    const updated = await prisma.session.findUniqueOrThrow({ where: { id: session.id } });
+    expect(updated.activeZevId).toBe(y.zev.id);
+
+    const mine = await memberships.listMyTenants(actor);
+    const yEntry = mine.find((mt) => mt.zevId === y.zev.id);
+    const xEntry = mine.find((mt) => mt.zevId === x.zev.id);
+    expect(yEntry?.roles).toEqual(["ACCOUNTANT"]);
+    expect(xEntry?.roles.slice().sort()).toEqual(["OWNER", "PRESIDENT"]);
+  });
+
+  it("switching to the tenant already active is a no-op — no audit record, session untouched", async () => {
+    const x = await createFixture("switch-noop");
+    const session = await prisma.session.create({ data: { userId: x.president.userId, expiresAt: new Date(Date.now() + 3600_000) } });
+    const actor = { ...x.president, sessionId: session.id, zevId: x.zev.id };
+    const before = await prisma.auditEvent.count({ where: { action: "session.switch_zev" } });
+
+    await memberships.switchActiveZev(actor, x.zev.id);
+
+    const after = await prisma.auditEvent.count({ where: { action: "session.switch_zev" } });
+    expect(after).toBe(before);
+  });
+
+  it("a super admin with no membership anywhere is rejected, same as any other user", async () => {
+    const y = await createFixture("switch-super-noaccess");
+    const admin = await createSuperAdminActor("switch-super");
+    const session = await prisma.session.create({ data: { userId: admin.userId, expiresAt: new Date(Date.now() + 3600_000) } });
+    const actor = { ...admin, sessionId: session.id };
+    await expectBlocked(() => memberships.switchActiveZev(actor, y.zev.id));
   });
 });

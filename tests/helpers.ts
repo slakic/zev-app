@@ -6,6 +6,7 @@ import * as ownership from "@/server/services/ownership";
 import * as finance from "@/server/services/finance";
 import * as meetings from "@/server/services/meetings";
 import * as billing from "@/server/services/billing";
+import { seedDefaultSettings } from "@/server/services/settings";
 
 let counter = 0;
 export function uid(prefix: string): string {
@@ -14,6 +15,26 @@ export function uid(prefix: string): string {
 }
 
 export type Fixture = Awaited<ReturnType<typeof createFixture>>;
+
+/**
+ * A platform-level super admin actor for exercising src/server/services/admin.ts
+ * (requireSuperAdmin, not requireRole/requireZev). Backed by a real User row
+ * (isSuperAdmin: true, no Party, no Membership, zevId null) so it behaves like
+ * the real thing rather than a bare object literal — useful once tests also need
+ * to look the user back up (e.g. authenticate() after createTenant sets a password).
+ */
+export async function createSuperAdminActor(tag = "super"): Promise<Actor> {
+  const t = uid(tag);
+  const user = await prisma.user.create({
+    data: {
+      email: `${t}@platform.test`,
+      passwordHash: await hashPassword("Test1234!"),
+      roles: [],
+      isSuperAdmin: true,
+    },
+  });
+  return { userId: user.id, roles: [], partyId: null, zevId: null, isSuperAdmin: true };
+}
 
 /**
  * Self-contained fixture: a ZEV context with 2 buildings, 4 units,
@@ -34,6 +55,8 @@ export async function createFixture(tag: string) {
   const zev = await prisma.zev.create({
     data: { legalName: `ZEV Test ${t}`, jib: "4400000000000" },
   });
+  // Mirrors createTenant()'s own seeding step (admin.ts) so fixtures match real tenants.
+  await seedDefaultSettings(prisma, zev.id);
 
   const presidentParty = await prisma.party.create({
     data: { zevId: zev.id, kind: "PERSON", firstName: "Petar", lastName: `Predsjednik-${t}`, email: `${t}-pres@example.com` },

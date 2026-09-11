@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
+import { requireZev } from "@/server/auth/guards";
 import { listExpenses, listSuppliers, createSupplier, createExpense, payExpense, cancelExpense, DuplicateExpenseWarning } from "@/server/services/expenses";
 import { listAccounts, ensureCategory } from "@/server/services/finance";
 import { listBuildings } from "@/server/services/property";
@@ -84,6 +85,7 @@ async function cancelExpenseAction(formData: FormData) {
 
 export default async function ExpensesPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
   const { err } = await searchParams;
   const [expenses, suppliers, accounts, buildings, projects, planItems] = await Promise.all([
     listExpenses(actor),
@@ -91,7 +93,10 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
     listAccounts(actor),
     listBuildings(actor),
     listProjects(actor),
-    prisma.planItem.findMany({ where: { plan: { status: "APPROVED" } }, include: { plan: true } }),
+    // zevId added 2026-09-09 — was unscoped, populating this dropdown with every
+    // tenant's approved plan items (createExpense itself does validate zevId, so this
+    // was a UI-only leak, not a write-path one — see docs/multitenancy-plan.md addendum).
+    prisma.planItem.findMany({ where: { zevId, plan: { status: "APPROVED" } }, include: { plan: true } }),
   ]);
   return (
     <div>

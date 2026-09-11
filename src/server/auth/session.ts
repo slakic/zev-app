@@ -77,8 +77,9 @@ export async function destroySession(): Promise<void> {
  * docs/multitenancy-plan.md §5. Auto-picks the user's sole Membership on first read
  * after login (or after this migration, for a pre-existing session) and persists that
  * choice on the session row; a user with more than one Membership also defaults to the
- * first (by createdAt) until Faza 3 adds an actual "choose ZEV" screen — not reachable
- * with today's single-tenant data, but handled rather than left to crash.
+ * first (by createdAt) — see setSessionActiveZev() below for how a user with several
+ * memberships then switches to a different one on purpose (the account-menu switcher in
+ * nav-shell.tsx, or "Uđi u ovaj ZEV" from /admin).
  */
 async function resolveActiveZev(
   sessionId: string,
@@ -142,6 +143,20 @@ export async function getAuthContext(): Promise<AuthContext | null> {
     zevSuspended,
     isSuperAdmin: u.isSuperAdmin,
   };
+}
+
+/**
+ * Change which ZEV a session acts within — the only place besides resolveActiveZev's own
+ * auto-pick (line ~93 above) that writes Session.activeZevId. Deliberately unauthorized —
+ * the caller (switchActiveZev in src/server/services/memberships.ts) is responsible for
+ * confirming the session's own user actually holds a Membership in zevId, and that zevId's
+ * Zev is active, before ever calling this. `zevId: null` clears it — used by
+ * setTenantActive() (src/server/services/admin.ts, Korak 3) when a super admin suspends
+ * the tenant they're currently active in, so the next request lands them back on /admin
+ * instead of being logged out by requireActor()'s zevSuspended check.
+ */
+export async function setSessionActiveZev(sessionId: string, zevId: string | null): Promise<void> {
+  await prisma.session.update({ where: { id: sessionId }, data: { activeZevId: zevId } });
 }
 
 async function zevIsSuspended(zevId: string): Promise<boolean> {

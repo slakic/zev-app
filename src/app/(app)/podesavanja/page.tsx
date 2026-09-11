@@ -5,11 +5,11 @@ import { getZev, upsertZev } from "@/server/services/property";
 import { listAccounts, createAccount } from "@/server/services/finance";
 import { getParty, updateParty, requireOwnerParty } from "@/server/services/ownership";
 import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
-import { prisma } from "@/lib/prisma";
+import { getSettings, setSetting } from "@/server/services/settings";
+import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, Flash } from "@/components/ui";
-import type { Prisma } from "@/generated/prisma/client";
 
 async function saveZevAction(formData: FormData) {
   "use server";
@@ -42,14 +42,14 @@ async function addAccountAction(formData: FormData) {
 
 async function saveSettingAction(formData: FormData) {
   "use server";
-  await requireActor("PRESIDENT");
+  const actor = await requireActor("PRESIDENT");
   const key = String(formData.get("key"));
   const value = String(formData.get("value"));
-  await prisma.setting.upsert({
-    where: { key },
-    create: { key, value: value as unknown as Prisma.InputJsonValue },
-    update: { value: value as unknown as Prisma.InputJsonValue },
-  });
+  try {
+    await setSetting(actor, key, value);
+  } catch (e) {
+    redirect(`/podesavanja?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
   revalidatePath("/podesavanja");
 }
 
@@ -83,17 +83,6 @@ async function revokeMyConsentAction(formData: FormData) {
   redirect("/podesavanja?msg=saved");
 }
 
-const LEGAL_SETTINGS: { key: string; label: string; def: string }[] = [
-  { key: "retention.financialYears", label: "Čuvanje finansijskih dokumenata (godina)", def: "11" },
-  { key: "retention.voteIpDays", label: "Čuvanje IP metapodataka glasanja (dana)", def: "30" },
-  { key: "emergency.costThreshold", label: "Prag za hitne radove bez skupštine (KM)", def: "500" },
-  { key: "interest.enabled", label: "Zatezna kamata (isključena dok pravnik ne potvrdi)", def: "false" },
-  { key: "invoice.dueDay", label: "Podrazumijevani dan dospijeća fakture", def: "15" },
-  { key: "board.size", label: "Preporučen broj članova upravnog odbora (uključujući predsjednika)", def: "3" },
-  { key: "board.termYears", label: "Trajanje mandata organa ZEV (godina)", def: "4" },
-  { key: "board.presidentIsBoardPresident", label: "Predsjednik ZEV je ujedno predsjednik upravnog odbora (pretpostavka — vidi LEGAL_AND_FINANCIAL_ASSUMPTIONS.md)", def: "true" },
-];
-
 export default async function SettingsPage({
   searchParams,
 }: {
@@ -108,11 +97,10 @@ export default async function SettingsPage({
   const [zev, accounts, settings, myParty, myConsent] = await Promise.all([
     isManagement ? getZev(actor) : null,
     isManagement ? listAccounts(actor) : Promise.resolve([]),
-    isManagement ? prisma.setting.findMany() : Promise.resolve([]),
+    isManagement ? getSettings(actor) : null,
     actor.partyId ? getParty(actor, actor.partyId) : null,
     actor.partyId ? getEVoteConsentHistory(actor, actor.partyId) : null,
   ]);
-  const settingsMap = new Map(settings.map((s) => [s.key, String(s.value)]));
 
   return (
     <div>
@@ -244,12 +232,12 @@ export default async function SettingsPage({
               Vrijednosti označene u LEGAL_AND_FINANCIAL_ASSUMPTIONS.md — pravna/računovodstvena provjera obavezna prije produkcijske upotrebe.
             </p>
             <div className="space-y-3">
-              {LEGAL_SETTINGS.map((s) => (
+              {SETTING_DEFINITIONS.map((s) => (
                 <form key={s.key} action={saveSettingAction} className="flex flex-wrap items-end gap-2">
                   <input type="hidden" name="key" value={s.key} />
                   <div className="min-w-[220px] flex-1">
                     <Field label={s.label}>
-                      <input name="value" defaultValue={settingsMap.get(s.key) ?? s.def} className={inputCls} disabled={!isPresident} />
+                      <input name="value" defaultValue={(settings ?? DEFAULT_SETTINGS)[s.key]} className={inputCls} disabled={!isPresident} />
                     </Field>
                   </div>
                   {isPresident && <SubmitBtn variant="secondary">Sačuvaj</SubmitBtn>}

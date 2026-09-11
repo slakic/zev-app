@@ -1,6 +1,6 @@
 {
   "name": "zev-app",
-  "version": "2.1.0",
+  "version": "2.5.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,6 +12,7 @@
     "db:reset": "node scripts/migrate.mjs reset",
     "db:seed": "tsx prisma/seed.ts",
     "db:setup": "node scripts/migrate.mjs apply && tsx prisma/seed.ts",
+    "admin:promote": "tsx scripts/promote-super-admin.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "test:e2e": "node e2e/smoke.e2e.mjs"

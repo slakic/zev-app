@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ partyId: st
   const { partyId } = await ctx.params;
   const session = await getAuthContext();
   if (!session) return NextResponse.redirect(new URL("/login", req.url));
-  const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId };
+  const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId, zevId: session.zevId, isSuperAdmin: session.isSuperAdmin };
   try {
     const buffer = await generateEVoteConsentPdf(actor, partyId);
     return new NextResponse(new Uint8Array(buffer), {

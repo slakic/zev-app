@@ -18,12 +18,17 @@ async function loginAction(formData: FormData) {
     redirect(`/login?err=${result.error}`);
   }
   await createSession(result.user.id, ip, h.get("user-agent"));
-  redirect("/");
+  // A super admin who also has a Membership (e.g. president of their own ZEV, per
+  // docs/multitenancy-plan.md §4.3 — isSuperAdmin and Membership are independent)
+  // lands on their own tenant dashboard like anyone else; only a super admin with
+  // no tenant at all has nowhere else useful to land, so goes to /admin.
+  const ctx = await getAuthContext();
+  redirect(ctx?.isSuperAdmin && !ctx.zevId ? "/admin" : "/");
 }
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string }> }) {
   const ctx = await getAuthContext();
-  if (ctx) redirect("/");
+  if (ctx) redirect(ctx.isSuperAdmin && !ctx.zevId ? "/admin" : "/");
   const { err, msg } = await searchParams;
   const errMsg =
     err === "invalid" ? t("auth.invalidCredentials")
