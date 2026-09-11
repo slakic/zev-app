@@ -155,6 +155,23 @@ export function IconChevronLeft(props: IconProps) {
   );
 }
 
+export function IconCheck(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4.5 10.4 8 14l7.5-8.5" />
+    </IconBase>
+  );
+}
+
+export function IconLogout(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M8.6 4H5.5A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16h3.1" />
+      <path d="M9.3 10h6.7M13.2 7l3 3-3 3" />
+    </IconBase>
+  );
+}
+
 /** href -> icon, for the sidebar. Falls back to IconDot for anything unmapped. */
 export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/": IconHome,

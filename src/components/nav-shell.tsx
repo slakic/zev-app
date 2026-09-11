@@ -7,7 +7,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { NAV_ICONS, IconDot, IconChevronLeft } from "@/components/nav-icons";
+import {
+  NAV_ICONS,
+  IconDot,
+  IconChevronLeft,
+  IconBuilding,
+  IconCheck,
+  IconLogout,
+  IconSliders,
+} from "@/components/nav-icons";
 import { t } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
@@ -207,8 +215,12 @@ export function NavShell({
           <div className="flex-1" />
 
           {showSwitcher && activeTenant && (
-            <span className="hidden truncate rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline-block">
-              {activeTenant.label}
+            <span
+              title={activeTenant.label}
+              className="hidden max-w-[16rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:inline-flex"
+            >
+              <IconBuilding className="h-3.5 w-3.5 shrink-0 text-blue-500" />
+              <span className="truncate">{activeTenant.label}</span>
             </span>
           )}
 
@@ -226,67 +238,87 @@ export function NavShell({
             {menuOpen && (
               <div
                 role="menu"
-                className="absolute right-0 z-30 mt-2 w-56 rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+                className="dropdown-in absolute right-0 z-30 mt-2 w-64 origin-top-right rounded-2xl border border-slate-200/80 bg-white py-1.5 shadow-xl ring-1 ring-slate-900/5"
               >
-                <div className="border-b border-slate-100 px-3 py-2">
-                  <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
-                  <div className="truncate text-xs text-slate-400">{rolesText}</div>
+                <div className="flex items-center gap-3 border-b border-slate-100 px-3.5 py-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                    {initials(displayName)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
+                    <div className="truncate text-xs text-slate-400">{rolesText}</div>
+                  </div>
                 </div>
                 {showSwitcher && (
-                  <div className="border-b border-slate-100 py-1">
-                    <div className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <div className="border-b border-slate-100 py-1.5">
+                    <div className="px-3.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                       {t("tenant.switcherHeading")}
                     </div>
-                    {tenants!.map((tt) => {
-                      const isActive = tt.zevId === activeZevId;
-                      return (
-                        <form key={tt.zevId} action={switchZevAction}>
-                          <input type="hidden" name="zevId" value={tt.zevId} />
-                          <button
-                            type="submit"
-                            role="menuitem"
-                            disabled={isActive}
-                            // Deliberately NOT closing the menu synchronously here: this is a
-                            // type="submit" button, and unmounting the dropdown (which contains
-                            // this very form) inside its own onClick — before the browser gets to
-                            // run the click's default action — cancels the form submission
-                            // entirely. The click silently "closes the menu" and switchActiveZev
-                            // never runs. Deferring to the next tick lets the native submit fire
-                            // first; the redirect that follows re-renders NavShell with fresh
-                            // props anyway, so the menu ends up reflecting the new active tenant
-                            // regardless of whether it stayed open for one extra frame.
-                            onClick={() => setTimeout(() => setMenuOpen(false), 0)}
-                            className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors ${
-                              isActive
-                                ? "cursor-default font-medium text-blue-700"
-                                : "text-slate-700 hover:bg-blue-50 hover:text-blue-700"
-                            }`}
-                          >
-                            <span className="truncate">{tt.label}</span>
-                            {isActive && <span className="shrink-0 text-xs">({t("tenant.active")})</span>}
-                          </button>
-                        </form>
-                      );
-                    })}
+                    <div className="px-1.5">
+                      {tenants!.map((tt) => {
+                        const isActive = tt.zevId === activeZevId;
+                        return (
+                          <form key={tt.zevId} action={switchZevAction}>
+                            <input type="hidden" name="zevId" value={tt.zevId} />
+                            <button
+                              type="submit"
+                              role="menuitem"
+                              aria-current={isActive ? "true" : undefined}
+                              disabled={isActive}
+                              // Deliberately NOT closing the menu synchronously here: this is a
+                              // type="submit" button, and unmounting the dropdown (which contains
+                              // this very form) inside its own onClick — before the browser gets to
+                              // run the click's default action — cancels the form submission
+                              // entirely. The click silently "closes the menu" and switchActiveZev
+                              // never runs. Deferring to the next tick lets the native submit fire
+                              // first; the redirect that follows re-renders NavShell with fresh
+                              // props anyway, so the menu ends up reflecting the new active tenant
+                              // regardless of whether it stayed open for one extra frame.
+                              onClick={() => setTimeout(() => setMenuOpen(false), 0)}
+                              className={`mb-0.5 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors last:mb-0 ${
+                                isActive
+                                  ? "cursor-default bg-blue-50 font-medium text-blue-700 ring-1 ring-inset ring-blue-100"
+                                  : "text-slate-700 hover:bg-slate-50"
+                              }`}
+                            >
+                              <IconBuilding
+                                className={`h-4 w-4 shrink-0 ${isActive ? "text-blue-500" : "text-slate-400"}`}
+                              />
+                              <span className="min-w-0 flex-1 truncate">{tt.label}</span>
+                              {isActive && (
+                                <>
+                                  <IconCheck className="h-4 w-4 shrink-0 text-blue-600" />
+                                  <span className="sr-only">({t("tenant.active")})</span>
+                                </>
+                              )}
+                            </button>
+                          </form>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
-                <Link
-                  href={settingsHref}
-                  role="menuitem"
-                  onClick={() => setMenuOpen(false)}
-                  className="block px-3 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
-                >
-                  {settingsLabel}
-                </Link>
-                <form action={logoutAction}>
-                  <button
-                    type="submit"
+                <div className="py-1">
+                  <Link
+                    href={settingsHref}
                     role="menuitem"
-                    className="block w-full px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
                   >
-                    {logoutLabel}
-                  </button>
-                </form>
+                    <IconSliders className="h-4 w-4 shrink-0 text-slate-400" />
+                    {settingsLabel}
+                  </Link>
+                  <form action={logoutAction}>
+                    <button
+                      type="submit"
+                      role="menuitem"
+                      className="flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                    >
+                      <IconLogout className="h-4 w-4 shrink-0 text-slate-400" />
+                      {logoutLabel}
+                    </button>
+                  </form>
+                </div>
               </div>
             )}
           </div>

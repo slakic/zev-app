@@ -11,3 +11,27 @@
 body {
   font-family: Roboto, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
+
+/* Subtle entrance for popover-style menus (account/tenant dropdown). Applied
+   to an element that mounts fresh each time it opens (conditional render),
+   so no JS open/close state machine is needed to trigger it. */
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdown-in {
+  animation: dropdown-in 130ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-in {
+    animation: none;
+  }
+}

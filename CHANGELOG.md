@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.5.3] - 2026-09-11
+
+### Izmijenjeno
+
+- **Vizuelno osvježen meni naloga (`NavShell`)** — dropdown ispod avatara
+  (prebacivanje ZEV-a, Podešavanja, Odjava) sada ima: profilnu "karticu" na
+  vrhu (avatar + ime + role, umjesto samog teksta), red za svaki ZEV sa
+  ikonicom zgrade i plavom pozadinom/kvačicom za trenutno aktivan (umjesto
+  golog teksta "(aktivan)"), ikonice uz Podešavanja i Odjavu, širi i
+  zaobljeniji okvir sa jačom sjenkom, i suptilnu animaciju otvaranja
+  (poštuje `prefers-reduced-motion`).
+- **Značka aktivnog ZEV-a u gornjoj traci** — od golog sivog "pilula" teksta
+  do plave tonalne značke sa ikonicom zgrade, dosljedno sa ostatkom
+  aplikacije (isti `ring-1 ring-inset` obrazac kao `StatusBadge`).
+- Dodate dvije nove monohromatske ikonice u `nav-icons.tsx`: `IconCheck`
+  (kvačica za aktivan ZEV) i `IconLogout` (izlazna strelica za Odjavu),
+  istim stilom kao postojeće.
+- Nema promjena u ponašanju/logici prebacivanja ZEV-a — popravka iz 2.5.2
+  (odgođeno zatvaranje menija zbog `type="submit"`) je zadržana bez izmjena.
+  Provjereno vizuelno u izolovanom renderu komponente (van Next/Prisma
+  stacka, sa lažnim podacima za dva ZEV-a) — desktop i mobilni prikaz, otvoren
+  i zatvoren meni, klik na prebacivanje ZEV-a.
+
 ## [2.5.2] - 2026-09-10
 
 ### Ispravljeno
