@@ -32,6 +32,13 @@ describe("secure electronic approval", () => {
     const audits = await prisma.auditEvent.findMany({ where: { action: "vote.submit", targetId: vote.id } });
     expect(audits).toHaveLength(1);
     expect(JSON.stringify(audits[0].after)).not.toContain(linkA.token);
+    // zevId/subjectPartyId fix (Plans/user-activity-log-plan.md §7.1): the event is now
+    // tenant-attributed and party-attributed even though there is no Actor (public token
+    // flow), and the vote choice itself is never written into the audit payload — it stays
+    // correctly recorded only on Vote, above, for counting and the official result.
+    expect(audits[0].zevId).toBe(f.zev.id);
+    expect((audits[0].after as { subjectPartyId?: string })?.subjectPartyId).toBe(f.ownerA.id);
+    expect(audits[0].after).not.toHaveProperty("choice");
   });
 
   it("a used link cannot vote again", async () => {

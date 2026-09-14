@@ -4,7 +4,7 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listDocuments, publishDocument } from "@/server/services/documents";
 import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/server/services/attachments";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn } from "@/components/ui";
 
 async function publishAction(formData: FormData) {
   "use server";
@@ -111,8 +111,8 @@ export default async function DocumentsPage({
             ))}
           </Table>
 
-          <details className="mt-4">
-            <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Otpremi dokument</summary>
+          <details className="group mt-4">
+            <ToggleBtn>Otpremi dokument</ToggleBtn>
             <form action={uploadAttachmentAction} className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <Field label="Kategorija">
                 <select name="category" className={inputCls} defaultValue="OTHER">

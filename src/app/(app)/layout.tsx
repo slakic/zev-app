@@ -54,7 +54,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // to the platform-level /admin area without typing the URL by hand.
   if (actor.isSuperAdmin) links.push({ href: "/admin", label: "Super admin" });
   const myTenants = await listMyTenants(actor);
-  const tenantOptions = myTenants.map((mt) => ({ zevId: mt.zevId, label: mt.shortName ?? mt.legalName }));
+  const tenantOptions = myTenants.map((mt) => ({
+    zevId: mt.zevId,
+    label: mt.shortName ?? mt.legalName,
+    // Shown as a hover tooltip in NavShell when it differs from the (often shortened)
+    // label above — lets you see the full legal name without opening /admin.
+    fullLabel: mt.legalName,
+  }));
   return (
     <NavShell
       appName={t("app.name")}

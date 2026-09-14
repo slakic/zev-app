@@ -4,7 +4,7 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listMeetings, createMeeting, listVotingRules, createVotingRule } from "@/server/services/meetings";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn } from "@/components/ui";
 
 async function addMeetingAction(formData: FormData) {
   "use server";
@@ -80,8 +80,8 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
           ))}
         </Table>
         {actor.roles.includes("PRESIDENT") && (
-          <details className="mt-4">
-            <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Nova sjednica</summary>
+          <details className="group mt-4">
+            <ToggleBtn>Nova sjednica</ToggleBtn>
             <form action={addMeetingAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
               <Field label="Naziv">
                 <input
@@ -129,8 +129,8 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
               ))}
             </Table>
             {actor.roles.includes("PRESIDENT") && (
-              <details className="mt-4">
-                <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Novo pravilo</summary>
+              <details className="group mt-4">
+                <ToggleBtn>Novo pravilo</ToggleBtn>
                 <form action={addRuleAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
                   <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno upravljanje" /></Field>
                   <Field label="Tip kvoruma">

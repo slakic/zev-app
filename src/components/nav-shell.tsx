@@ -19,7 +19,22 @@ import {
 import { t } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
-export type TenantOption = { zevId: string; label: string };
+export type TenantOption = {
+  zevId: string;
+  label: string;
+  /** Full legal name, shown as a hover tooltip when it differs from the (often
+   *  abbreviated) `label` — e.g. label "ZEV VM 10-12", fullLabel "Zajednica etažnih
+   *  vlasnika 'Vojvode Mišića 10 i 12'". Omit (or make it equal to `label`) when there's
+   *  no separate short name and no tooltip is needed. */
+  fullLabel?: string;
+};
+
+/** `title` text for a tenant chip/row: the full legal name when there is one and it
+ *  actually differs from the short label, otherwise `undefined` (no redundant tooltip
+ *  that just repeats what's already on screen). */
+function tenantTitle(tt: TenantOption): string | undefined {
+  return tt.fullLabel && tt.fullLabel !== tt.label ? tt.fullLabel : undefined;
+}
 
 const COLLAPSE_STORAGE_KEY = "zev-nav-collapsed";
 
@@ -216,7 +231,7 @@ export function NavShell({
 
           {showSwitcher && activeTenant && (
             <span
-              title={activeTenant.label}
+              title={tenantTitle(activeTenant) ?? activeTenant.label}
               className="hidden max-w-[16rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:inline-flex"
             >
               <IconBuilding className="h-3.5 w-3.5 shrink-0 text-blue-500" />
@@ -264,6 +279,7 @@ export function NavShell({
                               type="submit"
                               role="menuitem"
                               aria-current={isActive ? "true" : undefined}
+                              title={tenantTitle(tt)}
                               disabled={isActive}
                               // Deliberately NOT closing the menu synchronously here: this is a
                               // type="submit" button, and unmounting the dropdown (which contains

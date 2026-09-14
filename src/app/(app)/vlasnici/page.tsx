@@ -8,7 +8,7 @@ import { listUnits } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDate } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
@@ -137,8 +137,8 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
           ))}
         </Table>
         {isPresident && (
-          <details className="mt-4">
-            <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Dodaj lice</summary>
+          <details className="group mt-4">
+            <ToggleBtn>Dodaj lice</ToggleBtn>
             <form action={addPartyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-4">
               <Field label="Vrsta">
                 <select name="kind" className={inputCls}>

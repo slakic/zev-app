@@ -24,6 +24,7 @@ export async function requireActor(...roles: Role[]): Promise<Actor & { displayN
     sessionId: ctx.sessionId,
     displayName: ctx.displayName,
     email: ctx.email,
+    label: ctx.displayName,
   };
   if (roles.length > 0 && !ctx.roles.some((r) => roles.includes(r))) {
     redirect("/?err=forbidden");
@@ -51,6 +52,7 @@ export async function requireSuperAdminActor(): Promise<Actor & { displayName: s
     sessionId: ctx.sessionId,
     displayName: ctx.displayName,
     email: ctx.email,
+    label: ctx.displayName,
   };
 }
 
@@ -65,6 +67,7 @@ export async function maybeActor(): Promise<(Actor & { displayName: string }) | 
     isSuperAdmin: ctx.isSuperAdmin,
     sessionId: ctx.sessionId,
     displayName: ctx.displayName,
+    label: ctx.displayName,
   };
 }
 

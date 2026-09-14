@@ -432,6 +432,18 @@ describe("tenant isolation — no service function may read or write another ten
       const rules = await meetings.listVotingRules(a.president);
       expect(rules.some((r) => r.id === b.rule.id)).toBe(false);
     });
+
+    it("submitVote's audit event (no Actor — public token flow) is tenant/party-attributed and isolated (Plans/user-activity-log-plan.md §7.1)", async () => {
+      const bVoteAudit = await prisma.auditEvent.findFirstOrThrow({ where: { action: "vote.submit", targetId: bVoteId } });
+      // zevId/subjectPartyId come from the already-validated Proposal/EligibleVoter, not
+      // from caller input — confirms the fix actually attributes the event correctly...
+      expect(bVoteAudit.zevId).toBe(b.zev.id);
+      expect((bVoteAudit.after as { subjectPartyId?: string })?.subjectPartyId).toBe(b.ownerA.id);
+      // ...and a query scoped to the other tenant never sees it, same as every other
+      // AuditEvent-backed read in this suite.
+      const leakedIntoA = await prisma.auditEvent.findFirst({ where: { zevId: a.zev.id, targetId: bVoteId } });
+      expect(leakedIntoA).toBeNull();
+    });
   });
 
   // ---------------------------------------------------------------------

@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn } from "@/components/ui";
 import { ChargeItemRow } from "@/components/charge-item-row";
 
 async function addChargeItemAction(formData: FormData) {
@@ -111,8 +111,8 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                 />
               ))}
             </Table>
-            <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Nova stavka naknade</summary>
+            <details className="group mt-3">
+              <ToggleBtn>Nova stavka naknade</ToggleBtn>
               <form action={addChargeItemAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
                 <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno održavanje" /></Field>
                 <Field label="Metoda obračuna">

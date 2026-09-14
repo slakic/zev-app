@@ -9,7 +9,7 @@ import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
 
 async function addSupplierAction(formData: FormData) {
   "use server";
@@ -114,8 +114,8 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
               </tr>
             ))}
           </Table>
-          <details className="mt-3">
-            <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Novi dobavljač</summary>
+          <details className="group mt-3">
+            <ToggleBtn>Novi dobavljač</ToggleBtn>
             <form action={addSupplierAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
               <Field label="JIB"><input name="jib" className={inputCls} /></Field>

@@ -43,6 +43,62 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.6.0] - 2026-09-14
+
+### Dodato
+
+- **Faza 1 dnevnika korisničkih aktivnosti** (`Plans/user-activity-log-plan.md`,
+  plan odobren 2026-09-09) — temelji, bez vidljive promjene za korisnika:
+  - Dva nova indeksa na `AuditEvent` (`[zevId, createdAt]`,
+    `[zevId, actorId, createdAt]`), neophodna za bilo koji paginirani prikaz
+    aktivnosti preko ove tabele (koja samo raste).
+  - **Ispravljen `vote.submit` audit zapis** — do sada se upisivao potpuno
+    neatribuiran (`zevId: null`, bez ikoga ko je glasao), pa je elektronsko
+    glasanje bilo strukturno nevidljivo na `/podesavanja/audit`. Sada nosi
+    `zevId` (iz već provjerenog prijedloga) i identitet glasača (preko
+    `Party`, dok ne dobije posebnu kolonu). **Izbor glasa (`choice`) se više
+    uopšte ne upisuje** ni u jedan audit zapis (stroža odluka od originalne
+    preporuke — glasanje nije zakonski tajno, ali pregledljiv feed po osobi
+    je drugačija izloženost od formalne liste glasanja). Sam izbor ostaje
+    ispravno sačuvan u `Vote` tabeli za prebrojavanje i zvaničan rezultat.
+  - `document.publish` audit zapis sada nosi čitljiv sadržaj (tip, broj,
+    naslov dokumenta) — ranije nije imao nikakav.
+  - Ime aktera (`actorLabel`) sada preživljava i nakon što član napusti ZEV
+    (ranije se oslanjalo na živi join koji se tada pokvari).
+  - Prošireni `tests/voting.test.ts` i `tests/tenant-isolation.test.ts`.
+  - Slijedi Faza 2 (katalog akcija + `/aktivnosti` feed za predsjednika) i
+    Faza 3 (`/admin/aktivnosti` za super admina, preko svih ZEV naloga).
+
+## [2.5.5] - 2026-09-12
+
+### Izmijenjeno
+
+- **Dugme "+ Dodaj X" za otvaranje inline formi zamijenjeno standardnom
+  komponentom (`ToggleBtn`)** na svih 9 mjesta gdje se koristi
+  (`vlasnici`, dvaput na `skupstina`, `skupstina/[id]`, `planovi/[id]`,
+  `fakture`, `troskovi`, `dokumenti`, `odrzavanje/[id]`) — umjesto golog
+  plavog linka ("+ Dodaj lice" i sl.), sada je to ista "pilula" kao ostala
+  dugmad u aplikaciji (`btnBase`/`btnVariantCls`), sa strelicom (`›`) koja
+  se rotira za 90° kad se sekcija otvori/zatvori (isti obrazac kao
+  strelica za sažimanje bočnog menija) — jasnija vizuelna naznaka da
+  dugme otvara/zatvara sadržaj. Crveni "Hitna intervencija" prekidač na
+  `odrzavanje/[id]` koristi `danger` varijantu iste komponente. Ponašanje
+  nepromijenjeno — i dalje čist `<details>/<summary>` bez JS-a. Provjereno
+  vizuelno (izolovan render obje varijante, otvoreno/zatvoreno stanje) i
+  `typecheck`/`lint` na svih 9 izmijenjenih fajlova.
+
+## [2.5.4] - 2026-09-11
+
+### Dodato
+
+- **Tooltip sa punim pravnim nazivom ZEV-a** na meniju za prebacivanje (svaki red u
+  „Moji ZEV-ovi") i na značci aktivnog ZEV-a u gornjoj traci — hover preko kratkog
+  naziva (`Zev.shortName`, kad postoji) sada prikazuje `Zev.legalName` kao naslov
+  (`title` atribut), umjesto da se pun naziv vidi samo na /admin. Tooltip se ne
+  prikazuje kad kratki i puni naziv nisu postavljeni različito (nema suvišnog
+  ponavljanja iste vrijednosti). `TenantOption` (`nav-shell.tsx`) dobio novo opciono
+  polje `fullLabel`; `src/app/(app)/layout.tsx` ga popunjava sa `legalName`.
+
 ## [2.5.3] - 2026-09-11
 
 ### Izmijenjeno

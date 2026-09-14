@@ -720,11 +720,20 @@ export async function submitVote(input: {
         action: "vote.submit",
         targetType: "Vote",
         targetId: vote.id,
+        // No Actor here (public token flow) — zevId/subjectPartyId are passed explicitly
+        // instead, both already validated above (p.zevId from the resolved Proposal,
+        // voterParty.id from the resolved EligibleVoter), never from caller input
+        // (Plans/user-activity-log-plan.md §7.1).
+        zevId: p.zevId,
+        subjectPartyId: voterParty.id,
         after: {
           proposalId: p.id,
           proposalVersion: p.version,
           eligibleVoterId: t.eligibleVoterId,
-          choice: input.choice,
+          // choice is deliberately NOT recorded here (user decision P2, plan §6a/§7.1) —
+          // a feed browsable by person is a different privacy exposure than the formal
+          // vote list tied to a meeting record. The actual choice remains correctly
+          // stored on Vote itself, above, for counting and the official result.
           weight: t.eligibleVoter.weight.toString(),
           tokenId: t.id, // token ID only — never the token value
           channel: "ELECTRONIC",

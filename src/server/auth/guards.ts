@@ -29,6 +29,13 @@ export type Actor = {
    * row to update. Optional so fixtures/mocks that don't go through a real session (most
    * tests) still type-check without carrying one. */
   sessionId?: string;
+  /** Human-readable display name, populated from requireActor()'s displayName wherever an
+   * Actor is built from a real session (see actor.ts). Read only by audit() (src/server/
+   * audit.ts) so AuditEvent.actorLabel survives a member leaving the ZEV, instead of
+   * relying on a live join to Membership/User that breaks once they're gone (Plans/
+   * user-activity-log-plan.md §7.5). Optional so fixtures/mocks/the public vote-token
+   * flow (which has no Actor) still type-check without carrying one. */
+  label?: string;
 };
 
 export class AuthError extends Error {

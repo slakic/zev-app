@@ -184,7 +184,14 @@ export async function publishDocument(actor: Actor, documentId: string) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
   const d = await prisma.document.update({ where: { id: documentId, zevId }, data: { publishedToOwners: true } });
-  await audit(actor, { action: "document.publish", targetType: "Document", targetId: documentId });
+  // after populated for the curated activity feed (Plans/user-activity-log-plan.md §7.3) —
+  // this event previously had no payload at all, so a summarized view had nothing to show.
+  await audit(actor, {
+    action: "document.publish",
+    targetType: "Document",
+    targetId: documentId,
+    after: { type: d.type, number: d.number, title: d.title },
+  });
   return d;
 }
 

@@ -7,7 +7,7 @@ import { listSuppliers } from "@/server/services/expenses";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
 import type { IssueStatus } from "@/generated/prisma/client";
 
 async function transitionAction(formData: FormData) {
@@ -195,8 +195,8 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
             </div>
           )}
           {isPresident && !issue.isEmergency && ["REPORTED", "TRIAGED", "AUTHORIZATION_REQUIRED"].includes(issue.status) && (
-            <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-medium text-red-700">Hitna intervencija (preskače odobrenje)</summary>
+            <details className="group mt-3">
+              <ToggleBtn variant="danger">Hitna intervencija (preskače odobrenje)</ToggleBtn>
               <form action={emergencyAction} className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input type="hidden" name="issueId" value={issue.id} />
                 <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>

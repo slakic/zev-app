@@ -139,6 +139,27 @@ export function SubmitBtn({ children, variant, name, value }: { children: ReactN
   );
 }
 
+/** `<summary>` for a `<details>`-based inline "reveal a form" section (add a row, upload a
+ *  document, etc.) — same pill chrome as SubmitBtn/BtnLink so it reads as a real button,
+ *  with a chevron that rotates 90° open (same rotating-chevron idiom already used for the
+ *  sidebar collapse toggle in nav-shell.tsx) instead of the browser's own disclosure
+ *  triangle — clearer "this expands" affordance than a plain link ever gave it. No JS:
+ *  `<details>/<summary>` still does the actual show/hide. Wrap the section as
+ *  `<details className="group">...<ToggleBtn>Label</ToggleBtn>...form...</details>` — the
+ *  `group` class is what lets the chevron rotate via `group-open:` when the parent opens. */
+export function ToggleBtn({ children, variant }: { children: ReactNode; variant?: "primary" | "secondary" | "danger" }) {
+  return (
+    <summary
+      className={`${btnBase} ${btnVariantCls[variant ?? "secondary"]} cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden`}
+    >
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 transition-transform duration-150 group-open:rotate-90">
+        <path d="M7 5l6 5-6 5" />
+      </svg>
+      {children}
+    </summary>
+  );
+}
+
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="block text-sm">

@@ -1524,6 +1524,11 @@ model AuditEvent {
 
   @@index([targetType, targetId])
   @@index([action])
+  // Added for the curated activity feed (Plans/user-activity-log-plan.md §5, §8 Faza 1):
+  // every read there filters by zevId (and often actorId) ordered by createdAt, and the
+  // table is append-only-and-growing, so both must be indexed together, not separately.
+  @@index([zevId, createdAt])
+  @@index([zevId, actorId, createdAt])
 }
 
 // Tenant-scoped since 2026-09-09 (Faza 1 addendum — see docs/multitenancy-plan.md).

@@ -11,7 +11,7 @@ import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 async function addAgendaAction(formData: FormData) {
@@ -191,8 +191,8 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             ))}
           </Table>
           {isPresident && (
-            <details className="mt-4">
-              <summary className="cursor-pointer text-sm font-medium text-blue-700">+ Novi prijedlog</summary>
+            <details className="group mt-4">
+              <ToggleBtn>Novi prijedlog</ToggleBtn>
               <form action={addProposalAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input type="hidden" name="meetingId" value={meeting.id} />
                 <Field label="Šifra"><input name="code" required className={inputCls} placeholder="P-2026-01" /></Field>
