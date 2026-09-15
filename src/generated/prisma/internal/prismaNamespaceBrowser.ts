@@ -100,7 +100,9 @@ export const ModelName = {
   ContractorOffer: 'ContractorOffer',
   WorkOrder: 'WorkOrder',
   Document: 'Document',
+  DocumentBlob: 'DocumentBlob',
   Attachment: 'Attachment',
+  AttachmentBlob: 'AttachmentBlob',
   NotificationMessage: 'NotificationMessage',
   ViberSubscriber: 'ViberSubscriber',
   AuditEvent: 'AuditEvent',
@@ -990,6 +992,15 @@ export const DocumentScalarFieldEnum = {
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
 
 
+export const DocumentBlobScalarFieldEnum = {
+  documentId: 'documentId',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentBlobScalarFieldEnum = (typeof DocumentBlobScalarFieldEnum)[keyof typeof DocumentBlobScalarFieldEnum]
+
+
 export const AttachmentScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
@@ -1006,6 +1017,15 @@ export const AttachmentScalarFieldEnum = {
 } as const
 
 export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof typeof AttachmentScalarFieldEnum]
+
+
+export const AttachmentBlobScalarFieldEnum = {
+  attachmentId: 'attachmentId',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type AttachmentBlobScalarFieldEnum = (typeof AttachmentBlobScalarFieldEnum)[keyof typeof AttachmentBlobScalarFieldEnum]
 
 
 export const NotificationMessageScalarFieldEnum = {

@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import fs from "node:fs";
 import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, openVotingWithLinks, createAreaCharges, type Fixture } from "./helpers";
 import { createDraftBatch, issueBatch } from "@/server/services/billing";
@@ -26,22 +25,22 @@ describe("documents and audit trail", () => {
     expect(doc.sourceId).toBe(inv.id);
     expect(doc.number).toBe(inv.number);
     expect(doc.status).toBe("FINAL");
-    expect(fs.existsSync(doc.filePath)).toBe(true);
+    const blob = await prisma.documentBlob.findUniqueOrThrow({ where: { documentId: doc.id } });
     // the rendered PDF embeds the owner's name and the amount
-    const raw = fs.readFileSync(doc.filePath);
+    const raw = Buffer.from(blob.data);
     expect(raw.subarray(0, 5).toString()).toBe("%PDF-");
     expect(raw.length).toBeGreaterThan(1000);
   });
 
-  it("finalized documents are immutable: regeneration creates a new version, both files kept", async () => {
+  it("finalized documents are immutable: regeneration creates a new version, both blobs kept", async () => {
     const inv = invoices.find((i) => i.debtorId === f.ownerA.id && i.unitId === f.u1.id)!;
     const v1 = await prisma.document.findFirstOrThrow({ where: { sourceId: inv.id, type: "INVOICE" }, orderBy: { version: "desc" } });
     const v2 = await generateInvoicePdf(f.accountant, inv.id);
     expect(v2.version).toBe(v1.version + 1);
     const still = await prisma.document.findUniqueOrThrow({ where: { id: v1.id } });
     expect(still.sha256).toBe(v1.sha256);
-    expect(fs.existsSync(still.filePath)).toBe(true);
-    expect(fs.existsSync(v2.filePath)).toBe(true);
+    await expect(prisma.documentBlob.findUniqueOrThrow({ where: { documentId: v1.id } })).resolves.toBeTruthy();
+    await expect(prisma.documentBlob.findUniqueOrThrow({ where: { documentId: v2.id } })).resolves.toBeTruthy();
   });
 
   it("owners can download their own documents but not another owner's", async () => {

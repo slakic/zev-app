@@ -1409,15 +1409,30 @@ model Document {
   version     Int            @default(1)
   sourceType  String?        // e.g. "Meeting", "Invoice", "AnnualPlan"
   sourceId    String?
-  filePath    String
+  // Legacy Docker deployments only, from before Plans/deployment-portability-plan.md
+  // §3: an absolute on-disk path. New rows leave this null and carry their bytes in
+  // `blob` instead — readDocumentFile falls back to this path only when `blob` is absent.
+  filePath    String?
   sha256      String
   publishedToOwners Boolean  @default(false)
   createdById String?
   finalizedAt DateTime?
   createdAt   DateTime       @default(now())
+  blob        DocumentBlob?
 
   @@unique([zevId, type, number, version])
   @@index([sourceType, sourceId])
+}
+
+// Kept separate from Document (rather than a `data Bytes` column on it) so that listing
+// documents — a plain findMany with no explicit select — never pulls file contents over
+// the wire; the bytes are fetched only where `blob` is explicitly included, i.e. exactly
+// where the code used to call fs.readFileSync. See Plans/deployment-portability-plan.md §3.2.
+model DocumentBlob {
+  documentId String   @id
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  data       Bytes
+  createdAt  DateTime @default(now())
 }
 
 /// Classification: OWNERSHIP_PROOF | INVOICE | REPORT | MINUTES | CONTRACT |
@@ -1432,7 +1447,9 @@ model Attachment {
   filename    String
   mime        String
   size        Int
-  filePath    String
+  // Legacy Docker deployments only — see Document.filePath above; AttachmentBlob
+  // (below) is where new uploads live.
+  filePath    String?
   sha256      String?
   uploadedById String?
   category    String   @default("OTHER")
@@ -1443,9 +1460,18 @@ model Attachment {
   issues      MaintenanceIssue[] @relation("IssueAttachments")
   transactions FinTransaction[] @relation("TxAttachments")
   createdAt   DateTime @default(now())
+  blob        AttachmentBlob?
 
   @@index([linkedType, linkedId])
   @@index([category])
+}
+
+// See DocumentBlob above for why this is a separate table.
+model AttachmentBlob {
+  attachmentId String     @id
+  attachment   Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  data         Bytes
+  createdAt    DateTime   @default(now())
 }
 
 enum NotifChannel {

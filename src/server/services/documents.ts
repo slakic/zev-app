@@ -27,12 +27,6 @@ import type { DocumentType } from "@/generated/prisma/client";
 const FONT_REG = path.join(process.cwd(), "assets/fonts/DejaVuSans.ttf");
 const FONT_BOLD = path.join(process.cwd(), "assets/fonts/DejaVuSans-Bold.ttf");
 
-function storageDir(): string {
-  const dir = path.join(process.cwd(), process.env.STORAGE_DIR ?? "./var/storage", "documents");
-  fs.mkdirSync(dir, { recursive: true });
-  return dir;
-}
-
 type PdfBuild = (doc: PDFKit.PDFDocument) => Promise<void> | void;
 
 async function renderPdf(build: PdfBuild): Promise<Buffer> {
@@ -119,25 +113,27 @@ export async function storeDocument(
   const version = (existing?.version ?? 0) + 1;
   const number = input.number ?? existing?.number ?? (await nextDocNumber(zevId, input.type));
   const hash = createHash("sha256").update(input.buffer).digest("hex");
-  const filename = `${number.replace(/[^\w-]/g, "_")}_v${version}.pdf`;
-  const filePath = path.join(storageDir(), filename);
-  fs.writeFileSync(filePath, input.buffer);
-  const docRow = await prisma.document.create({
-    data: {
-      zevId,
-      type: input.type,
-      number,
-      title: input.title,
-      status: input.finalize ? "FINAL" : "DRAFT",
-      version,
-      sourceType: input.sourceType ?? null,
-      sourceId: input.sourceId ?? null,
-      filePath,
-      sha256: hash,
-      publishedToOwners: input.publishedToOwners ?? false,
-      createdById: actor?.userId ?? null,
-      finalizedAt: input.finalize ? new Date() : null,
-    },
+  // Row + blob are written in the same transaction — unlike the old disk-write-then-DB-insert
+  // sequence, a rollback can never leave an orphaned blob behind (Plans/deployment-portability-plan.md §3.4).
+  const docRow = await prisma.$transaction(async (tx) => {
+    const row = await tx.document.create({
+      data: {
+        zevId,
+        type: input.type,
+        number,
+        title: input.title,
+        status: input.finalize ? "FINAL" : "DRAFT",
+        version,
+        sourceType: input.sourceType ?? null,
+        sourceId: input.sourceId ?? null,
+        sha256: hash,
+        publishedToOwners: input.publishedToOwners ?? false,
+        createdById: actor?.userId ?? null,
+        finalizedAt: input.finalize ? new Date() : null,
+      },
+    });
+    await tx.documentBlob.create({ data: { documentId: row.id, data: new Uint8Array(input.buffer) } });
+    return row;
   });
   await audit(actor, {
     action: "document.generate",
@@ -179,7 +175,11 @@ export async function readDocumentFile(actor: Actor, documentId: string): Promis
     }
   }
   await audit(actor, { action: "document.download", targetType: "Document", targetId: d.id });
-  return { doc: { title: d.title, number: d.number }, buffer: fs.readFileSync(d.filePath) };
+  const blob = await prisma.documentBlob.findUnique({ where: { documentId: d.id } });
+  // Legacy Docker rows (pre-DB-storage, Plans/deployment-portability-plan.md §3.3) have no
+  // blob and instead carry an absolute on-disk filePath — read that as a fallback.
+  const buffer = blob ? Buffer.from(blob.data) : fs.readFileSync(d.filePath!);
+  return { doc: { title: d.title, number: d.number }, buffer };
 }
 
 export async function publishDocument(actor: Actor, documentId: string) {

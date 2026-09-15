@@ -249,7 +249,7 @@ export type DocumentGroupByOutputType = {
   version: number
   sourceType: string | null
   sourceId: string | null
-  filePath: string
+  filePath: string | null
   sha256: string
   publishedToOwners: boolean
   createdById: string | null
@@ -290,13 +290,14 @@ export type DocumentWhereInput = {
   version?: Prisma.IntFilter<"Document"> | number
   sourceType?: Prisma.StringNullableFilter<"Document"> | string | null
   sourceId?: Prisma.StringNullableFilter<"Document"> | string | null
-  filePath?: Prisma.StringFilter<"Document"> | string
+  filePath?: Prisma.StringNullableFilter<"Document"> | string | null
   sha256?: Prisma.StringFilter<"Document"> | string
   publishedToOwners?: Prisma.BoolFilter<"Document"> | boolean
   createdById?: Prisma.StringNullableFilter<"Document"> | string | null
   finalizedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
+  blob?: Prisma.XOR<Prisma.DocumentBlobNullableScalarRelationFilter, Prisma.DocumentBlobWhereInput> | null
 }
 
 export type DocumentOrderByWithRelationInput = {
@@ -309,13 +310,14 @@ export type DocumentOrderByWithRelationInput = {
   version?: Prisma.SortOrder
   sourceType?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceId?: Prisma.SortOrderInput | Prisma.SortOrder
-  filePath?: Prisma.SortOrder
+  filePath?: Prisma.SortOrderInput | Prisma.SortOrder
   sha256?: Prisma.SortOrder
   publishedToOwners?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   finalizedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
+  blob?: Prisma.DocumentBlobOrderByWithRelationInput
 }
 
 export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -332,13 +334,14 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   version?: Prisma.IntFilter<"Document"> | number
   sourceType?: Prisma.StringNullableFilter<"Document"> | string | null
   sourceId?: Prisma.StringNullableFilter<"Document"> | string | null
-  filePath?: Prisma.StringFilter<"Document"> | string
+  filePath?: Prisma.StringNullableFilter<"Document"> | string | null
   sha256?: Prisma.StringFilter<"Document"> | string
   publishedToOwners?: Prisma.BoolFilter<"Document"> | boolean
   createdById?: Prisma.StringNullableFilter<"Document"> | string | null
   finalizedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
+  blob?: Prisma.XOR<Prisma.DocumentBlobNullableScalarRelationFilter, Prisma.DocumentBlobWhereInput> | null
 }, "id" | "zevId_type_number_version">
 
 export type DocumentOrderByWithAggregationInput = {
@@ -351,7 +354,7 @@ export type DocumentOrderByWithAggregationInput = {
   version?: Prisma.SortOrder
   sourceType?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceId?: Prisma.SortOrderInput | Prisma.SortOrder
-  filePath?: Prisma.SortOrder
+  filePath?: Prisma.SortOrderInput | Prisma.SortOrder
   sha256?: Prisma.SortOrder
   publishedToOwners?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -377,7 +380,7 @@ export type DocumentScalarWhereWithAggregatesInput = {
   version?: Prisma.IntWithAggregatesFilter<"Document"> | number
   sourceType?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
   sourceId?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
-  filePath?: Prisma.StringWithAggregatesFilter<"Document"> | string
+  filePath?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
   sha256?: Prisma.StringWithAggregatesFilter<"Document"> | string
   publishedToOwners?: Prisma.BoolWithAggregatesFilter<"Document"> | boolean
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
@@ -394,13 +397,14 @@ export type DocumentCreateInput = {
   version?: number
   sourceType?: string | null
   sourceId?: string | null
-  filePath: string
+  filePath?: string | null
   sha256: string
   publishedToOwners?: boolean
   createdById?: string | null
   finalizedAt?: Date | string | null
   createdAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutDocumentsInput
+  blob?: Prisma.DocumentBlobCreateNestedOneWithoutDocumentInput
 }
 
 export type DocumentUncheckedCreateInput = {
@@ -413,12 +417,13 @@ export type DocumentUncheckedCreateInput = {
   version?: number
   sourceType?: string | null
   sourceId?: string | null
-  filePath: string
+  filePath?: string | null
   sha256: string
   publishedToOwners?: boolean
   createdById?: string | null
   finalizedAt?: Date | string | null
   createdAt?: Date | string
+  blob?: Prisma.DocumentBlobUncheckedCreateNestedOneWithoutDocumentInput
 }
 
 export type DocumentUpdateInput = {
@@ -430,13 +435,14 @@ export type DocumentUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutDocumentsNestedInput
+  blob?: Prisma.DocumentBlobUpdateOneWithoutDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateInput = {
@@ -449,12 +455,13 @@ export type DocumentUncheckedUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blob?: Prisma.DocumentBlobUncheckedUpdateOneWithoutDocumentNestedInput
 }
 
 export type DocumentCreateManyInput = {
@@ -467,7 +474,7 @@ export type DocumentCreateManyInput = {
   version?: number
   sourceType?: string | null
   sourceId?: string | null
-  filePath: string
+  filePath?: string | null
   sha256: string
   publishedToOwners?: boolean
   createdById?: string | null
@@ -484,7 +491,7 @@ export type DocumentUpdateManyMutationInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -502,7 +509,7 @@ export type DocumentUncheckedUpdateManyInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -589,6 +596,11 @@ export type DocumentSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
+export type DocumentScalarRelationFilter = {
+  is?: Prisma.DocumentWhereInput
+  isNot?: Prisma.DocumentWhereInput
+}
+
 export type DocumentCreateNestedManyWithoutZevInput = {
   create?: Prisma.XOR<Prisma.DocumentCreateWithoutZevInput, Prisma.DocumentUncheckedCreateWithoutZevInput> | Prisma.DocumentCreateWithoutZevInput[] | Prisma.DocumentUncheckedCreateWithoutZevInput[]
   connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutZevInput | Prisma.DocumentCreateOrConnectWithoutZevInput[]
@@ -639,6 +651,20 @@ export type EnumDocumentStatusFieldUpdateOperationsInput = {
   set?: $Enums.DocumentStatus
 }
 
+export type DocumentCreateNestedOneWithoutBlobInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutBlobInput, Prisma.DocumentUncheckedCreateWithoutBlobInput>
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutBlobInput
+  connect?: Prisma.DocumentWhereUniqueInput
+}
+
+export type DocumentUpdateOneRequiredWithoutBlobNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutBlobInput, Prisma.DocumentUncheckedCreateWithoutBlobInput>
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutBlobInput
+  upsert?: Prisma.DocumentUpsertWithoutBlobInput
+  connect?: Prisma.DocumentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DocumentUpdateToOneWithWhereWithoutBlobInput, Prisma.DocumentUpdateWithoutBlobInput>, Prisma.DocumentUncheckedUpdateWithoutBlobInput>
+}
+
 export type DocumentCreateWithoutZevInput = {
   id?: string
   type: $Enums.DocumentType
@@ -648,12 +674,13 @@ export type DocumentCreateWithoutZevInput = {
   version?: number
   sourceType?: string | null
   sourceId?: string | null
-  filePath: string
+  filePath?: string | null
   sha256: string
   publishedToOwners?: boolean
   createdById?: string | null
   finalizedAt?: Date | string | null
   createdAt?: Date | string
+  blob?: Prisma.DocumentBlobCreateNestedOneWithoutDocumentInput
 }
 
 export type DocumentUncheckedCreateWithoutZevInput = {
@@ -665,12 +692,13 @@ export type DocumentUncheckedCreateWithoutZevInput = {
   version?: number
   sourceType?: string | null
   sourceId?: string | null
-  filePath: string
+  filePath?: string | null
   sha256: string
   publishedToOwners?: boolean
   createdById?: string | null
   finalizedAt?: Date | string | null
   createdAt?: Date | string
+  blob?: Prisma.DocumentBlobUncheckedCreateNestedOneWithoutDocumentInput
 }
 
 export type DocumentCreateOrConnectWithoutZevInput = {
@@ -712,12 +740,100 @@ export type DocumentScalarWhereInput = {
   version?: Prisma.IntFilter<"Document"> | number
   sourceType?: Prisma.StringNullableFilter<"Document"> | string | null
   sourceId?: Prisma.StringNullableFilter<"Document"> | string | null
-  filePath?: Prisma.StringFilter<"Document"> | string
+  filePath?: Prisma.StringNullableFilter<"Document"> | string | null
   sha256?: Prisma.StringFilter<"Document"> | string
   publishedToOwners?: Prisma.BoolFilter<"Document"> | boolean
   createdById?: Prisma.StringNullableFilter<"Document"> | string | null
   finalizedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+}
+
+export type DocumentCreateWithoutBlobInput = {
+  id?: string
+  type: $Enums.DocumentType
+  number: string
+  title: string
+  status?: $Enums.DocumentStatus
+  version?: number
+  sourceType?: string | null
+  sourceId?: string | null
+  filePath?: string | null
+  sha256: string
+  publishedToOwners?: boolean
+  createdById?: string | null
+  finalizedAt?: Date | string | null
+  createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutDocumentsInput
+}
+
+export type DocumentUncheckedCreateWithoutBlobInput = {
+  id?: string
+  zevId: string
+  type: $Enums.DocumentType
+  number: string
+  title: string
+  status?: $Enums.DocumentStatus
+  version?: number
+  sourceType?: string | null
+  sourceId?: string | null
+  filePath?: string | null
+  sha256: string
+  publishedToOwners?: boolean
+  createdById?: string | null
+  finalizedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type DocumentCreateOrConnectWithoutBlobInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutBlobInput, Prisma.DocumentUncheckedCreateWithoutBlobInput>
+}
+
+export type DocumentUpsertWithoutBlobInput = {
+  update: Prisma.XOR<Prisma.DocumentUpdateWithoutBlobInput, Prisma.DocumentUncheckedUpdateWithoutBlobInput>
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutBlobInput, Prisma.DocumentUncheckedCreateWithoutBlobInput>
+  where?: Prisma.DocumentWhereInput
+}
+
+export type DocumentUpdateToOneWithWhereWithoutBlobInput = {
+  where?: Prisma.DocumentWhereInput
+  data: Prisma.XOR<Prisma.DocumentUpdateWithoutBlobInput, Prisma.DocumentUncheckedUpdateWithoutBlobInput>
+}
+
+export type DocumentUpdateWithoutBlobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutDocumentsNestedInput
+}
+
+export type DocumentUncheckedUpdateWithoutBlobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type DocumentCreateManyZevInput = {
@@ -729,7 +845,7 @@ export type DocumentCreateManyZevInput = {
   version?: number
   sourceType?: string | null
   sourceId?: string | null
-  filePath: string
+  filePath?: string | null
   sha256: string
   publishedToOwners?: boolean
   createdById?: string | null
@@ -746,12 +862,13 @@ export type DocumentUpdateWithoutZevInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blob?: Prisma.DocumentBlobUpdateOneWithoutDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateWithoutZevInput = {
@@ -763,12 +880,13 @@ export type DocumentUncheckedUpdateWithoutZevInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blob?: Prisma.DocumentBlobUncheckedUpdateOneWithoutDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateManyWithoutZevInput = {
@@ -780,7 +898,7 @@ export type DocumentUncheckedUpdateManyWithoutZevInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   publishedToOwners?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -807,6 +925,7 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   finalizedAt?: boolean
   createdAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  blob?: boolean | Prisma.Document$blobArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -868,6 +987,7 @@ export type DocumentSelectScalar = {
 export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "type" | "number" | "title" | "status" | "version" | "sourceType" | "sourceId" | "filePath" | "sha256" | "publishedToOwners" | "createdById" | "finalizedAt" | "createdAt", ExtArgs["result"]["document"]>
 export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  blob?: boolean | Prisma.Document$blobArgs<ExtArgs>
 }
 export type DocumentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -880,6 +1000,7 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Document"
   objects: {
     zev: Prisma.$ZevPayload<ExtArgs>
+    blob: Prisma.$DocumentBlobPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -891,7 +1012,7 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     version: number
     sourceType: string | null
     sourceId: string | null
-    filePath: string
+    filePath: string | null
     sha256: string
     publishedToOwners: boolean
     createdById: string | null
@@ -1292,6 +1413,7 @@ readonly fields: DocumentFieldRefs;
 export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  blob<T extends Prisma.Document$blobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$blobArgs<ExtArgs>>): Prisma.Prisma__DocumentBlobClient<runtime.Types.Result.GetResult<Prisma.$DocumentBlobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1734,6 +1856,25 @@ export type DocumentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Documents to delete.
    */
   limit?: number
+}
+
+/**
+ * Document.blob
+ */
+export type Document$blobArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DocumentBlob
+   */
+  select?: Prisma.DocumentBlobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DocumentBlob
+   */
+  omit?: Prisma.DocumentBlobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentBlobInclude<ExtArgs> | null
+  where?: Prisma.DocumentBlobWhereInput
 }
 
 /**

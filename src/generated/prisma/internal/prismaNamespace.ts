@@ -446,7 +446,9 @@ export const ModelName = {
   ContractorOffer: 'ContractorOffer',
   WorkOrder: 'WorkOrder',
   Document: 'Document',
+  DocumentBlob: 'DocumentBlob',
   Attachment: 'Attachment',
+  AttachmentBlob: 'AttachmentBlob',
   NotificationMessage: 'NotificationMessage',
   ViberSubscriber: 'ViberSubscriber',
   AuditEvent: 'AuditEvent',
@@ -466,7 +468,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "attachment" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4096,6 +4098,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DocumentBlob: {
+      payload: Prisma.$DocumentBlobPayload<ExtArgs>
+      fields: Prisma.DocumentBlobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DocumentBlobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DocumentBlobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>
+        }
+        findFirst: {
+          args: Prisma.DocumentBlobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DocumentBlobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>
+        }
+        findMany: {
+          args: Prisma.DocumentBlobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>[]
+        }
+        create: {
+          args: Prisma.DocumentBlobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>
+        }
+        createMany: {
+          args: Prisma.DocumentBlobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DocumentBlobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>[]
+        }
+        delete: {
+          args: Prisma.DocumentBlobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>
+        }
+        update: {
+          args: Prisma.DocumentBlobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>
+        }
+        deleteMany: {
+          args: Prisma.DocumentBlobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DocumentBlobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DocumentBlobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>[]
+        }
+        upsert: {
+          args: Prisma.DocumentBlobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DocumentBlobPayload>
+        }
+        aggregate: {
+          args: Prisma.DocumentBlobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDocumentBlob>
+        }
+        groupBy: {
+          args: Prisma.DocumentBlobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentBlobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DocumentBlobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DocumentBlobCountAggregateOutputType> | number
+        }
+      }
+    }
     Attachment: {
       payload: Prisma.$AttachmentPayload<ExtArgs>
       fields: Prisma.AttachmentFieldRefs
@@ -4167,6 +4243,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AttachmentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    AttachmentBlob: {
+      payload: Prisma.$AttachmentBlobPayload<ExtArgs>
+      fields: Prisma.AttachmentBlobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AttachmentBlobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AttachmentBlobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>
+        }
+        findFirst: {
+          args: Prisma.AttachmentBlobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AttachmentBlobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>
+        }
+        findMany: {
+          args: Prisma.AttachmentBlobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>[]
+        }
+        create: {
+          args: Prisma.AttachmentBlobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>
+        }
+        createMany: {
+          args: Prisma.AttachmentBlobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AttachmentBlobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>[]
+        }
+        delete: {
+          args: Prisma.AttachmentBlobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>
+        }
+        update: {
+          args: Prisma.AttachmentBlobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>
+        }
+        deleteMany: {
+          args: Prisma.AttachmentBlobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AttachmentBlobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AttachmentBlobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>[]
+        }
+        upsert: {
+          args: Prisma.AttachmentBlobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttachmentBlobPayload>
+        }
+        aggregate: {
+          args: Prisma.AttachmentBlobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAttachmentBlob>
+        }
+        groupBy: {
+          args: Prisma.AttachmentBlobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AttachmentBlobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AttachmentBlobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AttachmentBlobCountAggregateOutputType> | number
         }
       }
     }
@@ -5372,6 +5522,15 @@ export const DocumentScalarFieldEnum = {
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
 
 
+export const DocumentBlobScalarFieldEnum = {
+  documentId: 'documentId',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type DocumentBlobScalarFieldEnum = (typeof DocumentBlobScalarFieldEnum)[keyof typeof DocumentBlobScalarFieldEnum]
+
+
 export const AttachmentScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
@@ -5388,6 +5547,15 @@ export const AttachmentScalarFieldEnum = {
 } as const
 
 export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof typeof AttachmentScalarFieldEnum]
+
+
+export const AttachmentBlobScalarFieldEnum = {
+  attachmentId: 'attachmentId',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type AttachmentBlobScalarFieldEnum = (typeof AttachmentBlobScalarFieldEnum)[keyof typeof AttachmentBlobScalarFieldEnum]
 
 
 export const NotificationMessageScalarFieldEnum = {
@@ -6089,6 +6257,20 @@ export type ListEnumDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+/**
  * Reference to a field of type 'NotifChannel'
  */
 export type EnumNotifChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotifChannel'>
@@ -6329,7 +6511,9 @@ export type GlobalOmitConfig = {
   contractorOffer?: Prisma.ContractorOfferOmit
   workOrder?: Prisma.WorkOrderOmit
   document?: Prisma.DocumentOmit
+  documentBlob?: Prisma.DocumentBlobOmit
   attachment?: Prisma.AttachmentOmit
+  attachmentBlob?: Prisma.AttachmentBlobOmit
   notificationMessage?: Prisma.NotificationMessageOmit
   viberSubscriber?: Prisma.ViberSubscriberOmit
   auditEvent?: Prisma.AuditEventOmit

@@ -43,6 +43,33 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.8.0] - 2026-09-15
+
+### Izmijenjeno
+
+- **Faza 1 plana prenosivosti deployment-a** (`Plans/deployment-portability-plan.md`) —
+  dokumenti i prilozi se sada čuvaju u Postgres bazi umjesto na lokalnom fajlsistemu:
+  - Nove tabele `DocumentBlob`/`AttachmentBlob` (1:1 sa `Document`/`Attachment`,
+    `onDelete: Cascade`), zasebne od glavnih tabela da listanje dokumenata/priloga
+    (obična `findMany` bez `select`) nikad nenamjerno ne povuče sadržaj fajlova.
+  - `Document.filePath` i `Attachment.filePath` su sada opcioni — postojeći Docker
+    redovi (apsolutna putanja sa diska) i dalje rade bez izmjene, novi redovi ih
+    više ne postavljaju.
+  - `storeDocument`, `uploadAttachment` i `createLinkedAttachmentTx` upisuju red i
+    blob **u istoj DB transakciji** — bivši rizik od siročeta na disku (upis fajla
+    uspije, DB upis padne) više ne postoji po dizajnu, bez potrebe za alatom za
+    čišćenje.
+  - `readDocumentFile`/`readAttachmentFile` prvo pokušaju blob, pa se vraćaju na
+    `fs.readFileSync` samo za naslijeđene redove bez blob-a.
+  - **Docker ponašanje nepromijenjeno** — nema nove env varijable; `docker compose up`
+    sa nepromijenjenim `docker-compose.yml` radi identično kao prije.
+  - Novi kontrakt-test `tests/document-storage.test.ts` (round-trip, sha256,
+    naslijeđeni `filePath`, red bez ijednog izvora podataka); `tests/documents-audit.test.ts`
+    prešao sa `fs.existsSync`/`fs.readFileSync` na provjeru `DocumentBlob` reda.
+  - Uklanja S3/object-storage granu iz plana u cjelosti (`StorageAdapter`,
+    `STORAGE_BACKEND`, `@aws-sdk/client-s3`) — vidi odluku iz §11 P2.
+  - 220/220 testova prolazi.
+
 ## [2.7.1] - 2026-09-15
 
 ### Izmijenjeno

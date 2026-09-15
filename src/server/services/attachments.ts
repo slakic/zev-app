@@ -8,7 +8,6 @@ import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } f
 import type { Prisma } from "@/generated/prisma/client";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
-import path from "node:path";
 
 type Tx = Prisma.TransactionClient;
 
@@ -61,37 +60,27 @@ function assertUploadable(input: { buffer: Buffer; mime: string; category: strin
   }
 }
 
-function storageDir(): string {
-  const dir = path.join(process.cwd(), process.env.STORAGE_DIR ?? "./var/storage", "attachments");
-  fs.mkdirSync(dir, { recursive: true });
-  return dir;
-}
-
-/** Write the file to disk and return everything needed for an Attachment row — does not touch the DB. */
-function stageFile(input: { buffer: Buffer; filename: string }): { filePath: string; sha256: string } {
-  const hash = createHash("sha256").update(input.buffer).digest("hex");
-  const safeName = input.filename.replace(/[^\w.\-]+/g, "_").slice(-120);
-  const filePath = path.join(storageDir(), `${Date.now()}_${hash.slice(0, 12)}_${safeName}`);
-  fs.writeFileSync(filePath, input.buffer);
-  return { filePath, sha256: hash };
+function hashOf(buffer: Buffer): string {
+  return createHash("sha256").update(buffer).digest("hex");
 }
 
 /**
  * Create an Attachment row for a document tied to a specific record, INSIDE an existing
  * transaction (e.g. alongside creating the OwnershipStake it proves). Callers use this when
  * the attachment is one leg of a larger atomic operation; use uploadAttachment() otherwise.
+ * The blob is written in the same transaction as the row — a rollback can never leave an
+ * orphaned blob behind (Plans/deployment-portability-plan.md §3.4).
  */
 export async function createLinkedAttachmentTx(tx: Tx, actor: Actor, input: UploadInput) {
   assertUploadable(input);
   const zevId = requireZev(actor);
-  const { filePath, sha256 } = stageFile(input);
+  const sha256 = hashOf(input.buffer);
   const row = await tx.attachment.create({
     data: {
       zevId,
       filename: input.filename,
       mime: input.mime,
       size: input.buffer.length,
-      filePath,
       sha256,
       uploadedById: actor.userId,
       category: input.category,
@@ -99,6 +88,7 @@ export async function createLinkedAttachmentTx(tx: Tx, actor: Actor, input: Uplo
       linkedId: input.linkedId ?? null,
     },
   });
+  await tx.attachmentBlob.create({ data: { attachmentId: row.id, data: new Uint8Array(input.buffer) } });
   await audit(actor, {
     action: "attachment.upload",
     targetType: "Attachment",
@@ -113,20 +103,23 @@ export async function uploadAttachment(actor: Actor, input: UploadInput) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   assertUploadable(input);
   const zevId = requireZev(actor);
-  const { filePath, sha256 } = stageFile(input);
-  const row = await prisma.attachment.create({
-    data: {
-      zevId,
-      filename: input.filename,
-      mime: input.mime,
-      size: input.buffer.length,
-      filePath,
-      sha256,
-      uploadedById: actor.userId,
-      category: input.category,
-      linkedType: input.linkedType ?? null,
-      linkedId: input.linkedId ?? null,
-    },
+  const sha256 = hashOf(input.buffer);
+  const row = await prisma.$transaction(async (tx) => {
+    const r = await tx.attachment.create({
+      data: {
+        zevId,
+        filename: input.filename,
+        mime: input.mime,
+        size: input.buffer.length,
+        sha256,
+        uploadedById: actor.userId,
+        category: input.category,
+        linkedType: input.linkedType ?? null,
+        linkedId: input.linkedId ?? null,
+      },
+    });
+    await tx.attachmentBlob.create({ data: { attachmentId: r.id, data: new Uint8Array(input.buffer) } });
+    return r;
   });
   await audit(actor, {
     action: "attachment.upload",
@@ -183,5 +176,9 @@ export async function readAttachmentFile(actor: Actor, id: string): Promise<{ at
     if (!allowed) throw new ForbiddenError();
   }
   await audit(actor, { action: "attachment.download", targetType: "Attachment", targetId: a.id });
-  return { attachment: { filename: a.filename, mime: a.mime }, buffer: fs.readFileSync(a.filePath) };
+  const blob = await prisma.attachmentBlob.findUnique({ where: { attachmentId: a.id } });
+  // Legacy Docker rows (pre-DB-storage, Plans/deployment-portability-plan.md §3.3) have no
+  // blob and instead carry an absolute on-disk filePath — read that as a fallback.
+  const buffer = blob ? Buffer.from(blob.data) : fs.readFileSync(a.filePath!);
+  return { attachment: { filename: a.filename, mime: a.mime }, buffer };
 }

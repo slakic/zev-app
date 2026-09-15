@@ -270,6 +270,11 @@ export type WorkOrder = Prisma.WorkOrderModel
  */
 export type Document = Prisma.DocumentModel
 /**
+ * Model DocumentBlob
+ * 
+ */
+export type DocumentBlob = Prisma.DocumentBlobModel
+/**
  * Model Attachment
  * Classification: OWNERSHIP_PROOF | INVOICE | REPORT | MINUTES | CONTRACT |
  * CORRESPONDENCE | PHOTO | CONSENT | OTHER (see ATTACHMENT_CATEGORIES in attachments.ts —
@@ -278,6 +283,11 @@ export type Document = Prisma.DocumentModel
  * "OwnershipStake"), mirroring Document.sourceType/sourceId; both null = general library item.
  */
 export type Attachment = Prisma.AttachmentModel
+/**
+ * Model AttachmentBlob
+ * 
+ */
+export type AttachmentBlob = Prisma.AttachmentBlobModel
 /**
  * Model NotificationMessage
  * 
