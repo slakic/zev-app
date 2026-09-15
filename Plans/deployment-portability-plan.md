@@ -1,19 +1,57 @@
 # Prenosivost deployment-a (deployment portability) — smanjenje zavisnosti od Dockera — plan za pregled
 
-**Status: PLAN NA ČEKANJU ODGOVORA KORISNIKA.**
+**Status: ODLUKE DONESENE — plan ažuriran, spreman za implementaciju od Faze 0.**
 Nastalo na zahtjev korisnika (2026-09-15), nakon prethodnog pitanja u istoj
 konverzaciji: „how could I deploy this application to Vercel?". Zahtjev je
-proširen sa „kako na Vercel" na **„kako učiniti aplikaciju konfigurabilno
+proširen sa „kako na Vercel" na „kako učiniti aplikaciju konfigurabilno
 prenosivom preko više okruženja — Docker self-host (kao danas), Vercel, ili bilo
-koji Node hosting — bez izmjene koda, samo promjenom konfiguracije"**. Izrađeno
+koji Node hosting — bez izmjene koda, samo promjenom konfiguracije". Izrađeno
 kroz plansku analizu (Opus model, plan-only prolaz — metodologija u skill-u
 `opus-plan-sonnet-code`), zasnovano na stvarnom čitanju koda projekta.
 
+Odgovori na §11 primljeni 2026-09-15 su **promijenili arhitekturu** u odnosu na
+prvobitnu preporuku: umjesto `StorageAdapter`-a sa `local`/`s3` backend-ima
+(izvorni §3), dokumenti i prilozi idu **direktno u Postgres bazu**. §3 je u
+cjelosti prepisan; sve što je zavisilo od S3 (§3.5, `docker-compose.test-s3.yml`,
+`@aws-sdk/client-s3`, dio §9) je uklonjeno iz obima.
+
 ## Odluke korisnika
 
-**N/A — čeka odgovore na pitanja iz §11.** Nijedna odluka još nije donesena;
-sekcije ispod nose preporuke, ne odluke. Nekoliko preporuka (posebno §3.5, §4
-i §12 raspored faza) mijenja oblik u zavisnosti od odgovora na P1, P2 i P6.
+Donesene 2026-09-15, kao odgovor na pitanja iz §11:
+
+- **P1 — Vercel je konkretan cilj**, ne buduća fleksibilnost. Ovo opravdava
+  puni obim izmjena (bivši §3-§8), ali korisnik je za **nivo truda** (P6)
+  izabrao opciju **(b)**, ne (c) — vidi ispod. Stvaran probni deployment na
+  Vercel ostaje u Fazi 5, van trenutnog obima.
+- **P2/§3 — Umjesto object storage-a (S3/R2/MinIO), dokumenti i prilozi se
+  čuvaju direktno u Postgres bazi.** Ovo je izmijenjeni odgovor u odnosu na
+  izvorno pitanje P2 („koji S3?") — korisnik je odabrao da izbjegne object
+  storage u potpunosti. Vidi prepisan §3. Ovo **automatski rješava P3**
+  („ista baza za obje platforme?") na najjednostavniji mogući način: baza je i
+  dalje jedini izvor istine, na obje platforme, bez pojma „backend-a" koji
+  bira.
+- **P3 — Ne treba** ista baza da servisira Docker i serverless istovremeno kao
+  dvije žive produkcije. Bespredmetno nakon P2 odluke: DB storage radi
+  identično na obje platforme bez grananja.
+- **P4 — Pravi email provajder (Mailjet) ulazi u obim.** Viber ostaje `mock`,
+  odloženo za kasnije izdanje. §7 prepisan da uključi `MailjetEmailProvider`.
+- **P5 — Potvrđeno kroz P2/odgovor #2, uz novo ograničenje otkriveno
+  provjerom (vidi §8.1):** Vercel Functions imaju tvrd infrastrukturni limit od
+  4.5 MB po tijelu zahtjeva (izvor: [Vercel Functions Limits](https://vercel.com/docs/functions/limitations),
+  potvrđeno pretragom 2026-09-15) — korisnikov prvobitni prijedlog od 10 MB po
+  fajlu ne staje ispod tog zida ni uz `MAX_UPLOAD_MB`. Korisnik je nakon toga
+  odabrao **spuštanje limita na ~4 MB** (opcija „minimalna izmjena, zadržati
+  današnji jednozahtjevni upload") umjesto chunked upload-a ili presigned
+  relay-a. Efektivan `MAX_UPLOAD_MB=4`.
+- **P6 — Nivo truda: opcija (b), Blokator + higijena.** U obim ulaze: DB
+  storage (prepisan §3), §4 (fontovi), §5 (migracije), §2 (`env.ts`
+  validacija), §8.1 (upload limit, sada 4 MB), §8.2 (health), §8.3 (`engines`).
+  **Van** trenutnog obima (odloženo u Fazu 5): §6 (pooling), §8.4
+  (`maxDuration`), stvaran probni deployment na Vercel.
+- **P7 — Ne.** `DEPLOYMENT_TARGET` dijagnostička varijabla se ne uvodi.
+  Dodatno bespredmetna nakon P2 odluke — glavni scenario koji je štitila
+  (`STORAGE_BACKEND` mismatch) više ne postoji jer postoji samo jedan
+  „backend" (Postgres).
 
 ---
 
@@ -51,15 +89,18 @@ proceduralni**, i samo prvi je pravi blokator:
    `zaboravljena-lozinka/page.tsx:15`) — pogrešan deployment ne pukne, nego
    generiše QR kodove i linkove za reset lozinke koji vode u prazno.
 
-**Preporuka u jednoj rečenici:** uvesti tanak `StorageAdapter` sloj sa
-`local` backend-om kao podrazumijevanim (tačno današnje ponašanje, zero-config
-za Docker) i `s3` backend-om kao alternativom, izabranom **ortogonalnom** env
-varijablom po već postojećem `EMAIL_PROVIDER` obrascu — bez „magičnog"
-`DEPLOYMENT_TARGET` preseta — plus izdvojiti migracije iz entrypoint-a u
-eksplicitan, dokumentovan korak koji entrypoint *poziva*, umjesto da ga *sadrži*.
+**Odluka (nakon §11):** umjesto `StorageAdapter`-a sa `local`/`s3` backend-ima,
+dokumenti i prilozi se čuvaju **direktno u Postgres bazi** (§3) — nema više
+pojma „backend-a" niti ortogonalne `STORAGE_BACKEND` varijable, jer postoji
+samo jedan način čuvanja bajtova, identičan na Dockeru i na Vercel-u. Plus:
+izdvojiti migracije iz entrypoint-a u eksplicitan, dokumentovan korak koji
+entrypoint *poziva*, umjesto da ga *sadrži* (§5, nepromijenjeno).
 
 **Usput otkriven bag koji nema veze sa prenosivošću, ali ga ovaj posao mora
-dodirnuti** — vidi §8.1: upload veći od 1 MB danas pada **i u Dockeru**.
+dodirnuti** — vidi §8.1: upload veći od 1 MB danas pada **i u Dockeru**. Ispravka
+je sada čvrsto vezana za drugo, nezavisno ograničenje: Vercel Functions imaju
+tvrd limit od 4.5 MB po tijelu zahtjeva, pa je konačan izabran limit 4 MB, ne
+prvobitno razmatranih 10-15 MB.
 
 ---
 
@@ -82,9 +123,11 @@ Dodatno, tri rute čitaju `filePath` **direktno**, zaobilazeći servisni sloj:
 - (`src/app/api/dokumenti/[id]/route.ts` i `src/app/api/prilozi/[id]/route.ts` **ne** zaobilaze — pozivaju `readDocumentFile`/`readAttachmentFile`, što je ispravno.)
 
 **Posljedica po plan:** ta dva `route.ts` fajla moraju se prvo *ispraviti* da idu
-kroz servis, prije nego što adapter uopšte može biti jedina tačka pristupa.
-`generateFinancialReportPdf` i `generateOwnerDebtReportPdf` ionako već vraćaju
-`Document` red — dovoljno je pozvati `readDocumentFile(actor, doc.id)`, kao što
+kroz servis, prije nego što `documents.ts`/`attachments.ts` uopšte mogu biti
+jedina tačka pristupa bajtovima (sada: jedina tačka koja čita/piše
+`DocumentBlob`/`AttachmentBlob`, §3). `generateFinancialReportPdf` i
+`generateOwnerDebtReportPdf` ionako već vraćaju `Document` red — dovoljno je
+pozvati `readDocumentFile(actor, doc.id)`, kao što
 `src/app/api/dokumenti/kartica/[partyId]/route.ts:12-13` već radi.
 
 `ARCHITECTURE.md:97-99` eksplicitno dokumentuje da backup procedura zahtijeva
@@ -120,13 +163,17 @@ src/server/services/evoteConsent.ts:34-39  isti obrazac
 
 `createLinkedAttachmentTx` (`attachments.ts:82`) zove `stageFile()` — sinhroni
 `fs.writeFileSync` — dok je DB transakcija otvorena. Sa lokalnim diskom to je
-mikrosekunda. Sa S3 PUT-om to je mrežni round-trip (desetine do stotine ms) sa
-otvorenom transakcijom, što na pooled konekciji (§6) postaje stvaran izvor
-zaglavljivanja.
+mikrosekunda.
 
 **Bitno:** današnji kod **već** ostavlja siroče na disku ako se transakcija
-rollback-uje (fajl je upisan prije `tx.attachment.create`). Nova arhitektura to
-ne pogoršava, ali je prilika da se to eksplicitno adresira.
+rollback-uje (fajl je upisan prije `tx.attachment.create`).
+
+**Ovaj problem u potpunosti nestaje odlukom da bajtovi idu u Postgres (§3).**
+Upis u `AttachmentBlob` postaje **dio iste `tx.$transaction`** — nema više
+razdvajanja na „upiši van transakcije pa referenciraj unutra" (izvorna
+preporuka §3.3 dolje je zamijenjena): ako transakcija padne, blob red se
+rollback-uje zajedno sa svim ostalim, atomski, bez ikakvog siročeta. Ovo je
+strogo jednostavnije od originalnog plana, ne kompromis.
 
 ### 1.4 Fontovi preko sirove `fs` putanje
 
@@ -242,9 +289,13 @@ način da radi ovu stvar. Uvođenje `DEPLOYMENT_TARGET` preseta bi bio **drugi,
 paralelni** mehanizam konfiguracije pored postojećeg — što je gore od bilo koje
 od dvije opcije samostalno.
 
-Dodatno, `EMAIL_PROVIDER` i `STORAGE_BACKEND` su zaista nezavisni: neko može
-raditi Docker self-host **sa** S3 (npr. MinIO ili R2 za backup-friendly storage),
-ili serverless **sa** mock notifikacijama. Preseti bi tu kombinatoriku razbili.
+Dodatno, `EMAIL_PROVIDER`/`VIBER_PROVIDER` i ostale nove varijable (§8.1
+`MAX_UPLOAD_MB`, §6 `DB_POOL_MAX`) su zaista nezavisne jedna od druge: neko
+može raditi Docker self-host **sa** pravim Mailjet provajderom (§7), ili
+Vercel **sa** mock notifikacijama dok ne konfiguriše Mailjet. Preseti bi tu
+kombinatoriku razbili. (Napomena: nakon odluke iz §3, storage više nema
+zasebnu env varijablu uopšte — DB je jedini mehanizam — pa je ovaj argument
+sada suženiji nego u izvornom planu, ali i dalje važi za preostale opcije.)
 
 ### Centralna tačka: `src/lib/env.ts`
 
@@ -265,116 +316,110 @@ validacija na prvi pristup, ne top-level `parse()`.
 
 ---
 
-## 3. Storage adapter — dizajn
+## 3. Skladištenje dokumenata i priloga — dizajn (DB umjesto object storage-a)
 
-### 3.1 Interfejs
+**Odluka korisnika (§11 P2, revidirano):** umjesto `StorageAdapter`-a sa
+`local`/`s3` backend-ima, binarni sadržaj ide **direktno u Postgres**. Ovo je
+u potpunosti zamijenilo izvorni dizajn ovog paragrafa.
 
-Predlog: `src/server/storage/` (nov direktorijum, ogledalo strukture
-`src/server/notifications/`, koji je već presedan za „provider iza env varijable").
+### 3.1 Šema: `DocumentBlob` / `AttachmentBlob`
 
+```prisma
+model DocumentBlob {
+  documentId String   @id
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  data       Bytes
+  createdAt  DateTime @default(now())
+}
+
+model AttachmentBlob {
+  attachmentId String     @id
+  attachment   Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  data         Bytes
+  createdAt    DateTime   @default(now())
+}
 ```
-src/server/storage/
-  index.ts        getStorage() — switch po STORAGE_BACKEND, memoizovan
-  types.ts        StorageAdapter interfejs + StorageObject tip
-  local.ts        LocalStorageAdapter (današnje ponašanje)
-  s3.ts           S3StorageAdapter (uslovno — vidi §3.5 i P2)
-```
 
-Minimalan interfejs, izveden iz onoga što kod **stvarno** radi (ne špekulativno):
+`Bytes` u Prisma 7 mapira na Postgres `bytea`. Za fajlove do ~4 MB (§8.1) TOAST
+automatski čuva vrijednost van glavne stranice (out-of-line, kompresovano) —
+nema potrebe za `Large Object` (`lo`) API-jem, koji bi tražio posebno
+upravljanje transakcijama i nije dostupan kroz Prisma.
 
-| Metoda | Zašto postoji | Ko je zove danas |
-|---|---|---|
-| `put(key, buffer, opts?)` | jedini oblik upisa u kodu | `documents.ts:122`, `attachments.ts:75` |
-| `get(key)` → `Buffer` | jedini oblik čitanja | `documents.ts:180`, `attachments.ts:186` |
-| `delete(key)` | **ne postoji nijedan pozivalac danas** | — |
-| `exists(key)` | koriste samo testovi | `documents-audit.test.ts:29,43` |
+### 3.2 Zašto zasebne tabele, ne kolona na `Document`/`Attachment`
 
-**Preporuka:** implementirati sve četiri, ali biti svjestan da su `delete` i
-`exists` tu za testove i buduću upotrebu, ne zato što ih aplikacija treba.
-`delete` posebno: `Document` je po dizajnu **nepromjenljiv i verzionisan**
-(`documents.ts:1-2` komentar, `schema.prisma:1419` unique na `[zevId, type, number, version]`)
-— brisanje bi bilo pogrešno izlagati servisnom sloju. Držati ga za alat za
-čišćenje siročadi (§3.3), ne za domenski kod.
+Prisma upit bez eksplicitnog `select` povlači **sve** skalarne kolone. Liste
+dokumenata (`/dokumenti`, kartica vlasnika, itd.) rade tačno takve upite. Da je
+`data Bytes` kolona direktno na `Document`/`Attachment`, svako listanje bi
+nenamjerno povlačilo pune sadržaje fajlova (do 4 MB po redu) preko mreže. Sa
+zasebnom 1:1 tabelom, blob se dohvata samo eksplicitnim upitom na
+`DocumentBlob`/`AttachmentBlob` — tačno tamo gdje kod danas zove
+`fs.readFileSync`, u `readDocumentFile`/`readAttachmentFile`. Ovo je najveći
+implementacioni rizik ove odluke (vidi §13) — svaki budući `prisma.document.findMany`
+bez `select` i dalje je siguran samo zato što je blob u drugoj tabeli.
 
-Namjerno **NE** u interfejsu:
-- `getSignedUrl()` / redirect na presigned URL. Djeluje privlačno (rasterećuje
-  aplikaciju od streamovanja bajtova), ali **razbija autorizaciju**:
-  `readAttachmentFile` (`attachments.ts:165-186`) i `readDocumentFile`
-  (`documents.ts:159-181`) sprovode netrivijalnu kontrolu pristupa po vlasništvu
-  udjela i po `publishedToOwners`. Presigned URL je bearer token koji izlazi iz
-  domena te kontrole. Ako se ikad uvede, mora biti kratkotrajan i to je zasebna
-  odluka. Van obima.
-- `list()`. Nijedan kod ne pretražuje storage — baza je indeks. Ne uvoditi.
-- Streaming. Limit je 15 MB (`attachments.ts:37`), sve staje u memoriju, a rute
-  ionako već grade `new Uint8Array(buffer)`.
+### 3.3 `filePath` — nazad-kompatibilnost sa postojećim Docker redovima
 
-### 3.2 Ključ umjesto putanje — i šta sa postojećim redovima
+Princip je jednostavniji nego u izvornom planu jer sada postoji samo jedan novi
+mehanizam čuvanja, ne izbor između više:
 
-Adapter mora raditi sa **ključem** (`documents/RN-2026-0001_v1.pdf`), ne sa
-apsolutnom putanjom. Postojeći redovi imaju apsolutne putanje (§1.2).
+- Kolona `filePath` (`schema.prisma:1412`, `:1435`) **ostaje netaknuta** — jedini
+  način da postojeći Docker redovi (apsolutna putanja, §1.2) i dalje rade.
+- Novi redovi (od Faze 1 nadalje) **ne pišu** `filePath`; umjesto toga dobijaju
+  odgovarajući `DocumentBlob`/`AttachmentBlob` red.
+- Čitanje (`readDocumentFile`, `readAttachmentFile`): prvo pokušaj blob relaciju;
+  ako ne postoji, pad-back na `fs.readFileSync(filePath)` (legacy Docker put).
+  Ako ni jedno ni drugo — greška, kao i danas.
+- **Jedina stvarna izmjena šeme na postojećim modelima:** `filePath` mora
+  postati `filePath String?` (danas obavezno) da bi novi redovi mogli imati
+  prazan `filePath`. Sigurna, širi tip — sve postojeće vrijednosti ostaju validne.
+- `sha256` (već postoji na oba modela, `:1413`, `:1436`) i dalje se provjerava
+  pri čitanju kao i u izvornom planu — provjeravati i logovati neslaganje, ne
+  bacati grešku.
 
-| # | Opcija | Za | Protiv | Ocjena |
-|---|---|---|---|---|
-| A | Zadržati kolonu `filePath`, promijeniti značenje na „ključ"; **pri čitanju**: ako vrijednost počinje sa `/`, tretirati je kao naslijeđenu apsolutnu putanju i čitati sa lokalnog diska | Nula migracija podataka; postojeći Docker deployment nastavlja raditi netaknut; novi redovi su prenosivi | Kolona ima dva značenja neko vrijeme; naslijeđeni redovi ostaju vezani za lokalni disk zauvijek dok se ne migriraju | **✓ preporuka za Fazu 1** |
-| B | Nove kolone `storageKey` + `storageBackend`, backfill migracija, `filePath` se kasnije ukida | Čisto, eksplicitno, podržava više backend-a istovremeno | Migracija šeme + backfill + dupla logika u prelaznom periodu; `storageBackend` je potreban samo ako se backend-i miješaju (vidi P3) | Ako P3 kaže „da, ista baza služi obje platforme" |
-| C | Jednokratna SQL migracija koja skida prefiks sa `filePath` | Jednostavno, jedan `UPDATE` | Nepovratno; oslanja se na to da je prefiks uvijek isti (jeste danas, ali `STORAGE_DIR` je konfigurabilan pa nije garantovano); ne pomaže pri prelasku Docker→S3 jer fajlovi i dalje moraju biti prekopirani | Kao *opcioni* alat uz A, ne umjesto A |
+**Jednokratni backfill alat** (opcion, ne u trenutnom obimu — P6 (b) ga ne
+uključuje): pročitaj sve redove sa ne-null `filePath`, upiši sadržaj u
+odgovarajući blob, obriši `filePath`. Vrijedan tek kad se stvarno planira
+ugasiti Docker deployment koji te fajlove drži — dotle pad-back čitanje radi
+neograničeno, bez hitnosti.
 
-**Preporuka: A**, sa `C` kao opcionim `scripts/`-alatom kasnije. Razlog je
-konkretan: opcija A je jedina koja **garantuje** da postojeći Docker korisnik ne
-mora ništa da uradi — što je izričit zahtjev („Docker ostaje prva/default opcija").
+### 3.4 Upis — unutar transakcije, ne van nje
 
-`sha256` postoji na oba modela (`schema.prisma:1413`, `:1436`) i može se
-provjeriti pri čitanju — jeftino, i vrijedno kad podaci pređu preko mreže.
-Preporuka: provjeravati i **logovati** neslaganje, ne bacati grešku (stari
-`Attachment.sha256` je nullable, `:1436`).
+Izvorni plan je preporučivao izbacivanje upisa **iz** DB transakcije zbog
+mrežnog S3 PUT-a sa otvorenom transakcijom (§1.3). DB storage čini suprotno
+prirodnim: upis u `DocumentBlob`/`AttachmentBlob` ide **unutar** iste
+`prisma.$transaction` kao i upis reda u `Document`/`Attachment`. Ovo u
+potpunosti uklanja problem siročadi u storage-u (§1.3) — bez potrebe za bilo
+kakvim alatom za čišćenje.
 
-### 3.3 Transakciona semantika (§1.3)
+`createLinkedAttachmentTx` (`attachments.ts:82`) i ekvivalent u `documents.ts`
+se pojednostavljuju: `stageFile()`/`storeDocument()` rade **oba** upisa (red +
+odgovarajući blob red) u istom `tx`. Pozivaoci u `ownership.ts:131` i
+`evoteConsent.ts:34` se ne mijenjaju — i dalje prosljeđuju `tx` nadalje.
 
-Preporuka: **izbaciti upis iz transakcije.**
-
-Konkretno, razdvojiti `createLinkedAttachmentTx` na dva koraka:
-1. `stageUpload(input)` → `{ key, sha256, size }` — radi `put()`, **prije**
-   `prisma.$transaction`, u pozivaocima (`ownership.ts:131`, `evoteConsent.ts:34`).
-2. `createLinkedAttachmentTx(tx, actor, staged, meta)` — samo DB upis.
-
-Time transakcija nikad ne čeka mrežu. Semantika grešaka ostaje **ista kao danas**:
-ako DB dio padne, objekat je siroče u storage-u — što se i sada dešava. Razlika
-je da je sada eksplicitno i dokumentovano, i može se pokriti `scripts/`-alatom za
-pronalaženje siročadi (objekti bez reda u bazi). Taj alat je opcion i može u
-kasniju fazu.
-
-**Alternativa koja se odbacuje:** upisati DB red prvo pa storage poslije. Gore —
-proizvodi redove koji pokazuju na nepostojeće objekte, što je vidljivo korisniku
-(pokvaren download) za razliku od siročeta, koje nije.
-
-### 3.4 Nusprodukt koji treba popraviti usput
+### 3.5 Nusprodukt koji treba popraviti usput (nepromijenjeno u suštini)
 
 `src/app/api/dokumenti/kartica/[partyId]/route.ts:12-13` radi
-`generateOwnerStatementPdf` → `readDocumentFile` — dakle **upiše pa odmah
-pročita nazad**. Sa lokalnim diskom to je besplatno; sa S3 su to dva mrežna
-poziva za bajtove koji su bili u memoriji prije milisekunde. Isti obrazac je i u
-`izvjestaji/pdf/route.ts` i `izvjestaji/dugovanja/route.ts`.
+`generateOwnerStatementPdf` → `readDocumentFile` — upiše pa odmah pročita
+nazad. Sa DB storage-om to je i dalje nepotreban dodatni `SELECT` na
+`DocumentBlob` odmah nakon `INSERT`-a u istoj bazi — jeftinije nego sa S3
+(nema mrežnog PUT/GET-a), ali i dalje suvišno. Ista preporuka: `storeDocument`
+vraća `{ row, buffer }`, rute koriste buffer koji već imaju. Isti obrazac je i
+u `izvjestaji/pdf/route.ts` i `izvjestaji/dugovanja/route.ts` (§1.1).
 
-Preporuka: `storeDocument` da vraća `{ row, buffer }`, pa rute koriste buffer koji
-već imaju. To je i danas poboljšanje, a sa S3 postaje bitno.
+### 3.6 Šta ova odluka uklanja iz obima
 
-### 3.5 Koji backend-i
-
-| Backend | `STORAGE_BACKEND` | Napomena |
-|---|---|---|
-| Lokalni fajlsistem | `local` (**podrazumijevano**) | Tačno današnje ponašanje. Ako varijabla nije postavljena — kao danas. |
-| S3-kompatibilan | `s3` | Jedan adapter pokriva AWS S3, Cloudflare R2, MinIO, Backblaze B2, DigitalOcean Spaces — sve preko `S3_ENDPOINT` + `S3_REGION` + `S3_BUCKET` + `S3_ACCESS_KEY_ID` + `S3_SECRET_ACCESS_KEY` + `S3_FORCE_PATH_STYLE` (potrebno za MinIO) |
-
-**Vercel Blob je namjerno izostavljen** iz preporuke: nije S3-kompatibilan, ima
-vlastiti SDK, i vezuje aplikaciju za jednu platformu — što je suprotno cilju
-ovog poduhvata. Cloudflare R2 radi i sa Vercel-a i sa Dockera, preko istog S3
-adaptera. Ovo je predmet pitanja P2.
-
-**Nova zavisnost:** `@aws-sdk/client-s3` (+ `@aws-sdk/lib-storage` samo ako
-zatreba multipart, što na 15 MB limitu ne treba). Ovo je **prva prava vanjska
-integracija u projektu** — `Plans/gmail-bank-statement-ingestion-plan.md:86-96`
-to konstatuje. Vrijedi razmisliti o lijenom `await import("./s3")` unutar
-`getStorage()`, tako da Docker deployment nikad ne učita AWS SDK u memoriju.
+- `src/server/storage/` adapter sloj (interfejs + `local`/`s3` implementacije) —
+  ne treba, nema izbora backend-a.
+- `STORAGE_BACKEND` env varijabla i cijela tabela backend-a iz izvornog plana.
+- `@aws-sdk/client-s3` zavisnost — prva prava vanjska integracija koju je
+  izvorni plan predviđao za ovaj poduhvat više nije potrebna ovdje
+  (`Plans/gmail-bank-statement-ingestion-plan.md:86-96` i dalje može biti prva
+  vanjska integracija, ako do toga dođe).
+- `docker-compose.test-s3.yml` + MinIO test servis.
+- Pitanja P2 (izvorno „koji S3 provider") i P3 (dvostruki backend) — oba
+  bespredmetna, vidi Odluke korisnika.
+- `STORAGE_DIR` env varijabla ostaje **samo** za nazad-kompatibilno čitanje
+  postojećih Docker redova (§3.3 gore) — više se ne koristi za nove upise.
 
 ---
 
@@ -463,19 +508,43 @@ migrirati **produkcionu** bazu. Ne raditi to.
 
 ---
 
-## 7. Notifikacioni provajderi — potvrda obrasca
+## 7. Notifikacioni provajderi — Mailjet ulazi u obim (§11 P4)
 
-`providers.ts:71-95` je **već** tačan obrazac i ne treba ga mijenjati radi
-prenosivosti. Interfejsi `EmailProvider`/`ViberProvider` (`:22-33`) su čisti,
-`SendResult` je platformski neutralan, i `service.ts:47` dispatch-uje kroz njih.
+`providers.ts:71-95` je **već** tačan obrazac za dodavanje pravog provajdera:
+`switch` po env varijabli, `?? "mock"` kao podrazumijevana vrijednost, `throw`
+za nepoznatu vrijednost (`:71-80`). Interfejsi `EmailProvider`/`ViberProvider`
+(`:22-33`) su čisti, `SendResult` je platformski neutralan, i dispatch ide kroz
+njih — nema potrebe mijenjati obrazac, samo dodati implementaciju.
 
-Jedina sitna primjedba koja je **relevantna za prenosivost**: `service.ts:45-46`
-komentariše da bi „a real deployment would use a worker with retry/backoff", a
-`retryFailed()` (`service.ts:101`) postoji ali **nema pozivaoca**. Na Docker-u bi
-se to riješilo `setInterval`-om; na serverless platformi bi trebalo scheduler
-(Vercel Cron). Pošto danas nema nijednog pozivaoca, **ovo ostaje van obima** —
-ali treba biti zapisano kao prva stvar koja će zahtijevati platform-specific
-scheduler kad se uvede pravi email provajder (P4).
+### 7.1 `MailjetEmailProvider`
+
+- Nov `src/server/notifications/mailjetEmail.ts`, implementira `EmailProvider`.
+- Mailjet REST API (`POST /v3.1/send`), autentikacija preko API key + secret
+  (Basic Auth) — dvije nove env varijable: `MAILJET_API_KEY`,
+  `MAILJET_API_SECRET`, plus `MAILJET_FROM_EMAIL` (pošiljalac mora biti
+  verifikovan domen/adresa u Mailjet nalogu).
+- `getEmailProvider()` (`providers.ts:71`) dobija novi `case "mailjet"`; ostaje
+  `mock` kao podrazumijevano ako `EMAIL_PROVIDER` nije postavljen — Docker
+  deployment koji ništa ne mijenja nastavlja da radi identično (§9 princip).
+- Mapiranje na `SendResult`: Mailjet API vraća `Messages[].Status` ("success"/
+  "error") i `Messages[].To[].MessageID` — direktno se preslikava na
+  `ok`/`providerMessageId`. Mailjet ne šalje delivery/seen webhook-ove bez
+  dodatne konfiguracije (Event API) — van obima ovog plana; `events` niz u
+  `SendResult` se popunjava samo sa `"sent"` u trenutku uspješnog API poziva,
+  ne sa `"delivered"`/`"seen"` kao mock provajder danas simulira.
+- `VIBER_PROVIDER` **ostaje `mock`** — pravi Viber provajder je eksplicitno
+  odloženo za kasnije izdanje (§11 P4).
+
+### 7.2 Zakazivanje/retry — i dalje van obima, ali sada bliže
+
+`service.ts:45-46` komentariše da bi „a real deployment would use a worker with
+retry/backoff", a `retryFailed()` (`service.ts:101`) postoji ali **nema
+pozivaoca**. Uvođenje pravog provajdera (7.1) ovo čini konkretnijim rizikom —
+Mailjet API poziv može otkazati (mrežna greška, rate limit, nevalidna adresa)
+na način na koji mock provajder nikad ne otkazuje — ali `retryFailed`
+zakazivanje **ostaje van obima ovog plana** po odluci P4 (samo pravi provajder
+je tražen, ne i scheduler). Zapisano kao prva stvar koja će zahtijevati
+platform-specific scheduler kad se ikad uvede.
 
 Isti zaključak važi i za `Plans/adhoc-fund-collection-plan.md` P9 (planirani
 podsjetnici) i `Plans/gmail-bank-statement-ingestion-plan.md` Faza 3
@@ -488,7 +557,7 @@ Vercel-u (Vercel Cron) i svugdje drugdje. **Predložiti kao dizajn, ne graditi s
 
 ## 8. Ostalo
 
-### 8.1 Bag: limit veličine upload-a (nije vezan za prenosivost, ali blokira ovaj posao)
+### 8.1 Bag: limit veličine upload-a — RIJEŠENO, limit spušten na 4 MB (§11 P5)
 
 `attachments.ts:37` postavlja `MAX_SIZE_BYTES = 15 MB`. Upload ide kroz Server
 Action (`src/app/(app)/dokumenti/page.tsx:16-24`, `formData.get("file")` →
@@ -499,14 +568,27 @@ je **1 MB**, a `next.config.ts` je prazan.
 sa Next-ovom greškom o body limitu, ne sa aplikativnom porukom iz `assertUploadable`.
 Validaciju od 15 MB nikad ništa ne dosegne.
 
-Treba potvrditi empirijski (nisam mogao pokrenuti build u ovom okruženju), ali
-ako se potvrdi:
-- postaviti `serverActions.bodySizeLimit` u `next.config.ts` da odgovara `MAX_SIZE_BYTES`;
-- učiniti oba broja izvedenim iz **jedne** env varijable (`MAX_UPLOAD_MB`), jer
-  platformski limiti variraju — Vercel serverless funkcije imaju tvrd limit od
-  4.5 MB na tijelo zahtjeva koji aplikacija ne može podići. Na takvoj platformi
-  korisnik postavi `MAX_UPLOAD_MB=4`, i aplikacija odbije prevelik fajl **svojom**
-  porukom na sr-Latn umjesto platformskom greškom.
+**Drugo, nezavisno ograničenje potvrđeno pretragom (2026-09-15):** Vercel
+Functions imaju **tvrd infrastrukturni limit od 4.5 MB** na tijelo zahtjeva —
+nije podesivo iz `vercel.json` ni iz aplikativnog koda; prekoračenje vraća
+`413 FUNCTION_PAYLOAD_TOO_LARGE` prije nego što kod uopšte izvrši
+([Vercel Functions Limits](https://vercel.com/docs/functions/limitations),
+[Vercel KB: bypass the 4.5MB limit](https://vercel.com/kb/guide/how-to-bypass-vercel-body-size-limit-serverless-functions)).
+Pošto upload i dalje ide kroz jedan Server Action zahtjev (nepromijenjeno —
+korisnik je odbio chunked upload i presigned relay kao veći zahvat), efektivan
+maksimum na Vercel-u je taj zid, ne bilo koja vrijednost koju aplikacija
+postavi.
+
+**Odluka:** `MAX_UPLOAD_MB=4` (umjesto ranije razmatranih 10-15 MB), sa
+marginom ispod 4.5 MB zida za multipart/form-data overhead. Implementacija:
+- `attachments.ts:37` `MAX_SIZE_BYTES` postaje izveden iz `env.MAX_UPLOAD_MB`
+  (podrazumijevano `4`), ne fiksnih 15 MB — **ovo je namjerna izmjena
+  ponašanja koja smanjuje danas dokumentovani limit**, ne samo ispravka baga;
+  treba je istaknuti korisnicima ZEV aplikacije prije objave (CHANGELOG,
+  §12 svaka faza).
+- `serverActions.bodySizeLimit` u `next.config.ts` postavljen na isti broj.
+- Aplikacija odbija prevelik fajl **svojom** porukom na sr-Latn (postojeći
+  `assertUploadable`) umjesto platformskom `413` greškom, na obje platforme.
 
 ### 8.2 Health endpoint
 
@@ -551,11 +633,13 @@ dodati na dvije-tri najteže rute.
 ### Da li kvari: ne, ali pod tri uslova
 
 1. **Svaka nova varijabla mora imati podrazumijevanu vrijednost jednaku
-   današnjem ponašanju.** `STORAGE_BACKEND` neizostavljen → `local`.
-   `STORAGE_DIR` neizostavljen → `./var/storage`. `DB_POOL_MAX` neizostavljen →
-   ne prosljeđivati `max` uopšte. Praktičan test: **`docker compose up -d --build`
-   sa nepromijenjenim `docker-compose.yml` mora raditi identično.**
-2. **Naslijeđeni apsolutni `filePath`-ovi moraju ostati čitljivi** (§3.2, opcija A).
+   današnjem ponašanju.** `EMAIL_PROVIDER` neizostavljen → `mock` (Mailjet se
+   ne aktivira sam od sebe). `STORAGE_DIR` neizostavljen → `./var/storage`,
+   ostaje relevantan samo za pad-back čitanje postojećih redova (§3.3).
+   `DB_POOL_MAX` neizostavljen → ne prosljeđivati `max` uopšte. Praktičan test:
+   **`docker compose up -d --build` sa nepromijenjenim `docker-compose.yml`
+   mora raditi identično.**
+2. **Naslijeđeni apsolutni `filePath`-ovi moraju ostati čitljivi** (§3.3).
    Bez toga svaki postojeći Docker deployment gubi pristup svim dokumentima.
 3. **`docker-entrypoint.sh` mora nastaviti da radi migracije i seed.** Refaktor
    iz §5 mijenja *gdje logika živi*, ne *šta se dešava* pri `docker compose up`.
@@ -567,20 +651,22 @@ upload-a) — i to je ispravka baga, ne regresija.
 
 | Šta | Kako |
 |---|---|
-| Docker default nepromijenjen | `docker compose up -d --build` bez ijedne izmjene u `docker-compose.yml`; upload dokaza o vlasništvu, generisanje PDF-a, `docker compose down && up` pa provjera da su fajlovi tu (volume `zev-storage`) |
-| Naslijeđeni redovi | Pokrenuti stari deployment, generisati dokumente, pa nadograditi na novi kod bez ijedne nove env varijable → svi stari dokumenti se i dalje otvaraju |
-| `local` adapter | Postojeći testovi (`tests/attachments.test.ts`, `tests/documents-audit.test.ts`) rade bez izmjene — osim asercija koje gledaju `fs.existsSync(doc.filePath)` (`documents-audit.test.ts:29,31,43,44`), koje treba prepisati na `storage.exists(key)` / `storage.get(key)`. **To je poželjno**: test postaje agnostičan na backend i time važi za oba. |
-| `s3` adapter bez pravog naloga | MinIO kao servis u **odvojenom** compose fajlu (`docker-compose.test-s3.yml`), `S3_FORCE_PATH_STYLE=true`. Isti test suite se pokrene sa `STORAGE_BACKEND=s3` — dokazuje da su oba puta ekvivalentna. |
-| Kontrakt adaptera | Jedan zajednički test fajl (`tests/storage-adapter.test.ts`) koji se parametrizuje po backend-u: put/get round-trip, get nepostojećeg ključa, sha256 podudaranje, ključ sa dijakritikom u imenu (`č`, `ž` — `stageFile` ih danas zamjenjuje sa `_`, `attachments.ts:73`, što treba zadržati) |
+| Docker default nepromijenjen | `docker compose up -d --build` bez ijedne izmjene u `docker-compose.yml`; upload dokaza o vlasništvu, generisanje PDF-a, `docker compose down && up` pa provjera da su dokumenti i dalje čitljivi (sada iz Postgres baze, volume `zev-pgdata`, ne `zev-storage`) |
+| Naslijeđeni redovi | Pokrenuti stari deployment, generisati dokumente (upisuju u `filePath`), pa nadograditi na novi kod → stari dokumenti se i dalje otvaraju kroz pad-back čitanje (§3.3), novi idu u `DocumentBlob`/`AttachmentBlob` |
+| DB blob upis/čitanje | Postojeći testovi (`tests/attachments.test.ts`, `tests/documents-audit.test.ts`) rade uz izmjenu: asercije koje gledaju `fs.existsSync(doc.filePath)` (`documents-audit.test.ts:29,31,43,44`) se prepisuju na provjeru postojanja odgovarajućeg `DocumentBlob`/`AttachmentBlob` reda. |
+| Kontrakt čitanja/upisa | Jedan test fajl (`tests/document-storage.test.ts`): upiši-pa-pročitaj round-trip kroz `storeDocument`/`readDocumentFile`, `sha256` podudaranje, ponašanje kad `DocumentBlob` ne postoji a `filePath` postoji (legacy put), ponašanje kad ni jedno ni drugo ne postoji (greška) |
 | Fontovi | `npm run build` pa provjera da traced izlaz sadrži oba `.ttf` fajla; plus test koji generiše PDF sa `č/ć/ž/š/đ` u tekstu i provjeri da nije prazan |
 | Konfiguracija | Unit test za `env.ts`: nedostajuće obavezne varijable → jasna greška; podrazumijevane vrijednosti → današnje vrijednosti |
+| Upload limit | Test da fajl >4 MB pada sa aplikativnom porukom (`assertUploadable`), ne sa Next/platformskom greškom |
 
-`tests/setup-env.ts:9` postavlja `STORAGE_DIR = "./var/test-storage"` — ostaje
-kako jeste za `local` prolaz; za `s3` prolaz doda se `STORAGE_BACKEND=s3` +
-MinIO parametri, uz čišćenje bucket-a u `tests/global-setup.ts`.
+`tests/setup-env.ts:9` postavlja `STORAGE_DIR = "./var/test-storage"` — nakon
+ove odluke ostaje samo kao dokumentacija legacy putanje za testove koji
+provjeravaju pad-back čitanje (§3.3); testovi za nove upise ga više ne koriste.
 
-`vitest.config.ts` ima `fileParallelism: false`, pa nema trke oko dijeljenog
-bucket-a — dobro.
+Nema više potrebe za `fileParallelism: false` zbog dijeljenog bucket-a (nema
+bucket-a); ta postavka u `vitest.config.ts` ostaje samo ako je motivisana
+nečim drugim (dijeljena test baza) — provjeriti pri implementaciji, van obima
+ovog plana da se to mijenja.
 
 ---
 
@@ -588,22 +674,25 @@ bucket-a — dobro.
 
 - **Ne uklanja Docker.** `Dockerfile`, `docker-compose.yml` i
   `docker-entrypoint.sh` ostaju prva i podrazumijevana opcija u README.
-- **Ne uvodi presigned URL-ove** (§3.1) — razbija postojeću autorizaciju.
-- **Ne implementira prave email/Viber provajdere** (§7) — zaseban posao (P4).
-- **Ne uvodi apstrakciju zakazivanja** — nema šta da se zakaže danas (§7).
+- **Ne uvodi eksterni object storage (S3/R2/MinIO)** (§3) — namjerna odluka,
+  ne propust; sav binarni sadržaj ide u Postgres.
+- **Ne uvodi presigned URL-ove** — razbija postojeću autorizaciju, i dodatno
+  bespredmetno nakon odluke o DB storage-u (§3).
+- **Ne implementira pravi Viber provajder** — ostaje `mock`, odloženo za
+  kasnije izdanje (§11 P4). Mailjet email provajder **jeste** u obimu (§7.1).
+- **Ne uvodi apstrakciju zakazivanja** — nema šta da se zakaže danas (§7.2).
+- **Ne gradi jednokratni backfill alat za postojeće Docker fajlove** (§3.3) —
+  pad-back čitanje je dovoljno dok se stvarno ne planira gašenje Docker diska.
 - **Ne uvodi CDN, keširanje, ni `Cache-Control` promjene.** Rute svjesno šalju
   `private, no-store` (`api/dokumenti/[id]/route.ts:19`) — to je ispravno za
   dokumente sa kontrolom pristupa i ne dira se.
-- **Ne migrira postojeće fajlove u object storage.** Ako korisnik pređe sa
-  Dockera na S3, prenos postojećih fajlova je jednokratna operacija koja
-  zaslužuje svoj `scripts/` alat — ali tek kad se zna da je stvarno potrebna (P3).
 - **Ne dodaje CI.** Nekoliko preporuka (§8.3) bi bilo prirodnije uz CI, ali CI
   je zaseban poduhvat.
 - **Ne mijenja `Document` verzionisanje ni nepromjenljivost.**
 
 ---
 
-## 11. Pitanja za korisnika prije implementacije
+## 11. Pitanja za korisnika prije implementacije — SVA ODGOVORENA 2026-09-15
 
 **P1 — Da li je Vercel konkretan, blizak cilj, ili je ovo investicija u buduću
 fleksibilnost?** Ovo najviše mijenja oblik plana. Ako je Vercel konkretan cilj u
@@ -613,6 +702,9 @@ uradi **samo** §3 (storage adapter) i §5 (izdvajanje migracija) — to su dvij
 stvari koje su vrijedne same po sebi (backup, čistoća) čak i ako se nikad ne ode
 sa Dockera; ostalo se odgađa dok se ne zna ciljna platforma.
 
+> **Odgovoreno: Vercel je konkretan cilj.** Vidi ipak P6 — korisnik je za nivo
+> truda izabrao (b), ne (c), pa stvaran probni deployment ostaje u Fazi 5.
+
 **P2 — Koji object storage stvarno planiraš?** AWS S3, Cloudflare R2, MinIO
 (self-host), ili nešto drugo? Ako je odgovor „ostajem na lokalnom fajlsistemu
 zauvijek za Docker", onda `s3` adapter ne treba implementirati sada — dovoljno je
@@ -621,21 +713,38 @@ uklanjanje direktnog `fs` pristupa iz ruta). Napominjem da **ne** preporučujem
 Vercel Blob (§3.5) — ako ti je Vercel cilj, R2 ili S3 su bolji izbor jer ne
 vezuju za platformu.
 
+> **Odgovoreno: nijedan — korisnik je odbio object storage u cjelosti.**
+> Umjesto S3/R2/MinIO, dokumenti idu direktno u Postgres (novi §3). Ovo je
+> promijenilo plan više nego bilo koje pojedinačno pitanje — §3 je u potpunosti
+> prepisan.
+
 **P3 — Da li ista baza treba istovremeno da služi i Docker i serverless
 deployment, ili je scenario „biraš jednu platformu"?** Ako je odgovor „istovremeno",
 onda §3.2 mora ići na opciju B (zasebna `storageBackend` kolona po redu), što je
 osjetno više posla. Ako je „biraš jednu", opcija A je dovoljna.
+
+> **Odgovoreno: ne treba istovremeno.** Bespredmetno nakon P2 — DB storage
+> radi identično na obje platforme, nema više „backend-a" koji bira.
 
 **P4 — Da li pravi email/Viber provajderi ulaze u ovaj poduhvat?** Preporuka je
 **ne** — to je zaseban posao. Ali ako je plan da se aplikacija stavi na Vercel i
 odmah šalje prave e-mailove, onda se §7 (i pitanje zakazivanja `retryFailed`)
 vraća u obim.
 
+> **Odgovoreno: email da (Mailjet), Viber ne (odloženo).** Vidi prepisan §7.1.
+> Zakazivanje/retry (§7.2) i dalje van obima.
+
 **P5 — Da li potvrđuješ nalaz iz §8.1 (upload > 1 MB pada i danas)?** Konkretno:
 da li si ikad uspješno uploadovao skenirani dokument veći od 1 MB kroz stranicu
 `/dokumenti`? Ako jesi, moj zaključak je pogrešan i treba ga ponovo ispitati.
 Ako nisi probao — vrijedi probati prije nego što se planira išta drugo, jer to
 je bag koji pogađa i današnje korisnike.
+
+> **Odgovoreno indirektno kroz P2 (10 MB ceiling za DB storage), zatim
+> korigovano nalazom o Vercelovom 4.5 MB zidu (potvrđeno pretragom) na 4 MB.**
+> Vidi prepisan §8.1. Empirijska provjera „jesi li ikad uploadovao >1MB" nije
+> više toliko bitna — novi limit (4 MB) je i dalje iznad 1 MB Next
+> podrazumijevanog limita, pa se ispravka radi bez obzira na odgovor.
 
 **P6 — Nivo truda sada nasuprot kasnije.** Tri realne varijante:
 - **(a) Samo blokator:** §3 (storage) + §4 (fontovi) + §5 (migracije). Aplikacija
@@ -645,41 +754,55 @@ je bag koji pogađa i današnje korisnike.
 - **(c) Sve:** (b) + §6 (pooling) + §8.4 (`maxDuration`) + stvaran probni
   deployment na drugu platformu.
 
+> **Odgovoreno: (b).** §6 i §8.4 i probni deployment ostaju u Fazi 5, uslovno.
+
 **P7 — Da li želiš `DEPLOYMENT_TARGET` kao savjetodavnu dijagnostiku** (§2,
 opcija C) — varijablu koja **ne** mijenja ponašanje, nego pri startu ispiše
 upozorenje ako je kombinacija besmislena (npr. `DEPLOYMENT_TARGET=serverless`
 uz `STORAGE_BACKEND=local`)? Korisno, ali nije neophodno.
 
+> **Odgovoreno: ne.** Dodatno bespredmetno nakon P2 — scenario koji je štitila
+> (`STORAGE_BACKEND` mismatch) više ne postoji.
+
 ---
 
 ## 12. Fazni plan implementacije (za pregled — nije kod)
 
-Redoslijed je vođen jednim praktičnim razlogom: `Plans/gmail-bank-statement-ingestion-plan.md:357`
-planira **treći** potrošač `STORAGE_DIR` obrasca. Ako se Faza 1 uradi prije tog
-plana, taj plan odmah koristi adapter umjesto da se naknadno prepravlja.
+Obim faza 0-4 odgovara odluci P6 (b). Faza 5 je uslovna i odložena.
+
+Redoslijed Faze 0/1 je i dalje vođen istim praktičnim razlogom kao u izvornom
+planu: `Plans/gmail-bank-statement-ingestion-plan.md:357` planira **treći**
+potrošač istog `STORAGE_DIR`/fajl-čuvanje obrasca (`IncomingStatement.filePath`).
+Ako se Faza 1 uradi prije tog plana, taj plan odmah koristi
+`DocumentBlob`-obrazac umjesto da se naknadno prepravlja.
 
 ### Faza 0 — Priprema, bez promjene ponašanja *(mala)*
 
 - Ispraviti `src/app/api/izvjestaji/pdf/route.ts:18` i
   `src/app/api/izvjestaji/dugovanja/route.ts:19` da idu kroz `readDocumentFile`
   umjesto direktnog `fs.readFileSync` — ili, bolje, da koriste buffer koji
-  `storeDocument` već ima (§3.4).
+  `storeDocument` već ima (§3.5).
 - `storeDocument` (`documents.ts:95`) da vraća `{ row, buffer }`.
 - Rezultat: **nijedno mjesto van `documents.ts`/`attachments.ts` ne dodiruje
   `filePath`.** Ovo je preduslov za sve ostalo.
 
-### Faza 1 — `StorageAdapter` sa `local` backend-om *(srž)*
+### Faza 1 — Skladištenje u Postgres bazi *(srž)*
 
-- Nov `src/server/storage/` (types, index, local) po §3.1.
-- `documents.ts` i `attachments.ts` prelaze na `getStorage()`; `storageDir()`
-  nestaje sa oba mjesta.
-- `filePath` postaje ključ za nove redove; čitanje ostaje unazad kompatibilno za
-  apsolutne putanje (§3.2, opcija A).
-- Razdvajanje `stageUpload` / `createLinkedAttachmentTx` (§3.3); ažurirati
-  pozivaoce u `ownership.ts:131` i `evoteConsent.ts:34`.
-- `tests/storage-adapter.test.ts` (parametrizovan kontrakt-test);
-  `tests/documents-audit.test.ts` prelazi sa `fs.existsSync` na adapter.
-- **Docker ponašanje: identično, bez ijedne nove env varijable.**
+- Migracija šeme: `DocumentBlob`, `AttachmentBlob` (§3.1); `Document.filePath`
+  i `Attachment.filePath` postaju `String?` (§3.3).
+- `documents.ts` i `attachments.ts` prelaze na čitanje/upis kroz
+  `DocumentBlob`/`AttachmentBlob`; `storageDir()` nestaje sa oba mjesta.
+- Novi redovi ne pišu `filePath`; čitanje ostaje unazad kompatibilno za
+  postojeće apsolutne putanje (§3.3).
+- Upis blob reda ulazi **unutar** postojeće `prisma.$transaction` —
+  `createLinkedAttachmentTx` (`attachments.ts:82`) i ekvivalent u
+  `documents.ts` rade oba upisa u istom `tx` (§3.4); pozivaoci u
+  `ownership.ts:131` i `evoteConsent.ts:34` se ne mijenjaju.
+- `tests/document-storage.test.ts` (kontrakt-test iz §9);
+  `tests/documents-audit.test.ts` prelazi sa `fs.existsSync` na provjeru blob
+  reda.
+- **Docker ponašanje: identično, bez ijedne nove env varijable** (postojeći
+  Docker redovi i dalje čitljivi kroz pad-back na `filePath`).
 
 ### Faza 2 — Fontovi i konfiguracija *(mala-srednja)*
 
@@ -688,15 +811,18 @@ plana, taj plan odmah koristi adapter umjesto da se naknadno prepravlja.
 - `src/lib/env.ts` sa `zod` validacijom (§2); `APP_URL` prestaje da tiho pada na
   localhost u produkciji; tri pozivaoca (`meetings.ts:318`, `:504`,
   `zaboravljena-lozinka/page.tsx:15`) prelaze na `env.APP_URL`.
-- `.env.example` dopunjen svim novim varijablama, sa `MIGRATE_DATABASE_URL` koji
-  je do sada bio nedokumentovan (§6).
+- `.env.example` dopunjen svim novim varijablama (`MAILJET_API_KEY`,
+  `MAILJET_API_SECRET`, `MAILJET_FROM_EMAIL`, `MAX_UPLOAD_MB`), sa
+  `MIGRATE_DATABASE_URL` koji je do sada bio nedokumentovan (§6).
 
-### Faza 3 — `s3` backend *(uslovno, po P2)*
+### Faza 3 — Mailjet email provajder *(mala, uslovno po P4 — sada potvrđeno u obimu)*
 
-- `src/server/storage/s3.ts`, lijeno importovan.
-- `docker-compose.test-s3.yml` sa MinIO za testiranje.
-- Kontrakt-test iz Faze 1 se pokreće i za `s3`.
-- README: kako se konfiguriše R2 / S3 / MinIO.
+- `src/server/notifications/mailjetEmail.ts`, implementira `EmailProvider`
+  (§7.1); `getEmailProvider()` dobija `case "mailjet"`.
+- `mock` ostaje podrazumijevano ako `EMAIL_PROVIDER` nije postavljen.
+- Test sa mock HTTP odgovorom Mailjet API-ja (uspjeh i greška), bez pravog
+  naloga u test suite-u.
+- README: kako se pribavlja Mailjet API key/secret i verifikuje `FROM` adresa.
 
 ### Faza 4 — Deployment procedura *(mala)*
 
@@ -704,16 +830,21 @@ plana, taj plan odmah koristi adapter umjesto da se naknadno prepravlja.
   `scripts/wait-for-db.mjs`.
 - `src/app/api/health/route.ts` (§8.2); healthcheck za `app` u `docker-compose.yml`.
 - `"engines"` u `package.json` (§8.3).
-- `MAX_UPLOAD_MB` + `serverActions.bodySizeLimit` (§8.1).
-- README: nova sekcija „Deployment na druge platforme" sa tabelom varijabli i
-  eksplicitnim redoslijedom migracija.
+- `MAX_UPLOAD_MB=4` + `serverActions.bodySizeLimit` (§8.1) — istaknuti u
+  CHANGELOG-u kao namjernu izmjenu ponašanja (smanjenje sa 15 MB).
+- README: nova sekcija „Deployment na Vercel" sa tabelom varijabli
+  (uključujući `MAILJET_*`) i eksplicitnim redoslijedom migracija.
 
-### Faza 5 — Fino podešavanje *(uslovno, po P1 i P6)*
+### Faza 5 — Fino podešavanje *(uslovno, van trenutnog obima — P6 je (b), ne (c))*
 
 - `DB_POOL_MAX` (§6).
 - `maxDuration` na teškim rutama (§8.4).
-- Alat za pronalaženje siročadi u storage-u (§3.3).
-- Stvaran probni deployment na ciljnu platformu i ispravke onoga što se pokaže.
+- Jednokratni backfill alat: postojeći Docker `filePath` redovi →
+  `DocumentBlob`/`AttachmentBlob`, pa `filePath` na `null` (§3.3) — vrijedan
+  tek kad se stvarno planira ugasiti Docker disk.
+- Stvaran probni deployment na Vercel i ispravke onoga što se pokaže — ovo je
+  dio P1 preporuke koji P6 (b) svjesno odlaže dok Faze 0-4 ne budu gotove i
+  provjerene na Dockeru.
 
 ### Uz svaku fazu (pravila projekta)
 
@@ -728,19 +859,27 @@ Faza 3 (nova vanjska zavisnost) vjerovatno zaslužuje svoj minor.
 
 ## 13. Rizici i ono što će zaboljeti u praksi
 
-1. **Tihi gubitak dokumenata pri pogrešnoj konfiguraciji.** Ako neko postavi
-   `STORAGE_BACKEND=s3` na postojećem Docker deployment-u bez prenošenja
-   fajlova, novi dokumenti idu u S3, stari ostaju na disku, i sve *djeluje* da
-   radi dok neko ne otvori stari dokument. Ublažavanje: unazad kompatibilno
-   čitanje (§3.2 A) rješava tačno ovaj slučaj — stari apsolutni `filePath`-ovi se
-   i dalje čitaju sa diska. Ali ako se pređe na platformu **bez** diska, ti fajlovi
-   su nedostupni. **Ovo mora biti krupno napisano u README.**
-2. **Fontovi pucaju tek poslije uspješnog deploy-a.** Build prođe, health prođe,
+1. **Nenamjerno povlačenje blob-ova pri listanju (§3.2).** Najveći novi rizik
+   uveden ovom odlukom: bilo koji budući `prisma.document.findMany(...)` ili
+   `prisma.attachment.findMany(...)` koji doda `include: { blob: true }` iz
+   pogodnosti (npr. neko kopira postojeći upit i doda relaciju „da bude pri
+   ruci") tiho pretvara stranicu liste u prenos više desetina MB. Nema
+   kompajlerske zaštite od ovoga — samo code review disciplina. Ublažavanje:
+   `blob` relacija se dohvata **isključivo** unutar `readDocumentFile`/
+   `readAttachmentFile`, nigdje drugo; vrijedi razmotriti eksplicitan komentar
+   uz `DocumentBlob`/`AttachmentBlob` model u `schema.prisma` koji na to
+   upozorava.
+2. **Rast veličine baze i backup-a.** Svaki dokument/prilog do 4 MB sada živi u
+   `pg_dump` izlazu i u `zev-pgdata` volume-u, ne u zasebnom, lakše
+   komprimujućem fajlsistemu. `ARCHITECTURE.md:97-99` danas dokumentuje da
+   backup zahtijeva `pg_restore` **i** ručno vraćanje `var/storage` — nakon ove
+   izmjene backup postaje **jednostavniji** (jedan artefakt, `pg_restore`
+   dovoljan za nove podatke), ali baza raste brže i sporije se backup-uje.
+   Treba zapisati u README kao očekivanu posljedicu, ne kao bag.
+3. **Fontovi pucaju tek poslije uspješnog deploy-a.** Build prođe, health prođe,
    a prvi pokušaj generisanja fakture padne. Ublažavanje: health endpoint (§8.2)
    može opciono provjeriti prisustvo fontova, ili — jeftinije — `fonts.ts` da se
    inicijalizuje eagerly pri prvom importu modula `documents.ts`.
-3. **Siročad u storage-u.** Postoji i danas (§3.3), ali sa S3 to košta novac i
-   nije vidljivo. Alat za čišćenje je u Fazi 5 — dotle prihvatiti svjesno.
 4. **`env.ts` može pokvariti build.** `Dockerfile:21` build-uje sa lažnim
    `DATABASE_URL`. Ako `env.ts` radi top-level `parse()`, build puca. **Mora**
    biti lijena validacija. Ovo je najvjerovatniji izvor regresije u cijelom planu.
@@ -749,21 +888,26 @@ Faza 3 (nova vanjska zavisnost) vjerovatno zaslužuje svoj minor.
    Docker tok je pokriven — ali neko ko je pokrenuo ručno (README §„Instalacija
    (ručno, bez Dockera)") može biti pogođen. Preporuka: u prvoj verziji
    upozorenje u logu umjesto greške, pa greška u sljedećoj.
-6. **Trošak S3 zahtjeva pri današnjem obrascu „upiši pa odmah pročitaj".**
-   Ublaženo u Fazi 0/§3.4, ali ako se ta izmjena preskoči, svaki download
-   izvještaja je jedan PUT + jedan GET umjesto nule mrežnih poziva.
-7. **Testovi sa MinIO usporavaju suite.** `fileParallelism: false` i
-   `testTimeout: 60000` već čine suite sporim. Preporuka: `s3` prolaz kao
-   **odvojen, opcion** run (npr. `npm run test:storage-s3`), ne kao dio
-   podrazumijevanog `npm test`.
+6. **Mailjet poziv može otkazati bez ikakvog retry mehanizma (§7.2).** Za
+   razliku od mock provajdera, koji nikad ne otkazuje, pravi API poziv može
+   pasti zbog mreže, rate limit-a ili nevalidne adrese. `retryFailed()` postoji
+   ali nema pozivaoca i ostaje van obima (P4) — korisnik treba znati da
+   propali e-mailovi danas **ne** dobijaju automatski pokušaj ponovo.
+7. **4 MB upload limit je smanjenje u odnosu na danas dokumentovanih 15 MB.**
+   I dalje popravlja postojeći bag (>1 MB pada), ali neko ko je navikao na
+   veće skenove (npr. viestranični PDF dokaz o vlasništvu) može prvi put udariti
+   u ovaj limit tek nakon objave. Treba biti istaknuto u CHANGELOG-u.
 
 ---
 
 ### Ključni fajlovi za implementaciju
 
-- `/home/claude/zev-app/src/server/services/attachments.ts` — drugi (i važniji, jer su podaci nereproducibilni) potrošač lokalnog fajlsistema: `storageDir()` `:64`, `stageFile()` `:71-77`, `readAttachmentFile` `:186`
-- `/home/claude/zev-app/src/server/services/documents.ts` — `storageDir()` `:30-34`, upis `:121-122`, čitanje `:180`, fontovi `:27-28`, `renderPdf` `:39-50`
-- `/home/claude/zev-app/docker-entrypoint.sh` — cijeli sadržaj se refaktoriše u pozive npm skripti (§5)
-- `/home/claude/zev-app/next.config.ts` — danas prazan; prima `outputFileTracingIncludes` (§4) i `serverActions.bodySizeLimit` (§8.1)
-- `/home/claude/zev-app/src/lib/prisma.ts` — jedina tačka gdje se konfiguriše `PrismaPg` pool (§6)
-- `/home/claude/zev-app/.env.example` — ugovor konfiguracije prema korisniku; mora nabrojati sve nove varijable i već postojeći nedokumentovani `MIGRATE_DATABASE_URL`
+- `prisma/schema.prisma` — `Document` (`:1401-1421`) i `Attachment` (`:1428-1449`):
+  `filePath` → `String?` (§3.3), dodati `DocumentBlob`/`AttachmentBlob` modele (§3.1)
+- `src/server/services/attachments.ts` — drugi (i važniji, jer su podaci nereproducibilni) potrošač lokalnog fajlsistema: `storageDir()` `:64`, `stageFile()` `:71-77`, `createLinkedAttachmentTx` `:82`, `readAttachmentFile` `:186` — svi prelaze na `AttachmentBlob` (§3)
+- `src/server/services/documents.ts` — `storageDir()` `:30-34`, upis `:121-122`, čitanje `:180`, fontovi `:27-28`, `renderPdf` `:39-50` — upis/čitanje prelazi na `DocumentBlob` (§3), fontovi na §4 nezavisno
+- `src/server/notifications/providers.ts` — `getEmailProvider()` `:71-80` dobija `case "mailjet"` (§7.1)
+- `docker-entrypoint.sh` — cijeli sadržaj se refaktoriše u pozive npm skripti (§5)
+- `next.config.ts` — danas prazan; prima `outputFileTracingIncludes` (§4) i `serverActions.bodySizeLimit` (§8.1)
+- `src/lib/prisma.ts` — jedina tačka gdje se konfiguriše `PrismaPg` pool (§6, Faza 5)
+- `.env.example` — ugovor konfiguracije prema korisniku; mora nabrojati sve nove varijable (`MAILJET_API_KEY`, `MAILJET_API_SECRET`, `MAILJET_FROM_EMAIL`, `MAX_UPLOAD_MB`) i već postojeći nedokumentovani `MIGRATE_DATABASE_URL`
