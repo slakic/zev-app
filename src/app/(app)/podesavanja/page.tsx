@@ -115,6 +115,9 @@ export default async function SettingsPage({
           isManagement ? (
             <div className="flex gap-2">
               <BtnLink href="/podesavanja/poruke" variant="secondary">Poslate poruke</BtnLink>
+              {/* PRESIDENT-only (Plans/user-activity-log-plan.md §6, odluka P4) — uže od
+                  "Revizorski trag" ispod, koji ostaje PRESIDENT+ACCOUNTANT bez izmjene. */}
+              {isPresident && <BtnLink href="/aktivnosti" variant="secondary">Aktivnosti</BtnLink>}
               <BtnLink href="/podesavanja/audit" variant="secondary">Revizorski trag</BtnLink>
             </div>
           ) : undefined

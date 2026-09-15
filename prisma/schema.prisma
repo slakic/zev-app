@@ -1529,6 +1529,10 @@ model AuditEvent {
   // table is append-only-and-growing, so both must be indexed together, not separately.
   @@index([zevId, createdAt])
   @@index([zevId, actorId, createdAt])
+  // Added for the super-admin cross-tenant activity view (Plans/user-activity-log-plan.md §9,
+  // §8 Faza 3): a platform-wide query with no zevId in `where` (e.g. "svi ZEV nalozi") isn't
+  // covered by the two composite indexes above, since both lead with zevId.
+  @@index([createdAt])
 }
 
 // Tenant-scoped since 2026-09-09 (Faza 1 addendum — see docs/multitenancy-plan.md).

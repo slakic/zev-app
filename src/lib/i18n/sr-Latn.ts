@@ -286,6 +286,96 @@ const srLatn = {
     SIGNED: "Potpisana izjava dostavljena",
     REVOKED: "Saglasnost povučena",
   },
+  // Curated activity feed (Plans/user-activity-log-plan.md §4, §8 Faza 2). Nested by dot path
+  // to match how labelForAction()/tEnum() split an action code — "vote.submit" resolves via
+  // ["auditAction","vote","submit"], never a flat "vote.submit" key. Only OWNER + GOVERNANCE
+  // actions are translated here (what /aktivnosti shows by default); FINANCE/SYSTEM actions
+  // fall back to their raw code in a muted style, same as the old untranslated-audit-row
+  // treatment — a deliberate v1 scope decision, not an oversight (see CHANGELOG). NOTE:
+  // "issue.emergency" itself is NOT here — see ACTION_LABEL_OVERRIDE in
+  // src/lib/activity/catalog.ts for why.
+  auditAction: {
+    issue: {
+      report: "Prijavio/la kvar",
+      transition: "Promijenjen status prijave kvara",
+      emergency: { ratify: "Potvrđena hitna intervencija" },
+      offer: { add: "Dodata ponuda izvođača", select: "Izabrana ponuda izvođača" },
+    },
+    vote: {
+      submit: "Glasao/la elektronski",
+      manual_entry: "Glas evidentiran ručno",
+      correct: "Ispravka glasa",
+    },
+    party: {
+      update: "Ažurirao/la kontakt podatke",
+      create: "Kreirano lice",
+      evote_consent: {
+        sign: "Potpisana saglasnost za e-glasanje",
+        revoke: "Povukao/la saglasnost za e-glasanje",
+        request: "Zatražena saglasnost za e-glasanje",
+      },
+    },
+    document: {
+      generate: "Kreiran dokument",
+      publish: "Dokument objavljen vlasnicima",
+      download: "Preuzeo/la dokument",
+    },
+    attachment: {
+      upload: "Postavio/la dokument",
+      download: "Preuzeo/la prilog",
+    },
+    proxy: {
+      grant: "Dao/la punomoć",
+      revoke: "Povukao/la punomoć",
+    },
+    meeting: {
+      create: "Zakazana sjednica",
+      status: "Promijenjen status sjednice",
+      update: "Izmijenjena sjednica",
+    },
+    agenda: { add: "Dodata tačka dnevnog reda" },
+    proposal: {
+      create: "Kreiran prijedlog odluke",
+      revise: "Revidiran prijedlog odluke",
+      update: "Izmijenjen prijedlog odluke",
+      voting: { open: "Otvoreno glasanje", close: "Zatvoreno glasanje" },
+      decision: { record: "Evidentirana odluka" },
+    },
+    attendance: { record: "Evidentirano prisustvo" },
+    plan: {
+      create: "Kreiran plan",
+      revise: "Revidiran plan",
+      propose: "Plan predložen skupštini",
+      approve: "Plan usvojen",
+      item: { add: "Dodata stavka plana" },
+    },
+    work_order: {
+      create: "Kreiran radni nalog",
+      complete: "Radni nalog završen",
+    },
+    office: {
+      board_member: { add: "Dodat član odbora", end: "Okončan mandat člana odbora" },
+      term: { set: "Postavljen mandat organa" },
+    },
+    ownership: {
+      stake: { add: "Dodat vlasnički udio" },
+      transfer: "Prenos vlasništva",
+    },
+    occupancy: {
+      create: "Evidentiran korisnik jedinice",
+      end: "Okončano korišćenje jedinice",
+    },
+    zev: {
+      create: "Kreirani matični podaci ZEV",
+      update: "Izmijenjeni matični podaci ZEV",
+    },
+  },
+  activityCategory: {
+    OWNER: "Aktivnost vlasnika",
+    GOVERNANCE: "Upravljanje i skupština",
+    FINANCE: "Finansije",
+    SYSTEM: "Sistemski događaji",
+  },
 } as const;
 
 export default srLatn;

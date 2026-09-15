@@ -160,6 +160,39 @@ export function ToggleBtn({ children, variant }: { children: ReactNode; variant?
   );
 }
 
+/** Prev/next + "page N of M" for a server-rendered, offset-paginated list (Plans/
+ *  user-activity-log-plan.md §5) — `hrefFor(page)` builds the full URL for that page,
+ *  including whatever filters the caller already has selected. Renders nothing for a
+ *  single-page result, so callers don't need their own `pageCount > 1` check. */
+export function Pagination({ page, pageCount, hrefFor }: { page: number; pageCount: number; hrefFor: (page: number) => string }) {
+  if (pageCount <= 1) return null;
+  const atStart = page <= 1;
+  const atEnd = page >= pageCount;
+  return (
+    <nav aria-label="Stranice" className="mt-3 flex items-center justify-center gap-3 text-sm">
+      <Link
+        href={hrefFor(Math.max(1, page - 1))}
+        aria-disabled={atStart}
+        tabIndex={atStart ? -1 : undefined}
+        className={`${btnBase} ${btnVariantCls.secondary} ${atStart ? "pointer-events-none opacity-50" : ""}`}
+      >
+        ‹ Prethodna
+      </Link>
+      <span className="text-slate-500">
+        Stranica {page} od {pageCount}
+      </span>
+      <Link
+        href={hrefFor(Math.min(pageCount, page + 1))}
+        aria-disabled={atEnd}
+        tabIndex={atEnd ? -1 : undefined}
+        className={`${btnBase} ${btnVariantCls.secondary} ${atEnd ? "pointer-events-none opacity-50" : ""}`}
+      >
+        Sljedeća ›
+      </Link>
+    </nav>
+  );
+}
+
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="block text-sm">

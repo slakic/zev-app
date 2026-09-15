@@ -43,6 +43,53 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.7.0] - 2026-09-14
+
+### Dodato
+
+- **Faza 3 dnevnika korisničkih aktivnosti** (`Plans/user-activity-log-plan.md`) — nova
+  stranica **Aktivnosti — svi ZEV nalozi** (`/admin/aktivnosti`, dostupna isključivo
+  super adminu, dugme na `/admin` pored liste svih ZEV naloga):
+  - Platformski, cross-tenant pregled aktivnosti — u potpunosti dijeli katalog radnji,
+    prevode i renderer iz Faze 2 (`/aktivnosti`), razlikuje se samo po obimu upita.
+  - Podrazumijevano prikazuje sve četiri kategorije (uklj. sistemske događaje poput
+    prijava i platformske administracije) — za razliku od `/aktivnosti`, koja po
+    default-u prikazuje samo aktivnost vlasnika i upravljanja.
+  - Filter po konkretnom ZEV nalogu (ili "Svi ZEV nalozi"); filter po akteru postaje
+    aktivan tek kad je izabran konkretan ZEV. Nova kolona "ZEV" u tabeli, uklj. redove
+    bez tenanta (npr. prijava prije nego što je sesija razriješila aktivan ZEV).
+  - Novi indeks na `AuditEvent` (`createdAt`) za upit preko svih tenanata bez filtera po
+    ZEV-u.
+  - Novi test koji provjerava da pristup ima isključivo super admin, da filter po ZEV-u
+    ispravno suzi rezultate na jedan tenant, i da bez filtera vraćaju redovi iz više
+    tenanata (uklj. one bez tenanta).
+  - Ovim je `Plans/user-activity-log-plan.md` u potpunosti implementiran (Faza 1-3);
+    preostaje samo opciono doterivanje iz Faze 4, po potrebi.
+
+## [2.6.1] - 2026-09-14
+
+### Dodato
+
+- **Faza 2 dnevnika korisničkih aktivnosti** (`Plans/user-activity-log-plan.md`) — nova
+  stranica **Aktivnosti** (`/aktivnosti`, dostupna samo predsjedniku, dugme na
+  Podešavanjima pored "Revizorski trag"):
+  - Katalog svih 111 postojećih tipova zabilježenih radnji, razvrstanih u četiri
+    kategorije (aktivnost vlasnika, upravljanje i skupština, finansije, sistemski
+    događaji) — podrazumijevano se prikazuju prve dvije, ostale su dostupne preko
+    filtera.
+  - Filteri: period (podrazumijevano zadnjih 30 dana), kategorija, akter (ko je
+    izvršio radnju) — sa straničenjem (50 po strani).
+  - Čitljive labele umjesto sirovih engleskih kodova za aktivnost vlasnika i
+    upravljačke radnje (npr. "Prijavio/la kvar", "Glasao/la elektronski", "Otvoreno
+    glasanje"); finansijske i sistemske radnje za sada ostaju u sirovom obliku
+    (prigušen prikaz) — mogu se dodati naknadno na zahtjev.
+  - Nekoliko radnji (prijava kvara, promjena statusa prijave, objava dokumenta) ima
+    i kratak jednoredni rezime iz podataka same radnje.
+  - Novo: dijeljena komponenta za straničenje (`Pagination`) u `src/components/ui.tsx`.
+  - Test koji provjerava da je svaka radnja u kodu zaista klasifikovana (spriječava
+    da nova, nepregledana radnja tiho nestane iz prikaza).
+  - Slijedi Faza 3 (`/admin/aktivnosti` za super admina, preko svih ZEV naloga).
+
 ## [2.6.0] - 2026-09-14
 
 ### Dodato

@@ -60,6 +60,11 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
       <Flash err={err} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card title="Svi ZEV nalozi" className="lg:col-span-2">
+          <div className="mb-3 flex justify-end">
+            <Link href="/admin/aktivnosti" className="text-sm font-medium text-blue-700 hover:underline">
+              Aktivnosti preko svih ZEV naloga
+            </Link>
+          </div>
           <Table
             headers={["Naziv", "Paket", "Predsjednik", "Zgrade", "Vlasnici", "Status", ""]}
             empty={tenants.length === 0}
