@@ -25,6 +25,15 @@ const schema = z.object({
   // password-reset links. A silent fallback to localhost in production used to
   // produce broken links instead of an error (§1.8); now it's a startup failure.
   APP_URL: z.string().url("APP_URL mora biti validan URL (npr. https://zev.example.com).").optional(),
+  // Max upload size for scanned documents/attachments (§8.1). Default (4) stays under
+  // Vercel's hard 4.5 MB Function body limit; a Docker-only deployment with no such
+  // constraint may raise it. Drives both attachments.ts's own size check and
+  // next.config.ts's serverActions.bodySizeLimit, so a rejected upload always gets the
+  // app's own sr-Latn message instead of a platform-level body-size error.
+  MAX_UPLOAD_MB: z.coerce
+    .number("MAX_UPLOAD_MB mora biti broj.")
+    .positive("MAX_UPLOAD_MB mora biti pozitivan broj.")
+    .default(4),
 });
 
 export type Env = z.infer<typeof schema> & { APP_URL: string };

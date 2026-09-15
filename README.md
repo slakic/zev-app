@@ -92,6 +92,61 @@ koristiti i `npx prisma migrate dev`.
 | `npm run db:migrate:new <naziv>` | generiši novu migraciju iz izmjena šeme |
 | `npm run db:reset` | obriši šemu + primijeni sve + (ručno) `npm run db:seed` |
 
+## Deployment na Vercel (ili bilo koji Node hosting bez Dockera)
+
+Aplikacija je konfigurabilno prenosiva preko više okruženja — Docker self-host
+(podrazumijevano, iznad), Vercel, ili bilo koji drugi Node ≥ 22 hosting — bez izmjene koda,
+samo promjenom konfiguracije. Puna analiza i odluke: `Plans/deployment-portability-plan.md`.
+
+### Redoslijed
+
+Migracija **prije** deploy-a aplikacije, ne poslije — nova verzija koda očekuje novu šemu, pa
+migracije moraju biti unazad kompatibilne sa **prethodnom** verzijom koda tokom prozora između
+ova dva koraka:
+
+```bash
+# 1. lokalno ili u CI, protiv produkcione baze
+npm run db:migrate
+
+# 2. deploy aplikacije (npr. `vercel deploy --prod`, ili push na repo povezan sa Vercel-om)
+```
+
+Ne migrirati unutar platforminog build koraka: `scripts/migrate.mjs` zahtijeva
+`@prisma/schema-engine-wasm` (devDependency, dostupan pri build-u, ali ne u production
+install-u), a build se dešava i za preview/branch deployment-e — automatska migracija u
+build koraku bi značila da PR preview može migrirati produkcionu bazu.
+
+### Varijable okruženja
+
+Pun spisak sa objašnjenjima je u `.env.example`; sljedeće su posebno bitne van Dockera (gdje
+`docker-compose.yml` već postavlja razumne vrijednosti umjesto vas):
+
+| Varijabla | Obavezno? | Napomena |
+|---|---|---|
+| `DATABASE_URL` | da | Pooled connection string (npr. preko platforminog PgBouncer-a/Neon/Supabase poolera) |
+| `MIGRATE_DATABASE_URL` | ne | Direktan (unpooled) connection string za `npm run db:migrate` — pooler u transaction modu ne podržava DDL/advisory lock-ove koje migracioni engine koristi. Bez ovoga koristi se `DATABASE_URL`. |
+| `SESSION_SECRET` | da | `openssl rand -hex 32` |
+| `APP_URL` | **da, u produkciji** | Javan URL aplikacije (linkovi, QR kodovi, e-mailovi) — startup sada puca sa jasnom greškom ako nedostaje, umjesto da tiho generiše neispravne linkove |
+| `EMAIL_PROVIDER` | ne (podrazumijevano `mock`) | `mailjet` za pravi e-mail — vidi §„Šta je mock" niže |
+| `MAILJET_API_KEY` / `MAILJET_API_SECRET` / `MAILJET_FROM_EMAIL` | samo uz `EMAIL_PROVIDER=mailjet` | vidi §„Šta je mock" niže |
+| `MAX_UPLOAD_MB` | ne (podrazumijevano `4`) | Ostaviti na `4` na Vercel-u — serverless Function-e odbijaju tijelo zahtjeva preko 4.5 MB bez obzira na ovu vrijednost |
+| `FONT_DIR` | ne | Override lokacije PDF fontova ako platforma ne poštuje `outputFileTracingIncludes` iz `next.config.ts` |
+| `STORAGE_DIR` | ne | Samo za nazad-kompatibilno čitanje dokumenata generisanih prije prelaska skladišta u Postgres — nebitno za nov deployment |
+
+### Šta NE treba podešavati
+
+- **Object storage (S3/R2/MinIO)** — dokumenti i prilozi žive u Postgres bazi
+  (`DocumentBlob`/`AttachmentBlob`), ne na disku ni u eksternom storage-u.
+- **`DEPLOYMENT_TARGET` ili slična platformska varijabla** — ne postoji; svaka opcija
+  (storage, e-mail provajder, upload limit...) se bira nezavisno, kao iznad.
+- **Migracija unutar platforminog build koraka** — vidi §„Redoslijed" iznad.
+
+### Health check
+
+`GET /api/health` vraća `{ status: "ok" | "error", version }`, bez autentikacije i bez
+detalja o konekciji — provjerava samo dohvatljivost baze (`SELECT 1`). Koristi ga i
+`docker-compose.yml` (healthcheck za `app` servis) i svaka PaaS platforma koja radi probe.
+
 ## Demo nalozi (nakon `npm run db:seed`)
 
 | Uloga | E-mail | Lozinka |

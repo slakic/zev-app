@@ -43,6 +43,38 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.11.0] - 2026-09-15
+
+### Izmijenjeno
+
+- **Faza 4 plana prenosivosti deployment-a** (`Plans/deployment-portability-plan.md`) —
+  deployment procedura:
+  - `docker-entrypoint.sh` refaktorisan da poziva `npm run db:migrate` / `npm run db:seed`
+    umjesto da direktno zove `scripts/migrate.mjs`/`tsx prisma/seed.ts` — iste komande koje
+    korisnik/CI pokreće ručno na platformi bez ovog entrypoint-a, nula duplirane logike.
+    Petlja čekanja na Postgres izdvojena u `scripts/wait-for-db.mjs` (i dalje redundantna sa
+    `docker-compose.yml`-ovim `depends_on: service_healthy`, ali korisna odbrana za `docker run`
+    bez Compose-a ili eksterni/managed Postgres).
+  - Nov `GET /api/health` (`src/app/api/health/route.ts`) — provjerava dohvatljivost baze
+    (`SELECT 1`) i vraća verziju iz `package.json`, bez autentikacije, bez detalja o konekciji.
+    `docker-compose.yml` dobija healthcheck za `app` servis preko njega (ranije ga nije imao).
+  - `"engines": { "node": ">=22" }` u `package.json`.
+  - **`MAX_UPLOAD_MB` sada stvarno primijenjen** (`src/lib/env.ts`, podrazumijevano `4`) —
+    `attachments.ts` više ne koristi fiksnih 15 MB, i `next.config.ts`-ov
+    `serverActions.bodySizeLimit` je usklađen sa istom vrijednošću. **Namjerna izmjena
+    ponašanja: efektivan limit za upload skeniranih dokumenata pada sa 15 MB na 4 MB**
+    (margina ispod Vercel-ovog tvrdog infrastrukturnog zida od 4.5 MB po tijelu zahtjeva,
+    §11 P5) — istaknuto ovdje jer neko ko je navikao na veće skenove može prvi put udariti u
+    ovaj limit tek nakon objave.
+  - `.env.example` i README dopunjeni: `MAX_UPLOAD_MB` više nije zakomentarisan (sada aktivan),
+    i nova README sekcija „Deployment na Vercel" sa tabelom varijabli (uključujući `MAILJET_*`)
+    i eksplicitnim redoslijedom migracija.
+  - 243/243 testova prolazi (novi: `tests/health.test.ts`; prošireni `tests/env.test.ts` za
+    `MAX_UPLOAD_MB`; `tests/attachments.test.ts`-ov test limita usklađen sa novih 4 MB).
+  - Ovim je Faza 0-4 (P6 opcija b) plana prenosivosti deployment-a u potpunosti implementirana;
+    preostaje samo Faza 5 (pooling, `maxDuration`, backfill alat, stvaran probni deployment na
+    Vercel), namjerno odložena van trenutnog obima.
+
 ## [2.10.0] - 2026-09-15
 
 ### Dodato

@@ -7,3 +7,4 @@ process.env.APP_URL = "http://localhost:3000";
 process.env.EMAIL_PROVIDER = "mock";
 process.env.VIBER_PROVIDER = "mock";
 process.env.STORAGE_DIR = "./var/test-storage";
+process.env.MAX_UPLOAD_MB = "4";

@@ -109,7 +109,9 @@ describe("attachment upload validation", () => {
 
   it("rejects a file over the size limit", async () => {
     const f = await createFixture("upload-toobig");
-    const big = Buffer.alloc(15 * 1024 * 1024 + 1);
+    // MAX_UPLOAD_MB=4 in tests/setup-env.ts (Plans/deployment-portability-plan.md §8.1 —
+    // kept under Vercel's 4.5 MB hard Function body limit).
+    const big = Buffer.alloc(4 * 1024 * 1024 + 1);
     await expect(
       uploadAttachment(f.president, { buffer: big, filename: "big.pdf", mime: "application/pdf", category: "REPORT" })
     ).rejects.toThrow(/prevelik/);

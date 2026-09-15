@@ -5,6 +5,7 @@
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
+import { getEnv } from "@/lib/env";
 import type { Prisma } from "@/generated/prisma/client";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
@@ -34,8 +35,6 @@ const ALLOWED_MIME = new Set([
   "image/png",
   "image/webp",
 ]);
-const MAX_SIZE_BYTES = 15 * 1024 * 1024; // 15 MB
-
 export type UploadInput = {
   buffer: Buffer;
   filename: string;
@@ -45,12 +44,20 @@ export type UploadInput = {
   linkedId?: string | null;
 };
 
+// Lazy (not a module-level constant): getEnv() must not run at module load time — see
+// src/lib/env.ts's own header. Called per upload, not per process, so the memoization
+// inside getEnv() keeps this cheap regardless (Plans/deployment-portability-plan.md §8.1).
+function maxUploadBytes(): number {
+  return getEnv().MAX_UPLOAD_MB * 1024 * 1024;
+}
+
 function assertUploadable(input: { buffer: Buffer; mime: string; category: string }) {
   if (!input.buffer || input.buffer.length === 0) {
     throw new Error("Fajl je obavezan.");
   }
-  if (input.buffer.length > MAX_SIZE_BYTES) {
-    throw new Error(`Fajl je prevelik (maksimalno ${MAX_SIZE_BYTES / (1024 * 1024)} MB).`);
+  const maxBytes = maxUploadBytes();
+  if (input.buffer.length > maxBytes) {
+    throw new Error(`Fajl je prevelik (maksimalno ${maxBytes / (1024 * 1024)} MB).`);
   }
   if (!ALLOWED_MIME.has(input.mime)) {
     throw new Error("Dozvoljeni formati su PDF, JPG, PNG i WEBP.");

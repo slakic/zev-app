@@ -8,6 +8,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 describe("env.ts", () => {
   const savedAppUrl = process.env.APP_URL;
   const savedNodeEnv = process.env.NODE_ENV;
+  const savedMaxUpload = process.env.MAX_UPLOAD_MB;
 
   beforeEach(() => {
     vi.resetModules();
@@ -16,6 +17,7 @@ describe("env.ts", () => {
   afterEach(() => {
     process.env.APP_URL = savedAppUrl;
     process.env.NODE_ENV = savedNodeEnv;
+    process.env.MAX_UPLOAD_MB = savedMaxUpload;
     vi.resetModules();
   });
 
@@ -51,5 +53,23 @@ describe("env.ts", () => {
     expect(getEnv().APP_URL).toBe("https://first.example.com");
     process.env.APP_URL = "https://second.example.com";
     expect(getEnv().APP_URL).toBe("https://first.example.com");
+  });
+
+  it("defaults MAX_UPLOAD_MB to 4 (Vercel's 4.5 MB Function body limit) when unset", async () => {
+    delete process.env.MAX_UPLOAD_MB;
+    const { getEnv } = await import("@/lib/env");
+    expect(getEnv().MAX_UPLOAD_MB).toBe(4);
+  });
+
+  it("accepts a custom MAX_UPLOAD_MB (e.g. a Docker-only deployment with no Vercel constraint)", async () => {
+    process.env.MAX_UPLOAD_MB = "10";
+    const { getEnv } = await import("@/lib/env");
+    expect(getEnv().MAX_UPLOAD_MB).toBe(10);
+  });
+
+  it("throws a readable error when MAX_UPLOAD_MB is not a positive number", async () => {
+    process.env.MAX_UPLOAD_MB = "-1";
+    const { getEnv } = await import("@/lib/env");
+    expect(() => getEnv()).toThrow(/MAX_UPLOAD_MB/);
   });
 });
