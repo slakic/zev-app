@@ -14,13 +14,11 @@ export async function GET(req: NextRequest) {
     from: sp.get("from") ? new Date(sp.get("from")!) : undefined,
     to: sp.get("to") ? new Date(sp.get("to")!) : undefined,
   };
-  const stored = await generateFinancialReportPdf(actor, range);
-  const fs = await import("node:fs");
-  const buffer = fs.readFileSync(stored.filePath);
+  const { row, buffer } = await generateFinancialReportPdf(actor, range);
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${stored.number}.pdf"`,
+      "Content-Disposition": `attachment; filename="${row.number}.pdf"`,
     },
   });
 }

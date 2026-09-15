@@ -13,13 +13,11 @@ export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const asOf = sp.get("asOf") ? endOfDay(sp.get("asOf")!) : new Date();
   const partyIds = sp.getAll("owner").filter(Boolean);
-  const stored = await generateOwnerDebtReportPdf(actor, { asOf, partyIds: partyIds.length > 0 ? partyIds : undefined });
-  const fs = await import("node:fs");
-  const buffer = fs.readFileSync(stored.filePath);
+  const { row, buffer } = await generateOwnerDebtReportPdf(actor, { asOf, partyIds: partyIds.length > 0 ? partyIds : undefined });
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${stored.number}.pdf"`,
+      "Content-Disposition": `attachment; filename="${row.number}.pdf"`,
     },
   });
 }

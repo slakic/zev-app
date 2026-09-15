@@ -43,6 +43,24 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.7.1] - 2026-09-15
+
+### Izmijenjeno
+
+- **Faza 0 plana prenosivosti deployment-a** (`Plans/deployment-portability-plan.md`) —
+  priprema bez promjene ponašanja, prvi korak ka skladištenju dokumenata u bazi
+  (Faza 1):
+  - `storeDocument` sada vraća `{ row, buffer }` umjesto samo reda — pozivaoci koji
+    generišu i odmah preuzimaju isti dokument koriste bafer koji već imaju, umjesto
+    da ga ponovo čitaju sa diska.
+  - `api/izvjestaji/pdf`, `api/izvjestaji/dugovanja` i `api/dokumenti/kartica/[partyId]`
+    više ne rade nepotreban dodatni upis-pa-čitanje; prva dva su i prestala direktno
+    da diraju `Document.filePath` (`fs.readFileSync`), zaobilazeći servisni sloj.
+  - Usput vraćen `document.download` audit zapis na `kartica/[partyId]` ruti, koji bi
+    inače nestao ovom optimizacijom (generisanje i preuzimanje su sada isti korak, pa
+    se revizioni zapis piše direktno u `generateOwnerStatementPdf`).
+  - Bez ijedne vidljive promjene za korisnika; 217/217 testova prolazi.
+
 ## [2.7.0] - 2026-09-14
 
 ### Dodato

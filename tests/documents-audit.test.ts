@@ -52,7 +52,7 @@ describe("documents and audit trail", () => {
     await expect(readDocumentFile(f.actorB, docA.id)).rejects.toThrow(ForbiddenError);
     // owner statement isolation as well
     const stmt = await generateOwnerStatementPdf(f.actorA, f.ownerA.id);
-    expect(stmt.type).toBe("OWNER_STATEMENT");
+    expect(stmt.row.type).toBe("OWNER_STATEMENT");
     await expect(generateOwnerStatementPdf(f.actorB, f.ownerA.id)).rejects.toThrow(ForbiddenError);
   });
 

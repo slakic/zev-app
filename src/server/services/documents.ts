@@ -89,6 +89,8 @@ async function nextDocNumber(zevId: string, type: DocumentType): Promise<string>
 /**
  * Store a generated PDF as a Document row. If a FINAL document already exists
  * for the same (type, sourceId), a new VERSION is created — never overwritten.
+ * Returns the buffer alongside the row so callers that need the bytes right
+ * after storing (e.g. to stream a download) don't have to read them back.
  */
 export async function storeDocument(
   actor: Actor | null,
@@ -143,7 +145,7 @@ export async function storeDocument(
     targetId: docRow.id,
     after: { type: input.type, number, version, sha256: hash, final: !!input.finalize },
   });
-  return docRow;
+  return { row: docRow, buffer: input.buffer };
 }
 
 export async function listDocuments(actor: Actor) {
@@ -258,7 +260,7 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
     docFooter(doc, { sourceRef: `Invoice ${inv.number}`, version: 1, status: inv.status });
   });
 
-  const stored = await storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "INVOICE",
     title: `Faktura ${inv.number}`,
     sourceType: "Invoice",
@@ -267,10 +269,11 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
     buffer,
     finalize: true,
   });
-  await prisma.invoice.update({ where: { id: inv.id, zevId }, data: { documentId: stored.id } });
-  return stored;
+  await prisma.invoice.update({ where: { id: inv.id, zevId }, data: { documentId: row.id } });
+  return row;
 }
 
+/** Returns { row, buffer } — caller (kartica route) streams `buffer` directly instead of re-reading. */
 export async function generateOwnerStatementPdf(actor: Actor, partyId: string, asOf?: Date) {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
@@ -318,7 +321,7 @@ export async function generateOwnerStatementPdf(actor: Actor, partyId: string, a
     docFooter(doc, { sourceRef: `Party ${partyId}`, version: 1, status: "FINAL" });
   });
 
-  return storeDocument(actor, {
+  const stored = await storeDocument(actor, {
     type: "OWNER_STATEMENT",
     title: `Kartica vlasnika — ${partyDisplayName(party)}`,
     sourceType: "Party",
@@ -326,6 +329,11 @@ export async function generateOwnerStatementPdf(actor: Actor, partyId: string, a
     buffer,
     finalize: true,
   });
+  // Generation and download are the same step for this route (kartica/[partyId]/route.ts
+  // streams `buffer` straight back), so log the download here — readDocumentFile, which
+  // normally logs it, is never called in that path.
+  await audit(actor, { action: "document.download", targetType: "Document", targetId: stored.row.id });
+  return stored;
 }
 
 /**
@@ -514,7 +522,7 @@ export async function generateMeetingInvitationPdf(actor: Actor, meetingId: stri
     doc.moveDown().text("Materijali za sjednicu dostupni su u aplikaciji nakon prijave.");
     docFooter(doc, { sourceRef: `Meeting ${meeting.id}`, version: 1, status: "FINAL" });
   });
-  return storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "MEETING_INVITATION",
     title: `Poziv — ${meeting.title}`,
     sourceType: "Meeting",
@@ -523,6 +531,7 @@ export async function generateMeetingInvitationPdf(actor: Actor, meetingId: stri
     finalize: true,
     publishedToOwners: true,
   });
+  return row;
 }
 
 export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?: { finalize?: boolean }) {
@@ -567,7 +576,7 @@ export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?:
     doc.text("Zapisničar: ______________________", 300, doc.y - 12);
     docFooter(doc, { sourceRef: `Meeting ${meeting.id}`, version: 1, status: opts?.finalize ? "FINAL" : "DRAFT" });
   });
-  return storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "MINUTES",
     title: `Zapisnik — ${meeting.title}`,
     sourceType: "Meeting",
@@ -576,6 +585,7 @@ export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?:
     finalize: opts?.finalize,
     publishedToOwners: opts?.finalize ?? false,
   });
+  return row;
 }
 
 export async function generateDecisionPdf(actor: Actor, proposalId: string) {
@@ -601,7 +611,7 @@ export async function generateDecisionPdf(actor: Actor, proposalId: string) {
     doc.moveDown(2).text("Predsjednik ZEV: ______________________");
     docFooter(doc, { sourceRef: `Proposal ${p.code} v${p.version}`, version: p.version, status: "FINAL" });
   });
-  return storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "DECISION",
     title: `Odluka — ${p.title}`,
     sourceType: "Proposal",
@@ -611,6 +621,7 @@ export async function generateDecisionPdf(actor: Actor, proposalId: string) {
     finalize: true,
     publishedToOwners: true,
   });
+  return row;
 }
 
 export async function generateVotingListPdf(actor: Actor, proposalId: string) {
@@ -640,7 +651,7 @@ export async function generateVotingListPdf(actor: Actor, proposalId: string) {
     }
     docFooter(doc, { sourceRef: `Proposal ${p.code} v${p.version}`, version: p.version, status: "FINAL" });
   });
-  return storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "VOTING_LIST",
     title: `Glasačka lista ${p.code} v${p.version}`,
     sourceType: "Proposal",
@@ -648,6 +659,7 @@ export async function generateVotingListPdf(actor: Actor, proposalId: string) {
     buffer,
     finalize: true,
   });
+  return row;
 }
 
 export async function generatePlanPdf(actor: Actor, planId: string) {
@@ -673,7 +685,7 @@ export async function generatePlanPdf(actor: Actor, planId: string) {
     doc.moveDown().font("bold").text(`UKUPNO PLANIRANO: ${formatMoney(total.toFixed(2))}`, 50, doc.y, { width: 495, align: "right" });
     docFooter(doc, { sourceRef: `AnnualPlan ${plan.year}/${plan.kind} v${plan.version}`, version: plan.version, status: plan.status });
   });
-  return storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type,
     title: `${plan.title} (v${plan.version})`,
     sourceType: "AnnualPlan",
@@ -682,6 +694,7 @@ export async function generatePlanPdf(actor: Actor, planId: string) {
     finalize: plan.status === "APPROVED",
     publishedToOwners: plan.status === "APPROVED",
   });
+  return row;
 }
 
 export async function generatePaymentReminderPdf(actor: Actor, partyId: string) {
@@ -709,7 +722,7 @@ export async function generatePaymentReminderPdf(actor: Actor, partyId: string) 
     doc.moveDown().text("Molimo da dug izmirite u roku od 8 dana. Detalji su dostupni u aplikaciji nakon prijave.");
     docFooter(doc, { sourceRef: `Party ${partyId}`, version: 1, status: "FINAL" });
   });
-  return storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "PAYMENT_REMINDER",
     title: `Opomena — ${partyDisplayName(party)}`,
     sourceType: "Party",
@@ -717,6 +730,7 @@ export async function generatePaymentReminderPdf(actor: Actor, partyId: string) 
     buffer,
     finalize: true,
   });
+  return row;
 }
 
 export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
@@ -737,7 +751,7 @@ export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
     doc.text("Izvođač: ______________________", 300, doc.y - 12);
     docFooter(doc, { sourceRef: `WorkOrder ${wo.number}`, version: 1, status: "FINAL" });
   });
-  const stored = await storeDocument(actor, {
+  const { row } = await storeDocument(actor, {
     type: "WORK_ORDER",
     title: `Radni nalog ${wo.number}`,
     sourceType: "WorkOrder",
@@ -746,8 +760,8 @@ export async function generateWorkOrderPdf(actor: Actor, workOrderId: string) {
     buffer,
     finalize: true,
   });
-  await prisma.workOrder.update({ where: { id: wo.id, zevId }, data: { documentId: stored.id } });
-  return stored;
+  await prisma.workOrder.update({ where: { id: wo.id, zevId }, data: { documentId: row.id } });
+  return row;
 }
 
 type PdfCol = { label: string; x: number; width: number; right?: boolean };
@@ -798,6 +812,7 @@ function pdfTable(doc: PDFKit.PDFDocument, cols: PdfCol[], rows: string[][], emp
  * the printable counterpart to the CSV exports on the Izvještaji page. Stored as
  * a versioned Document (type ANNUAL_REPORT) so it shows up in Dokumenti and can
  * be re-downloaded later, same as the other formal PDFs in this file.
+ * Returns { row, buffer } — caller streams `buffer` directly instead of re-reading.
  */
 export async function generateFinancialReportPdf(actor: Actor, range?: DateRange) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
@@ -936,6 +951,7 @@ export async function generateFinancialReportPdf(actor: Actor, range?: DateRange
  * Owner debt/balance statement ("izvod otvorenih stavki") as of a chosen date,
  * for one, several, or all owners. Stored as a versioned Document (type
  * DEBT_STATEMENT) so it shows up in Dokumenti and can be re-downloaded later.
+ * Returns { row, buffer } — caller streams `buffer` directly instead of re-reading.
  */
 export async function generateOwnerDebtReportPdf(actor: Actor, opts: { asOf: Date; partyIds?: string[] }) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
