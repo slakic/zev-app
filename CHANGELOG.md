@@ -43,7 +43,36 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
-## [2.8.0] - 2026-09-15
+## [2.9.0] - 2026-09-15
+
+### Dodato
+
+- **Faza 2 plana prenosivosti deployment-a** (`Plans/deployment-portability-plan.md`) —
+  fontovi i konfiguracija:
+  - `src/lib/env.ts` — centralna, lijeno validirana (`zod`) konfiguracija. `APP_URL`
+    više ne pada tiho na `http://localhost:3000` u produkciji — u produkciji je
+    obavezan i nedostatak sada puca sa jasnom porukom na sr-Latn umjesto da tiho
+    generiše neispravne linkove/QR kodove. Van produkcije zadržava podrazumijevanu
+    lokalnu vrijednost, bez izmjene ponašanja. Tri pozivaoca (`meetings.ts` ×2,
+    `zaboravljena-lozinka/page.tsx`) prešla sa `process.env.APP_URL ?? "…"` na
+    `getEnv().APP_URL`.
+  - `src/server/pdf/fonts.ts` — fontovi se sada čitaju jednom po instanci procesa
+    (memoizovan `Buffer`) umjesto po svakom generisanom PDF-u; putanja je
+    podesiva preko `FONT_DIR`, sa jasnom greškom ako font nije pronađen.
+  - `outputFileTracingIncludes` u `next.config.ts` za `assets/fonts/**` — Next-ovo
+    praćenje fajlova ranije nije moglo otkriti fontove jer se čitaju preko sirove
+    `fs` putanje, ne preko `import`-a.
+  - `.env.example` dopunjen (`MIGRATE_DATABASE_URL`, `MAILJET_*`, `MAX_UPLOAD_MB`
+    dokumentovani unaprijed za kasnije faze) — i **prvi put stvarno komitovan**:
+    `.gitignore`-ov `.env*` je do sada tiho isključivao i njega, pa fajl nikad
+    nije bio dio istorije repozitorija iako ga README od početka referencira.
+  - Usput otkriven i ispravljen bag: `import "server-only"` u `env.ts` je rušio
+    `prisma/seed.ts` (poziva `meetings.openVoting`, koji sada zove `getEnv()`) pod
+    plain `tsx`-om, koji nikad ne postavlja Next-ov `"react-server"` export
+    uslov — paket bezuslovno puca van Next build-a. `env.ts` namjerno ne uvozi
+    `server-only`, po istom obrascu kao `src/lib/prisma.ts`.
+  - Novi testovi `tests/env.test.ts` (5) i `tests/fonts.test.ts` (3, uklj. PDF sa
+    č/ć/ž/š/đ). 228/228 testova prolazi.
 
 ### Izmijenjeno
 

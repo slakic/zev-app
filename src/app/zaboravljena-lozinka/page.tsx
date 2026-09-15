@@ -7,12 +7,13 @@ import { requestPasswordReset } from "@/server/services/users";
 import { clientIp, getAuthContext } from "@/server/auth/session";
 import { sha256 } from "@/server/auth/tokens";
 import { Field, inputCls, SubmitBtn } from "@/components/ui";
+import { getEnv } from "@/lib/env";
 
 async function requestResetAction(formData: FormData) {
   "use server";
   const email = String(formData.get("email") ?? "").trim();
   const ip = await clientIp();
-  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const appUrl = getEnv().APP_URL;
   if (email) {
     await requestPasswordReset(email, appUrl, ip ? sha256(ip) : null);
   }

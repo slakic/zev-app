@@ -15,6 +15,7 @@ import { ownersVotingBasis, boardVotingBasis, activeProxyFor, partyDisplayName }
 import { unitsInScope } from "./property";
 import { queueNotification } from "@/server/notifications/service";
 import { dec, ZERO } from "@/lib/money";
+import { getEnv } from "@/lib/env";
 import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma } from "@/generated/prisma/client";
 
 const MEETING_FLOW: MeetingStatus[] = [
@@ -315,7 +316,7 @@ function proposalContentHash(p: { text: string; title: string; version: number }
 export async function openVoting(actor: Actor, proposalId: string, opts?: { expiresAt?: Date }) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const appUrl = getEnv().APP_URL;
 
   const deliveries = await prisma.$transaction(async (tx) => {
     const p = await tx.proposal.findUniqueOrThrow({
@@ -501,7 +502,7 @@ export async function revokeToken(actor: Actor, tokenId: string, reason: string)
 export async function reissueToken(actor: Actor, tokenId: string, reason: string) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const appUrl = getEnv().APP_URL;
   const result = await prisma.$transaction(async (tx) => {
     const old = await tx.approvalToken.findUniqueOrThrow({
       where: { id: tokenId },

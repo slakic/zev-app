@@ -20,19 +20,17 @@ import { reserveFundBalance } from "./finance";
 import PDFDocument from "pdfkit";
 import QRCode from "qrcode";
 import fs from "node:fs";
-import path from "node:path";
 import { createHash } from "node:crypto";
 import type { DocumentType } from "@/generated/prisma/client";
-
-const FONT_REG = path.join(process.cwd(), "assets/fonts/DejaVuSans.ttf");
-const FONT_BOLD = path.join(process.cwd(), "assets/fonts/DejaVuSans-Bold.ttf");
+import { getFonts } from "@/server/pdf/fonts";
 
 type PdfBuild = (doc: PDFKit.PDFDocument) => Promise<void> | void;
 
 async function renderPdf(build: PdfBuild): Promise<Buffer> {
   const doc = new PDFDocument({ size: "A4", margin: 50, bufferPages: true });
-  doc.registerFont("reg", FONT_REG);
-  doc.registerFont("bold", FONT_BOLD);
+  const fonts = getFonts();
+  doc.registerFont("reg", fonts.regular);
+  doc.registerFont("bold", fonts.bold);
   doc.font("reg").fontSize(10);
   const chunks: Buffer[] = [];
   doc.on("data", (c: Buffer) => chunks.push(c));
