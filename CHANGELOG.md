@@ -43,6 +43,31 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.10.0] - 2026-09-15
+
+### Dodato
+
+- **Faza 3 plana prenosivosti deployment-a** (`Plans/deployment-portability-plan.md`) —
+  Mailjet kao pravi e-mail provajder:
+  - `src/server/notifications/mailjetEmail.ts` — `MailjetEmailProvider`, implementira
+    postojeći `EmailProvider` interfejs preko Mailjet REST API-ja (`POST /v3.1/send`,
+    Basic Auth). Mapira Mailjet-ov `Messages[].Status`/`Errors` na `SendResult`; mrežne
+    greške i ne-2xx HTTP odgovori se hvataju i vraćaju kao `ok: false`, ne bacaju grešku.
+  - `getEmailProvider()` (`providers.ts`) dobija `case "mailjet"`; `mock` ostaje
+    podrazumijevano ako `EMAIL_PROVIDER` nije postavljen — Docker deployment koji ništa
+    ne mijenja nastavlja da radi identično.
+  - Mailjet ne šalje delivery/seen callback-ove bez zasebno podešenog Event API-ja (van
+    obima) — uspješan `send()` bilježi samo `"sent"` događaj, za razliku od mock
+    provajdera koji simulira i `delivered`/`seen`.
+  - `VIBER_PROVIDER` ostaje `mock` — pravi Viber provajder je i dalje odloženo.
+  - README dopunjen uputstvom za podešavanje (API key/secret, verifikacija `FROM`
+    adrese) i napomenom da neuspjeli pokušaji ne dobijaju automatski retry
+    (`retryFailed()` i dalje nema pozivaoca, zakazivanje van obima).
+  - Novi testovi `tests/mailjetEmail.test.ts` (6, mockovan HTTP odgovor — uspjeh, greška
+    na nivou Mailjet-a, ne-2xx HTTP, mrežna greška, nedostajuća konfiguracija) i
+    `tests/providers.test.ts` (5, provjera switch-a za oba kanala). 239/239 testova
+    prolazi.
+
 ## [2.9.0] - 2026-09-15
 
 ### Dodato

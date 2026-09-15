@@ -1,10 +1,13 @@
 // Provider abstraction for e-mail and Viber.
-// The MVP ships MOCK providers: they mark messages as sent/delivered and keep
-// the full history in the NotificationMessage outbox, so every workflow that
-// depends on delivery is functional without real credentials.
+// Ships with MOCK providers for both channels: they mark messages as sent/delivered
+// and keep the full history in the NotificationMessage outbox, so every workflow
+// that depends on delivery is functional without real credentials. A real e-mail
+// provider (Mailjet) is also available — see EMAIL_PROVIDER below.
 //
-// Real providers: implement EmailProvider/ViberProvider below and select them
-// via EMAIL_PROVIDER / VIBER_PROVIDER in .env (see .env.example).
+// Select a provider via EMAIL_PROVIDER / VIBER_PROVIDER in .env (see .env.example).
+// A real Viber provider isn't implemented yet (Plans/deployment-portability-plan.md §11 P4).
+
+import { MailjetEmailProvider } from "./mailjetEmail";
 
 export type DeliveryEvent = {
   at: string;
@@ -73,9 +76,10 @@ export function getEmailProvider(): EmailProvider {
   switch (kind) {
     case "mock":
       return new MockEmailProvider();
+    case "mailjet":
+      return new MailjetEmailProvider();
     default:
-      // Real SMTP/API providers are part of the production-hardening backlog.
-      throw new Error(`Unknown EMAIL_PROVIDER: ${kind}. Only "mock" ships with the MVP.`);
+      throw new Error(`Unknown EMAIL_PROVIDER: ${kind}. Expected "mock" or "mailjet".`);
   }
 }
 

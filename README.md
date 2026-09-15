@@ -118,12 +118,25 @@ Testovi koriste `TEST_DATABASE_URL` (baza se resetuje pri svakom pokretanju).
 
 ## Šta je mock / poznata ograničenja
 
-* **E-mail i Viber su mock provajderi.** Poruke se upisuju u outbox
-  (`NotificationMessage`) sa simuliranim događajima isporuke (sent/delivered/seen);
-  kompletan tok sjednica i glasanja radi bez stvarnih kredencijala. Stvarni provajderi se
-  dodaju implementacijom interfejsa u `src/server/notifications/providers.ts` i izborom u
-  `.env`. Viber bot API šalje poruke **pretplaćenim** korisnicima — automatsko objavljivanje
-  u proizvoljne privatne Viber grupe nije podržano zvaničnim API-jem.
+* **E-mail i Viber su podrazumijevano mock provajderi** (`EMAIL_PROVIDER=mock`,
+  `VIBER_PROVIDER=mock`). Poruke se upisuju u outbox (`NotificationMessage`) sa
+  simuliranim događajima isporuke (sent/delivered/seen); kompletan tok sjednica i
+  glasanja radi bez stvarnih kredencijala. Viber i dalje nema pravi provajder — bot API
+  šalje poruke **pretplaćenim** korisnicima, pa automatsko objavljivanje u proizvoljne
+  privatne Viber grupe nije podržano zvaničnim API-jem.
+  * **E-mail ima i pravog provajdera — Mailjet** (`EMAIL_PROVIDER=mailjet`,
+    `src/server/notifications/mailjetEmail.ts`). Podešavanje:
+    1. Napravite nalog na [mailjet.com](https://www.mailjet.com/) i verifikujte
+       pošiljaočevu adresu/domen (Account Settings → Sender addresses & domains) —
+       Mailjet odbija slanje sa neverifikovane adrese.
+    2. API key i secret: Account Settings → REST API → API Key Management.
+    3. U `.env` postavite `EMAIL_PROVIDER="mailjet"`, `MAILJET_API_KEY`,
+       `MAILJET_API_SECRET` i `MAILJET_FROM_EMAIL` (verifikovana adresa iz koraka 1).
+    4. Mailjet ne šalje delivery/seen callback-ove bez zasebno podešenog Event API-ja
+       (van obima) — uspješno slanje bilježi samo `"sent"` događaj, za razliku od mock
+       provajdera koji simulira i `delivered`/`seen`.
+    5. Neuspjeli pokušaji **ne** dobijaju automatski retry (`retryFailed()` postoji, ali
+       nema pozivaoca — zakazivanje je van obima dok se ne uvede platformski scheduler).
 * Elektronsko odobravanje je **evidentirano elektronsko izjašnjavanje sa dokazima**, ne
   kvalifikovani elektronski potpis (tako je i označeno korisnicima).
 * Nema obračuna zatezne kamate (parametar postoji, isključen — čeka pravnu potvrdu).
