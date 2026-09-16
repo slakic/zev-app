@@ -125,6 +125,7 @@ Pun spisak sa objašnjenjima je u `.env.example`; sljedeće su posebno bitne van
 |---|---|---|
 | `DATABASE_URL` | da | Pooled connection string (npr. preko platforminog PgBouncer-a/Neon/Supabase poolera) |
 | `MIGRATE_DATABASE_URL` | ne | Direktan (unpooled) connection string za `npm run db:migrate` — pooler u transaction modu ne podržava DDL/advisory lock-ove koje migracioni engine koristi. Bez ovoga koristi se `DATABASE_URL`. |
+| `DB_POOL_MAX` | ne | Ograničava veličinu `pg` connection pool-a po instanci (podrazumijevano 10). Bitno na serverless-u, gdje više istovremenih instanci × neograničenih 10 konekcija svaka može iscrpiti limit baze — ako `DATABASE_URL` već ide preko poolera (gornji red), ovo obično nije potrebno. |
 | `SESSION_SECRET` | da | `openssl rand -hex 32` |
 | `APP_URL` | **da, u produkciji** | Javan URL aplikacije (linkovi, QR kodovi, e-mailovi) — startup sada puca sa jasnom greškom ako nedostaje, umjesto da tiho generiše neispravne linkove |
 | `EMAIL_PROVIDER` | ne (podrazumijevano `mock`) | `mailjet` za pravi e-mail — vidi §„Šta je mock" niže |

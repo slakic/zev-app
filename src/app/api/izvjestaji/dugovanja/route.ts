@@ -3,6 +3,11 @@ import { getAuthContext } from "@/server/auth/session";
 import { generateOwnerDebtReportPdf } from "@/server/services/documents";
 import { endOfDay } from "@/lib/i18n";
 
+// generateOwnerDebtReportPdf aggregates balances across every owner before rendering the
+// PDF — can be tight for a larger ZEV against a platform's default (e.g. Vercel's 10s).
+// No-op on Docker; respected on Vercel (Plans/deployment-portability-plan.md §8.4).
+export const maxDuration = 60;
+
 export async function GET(req: NextRequest) {
   const session = await getAuthContext();
   if (!session) return NextResponse.redirect(new URL("/login", req.url));

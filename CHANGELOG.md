@@ -43,6 +43,39 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.12.0] - 2026-09-16
+
+### Dodato
+
+- **Faza 5 plana prenosivosti deployment-a** (`Plans/deployment-portability-plan.md`) —
+  fino podešavanje:
+  - `DB_POOL_MAX` (`src/lib/prisma.ts`) — opciono ograničava veličinu `pg` connection
+    pool-a po instanci; bez varijable ponašanje je identično današnjem (`pg`-ov
+    podrazumijevani `max: 10`, ništa se ne prosljeđuje `PrismaPg`-u). Čitano direktno iz
+    `process.env`, ne preko `getEnv()` — `createClient()` se izvršava pri učitavanju
+    modula, uključujući Next-ov build, gdje `getEnv()` ne smije da se pozove (isto
+    obrazloženje kao `next.config.ts`). Ručno provjereno: `DB_POOL_MAX=2` ispravno
+    postavlja `pool.options.max`, upiti i dalje rade.
+  - `export const maxDuration = 60` na `izvjestaji/pdf` i `izvjestaji/dugovanja` rutama
+    (agregiraju više izvještaja prije renderovanja PDF-a — može biti tijesno za veći ZEV
+    na platformi sa podrazumijevanim limitom od 10s). No-op na Dockeru, poštuje se na
+    Vercel-u.
+  - Nov `scripts/backfill-storage-blobs.ts` (`npm run storage:backfill [-- --apply]`) —
+    jednokratni alat koji naslijeđene Docker `filePath` redove (dokumenti/prilozi sa
+    diska, od prije Faze 1) prebacuje u `DocumentBlob`/`AttachmentBlob` i briše
+    `filePath`. Podrazumijevano dry-run (ništa ne upisuje dok se ne doda `--apply`).
+    Nije neophodan za ispravnost — čitanje sa pad-back na `filePath` iz Faze 1 radi
+    neograničeno — vrijedan tek kad se stvarno planira ugasiti disk na kojem ti fajlovi
+    žive. 4 nova testa (`tests/backfill-storage-blobs.test.ts`): dry-run ne upisuje,
+    stvarno prebacivanje dokumenta i priloga, i siguran preskok reda čiji fajl više ne
+    postoji na disku (bez rušenja, bez gubljenja reda).
+  - `.env.example`/README dopunjeni sa `DB_POOL_MAX`.
+  - 247/247 testova prolazi.
+  - Ovim je kompletan kod iz plana prenosivosti deployment-a (Faze 0-5) implementiran.
+    Preostaje samo stvaran probni deployment na Vercel — svjesno odloženo, van obima
+    ovog izdanja (zahtijeva Vercel nalog i produkcionu Postgres bazu koje ova sesija
+    nema pristup da sama podesi).
+
 ## [2.11.0] - 2026-09-15
 
 ### Izmijenjeno
