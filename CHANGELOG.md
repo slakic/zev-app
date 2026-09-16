@@ -43,6 +43,20 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.12.1] - 2026-09-16
+
+### Ispravljeno
+
+- **`openVoting` (`src/server/services/meetings.ts`) — otkriveno tokom stvarnog probnog
+  deployment-a na Vercel + Neon** (`Plans/deployment-portability-plan.md` §12 Faza 5).
+  Transakcija radi 3-4 sekvencijalna upita po biraču (provjera punomoćja, upis
+  `EligibleVoter`, upis `ApprovalToken`, audit zapis). Lokalno je to trenutno; preko
+  stvarne mrežne latencije do udaljene baze (Vercel → Neon) skup ovih upita je premašio
+  Prisma-in podrazumijevani limit interaktivne transakcije od 5s već sa skromnim brojem
+  birača — reprodukovano na pravom Neon nalogu tokom seed-a demo podataka. Ispravka:
+  eksplicitan `timeout: 20000` na `$transaction` pozivu. Verifikovano: reset + reseed
+  Neon baze prošao čisto nakon ispravke, 247/247 testova i dalje prolazi.
+
 ## [2.12.0] - 2026-09-16
 
 ### Dodato

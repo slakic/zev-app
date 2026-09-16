@@ -318,6 +318,12 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
   const zevId = requireZev(actor);
   const appUrl = getEnv().APP_URL;
 
+  // Explicit timeout: this loops 3-4 sequential queries per eligible voter (proxy lookup,
+  // EligibleVoter + ApprovalToken + audit writes) inside one interactive transaction.
+  // Locally that's instant, but against a remote DB (e.g. Vercel -> Neon) each round-trip
+  // carries real network latency, and Prisma's default 5s transaction timeout was hit with
+  // a modest voter count during the first live trial deployment
+  // (Plans/deployment-portability-plan.md §12 Faza 5) — not a local-only edge case.
   const deliveries = await prisma.$transaction(async (tx) => {
     const p = await tx.proposal.findUniqueOrThrow({
       where: { id: proposalId, zevId },
@@ -449,7 +455,7 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
       after: { contentHash, totalEligibleWeight: ruleSnapshot.totalEligibleWeight, voters: out.length },
     }, tx);
     return out;
-  });
+  }, { timeout: 20000 });
 
   // Queue deliveries (outside the tx; mock providers in MVP).
   for (const d of deliveries) {
