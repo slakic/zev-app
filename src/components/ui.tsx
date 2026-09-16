@@ -21,7 +21,7 @@ export function PageHeader({
           </Link>
         )}
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-[15px] text-slate-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -31,7 +31,7 @@ export function PageHeader({
 export function Card({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
   return (
     <section className={`rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm ${className ?? ""}`}>
-      {title && <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">{title}</h2>}
+      {title && <h2 className="mb-3 text-sm font-semibold text-slate-700">{title}</h2>}
       {children}
     </section>
   );
@@ -81,7 +81,7 @@ const statusTone: Record<string, string> = {
 export function StatusBadge({ status, label }: { status: string; label: string }) {
   const tone = badgeTones[statusTone[status] ?? "slate"];
   return (
-    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${tone}`}>
+    <span className={`inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset ${tone}`}>
       {label}
     </span>
   );
@@ -89,7 +89,18 @@ export function StatusBadge({ status, label }: { status: string; label: string }
 
 export function Table({ headers, children, empty }: { headers: string[]; children: ReactNode; empty?: boolean }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-sm">
+    // No own border/shadow: every caller already wraps this in a Card, which supplies that —
+    // a border here too was a box-in-a-box (Plans/ui-ux-redesign-plan.md §3.5). tabIndex +
+    // role + aria-label make horizontally-scrolled content reachable by keyboard, and the
+    // inset shadow on the trailing edge is a static hint that there's more to scroll to
+    // (§4.2, "A+" patch) — cheap now; Faza 3 replaces overflow-x-auto with a real responsive
+    // table for the worst offenders.
+    <div
+      tabIndex={0}
+      role="region"
+      aria-label="Tabela — sadržaj se može horizontalno pomjerati na užim ekranima"
+      className="overflow-x-auto rounded-lg [box-shadow:inset_-10px_0_8px_-10px_rgba(15,23,42,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
+    >
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50/80 text-left">
@@ -100,7 +111,7 @@ export function Table({ headers, children, empty }: { headers: string[]; childre
         </thead>
         <tbody className="divide-y divide-slate-100">
           {empty ? (
-            <tr><td colSpan={headers.length} className="px-4 py-8 text-center text-slate-400">Nema podataka.</td></tr>
+            <tr><td colSpan={headers.length} className="px-4 py-8 text-center text-slate-500">Nema podataka.</td></tr>
           ) : children}
         </tbody>
       </table>
@@ -112,9 +123,11 @@ export function Td({ children, right, className }: { children: ReactNode; right?
   return <td className={`px-4 py-2.5 ${right ? "text-right tabular-nums" : ""} ${className ?? ""}`}>{children}</td>;
 }
 
+// py-2.5 + a 44px floor below md keeps every button a real touch target (WCAG 2.5.5) —
+// the old py-1.5 measured ~30px tall (Plans/ui-ux-redesign-plan.md §3.7, A2).
 const btnBase =
-  "inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium " +
-  "transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 " +
+  "inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium " +
+  "max-md:min-h-[44px] transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 " +
   "focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50";
 
 const btnVariantCls: Record<string, string> = {
@@ -198,7 +211,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
     <label className="block text-sm">
       <span className="mb-1 block font-medium text-slate-700">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-[13px] text-slate-500">{hint}</span>}
     </label>
   );
 }
@@ -229,7 +242,7 @@ export function Flash({ msg, err }: { msg?: string; err?: string }) {
   if (!msg && !err) return null;
   return (
     <div
-      role="status"
+      role={err ? "alert" : "status"}
       className={`mb-4 flex items-start gap-2 rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm ${
         err ? "border-l-red-500 bg-red-50 text-red-800" : "border-l-emerald-500 bg-emerald-50 text-emerald-800"
       }`}

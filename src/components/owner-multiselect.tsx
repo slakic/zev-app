@@ -91,7 +91,7 @@ export function OwnerMultiSelect({
             </button>
           </div>
           {options.length === 0 ? (
-            <p className="px-3 py-2 text-sm text-slate-400">Nema vlasnika.</p>
+            <p className="px-3 py-2 text-sm text-slate-500">Nema vlasnika.</p>
           ) : (
             options.map((o) => (
               <label

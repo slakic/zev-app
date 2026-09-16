@@ -261,12 +261,12 @@ export function NavShell({
                   </div>
                   <div className="min-w-0">
                     <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
-                    <div className="truncate text-xs text-slate-400">{rolesText}</div>
+                    <div className="truncate text-xs text-slate-500">{rolesText}</div>
                   </div>
                 </div>
                 {showSwitcher && (
                   <div className="border-b border-slate-100 py-1.5">
-                    <div className="px-3.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    <div className="px-3.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                       {t("tenant.switcherHeading")}
                     </div>
                     <div className="px-1.5">
@@ -340,7 +340,12 @@ export function NavShell({
           </div>
         </header>
 
-        <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
+        {/* Capped width so paragraphs/cards don't stretch to unreadable line lengths on
+            wide monitors (Plans/ui-ux-redesign-plan.md §3.4, §2.8) — mx-auto centers the
+            capped column inside the flex-1 area rather than pinning it left. */}
+        <main className="min-w-0 flex-1 p-4 md:p-8">
+          <div className="mx-auto w-full max-w-[1440px]">{children}</div>
+        </main>
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ export function ChargeItemRow({
       <tr className={open ? "bg-slate-50" : !c.active ? "opacity-50" : undefined}>
         <Td>
           {c.name}
-          {!c.active && <span className="ml-1.5 text-xs text-slate-400">(neaktivna)</span>}
+          {!c.active && <span className="ml-1.5 text-xs text-slate-500">(neaktivna)</span>}
         </Td>
         <Td>{tEnum("chargeMethod", c.method)}</Td>
         <Td right>{c.rate ?? "—"}</Td>

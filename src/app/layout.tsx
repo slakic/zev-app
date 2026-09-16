@@ -18,7 +18,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="sr-Latn">
-      <body className="antialiased bg-slate-50 text-slate-900">{children}</body>
+      <body className="antialiased bg-canvas text-ink">{children}</body>
     </html>
   );
 }

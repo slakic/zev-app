@@ -43,6 +43,42 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.13.0] - 2026-09-16
+
+### Izmijenjeno
+
+- **Faza 0 plana UI/UX redizajna** (`Plans/ui-ux-redesign-plan.md`) — tokeni,
+  tipografija, kontrast:
+  - Nov `@theme` blok u `globals.css` — nazvani tokeni za paletu koja je već
+    bila u upotrebi (slate neutrali, blue-600 primarna, tonalni emerald/amber/
+    red) — nijedna boja se stvarno nije promijenila, samo je dobila ime
+    (`bg-primary`, `bg-danger-soft` itd.) za buduću upotrebu (Faza 1). Uklonjene
+    mrtve `--background`/`--foreground` varijable; `layout.tsx` sada koristi
+    `bg-canvas text-ink` umjesto hardkodovanog `bg-slate-50 text-slate-900`.
+  - Naslov kartice (`Card`, `ui.tsx`) prestaje da bude 12px verzal
+    (`text-xs uppercase`) — sada je 14px polu-podebljan tekst, čitljiviji na
+    prvi pogled.
+  - **Kontrastna ispravka (WCAG AA):** `text-slate-400` (≈2,8:1, ispod praga
+    4,5:1) zamijenjen sa `text-slate-500` (≈4,76:1) svuda gdje nosi stvarni
+    sadržaj koji korisnik mora pročitati (hintovi, prazna stanja, napomene) —
+    18 fajlova. Dekorativne upotrebe (ikone, fokus prstenovi, zatamnjeni redovi
+    isteklih vlasničkih udjela) namjerno nisu dirane.
+  - Dodirne mete dugmadi sa ≈30px na ≈40px (44px na užim ekranima) — WCAG 2.5.5.
+  - Globalan `:focus-visible` prsten — do sada su ga imali samo dugmad i polja,
+    ne i linkovi u navigaciji i tabelama.
+  - `Flash` greška sada nosi `role="alert"` umjesto `role="status"`.
+  - Maksimalna širina glavnog sadržaja (1440px) — spriječava da se pasusi na
+    širim ekranima razvuku preko 140+ karaktera po redu.
+  - Uklonjena dvostruka elevacija: `Table` više ne crta svoj okvir/sjenku kad
+    je (kao skoro uvijek) već unutar `Card`-a koji to obezbjeđuje.
+  - Tabela sa horizontalnim skrolom je sada dostupna tastaturom
+    (`tabIndex`/`role="region"`/`aria-label`) i ima suptilnu naznaku da sadržaj
+    nastavlja desno — stvarno rješenje gustine tabela dolazi tek u Fazi 3.
+  - Bez izmjene rasporeda/logike; provjereno uživo na 1440px i 375px na šest
+    ključnih stranica (`/`, `/zgrade`, `/fakture`, `/skupstina/prijedlog/[id]`,
+    `/podesavanja`, `/login`), bez regresija. 247/247 testova prolazi
+    (nepromijenjeno — ovo je čisto prezentaciona izmjena).
+
 ## [2.12.1] - 2026-09-16
 
 ### Ispravljeno

@@ -245,7 +245,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
                           )}
                         </div>
                       )}
-                      {r.matchHint && <p className="mt-1 max-w-64 text-[11px] text-slate-400">Predlog: {r.matchHint}</p>}
+                      {r.matchHint && <p className="mt-1 max-w-64 text-[11px] text-slate-500">Predlog: {r.matchHint}</p>}
                     </td>
                   </tr>
                 ))}

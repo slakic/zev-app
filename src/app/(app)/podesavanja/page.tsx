@@ -133,7 +133,7 @@ export default async function SettingsPage({
               <Field label="Adresa za prepisku (ako je različita)">
                 <input name="correspondenceAddress" defaultValue={myParty.correspondenceAddress ?? ""} className={inputCls} />
               </Field>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500">
                 Ime, prezime i adresu nekretnine mijenja predsjednik — vidi vaš profil u „Vlasnici i korisnici”.
               </p>
               <SubmitBtn>Sačuvaj</SubmitBtn>

@@ -90,7 +90,7 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
             </Table>
           </Card>
         ))}
-        {preview.length === 0 && <p className="text-sm text-slate-400">Serija nema obračunatih stavki.</p>}
+        {preview.length === 0 && <p className="text-sm text-slate-500">Serija nema obračunatih stavki.</p>}
       </div>
     </div>
   );

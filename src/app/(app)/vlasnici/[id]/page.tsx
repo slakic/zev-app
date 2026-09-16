@@ -170,7 +170,7 @@ export default async function PartyDetailPage({
                 <input name="correspondenceAddress" defaultValue={party.correspondenceAddress ?? ""} className={inputCls} />
               </Field>
               {!isPresident && (
-                <p className="text-xs text-slate-400">Kao vlasnik možete mijenjati samo svoje kontakt podatke.</p>
+                <p className="text-xs text-slate-500">Kao vlasnik možete mijenjati samo svoje kontakt podatke.</p>
               )}
               <SubmitBtn>Sačuvaj</SubmitBtn>
             </form>
@@ -221,14 +221,14 @@ export default async function PartyDetailPage({
           <div className="text-sm">
             <p className="font-medium">Date punomoći:</p>
             <ul className="mb-2 list-inside list-disc text-slate-600">
-              {party.proxiesGiven.length === 0 && <li className="list-none text-slate-400">Nema</li>}
+              {party.proxiesGiven.length === 0 && <li className="list-none text-slate-500">Nema</li>}
               {party.proxiesGiven.map((p) => (
                 <li key={p.id}>{partyDisplayName(p.holder)} — {p.revokedAt ? "OPOZVANA" : "aktivna"} od {formatDate(p.validFrom)}</li>
               ))}
             </ul>
             <p className="font-medium">Primljene punomoći:</p>
             <ul className="list-inside list-disc text-slate-600">
-              {party.proxiesHeld.length === 0 && <li className="list-none text-slate-400">Nema</li>}
+              {party.proxiesHeld.length === 0 && <li className="list-none text-slate-500">Nema</li>}
               {party.proxiesHeld.map((p) => (
                 <li key={p.id}>za {partyDisplayName(p.grantor)} — {p.revokedAt ? "OPOZVANA" : "aktivna"}</li>
               ))}

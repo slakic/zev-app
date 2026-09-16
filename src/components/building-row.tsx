@@ -40,8 +40,8 @@ export function BuildingRow({
       <tr className={open ? "bg-slate-50" : undefined}>
         <Td>
           <div className="font-medium text-slate-900">{b.name}</div>
-          {details && <div className="mt-0.5 text-xs text-slate-400">{details}</div>}
-          {b.note && <div className="mt-0.5 text-xs italic text-slate-400">{b.note}</div>}
+          {details && <div className="mt-0.5 text-xs text-slate-500">{details}</div>}
+          {b.note && <div className="mt-0.5 text-xs italic text-slate-500">{b.note}</div>}
         </Td>
         <Td>{b.address}</Td>
         <Td>{b.entrances.map((e) => e.name).join(", ") || "—"}</Td>

@@ -98,7 +98,7 @@ export default async function VotePage({ params, searchParams }: {
         {info.proposal.rationale && (
           <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600"><b>Obrazloženje:</b> {info.proposal.rationale}</p>
         )}
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-slate-500">
           Glasanje otvoreno do {formatDateTime(info.proposal.votingClosesAt)} · otisak sadržaja (SHA-256): {info.proposal.contentHash?.slice(0, 20)}…
         </p>
       </div>
@@ -133,7 +133,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <main className="mx-auto min-h-screen max-w-2xl p-4 md:py-10">
       <div className="mb-4 text-sm font-bold text-blue-700">ZEV upravnik — elektronsko odobravanje</div>
       {children}
-      <p className="mt-6 text-xs text-slate-400">
+      <p className="mt-6 text-xs text-slate-500">
         Ovaj postupak predstavlja evidentirano elektronsko odobravanje, a ne kvalifikovani elektronski potpis.
       </p>
     </main>

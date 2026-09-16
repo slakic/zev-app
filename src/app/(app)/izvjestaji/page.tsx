@@ -21,7 +21,7 @@ function balanceStatus(balance: string): { text: string; cls: string } {
   const n = Number(balance);
   if (n > 0) return { text: "duguje", cls: "text-red-700" };
   if (n < 0) return { text: "preplata", cls: "text-emerald-700" };
-  return { text: "izmireno", cls: "text-slate-400" };
+  return { text: "izmireno", cls: "text-slate-500" };
 }
 
 export default async function ReportsPage({

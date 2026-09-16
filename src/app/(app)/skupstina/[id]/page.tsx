@@ -168,7 +168,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                 )}
               </li>
             ))}
-            {meeting.agendaItems.length === 0 && <p className="text-sm text-slate-400">Dnevni red je prazan.</p>}
+            {meeting.agendaItems.length === 0 && <p className="text-sm text-slate-500">Dnevni red je prazan.</p>}
           </ol>
           {isPresident && !["MINUTES_FINALIZED", "ARCHIVED"].includes(meeting.status) && (
             <form action={addAgendaAction} className="mt-3 flex gap-2">

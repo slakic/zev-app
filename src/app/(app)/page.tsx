@@ -73,7 +73,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
 
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Prijedlozi na glasanju">
-          {openProposals.length === 0 && <p className="text-sm text-slate-400">Nema otvorenih glasanja.</p>}
+          {openProposals.length === 0 && <p className="text-sm text-slate-500">Nema otvorenih glasanja.</p>}
           <ul className="space-y-2">
             {openProposals.map((p) => {
               const voted = p.eligibleVoters.filter((ev) => ev.votes.some((v) => !v.invalid)).length;
@@ -89,7 +89,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
           </ul>
         </Card>
         <Card title="Predstojeće sjednice">
-          {upcomingMeetings.length === 0 && <p className="text-sm text-slate-400">Nema zakazanih sjednica.</p>}
+          {upcomingMeetings.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih sjednica.</p>}
           <ul className="space-y-2">
             {upcomingMeetings.map((m) => (
               <li key={m.id} className="flex items-center justify-between gap-2 text-sm">
@@ -100,7 +100,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
           </ul>
         </Card>
         <Card title="Otvorene prijave održavanja">
-          {openIssues.length === 0 && <p className="text-sm text-slate-400">Nema otvorenih prijava.</p>}
+          {openIssues.length === 0 && <p className="text-sm text-slate-500">Nema otvorenih prijava.</p>}
           <ul className="space-y-2">
             {openIssues.map((i) => (
               <li key={i.id} className="flex items-center justify-between gap-2 text-sm">
@@ -111,7 +111,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
           </ul>
         </Card>
         <Card title="Neraspoređene uplate">
-          {unmatchedPayments.length === 0 && <p className="text-sm text-slate-400">Sve uplate su raspoređene.</p>}
+          {unmatchedPayments.length === 0 && <p className="text-sm text-slate-500">Sve uplate su raspoređene.</p>}
           <ul className="space-y-2">
             {unmatchedPayments.map((p) => (
               <li key={p.id} className="flex items-center justify-between gap-2 text-sm">
@@ -124,7 +124,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
           </ul>
         </Card>
         <Card title="Predstojeći pregledi i preventivno održavanje">
-          {inspections.length === 0 && <p className="text-sm text-slate-400">Nema zakazanih pregleda.</p>}
+          {inspections.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih pregleda.</p>}
           <ul className="space-y-2">
             {inspections.map((i) => (
               <li key={i.id} className="flex items-center justify-between gap-2 text-sm">
@@ -175,7 +175,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
       </div>
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Moje neplaćene fakture">
-          {unpaid.length === 0 && <p className="text-sm text-slate-400">Nemate neplaćenih faktura.</p>}
+          {unpaid.length === 0 && <p className="text-sm text-slate-500">Nemate neplaćenih faktura.</p>}
           <ul className="space-y-2">
             {unpaid.map((inv) => {
               const paid = inv.allocations.reduce((a, x) => a + Number(x.amount), 0);
@@ -192,7 +192,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
           </ul>
         </Card>
         <Card title="Otvorena glasanja">
-          {openVoting.length === 0 && <p className="text-sm text-slate-400">Trenutno nema otvorenih izjašnjavanja.</p>}
+          {openVoting.length === 0 && <p className="text-sm text-slate-500">Trenutno nema otvorenih izjašnjavanja.</p>}
           <ul className="space-y-2">
             {openVoting.map((ev) => (
               <li key={ev.id} className="flex items-center justify-between gap-2 text-sm">
@@ -205,7 +205,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
           </ul>
         </Card>
         <Card title="Moje nedavne uplate">
-          {recentPayments.length === 0 && <p className="text-sm text-slate-400">Nema evidentiranih uplata.</p>}
+          {recentPayments.length === 0 && <p className="text-sm text-slate-500">Nema evidentiranih uplata.</p>}
           <ul className="space-y-2">
             {recentPayments.map((p) => (
               <li key={p.id} className="flex items-center justify-between text-sm">
@@ -223,7 +223,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
                 <span className="text-xs text-slate-500">{formatDateTime(m.scheduledAt)}</span>
               </li>
             ))}
-            {meetings.length === 0 && <p className="text-sm text-slate-400">Nema zakazanih sjednica.</p>}
+            {meetings.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih sjednica.</p>}
           </ul>
         </Card>
         <Card title="Objavljene odluke">
@@ -233,7 +233,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
                 <a className="text-blue-700 hover:underline" href={`/api/dokumenti/${d.id}`}>{d.title}</a>
               </li>
             ))}
-            {decisions.length === 0 && <p className="text-sm text-slate-400">Nema objavljenih odluka.</p>}
+            {decisions.length === 0 && <p className="text-sm text-slate-500">Nema objavljenih odluka.</p>}
           </ul>
         </Card>
         <Card title="Moje prijave održavanja">
@@ -244,7 +244,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
                 <StatusBadge status={i.status} label={tEnum("issueStatus", i.status)} />
               </li>
             ))}
-            {myIssues.length === 0 && <p className="text-sm text-slate-400">Nemate prijava.</p>}
+            {myIssues.length === 0 && <p className="text-sm text-slate-500">Nemate prijava.</p>}
           </ul>
         </Card>
       </div>

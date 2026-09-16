@@ -173,7 +173,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
       <div className="mb-4 flex items-center gap-2">
         <StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} />
         {p.decisionNumber && <span className="text-sm text-slate-500">Odluka br. {p.decisionNumber}</span>}
-        {p.contentHash && <span className="text-xs text-slate-400">hash: {p.contentHash.slice(0, 16)}…</span>}
+        {p.contentHash && <span className="text-xs text-slate-500">hash: {p.contentHash.slice(0, 16)}…</span>}
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

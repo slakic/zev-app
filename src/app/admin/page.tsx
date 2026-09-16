@@ -77,7 +77,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
                     <Link href={`/admin/${z.id}`} className="font-medium text-blue-700 hover:underline">
                       {z.legalName}
                     </Link>
-                    {z.shortName && <div className="text-xs text-slate-400">{z.shortName}</div>}
+                    {z.shortName && <div className="text-xs text-slate-500">{z.shortName}</div>}
                   </Td>
                   <Td>{TIER_LABELS[z.tier] ?? z.tier}</Td>
                   <Td>{president?.email ?? "—"}</Td>

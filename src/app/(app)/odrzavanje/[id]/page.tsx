@@ -178,7 +178,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
             {issue.statusEvents.map((e) => (
               <li key={e.id} className="flex justify-between gap-2">
                 <span>{tEnum("issueStatus", e.to)}{e.note ? ` — ${e.note}` : ""}</span>
-                <span className="whitespace-nowrap text-xs text-slate-400">{formatDateTime(e.createdAt)}</span>
+                <span className="whitespace-nowrap text-xs text-slate-500">{formatDateTime(e.createdAt)}</span>
               </li>
             ))}
           </ol>
@@ -289,10 +289,10 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
           <ul className="space-y-2 text-sm">
             {issue.comments.map((c) => (
               <li key={c.id} className="rounded bg-slate-50 p-2">
-                <span className="text-xs text-slate-400">{formatDateTime(c.createdAt)}:</span> {c.text}
+                <span className="text-xs text-slate-500">{formatDateTime(c.createdAt)}:</span> {c.text}
               </li>
             ))}
-            {issue.comments.length === 0 && <li className="text-slate-400">Nema komentara.</li>}
+            {issue.comments.length === 0 && <li className="text-slate-500">Nema komentara.</li>}
           </ul>
           <form action={commentAction} className="mt-3 flex gap-2">
             <input type="hidden" name="issueId" value={issue.id} />

@@ -95,10 +95,10 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
             <div className="text-sm">
               <div className="text-lg font-semibold text-slate-900">{partyDisplayName(holders.president.party)}</div>
               <div className="mt-1 text-slate-500">Mandat od {formatDate(holders.president.validFrom)}</div>
-              {holders.president.decisionRef && <div className="text-xs text-slate-400">Osnov: {holders.president.decisionRef}</div>}
+              {holders.president.decisionRef && <div className="text-xs text-slate-500">Osnov: {holders.president.decisionRef}</div>}
             </div>
           ) : (
-            <p className="text-sm text-slate-400">Nije evidentiran predsjednik.</p>
+            <p className="text-sm text-slate-500">Nije evidentiran predsjednik.</p>
           )}
         </Card>
         <Card title="Računovođa">
@@ -106,10 +106,10 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
             <div className="text-sm">
               <div className="text-lg font-semibold text-slate-900">{partyDisplayName(holders.accountant.party)}</div>
               <div className="mt-1 text-slate-500">Angažman od {formatDate(holders.accountant.validFrom)}</div>
-              {holders.accountant.decisionRef && <div className="text-xs text-slate-400">Osnov: {holders.accountant.decisionRef}</div>}
+              {holders.accountant.decisionRef && <div className="text-xs text-slate-500">Osnov: {holders.accountant.decisionRef}</div>}
             </div>
           ) : (
-            <p className="text-sm text-slate-400">Nije evidentiran računovođa.</p>
+            <p className="text-sm text-slate-500">Nije evidentiran računovođa.</p>
           )}
         </Card>
       </div>
