@@ -212,7 +212,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
                   <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
                 </Field>
               </div>
-              <div className="flex items-end"><SubmitBtn variant="danger">Evidentiraj prenos</SubmitBtn></div>
+              <div className="flex items-end"><SubmitBtn variant="tonal">Evidentiraj prenos</SubmitBtn></div>
             </form>
           </Card>
           <Card title="Evidentiraj stanara / zakupca">

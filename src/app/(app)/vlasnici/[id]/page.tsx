@@ -296,7 +296,7 @@ export default async function PartyDetailPage({
                 <Field label="Razlog opoziva (opciono)">
                   <input name="reason" className={inputCls} />
                 </Field>
-                <SubmitBtn variant="danger">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
+                <SubmitBtn variant="caution">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
               </form>
             )}
           </div>

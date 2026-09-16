@@ -196,14 +196,14 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
           )}
           {isPresident && !issue.isEmergency && ["REPORTED", "TRIAGED", "AUTHORIZATION_REQUIRED"].includes(issue.status) && (
             <details className="group mt-3">
-              <ToggleBtn variant="danger">Hitna intervencija (preskače odobrenje)</ToggleBtn>
+              <ToggleBtn variant="caution">Hitna intervencija (preskače odobrenje)</ToggleBtn>
               <form action={emergencyAction} className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input type="hidden" name="issueId" value={issue.id} />
                 <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
                 <Field label="Odobrio (ime)"><input name="authorizedBy" required className={inputCls} /></Field>
                 <Field label="Osnov ovlašćenja"><input name="authority" required className={inputCls} placeholder="čl. ugovora/odluke..." /></Field>
                 <Field label="Procjena troška (KM)"><input name="estimatedCost" className={inputCls} /></Field>
-                <div className="sm:col-span-2"><SubmitBtn variant="danger">Označi kao hitno i odobri</SubmitBtn></div>
+                <div className="sm:col-span-2"><SubmitBtn variant="caution">Označi kao hitno i odobri</SubmitBtn></div>
               </form>
             </details>
           )}

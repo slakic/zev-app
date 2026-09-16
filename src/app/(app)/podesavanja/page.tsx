@@ -176,7 +176,7 @@ export default async function SettingsPage({
                   <Field label="Razlog opoziva (opciono)">
                     <input name="reason" className={inputCls} />
                   </Field>
-                  <SubmitBtn variant="danger">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
+                  <SubmitBtn variant="caution">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
                 </form>
               )}
             </div>
@@ -253,9 +253,14 @@ export default async function SettingsPage({
         {isManagement && (
           <Card title="Napomena o integracijama">
             <p className="text-sm text-slate-600">
-              E-mail i Viber rade preko <b>mock</b> provajdera: poruke se evidentiraju u
-              „Poslate poruke” sa simuliranim statusima isporuke. Konfiguracija stvarnih
-              provajdera opisana je u <code className="rounded bg-slate-100 px-1">.env.example</code> i README.
+              {process.env.EMAIL_PROVIDER === "mailjet" ? (
+                <>E-mail se šalje preko <b>Mailjet</b>-a; Viber trenutno radi preko <b>mock</b> provajdera.</>
+              ) : (
+                <>E-mail i Viber trenutno rade preko <b>mock</b> provajdera.</>
+              )}{" "}
+              Poruke se evidentiraju u „Poslate poruke” sa (simuliranim, za mock provajder)
+              statusima isporuke. Konfiguracija stvarnih provajdera opisana je u{" "}
+              <code className="rounded bg-slate-100 px-1">.env.example</code> i README.
               Viber bot može slati poruke korisnicima koji su se pretplatili na bota —
               automatsko objavljivanje u proizvoljne privatne grupe nije podržano zvaničnim API-jem.
             </p>

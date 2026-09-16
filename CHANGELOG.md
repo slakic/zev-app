@@ -43,6 +43,46 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.14.0] - 2026-09-16
+
+### Izmijenjeno
+
+- **Faza 1 plana UI/UX redizajna** (`Plans/ui-ux-redesign-plan.md`) — hijerarhija
+  dugmadi. **Pažnja: mijenja se boja poznatih dugmadi u produkciji** — ko je
+  navikao da traži crveno dugme na nekim mjestima, sada će ga naći u drugoj
+  boji (obrazloženje ispod).
+  - Sistem dugmadi proširen sa 3 na 6 težina (`ui.tsx`, `btnVariantCls` sada
+    izvezen): pored postojećih `primary`/`secondary`/`danger`, dodati `tonal`
+    (plava, tiha — podržavajuće radnje u kartici), `ghost` (bez pozadine —
+    radnje u redu tabele) i `caution` (jantar — ozbiljno, ali ne uništavanje
+    podataka).
+  - **Reklasifikovano svih 13 dosadašnjih `danger` (puno crvenih) dugmadi** po
+    tome koliko su zaista nepovratna: 3 ostaju puno crvena jer poništavaju
+    novac ili gase pristup (Storniraj fakturu/uplatu, Suspenduj ZEV — i dalje
+    bez izmjene, iza potvrde dolazi u Fazi 2); 4 prelaze na jantar/`caution`
+    (Povuci saglasnost za e-glasanje — na dva mjesta, Zatvori glasanje i
+    utvrdi rezultat, Kreiraj novu verziju prijedloga, Hitna intervencija);
+    3 prelaze na tihu plavu/`tonal` jer ništa ne uništavaju, samo dodaju trag
+    (Evidentiraj ispravku glasa, Kreiraj korektivnu fakturu, Evidentiraj
+    prenos vlasništva); „Okončaj mandat" u tabeli upravnog odbora prelazi na
+    `ghost` (više nije crveno u svakom redu tabele).
+  - Redovi tabela: „ponovo izdaj"/„opozovi" (glasački tokeni) i „Uđi u ZEV"
+    (super admin) prelaze sa golog teksta bez tap targeta na `ghost` dugmad
+    sa punim dodirnim ciljem.
+  - 6 ručno pisanih dugmadi (`izvjestaji`, `aktivnosti`, `admin/aktivnosti`,
+    `pdf-statement-import`) i 3 ručno pisana polja (`izvjestaji`, `organi`)
+    zamijenjeni dijeljenim `SubmitBtn`/`inputCls` primitivima — ista boja i
+    ponašanje kao svuda drugo, bez duplirane definicije stila.
+  - Usput ispravljena napomena na `/podesavanja` koja je tvrdila da e-mail
+    uvijek ide preko mock provajdera — sada tačno odražava da li je
+    `EMAIL_PROVIDER=mailjet` podešen.
+  - Bez izmjene rasporeda/teksta radnji (osim gore navedene napomene); samo
+    boja/težina dugmadi. Provjereno uživo na 1440px i 375px na šest ključnih
+    stranica (`/`, `/zgrade`, `/fakture`, `/skupstina/prijedlog/[id]`,
+    `/podesavanja`, `/login`) plus `/organi` i `/fakture/[id]`, bez
+    regresija. 247/247 testova prolazi (nepromijenjeno — prezentaciona
+    izmjena).
+
 ## [2.13.0] - 2026-09-16
 
 ### Izmijenjeno

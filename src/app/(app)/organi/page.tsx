@@ -147,10 +147,10 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
               <Td className="text-xs text-slate-500">{m.decisionRef ?? "—"}</Td>
               <Td>
                 {isPresident && (
-                  <form action={endBoardMemberAction} className="flex items-center gap-1">
+                  <form action={endBoardMemberAction} className="flex flex-wrap items-center gap-2">
                     <input type="hidden" name="termId" value={m.id} />
-                    <input type="date" name="validTo" className="rounded border border-slate-300 px-1 py-0.5 text-xs" />
-                    <SubmitBtn variant="danger">Okončaj mandat</SubmitBtn>
+                    <input type="date" name="validTo" className={`${inputCls} w-36 py-1 text-xs`} />
+                    <SubmitBtn variant="ghost">Okončaj mandat</SubmitBtn>
                   </form>
                 )}
               </Td>

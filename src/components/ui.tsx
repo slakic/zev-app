@@ -125,18 +125,31 @@ export function Td({ children, right, className }: { children: ReactNode; right?
 
 // py-2.5 + a 44px floor below md keeps every button a real touch target (WCAG 2.5.5) —
 // the old py-1.5 measured ~30px tall (Plans/ui-ux-redesign-plan.md §3.7, A2).
-const btnBase =
+export const btnBase =
   "inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium " +
   "max-md:min-h-[44px] transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 " +
   "focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50";
 
-const btnVariantCls: Record<string, string> = {
+// Five weights of loudness, not three (Plans/ui-ux-redesign-plan.md §3.6): a page author who
+// wants "this is serious" no longer has only `danger` — full red bg-red-600 — to reach for.
+// `caution` takes over most of what used to be `danger`; the plain-red `danger` weight is now
+// reserved for irreversible destruction or undoing money/rights, and always behind a confirm
+// step (Faza 2). `tonal` is the new default for supporting actions inside a card ("Sačuvaj",
+// "Dodaj stavku") — the single biggest source of calming the page down. `ghost` is for
+// row-level text actions in tables, replacing bare `<button className="text-xs ...">` calls
+// that had no real tap target.
+export const btnVariantCls: Record<string, string> = {
   primary: "bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:shadow focus-visible:ring-blue-500",
+  tonal: "bg-blue-50 text-blue-700 hover:bg-blue-100 focus-visible:ring-blue-500",
   secondary: "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-400",
+  ghost: "text-slate-600 hover:bg-slate-100 focus-visible:ring-slate-400",
+  caution: "border border-amber-600/40 bg-amber-50 text-amber-900 hover:bg-amber-100 focus-visible:ring-amber-500",
   danger: "bg-red-600 text-white shadow-sm hover:bg-red-700 hover:shadow focus-visible:ring-red-500",
 };
 
-export function BtnLink({ href, children, variant }: { href: string; children: ReactNode; variant?: "primary" | "secondary" }) {
+type BtnVariant = "primary" | "tonal" | "secondary" | "ghost" | "caution" | "danger";
+
+export function BtnLink({ href, children, variant }: { href: string; children: ReactNode; variant?: BtnVariant }) {
   return (
     <Link href={href} className={`${btnBase} ${btnVariantCls[variant ?? "secondary"]}`}>
       {children}
@@ -144,7 +157,7 @@ export function BtnLink({ href, children, variant }: { href: string; children: R
   );
 }
 
-export function SubmitBtn({ children, variant, name, value }: { children: ReactNode; variant?: "primary" | "danger" | "secondary"; name?: string; value?: string }) {
+export function SubmitBtn({ children, variant, name, value }: { children: ReactNode; variant?: BtnVariant; name?: string; value?: string }) {
   return (
     <button type="submit" name={name} value={value} className={`${btnBase} ${btnVariantCls[variant ?? "primary"]}`}>
       {children}
@@ -160,7 +173,7 @@ export function SubmitBtn({ children, variant, name, value }: { children: ReactN
  *  `<details>/<summary>` still does the actual show/hide. Wrap the section as
  *  `<details className="group">...<ToggleBtn>Label</ToggleBtn>...form...</details>` — the
  *  `group` class is what lets the chevron rotate via `group-open:` when the parent opens. */
-export function ToggleBtn({ children, variant }: { children: ReactNode; variant?: "primary" | "secondary" | "danger" }) {
+export function ToggleBtn({ children, variant }: { children: ReactNode; variant?: BtnVariant }) {
   return (
     <summary
       className={`${btnBase} ${btnVariantCls[variant ?? "secondary"]} cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden`}

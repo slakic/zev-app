@@ -4,7 +4,7 @@ import { reserveFundBalance } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
 import { formatDate, endOfDay } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, BtnLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
 function todayIso(): string {
@@ -65,9 +65,9 @@ export default async function ReportsPage({
         actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="primary">Izvoz svih izvještaja (PDF)</BtnLink>}
       />
       <form className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
-        <label className="text-sm">Od <input type="date" name="from" defaultValue={sp.from} className="ml-1 rounded border border-slate-300 px-2 py-1" /></label>
-        <label className="text-sm">Do <input type="date" name="to" defaultValue={sp.to} className="ml-1 rounded border border-slate-300 px-2 py-1" /></label>
-        <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Primijeni period</button>
+        <label className="text-sm">Od <input type="date" name="from" defaultValue={sp.from} className={`${inputCls} ml-1 w-36`} /></label>
+        <label className="text-sm">Do <input type="date" name="to" defaultValue={sp.to} className={`${inputCls} ml-1 w-36`} /></label>
+        <SubmitBtn variant="tonal">Primijeni period</SubmitBtn>
       </form>
 
       <Card
@@ -76,7 +76,7 @@ export default async function ReportsPage({
         <form className="mb-3 flex flex-wrap items-end gap-3">
           <label className="text-sm">
             Stanje na dan{" "}
-            <input type="date" name="asOf" defaultValue={asOfStr} className="ml-1 rounded border border-slate-300 px-2 py-1" />
+            <input type="date" name="asOf" defaultValue={asOfStr} className={`${inputCls} ml-1 w-36`} />
           </label>
           <OwnerMultiSelect
             name="owner"
@@ -85,7 +85,7 @@ export default async function ReportsPage({
             defaultSelected={ownerIds}
             helperText="Prazan izbor (ili dugme „Obriši izbor”) = svi vlasnici."
           />
-          <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Prikaži</button>
+          <SubmitBtn variant="tonal">Prikaži</SubmitBtn>
         </form>
         <p className="mb-2 text-xs text-slate-500">
           <strong>Prethodni saldo</strong> = ukupno stanje vlasnika prije izabranog dana. <strong>Zaduženo / Plaćeno /

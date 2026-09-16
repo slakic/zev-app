@@ -9,7 +9,7 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { parsePdfPreviewAction, commitPdfImportAction } from "@/server/actions/bankPdfImport";
 import type { PdfImportPreview, PdfPreviewRow } from "@/server/services/payments";
-import { inputCls } from "@/components/ui";
+import { inputCls, btnBase, btnVariantCls } from "@/components/ui";
 
 type Account = { id: string; name: string };
 
@@ -128,7 +128,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
             <button
               type="submit"
               disabled={pending}
-              className="rounded-full border border-transparent bg-blue-600 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow active:scale-[0.97] disabled:opacity-50"
+              className={`${btnBase} ${btnVariantCls.primary}`}
             >
               {pending ? "Čitam izvod…" : "Učitaj i pregledaj"}
             </button>
@@ -257,7 +257,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
               type="button"
               onClick={handleCommit}
               disabled={pending || includedCount === 0}
-              className="rounded-full border border-transparent bg-blue-600 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow active:scale-[0.97] disabled:opacity-50"
+              className={`${btnBase} ${btnVariantCls.primary}`}
             >
               {pending ? "Uvozim…" : `Uvezi (${includedCount})`}
             </button>

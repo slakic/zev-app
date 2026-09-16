@@ -3,7 +3,7 @@ import { listAllActivity, listActivityActorsForZev } from "@/server/services/act
 import { listTenants } from "@/server/services/admin";
 import { ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Pagination } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Pagination, SubmitBtn } from "@/components/ui";
 
 function daysAgoIso(n: number): string {
   const d = new Date();
@@ -120,7 +120,7 @@ export default async function AdminActivityPage({
             ))}
           </select>
         </label>
-        <button className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white">Primijeni</button>
+        <SubmitBtn variant="tonal">Primijeni</SubmitBtn>
       </form>
 
       <Card>

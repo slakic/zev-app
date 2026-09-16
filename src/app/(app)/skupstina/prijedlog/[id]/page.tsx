@@ -163,7 +163,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
             ) : p.status === "VOTING_OPEN" ? (
               <form action={closeVotingAction}>
                 <input type="hidden" name="proposalId" value={p.id} />
-                <SubmitBtn variant="danger">Zatvori glasanje i utvrdi rezultat</SubmitBtn>
+                <SubmitBtn variant="caution">Zatvori glasanje i utvrdi rezultat</SubmitBtn>
               </form>
             ) : undefined
           ) : undefined
@@ -225,18 +225,18 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                     <Td>{vote ? `${tEnum("vote", vote.choice)} (${tEnum("vote", vote.channel)})` : "—"}</Td>
                     <Td>
                       {isPresident && lastToken && lastToken.status === "ACTIVE" && (
-                        <div className="flex gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                           <form action={tokenAction}>
                             <input type="hidden" name="proposalId" value={p.id} />
                             <input type="hidden" name="tokenId" value={lastToken.id} />
                             <input type="hidden" name="op" value="reissue" />
-                            <button className="text-xs text-blue-700 hover:underline">ponovo izdaj</button>
+                            <SubmitBtn variant="ghost">ponovo izdaj</SubmitBtn>
                           </form>
                           <form action={tokenAction}>
                             <input type="hidden" name="proposalId" value={p.id} />
                             <input type="hidden" name="tokenId" value={lastToken.id} />
                             <input type="hidden" name="op" value="revoke" />
-                            <button className="text-xs text-red-700 hover:underline">opozovi</button>
+                            <SubmitBtn variant="ghost">opozovi</SubmitBtn>
                           </form>
                         </div>
                       )}
@@ -292,7 +292,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
               <input type="hidden" name="proposalId" value={p.id} />
               <Field label="Novi tekst prijedloga"><textarea name="text" rows={3} defaultValue={p.text} className={inputCls} /></Field>
               <Field label="Razlog izmjene"><input name="reason" required className={inputCls} /></Field>
-              <SubmitBtn variant="danger">Kreiraj novu verziju</SubmitBtn>
+              <SubmitBtn variant="caution">Kreiraj novu verziju</SubmitBtn>
             </form>
           </Card>
         </div>
@@ -328,7 +328,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
               </Field>
               <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
               <Field label="Osnov / ovlašćenje"><input name="authority" required className={inputCls} /></Field>
-              <div className="sm:col-span-2"><SubmitBtn variant="danger">Evidentiraj ispravku</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn variant="tonal">Evidentiraj ispravku</SubmitBtn></div>
             </form>
           </Card>
         </div>

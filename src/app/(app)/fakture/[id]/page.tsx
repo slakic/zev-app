@@ -130,7 +130,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
               <div className="sm:col-span-2">
                 <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
               </div>
-              <div className="sm:col-span-2"><SubmitBtn variant="danger">Kreiraj korektivnu fakturu</SubmitBtn></div>
+              <div className="sm:col-span-2"><SubmitBtn variant="tonal">Kreiraj korektivnu fakturu</SubmitBtn></div>
             </form>
           </Card>
           <Card title="Storniranje">
