@@ -147,7 +147,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
           {plan.items.map((i) => (
             <tr key={i.id}>
               <Td>{i.name}</Td>
-              <Td>{i.type === "INCOME" ? "Prihod" : i.type === "RECURRING_EXPENSE" ? "Redovni trošak" : i.type === "MAINTENANCE_EXPENSE" ? "Održavanje" : i.type === "PROJECT" ? "Projekat" : i.type === "RESERVE_ALLOCATION" ? "Fond održavanja" : i.type === "CONTINGENCY" ? "Rezerva" : i.type === "PREVENTIVE_MAINTENANCE" ? "Preventivno održavanje" : "Pregled/inspekcija"}</Td>
+              <Td>{tEnum("planItemType", i.type)}</Td>
               <Td>{i.month ?? "—"}</Td>
               <Td>{tEnum("scope", i.scopeType)}</Td>
               <Td>{formatMoney(i.plannedAmount.toString(), "")}</Td>

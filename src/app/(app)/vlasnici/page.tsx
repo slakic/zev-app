@@ -180,81 +180,90 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
       {isPresident && (
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Dodaj vlasnički udio">
-            <form action={addStakeAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Jedinica">
-                <select name="unitId" className={inputCls}>
-                  {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
-                </select>
-              </Field>
-              <Field label="Vlasnik">
-                <select name="ownerId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Udio na jedinici (%)"><input name="sharePercent" required className={inputCls} placeholder="100 ili 50" /></Field>
-              <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
-              <div className="sm:col-span-2">
-                <Field label="Dokaz o vlasništvu" hint="Obavezno — ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
-                  <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
+            <details className="group">
+              <ToggleBtn>Dodaj udio</ToggleBtn>
+              <form action={addStakeAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="Jedinica">
+                  <select name="unitId" className={inputCls}>
+                    {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
+                  </select>
                 </Field>
-              </div>
-              <div className="sm:col-span-2"><SubmitBtn>Dodaj udio</SubmitBtn></div>
-            </form>
+                <Field label="Vlasnik">
+                  <select name="ownerId" className={inputCls}>
+                    {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                  </select>
+                </Field>
+                <Field label="Udio na jedinici (%)"><input name="sharePercent" required className={inputCls} placeholder="100 ili 50" /></Field>
+                <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
+                <div className="sm:col-span-2">
+                  <Field label="Dokaz o vlasništvu" hint="Obavezno — ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
+                    <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
+                  </Field>
+                </div>
+                <div className="sm:col-span-2"><SubmitBtn>Dodaj udio</SubmitBtn></div>
+              </form>
+            </details>
           </Card>
           <Card title="Promjena vlasništva (promet jedinice)">
             <p className="mb-3 text-xs text-slate-500">
               Istorijski dug ostaje na prethodnom vlasniku; prenos duga moguć je samo izričitom korekcijom salda.
             </p>
-            <form action={transferAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Jedinica">
-                <select name="unitId" className={inputCls}>
-                  {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
-                </select>
-              </Field>
-              <Field label="Dosadašnji vlasnik">
-                <select name="fromOwnerId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Novi vlasnik">
-                <select name="toOwnerId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Datum prenosa"><input name="effectiveDate" type="date" required className={inputCls} /></Field>
-              <Field label="Napomena / osnov"><input name="note" className={inputCls} placeholder="kupoprodajni ugovor br..." /></Field>
-              <div className="sm:col-span-2">
-                <Field label="Dokaz o vlasništvu" hint="Obavezno — kupoprodajni ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
-                  <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
+            <details className="group">
+              <ToggleBtn>Evidentiraj prenos</ToggleBtn>
+              <form action={transferAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="Jedinica">
+                  <select name="unitId" className={inputCls}>
+                    {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
+                  </select>
                 </Field>
-              </div>
-              <div className="flex items-end"><SubmitBtn variant="tonal">Evidentiraj prenos</SubmitBtn></div>
-            </form>
+                <Field label="Dosadašnji vlasnik">
+                  <select name="fromOwnerId" className={inputCls}>
+                    {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                  </select>
+                </Field>
+                <Field label="Novi vlasnik">
+                  <select name="toOwnerId" className={inputCls}>
+                    {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                  </select>
+                </Field>
+                <Field label="Datum prenosa"><input name="effectiveDate" type="date" required className={inputCls} /></Field>
+                <Field label="Napomena / osnov"><input name="note" className={inputCls} placeholder="kupoprodajni ugovor br..." /></Field>
+                <div className="sm:col-span-2">
+                  <Field label="Dokaz o vlasništvu" hint="Obavezno — kupoprodajni ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
+                    <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
+                  </Field>
+                </div>
+                <div className="flex items-end"><SubmitBtn variant="tonal">Evidentiraj prenos</SubmitBtn></div>
+              </form>
+            </details>
           </Card>
           <Card title="Evidentiraj stanara / zakupca">
             <p className="mb-3 text-xs text-slate-500">Stanar ili zakupac NE stiče pravo glasa stanovanjem.</p>
-            <form action={addOccupancyAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Jedinica">
-                <select name="unitId" className={inputCls}>
-                  {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
-                </select>
-              </Field>
-              <Field label="Lice">
-                <select name="partyId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Vrsta">
-                <select name="type" className={inputCls}>
-                  <option value="OWNER_OCCUPANT">Vlasnik stanuje</option>
-                  <option value="TENANT">Zakupac</option>
-                  <option value="OTHER_OCCUPANT">Korisnik</option>
-                </select>
-              </Field>
-              <Field label="Broj lica u domaćinstvu"><input name="headcount" type="number" defaultValue={1} className={inputCls} /></Field>
-              <Field label="Od datuma"><input name="validFrom" type="date" required className={inputCls} /></Field>
-              <div className="flex items-end"><SubmitBtn>Evidentiraj</SubmitBtn></div>
-            </form>
+            <details className="group">
+              <ToggleBtn>Evidentiraj</ToggleBtn>
+              <form action={addOccupancyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="Jedinica">
+                  <select name="unitId" className={inputCls}>
+                    {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
+                  </select>
+                </Field>
+                <Field label="Lice">
+                  <select name="partyId" className={inputCls}>
+                    {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                  </select>
+                </Field>
+                <Field label="Vrsta">
+                  <select name="type" className={inputCls}>
+                    <option value="OWNER_OCCUPANT">Vlasnik stanuje</option>
+                    <option value="TENANT">Zakupac</option>
+                    <option value="OTHER_OCCUPANT">Korisnik</option>
+                  </select>
+                </Field>
+                <Field label="Broj lica u domaćinstvu"><input name="headcount" type="number" defaultValue={1} className={inputCls} /></Field>
+                <Field label="Od datuma"><input name="validFrom" type="date" required className={inputCls} /></Field>
+                <div className="flex items-end"><SubmitBtn>Evidentiraj</SubmitBtn></div>
+              </form>
+            </details>
           </Card>
           <Card title="Punomoći">
             <Table id="proxies-table" caption="Punomoći" headers={proxyHeaders} empty={proxies.length === 0}>
@@ -268,28 +277,31 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
                 </tr>
               ))}
             </Table>
-            <form action={grantProxyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Davalac (vlasnik)">
-                <select name="grantorId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Punomoćnik">
-                <select name="holderId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Obim">
-                <select name="scope" className={inputCls}>
-                  <option value="ALL">Sve sjednice</option>
-                  <option value="MEETING">Jedna sjednica</option>
-                </select>
-              </Field>
-              <Field label="Referenca dokumenta"><input name="documentRef" className={inputCls} placeholder="ovjerena punomoć br..." /></Field>
-              <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
-              <Field label="Važi do (opciono)"><input name="validTo" type="date" className={inputCls} /></Field>
-              <div className="sm:col-span-2"><SubmitBtn>Evidentiraj punomoć</SubmitBtn></div>
-            </form>
+            <details className="group mt-3">
+              <ToggleBtn>Evidentiraj punomoć</ToggleBtn>
+              <form action={grantProxyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="Davalac (vlasnik)">
+                  <select name="grantorId" className={inputCls}>
+                    {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                  </select>
+                </Field>
+                <Field label="Punomoćnik">
+                  <select name="holderId" className={inputCls}>
+                    {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                  </select>
+                </Field>
+                <Field label="Obim">
+                  <select name="scope" className={inputCls}>
+                    <option value="ALL">Sve sjednice</option>
+                    <option value="MEETING">Jedna sjednica</option>
+                  </select>
+                </Field>
+                <Field label="Referenca dokumenta"><input name="documentRef" className={inputCls} placeholder="ovjerena punomoć br..." /></Field>
+                <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
+                <Field label="Važi do (opciono)"><input name="validTo" type="date" className={inputCls} /></Field>
+                <div className="sm:col-span-2"><SubmitBtn>Evidentiraj punomoć</SubmitBtn></div>
+              </form>
+            </details>
           </Card>
         </div>
       )}

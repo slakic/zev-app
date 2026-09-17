@@ -203,6 +203,16 @@ const srLatn = {
     MAINTENANCE: "Plan održavanja",
     BUDGET: "Finansijski plan",
   },
+  planItemType: {
+    INCOME: "Prihod",
+    RECURRING_EXPENSE: "Redovni trošak",
+    MAINTENANCE_EXPENSE: "Održavanje",
+    PROJECT: "Projekat",
+    RESERVE_ALLOCATION: "Fond održavanja",
+    CONTINGENCY: "Rezerva",
+    PREVENTIVE_MAINTENANCE: "Preventivno održavanje",
+    INSPECTION: "Pregled/inspekcija",
+  },
   issueStatus: {
     REPORTED: "Prijavljen",
     TRIAGED: "Trijaža obavljena",

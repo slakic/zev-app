@@ -43,6 +43,45 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.3] - 2026-09-17
+
+### Izmijenjeno
+
+- **Faza 3d plana UI/UX redizajna — raspored, sažeci, progresivno otkrivanje
+  (§4.1, §4.2).**
+  - **Rasporedna ispravka:** tabele sa >5 kolona više ne dijele dvokolonski
+    grid sa manjom karticom pored sebe (uzrok N6-tipa horizontalnog skrola na
+    desktopu i pored praznog prostora). `/fakture` „Stavke naknada" (7 kolona)
+    sada je `lg:col-span-2` u trokolonskom gridu — isti obrazac kao već
+    ispravan `admin/page.tsx`. `/izvjestaji` „Stanje računa i tok novca" i
+    „Neplaćene fakture vlasnika" (6 kolona) izlaze iz dvokolonskog grida u
+    puni red.
+  - **Sažetak iznad tabele (H6):** `/zgrade` posebni dijelovi dobijaju liniju
+    iznad tabele — „8 jedinica · 429,80 m² · **ukupan udio 100,00 %**" — sa
+    amber tonom kad zbir vlasničkih udjela odstupa od 100%, po uzoru na
+    `izvjestaji`'s postojeći obrazac zbira u naslovu kartice.
+  - **Role-based zaglavlje `/fakture`:** vlasnik (ne uprava) vidi listu bez
+    kolone „Dužnik" (očigledno — to je uvijek on) i sa skraćenom „Jedinica"
+    (samo oznaka, bez ponavljanja naziva zgrade).
+  - **Progresivno otkrivanje** (`ToggleBtn`/`<details>`) dodano na 11 formi za
+    dodavanje koje su dosad bile vizuelno jednako teške kao lista iznad njih:
+    `/zgrade` (4 — zgrada, ulaz, jedinica, zajednički dio), `/organi` (2 —
+    postavi predsjednika/računovođu, dodaj člana odbora), `/vlasnici` (4 —
+    udio, prenos vlasništva, stanar/zakupac, punomoć), `/podesavanja` (1 —
+    novi račun). Namjerno izostavljeno na `/skupstina/[id]` (dnevni red,
+    prisustvo) — oba su već jednoredni obrasci gdje wrap iza klika dodaje
+    trenje bez smanjenja gustine, posebno za evidentiranje prisustva „uživo".
+  - **`<fieldset>` grupisanje** za dvije najveće forme: `/fakture` stavka
+    naknade (10 polja → Osnovno / Obračun / Dospijeće i prikaz) i `/zgrade`
+    nova jedinica (9 polja → Lokacija / Tip i mjere / Obračun).
+  - **Sitna ispravka:** `/planovi/[id]` stavka plana koristila je ručni
+    lanac ternarnih izraza za naziv vrste stavke umjesto rječnika; sada ide
+    kroz novu `tEnum("planItemType", …)` grupu u `sr-Latn.ts` (isti tekst,
+    jedan izvor istine).
+  - 247/247 testova prolazi; provjereno na 1440px i 375px, uključujući
+    prijavu kao vlasnik (role-based `/fakture` zaglavlje) i kao predsjednik
+    (svi ostali ekrani).
+
 ## [2.19.2] - 2026-09-17
 
 ### Izmijenjeno

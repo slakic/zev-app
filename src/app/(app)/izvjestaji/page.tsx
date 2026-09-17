@@ -187,7 +187,7 @@ export default async function ReportsPage({
       </Card>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card title="Stanje računa i tok novca">
+        <Card title="Stanje računa i tok novca" className="lg:col-span-2">
           <Table id="cashflow-table" caption="Stanje računa i tok novca" headers={cashFlowHeaders} empty={cashFlow.length === 0}>
             {cashFlow.map((r) => (
               <tr key={r.accountId}>
@@ -216,7 +216,7 @@ export default async function ReportsPage({
           <div className="mt-2"><BtnLink href={`/api/izvjestaji/csv${csvQ}&type=incexp`} variant="secondary">Izvoz CSV</BtnLink></div>
         </Card>
 
-        <Card title={`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`}>
+        <Card title={`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`} className="lg:col-span-2">
           <Table id="receivables-table" caption="Neplaćene fakture vlasnika" headers={receivablesHeaders} empty={receivables.rows.length === 0}>
             {receivables.rows.map((r) => (
               <tr key={r.invoiceId}>

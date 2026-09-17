@@ -26,16 +26,18 @@ const batchHeaders: ColumnSpec[] = [
   { label: "Kreirana" },
 ];
 
-const invoiceHeaders: ColumnSpec[] = [
-  { label: "Broj", priority: "primary", nowrap: true },
-  { label: "Jedinica" },
-  { label: "Dužnik" },
-  { label: "Period", priority: "detail" },
-  { label: "Dospijeće" },
-  { label: "Iznos", align: "right", nowrap: true },
-  { label: "Plaćeno", align: "right", nowrap: true },
-  { label: "Status" },
-];
+function invoiceHeadersFor(management: boolean): ColumnSpec[] {
+  return [
+    { label: "Broj", priority: "primary", nowrap: true },
+    { label: "Jedinica" },
+    ...(management ? [{ label: "Dužnik" } as ColumnSpec] : []),
+    { label: "Period", priority: "detail" },
+    { label: "Dospijeće" },
+    { label: "Iznos", align: "right", nowrap: true },
+    { label: "Plaćeno", align: "right", nowrap: true },
+    { label: "Status" },
+  ];
+}
 import { ChargeItemRow } from "@/components/charge-item-row";
 
 async function addChargeItemAction(formData: FormData) {
@@ -113,8 +115,8 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       <Flash err={err} msg={msg} />
 
       {management && (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Card title="Stavke naknada (konfigurabilne)">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <Card title="Stavke naknada (konfigurabilne)" className="lg:col-span-2">
             <Table id="charge-items-table" caption="Stavke naknada" headers={chargeItemHeaders} empty={chargeItems.length === 0}>
               {chargeItems.map((c) => (
                 <ChargeItemRow
@@ -140,55 +142,64 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
             </Table>
             <details className="group mt-3">
               <ToggleBtn>Nova stavka naknade</ToggleBtn>
-              <form action={addChargeItemAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
-                <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno održavanje" /></Field>
-                <Field label="Metoda obračuna">
-                  <select name="method" className={inputCls}>
-                    <option value="FIXED_PER_UNIT">Fiksno po jedinici</option>
-                    <option value="PER_AREA">Po m²</option>
-                    <option value="PER_OWNERSHIP_SHARE">Po vlasničkom udjelu</option>
-                    <option value="PER_OCCUPANT">Po broju korisnika</option>
-                    <option value="EQUAL_SPLIT">Jednaka raspodjela</option>
-                    <option value="UNIT_TYPE_COEFFICIENT">Koeficijent tipa</option>
-                    <option value="CONSUMPTION">Po potrošnji</option>
-                    <option value="CUSTOM_WEIGHTS">Prilagođeni ponderi</option>
-                    <option value="MANUAL">Ručni iznos</option>
-                  </select>
-                </Field>
-                <Field label="Stopa / iznos (KM)" hint="Za raspodjele: ukupan iznos; za m²/udio/korisnika: cijena po jedinici mjere.">
-                  <input name="rate" className={inputCls} placeholder="0.35" />
-                </Field>
-                <Field label="Obuhvat">
-                  <select name="scopeType" className={inputCls}>
-                    <option value="ZEV">Cijela ZEV</option>
-                    <option value="BUILDING">Zgrada</option>
-                  </select>
-                </Field>
-                <Field label="Zgrada (ako obuhvat = zgrada)">
-                  <select name="buildingId" className={inputCls}>
-                    <option value="">—</option>
-                    {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                  </select>
-                </Field>
-                <Field label="Važi od"><input name="effectiveFrom" type="date" required className={inputCls} /></Field>
-                <Field label="Frekvencija">
-                  <select name="frequency" className={inputCls}>
-                    <option value="MONTHLY">Mjesečno</option>
-                    <option value="ANNUAL">Godišnje</option>
-                    <option value="ONE_TIME">Jednokratno</option>
-                  </select>
-                </Field>
-                <Field label="Dan dospijeća u mjesecu"><input name="dueDayOfMonth" type="number" defaultValue={15} className={inputCls} /></Field>
-                <Field label="Zaokruživanje">
-                  <select name="rounding" className={inputCls}>
-                    <option value="HALF_UP_2">Polovina naviše (2 dec.)</option>
-                    <option value="UP_2">Naviše</option>
-                    <option value="DOWN_2">Naniže</option>
-                  </select>
-                </Field>
-                <Field label="Redoslijed na fakturi"><input name="displayOrder" type="number" defaultValue={0} className={inputCls} /></Field>
-                <label className="flex items-center gap-2 pb-2 text-sm"><input type="checkbox" name="isReserveFund" /> Fond održavanja</label>
-                <div className="flex items-end"><SubmitBtn>Sačuvaj stavku</SubmitBtn></div>
+              <form action={addChargeItemAction} className="mt-3 space-y-4">
+                <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Osnovno</legend>
+                  <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno održavanje" /></Field>
+                  <Field label="Metoda obračuna">
+                    <select name="method" className={inputCls}>
+                      <option value="FIXED_PER_UNIT">Fiksno po jedinici</option>
+                      <option value="PER_AREA">Po m²</option>
+                      <option value="PER_OWNERSHIP_SHARE">Po vlasničkom udjelu</option>
+                      <option value="PER_OCCUPANT">Po broju korisnika</option>
+                      <option value="EQUAL_SPLIT">Jednaka raspodjela</option>
+                      <option value="UNIT_TYPE_COEFFICIENT">Koeficijent tipa</option>
+                      <option value="CONSUMPTION">Po potrošnji</option>
+                      <option value="CUSTOM_WEIGHTS">Prilagođeni ponderi</option>
+                      <option value="MANUAL">Ručni iznos</option>
+                    </select>
+                  </Field>
+                  <Field label="Obuhvat">
+                    <select name="scopeType" className={inputCls}>
+                      <option value="ZEV">Cijela ZEV</option>
+                      <option value="BUILDING">Zgrada</option>
+                    </select>
+                  </Field>
+                  <Field label="Zgrada (ako obuhvat = zgrada)">
+                    <select name="buildingId" className={inputCls}>
+                      <option value="">—</option>
+                      {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                    </select>
+                  </Field>
+                </fieldset>
+                <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Obračun</legend>
+                  <Field label="Stopa / iznos (KM)" hint="Za raspodjele: ukupan iznos; za m²/udio/korisnika: cijena po jedinici mjere.">
+                    <input name="rate" className={inputCls} placeholder="0.35" />
+                  </Field>
+                  <Field label="Zaokruživanje">
+                    <select name="rounding" className={inputCls}>
+                      <option value="HALF_UP_2">Polovina naviše (2 dec.)</option>
+                      <option value="UP_2">Naviše</option>
+                      <option value="DOWN_2">Naniže</option>
+                    </select>
+                  </Field>
+                  <Field label="Redoslijed na fakturi"><input name="displayOrder" type="number" defaultValue={0} className={inputCls} /></Field>
+                  <label className="flex items-center gap-2 pb-2 text-sm"><input type="checkbox" name="isReserveFund" /> Fond održavanja</label>
+                </fieldset>
+                <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Dospijeće i prikaz</legend>
+                  <Field label="Važi od"><input name="effectiveFrom" type="date" required className={inputCls} /></Field>
+                  <Field label="Frekvencija">
+                    <select name="frequency" className={inputCls}>
+                      <option value="MONTHLY">Mjesečno</option>
+                      <option value="ANNUAL">Godišnje</option>
+                      <option value="ONE_TIME">Jednokratno</option>
+                    </select>
+                  </Field>
+                  <Field label="Dan dospijeća u mjesecu"><input name="dueDayOfMonth" type="number" defaultValue={15} className={inputCls} /></Field>
+                </fieldset>
+                <div className="flex items-end justify-end"><SubmitBtn>Sačuvaj stavku</SubmitBtn></div>
               </form>
             </details>
           </Card>
@@ -216,15 +227,17 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
 
       <div className="mt-4">
         <Card title={management ? "Sve fakture" : "Moje fakture"}>
-          <Table id="invoices-table" caption={management ? "Sve fakture" : "Moje fakture"} headers={invoiceHeaders} empty={invoices.length === 0}>
+          <Table id="invoices-table" caption={management ? "Sve fakture" : "Moje fakture"} headers={invoiceHeadersFor(management)} empty={invoices.length === 0}>
             {invoices.map((inv) => {
               const paid = invoicePaidAmount(inv);
               const overdue = inv.status === "ISSUED" && inv.dueDate < new Date();
               return (
                 <tr key={inv.id}>
                   <Td><RowLink href={`/fakture/${inv.id}`}>{inv.number}</RowLink></Td>
-                  <Td>{inv.unit.building.name} / {inv.unit.label}</Td>
-                  <Td>{inv.debtor.kind === "PERSON" ? `${inv.debtor.firstName ?? ""} ${inv.debtor.lastName ?? ""}` : inv.debtor.orgName}</Td>
+                  <Td>{management ? `${inv.unit.building.name} / ${inv.unit.label}` : inv.unit.label}</Td>
+                  {management && (
+                    <Td>{inv.debtor.kind === "PERSON" ? `${inv.debtor.firstName ?? ""} ${inv.debtor.lastName ?? ""}` : inv.debtor.orgName}</Td>
+                  )}
                   <Td>{inv.periodLabel ?? "—"}</Td>
                   <Td>{formatDate(inv.dueDate)}</Td>
                   <Td>{formatMoney(inv.total.toString())}</Td>

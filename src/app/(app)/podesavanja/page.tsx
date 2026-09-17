@@ -9,7 +9,7 @@ import { getSettings, setSetting } from "@/server/services/settings";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
 const accountHeaders: ColumnSpec[] = [
   { label: "Naziv" },
@@ -226,20 +226,23 @@ export default async function SettingsPage({
                 </tr>
               ))}
             </Table>
-            <form action={addAccountAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
-              <Field label="Vrsta">
-                <select name="type" className={inputCls}>
-                  <option value="BANK">Bankovni račun</option>
-                  <option value="CASH">Blagajna</option>
-                </select>
-              </Field>
-              <Field label="Broj računa"><input name="iban" className={inputCls} /></Field>
-              <Field label="Banka"><input name="bankName" className={inputCls} /></Field>
-              <Field label="Početno stanje (KM)"><input name="openingBalance" defaultValue="0" className={inputCls} /></Field>
-              <Field label="Datum početnog stanja"><input name="openingDate" type="date" required className={inputCls} /></Field>
-              <div className="sm:col-span-2"><SubmitBtn>Dodaj račun</SubmitBtn></div>
-            </form>
+            <details className="group mt-3">
+              <ToggleBtn>Dodaj račun</ToggleBtn>
+              <form action={addAccountAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
+                <Field label="Vrsta">
+                  <select name="type" className={inputCls}>
+                    <option value="BANK">Bankovni račun</option>
+                    <option value="CASH">Blagajna</option>
+                  </select>
+                </Field>
+                <Field label="Broj računa"><input name="iban" className={inputCls} /></Field>
+                <Field label="Banka"><input name="bankName" className={inputCls} /></Field>
+                <Field label="Početno stanje (KM)"><input name="openingBalance" defaultValue="0" className={inputCls} /></Field>
+                <Field label="Datum početnog stanja"><input name="openingDate" type="date" required className={inputCls} /></Field>
+                <div className="sm:col-span-2"><SubmitBtn>Dodaj račun</SubmitBtn></div>
+              </form>
+            </details>
           </Card>
         )}
 

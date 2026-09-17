@@ -7,7 +7,7 @@ import {
 } from "@/server/services/ownership";
 import { getSettings } from "@/server/services/settings";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
 const boardHeaders: ColumnSpec[] = [
   { label: "Član" },
@@ -130,22 +130,25 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
 
       {isPresident && (
         <Card title="Postavi predsjednika / računovođu">
-          <form action={setOfficerAction} className="grid grid-cols-1 gap-3 md:grid-cols-5 md:items-end">
-            <Field label="Funkcija">
-              <select name="role" className={inputCls}>
-                <option value="PRESIDENT">Predsjednik ZEV</option>
-                <option value="ACCOUNTANT">Računovođa</option>
-              </select>
-            </Field>
-            <Field label="Lice">
-              <select name="partyId" required className={inputCls}>
-                {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-              </select>
-            </Field>
-            <Field label="Mandat od"><input name="validFrom" type="date" required className={inputCls} /></Field>
-            <Field label="Osnov (odluka/ugovor)"><input name="decisionRef" className={inputCls} placeholder="Odluka skupštine ..." /></Field>
-            <SubmitBtn>Postavi</SubmitBtn>
-          </form>
+          <details className="group">
+            <ToggleBtn>Postavi</ToggleBtn>
+            <form action={setOfficerAction} className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-5 md:items-end">
+              <Field label="Funkcija">
+                <select name="role" className={inputCls}>
+                  <option value="PRESIDENT">Predsjednik ZEV</option>
+                  <option value="ACCOUNTANT">Računovođa</option>
+                </select>
+              </Field>
+              <Field label="Lice">
+                <select name="partyId" required className={inputCls}>
+                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                </select>
+              </Field>
+              <Field label="Mandat od"><input name="validFrom" type="date" required className={inputCls} /></Field>
+              <Field label="Osnov (odluka/ugovor)"><input name="decisionRef" className={inputCls} placeholder="Odluka skupštine ..." /></Field>
+              <SubmitBtn>Postavi</SubmitBtn>
+            </form>
+          </details>
           <p className="mt-2 text-xs text-slate-500">
             Postavljanje nove osobe automatski okončava tekući mandat prethodnog nosioca te funkcije na izabrani datum.
           </p>
@@ -175,16 +178,19 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
 
       {isPresident && (
         <Card title="Dodaj člana upravnog odbora">
-          <form action={addBoardMemberAction} className="grid grid-cols-1 gap-3 md:grid-cols-4 md:items-end">
-            <Field label="Lice">
-              <select name="partyId" required className={inputCls}>
-                {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-              </select>
-            </Field>
-            <Field label="Mandat od"><input name="validFrom" type="date" required className={inputCls} /></Field>
-            <Field label="Osnov (odluka skupštine)"><input name="decisionRef" className={inputCls} placeholder="Odluka skupštine ..." /></Field>
-            <SubmitBtn>Dodaj</SubmitBtn>
-          </form>
+          <details className="group">
+            <ToggleBtn>Dodaj člana</ToggleBtn>
+            <form action={addBoardMemberAction} className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-4 md:items-end">
+              <Field label="Lice">
+                <select name="partyId" required className={inputCls}>
+                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                </select>
+              </Field>
+              <Field label="Mandat od"><input name="validFrom" type="date" required className={inputCls} /></Field>
+              <Field label="Osnov (odluka skupštine)"><input name="decisionRef" className={inputCls} placeholder="Odluka skupštine ..." /></Field>
+              <SubmitBtn>Dodaj</SubmitBtn>
+            </form>
+          </details>
         </Card>
       )}
 
