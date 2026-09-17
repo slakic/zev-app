@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listMeetings, createMeeting, listVotingRules, createVotingRule } from "@/server/services/meetings";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
 
 const votingRuleHeaders: ColumnSpec[] = [
   { label: "Naziv" },
@@ -52,11 +51,11 @@ async function addRuleAction(formData: FormData) {
   revalidatePath("/skupstina");
 }
 
-export default async function AssemblyPage({ searchParams }: { searchParams: Promise<{ body?: string }> }) {
+export default async function AssemblyPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const actor = await requireActor();
   const management = isManagement(actor);
-  const { body: bodyParam } = await searchParams;
-  const activeBody = bodyParam === "BOARD" ? "BOARD" : "ASSEMBLY";
+  const { tab } = await searchParams;
+  const activeBody = tab === "BOARD" ? "BOARD" : "ASSEMBLY";
   const [meetings, rules] = await Promise.all([listMeetings(actor, activeBody), listVotingRules(actor)]);
   return (
     <div>
@@ -68,20 +67,14 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
             : "Sjednice skupštine, prijedlozi, elektronsko izjašnjavanje i odluke"
         }
       />
-      <div className="mb-4 flex gap-1 border-b border-slate-200">
-        <Link
-          href="/skupstina?body=ASSEMBLY"
-          className={`border-b-2 px-3 py-2 text-sm font-medium ${activeBody === "ASSEMBLY" ? "border-blue-600 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-700"}`}
-        >
-          Skupština
-        </Link>
-        <Link
-          href="/skupstina?body=BOARD"
-          className={`border-b-2 px-3 py-2 text-sm font-medium ${activeBody === "BOARD" ? "border-blue-600 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-700"}`}
-        >
-          Upravni odbor
-        </Link>
-      </div>
+      <Tabs
+        tabs={[
+          { key: "ASSEMBLY", label: "Skupština" },
+          { key: "BOARD", label: "Upravni odbor" },
+        ]}
+        active={activeBody}
+        hrefFor={(key) => `/skupstina?tab=${key}`}
+      />
       <Card title={activeBody === "BOARD" ? "Sjednice upravnog odbora" : "Sjednice skupštine"}>
         <Table
           id="meetings-table"

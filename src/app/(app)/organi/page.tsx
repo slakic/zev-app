@@ -7,7 +7,7 @@ import {
 } from "@/server/services/ownership";
 import { getSettings } from "@/server/services/settings";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
 
 const boardHeaders: ColumnSpec[] = [
   { label: "Član" },
@@ -35,7 +35,7 @@ async function setOfficerAction(formData: FormData) {
       decisionRef: (formData.get("decisionRef") as string) || null,
     });
   } catch (e) {
-    redirect(`/organi?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/organi?tab=aktuelni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/organi");
 }
@@ -50,7 +50,7 @@ async function addBoardMemberAction(formData: FormData) {
       decisionRef: (formData.get("decisionRef") as string) || null,
     });
   } catch (e) {
-    redirect(`/organi?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/organi?tab=aktuelni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/organi");
 }
@@ -66,22 +66,23 @@ async function endBoardMemberAction(formData: FormData) {
       (formData.get("reason") as string) || null
     );
   } catch (e) {
-    redirect(`/organi?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/organi?tab=aktuelni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/organi");
 }
 
-export default async function OrganiPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
+export default async function OrganiPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string }> }) {
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
-  const { err } = await searchParams;
+  const { tab, err } = await searchParams;
+  const activeTab = tab === "istorija" ? "istorija" : "aktuelni";
 
-  const [holders, history, settings] = await Promise.all([
+  const [holders, settings] = await Promise.all([
     listOfficeHolders(actor),
-    listOfficeHistory(actor),
     getSettings(actor),
   ]);
-  const parties = isPresident ? await listParties(actor) : [];
+  const history = activeTab === "istorija" ? await listOfficeHistory(actor) : [];
+  const parties = isPresident && activeTab === "aktuelni" ? await listParties(actor) : [];
   const boardSize = settings["board.size"];
   const termYears = settings["board.termYears"];
 
@@ -93,6 +94,17 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
       />
       <Flash err={err} />
 
+      <Tabs
+        tabs={[
+          { key: "aktuelni", label: "Aktuelni organi" },
+          { key: "istorija", label: "Istorija mandata" },
+        ]}
+        active={activeTab}
+        hrefFor={(key) => `/organi?tab=${key}`}
+      />
+
+      {activeTab === "aktuelni" && (
+      <>
       <Card>
         <p className="text-sm text-slate-600">
           Prema Zakonu o održavanju zgrada Republike Srpske organi ZEV su <b>skupština</b> (svi vlasnici) i{" "}
@@ -193,7 +205,10 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
           </details>
         </Card>
       )}
+      </>
+      )}
 
+      {activeTab === "istorija" && (
       <Card title="Istorija mandata">
         <Table id="office-history-table" caption="Istorija mandata" headers={officeHistoryHeaders} empty={history.length === 0}>
           {history.map((h) => (
@@ -207,6 +222,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
           ))}
         </Table>
       </Card>
+      )}
     </div>
   );
 }

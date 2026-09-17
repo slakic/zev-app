@@ -43,6 +43,49 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.4] - 2026-09-17
+
+### Izmijenjeno
+
+- **Faza 3e plana UI/UX redizajna — `Tabs` primitiv (N3, §3.D).** Direktan
+  odgovor na izvorni nalaz posmatrane sesije: „potrebno je skrolovati
+  vertikalno da se vide sve sekcije... trebalo bi moći prebaciti se između
+  sekcija kao tabovi."
+  - `Tabs` (izgrađen u Fazi 3a, do sada nekorišćen) primijenjen na svih 8
+    stranica iz definitivnog spiska (§3.D): `/zgrade` (Zgrade · Ulazi ·
+    Posebni dijelovi · Zajednički dijelovi — izvorni nalaz), `/skupstina`
+    (migracija postojećeg ručno pisanog `?body=` taba na primitiv), `/izvjestaji`
+    (Dugovanja · Novac · Fakture · Pregledi — najduži skrol u aplikaciji, 9
+    kartica), `/vlasnici` (Lica · Vlasništvo i korištenje · Punomoći),
+    `/podesavanja` (Moji podaci · ZEV · Parametri — **samo za upravu**; vlasnik
+    i dalje vidi 2 kartice bez tabova, po planu), `/organi` (Aktuelni organi ·
+    Istorija mandata), `/troskovi` (Dobavljači · Troškovi), `/fakture`
+    (Naknade i serije · Fakture — **samo za upravu**).
+  - **Neaktivni tabovi ne izvršavaju svoje upite** — `/zgrade` je imao 4 upita
+    na svako učitavanje bez obzira na sekciju; sada su `listUnits`/
+    `listCommonAssets` uslovni na aktivni tab (2 upita na `Zgrade`/`Ulazi`
+    tabovima, do 3 na `Posebni dijelovi`/`Zajednički dijelovi`). Isti obrazac
+    primijenjen na `/troskovi`, `/organi`, `/vlasnici`, `/podesavanja`,
+    `/fakture`, `/izvjestaji` (9 izvještajnih upita raspoređeno u 4 grupe po
+    tabu umjesto svih odjednom).
+  - **Očuvanje taba kroz server akcije** — svaka forma na tabovanoj stranici
+    čija akcija radi `redirect()` sada se vraća na isti tab (`?tab=...`)
+    umjesto na podrazumijevani prvi. Popravljeno 19 `redirect()` poziva:
+    `property.ts` (2 akcije, `/zgrade` inline-edit forme za zgrade i jedinice),
+    `/vlasnici` (3), `/organi` (3), `/troskovi` (4), `/podesavanja` (5),
+    `/fakture` (2). Bez ove ispravke, npr. izmjena jedinice na tabu „Posebni
+    dijelovi" bi nakon snimanja izbacila korisnika nazad na tab „Zgrade" —
+    regresija gora od problema koji Tabs rješava. Provjereno uživo (ne samo
+    pregledom koda) na `/zgrade` (inline edit jedinice) i `/podesavanja`
+    (GET forma perioda) da URL nakon submit-a zadržava ispravan `?tab=`.
+  - Pristupačnost: `Tabs` su obični linkovi sa `aria-current="page"`, ne
+    `role="tablist"`/`role="tab"` (koji bi obećao strelice lijevo/desno kojih
+    nema) — odluka i obrazloženje već zapisani u `ui.tsx` iz Faze 3a.
+  - 247/247 testova prolazi; provjereno na 1440px (svih 8 stranica, sve
+    sekcije, uključujući ulogovanog kao vlasnik za role-gated `/podesavanja`
+    i `/fakture`) i 375px (`/zgrade`, `/izvjestaji` — horizontalni skrol trake
+    tabova sa vidljivom naznakom, dodirne mete pune visine).
+
 ## [2.19.3] - 2026-09-17
 
 ### Izmijenjeno

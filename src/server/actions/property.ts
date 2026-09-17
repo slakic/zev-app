@@ -21,10 +21,10 @@ export async function updateBuildingAction(formData: FormData) {
       note: (formData.get("note") as string) || null,
     });
   } catch (e) {
-    redirect(`/zgrade?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/zgrade?tab=zgrade&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/zgrade");
-  redirect("/zgrade?msg=saved");
+  redirect("/zgrade?tab=zgrade&msg=saved");
 }
 
 export async function updateUnitAction(formData: FormData) {
@@ -43,8 +43,8 @@ export async function updateUnitAction(formData: FormData) {
       typeCoefficient: parseMoneyInput(formData.get("typeCoefficient") as string | null) ?? undefined,
     });
   } catch (e) {
-    redirect(`/zgrade?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/zgrade?tab=posebni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/zgrade");
-  redirect("/zgrade?msg=saved");
+  redirect("/zgrade?tab=posebni&msg=saved");
 }

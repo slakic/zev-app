@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
 
 const chargeItemHeaders: ColumnSpec[] = [
   { label: "Naziv", priority: "primary" },
@@ -88,22 +88,24 @@ async function createBatchAction(formData: FormData) {
     redirect(`/fakture/serija/${batch.id}`);
   } catch (e) {
     if (e && typeof e === "object" && "digest" in e) throw e;
-    redirect(`/fakture?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/fakture?tab=naknade&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
 }
 
-export default async function InvoicesPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string }> }) {
+export default async function InvoicesPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string; msg?: string }> }) {
   const actor = await requireActor();
   const management = isManagement(actor);
-  const { err, msg } = await searchParams;
-  const invoices = await listInvoices(actor);
-  const [chargeItems, batches, buildings] = management
-    ? await Promise.all([
-        listChargeItems(actor),
-        prisma.invoiceBatch.findMany({ where: { zevId: requireZev(actor) }, orderBy: { createdAt: "desc" }, take: 10, include: { _count: { select: { invoices: true } } } }),
-        listBuildings(actor),
-      ])
-    : [[], [], []];
+  const { tab, err, msg } = await searchParams;
+  const activeTab = tab === "fakture" ? "fakture" : "naknade";
+  const invoices = !management || activeTab === "fakture" ? await listInvoices(actor) : [];
+  const [chargeItems, batches, buildings] =
+    management && activeTab === "naknade"
+      ? await Promise.all([
+          listChargeItems(actor),
+          prisma.invoiceBatch.findMany({ where: { zevId: requireZev(actor) }, orderBy: { createdAt: "desc" }, take: 10, include: { _count: { select: { invoices: true } } } }),
+          listBuildings(actor),
+        ])
+      : [[], [], []];
 
   return (
     <div>
@@ -115,6 +117,17 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       <Flash err={err} msg={msg} />
 
       {management && (
+        <Tabs
+          tabs={[
+            { key: "naknade", label: "Naknade i serije" },
+            { key: "fakture", label: "Fakture" },
+          ]}
+          active={activeTab}
+          hrefFor={(key) => `/fakture?tab=${key}`}
+        />
+      )}
+
+      {management && activeTab === "naknade" && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <Card title="Stavke naknada (konfigurabilne)" className="lg:col-span-2">
             <Table id="charge-items-table" caption="Stavke naknada" headers={chargeItemHeaders} empty={chargeItems.length === 0}>
@@ -225,6 +238,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
         </div>
       )}
 
+      {(!management || activeTab === "fakture") && (
       <div className="mt-4">
         <Card title={management ? "Sve fakture" : "Moje fakture"}>
           <Table id="invoices-table" caption={management ? "Sve fakture" : "Moje fakture"} headers={invoiceHeadersFor(management)} empty={invoices.length === 0}>
@@ -254,6 +268,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
           </Table>
         </Card>
       </div>
+      )}
     </div>
   );
 }

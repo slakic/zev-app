@@ -4,7 +4,7 @@ import { reserveFundBalance } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
 import { formatDate, endOfDay, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, Tabs, type ColumnSpec } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
 const incExpHeaders: ColumnSpec[] = [
@@ -89,28 +89,37 @@ function balanceStatus(balance: string): { text: string; cls: string } {
 export default async function ReportsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ from?: string; to?: string; asOf?: string; owner?: string | string[] }>;
+  searchParams: Promise<{ tab?: string; from?: string; to?: string; asOf?: string; owner?: string | string[] }>;
 }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const sp = await searchParams;
+  const activeTab = ["novac", "fakture", "pregledi"].includes(sp.tab ?? "") ? (sp.tab as string) : "dugovanja";
   const range = {
     from: sp.from ? new Date(sp.from) : undefined,
     to: sp.to ? new Date(sp.to) : undefined,
   };
   const asOfStr = sp.asOf || todayIso();
   const ownerIds = sp.owner ? (Array.isArray(sp.owner) ? sp.owner : [sp.owner]) : [];
-  const [cashFlow, incExp, receivables, suppliers, supplierUnpaid, fund, byBuilding, byProject, parties, debt] = await Promise.all([
-    cashFlowReport(actor, range),
-    incomeExpenseReport(actor, range),
-    receivablesReport(actor, range.to ?? new Date()),
-    supplierReport(actor, range),
-    unpaidSupplierInvoices(actor),
-    reserveFundBalance(actor),
-    allocationSummary(actor, "building", range),
-    allocationSummary(actor, "project", range),
-    listParties(actor),
-    ownerDebtReport(actor, { asOf: endOfDay(asOfStr), partyIds: ownerIds.length > 0 ? ownerIds : undefined }),
-  ]);
+
+  const [cashFlow, incExp, fund] =
+    activeTab === "novac"
+      ? await Promise.all([cashFlowReport(actor, range), incomeExpenseReport(actor, range), reserveFundBalance(actor)])
+      : [[], [], null];
+  const [receivables, suppliers, supplierUnpaid] =
+    activeTab === "fakture"
+      ? await Promise.all([receivablesReport(actor, range.to ?? new Date()), supplierReport(actor, range), unpaidSupplierInvoices(actor)])
+      : [null, [], []];
+  const [byBuilding, byProject] =
+    activeTab === "pregledi"
+      ? await Promise.all([allocationSummary(actor, "building", range), allocationSummary(actor, "project", range)])
+      : [[], []];
+  const [parties, debt] =
+    activeTab === "dugovanja"
+      ? await Promise.all([
+          listParties(actor),
+          ownerDebtReport(actor, { asOf: endOfDay(asOfStr), partyIds: ownerIds.length > 0 ? ownerIds : undefined }),
+        ])
+      : [[], null];
   const owners = parties
     .filter((p) => p.ownershipStakes.length > 0)
     .map((p) => ({
@@ -127,15 +136,29 @@ export default async function ReportsPage({
         actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="primary">Izvoz svih izvještaja (PDF)</BtnLink>}
       />
       <form className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
+        <input type="hidden" name="tab" value={activeTab} />
         <label className="text-sm">Od <input type="date" name="from" defaultValue={sp.from} className={`${inputCls} ml-1 w-36`} /></label>
         <label className="text-sm">Do <input type="date" name="to" defaultValue={sp.to} className={`${inputCls} ml-1 w-36`} /></label>
         <SubmitBtn variant="tonal">Primijeni period</SubmitBtn>
       </form>
 
+      <Tabs
+        tabs={[
+          { key: "dugovanja", label: "Dugovanja" },
+          { key: "novac", label: "Novac" },
+          { key: "fakture", label: "Fakture" },
+          { key: "pregledi", label: "Pregledi" },
+        ]}
+        active={activeTab}
+        hrefFor={(key) => `/izvjestaji?tab=${key}`}
+      />
+
+      {activeTab === "dugovanja" && debt && (
       <Card
         title={`Dugovanja po vlasnicima — stanje na dan ${formatDate(new Date(asOfStr))} (ukupno: ${formatMoney(debt.totalBalance)})`}
       >
         <form className="mb-3 flex flex-wrap items-end gap-3">
+          <input type="hidden" name="tab" value="dugovanja" />
           <label className="text-sm">
             Stanje na dan{" "}
             <input type="date" name="asOf" defaultValue={asOfStr} className={`${inputCls} ml-1 w-36`} />
@@ -185,8 +208,10 @@ export default async function ReportsPage({
           </BtnLink>
         </div>
       </Card>
+      )}
 
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {activeTab === "novac" && fund && (
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Stanje računa i tok novca" className="lg:col-span-2">
           <Table id="cashflow-table" caption="Stanje računa i tok novca" headers={cashFlowHeaders} empty={cashFlow.length === 0}>
             {cashFlow.map((r) => (
@@ -216,6 +241,15 @@ export default async function ReportsPage({
           <div className="mt-2"><BtnLink href={`/api/izvjestaji/csv${csvQ}&type=incexp`} variant="secondary">Izvoz CSV</BtnLink></div>
         </Card>
 
+        <Card title={`Fond održavanja (uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)})`}>
+          <p className="text-2xl font-semibold tabular-nums">{formatMoney(fund.balance)}</p>
+          <p className="mt-1 text-xs text-slate-500">Prati se preko oznake „fond održavanja” na stavkama naknada i transakcijama.</p>
+        </Card>
+      </div>
+      )}
+
+      {activeTab === "fakture" && receivables && (
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title={`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`} className="lg:col-span-2">
           <Table id="receivables-table" caption="Neplaćene fakture vlasnika" headers={receivablesHeaders} empty={receivables.rows.length === 0}>
             {receivables.rows.map((r) => (
@@ -246,11 +280,6 @@ export default async function ReportsPage({
           <div className="mt-2"><BtnLink href={`/api/izvjestaji/csv${csvQ}&type=suppliers`} variant="secondary">Izvoz CSV</BtnLink></div>
         </Card>
 
-        <Card title={`Fond održavanja (uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)})`}>
-          <p className="text-2xl font-semibold tabular-nums">{formatMoney(fund.balance)}</p>
-          <p className="mt-1 text-xs text-slate-500">Prati se preko oznake „fond održavanja” na stavkama naknada i transakcijama.</p>
-        </Card>
-
         <Card title="Neplaćene fakture dobavljača">
           <Table id="supplier-unpaid-table" caption="Neplaćene fakture dobavljača" headers={supplierUnpaidHeaders} empty={supplierUnpaid.length === 0}>
             {supplierUnpaid.map((e) => (
@@ -263,7 +292,11 @@ export default async function ReportsPage({
             ))}
           </Table>
         </Card>
+      </div>
+      )}
 
+      {activeTab === "pregledi" && (
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Pregled po zgradama">
           <Table id="by-building-table" caption="Pregled po zgradama" headers={byBuildingHeaders} empty={byBuilding.length === 0}>
             {byBuilding.map((r) => (
@@ -290,6 +323,7 @@ export default async function ReportsPage({
           </Table>
         </Card>
       </div>
+      )}
     </div>
   );
 }

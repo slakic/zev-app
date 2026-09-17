@@ -7,7 +7,7 @@ import { listUnits } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
@@ -70,7 +70,7 @@ async function addStakeAction(formData: FormData) {
       validFrom: new Date(String(formData.get("validFrom"))),
     }, proof);
   } catch (e) {
-    redirect(`/vlasnici?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/vlasnici?tab=vlasnistvo&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/vlasnici");
 }
@@ -89,7 +89,7 @@ async function transferAction(formData: FormData) {
       note: (formData.get("note") as string) || null,
     }, proof);
   } catch (e) {
-    redirect(`/vlasnici?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/vlasnici?tab=vlasnistvo&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/vlasnici");
 }
@@ -120,25 +120,41 @@ async function grantProxyAction(formData: FormData) {
       validTo: formData.get("validTo") ? new Date(String(formData.get("validTo"))) : null,
     });
   } catch (e) {
-    redirect(`/vlasnici?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/vlasnici?tab=punomoci&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/vlasnici");
 }
 
-export default async function OwnersPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
+export default async function OwnersPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string }> }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const isPresident = actor.roles.includes("PRESIDENT");
-  const { err } = await searchParams;
-  const [parties, units, proxies] = await Promise.all([
-    listParties(actor),
-    listUnits(actor),
-    prisma.proxy.findMany({ where: { zevId, revokedAt: null }, include: { grantor: true, holder: true } }),
-  ]);
+  const { tab, err } = await searchParams;
+  const activeTab = tab === "vlasnistvo" || tab === "punomoci" ? tab : "lica";
+  const parties = await listParties(actor);
+  const units = isPresident && activeTab === "vlasnistvo" ? await listUnits(actor) : [];
+  const proxies =
+    isPresident && activeTab === "punomoci"
+      ? await prisma.proxy.findMany({ where: { zevId, revokedAt: null }, include: { grantor: true, holder: true } })
+      : [];
   return (
     <div>
       <PageHeader title={t("nav.owners")} subtitle="Etažni vlasnici, suvlasnici, stanari, zakupci i punomoćnici" />
       <Flash err={err} />
+      <Tabs
+        tabs={
+          isPresident
+            ? [
+                { key: "lica", label: "Lica", count: parties.length },
+                { key: "vlasnistvo", label: "Vlasništvo i korištenje" },
+                { key: "punomoci", label: "Punomoći" },
+              ]
+            : [{ key: "lica", label: "Lica", count: parties.length }]
+        }
+        active={activeTab}
+        hrefFor={(key) => `/vlasnici?tab=${key}`}
+      />
+      {activeTab === "lica" && (
       <Card title="Lica (fizička i pravna)">
         <Table id="parties-table" caption="Lica (fizička i pravna)" headers={partyHeaders} empty={parties.length === 0}>
           {parties.map((p) => (
@@ -176,9 +192,10 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
           </details>
         )}
       </Card>
+      )}
 
-      {isPresident && (
-        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {isPresident && activeTab === "vlasnistvo" && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Dodaj vlasnički udio">
             <details className="group">
               <ToggleBtn>Dodaj udio</ToggleBtn>
@@ -265,6 +282,10 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               </form>
             </details>
           </Card>
+        </div>
+      )}
+
+      {isPresident && activeTab === "punomoci" && (
           <Card title="Punomoći">
             <Table id="proxies-table" caption="Punomoći" headers={proxyHeaders} empty={proxies.length === 0}>
               {proxies.map((p) => (
@@ -303,7 +324,6 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
               </form>
             </details>
           </Card>
-        </div>
       )}
     </div>
   );

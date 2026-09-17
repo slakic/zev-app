@@ -5,7 +5,7 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { updateBuildingAction, updateUnitAction } from "@/server/actions/property";
 import { parseMoneyInput, formatMoney } from "@/lib/money";
 import { t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
 import { BuildingRow } from "@/components/building-row";
 import { UnitRow } from "@/components/unit-row";
 
@@ -63,18 +63,16 @@ async function addAssetAction(formData: FormData) {
 export default async function BuildingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ err?: string; msg?: string }>;
+  searchParams: Promise<{ tab?: string; err?: string; msg?: string }>;
 }) {
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
-  const { err, msg } = await searchParams;
+  const { tab, err, msg } = await searchParams;
   const okMsg = msg === "saved" ? "Sačuvano." : undefined;
-  const [zev, buildings, units, assets] = await Promise.all([
-    getZev(actor),
-    listBuildings(actor),
-    listUnits(actor),
-    listCommonAssets(actor),
-  ]);
+  const activeTab = ["ulazi", "posebni", "zajednicki"].includes(tab ?? "") ? (tab as string) : "zgrade";
+  const [zev, buildings] = await Promise.all([getZev(actor), listBuildings(actor)]);
+  const units = activeTab === "posebni" ? await listUnits(actor) : [];
+  const assets = activeTab === "zajednicki" ? await listCommonAssets(actor) : [];
   const entrances = buildings.flatMap((b) => b.entrances.map((e) => ({ ...e, buildingName: b.name })));
   const totalArea = units.reduce((sum, u) => sum + Number(u.usableArea), 0);
   const totalShare = units.reduce((sum, u) => sum + Number(u.ownershipShare), 0);
@@ -106,7 +104,18 @@ export default async function BuildingsPage({
       <PageHeader title={t("nav.buildings")} subtitle={zev?.legalName ?? undefined} />
       {!zev && <Flash err="ZEV još nije konfigurisana — unesite matične podatke u Podešavanjima." />}
       <Flash err={err} msg={okMsg} />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <Tabs
+        tabs={[
+          { key: "zgrade", label: "Zgrade", count: buildings.length },
+          { key: "ulazi", label: "Ulazi", count: entrances.length },
+          { key: "posebni", label: "Posebni dijelovi" },
+          { key: "zajednicki", label: "Zajednički dijelovi" },
+        ]}
+        active={activeTab}
+        hrefFor={(key) => `/zgrade?tab=${key}`}
+      />
+
+      {activeTab === "zgrade" && (
         <Card title="Zgrade">
           <Table id="buildings-table" caption="Zgrade" headers={buildingHeaders} empty={buildings.length === 0}>
             {buildings.map((b) => (
@@ -125,6 +134,9 @@ export default async function BuildingsPage({
             </details>
           )}
         </Card>
+      )}
+
+      {activeTab === "ulazi" && (
         <Card title="Ulazi / lamele">
           <Table id="entrances-table" caption="Ulazi / lamele" headers={entranceHeaders} empty={entrances.length === 0}>
             {entrances.map((e) => (
@@ -151,9 +163,9 @@ export default async function BuildingsPage({
             </details>
           )}
         </Card>
-      </div>
+      )}
 
-      <div className="mt-4">
+      {activeTab === "posebni" && (
         <Card
           title="Posebni dijelovi (stanovi, poslovni prostori, garaže)"
           hint={
@@ -244,9 +256,9 @@ export default async function BuildingsPage({
             </details>
           )}
         </Card>
-      </div>
+      )}
 
-      <div className="mt-4">
+      {activeTab === "zajednicki" && (
         <Card title="Zajednički dijelovi, sistemi i oprema">
           <Table id="assets-table" caption="Zajednički dijelovi, sistemi i oprema" headers={assetHeaders} empty={assets.length === 0}>
             {assets.map((a) => (
@@ -282,7 +294,7 @@ export default async function BuildingsPage({
             </details>
           )}
         </Card>
-      </div>
+      )}
     </div>
   );
 }

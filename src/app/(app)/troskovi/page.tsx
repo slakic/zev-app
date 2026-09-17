@@ -9,7 +9,7 @@ import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, Tabs, type ColumnSpec } from "@/components/ui";
 
 const supplierHeaders: ColumnSpec[] = [
   { label: "Naziv" },
@@ -69,9 +69,9 @@ async function addExpenseAction(formData: FormData) {
     });
   } catch (e) {
     if (e instanceof DuplicateExpenseWarning) {
-      redirect(`/troskovi?err=${encodeURIComponent(`UPOZORENJE: mogući duplikat (${e.duplicates.map((d) => d.invoiceNumber ?? d.id).join(", ")}). Označite "dozvoli duplikat" ako je unos ispravan.`)}`);
+      redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(`UPOZORENJE: mogući duplikat (${e.duplicates.map((d) => d.invoiceNumber ?? d.id).join(", ")}). Označite "dozvoli duplikat" ako je unos ispravan.`)}`);
     }
-    redirect(`/troskovi?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/troskovi");
 }
@@ -86,7 +86,7 @@ async function payExpenseAction(formData: FormData) {
       date: new Date(),
     });
   } catch (e) {
-    redirect(`/troskovi?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/troskovi");
 }
@@ -97,31 +97,43 @@ async function cancelExpenseAction(formData: FormData) {
   try {
     await cancelExpense(actor, String(formData.get("expenseId")), String(formData.get("reason") || "Storno"));
   } catch (e) {
-    redirect(`/troskovi?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/troskovi");
 }
 
-export default async function ExpensesPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
+export default async function ExpensesPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string }> }) {
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
   const zevId = requireZev(actor);
-  const { err } = await searchParams;
-  const [expenses, suppliers, accounts, buildings, projects, planItems] = await Promise.all([
-    listExpenses(actor),
-    listSuppliers(actor),
-    listAccounts(actor),
-    listBuildings(actor),
-    listProjects(actor),
-    // zevId added 2026-09-09 — was unscoped, populating this dropdown with every
-    // tenant's approved plan items (createExpense itself does validate zevId, so this
-    // was a UI-only leak, not a write-path one — see docs/multitenancy-plan.md addendum).
-    prisma.planItem.findMany({ where: { zevId, plan: { status: "APPROVED" } }, include: { plan: true } }),
-  ]);
+  const { tab, err } = await searchParams;
+  const activeTab = tab === "troskovi" ? "troskovi" : "dobavljaci";
+  const suppliers = await listSuppliers(actor);
+  const [expenses, accounts, buildings, projects, planItems] =
+    activeTab === "troskovi"
+      ? await Promise.all([
+          listExpenses(actor),
+          listAccounts(actor),
+          listBuildings(actor),
+          listProjects(actor),
+          // zevId added 2026-09-09 — was unscoped, populating this dropdown with every
+          // tenant's approved plan items (createExpense itself does validate zevId, so this
+          // was a UI-only leak, not a write-path one — see docs/multitenancy-plan.md addendum).
+          prisma.planItem.findMany({ where: { zevId, plan: { status: "APPROVED" } }, include: { plan: true } }),
+        ])
+      : [[], [], [], [], []];
   return (
     <div>
       <PageHeader title="Troškovi i dobavljači" subtitle="Ulazne fakture, plaćanja, veza sa planom i održavanjem" />
       <Flash err={err} />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <Tabs
+        tabs={[
+          { key: "dobavljaci", label: "Dobavljači", count: suppliers.length },
+          { key: "troskovi", label: "Troškovi" },
+        ]}
+        active={activeTab}
+        hrefFor={(key) => `/troskovi?tab=${key}`}
+      />
+      {activeTab === "dobavljaci" && (
         <Card title="Dobavljači i izvođači">
           <Table id="suppliers-table" caption="Dobavljači i izvođači" headers={supplierHeaders} empty={suppliers.length === 0}>
             {suppliers.map((s) => (
@@ -145,47 +157,10 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
             </form>
           </details>
         </Card>
+      )}
 
-        <Card title="Novi trošak (ulazna faktura)">
-          <form action={addExpenseAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Field label="Dobavljač">
-              <select name="supplierId" className={inputCls}>
-                <option value="">—</option>
-                {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
-            </Field>
-            <Field label="Broj fakture dobavljača"><input name="invoiceNumber" className={inputCls} /></Field>
-            <Field label="Datum fakture"><input name="invoiceDate" type="date" className={inputCls} /></Field>
-            <Field label="Iznos (KM)"><input name="amount" required className={inputCls} /></Field>
-            <Field label="Rok plaćanja"><input name="dueDate" type="date" className={inputCls} /></Field>
-            <Field label="Kategorija"><input name="categoryName" className={inputCls} placeholder="Struja zajedničkih prostorija" /></Field>
-            <Field label="Zgrada">
-              <select name="buildingId" className={inputCls}>
-                <option value="">Cijela ZEV</option>
-                {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
-            </Field>
-            <Field label="Projekat">
-              <select name="projectId" className={inputCls}>
-                <option value="">—</option>
-                {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </select>
-            </Field>
-            <Field label="Stavka godišnjeg plana">
-              <select name="planItemId" className={inputCls}>
-                <option value="">—</option>
-                {planItems.map((pi) => <option key={pi.id} value={pi.id}>{pi.plan.year}: {pi.name}</option>)}
-              </select>
-            </Field>
-            <Field label="Opis"><input name="description" className={inputCls} /></Field>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="recurring" /> ponavljajući (mjesečno)</label>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="allowDuplicate" /> dozvoli mogući duplikat</label>
-            <div className="sm:col-span-2"><SubmitBtn>Evidentiraj trošak</SubmitBtn></div>
-          </form>
-        </Card>
-      </div>
-
-      <div className="mt-4">
+      {activeTab === "troskovi" && (
+      <>
         <Card title="Troškovi">
           <Table id="expenses-table" caption="Troškovi" headers={expenseHeaders} empty={expenses.length === 0}>
             {expenses.map((e) => (
@@ -226,7 +201,48 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
             ))}
           </Table>
         </Card>
-      </div>
+
+        <div className="mt-4">
+          <Card title="Novi trošak (ulazna faktura)">
+            <form action={addExpenseAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field label="Dobavljač">
+                <select name="supplierId" className={inputCls}>
+                  <option value="">—</option>
+                  {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </Field>
+              <Field label="Broj fakture dobavljača"><input name="invoiceNumber" className={inputCls} /></Field>
+              <Field label="Datum fakture"><input name="invoiceDate" type="date" className={inputCls} /></Field>
+              <Field label="Iznos (KM)"><input name="amount" required className={inputCls} /></Field>
+              <Field label="Rok plaćanja"><input name="dueDate" type="date" className={inputCls} /></Field>
+              <Field label="Kategorija"><input name="categoryName" className={inputCls} placeholder="Struja zajedničkih prostorija" /></Field>
+              <Field label="Zgrada">
+                <select name="buildingId" className={inputCls}>
+                  <option value="">Cijela ZEV</option>
+                  {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+              </Field>
+              <Field label="Projekat">
+                <select name="projectId" className={inputCls}>
+                  <option value="">—</option>
+                  {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              </Field>
+              <Field label="Stavka godišnjeg plana">
+                <select name="planItemId" className={inputCls}>
+                  <option value="">—</option>
+                  {planItems.map((pi) => <option key={pi.id} value={pi.id}>{pi.plan.year}: {pi.name}</option>)}
+                </select>
+              </Field>
+              <Field label="Opis"><input name="description" className={inputCls} /></Field>
+              <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="recurring" /> ponavljajući (mjesečno)</label>
+              <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="allowDuplicate" /> dozvoli mogući duplikat</label>
+              <div className="sm:col-span-2"><SubmitBtn>Evidentiraj trošak</SubmitBtn></div>
+            </form>
+          </Card>
+        </div>
+      </>
+      )}
     </div>
   );
 }

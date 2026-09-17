@@ -9,7 +9,7 @@ import { getSettings, setSetting } from "@/server/services/settings";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
 
 const accountHeaders: ColumnSpec[] = [
   { label: "Naziv" },
@@ -55,7 +55,7 @@ async function saveSettingAction(formData: FormData) {
   try {
     await setSetting(actor, key, value);
   } catch (e) {
-    redirect(`/podesavanja?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/podesavanja?tab=parametri&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/podesavanja");
 }
@@ -71,10 +71,10 @@ async function updateMyContactAction(formData: FormData) {
       correspondenceAddress: (formData.get("correspondenceAddress") as string) || null,
     });
   } catch (e) {
-    redirect(`/podesavanja?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/podesavanja?tab=moji&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/podesavanja");
-  redirect("/podesavanja?msg=saved");
+  redirect("/podesavanja?tab=moji&msg=saved");
 }
 
 async function revokeMyConsentAction(formData: FormData) {
@@ -85,28 +85,32 @@ async function revokeMyConsentAction(formData: FormData) {
     const partyId = await requireOwnerParty(actor);
     await revokeEVoteConsent(actor, partyId, reason);
   } catch (e) {
-    redirect(`/podesavanja?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    redirect(`/podesavanja?tab=moji&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
-  redirect("/podesavanja?msg=saved");
+  redirect("/podesavanja?tab=moji&msg=saved");
 }
 
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ err?: string; msg?: string }>;
+  searchParams: Promise<{ tab?: string; err?: string; msg?: string }>;
 }) {
   const actor = await requireActor();
-  const { err, msg } = await searchParams;
+  const { tab, err, msg } = await searchParams;
   const okMsg = msg === "saved" ? "Sačuvano." : undefined;
   const isPresident = actor.roles.includes("PRESIDENT");
   const isManagement = isPresident || actor.roles.includes("ACCOUNTANT");
+  const activeTab = tab === "zev" || tab === "parametri" ? tab : "moji";
+  const showMoji = !isManagement || activeTab === "moji";
+  const showZev = isManagement && activeTab === "zev";
+  const showParametri = isManagement && activeTab === "parametri";
 
   const [zev, accounts, settings, myParty, myConsent] = await Promise.all([
-    isManagement ? getZev(actor) : null,
-    isManagement ? listAccounts(actor) : Promise.resolve([]),
-    isManagement ? getSettings(actor) : null,
-    actor.partyId ? getParty(actor, actor.partyId) : null,
-    actor.partyId ? getEVoteConsentHistory(actor, actor.partyId) : null,
+    showZev ? getZev(actor) : null,
+    showZev ? listAccounts(actor) : Promise.resolve([]),
+    showParametri ? getSettings(actor) : null,
+    actor.partyId && showMoji ? getParty(actor, actor.partyId) : null,
+    actor.partyId && showMoji ? getEVoteConsentHistory(actor, actor.partyId) : null,
   ]);
 
   return (
@@ -131,8 +135,19 @@ export default async function SettingsPage({
         }
       />
       <Flash err={err} msg={okMsg} />
+      {isManagement && (
+        <Tabs
+          tabs={[
+            { key: "moji", label: "Moji podaci" },
+            { key: "zev", label: "ZEV" },
+            { key: "parametri", label: "Parametri" },
+          ]}
+          active={activeTab}
+          hrefFor={(key) => `/podesavanja?tab=${key}`}
+        />
+      )}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {myParty && (
+        {myParty && showMoji && (
           <Card title="Moji podaci">
             <form action={updateMyContactAction} className="space-y-3">
               <Field label="E-mail"><input name="email" type="email" defaultValue={myParty.email ?? ""} className={inputCls} /></Field>
@@ -148,7 +163,7 @@ export default async function SettingsPage({
           </Card>
         )}
 
-        {myParty && myConsent && (
+        {myParty && myConsent && showMoji && (
           <Card title="Elektronsko glasanje">
             <div className="space-y-3 text-sm">
               <StatusBadge status={myParty.eVoteConsentStatus} label={tEnum("eVoteConsentStatus", myParty.eVoteConsentStatus)} />
@@ -197,7 +212,7 @@ export default async function SettingsPage({
           </Card>
         )}
 
-        {isManagement && (
+        {showZev && (
           <Card title="Matični podaci ZEV">
             <form action={saveZevAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="sm:col-span-2">
@@ -214,7 +229,7 @@ export default async function SettingsPage({
           </Card>
         )}
 
-        {isManagement && (
+        {showZev && (
           <Card title="Računi (banka i blagajna)">
             <Table id="accounts-table" caption="Računi (banka i blagajna)" headers={accountHeaders} empty={accounts.length === 0}>
               {accounts.map((a) => (
@@ -246,7 +261,7 @@ export default async function SettingsPage({
           </Card>
         )}
 
-        {isManagement && (
+        {showParametri && (
           <Card title="Konfigurabilni pravni i finansijski parametri">
             <p className="mb-3 text-[13px] text-slate-500">
               Ove vrijednosti utiču na obračun i na pravila glasanja. Prije izmjene se posavjetujte sa računovođom.
@@ -267,7 +282,7 @@ export default async function SettingsPage({
           </Card>
         )}
 
-        {isManagement && (
+        {showParametri && (
           <Card title="Napomena o integracijama">
             <p className="text-sm text-slate-600">
               {process.env.EMAIL_PROVIDER === "mailjet" ? (
