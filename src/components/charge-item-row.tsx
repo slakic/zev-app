@@ -40,7 +40,7 @@ export function ChargeItemRow({
           {!c.active && <span className="ml-1.5 text-xs text-slate-500">(neaktivna)</span>}
         </Td>
         <Td>{tEnum("chargeMethod", c.method)}</Td>
-        <Td right>{c.rate ?? "—"}</Td>
+        <Td>{c.rate ?? "—"}</Td>
         <Td>{tEnum("scope", c.scopeType)}</Td>
         <Td>{tEnum("frequency", c.frequency)}</Td>
         <Td>{c.isReserveFund ? "Da" : "—"}</Td>

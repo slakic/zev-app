@@ -3,9 +3,19 @@ import Link from "next/link";
 import { requireSuperAdminActor } from "@/server/actor";
 import { listTenants, createTenant } from "@/server/services/admin";
 import { switchActiveZev } from "@/server/services/memberships";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowAction, RowActionLink, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowAction, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { t } from "@/lib/i18n";
+
+const tenantHeaders: ColumnSpec[] = [
+  { label: "Naziv", priority: "primary" },
+  { label: "Paket", priority: "detail" },
+  { label: "Predsjednik" },
+  { label: "Zgrade", align: "right", priority: "detail" },
+  { label: "Vlasnici", align: "right", priority: "detail" },
+  { label: "Status" },
+  { label: "Radnje" },
+];
 
 const TIER_LABELS: Record<string, string> = {
   BASIC: "Basic",
@@ -65,10 +75,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
               Aktivnosti preko svih ZEV naloga
             </Link>
           </div>
-          <Table
-            headers={["Naziv", "Paket", "Predsjednik", "Zgrade", "Vlasnici", "Status", ""]}
-            empty={tenants.length === 0}
-          >
+          <Table id="tenants-table" caption="Svi ZEV nalozi" headers={tenantHeaders} empty={tenants.length === 0}>
             {tenants.map((z) => {
               const president = z.memberships[0]?.user;
               return (
@@ -79,8 +86,8 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
                   </Td>
                   <Td>{TIER_LABELS[z.tier] ?? z.tier}</Td>
                   <Td>{president?.email ?? "—"}</Td>
-                  <Td right>{z._count.buildings}</Td>
-                  <Td right>{z._count.parties}</Td>
+                  <Td>{z._count.buildings}</Td>
+                  <Td>{z._count.parties}</Td>
                   <Td>
                     <StatusBadge status={z.active ? "ACTIVE" : "SUSPENDED"} label={z.active ? "Aktivan" : "Suspendovan"} />
                   </Td>

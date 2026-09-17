@@ -4,8 +4,18 @@ import { reserveFundBalance } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
 import { formatDate, endOfDay, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls } from "@/components/ui";
+import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
+
+const debtHeaders: ColumnSpec[] = [
+  { label: "Vlasnik", priority: "primary" },
+  { label: "Jedinica(e)", priority: "detail" },
+  { label: "Prethodni saldo", align: "right", priority: "detail" },
+  { label: "Zaduženo (taj dan)", align: "right" },
+  { label: "Plaćeno (taj dan)", align: "right" },
+  { label: "Korekcije (taj dan)", align: "right", priority: "detail" },
+  { label: "Saldo", align: "right" },
+];
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -94,10 +104,7 @@ export default async function ReportsPage({
           (kredit/avans), a <strong>0,00</strong> da je stanje izmireno — isto važi i za prethodni saldo i za konačni
           saldo.
         </p>
-        <Table
-          headers={["Vlasnik", "Jedinica(e)", "Prethodni saldo", "Zaduženo (taj dan)", "Plaćeno (taj dan)", "Korekcije (taj dan)", "Saldo"]}
-          empty={debt.rows.length === 0}
-        >
+        <Table id="owner-debt-table" caption="Dugovanja po vlasnicima" headers={debtHeaders} empty={debt.rows.length === 0}>
           {debt.rows.map((r) => {
             const prevStatus = balanceStatus(r.previousBalance);
             const status = balanceStatus(r.balance);
@@ -105,14 +112,14 @@ export default async function ReportsPage({
               <tr key={r.partyId}>
                 <Td>{r.name}</Td>
                 <Td>{r.units}</Td>
-                <Td right>
+                <Td>
                   {formatMoney(r.previousBalance, "")}
                   <span className={`ml-1.5 text-xs ${prevStatus.cls}`}>({prevStatus.text})</span>
                 </Td>
-                <Td right>{formatMoney(r.chargedToday, "")}</Td>
-                <Td right>{formatMoney(r.paidToday, "")}</Td>
-                <Td right>{formatMoney(r.correctionsToday, "")}</Td>
-                <Td right className="font-semibold">
+                <Td>{formatMoney(r.chargedToday, "")}</Td>
+                <Td>{formatMoney(r.paidToday, "")}</Td>
+                <Td>{formatMoney(r.correctionsToday, "")}</Td>
+                <Td className="font-semibold">
                   {formatMoney(r.balance, "")}
                   <span className={`ml-1.5 text-xs font-normal ${status.cls}`}>({status.text})</span>
                 </Td>

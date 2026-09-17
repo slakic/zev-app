@@ -7,8 +7,18 @@ import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/lib/money";
 import { tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
 import { partyDisplayName } from "@/server/services/ownership";
+
+const calcLineHeaders: ColumnSpec[] = [
+  { label: "Stavka", priority: "primary" },
+  { label: "Metoda" },
+  { label: "Formula", priority: "detail" },
+  { label: "Ulazne vrijednosti", priority: "detail" },
+  { label: "Osnov raspodjele", priority: "detail" },
+  { label: "Prije zaokruž.", align: "right", priority: "detail" },
+  { label: "Iznos", align: "right" },
+];
 
 async function issueBatchAction(formData: FormData) {
   "use server";
@@ -73,7 +83,12 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
       <div className="space-y-4">
         {preview.map((calc) => (
           <Card key={calc.unitId} title={`${calc.buildingName} / ${calc.unitLabel} — ${calc.debtorName} — ukupno ${formatMoney(calc.total)}`}>
-            <Table headers={["Stavka", "Metoda", "Formula", "Ulazne vrijednosti", "Osnov raspodjele", "Prije zaokruž.", "Iznos"]} empty={calc.lines.length === 0}>
+            <Table
+              id={`calc-lines-${calc.unitId}`}
+              caption={`Obračun — ${calc.buildingName} / ${calc.unitLabel}`}
+              headers={calcLineHeaders}
+              empty={calc.lines.length === 0}
+            >
               {calc.lines.map((l, i) => (
                 <tr key={i}>
                   <Td>{l.name}</Td>
@@ -83,8 +98,8 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
                     {Object.entries(l.inputs).map(([k, v]) => `${k}=${v}`).join(", ")}
                   </Td>
                   <Td className="text-xs">{l.allocationBasis}</Td>
-                  <Td right className="text-xs">{l.rawAmount}</Td>
-                  <Td right>{formatMoney(l.amount, "")}</Td>
+                  <Td className="text-xs">{l.rawAmount}</Td>
+                  <Td>{formatMoney(l.amount, "")}</Td>
                 </tr>
               ))}
             </Table>

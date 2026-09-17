@@ -9,6 +9,16 @@ import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, t, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 
+const chargeItemHeaders: ColumnSpec[] = [
+  { label: "Naziv", priority: "primary" },
+  { label: "Metoda" },
+  { label: "Stopa/iznos", align: "right", nowrap: true },
+  { label: "Obuhvat", priority: "detail" },
+  { label: "Frekvencija", priority: "detail" },
+  { label: "Fond", priority: "detail" },
+  { label: "Radnje" },
+];
+
 const invoiceHeaders: ColumnSpec[] = [
   { label: "Broj", priority: "primary", nowrap: true },
   { label: "Jedinica" },
@@ -98,7 +108,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       {management && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Stavke naknada (konfigurabilne)">
-            <Table headers={["Naziv", "Metoda", "Stopa/iznos", "Obuhvat", "Frekvencija", "Fond", "Radnje"]} empty={chargeItems.length === 0}>
+            <Table id="charge-items-table" caption="Stavke naknada" headers={chargeItemHeaders} empty={chargeItems.length === 0}>
               {chargeItems.map((c) => (
                 <ChargeItemRow
                   key={c.id}

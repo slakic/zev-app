@@ -67,6 +67,13 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
     na `/zgrade` i `/troskovi` prije nastavka na preostalih 47 tabela —
     mehanizam vizuelno i strukturno ispravan na 1440px i 375px. 247/247
     testova prolazi.
+  - **Talas 3c-2 — tabele sa 7 kolona:** `/fakture` stavke naknada, `/izvjestaji`
+    dugovanja po vlasnicima, `/fakture/serija/[id]` pregled obračuna po stavci
+    (posebna tabela po jedinici — provjereno da više instanci `id`-a na istoj
+    stranici rade nezavisno), `/admin` svi ZEV nalozi (usput dobio i vidljiv
+    „Radnje" naslov kolone umjesto praznog stringa — isti a11y razlog kao i
+    `<caption>`/`scope="col"` iz Faze 3a). 247/247 testova prolazi; provjereno
+    na 1440px i 375px.
 
 ## [2.19.1] - 2026-09-17
 
