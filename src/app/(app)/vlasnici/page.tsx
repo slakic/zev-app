@@ -7,9 +7,18 @@ import { listUnits } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
+
+const partyHeaders: ColumnSpec[] = [
+  { label: "Ime / naziv", priority: "primary" },
+  { label: "Vrsta", priority: "detail" },
+  { label: "E-mail" },
+  { label: "Telefon", priority: "detail" },
+  { label: "Vlasništvo (aktivno)" },
+  { label: "Nalog", priority: "detail" },
+];
 
 async function addPartyAction(formData: FormData) {
   "use server";
@@ -123,7 +132,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
       <PageHeader title={t("nav.owners")} subtitle="Etažni vlasnici, suvlasnici, stanari, zakupci i punomoćnici" />
       <Flash err={err} />
       <Card title="Lica (fizička i pravna)">
-        <Table headers={["Ime / naziv", "Vrsta", "E-mail", "Telefon", "Vlasništvo (aktivno)", "Nalog"]} empty={parties.length === 0}>
+        <Table id="parties-table" caption="Lica (fizička i pravna)" headers={partyHeaders} empty={parties.length === 0}>
           {parties.map((p) => (
             <tr key={p.id}>
               <Td><RowLink href={`/vlasnici/${p.id}`}>{partyDisplayName(p)}</RowLink></Td>

@@ -2,7 +2,16 @@ import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, inputCls } from "@/components/ui";
+import { PageHeader, Card, Table, Td, inputCls, type ColumnSpec } from "@/components/ui";
+
+const auditHeaders: ColumnSpec[] = [
+  { label: "Vrijeme", nowrap: true },
+  { label: "Akter", priority: "primary" },
+  { label: "Radnja" },
+  { label: "Cilj", priority: "detail" },
+  { label: "Razlog", priority: "detail" },
+  { label: "Detalji", priority: "detail" },
+];
 
 export default async function AuditPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
@@ -30,15 +39,15 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
         <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className={`${inputCls} w-72`} />
       </form>
       <Card>
-        <Table headers={["Vrijeme", "Akter", "Radnja", "Cilj", "Razlog", "Detalji"]} empty={events.length === 0}>
+        <Table id="audit-table" caption="Revizorski trag" headers={auditHeaders} empty={events.length === 0}>
           {events.map((e) => (
             <tr key={e.id}>
-              <Td className="whitespace-nowrap text-xs">{formatDateTime(e.createdAt)}</Td>
+              <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>
               <Td className="text-xs">{e.actorId ? emailById.get(e.actorId) ?? e.actorId.slice(-8) : e.actorLabel ?? "—"}</Td>
-              <Td className="font-mono text-xs">{e.action}</Td>
+              <Td className="break-all font-mono text-xs">{e.action}</Td>
               <Td className="text-xs">{e.targetType}{e.targetId ? ` (${e.targetId.slice(-8)})` : ""}</Td>
               <Td className="text-xs">{e.reason ?? "—"}</Td>
-              <Td className="max-w-md truncate text-xs text-slate-500">
+              <Td className="max-w-md break-all text-xs text-slate-500 md:truncate">
                 {e.after ? JSON.stringify(e.after) : ""}
               </Td>
             </tr>

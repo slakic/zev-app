@@ -7,6 +7,24 @@ import { formatDate, endOfDay, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
+const cashFlowHeaders: ColumnSpec[] = [
+  { label: "Račun", priority: "primary" },
+  { label: "Početno", align: "right", priority: "detail" },
+  { label: "Prilivi", align: "right" },
+  { label: "Odlivi", align: "right" },
+  { label: "Neto", align: "right", priority: "detail" },
+  { label: "Trenutno stanje", align: "right" },
+];
+
+const receivablesHeaders: ColumnSpec[] = [
+  { label: "Faktura", priority: "primary" },
+  { label: "Dužnik" },
+  { label: "Jedinica", priority: "detail" },
+  { label: "Dospijeće" },
+  { label: "Otvoreno", align: "right" },
+  { label: "Starost", priority: "detail" },
+];
+
 const debtHeaders: ColumnSpec[] = [
   { label: "Vlasnik", priority: "primary" },
   { label: "Jedinica(e)", priority: "detail" },
@@ -136,15 +154,15 @@ export default async function ReportsPage({
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Stanje računa i tok novca">
-          <Table headers={["Račun", "Početno", "Prilivi", "Odlivi", "Neto", "Trenutno stanje"]} empty={cashFlow.length === 0}>
+          <Table id="cashflow-table" caption="Stanje računa i tok novca" headers={cashFlowHeaders} empty={cashFlow.length === 0}>
             {cashFlow.map((r) => (
               <tr key={r.accountId}>
                 <Td>{r.accountName}</Td>
-                <Td right>{formatMoney(r.opening, "")}</Td>
-                <Td right>{formatMoney(r.income, "")}</Td>
-                <Td right>{formatMoney(r.expense, "")}</Td>
-                <Td right>{formatMoney(r.net, "")}</Td>
-                <Td right className="font-semibold">{formatMoney(r.currentBalance, "")}</Td>
+                <Td>{formatMoney(r.opening, "")}</Td>
+                <Td>{formatMoney(r.income, "")}</Td>
+                <Td>{formatMoney(r.expense, "")}</Td>
+                <Td>{formatMoney(r.net, "")}</Td>
+                <Td className="font-semibold">{formatMoney(r.currentBalance, "")}</Td>
               </tr>
             ))}
           </Table>
@@ -165,14 +183,14 @@ export default async function ReportsPage({
         </Card>
 
         <Card title={`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`}>
-          <Table headers={["Faktura", "Dužnik", "Jedinica", "Dospijeće", "Otvoreno", "Starost"]} empty={receivables.rows.length === 0}>
+          <Table id="receivables-table" caption="Neplaćene fakture vlasnika" headers={receivablesHeaders} empty={receivables.rows.length === 0}>
             {receivables.rows.map((r) => (
               <tr key={r.invoiceId}>
                 <Td>{r.number}</Td>
                 <Td>{r.debtor}</Td>
                 <Td>{r.unit}</Td>
                 <Td>{formatDate(r.dueDate)}</Td>
-                <Td right>{formatMoney(r.open, "")}</Td>
+                <Td>{formatMoney(r.open, "")}</Td>
                 <Td>{r.bucket}</Td>
               </tr>
             ))}

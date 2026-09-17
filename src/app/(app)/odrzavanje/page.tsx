@@ -5,7 +5,16 @@ import { listIssues, reportIssue } from "@/server/services/maintenance";
 import { listBuildings, listUnits } from "@/server/services/property";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowLink, type ColumnSpec } from "@/components/ui";
+
+const issueHeaders: ColumnSpec[] = [
+  { label: "Naslov", priority: "primary" },
+  { label: "Prijavio", priority: "detail" },
+  { label: "Kategorija", priority: "detail" },
+  { label: "Hitnost" },
+  { label: "Status" },
+  { label: "Prijavljena", priority: "detail" },
+];
 
 async function reportAction(formData: FormData) {
   "use server";
@@ -75,7 +84,7 @@ export default async function MaintenancePage({ searchParams }: { searchParams: 
 
       <div className="mt-4">
         <Card title={management ? "Sve prijave" : "Moje prijave"}>
-          <Table headers={["Naslov", "Prijavio", "Kategorija", "Hitnost", "Status", "Prijavljena"]} empty={issues.length === 0}>
+          <Table id="issues-table" caption={management ? "Sve prijave" : "Moje prijave"} headers={issueHeaders} empty={issues.length === 0}>
             {issues.map((i) => (
               <tr key={i.id}>
                 <Td><RowLink href={`/odrzavanje/${i.id}`}>{i.title}</RowLink></Td>

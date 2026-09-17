@@ -6,7 +6,16 @@ import { listAccounts } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, type ColumnSpec } from "@/components/ui";
+
+const paymentHeaders: ColumnSpec[] = [
+  { label: "Datum" },
+  { label: "Platilac", priority: "primary" },
+  { label: "Poziv na broj", priority: "detail" },
+  { label: "Iznos", align: "right", nowrap: true },
+  { label: "Status" },
+  { label: "Radnje" },
+];
 import { PdfStatementImport } from "@/components/pdf-statement-import";
 
 async function enterPaymentAction(formData: FormData) {
@@ -137,13 +146,13 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
 
       <div className="mt-4">
         <Card title={management ? "Sve uplate" : "Moje evidentirane uplate"}>
-          <Table headers={["Datum", "Platilac", "Poziv na broj", "Iznos", "Status", ""]} empty={payments.length === 0}>
+          <Table id="payments-table" caption={management ? "Sve uplate" : "Moje evidentirane uplate"} headers={paymentHeaders} empty={payments.length === 0}>
             {payments.map((p) => (
               <tr key={p.id}>
                 <Td>{formatDate(p.date)}</Td>
                 <Td>{p.payer ? partyDisplayName(p.payer) : p.payerNameRaw ?? "—"}</Td>
                 <Td className="font-mono text-xs">{p.reference ?? "—"}</Td>
-                <Td right>{formatMoney(p.amount.toString())}</Td>
+                <Td>{formatMoney(p.amount.toString())}</Td>
                 <Td><StatusBadge status={p.status} label={tEnum("paymentStatus", p.status)} /></Td>
                 <Td>
                   {management && (

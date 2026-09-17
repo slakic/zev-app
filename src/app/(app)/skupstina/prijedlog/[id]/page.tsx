@@ -7,7 +7,16 @@ import { serializeResult } from "@/server/engines/voting";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatWeight } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+
+const voterHeaders: ColumnSpec[] = [
+  { label: "Vlasnik", priority: "primary" },
+  { label: "Punomoćnik", priority: "detail" },
+  { label: "Težina", align: "right", priority: "detail" },
+  { label: "Token status" },
+  { label: "Izjašnjenje" },
+  { label: "Radnje" },
+];
 
 async function openVotingAction(formData: FormData) {
   "use server";
@@ -225,7 +234,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
       {isPresident && (
         <div className="mt-4">
           <Card title="Glasačka baza i lični linkovi" hint="Tokeni se čuvaju samo kao hash — sami linkovi se ne mogu ponovo prikazati.">
-            <Table headers={["Vlasnik", "Punomoćnik", "Težina", "Token status", "Izjašnjenje", "Radnje"]} empty={p.eligibleVoters.length === 0}>
+            <Table id="voters-table" caption="Glasačka baza i lični linkovi" headers={voterHeaders} empty={p.eligibleVoters.length === 0}>
               {p.eligibleVoters.map((ev) => {
                 const activeToken = ev.tokens.find((t) => t.status === "ACTIVE");
                 const lastToken = activeToken ?? ev.tokens[ev.tokens.length - 1];
@@ -234,7 +243,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                   <tr key={ev.id}>
                     <Td>{partyDisplayName(ev.owner)}</Td>
                     <Td>{ev.proxy ? partyDisplayName(ev.proxy) : "—"}</Td>
-                    <Td right>{formatWeight(ev.weight)}</Td>
+                    <Td>{formatWeight(ev.weight)}</Td>
                     <Td>{lastToken ? <StatusBadge status={lastToken.status} label={tEnum("tokenStatus", lastToken.status)} /> : "—"}</Td>
                     <Td>{vote ? `${tEnum("vote", vote.choice)} (${tEnum("vote", vote.channel)})` : "—"}</Td>
                     <Td>

@@ -4,7 +4,16 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listMeetings, createMeeting, listVotingRules, createVotingRule } from "@/server/services/meetings";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+
+const meetingHeaders: ColumnSpec[] = [
+  { label: "Sjednica", priority: "primary" },
+  { label: "Vrsta", priority: "detail" },
+  { label: "Termin" },
+  { label: "Status" },
+  { label: "Tačke", align: "right", priority: "detail" },
+  { label: "Prijedlozi", align: "right" },
+];
 
 async function addMeetingAction(formData: FormData) {
   "use server";
@@ -67,15 +76,20 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
         </Link>
       </div>
       <Card title={activeBody === "BOARD" ? "Sjednice upravnog odbora" : "Sjednice skupštine"}>
-        <Table headers={["Sjednica", "Vrsta", "Termin", "Status", "Tačke", "Prijedlozi"]} empty={meetings.length === 0}>
+        <Table
+          id="meetings-table"
+          caption={activeBody === "BOARD" ? "Sjednice upravnog odbora" : "Sjednice skupštine"}
+          headers={meetingHeaders}
+          empty={meetings.length === 0}
+        >
           {meetings.map((m) => (
             <tr key={m.id}>
               <Td><RowLink href={`/skupstina/${m.id}`}>{m.title}</RowLink></Td>
               <Td>{tEnum("meetingType", m.type)}</Td>
               <Td>{formatDateTime(m.scheduledAt)}</Td>
               <Td><StatusBadge status={m.status} label={tEnum("meetingStatus", m.status)} /></Td>
-              <Td right>{m._count.agendaItems}</Td>
-              <Td right>{m._count.proposals}</Td>
+              <Td>{m._count.agendaItems}</Td>
+              <Td>{m._count.proposals}</Td>
             </tr>
           ))}
         </Table>

@@ -8,7 +8,16 @@ import { listBuildings } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+
+const planItemHeaders: ColumnSpec[] = [
+  { label: "Stavka", priority: "primary" },
+  { label: "Vrsta" },
+  { label: "Mjesec", align: "right", priority: "detail" },
+  { label: "Obuhvat", priority: "detail" },
+  { label: "Planirano (KM)", align: "right", nowrap: true },
+  { label: "Termin" },
+];
 
 async function addItemAction(formData: FormData) {
   "use server";
@@ -127,14 +136,14 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       )}
 
       <Card title="Stavke plana">
-        <Table headers={["Stavka", "Vrsta", "Mjesec", "Obuhvat", "Planirano (KM)", "Termin"]} empty={plan.items.length === 0}>
+        <Table id="plan-items-table" caption="Stavke plana" headers={planItemHeaders} empty={plan.items.length === 0}>
           {plan.items.map((i) => (
             <tr key={i.id}>
               <Td>{i.name}</Td>
               <Td>{i.type === "INCOME" ? "Prihod" : i.type === "RECURRING_EXPENSE" ? "Redovni trošak" : i.type === "MAINTENANCE_EXPENSE" ? "Održavanje" : i.type === "PROJECT" ? "Projekat" : i.type === "RESERVE_ALLOCATION" ? "Fond održavanja" : i.type === "CONTINGENCY" ? "Rezerva" : i.type === "PREVENTIVE_MAINTENANCE" ? "Preventivno održavanje" : "Pregled/inspekcija"}</Td>
-              <Td right>{i.month ?? "—"}</Td>
+              <Td>{i.month ?? "—"}</Td>
               <Td>{tEnum("scope", i.scopeType)}</Td>
-              <Td right>{formatMoney(i.plannedAmount.toString(), "")}</Td>
+              <Td>{formatMoney(i.plannedAmount.toString(), "")}</Td>
               <Td>{formatDate(i.scheduledDate)}</Td>
             </tr>
           ))}

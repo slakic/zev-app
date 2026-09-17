@@ -74,6 +74,27 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
     „Radnje" naslov kolone umjesto praznog stringa — isti a11y razlog kao i
     `<caption>`/`scope="col"` iz Faze 3a). 247/247 testova prolazi; provjereno
     na 1440px i 375px.
+  - **Talas 3c-3 — tabele sa 6 kolona (10 tabela):** `/vlasnici` lica, `/skupstina`
+    sjednice, `/odrzavanje` prijave, `/fakture/uplate` uplate, `/izvjestaji`
+    (tok novca, neplaćene fakture vlasnika), `/planovi/[id]` stavke plana,
+    `/skupstina/prijedlog/[id]` glasačka baza, `/podesavanja/audit` revizorski
+    trag, `/podesavanja/poruke` outbox.
+    - **Nađen i ispravljen stvaran bag u mehanizmu**, ne samo migracija: na
+      `/podesavanja/audit`, kartični prelom prisilno postavlja
+      `white-space: normal !important` na `<td>`, ali CSS Grid-ova podrazumijevana
+      `min-width: auto` na grid-stavci i dalje računa širinu prema
+      min-content-u nepreloma teksta (JSON dump, `document.download`-tip
+      nazivi radnji bez razmaka) — `overflow-wrap`/`break-words` to ne rješava
+      jer ne utiče na min-content proračun u Grid kontekstu, pa je ćelija i
+      dalje gurala karticu u horizontalni skrol unutar samog `Table`-a (upravo
+      ono što je N6 nalaz prijavio, sada iznutra umjesto spolja). Ispravljeno
+      sa `break-all` (koji *smanjuje* min-content), uz `md:truncate` da se
+      desktop izgled (elipsa jednog reda) ne promijeni na `lg+`, gdje se ova
+      kolona (`priority: "detail"`) i dalje prikazuje kao obična ćelija.
+      Provjereno JS-om (`table.scrollWidth` ≤ širina viewporta) na svih 10
+      tabela ovog talasa nakon ispravke, ne samo vizuelno.
+  - 247/247 testova prolazi; provjereno na 1440px i 375px za svih 18 tabela
+    (3c-1 + 3c-2 + 3c-3) isporučenih do sada.
 
 ## [2.19.1] - 2026-09-17
 

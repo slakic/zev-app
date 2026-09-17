@@ -2,7 +2,16 @@ import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, type ColumnSpec } from "@/components/ui";
+
+const messageHeaders: ColumnSpec[] = [
+  { label: "Vrijeme", nowrap: true },
+  { label: "Kanal", priority: "detail" },
+  { label: "Primalac", priority: "primary" },
+  { label: "Naslov / šablon" },
+  { label: "Status" },
+  { label: "Pokušaja", align: "right", priority: "detail" },
+];
 
 export default async function MessagesPage() {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
@@ -21,15 +30,15 @@ export default async function MessagesPage() {
     <div>
       <PageHeader title="Poslate poruke" subtitle="Outbox e-mail i Viber poruka (mock provajderi — simulirani statusi isporuke)" />
       <Card>
-        <Table headers={["Vrijeme", "Kanal", "Primalac", "Naslov / šablon", "Status", "Pokušaja"]} empty={messages.length === 0}>
+        <Table id="messages-table" caption="Poslate poruke" headers={messageHeaders} empty={messages.length === 0}>
           {messages.map((m) => (
             <tr key={m.id}>
-              <Td className="whitespace-nowrap text-xs">{formatDateTime(m.createdAt)}</Td>
+              <Td className="text-xs">{formatDateTime(m.createdAt)}</Td>
               <Td>{m.channel === "EMAIL" ? "E-mail" : "Viber"}</Td>
               <Td className="text-xs">{m.toAddress}</Td>
               <Td className="text-xs">{m.subject ?? m.template ?? "—"}</Td>
               <Td><StatusBadge status={m.status} label={m.status === "QUEUED" ? "U redu čekanja" : m.status === "SENT" ? "Poslato" : m.status === "DELIVERED" ? "Isporučeno" : m.status === "SEEN" ? "Pročitano" : "Neuspješno"} /></Td>
-              <Td right>{m.attempts}</Td>
+              <Td>{m.attempts}</Td>
             </tr>
           ))}
         </Table>
