@@ -93,8 +93,18 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
       kolona (`priority: "detail"`) i dalje prikazuje kao obična ćelija.
       Provjereno JS-om (`table.scrollWidth` ≤ širina viewporta) na svih 10
       tabela ovog talasa nakon ispravke, ne samo vizuelno.
-  - 247/247 testova prolazi; provjereno na 1440px i 375px za svih 18 tabela
-    (3c-1 + 3c-2 + 3c-3) isporučenih do sada.
+  - **Talas 3c-4 — tabele sa tačno 5 kolona (11 tabela, bez kartičnog preloma
+    po P5 — samo `align` + `caption` + `id`):** `/zgrade` zgrade, `/vlasnici`
+    punomoći, `/vlasnici/[id]` vlasnički udjeli, `/organi` istorija mandata,
+    `/planovi` planovi, `/odrzavanje/[id]` ponude izvođača + radni nalozi,
+    `/fakture/uplate/[id]` prijedlozi uparivanja + alokacije, `/admin/aktivnosti`,
+    `/admin/[zevId]` nalozi u ZEV-u. Nekoliko tabela je usput dobilo vidljiv
+    „Radnje" naslov kolone umjesto praznog stringa (isti a11y razlog kao 3c-2).
+    Provjereno JS-om da se generisani `<style>` blok NE generiše (`useCardTransform`
+    je `false` za tačno 5 kolona, po dizajnu iz §3.B) i da tabele ostaju obične
+    horizontalno-skrolabilne tabele na 375px, kao i prije migracije.
+  - 247/247 testova prolazi; provjereno na 1440px i 375px za svih 29 tabela
+    (3c-1 + 3c-2 + 3c-3 + 3c-4) isporučenih do sada.
 
 ## [2.19.1] - 2026-09-17
 

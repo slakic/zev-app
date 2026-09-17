@@ -3,7 +3,15 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listPlans, createPlan, listProjects, createProject } from "@/server/services/plans";
 import { parseMoneyInput } from "@/lib/money";
 import { tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink, type ColumnSpec } from "@/components/ui";
+
+const plansHeaders: ColumnSpec[] = [
+  { label: "Godina" },
+  { label: "Vrsta" },
+  { label: "Naziv" },
+  { label: "Verzija", align: "right" },
+  { label: "Status" },
+];
 
 async function addPlanAction(formData: FormData) {
   "use server";
@@ -34,13 +42,13 @@ export default async function PlansPage() {
     <div>
       <PageHeader title="Godišnji planovi" subtitle="Plan održavanja, finansijski plan, projekti i realizacija" />
       <Card title="Planovi (verzionisani)">
-        <Table headers={["Godina", "Vrsta", "Naziv", "Verzija", "Status"]} empty={plans.length === 0}>
+        <Table id="plans-table" caption="Planovi (verzionisani)" headers={plansHeaders} empty={plans.length === 0}>
           {plans.map((p) => (
             <tr key={p.id}>
               <Td>{p.year}.</Td>
               <Td>{tEnum("planKind", p.kind)}</Td>
               <Td><RowLink href={`/planovi/${p.id}`}>{p.title}</RowLink></Td>
-              <Td right>v{p.version}</Td>
+              <Td>v{p.version}</Td>
               <Td><StatusBadge status={p.status} label={tEnum("planStatus", p.status)} /></Td>
             </tr>
           ))}

@@ -7,7 +7,23 @@ import { prisma } from "@/lib/prisma";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash, type ColumnSpec } from "@/components/ui";
+
+const suggestionHeaders: ColumnSpec[] = [
+  { label: "Faktura" },
+  { label: "Jedinica" },
+  { label: "Otvoreno", align: "right" },
+  { label: "Osnov prijedloga" },
+  { label: "Radnje" },
+];
+
+const allocationHeaders: ColumnSpec[] = [
+  { label: "Vrijeme" },
+  { label: "Faktura" },
+  { label: "Iznos", align: "right" },
+  { label: "Napomena" },
+  { label: "Radnje" },
+];
 
 async function allocateAction(formData: FormData) {
   "use server";
@@ -84,12 +100,12 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Prijedlozi uparivanja">
-          <Table headers={["Faktura", "Jedinica", "Otvoreno", "Osnov prijedloga", ""]} empty={suggestions.length === 0}>
+          <Table id="suggestions-table" caption="Prijedlozi uparivanja" headers={suggestionHeaders} empty={suggestions.length === 0}>
             {suggestions.map((s) => (
               <tr key={s.invoiceId}>
                 <Td>{s.number}</Td>
                 <Td>{s.unitLabel}</Td>
-                <Td right>{formatMoney(s.open)}</Td>
+                <Td>{formatMoney(s.open)}</Td>
                 <Td className="text-xs">{s.reasons.join(", ")}</Td>
                 <Td>
                   <form action={allocateAction}>
@@ -150,12 +166,12 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
 
       <div className="mt-4">
         <Card title="Alokacije" hint="Zapisi se ne brišu — storno je novi zapis.">
-          <Table headers={["Vrijeme", "Faktura", "Iznos", "Napomena", ""]} empty={payment.allocations.length === 0}>
+          <Table id="allocations-table" caption="Alokacije" headers={allocationHeaders} empty={payment.allocations.length === 0}>
             {payment.allocations.map((a) => (
               <tr key={a.id} className={Number(a.amount) < 0 ? "text-red-700" : ""}>
                 <Td>{formatDateTime(a.createdAt)}</Td>
                 <Td>{a.invoice.number}</Td>
-                <Td right>{formatMoney(a.amount.toString())}</Td>
+                <Td>{formatMoney(a.amount.toString())}</Td>
                 <Td>{a.reason ?? "—"}</Td>
                 <Td>
                   {Number(a.amount) > 0 && !a.reversalOfId && payment.status !== "REVERSED" && (

@@ -3,7 +3,15 @@ import { listAllActivity, listActivityActorsForZev } from "@/server/services/act
 import { listTenants } from "@/server/services/admin";
 import { ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
+
+const adminActivityHeaders: ColumnSpec[] = [
+  { label: "Vrijeme", nowrap: true },
+  { label: "ZEV" },
+  { label: "Akter" },
+  { label: "Kategorija" },
+  { label: "Aktivnost" },
+];
 
 function daysAgoIso(n: number): string {
   const d = new Date();
@@ -124,13 +132,13 @@ export default async function AdminActivityPage({
       </form>
 
       <Card>
-        <Table headers={["Vrijeme", "ZEV", "Akter", "Kategorija", "Aktivnost"]} empty={result.rows.length === 0}>
+        <Table id="admin-activity-table" caption="Aktivnosti — svi ZEV nalozi" headers={adminActivityHeaders} empty={result.rows.length === 0}>
           {result.rows.map((e) => {
             const label = labelForAction(e.action);
             const summary = summarize(e);
             return (
               <tr key={e.id}>
-                <Td className="whitespace-nowrap text-xs">{formatDateTime(e.createdAt)}</Td>
+                <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>
                 <Td className="text-xs">{e.zev ? e.zev.shortName || e.zev.legalName : "—"}</Td>
                 <Td className="text-xs">{e.actorId ? actorLabelById.get(e.actorId) ?? e.actorLabel ?? "—" : e.actorLabel ?? "—"}</Td>
                 <Td className="text-xs">{categoryLabel(categoryForAction(e.action))}</Td>

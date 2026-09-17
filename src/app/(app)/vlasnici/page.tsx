@@ -11,6 +11,14 @@ import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleB
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
+const proxyHeaders: ColumnSpec[] = [
+  { label: "Davalac" },
+  { label: "Punomoćnik" },
+  { label: "Obim" },
+  { label: "Važi od" },
+  { label: "Važi do" },
+];
+
 const partyHeaders: ColumnSpec[] = [
   { label: "Ime / naziv", priority: "primary" },
   { label: "Vrsta", priority: "detail" },
@@ -249,7 +257,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
             </form>
           </Card>
           <Card title="Punomoći">
-            <Table headers={["Davalac", "Punomoćnik", "Obim", "Važi od", "Važi do"]} empty={proxies.length === 0}>
+            <Table id="proxies-table" caption="Punomoći" headers={proxyHeaders} empty={proxies.length === 0}>
               {proxies.map((p) => (
                 <tr key={p.id}>
                   <Td>{partyDisplayName(p.grantor)}</Td>

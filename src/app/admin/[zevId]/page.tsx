@@ -5,8 +5,16 @@ import { getTenant, setTenantActive, createTenantAccount, grantMembership, revok
 import { switchActiveZev } from "@/server/services/memberships";
 import { formatDate, t } from "@/lib/i18n";
 import { PasswordField } from "@/components/password-field";
-import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash, type ColumnSpec } from "@/components/ui";
 import type { Role } from "@/generated/prisma/client";
+
+const membershipHeaders: ColumnSpec[] = [
+  { label: "Korisnik" },
+  { label: "Rola" },
+  { label: "Nalog aktivan" },
+  { label: "Član od" },
+  { label: "Radnje" },
+];
 
 const TIER_LABELS: Record<string, string> = {
   BASIC: "Basic",
@@ -180,7 +188,7 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
               <Flash err={t("tenant.noActivePresidentWarning")} />
             </div>
           )}
-          <Table headers={["Korisnik", "Rola", "Nalog aktivan", "Član od", ""]} empty={zev.memberships.length === 0}>
+          <Table id="memberships-table" caption="Nalozi u ovom ZEV-u" headers={membershipHeaders} empty={zev.memberships.length === 0}>
             {zev.memberships.map((m) => (
               <tr key={m.id}>
                 <Td>

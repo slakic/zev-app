@@ -45,7 +45,7 @@ export function BuildingRow({
         </Td>
         <Td>{b.address}</Td>
         <Td>{b.entrances.map((e) => e.name).join(", ") || "—"}</Td>
-        <Td right>{b._count.units}</Td>
+        <Td>{b._count.units}</Td>
         {canEdit && (
           <Td>
             <RowAction type="button" onClick={() => setOpen((v) => !v)}>

@@ -7,8 +7,16 @@ import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
-import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
+
+const stakeHeaders: ColumnSpec[] = [
+  { label: "Jedinica" },
+  { label: "Udio %", align: "right" },
+  { label: "Od" },
+  { label: "Do" },
+  { label: "Dokaz o vlasništvu" },
+];
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
 const ALL_ROLES: Role[] = ["PRESIDENT", "ACCOUNTANT", "OWNER"];
@@ -184,13 +192,13 @@ export default async function PartyDetailPage({
           )}
         </Card>
         <Card title="Vlasnički udjeli" hint="Istorija se čuva — raniji udjeli ostaju vidljivi.">
-          <Table headers={["Jedinica", "Udio %", "Od", "Do", "Dokaz o vlasništvu"]} empty={party.ownershipStakes.length === 0}>
+          <Table id="stakes-table" caption="Vlasnički udjeli" headers={stakeHeaders} empty={party.ownershipStakes.length === 0}>
             {party.ownershipStakes.map((s) => {
               const proof = proofsByStake.get(s.id);
               return (
                 <tr key={s.id} className={s.validTo ? "text-slate-400" : ""}>
                   <Td>{s.unit.building.name} / {s.unit.label}</Td>
-                  <Td right>{s.sharePercent.toString()}</Td>
+                  <Td>{s.sharePercent.toString()}</Td>
                   <Td>{formatDate(s.validFrom)}</Td>
                   <Td>{s.validTo ? formatDate(s.validTo) : "aktivno"}</Td>
                   <Td>

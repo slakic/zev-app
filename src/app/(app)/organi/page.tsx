@@ -7,7 +7,15 @@ import {
 } from "@/server/services/ownership";
 import { getSettings } from "@/server/services/settings";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
+
+const officeHistoryHeaders: ColumnSpec[] = [
+  { label: "Funkcija" },
+  { label: "Lice" },
+  { label: "Od" },
+  { label: "Do" },
+  { label: "Osnov" },
+];
 
 async function setOfficerAction(formData: FormData) {
   "use server";
@@ -174,7 +182,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
       )}
 
       <Card title="Istorija mandata">
-        <Table headers={["Funkcija", "Lice", "Od", "Do", "Osnov"]} empty={history.length === 0}>
+        <Table id="office-history-table" caption="Istorija mandata" headers={officeHistoryHeaders} empty={history.length === 0}>
           {history.map((h) => (
             <tr key={h.id}>
               <Td>{h.role === "PRESIDENT" ? "Predsjednik ZEV" : h.role === "ACCOUNTANT" ? "Računovođa" : "Član upravnog odbora"}</Td>

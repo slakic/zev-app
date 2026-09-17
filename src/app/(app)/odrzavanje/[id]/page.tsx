@@ -7,8 +7,24 @@ import { listSuppliers } from "@/server/services/expenses";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, type ColumnSpec } from "@/components/ui";
 import type { IssueStatus } from "@/generated/prisma/client";
+
+const offerHeaders: ColumnSpec[] = [
+  { label: "Izvođač" },
+  { label: "Iznos", align: "right" },
+  { label: "Opis" },
+  { label: "Izabrana" },
+  { label: "Radnje" },
+];
+
+const workOrderHeaders: ColumnSpec[] = [
+  { label: "Broj" },
+  { label: "Izvođač" },
+  { label: "Termin" },
+  { label: "Status" },
+  { label: "Radnje" },
+];
 
 async function transitionAction(formData: FormData) {
   "use server";
@@ -211,11 +227,11 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
 
         {management && (
           <Card title="Ponude izvođača">
-            <Table headers={["Izvođač", "Iznos", "Opis", "Izabrana", ""]} empty={issue.offers.length === 0}>
+            <Table id="offers-table" caption="Ponude izvođača" headers={offerHeaders} empty={issue.offers.length === 0}>
               {issue.offers.map((o) => (
                 <tr key={o.id}>
                   <Td>{o.supplier.name}</Td>
-                  <Td right>{formatMoney(o.amount.toString())}</Td>
+                  <Td>{formatMoney(o.amount.toString())}</Td>
                   <Td>{o.description ?? "—"}</Td>
                   <Td>{o.selected ? "DA" : "—"}</Td>
                   <Td>
@@ -248,7 +264,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
 
         {management && (
           <Card title="Radni nalozi">
-            <Table headers={["Broj", "Izvođač", "Termin", "Status", ""]} empty={issue.workOrders.length === 0}>
+            <Table id="work-orders-table" caption="Radni nalozi" headers={workOrderHeaders} empty={issue.workOrders.length === 0}>
               {issue.workOrders.map((wo) => (
                 <tr key={wo.id}>
                   <Td>{wo.number}</Td>

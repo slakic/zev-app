@@ -76,9 +76,13 @@ export default async function BuildingsPage({
     listCommonAssets(actor),
   ]);
   const entrances = buildings.flatMap((b) => b.entrances.map((e) => ({ ...e, buildingName: b.name })));
-  const buildingHeaders = isPresident
-    ? ["Naziv", "Adresa", "Ulazi", "Jedinica", "Radnje"]
-    : ["Naziv", "Adresa", "Ulazi", "Jedinica"];
+  const buildingHeaders: ColumnSpec[] = [
+    { label: "Naziv" },
+    { label: "Adresa" },
+    { label: "Ulazi" },
+    { label: "Jedinica", align: "right" },
+    ...(isPresident ? [{ label: "Radnje" } as ColumnSpec] : []),
+  ];
   const unitHeaders: ColumnSpec[] = [
     { label: "Zgrada" },
     { label: "Ulaz", priority: "detail" },
@@ -99,7 +103,7 @@ export default async function BuildingsPage({
       <Flash err={err} msg={okMsg} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Zgrade">
-          <Table headers={buildingHeaders} empty={buildings.length === 0}>
+          <Table id="buildings-table" caption="Zgrade" headers={buildingHeaders} empty={buildings.length === 0}>
             {buildings.map((b) => (
               <BuildingRow key={b.id} building={b} canEdit={isPresident} action={updateBuildingAction} />
             ))}
