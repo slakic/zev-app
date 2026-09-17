@@ -6,7 +6,7 @@ import { generateDecisionPdf, generateVotingListPdf } from "@/server/services/do
 import { serializeResult } from "@/server/engines/voting";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatWeight } from "@/lib/money";
-import { formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
 
 const voterHeaders: ColumnSpec[] = [
@@ -234,7 +234,14 @@ export default async function ProposalPage({ params, searchParams }: { params: P
       {isPresident && (
         <div className="mt-4">
           <Card title="Glasačka baza i lični linkovi" hint="Tokeni se čuvaju samo kao hash — sami linkovi se ne mogu ponovo prikazati.">
-            <Table id="voters-table" caption="Glasačka baza i lični linkovi" headers={voterHeaders} empty={p.eligibleVoters.length === 0}>
+            <Table
+              id="voters-table"
+              caption="Glasačka baza i lični linkovi"
+              headers={voterHeaders}
+              empty={p.eligibleVoters.length === 0}
+              emptyTitle={t("empty.voters.title")}
+              emptyHint={t("empty.voters.hint")}
+            >
               {p.eligibleVoters.map((ev) => {
                 const activeToken = ev.tokens.find((t) => t.status === "ACTIVE");
                 const lastToken = activeToken ?? ev.tokens[ev.tokens.length - 1];

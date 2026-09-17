@@ -7,7 +7,7 @@ import { generatePlanPdf } from "@/server/services/documents";
 import { listBuildings } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, tEnum } from "@/lib/i18n";
+import { formatDate, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
 const pvaHeaders: ColumnSpec[] = [
@@ -143,7 +143,14 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       )}
 
       <Card title="Stavke plana">
-        <Table id="plan-items-table" caption="Stavke plana" headers={planItemHeaders} empty={plan.items.length === 0}>
+        <Table
+          id="plan-items-table"
+          caption="Stavke plana"
+          headers={planItemHeaders}
+          empty={plan.items.length === 0}
+          emptyTitle={t(isPresident && (plan.status === "DRAFT" || plan.status === "PROPOSED") ? "empty.planItems.title" : "empty.planItemsReadonly.title")}
+          emptyHint={isPresident && (plan.status === "DRAFT" || plan.status === "PROPOSED") ? t("empty.planItems.hint") : undefined}
+        >
           {plan.items.map((i) => (
             <tr key={i.id}>
               <Td>{i.name}</Td>
@@ -203,7 +210,13 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       {pva && (
         <div className="mt-4">
           <Card title={`Plan vs. realizacija (ukupno: ${formatMoney(pva.totalPlanned)} planirano / ${formatMoney(pva.totalActual)} realizovano)`}>
-            <Table id="pva-table" caption="Plan vs. realizacija" headers={pvaHeaders} empty={pva.rows.length === 0}>
+            <Table
+              id="pva-table"
+              caption="Plan vs. realizacija"
+              headers={pvaHeaders}
+              empty={pva.rows.length === 0}
+              emptyTitle={t("empty.pva.title")}
+            >
               {pva.rows.map((r) => (
                 <tr key={r.planItemId}>
                   <Td>{r.name}</Td>

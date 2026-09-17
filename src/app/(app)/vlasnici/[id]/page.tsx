@@ -5,7 +5,7 @@ import { updateUserRoles, activateUser, deactivateUser } from "@/server/services
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
-import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
 import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
@@ -199,7 +199,14 @@ export default async function PartyDetailPage({
           )}
         </Card>
         <Card title="Vlasnički udjeli" hint="Istorija se čuva — raniji udjeli ostaju vidljivi.">
-          <Table id="stakes-table" caption="Vlasnički udjeli" headers={stakeHeaders} empty={party.ownershipStakes.length === 0}>
+          <Table
+            id="stakes-table"
+            caption="Vlasnički udjeli"
+            headers={stakeHeaders}
+            empty={party.ownershipStakes.length === 0}
+            emptyTitle={t("empty.stakes.title")}
+            emptyHint={isPresident ? <BtnLink href="/vlasnici?tab=vlasnistvo" variant="tonal">Dodaj vlasnički udio</BtnLink> : undefined}
+          >
             {party.ownershipStakes.map((s) => {
               const proof = proofsByStake.get(s.id);
               return (
@@ -221,7 +228,14 @@ export default async function PartyDetailPage({
           </Table>
         </Card>
         <Card title="Korištenje jedinica">
-          <Table id="occupancies-table" caption="Korištenje jedinica" headers={occupancyHeaders} empty={party.occupancies.length === 0}>
+          <Table
+            id="occupancies-table"
+            caption="Korištenje jedinica"
+            headers={occupancyHeaders}
+            empty={party.occupancies.length === 0}
+            emptyTitle={t("empty.occupancies.title")}
+            emptyHint={isPresident ? <BtnLink href="/vlasnici?tab=vlasnistvo" variant="tonal">Evidentiraj korišćenje</BtnLink> : undefined}
+          >
             {party.occupancies.map((o) => (
               <tr key={o.id}>
                 <Td>{o.unit.label}</Td>

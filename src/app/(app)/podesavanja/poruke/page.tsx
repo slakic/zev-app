@@ -1,7 +1,7 @@
 import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
-import { formatDateTime } from "@/lib/i18n";
+import { formatDateTime, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, type ColumnSpec } from "@/components/ui";
 
 const messageHeaders: ColumnSpec[] = [
@@ -30,7 +30,14 @@ export default async function MessagesPage() {
     <div>
       <PageHeader title="Poslate poruke" subtitle="Outbox e-mail i Viber poruka (mock provajderi — simulirani statusi isporuke)" />
       <Card>
-        <Table id="messages-table" caption="Poslate poruke" headers={messageHeaders} empty={messages.length === 0}>
+        <Table
+          id="messages-table"
+          caption="Poslate poruke"
+          headers={messageHeaders}
+          empty={messages.length === 0}
+          emptyTitle={t("empty.messages.title")}
+          emptyHint={t("empty.messages.hint")}
+        >
           {messages.map((m) => (
             <tr key={m.id}>
               <Td className="text-xs">{formatDateTime(m.createdAt)}</Td>

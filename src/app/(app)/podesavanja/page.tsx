@@ -231,7 +231,14 @@ export default async function SettingsPage({
 
         {showZev && (
           <Card title="Računi (banka i blagajna)">
-            <Table id="accounts-table" caption="Računi (banka i blagajna)" headers={accountHeaders} empty={accounts.length === 0}>
+            <Table
+              id="accounts-table"
+              caption="Računi (banka i blagajna)"
+              headers={accountHeaders}
+              empty={accounts.length === 0}
+              emptyTitle={t("empty.accounts.title")}
+              emptyHint={t("empty.accounts.hint")}
+            >
               {accounts.map((a) => (
                 <tr key={a.id}>
                   <Td>{a.name}</Td>

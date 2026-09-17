@@ -156,7 +156,14 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
       />
       {activeTab === "lica" && (
       <Card title="Lica (fizička i pravna)">
-        <Table id="parties-table" caption="Lica (fizička i pravna)" headers={partyHeaders} empty={parties.length === 0}>
+        <Table
+          id="parties-table"
+          caption="Lica (fizička i pravna)"
+          headers={partyHeaders}
+          empty={parties.length === 0}
+          emptyTitle={t("empty.parties.title")}
+          emptyHint={isPresident ? t("empty.parties.hint") : undefined}
+        >
           {parties.map((p) => (
             <tr key={p.id}>
               <Td><RowLink href={`/vlasnici/${p.id}`}>{partyDisplayName(p)}</RowLink></Td>
@@ -287,7 +294,14 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
 
       {isPresident && activeTab === "punomoci" && (
           <Card title="Punomoći">
-            <Table id="proxies-table" caption="Punomoći" headers={proxyHeaders} empty={proxies.length === 0}>
+            <Table
+              id="proxies-table"
+              caption="Punomoći"
+              headers={proxyHeaders}
+              empty={proxies.length === 0}
+              emptyTitle={t("empty.proxies.title")}
+              emptyHint={t("empty.proxies.hint")}
+            >
               {proxies.map((p) => (
                 <tr key={p.id}>
                   <Td>{partyDisplayName(p.grantor)}</Td>

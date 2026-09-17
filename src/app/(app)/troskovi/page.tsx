@@ -8,7 +8,7 @@ import { listBuildings } from "@/server/services/property";
 import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, tEnum } from "@/lib/i18n";
+import { formatDate, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, Tabs, type ColumnSpec } from "@/components/ui";
 
 const supplierHeaders: ColumnSpec[] = [
@@ -135,7 +135,14 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
       />
       {activeTab === "dobavljaci" && (
         <Card title="Dobavljači i izvođači">
-          <Table id="suppliers-table" caption="Dobavljači i izvođači" headers={supplierHeaders} empty={suppliers.length === 0}>
+          <Table
+            id="suppliers-table"
+            caption="Dobavljači i izvođači"
+            headers={supplierHeaders}
+            empty={suppliers.length === 0}
+            emptyTitle={t("empty.suppliers.title")}
+            emptyHint={t("empty.suppliers.hint")}
+          >
             {suppliers.map((s) => (
               <tr key={s.id}>
                 <Td>{s.name}</Td>
@@ -162,7 +169,14 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
       {activeTab === "troskovi" && (
       <>
         <Card title="Troškovi">
-          <Table id="expenses-table" caption="Troškovi" headers={expenseHeaders} empty={expenses.length === 0}>
+          <Table
+            id="expenses-table"
+            caption="Troškovi"
+            headers={expenseHeaders}
+            empty={expenses.length === 0}
+            emptyTitle={t("empty.expenses.title")}
+            emptyHint={t("empty.expenses.hint")}
+          >
             {expenses.map((e) => (
               <tr key={e.id}>
                 <Td>{e.supplier?.name ?? "—"}</Td>

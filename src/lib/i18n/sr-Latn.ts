@@ -386,6 +386,65 @@ const srLatn = {
     FINANCE: "Finansije",
     SYSTEM: "Sistemski događaji",
   },
+  /**
+   * Empty-state copy for `Table`'s `emptyTitle`/`emptyHint` (Plans/ui-ux-redesign-plan.md
+   * §3.I, P7/H10). Two classes, per the plan — never mixed within one key:
+   *  - "još ničega nema": `title` names the missing thing, `hint` names the control that
+   *    creates the first one ("Dodajte prvu zgradu obrascem „Dodaj zgradu” ispod.") — never a
+   *    button, since the hint can't reach outside the table into a sibling `<details>`.
+   *  - "nema rezultata za filter" (`filtered*` keys): the opposite message — widen or clear
+   *    the filter, not create something.
+   */
+  empty: {
+    buildings: { title: "Još nema zgrada.", hint: "Dodajte prvu zgradu obrascem „Dodaj zgradu” ispod." },
+    entrances: { title: "Još nema ulaza.", hint: "Dodajte prvi ulaz obrascem „Dodaj ulaz” ispod." },
+    entrancesNoBuilding: { title: "Još nema ulaza.", hint: "Prvo dodajte zgradu na tabu „Zgrade”." },
+    units: { title: "Još nema posebnih dijelova.", hint: "Dodajte prvu jedinicu obrascem „Dodaj jedinicu” ispod." },
+    unitsNoBuilding: { title: "Još nema posebnih dijelova.", hint: "Prvo dodajte zgradu na tabu „Zgrade”." },
+    assets: { title: "Još nema zajedničkih dijelova.", hint: "Dodajte prvi obrascem „Dodaj zajednički dio” ispod." },
+    suppliers: { title: "Još nema dobavljača.", hint: "Dodajte prvog dobavljača obrascem „Novi dobavljač” ispod." },
+    expenses: { title: "Još nema troškova.", hint: "Evidentirajte prvi trošak obrascem „Novi trošak (ulazna faktura)” ispod." },
+    parties: { title: "Još nema evidentiranih lica.", hint: "Dodajte prvo lice obrascem „Dodaj lice” ispod." },
+    proxies: { title: "Još nema punomoći.", hint: "Evidentirajte prvu punomoć obrascem ispod." },
+    stakes: { title: "Nema evidentiranih vlasničkih udjela." },
+    occupancies: { title: "Nema evidentiranog korišćenja jedinica." },
+    board: { title: "Još nema članova upravnog odbora.", hint: "Dodajte prvog člana obrascem „Dodaj člana” ispod." },
+    officeHistory: { title: "Istorija je još prazna.", hint: "Zapisi se dodaju automatski kada se promijeni nosilac funkcije." },
+    chargeItems: { title: "Još nema stavki naknada.", hint: "Dodajte prvu stavku obrascem „Nova stavka naknade” ispod." },
+    batches: { title: "Još nema serija faktura.", hint: "Kreirajte prvu seriju obrascem ispod." },
+    invoicesManagement: { title: "Još nema izdatih faktura.", hint: "Prvo podesite stavke naknada, pa kreirajte seriju faktura." },
+    invoicesOwner: { title: "Nemate izdatih faktura." },
+    payments: { title: "Još nema evidentiranih uplata.", hint: "Unesite prvu uplatu obrascem iznad." },
+    suggestions: { title: "Nema predloženih uparivanja." },
+    allocations: { title: "Još nema raspoređenih iznosa.", hint: "Rasporedite uplatu obrascem „Ručno raspoređivanje”." },
+    invoiceLines: { title: "Faktura nema stavki obračuna." },
+    invoiceAllocations: { title: "Još nema uplata po ovoj fakturi." },
+    accounts: { title: "Još nema računa.", hint: "Dodajte prvi račun obrascem „Dodaj račun” ispod." },
+    meetings: { title: "Još nema sjednica.", hint: "Zakažite prvu sjednicu obrascem „Nova sjednica” ispod." },
+    votingRules: { title: "Još nema pravila glasanja.", hint: "Dodajte prvo pravilo obrascem „Novo pravilo” ispod." },
+    voters: { title: "Glasačka baza još nije formirana.", hint: "Baza se popunjava kada se glasanje otvori." },
+    proposals: { title: "Još nema prijedloga.", hint: "Dodajte prvi prijedlog obrascem „Novi prijedlog” ispod." },
+    attendance: { title: "Još nema evidentiranog prisustva.", hint: "Evidentirajte prisustvo obrascem ispod." },
+    plans: { title: "Još nema planova.", hint: "Kreirajte prvi plan obrascem ispod." },
+    projects: { title: "Još nema investicionih projekata.", hint: "Dodajte prvi projekat obrascem ispod." },
+    planItems: { title: "Još nema stavki plana.", hint: "Dodajte prvu stavku obrascem „Nova stavka” ispod." },
+    planItemsReadonly: { title: "Ovaj plan nema stavki." },
+    pva: { title: "Još nema podataka o realizaciji." },
+    issuesManagement: { title: "Još nema prijavljenih kvarova.", hint: "Prijavite kvar obrascem „Prijavi kvar / problem” iznad." },
+    issuesOwner: { title: "Još niste prijavili nijedan kvar.", hint: "Prijavite kvar obrascem „Prijavi kvar / problem” iznad." },
+    offers: { title: "Još nema ponuda izvođača.", hint: "Dodajte prvu ponudu obrascem ispod." },
+    workOrders: { title: "Još nema radnih naloga.", hint: "Kreirajte radni nalog obrascem ispod." },
+    documents: { title: "Još nema generisanih dokumenata." },
+    attachments: { title: "Još nema otpremljenih dokumenata.", hint: "Otpremite prvi dokument obrascem „Otpremi dokument” ispod." },
+    calcLines: { title: "Nema obračunatih stavki za ovu jedinicu." },
+    tenants: { title: "Još nema ZEV naloga.", hint: "Kreirajte prvi obrascem „Novi ZEV nalog” pored tabele." },
+    memberships: { title: "Nema korisničkih naloga u ovom ZEV-u." },
+    messages: { title: "Još nema poslatih poruka.", hint: "Poruke se šalju automatski kada se preduzmu radnje poput izdavanja fakture ili otvaranja glasanja." },
+    filteredPeriod: { title: "Nema zapisa u izabranom periodu.", hint: "Proširite period ili uklonite filtere." },
+    supplierUnpaid: { title: "Nema neplaćenih faktura dobavljača." },
+    filteredQuery: { title: "Nema zapisa za dati filter.", hint: "Uklonite filter da vidite sve zapise." },
+    auditEmpty: { title: "Još nema zapisa u revizorskom tragu." },
+  },
 } as const;
 
 export default srLatn;

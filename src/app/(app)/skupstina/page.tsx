@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listMeetings, createMeeting, listVotingRules, createVotingRule } from "@/server/services/meetings";
 import { parseMoneyInput } from "@/lib/money";
-import { formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
 
 const votingRuleHeaders: ColumnSpec[] = [
@@ -81,6 +81,8 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
           caption={activeBody === "BOARD" ? "Sjednice upravnog odbora" : "Sjednice skupštine"}
           headers={meetingHeaders}
           empty={meetings.length === 0}
+          emptyTitle={t("empty.meetings.title")}
+          emptyHint={actor.roles.includes("PRESIDENT") ? t("empty.meetings.hint") : undefined}
         >
           {meetings.map((m) => (
             <tr key={m.id}>
@@ -132,7 +134,14 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
       {management && (
         <div className="mt-4">
           <Card title="Pravila glasanja" hint="Konfigurabilna — snimak pravila se čuva uz svaki prijedlog, pa kasnija izmjena ne utiče na već otvorena glasanja.">
-            <Table id="voting-rules-table" caption="Pravila glasanja" headers={votingRuleHeaders} empty={rules.length === 0}>
+            <Table
+              id="voting-rules-table"
+              caption="Pravila glasanja"
+              headers={votingRuleHeaders}
+              empty={rules.length === 0}
+              emptyTitle={t("empty.votingRules.title")}
+              emptyHint={actor.roles.includes("PRESIDENT") ? t("empty.votingRules.hint") : undefined}
+            >
               {rules.map((r) => (
                 <tr key={r.id}>
                   <Td>{r.name}</Td>

@@ -5,7 +5,7 @@ import { listPayments, enterPayment, importBankCsv } from "@/server/services/pay
 import { listAccounts } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, tEnum } from "@/lib/i18n";
+import { formatDate, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, type ColumnSpec } from "@/components/ui";
 
 const paymentHeaders: ColumnSpec[] = [
@@ -146,7 +146,14 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
 
       <div className="mt-4">
         <Card title={management ? "Sve uplate" : "Moje evidentirane uplate"}>
-          <Table id="payments-table" caption={management ? "Sve uplate" : "Moje evidentirane uplate"} headers={paymentHeaders} empty={payments.length === 0}>
+          <Table
+            id="payments-table"
+            caption={management ? "Sve uplate" : "Moje evidentirane uplate"}
+            headers={paymentHeaders}
+            empty={payments.length === 0}
+            emptyTitle={t("empty.payments.title")}
+            emptyHint={management && actor.roles.includes("ACCOUNTANT") ? t("empty.payments.hint") : undefined}
+          >
             {payments.map((p) => (
               <tr key={p.id}>
                 <Td>{formatDate(p.date)}</Td>

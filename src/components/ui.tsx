@@ -168,8 +168,22 @@ function buildTableCss(id: string, columns: ColumnSpec[], useCardTransform: bool
   return rules.join("\n");
 }
 
+/** Hand-drawn empty-state glyph (an open tray), matching the sidebar icon style
+ *  (`nav-icons.tsx`'s `IconBase`: 20×20 viewBox, `currentColor` stroke, 1.6 weight) — kept
+ *  local to `ui.tsx` rather than added to `nav-icons.tsx` since it's not a nav icon and only
+ *  `Table` uses it (Plans/ui-ux-redesign-plan.md §3.I, P6). */
+function EmptyTrayIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-slate-300" aria-hidden="true">
+      <path d="M3 11.5 5.5 4h9l2.5 7.5" />
+      <path d="M3 11.5v3A1.5 1.5 0 0 0 4.5 16h11a1.5 1.5 0 0 0 1.5-1.5v-3" />
+      <path d="M3 11.5h4.2c.3 1 1.2 1.7 2.3 1.7s2-.7 2.3-1.7H16" />
+    </svg>
+  );
+}
+
 export function Table({
-  id, caption, headers, children, empty, emptyHint,
+  id, caption, headers, children, empty, emptyTitle, emptyHint,
 }: {
   /** Required when `headers` is `ColumnSpec[]` — it's the hook the generated `<style>` (above)
    *  is keyed to. A plain `string[]` table doesn't need one (no per-column behavior to generate). */
@@ -179,9 +193,15 @@ export function Table({
   headers: string[] | ColumnSpec[];
   children: ReactNode;
   empty?: boolean;
-  /** Shown under "Nema podataka." when `empty` — a concrete next step, not just the empty fact
-   *  (P7). Left out on purpose is fine; every table works without it, this rolls out table by
-   *  table (Faza 3f). */
+  /** Bespoke empty-state headline, e.g. "Još nema zgrada." — when given, replaces the generic
+   *  "Nema podataka." with the full icon + title (+ `emptyHint`) treatment (P7, §3.I). Left out
+   *  on purpose is fine; every table works without it. */
+  emptyTitle?: string;
+  /** Shown under the title when `empty` — a concrete next step naming the control that creates
+   *  the first record ("Dodajte prvu zgradu obrascem *Dodaj zgradu* ispod."), or, for tables
+   *  whose next step lives on a *different* page, a `BtnLink`. Never a button that would need to
+   *  reach outside the table (§3.I). For filtered lists (activity logs, reports), a sentence
+   *  explaining the filter instead ("Nema zapisa u izabranom periodu…") plus a clear-filters link. */
   emptyHint?: ReactNode;
 }) {
   const columns: ColumnSpec[] = isColumnSpecArray(headers) ? headers : headers.map((label) => ({ label }));
@@ -220,9 +240,19 @@ export function Table({
         <tbody className="divide-y divide-slate-100">
           {empty ? (
             <tr>
-              <td colSpan={columns.length} className="px-3 py-8 text-center text-slate-500">
-                <div>Nema podataka.</div>
-                {emptyHint && <div className="mt-1 text-[13px]">{emptyHint}</div>}
+              <td colSpan={columns.length} className="px-3 py-10 text-center">
+                {emptyTitle ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <EmptyTrayIcon />
+                    <div className="text-[15px] font-medium text-slate-700">{emptyTitle}</div>
+                    {emptyHint && <div className="max-w-sm text-[13px] text-slate-500">{emptyHint}</div>}
+                  </div>
+                ) : (
+                  <div className="text-slate-500">
+                    <div>Nema podataka.</div>
+                    {emptyHint && <div className="mt-1 text-[13px]">{emptyHint}</div>}
+                  </div>
+                )}
               </td>
             </tr>
           ) : children}

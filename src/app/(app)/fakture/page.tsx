@@ -130,7 +130,14 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       {management && activeTab === "naknade" && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <Card title="Stavke naknada (konfigurabilne)" className="lg:col-span-2">
-            <Table id="charge-items-table" caption="Stavke naknada" headers={chargeItemHeaders} empty={chargeItems.length === 0}>
+            <Table
+              id="charge-items-table"
+              caption="Stavke naknada"
+              headers={chargeItemHeaders}
+              empty={chargeItems.length === 0}
+              emptyTitle={t("empty.chargeItems.title")}
+              emptyHint={t("empty.chargeItems.hint")}
+            >
               {chargeItems.map((c) => (
                 <ChargeItemRow
                   key={c.id}
@@ -218,7 +225,14 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
           </Card>
 
           <Card title="Serije faktura">
-            <Table id="batches-table" caption="Serije faktura" headers={batchHeaders} empty={batches.length === 0}>
+            <Table
+              id="batches-table"
+              caption="Serije faktura"
+              headers={batchHeaders}
+              empty={batches.length === 0}
+              emptyTitle={t("empty.batches.title")}
+              emptyHint={actor.roles.includes("ACCOUNTANT") ? t("empty.batches.hint") : undefined}
+            >
               {batches.map((b) => (
                 <tr key={b.id}>
                   <Td><RowLink href={`/fakture/serija/${b.id}`}>{b.period}</RowLink></Td>
@@ -241,7 +255,14 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
       {(!management || activeTab === "fakture") && (
       <div className="mt-4">
         <Card title={management ? "Sve fakture" : "Moje fakture"}>
-          <Table id="invoices-table" caption={management ? "Sve fakture" : "Moje fakture"} headers={invoiceHeadersFor(management)} empty={invoices.length === 0}>
+          <Table
+            id="invoices-table"
+            caption={management ? "Sve fakture" : "Moje fakture"}
+            headers={invoiceHeadersFor(management)}
+            empty={invoices.length === 0}
+            emptyTitle={t(management ? "empty.invoicesManagement.title" : "empty.invoicesOwner.title")}
+            emptyHint={management ? <BtnLink href="/fakture?tab=naknade" variant="tonal">Naknade i serije</BtnLink> : undefined}
+          >
             {invoices.map((inv) => {
               const paid = invoicePaidAmount(inv);
               const overdue = inv.status === "ISSUED" && inv.dueDate < new Date();

@@ -43,6 +43,49 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.5] - 2026-09-17
+
+### Izmijenjeno
+
+- **Faza 3f plana UI/UX redizajna — prazna stanja (P7/H10, §3.I).** Do sada je
+  svih 51 tabela u aplikaciji, prazna ili puna, ispisivalo doslovno „Nema
+  podataka." — nova stranica bez ijednog zapisa nije davala nikakav trag šta
+  raditi dalje.
+  - `Table` dobija `emptyTitle` prop: kad je postavljen, prazno stanje se
+    prikazuje kao ručno crtana ikona (P6 stil, `strokeWidth 1.6`, ista
+    porodica kao `nav-icons.tsx`) + podebljan bespoke naslov + rečenica sa
+    sljedećim korakom (`emptyHint`) — umjesto generičkog teksta. Bez
+    `emptyTitle` tabela i dalje radi identično kao prije (postepeni uvod, isti
+    obrazac kao `ColumnSpec` u Fazi 3a).
+  - Nova ugniježđena `empty` grupa u `sr-Latn.ts` (~45 parova naslov/rečenica)
+    — nikad ravni ključevi, po §7, jer bi `t()` inače tiho vratio sam ključ.
+  - **Dvije klase teksta, namjerno različite poruke:**
+    - „još ničega nema" — naslov imenuje šta nedostaje, rečenica imenuje
+      kontrolu koja kreira prvi zapis („Dodajte prvu zgradu obrascem „Dodaj
+      zgradu" ispod."). Nikad dugme — `emptyHint` ne može da otvori `<details>`
+      formu koja je van tabele.
+    - **Izuzetak:** kad sljedeći korak živi na drugoj stranici/tabu (npr.
+      `/vlasnici/[id]` prazni vlasnički udjeli → `BtnLink` na `/vlasnici?tab=vlasnistvo`;
+      `/fakture` prazna lista faktura → `BtnLink` na `/fakture?tab=naknade`).
+    - „nema rezultata za filter" — suprotna poruka, širi/ukloni filter, ne
+      kreiraj nešto. Dvije varijante teksta (perioda vs. tekstualnog filtera)
+      sa linkom koji čisti query: `/aktivnosti`, `/admin/aktivnosti`,
+      `/izvjestaji` (svih 9 tabela — perioda/vlasnika filter), `/podesavanja/audit`
+      (tekstualni filter).
+  - Hint se prikazuje samo kad je akcija stvarno dostupna gledaocu — uslovno na
+    ulogu (npr. `/organi` upravni odbor: hint samo za predsjednika),
+    prethodni korak (npr. `/zgrade` ulazi/posebni dijelovi: „Prvo dodajte
+    zgradu" dok nema nijedne zgrade) ili status objekta (npr. `/odrzavanje/[id]`
+    radni nalozi: hint samo dok je prijava u statusu „Izvođač izabran").
+  - Svih 51 tabela pokriveno (provjereno brojanjem `<Table`/`empty=`/`emptyTitle=`
+    po fajlu — mora se poklapati u svakom); jedini legitimni izuzetak je
+    `related-expenses-table` na `/odrzavanje/[id]` čiji je `empty` uvijek
+    `false` (kartica se uopšte ne renderuje kad nema povezanih troškova).
+  - 247/247 testova prolazi; uživo provjereno na 1440px i 375px — ikona +
+    naslov + rečenica (uslovna po ulozi i po statusu), oba tipa filter-poruke
+    sa radnim „Obriši filter(e)" linkom, i `BtnLink` varijanta za međustranični
+    sljedeći korak.
+
 ## [2.19.4] - 2026-09-17
 
 ### Izmijenjeno

@@ -75,7 +75,14 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
               Aktivnosti preko svih ZEV naloga
             </Link>
           </div>
-          <Table id="tenants-table" caption="Svi ZEV nalozi" headers={tenantHeaders} empty={tenants.length === 0}>
+          <Table
+            id="tenants-table"
+            caption="Svi ZEV nalozi"
+            headers={tenantHeaders}
+            empty={tenants.length === 0}
+            emptyTitle={t("empty.tenants.title")}
+            emptyHint={t("empty.tenants.hint")}
+          >
             {tenants.map((z) => {
               const president = z.memberships[0]?.user;
               return (

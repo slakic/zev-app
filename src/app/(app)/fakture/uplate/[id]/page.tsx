@@ -6,7 +6,7 @@ import { suggestMatches, allocatePayment, reverseAllocation, reversePayment } fr
 import { prisma } from "@/lib/prisma";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash, type ColumnSpec } from "@/components/ui";
 
 const suggestionHeaders: ColumnSpec[] = [
@@ -100,7 +100,13 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Prijedlozi uparivanja">
-          <Table id="suggestions-table" caption="Prijedlozi uparivanja" headers={suggestionHeaders} empty={suggestions.length === 0}>
+          <Table
+            id="suggestions-table"
+            caption="Prijedlozi uparivanja"
+            headers={suggestionHeaders}
+            empty={suggestions.length === 0}
+            emptyTitle={t("empty.suggestions.title")}
+          >
             {suggestions.map((s) => (
               <tr key={s.invoiceId}>
                 <Td>{s.number}</Td>
@@ -166,7 +172,14 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
 
       <div className="mt-4">
         <Card title="Alokacije" hint="Zapisi se ne brišu — storno je novi zapis.">
-          <Table id="allocations-table" caption="Alokacije" headers={allocationHeaders} empty={payment.allocations.length === 0}>
+          <Table
+            id="allocations-table"
+            caption="Alokacije"
+            headers={allocationHeaders}
+            empty={payment.allocations.length === 0}
+            emptyTitle={t("empty.allocations.title")}
+            emptyHint={t("empty.allocations.hint")}
+          >
             {payment.allocations.map((a) => (
               <tr key={a.id} className={Number(a.amount) < 0 ? "text-red-700" : ""}>
                 <Td>{formatDateTime(a.createdAt)}</Td>

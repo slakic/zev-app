@@ -117,7 +117,14 @@ export default async function BuildingsPage({
 
       {activeTab === "zgrade" && (
         <Card title="Zgrade">
-          <Table id="buildings-table" caption="Zgrade" headers={buildingHeaders} empty={buildings.length === 0}>
+          <Table
+            id="buildings-table"
+            caption="Zgrade"
+            headers={buildingHeaders}
+            empty={buildings.length === 0}
+            emptyTitle={t("empty.buildings.title")}
+            emptyHint={isPresident ? t("empty.buildings.hint") : undefined}
+          >
             {buildings.map((b) => (
               <BuildingRow key={b.id} building={b} canEdit={isPresident} action={updateBuildingAction} />
             ))}
@@ -138,7 +145,20 @@ export default async function BuildingsPage({
 
       {activeTab === "ulazi" && (
         <Card title="Ulazi / lamele">
-          <Table id="entrances-table" caption="Ulazi / lamele" headers={entranceHeaders} empty={entrances.length === 0}>
+          <Table
+            id="entrances-table"
+            caption="Ulazi / lamele"
+            headers={entranceHeaders}
+            empty={entrances.length === 0}
+            emptyTitle={t(buildings.length === 0 ? "empty.entrancesNoBuilding.title" : "empty.entrances.title")}
+            emptyHint={
+              buildings.length === 0
+                ? t("empty.entrancesNoBuilding.hint")
+                : isPresident
+                  ? t("empty.entrances.hint")
+                  : undefined
+            }
+          >
             {entrances.map((e) => (
               <tr key={e.id}>
                 <Td>{e.buildingName}</Td>
@@ -185,6 +205,14 @@ export default async function BuildingsPage({
             caption="Posebni dijelovi — stanovi, poslovni prostori i garaže"
             headers={unitHeaders}
             empty={units.length === 0}
+            emptyTitle={t(buildings.length === 0 ? "empty.unitsNoBuilding.title" : "empty.units.title")}
+            emptyHint={
+              buildings.length === 0
+                ? t("empty.unitsNoBuilding.hint")
+                : isPresident
+                  ? t("empty.units.hint")
+                  : undefined
+            }
           >
             {units.map((u) => (
               <UnitRow
@@ -260,7 +288,14 @@ export default async function BuildingsPage({
 
       {activeTab === "zajednicki" && (
         <Card title="Zajednički dijelovi, sistemi i oprema">
-          <Table id="assets-table" caption="Zajednički dijelovi, sistemi i oprema" headers={assetHeaders} empty={assets.length === 0}>
+          <Table
+            id="assets-table"
+            caption="Zajednički dijelovi, sistemi i oprema"
+            headers={assetHeaders}
+            empty={assets.length === 0}
+            emptyTitle={t("empty.assets.title")}
+            emptyHint={isPresident ? t("empty.assets.hint") : undefined}
+          >
             {assets.map((a) => (
               <tr key={a.id}>
                 <Td>{a.name}</Td>

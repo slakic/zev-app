@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { requireSuperAdminActor } from "@/server/actor";
 import { listAllActivity, listActivityActorsForZev } from "@/server/services/activity";
 import { listTenants } from "@/server/services/admin";
 import { ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
-import { formatDateTime, endOfDay } from "@/lib/i18n";
+import { formatDateTime, endOfDay, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
 
 const adminActivityHeaders: ColumnSpec[] = [
@@ -132,7 +133,21 @@ export default async function AdminActivityPage({
       </form>
 
       <Card>
-        <Table id="admin-activity-table" caption="Aktivnosti — svi ZEV nalozi" headers={adminActivityHeaders} empty={result.rows.length === 0}>
+        <Table
+          id="admin-activity-table"
+          caption="Aktivnosti — svi ZEV nalozi"
+          headers={adminActivityHeaders}
+          empty={result.rows.length === 0}
+          emptyTitle={t("empty.filteredPeriod.title")}
+          emptyHint={
+            <>
+              {t("empty.filteredPeriod.hint")}{" "}
+              <Link href="/admin/aktivnosti" className="font-medium text-primary-ink underline-offset-2 hover:underline">
+                Obriši filtere
+              </Link>
+            </>
+          }
+        >
           {result.rows.map((e) => {
             const label = labelForAction(e.action);
             const summary = summarize(e);

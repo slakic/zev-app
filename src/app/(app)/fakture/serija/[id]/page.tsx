@@ -6,7 +6,7 @@ import { generateInvoicePdf } from "@/server/services/documents";
 import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/lib/money";
-import { tEnum } from "@/lib/i18n";
+import { tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
 import { partyDisplayName } from "@/server/services/ownership";
 
@@ -88,6 +88,7 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
               caption={`Obračun — ${calc.buildingName} / ${calc.unitLabel}`}
               headers={calcLineHeaders}
               empty={calc.lines.length === 0}
+              emptyTitle={t("empty.calcLines.title")}
             >
               {calc.lines.map((l, i) => (
                 <tr key={i}>

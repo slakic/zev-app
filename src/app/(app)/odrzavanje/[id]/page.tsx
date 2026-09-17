@@ -6,7 +6,7 @@ import { generateWorkOrderPdf } from "@/server/services/documents";
 import { listSuppliers } from "@/server/services/expenses";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, type ColumnSpec } from "@/components/ui";
 import type { IssueStatus } from "@/generated/prisma/client";
 
@@ -233,7 +233,14 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
 
         {management && (
           <Card title="Ponude izvođača">
-            <Table id="offers-table" caption="Ponude izvođača" headers={offerHeaders} empty={issue.offers.length === 0}>
+            <Table
+              id="offers-table"
+              caption="Ponude izvođača"
+              headers={offerHeaders}
+              empty={issue.offers.length === 0}
+              emptyTitle={t("empty.offers.title")}
+              emptyHint={isPresident ? t("empty.offers.hint") : undefined}
+            >
               {issue.offers.map((o) => (
                 <tr key={o.id}>
                   <Td>{o.supplier.name}</Td>
@@ -270,7 +277,14 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
 
         {management && (
           <Card title="Radni nalozi">
-            <Table id="work-orders-table" caption="Radni nalozi" headers={workOrderHeaders} empty={issue.workOrders.length === 0}>
+            <Table
+              id="work-orders-table"
+              caption="Radni nalozi"
+              headers={workOrderHeaders}
+              empty={issue.workOrders.length === 0}
+              emptyTitle={t("empty.workOrders.title")}
+              emptyHint={isPresident && issue.status === "CONTRACTOR_SELECTED" ? t("empty.workOrders.hint") : undefined}
+            >
               {issue.workOrders.map((wo) => (
                 <tr key={wo.id}>
                   <Td>{wo.number}</Td>

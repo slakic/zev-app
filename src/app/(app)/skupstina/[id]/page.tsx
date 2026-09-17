@@ -9,7 +9,7 @@ import { listBuildings } from "@/server/services/property";
 import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
-import { formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
@@ -192,7 +192,14 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         </Card>
 
         <Card title="Prijedlozi">
-          <Table id="proposals-table" caption="Prijedlozi" headers={proposalsHeaders} empty={meeting.proposals.length === 0}>
+          <Table
+            id="proposals-table"
+            caption="Prijedlozi"
+            headers={proposalsHeaders}
+            empty={meeting.proposals.length === 0}
+            emptyTitle={t("empty.proposals.title")}
+            emptyHint={isPresident ? t("empty.proposals.hint") : undefined}
+          >
             {meeting.proposals.map((p) => (
               <tr key={p.id}>
                 <Td><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink></Td>
@@ -248,7 +255,14 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
 
         {isPresident && (
           <Card title="Prisustvo (za sjednicu uživo)">
-            <Table id="attendance-table" caption="Prisustvo" headers={attendanceHeaders} empty={meeting.attendances.length === 0}>
+            <Table
+              id="attendance-table"
+              caption="Prisustvo"
+              headers={attendanceHeaders}
+              empty={meeting.attendances.length === 0}
+              emptyTitle={t("empty.attendance.title")}
+              emptyHint={t("empty.attendance.hint")}
+            >
               {meeting.attendances.map((a) => (
                 <tr key={a.id}>
                   <Td>{partyDisplayName(a.party)}</Td>

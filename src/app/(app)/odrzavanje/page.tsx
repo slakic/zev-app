@@ -4,7 +4,7 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listIssues, reportIssue } from "@/server/services/maintenance";
 import { listBuildings, listUnits } from "@/server/services/property";
 import { partyDisplayName } from "@/server/services/ownership";
-import { formatDate, tEnum } from "@/lib/i18n";
+import { formatDate, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowLink, type ColumnSpec } from "@/components/ui";
 
 const issueHeaders: ColumnSpec[] = [
@@ -84,7 +84,14 @@ export default async function MaintenancePage({ searchParams }: { searchParams: 
 
       <div className="mt-4">
         <Card title={management ? "Sve prijave" : "Moje prijave"}>
-          <Table id="issues-table" caption={management ? "Sve prijave" : "Moje prijave"} headers={issueHeaders} empty={issues.length === 0}>
+          <Table
+            id="issues-table"
+            caption={management ? "Sve prijave" : "Moje prijave"}
+            headers={issueHeaders}
+            empty={issues.length === 0}
+            emptyTitle={t(management ? "empty.issuesManagement.title" : "empty.issuesOwner.title")}
+            emptyHint={t(management ? "empty.issuesManagement.hint" : "empty.issuesOwner.hint")}
+          >
             {issues.map((i) => (
               <tr key={i.id}>
                 <Td><RowLink href={`/odrzavanje/${i.id}`}>{i.title}</RowLink></Td>

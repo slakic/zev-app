@@ -1,7 +1,8 @@
 import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
-import { formatDateTime } from "@/lib/i18n";
+import Link from "next/link";
+import { formatDateTime, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, inputCls, type ColumnSpec } from "@/components/ui";
 
 const auditHeaders: ColumnSpec[] = [
@@ -39,7 +40,23 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
         <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className={`${inputCls} w-72`} />
       </form>
       <Card>
-        <Table id="audit-table" caption="Revizorski trag" headers={auditHeaders} empty={events.length === 0}>
+        <Table
+          id="audit-table"
+          caption="Revizorski trag"
+          headers={auditHeaders}
+          empty={events.length === 0}
+          emptyTitle={t(q ? "empty.filteredQuery.title" : "empty.auditEmpty.title")}
+          emptyHint={
+            q ? (
+              <>
+                {t("empty.filteredQuery.hint")}{" "}
+                <Link href="/podesavanja/audit" className="font-medium text-primary-ink underline-offset-2 hover:underline">
+                  Obriši filter
+                </Link>
+              </>
+            ) : undefined
+          }
+        >
           {events.map((e) => (
             <tr key={e.id}>
               <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>

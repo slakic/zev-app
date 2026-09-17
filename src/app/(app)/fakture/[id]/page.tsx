@@ -5,7 +5,7 @@ import { getInvoice, cancelInvoice, correctInvoice, invoicePaidAmount } from "@/
 import { generateInvoicePdf } from "@/server/services/documents";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, parseMoneyInput } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
 
 const invoiceLineHeaders: ColumnSpec[] = [
@@ -102,7 +102,13 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
         </Card>
         <div className="lg:col-span-2">
           <Card title="Stavke sa obračunom">
-            <Table id="invoice-lines-table" caption="Stavke sa obračunom" headers={invoiceLineHeaders} empty={inv.lines.length === 0}>
+            <Table
+              id="invoice-lines-table"
+              caption="Stavke sa obračunom"
+              headers={invoiceLineHeaders}
+              empty={inv.lines.length === 0}
+              emptyTitle={t("empty.invoiceLines.title")}
+            >
               {inv.lines.map((l) => {
                 const snap = l.calcSnapshot as { formula?: string; inputs?: Record<string, unknown> } | null;
                 return (
@@ -121,7 +127,13 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
 
       <div className="mt-4">
         <Card title="Uplate po ovoj fakturi">
-          <Table id="invoice-allocations-table" caption="Uplate po ovoj fakturi" headers={invoiceAllocationHeaders} empty={inv.allocations.length === 0}>
+          <Table
+            id="invoice-allocations-table"
+            caption="Uplate po ovoj fakturi"
+            headers={invoiceAllocationHeaders}
+            empty={inv.allocations.length === 0}
+            emptyTitle={t("empty.invoiceAllocations.title")}
+          >
             {inv.allocations.map((a) => (
               <tr key={a.id} className={Number(a.amount) < 0 ? "text-red-700" : ""}>
                 <Td>{formatDateTime(a.createdAt)}</Td>

@@ -168,7 +168,14 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
       )}
 
       <Card title={`Upravni odbor (${holders.boardMembers.length} ${holders.boardMembers.length === 1 ? "član" : "člana"})`}>
-        <Table id="board-table" caption="Upravni odbor" headers={boardHeaders} empty={holders.boardMembers.length === 0}>
+        <Table
+          id="board-table"
+          caption="Upravni odbor"
+          headers={boardHeaders}
+          empty={holders.boardMembers.length === 0}
+          emptyTitle={t("empty.board.title")}
+          emptyHint={isPresident ? t("empty.board.hint") : undefined}
+        >
           {holders.boardMembers.map((m) => (
             <tr key={m.id}>
               <Td>{partyDisplayName(m.party)}</Td>
@@ -210,7 +217,14 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
 
       {activeTab === "istorija" && (
       <Card title="Istorija mandata">
-        <Table id="office-history-table" caption="Istorija mandata" headers={officeHistoryHeaders} empty={history.length === 0}>
+        <Table
+          id="office-history-table"
+          caption="Istorija mandata"
+          headers={officeHistoryHeaders}
+          empty={history.length === 0}
+          emptyTitle={t("empty.officeHistory.title")}
+          emptyHint={t("empty.officeHistory.hint")}
+        >
           {history.map((h) => (
             <tr key={h.id}>
               <Td>{h.role === "PRESIDENT" ? "Predsjednik ZEV" : h.role === "ACCOUNTANT" ? "Računovođa" : "Član upravnog odbora"}</Td>

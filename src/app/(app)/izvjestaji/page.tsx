@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireActor } from "@/server/actor";
 import { cashFlowReport, incomeExpenseReport, receivablesReport, supplierReport, unpaidSupplierInvoices, allocationSummary, ownerDebtReport } from "@/server/services/reports";
 import { reserveFundBalance } from "@/server/services/finance";
@@ -84,6 +85,19 @@ function balanceStatus(balance: string): { text: string; cls: string } {
   if (n > 0) return { text: "duguje", cls: "text-red-700" };
   if (n < 0) return { text: "preplata", cls: "text-emerald-700" };
   return { text: "izmireno", cls: "text-slate-500" };
+}
+
+/** Empty-state hint shared by every report table (H10, filter class) — the period/owner
+ *  filters are page-level, so clearing them means dropping back to the tab's bare URL. */
+function FilteredEmptyHint({ clearHref }: { clearHref: string }) {
+  return (
+    <>
+      {t("empty.filteredPeriod.hint")}{" "}
+      <Link href={clearHref} className="font-medium text-primary-ink underline-offset-2 hover:underline">
+        Obriši filtere
+      </Link>
+    </>
+  );
 }
 
 export default async function ReportsPage({
@@ -179,7 +193,14 @@ export default async function ReportsPage({
           (kredit/avans), a <strong>0,00</strong> da je stanje izmireno — isto važi i za prethodni saldo i za konačni
           saldo.
         </p>
-        <Table id="owner-debt-table" caption="Dugovanja po vlasnicima" headers={debtHeaders} empty={debt.rows.length === 0}>
+        <Table
+          id="owner-debt-table"
+          caption="Dugovanja po vlasnicima"
+          headers={debtHeaders}
+          empty={debt.rows.length === 0}
+          emptyTitle={t("empty.filteredPeriod.title")}
+          emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=dugovanja" />}
+        >
           {debt.rows.map((r) => {
             const prevStatus = balanceStatus(r.previousBalance);
             const status = balanceStatus(r.balance);
@@ -213,7 +234,14 @@ export default async function ReportsPage({
       {activeTab === "novac" && fund && (
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Stanje računa i tok novca" className="lg:col-span-2">
-          <Table id="cashflow-table" caption="Stanje računa i tok novca" headers={cashFlowHeaders} empty={cashFlow.length === 0}>
+          <Table
+            id="cashflow-table"
+            caption="Stanje računa i tok novca"
+            headers={cashFlowHeaders}
+            empty={cashFlow.length === 0}
+            emptyTitle={t("empty.filteredPeriod.title")}
+            emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=novac" />}
+          >
             {cashFlow.map((r) => (
               <tr key={r.accountId}>
                 <Td>{r.accountName}</Td>
@@ -229,7 +257,14 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Prihodi i rashodi po kategorijama">
-          <Table id="incexp-table" caption="Prihodi i rashodi po kategorijama" headers={incExpHeaders} empty={incExp.length === 0}>
+          <Table
+            id="incexp-table"
+            caption="Prihodi i rashodi po kategorijama"
+            headers={incExpHeaders}
+            empty={incExp.length === 0}
+            emptyTitle={t("empty.filteredPeriod.title")}
+            emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=novac" />}
+          >
             {incExp.map((r, i) => (
               <tr key={i}>
                 <Td>{r.category}</Td>
@@ -251,7 +286,14 @@ export default async function ReportsPage({
       {activeTab === "fakture" && receivables && (
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title={`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`} className="lg:col-span-2">
-          <Table id="receivables-table" caption="Neplaćene fakture vlasnika" headers={receivablesHeaders} empty={receivables.rows.length === 0}>
+          <Table
+            id="receivables-table"
+            caption="Neplaćene fakture vlasnika"
+            headers={receivablesHeaders}
+            empty={receivables.rows.length === 0}
+            emptyTitle={t("empty.filteredPeriod.title")}
+            emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=fakture" />}
+          >
             {receivables.rows.map((r) => (
               <tr key={r.invoiceId}>
                 <Td>{r.number}</Td>
@@ -267,7 +309,14 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Dobavljači">
-          <Table id="supplier-summary-table" caption="Dobavljači" headers={supplierSummaryHeaders} empty={suppliers.length === 0}>
+          <Table
+            id="supplier-summary-table"
+            caption="Dobavljači"
+            headers={supplierSummaryHeaders}
+            empty={suppliers.length === 0}
+            emptyTitle={t("empty.filteredPeriod.title")}
+            emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=fakture" />}
+          >
             {suppliers.map((s, i) => (
               <tr key={i}>
                 <Td>{s.supplier}</Td>
@@ -281,7 +330,13 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Neplaćene fakture dobavljača">
-          <Table id="supplier-unpaid-table" caption="Neplaćene fakture dobavljača" headers={supplierUnpaidHeaders} empty={supplierUnpaid.length === 0}>
+          <Table
+            id="supplier-unpaid-table"
+            caption="Neplaćene fakture dobavljača"
+            headers={supplierUnpaidHeaders}
+            empty={supplierUnpaid.length === 0}
+            emptyTitle={t("empty.supplierUnpaid.title")}
+          >
             {supplierUnpaid.map((e) => (
               <tr key={e.id}>
                 <Td>{e.supplier?.name ?? "—"}</Td>
@@ -298,7 +353,14 @@ export default async function ReportsPage({
       {activeTab === "pregledi" && (
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Pregled po zgradama">
-          <Table id="by-building-table" caption="Pregled po zgradama" headers={byBuildingHeaders} empty={byBuilding.length === 0}>
+          <Table
+            id="by-building-table"
+            caption="Pregled po zgradama"
+            headers={byBuildingHeaders}
+            empty={byBuilding.length === 0}
+            emptyTitle={t("empty.filteredPeriod.title")}
+            emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=pregledi" />}
+          >
             {byBuilding.map((r) => (
               <tr key={r.key}>
                 <Td>{r.name}</Td>
@@ -311,7 +373,14 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Pregled po projektima">
-          <Table id="by-project-table" caption="Pregled po projektima" headers={byProjectHeaders} empty={byProject.length === 0}>
+          <Table
+            id="by-project-table"
+            caption="Pregled po projektima"
+            headers={byProjectHeaders}
+            empty={byProject.length === 0}
+            emptyTitle={t("empty.filteredPeriod.title")}
+            emptyHint={<FilteredEmptyHint clearHref="/izvjestaji?tab=pregledi" />}
+          >
             {byProject.map((r) => (
               <tr key={r.key}>
                 <Td>{r.name}</Td>

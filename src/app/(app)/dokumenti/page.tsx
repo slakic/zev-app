@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
 import { listDocuments, publishDocument } from "@/server/services/documents";
 import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/server/services/attachments";
-import { formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, RowAction, RowActionLink, type ColumnSpec } from "@/components/ui";
 
 const attachmentHeaders: ColumnSpec[] = [
@@ -73,7 +73,13 @@ export default async function DocumentsPage({
       />
       <Flash err={err} msg={okMsg} />
       <Card>
-        <Table id="documents-table" caption="Generisani dokumenti" headers={documentHeaders} empty={docs.length === 0}>
+        <Table
+          id="documents-table"
+          caption="Generisani dokumenti"
+          headers={documentHeaders}
+          empty={docs.length === 0}
+          emptyTitle={t("empty.documents.title")}
+        >
           {docs.map((d) => (
             <tr key={d.id}>
               <Td className="font-mono text-xs">{d.number}</Td>
@@ -118,7 +124,14 @@ export default async function DocumentsPage({
             <SubmitBtn variant="secondary">Filtriraj</SubmitBtn>
           </form>
 
-          <Table id="attachments-table" caption="Otpremljeni dokumenti" headers={attachmentHeaders} empty={attachments.length === 0}>
+          <Table
+            id="attachments-table"
+            caption="Otpremljeni dokumenti"
+            headers={attachmentHeaders}
+            empty={attachments.length === 0}
+            emptyTitle={t("empty.attachments.title")}
+            emptyHint={t("empty.attachments.hint")}
+          >
             {attachments.map((a) => (
               <tr key={a.id}>
                 <Td>{tEnum("attachmentCategory", a.category)}</Td>

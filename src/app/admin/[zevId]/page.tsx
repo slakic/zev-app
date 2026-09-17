@@ -188,7 +188,13 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
               <Flash err={t("tenant.noActivePresidentWarning")} />
             </div>
           )}
-          <Table id="memberships-table" caption="Nalozi u ovom ZEV-u" headers={membershipHeaders} empty={zev.memberships.length === 0}>
+          <Table
+            id="memberships-table"
+            caption="Nalozi u ovom ZEV-u"
+            headers={membershipHeaders}
+            empty={zev.memberships.length === 0}
+            emptyTitle={t("empty.memberships.title")}
+          >
             {zev.memberships.map((m) => (
               <tr key={m.id}>
                 <Td>

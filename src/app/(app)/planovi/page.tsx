@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listPlans, createPlan, listProjects, createProject } from "@/server/services/plans";
 import { parseMoneyInput } from "@/lib/money";
-import { tEnum } from "@/lib/i18n";
+import { tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink, type ColumnSpec } from "@/components/ui";
 
 const projectsHeaders: ColumnSpec[] = [
@@ -49,7 +49,14 @@ export default async function PlansPage() {
     <div>
       <PageHeader title="Godišnji planovi" subtitle="Plan održavanja, finansijski plan, projekti i realizacija" />
       <Card title="Planovi (verzionisani)">
-        <Table id="plans-table" caption="Planovi (verzionisani)" headers={plansHeaders} empty={plans.length === 0}>
+        <Table
+          id="plans-table"
+          caption="Planovi (verzionisani)"
+          headers={plansHeaders}
+          empty={plans.length === 0}
+          emptyTitle={t("empty.plans.title")}
+          emptyHint={actor.roles.includes("PRESIDENT") ? t("empty.plans.hint") : undefined}
+        >
           {plans.map((p) => (
             <tr key={p.id}>
               <Td>{p.year}.</Td>
@@ -77,7 +84,14 @@ export default async function PlansPage() {
       {isManagement(actor) && (
         <div className="mt-4">
           <Card title="Investicioni projekti">
-            <Table id="projects-table" caption="Investicioni projekti" headers={projectsHeaders} empty={projects.length === 0}>
+            <Table
+              id="projects-table"
+              caption="Investicioni projekti"
+              headers={projectsHeaders}
+              empty={projects.length === 0}
+              emptyTitle={t("empty.projects.title")}
+              emptyHint={actor.roles.includes("PRESIDENT") ? t("empty.projects.hint") : undefined}
+            >
               {projects.map((p) => (
                 <tr key={p.id}>
                   <Td>{p.name}</Td>

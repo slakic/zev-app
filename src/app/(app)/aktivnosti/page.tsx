@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { requireActor } from "@/server/actor";
 import { listActivity, listActivityActors } from "@/server/services/activity";
 import { ACTIVITY_CATEGORIES, DEFAULT_ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
-import { formatDateTime, endOfDay } from "@/lib/i18n";
+import { formatDateTime, endOfDay, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
 
 const activityHeaders: ColumnSpec[] = [
@@ -108,7 +109,21 @@ export default async function ActivityPage({
       </form>
 
       <Card>
-        <Table id="activity-table" caption="Aktivnosti" headers={activityHeaders} empty={result.rows.length === 0}>
+        <Table
+          id="activity-table"
+          caption="Aktivnosti"
+          headers={activityHeaders}
+          empty={result.rows.length === 0}
+          emptyTitle={t("empty.filteredPeriod.title")}
+          emptyHint={
+            <>
+              {t("empty.filteredPeriod.hint")}{" "}
+              <Link href="/aktivnosti" className="font-medium text-primary-ink underline-offset-2 hover:underline">
+                Obriši filtere
+              </Link>
+            </>
+          }
+        >
           {result.rows.map((e) => {
             const label = labelForAction(e.action);
             const summary = summarize(e);
