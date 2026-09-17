@@ -4,7 +4,18 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listDocuments, publishDocument } from "@/server/services/documents";
 import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/server/services/attachments";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, RowAction, RowActionLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, RowAction, RowActionLink, type ColumnSpec } from "@/components/ui";
+
+const documentHeaders: ColumnSpec[] = [
+  { label: "Broj", priority: "primary", nowrap: true },
+  { label: "Vrsta", priority: "detail" },
+  { label: "Naziv" },
+  { label: "Verzija", align: "right" },
+  { label: "Status" },
+  { label: "Objavljen vlasnicima", priority: "detail" },
+  { label: "Generisan", priority: "detail" },
+  { label: "Radnje" },
+];
 
 async function publishAction(formData: FormData) {
   "use server";
@@ -55,13 +66,13 @@ export default async function DocumentsPage({
       />
       <Flash err={err} msg={okMsg} />
       <Card>
-        <Table headers={["Broj", "Vrsta", "Naziv", "Verzija", "Status", "Objavljen vlasnicima", "Generisan", "Radnje"]} empty={docs.length === 0}>
+        <Table id="documents-table" caption="Generisani dokumenti" headers={documentHeaders} empty={docs.length === 0}>
           {docs.map((d) => (
             <tr key={d.id}>
               <Td className="font-mono text-xs">{d.number}</Td>
               <Td>{tEnum("docType", d.type)}</Td>
               <Td>{d.title}</Td>
-              <Td right>v{d.version}</Td>
+              <Td>v{d.version}</Td>
               <Td><StatusBadge status={d.status} label={tEnum("docStatus", d.status)} /></Td>
               <Td>{d.publishedToOwners ? "Da" : "—"}</Td>
               <Td>{formatDateTime(d.createdAt)}</Td>

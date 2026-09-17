@@ -5,7 +5,7 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { updateBuildingAction, updateUnitAction } from "@/server/actions/property";
 import { parseMoneyInput } from "@/lib/money";
 import { t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
 import { BuildingRow } from "@/components/building-row";
 import { UnitRow } from "@/components/unit-row";
 
@@ -79,6 +79,19 @@ export default async function BuildingsPage({
   const buildingHeaders = isPresident
     ? ["Naziv", "Adresa", "Ulazi", "Jedinica", "Radnje"]
     : ["Naziv", "Adresa", "Ulazi", "Jedinica"];
+  const unitHeaders: ColumnSpec[] = [
+    { label: "Zgrada" },
+    { label: "Ulaz", priority: "detail" },
+    { label: "Oznaka", priority: "primary" },
+    { label: "Tip" },
+    { label: "Sprat", align: "right", priority: "detail" },
+    { label: "Površina m²", align: "right", nowrap: true },
+    { label: "Udio %", align: "right", nowrap: true },
+    { label: "Korisnika", align: "right", priority: "detail" },
+    { label: "Vlasnici" },
+    { label: "Stanari/zakupci", priority: "detail" },
+    ...(isPresident ? [{ label: "Radnje" } as ColumnSpec] : []),
+  ];
   return (
     <div>
       <PageHeader title={t("nav.buildings")} subtitle={zev?.legalName ?? undefined} />
@@ -128,10 +141,9 @@ export default async function BuildingsPage({
       <div className="mt-4">
         <Card title="Posebni dijelovi (stanovi, poslovni prostori, garaže)">
           <Table
-            headers={[
-              "Zgrada", "Ulaz", "Oznaka", "Tip", "Sprat", "Površina m²", "Udio %", "Korisnika", "Vlasnici", "Stanari/zakupci",
-              ...(isPresident ? ["Radnje"] : []),
-            ]}
+            id="units-table"
+            caption="Posebni dijelovi — stanovi, poslovni prostori i garaže"
+            headers={unitHeaders}
             empty={units.length === 0}
           >
             {units.map((u) => (

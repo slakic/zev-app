@@ -9,7 +9,19 @@ import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, type ColumnSpec } from "@/components/ui";
+
+const expenseHeaders: ColumnSpec[] = [
+  { label: "Dobavljač", priority: "primary" },
+  { label: "Br. fakture", priority: "detail" },
+  { label: "Datum" },
+  { label: "Kategorija", priority: "detail" },
+  { label: "Iznos", align: "right", nowrap: true },
+  { label: "Plaćeno", align: "right", nowrap: true },
+  { label: "Rok" },
+  { label: "Status" },
+  { label: "Radnje" },
+];
 
 async function addSupplierAction(formData: FormData) {
   "use server";
@@ -168,15 +180,15 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
 
       <div className="mt-4">
         <Card title="Troškovi">
-          <Table headers={["Dobavljač", "Br. fakture", "Datum", "Kategorija", "Iznos", "Plaćeno", "Rok", "Status", "Radnje"]} empty={expenses.length === 0}>
+          <Table id="expenses-table" caption="Troškovi" headers={expenseHeaders} empty={expenses.length === 0}>
             {expenses.map((e) => (
               <tr key={e.id}>
                 <Td>{e.supplier?.name ?? "—"}</Td>
                 <Td>{e.invoiceNumber ?? "—"}</Td>
                 <Td>{formatDate(e.invoiceDate)}</Td>
                 <Td>{e.category?.name ?? "—"}</Td>
-                <Td right>{formatMoney(e.amount.toString())}</Td>
-                <Td right>{formatMoney(e.paidAmount.toString())}</Td>
+                <Td>{formatMoney(e.amount.toString())}</Td>
+                <Td>{formatMoney(e.paidAmount.toString())}</Td>
                 <Td>{formatDate(e.dueDate)}</Td>
                 <Td><StatusBadge status={e.status} label={tEnum("expenseStatus", e.status)} /></Td>
                 <Td>

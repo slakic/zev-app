@@ -43,6 +43,31 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.2] - 2026-09-17
+
+### Izmijenjeno
+
+- **Faza 3c plana UI/UX redizajna — migracija tabela na `ColumnSpec` (talas 3c-1
+  od 5, §3.G).** Pet talasa dijeli jednu verziju (`2.19.2`), po planu — svaki
+  talas je zaseban commit sa vizuelnom provjerom, ali samo prvi diže verziju.
+  - **Talas 3c-1 — tabele sa ≥8 kolona (kartični prelom obavezan):**
+    `/zgrade` posebni dijelovi (11/10 kolona), `/troskovi` (9), `/dokumenti`
+    generisani dokumenti (8), `/fakture` sve/moje fakture (8).
+  - Svaka tabela dobija `id` + `caption` (sr-only) + `ColumnSpec[]` zaglavlje:
+    poravnanje brojčanih kolona (`align: "right"`) sada dolazi iz istog izvora
+    za `<th>` i `<td>`, pa je nesklad iz N4 nalaza strukturno nemoguć na ovim
+    tabelama. Jedna kolona po tabeli je `priority: "primary"` (identitet reda
+    — npr. "Oznaka" na `/zgrade`, "Broj" na `/dokumenti` i `/fakture`) i
+    postaje podebljan naslov kartice ispod 768px; manje kritične kolone su
+    `priority: "detail"` (sakrivene samo na tablet širini 768–1023px, vraćaju
+    se na `lg`).
+  - Zastarjeli `right` prop na `Td` uklonjen sa svih migriranih ćelija —
+    poravnanje sada dolazi isključivo iz `ColumnSpec`.
+  - **Zaustavljeno poslije 3c-1** (po planu) radi provjere kartičnog preloma
+    na `/zgrade` i `/troskovi` prije nastavka na preostalih 47 tabela —
+    mehanizam vizuelno i strukturno ispravan na 1440px i 375px. 247/247
+    testova prolazi.
+
 ## [2.19.1] - 2026-09-17
 
 ### Izmijenjeno

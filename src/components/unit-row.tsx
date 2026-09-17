@@ -52,10 +52,10 @@ export function UnitRow({
         <Td>{u.entranceName ?? "—"}</Td>
         <Td>{u.label}</Td>
         <Td>{u.typeLabel}</Td>
-        <Td right>{u.floor ?? "—"}</Td>
-        <Td right>{u.usableArea}</Td>
-        <Td right>{u.ownershipShare}</Td>
-        <Td right>{u.occupantCount}</Td>
+        <Td>{u.floor ?? "—"}</Td>
+        <Td>{u.usableArea}</Td>
+        <Td>{u.ownershipShare}</Td>
+        <Td>{u.occupantCount}</Td>
         <Td>{u.ownersDisplay}</Td>
         <Td>{u.occupantsDisplay}</Td>
         {canEdit && (

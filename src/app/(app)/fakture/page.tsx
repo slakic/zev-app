@@ -7,7 +7,18 @@ import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+
+const invoiceHeaders: ColumnSpec[] = [
+  { label: "Broj", priority: "primary", nowrap: true },
+  { label: "Jedinica" },
+  { label: "Dužnik" },
+  { label: "Period", priority: "detail" },
+  { label: "Dospijeće" },
+  { label: "Iznos", align: "right", nowrap: true },
+  { label: "Plaćeno", align: "right", nowrap: true },
+  { label: "Status" },
+];
 import { ChargeItemRow } from "@/components/charge-item-row";
 
 async function addChargeItemAction(formData: FormData) {
@@ -188,7 +199,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
 
       <div className="mt-4">
         <Card title={management ? "Sve fakture" : "Moje fakture"}>
-          <Table headers={["Broj", "Jedinica", "Dužnik", "Period", "Dospijeće", "Iznos", "Plaćeno", "Status"]} empty={invoices.length === 0}>
+          <Table id="invoices-table" caption={management ? "Sve fakture" : "Moje fakture"} headers={invoiceHeaders} empty={invoices.length === 0}>
             {invoices.map((inv) => {
               const paid = invoicePaidAmount(inv);
               const overdue = inv.status === "ISSUED" && inv.dueDate < new Date();
@@ -199,8 +210,8 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                   <Td>{inv.debtor.kind === "PERSON" ? `${inv.debtor.firstName ?? ""} ${inv.debtor.lastName ?? ""}` : inv.debtor.orgName}</Td>
                   <Td>{inv.periodLabel ?? "—"}</Td>
                   <Td>{formatDate(inv.dueDate)}</Td>
-                  <Td right>{formatMoney(inv.total.toString())}</Td>
-                  <Td right>{formatMoney(paid.toFixed(2))}</Td>
+                  <Td>{formatMoney(inv.total.toString())}</Td>
+                  <Td>{formatMoney(paid.toFixed(2))}</Td>
                   <Td>
                     <StatusBadge
                       status={overdue ? "UNPAID" : inv.status}
