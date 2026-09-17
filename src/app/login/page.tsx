@@ -5,6 +5,8 @@ import { authenticate } from "@/server/services/users";
 import { createSession, getAuthContext, clientIp } from "@/server/auth/session";
 import { sha256 } from "@/server/auth/tokens";
 import { Flash, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { AuthShell } from "@/components/auth-shell";
+import { PasswordInput } from "@/components/password-input";
 import { headers } from "next/headers";
 
 async function loginAction(formData: FormData) {
@@ -38,24 +40,23 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     : undefined;
   const okMsg = msg === "password_reset_done" ? "Lozinka je uspješno promijenjena. Prijavite se novom lozinkom." : undefined;
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="mb-1 text-xl font-semibold">{t("app.name")}</h1>
-        <p className="mb-5 text-sm text-slate-500">{t("auth.loginTitle")}</p>
-        <Flash err={errMsg} msg={okMsg} />
-        <form action={loginAction} className="space-y-4">
-          <Field label={t("auth.email")}>
-            <input name="email" type="email" required autoComplete="username" className={inputCls} />
-          </Field>
-          <Field label={t("auth.password")}>
-            <input name="password" type="password" required autoComplete="current-password" className={inputCls} />
-          </Field>
-          <SubmitBtn>{t("auth.login")}</SubmitBtn>
-        </form>
-        <p className="mt-4 text-sm">
-          <Link href="/zaboravljena-lozinka" className="text-blue-700 hover:underline">Zaboravili ste lozinku?</Link>
-        </p>
-      </div>
-    </main>
+    <AuthShell
+      pageTitle={t("auth.loginTitle")}
+      footnote="Nalog dobijate od predsjednika vaše zajednice etažnih vlasnika."
+    >
+      <Flash err={errMsg} msg={okMsg} />
+      <form action={loginAction} className="space-y-4">
+        <Field label={t("auth.email")}>
+          <input name="email" type="email" required autoComplete="username" className={inputCls} />
+        </Field>
+        <Field label={t("auth.password")}>
+          <PasswordInput name="password" required autoComplete="current-password" />
+        </Field>
+        <SubmitBtn>{t("auth.login")}</SubmitBtn>
+      </form>
+      <p className="mt-4 text-sm">
+        <Link href="/zaboravljena-lozinka" className="text-blue-700 hover:underline">Zaboravili ste lozinku?</Link>
+      </p>
+    </AuthShell>
   );
 }

@@ -590,7 +590,7 @@ export async function inspectApprovalToken(tokenPlain: string, ipHash?: string |
         include: {
           owner: true,
           proxy: true,
-          proposal: { include: { meeting: true, attachments: true } },
+          proposal: { include: { meeting: true, attachments: true, zev: { select: { legalName: true, shortName: true } } } },
         },
       },
       vote: true,
@@ -638,6 +638,7 @@ export async function inspectApprovalToken(tokenPlain: string, ipHash?: string |
       contentHash: p.contentHash,
       votingClosesAt: p.votingClosesAt,
       meetingTitle: p.meeting.title,
+      zevName: p.zev.shortName ?? p.zev.legalName,
     },
     voter: {
       ownerName: partyDisplayName(t.eligibleVoter.owner),

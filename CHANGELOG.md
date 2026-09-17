@@ -43,6 +43,44 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.17.0] - 2026-09-17
+
+### Dodano
+
+- **Faza 4 plana UI/UX redizajna** (`Plans/ui-ux-redesign-plan.md`) — javni i
+  neautentifikovani tokovi. Ovo su ekrani sa najmanje vještim korisnicima
+  (link iz e-maila, otvara se jednom u životu) i najvećim pravnim ulogom, a
+  do sada su dobijali najmanje dizajnerske pažnje.
+  - **Novi `AuthShell` primitiv** (`src/components/auth-shell.tsx`) —
+    logotip, naziv i slogan aplikacije (`t("app.tagline")`, postojao u
+    rječniku a nikad se nije prikazivao), primijenjen na `/login`,
+    `/zaboravljena-lozinka` i `/reset-lozinka/[token]` umjesto tri kopije
+    istog ručno pisanog markupa. Na `/login` dodata rečenica „Nalog dobijate
+    od predsjednika vaše zajednice etažnih vlasnika." — za vlasnika koji
+    prvi put treba nalog, to danas nije pisalo nigdje.
+  - **Novi `PasswordInput` sa „prikaži lozinku” prekidačem**
+    (`src/components/password-input.tsx`), na `/login` i `/reset-lozinka` —
+    značajno za starije korisnike koji žele provjeriti šta su ukucali.
+  - **Redizajn `/glasanje/[token]`** (elektronsko izjašnjavanje) u tri
+    numerisana koraka na jednoj stranici: 1) ko ste vi, 2) o čemu se
+    izjašnjavate (tekst prijedloga sada 16px umjesto 14px, `max-w-[68ch]`;
+    otisak sadržaja premješten u fusnotu sa objašnjenjem), 3) vaš izbor —
+    tri velike klikabilne kartice umjesto sitnih radio dugmadi (min. 56px
+    visine, cijela kartica klikabilna), izjava saglasnosti na veličini
+    tijela teksta (bila `text-xs`). Dodat stvaran korak potvrde prije
+    nepovratnog slanja: sažetak izbora („Izjašnjavate se **ZA** prijedlog
+    P-2026-02...") koji se ažurira **bez ijedne linije JavaScripta**
+    (CSS `:has()` selektori prate koji je radio označen). Greška
+    potvrde izjave sada se prikazuje uz sam obrazac umjesto na vrhu
+    stranice. Dodat logotip i red za pomoć na dnu („Ako vaš kod ne radi...
+    obratite se predsjedniku vaše zajednice").
+  - Prije implementacije stranica `/glasanje/[token]` je otvorena uživo sa
+    stvarnim tokenom (generisanim lokalno za potrebe provjere), kako plan i
+    traži — do sada nikad nije viđena uživo, samo kroz čitanje koda.
+  - Bez izmjene tri postojeće brane identiteta (link + verifikacioni kod +
+    potvrda izjave) niti pravne ograde na dnu stranice. 247/247 testova
+    prolazi; uživo provjereno na 1440px i 375px.
+
 ## [2.16.0] - 2026-09-17
 
 ### Ispravljeno
