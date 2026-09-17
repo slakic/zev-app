@@ -43,6 +43,32 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.18.0] - 2026-09-17
+
+### Izmijenjeno
+
+- **Faza 6 plana UI/UX redizajna** (`Plans/ui-ux-redesign-plan.md`) — copy i
+  i18n higijena. Ovo je posljednja faza iz trenutnog obima (Faza 0, 1, 2, 4,
+  6); Faza 3 i Faza 5 ostaju odložene po ranijoj odluci.
+  - **Naslovi stranica kroz rječnik:** `/zgrade`, `/vlasnici`, `/organi`,
+    `/fakture`, `/podesavanja`, `/izvjestaji` su hardkodovano ponavljali
+    string koji već postoji u `nav` dijelu rječnika — sada idu kroz `t()`,
+    pa se ne mogu razminuti sa nazivom stavke u meniju.
+  - **Uklonjeni interni nazivi fajlova iz teksta koji vidi korisnik** — pet
+    mjesta je referenciralo `LEGAL_AND_FINANCIAL_ASSUMPTIONS.md`,
+    `.env.example` ili `README` (na `/organi`, `/podesavanja` dva mjesta,
+    `/skupstina`, i oznaka podešavanja „predsjednik je ujedno predsjednik
+    upravnog odbora"). Ovi fajlovi nisu dostupni korisniku pa referenca nije
+    nosila informaciju — suština teksta je zadržana, samo bez naziva fajla.
+  - **Novi opcioni `hint` prop na `Card`-u** (`ui.tsx`) — naslovi kartica
+    koji su u zagradi nosili implementacioni detalj (npr. „Glasačka baza i
+    lični linkovi (tokeni se čuvaju samo kao hash)") sada imaju kratak,
+    jasan naslov i detalj premješten u hint red ispod, manjim, prigušenim
+    fontom. Primijenjeno na pet kartica: glasačka baza i lični linkovi,
+    ispravka glasa, alokacije uplate, pravila glasanja, vlasnički udjeli.
+  - Bez izmjene rasporeda ni ponašanja — čisto tekstualna izmjena. 247/247
+    testova prolazi; uživo provjereno na 1440px i 375px.
+
 ## [2.17.0] - 2026-09-17
 
 ### Dodano

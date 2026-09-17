@@ -28,10 +28,13 @@ export function PageHeader({
   );
 }
 
-export function Card({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
+export function Card({
+  title, hint, children, className,
+}: { title?: string; hint?: ReactNode; children: ReactNode; className?: string }) {
   return (
     <section className={`rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm ${className ?? ""}`}>
-      {title && <h2 className="mb-3 text-sm font-semibold text-slate-700">{title}</h2>}
+      {title && <h2 className={`text-sm font-semibold text-slate-700 ${hint ? "" : "mb-3"}`}>{title}</h2>}
+      {hint && <p className="mb-3 mt-0.5 text-[13px] text-slate-500">{hint}</p>}
       {children}
     </section>
   );

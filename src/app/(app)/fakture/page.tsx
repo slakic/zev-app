@@ -7,7 +7,7 @@ import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, crea
 import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, tEnum } from "@/lib/i18n";
+import { formatDate, t, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn } from "@/components/ui";
 import { ChargeItemRow } from "@/components/charge-item-row";
 
@@ -79,7 +79,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
   return (
     <div>
       <PageHeader
-        title="Fakture i uplate"
+        title={t("nav.invoices")}
         subtitle={management ? "Stavke naknada, serije faktura, uplate i salda" : "Vaše fakture i uplate"}
         actions={management ? <BtnLink href="/fakture/uplate" variant="secondary">Uplate i uparivanje</BtnLink> : <BtnLink href="/fakture/uplate" variant="secondary">Moje uplate</BtnLink>}
       />

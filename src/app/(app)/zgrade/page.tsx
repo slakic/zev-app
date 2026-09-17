@@ -4,7 +4,7 @@ import { listBuildings, listUnits, createBuilding, createEntrance, createUnit, g
 import { partyDisplayName } from "@/server/services/ownership";
 import { updateBuildingAction, updateUnitAction } from "@/server/actions/property";
 import { parseMoneyInput } from "@/lib/money";
-import { tEnum } from "@/lib/i18n";
+import { t, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
 import { BuildingRow } from "@/components/building-row";
 import { UnitRow } from "@/components/unit-row";
@@ -81,7 +81,7 @@ export default async function BuildingsPage({
     : ["Naziv", "Adresa", "Ulazi", "Jedinica"];
   return (
     <div>
-      <PageHeader title="Zgrade i jedinice" subtitle={zev?.legalName ?? undefined} />
+      <PageHeader title={t("nav.buildings")} subtitle={zev?.legalName ?? undefined} />
       {!zev && <Flash err="ZEV još nije konfigurisana — unesite matične podatke u Podešavanjima." />}
       <Flash err={err} msg={okMsg} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

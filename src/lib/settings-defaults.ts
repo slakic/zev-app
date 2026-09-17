@@ -26,7 +26,7 @@ export const SETTING_DEFINITIONS: readonly SettingDefinition[] = [
   { key: "board.termYears", label: "Trajanje mandata organa ZEV (godina)", def: "4" },
   {
     key: "board.presidentIsBoardPresident",
-    label: "Predsjednik ZEV je ujedno predsjednik upravnog odbora (pretpostavka — vidi LEGAL_AND_FINANCIAL_ASSUMPTIONS.md)",
+    label: "Predsjednik ZEV je ujedno predsjednik upravnog odbora (pretpostavka — pravna provjera u toku)",
     def: "true",
   },
 ] as const;

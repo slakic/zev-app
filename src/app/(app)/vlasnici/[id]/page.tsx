@@ -183,7 +183,7 @@ export default async function PartyDetailPage({
             </dl>
           )}
         </Card>
-        <Card title="Vlasnički udjeli (istorija se čuva)">
+        <Card title="Vlasnički udjeli" hint="Istorija se čuva — raniji udjeli ostaju vidljivi.">
           <Table headers={["Jedinica", "Udio %", "Od", "Do", "Dokaz o vlasništvu"]} empty={party.ownershipStakes.length === 0}>
             {party.ownershipStakes.map((s) => {
               const proof = proofsByStake.get(s.id);

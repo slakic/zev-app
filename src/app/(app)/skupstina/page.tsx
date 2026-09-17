@@ -117,7 +117,7 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
 
       {management && (
         <div className="mt-4">
-          <Card title="Pravila glasanja (konfigurabilna — snimak se čuva uz svaki prijedlog)">
+          <Card title="Pravila glasanja" hint="Konfigurabilna — snimak pravila se čuva uz svaki prijedlog, pa kasnija izmjena ne utiče na već otvorena glasanja.">
             <Table headers={["Naziv", "Kvorum", "Većina", "Težina glasa"]} empty={rules.length === 0}>
               {rules.map((r) => (
                 <tr key={r.id}>
@@ -160,8 +160,8 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
                 </form>
               </details>
             )}
-            <p className="mt-3 text-xs text-slate-500">
-              Napomena: zakonski kvorum i većine po tipu odluke potvrđuje pravnik — vidjeti LEGAL_AND_FINANCIAL_ASSUMPTIONS.md.
+            <p className="mt-3 text-[13px] text-slate-500">
+              Napomena: zakonski kvorum i većine po tipu odluke potvrđuje pravnik prije produkcijske upotrebe.
             </p>
           </Card>
         </div>

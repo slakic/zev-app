@@ -3,7 +3,7 @@ import { cashFlowReport, incomeExpenseReport, receivablesReport, supplierReport,
 import { reserveFundBalance } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
-import { formatDate, endOfDay } from "@/lib/i18n";
+import { formatDate, endOfDay, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
@@ -60,7 +60,7 @@ export default async function ReportsPage({
   return (
     <div>
       <PageHeader
-        title="Izvještaji"
+        title={t("nav.reports")}
         subtitle="Operativni finansijski pregledi — izvoz u CSV za eksternog računovođu ili u PDF za štampu/arhivu"
         actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="primary">Izvoz svih izvještaja (PDF)</BtnLink>}
       />

@@ -7,7 +7,7 @@ import { createUserForParty } from "@/server/services/users";
 import { listUnits } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
-import { formatDate } from "@/lib/i18n";
+import { formatDate, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
@@ -121,7 +121,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
   ]);
   return (
     <div>
-      <PageHeader title="Vlasnici i korisnici" subtitle="Etažni vlasnici, suvlasnici, stanari, zakupci i punomoćnici" />
+      <PageHeader title={t("nav.owners")} subtitle="Etažni vlasnici, suvlasnici, stanari, zakupci i punomoćnici" />
       <Flash err={err} />
       <Card title="Lica (fizička i pravna)">
         <Table headers={["Ime / naziv", "Vrsta", "E-mail", "Telefon", "Vlasništvo (aktivno)", "Nalog"]} empty={parties.length === 0}>

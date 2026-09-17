@@ -6,7 +6,7 @@ import {
   listParties, partyDisplayName,
 } from "@/server/services/ownership";
 import { getSettings } from "@/server/services/settings";
-import { formatDate } from "@/lib/i18n";
+import { formatDate, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
 
 async function setOfficerAction(formData: FormData) {
@@ -73,7 +73,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Organi ZEV"
+        title={t("nav.organs")}
         subtitle="Predsjednik, računovođa i upravni odbor — trenutni sastav i istorija mandata"
       />
       <Flash err={err} />
@@ -83,8 +83,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
           Prema Zakonu o održavanju zgrada Republike Srpske organi ZEV su <b>skupština</b> (svi vlasnici) i{" "}
           <b>upravni odbor</b> (kolegijalno tijelo koje skupština bira). Tačan broj članova upravnog odbora,
           trajanje mandata i pretpostavka da je predsjednik ZEV ujedno i predsjednik upravnog odbora su{" "}
-          <b>podesivi</b> (vidi <i>Podešavanja</i>) i flagovani su za pravnu potvrdu — vidi{" "}
-          <code>LEGAL_AND_FINANCIAL_ASSUMPTIONS.md §Organi ZEV</code>. Preporučeni broj članova upravnog odbora
+          <b>podesivi</b> (vidi <i>Podešavanja</i>). Preporučeni broj članova upravnog odbora
           trenutno je <b>{boardSize}</b>, trajanje mandata <b>{termYears}</b> godina.
         </p>
       </Card>

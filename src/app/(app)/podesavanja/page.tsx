@@ -8,7 +8,7 @@ import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/ev
 import { getSettings, setSetting } from "@/server/services/settings";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDateTime, t, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash } from "@/components/ui";
 
 async function saveZevAction(formData: FormData) {
@@ -105,7 +105,7 @@ export default async function SettingsPage({
   return (
     <div>
       <PageHeader
-        title="Podešavanja"
+        title={t("nav.settings")}
         subtitle={
           isManagement
             ? "Moji podaci, matični podaci ZEV, računi, pravni parametri, poruke i revizorski trag"
@@ -238,8 +238,8 @@ export default async function SettingsPage({
 
         {isManagement && (
           <Card title="Konfigurabilni pravni i finansijski parametri">
-            <p className="mb-3 text-xs text-slate-500">
-              Vrijednosti označene u LEGAL_AND_FINANCIAL_ASSUMPTIONS.md — pravna/računovodstvena provjera obavezna prije produkcijske upotrebe.
+            <p className="mb-3 text-[13px] text-slate-500">
+              Ove vrijednosti utiču na obračun i na pravila glasanja. Prije izmjene se posavjetujte sa računovođom.
             </p>
             <div className="space-y-3">
               {SETTING_DEFINITIONS.map((s) => (
@@ -266,8 +266,7 @@ export default async function SettingsPage({
                 <>E-mail i Viber trenutno rade preko <b>mock</b> provajdera.</>
               )}{" "}
               Poruke se evidentiraju u „Poslate poruke” sa (simuliranim, za mock provajder)
-              statusima isporuke. Konfiguracija stvarnih provajdera opisana je u{" "}
-              <code className="rounded bg-slate-100 px-1">.env.example</code> i README.
+              statusima isporuke. Stvarne provajdere podešava osoba koja je postavila sistem.
               Viber bot može slati poruke korisnicima koji su se pretplatili na bota —
               automatsko objavljivanje u proizvoljne privatne grupe nije podržano zvaničnim API-jem.
             </p>

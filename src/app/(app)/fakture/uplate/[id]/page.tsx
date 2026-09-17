@@ -149,7 +149,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
       </div>
 
       <div className="mt-4">
-        <Card title="Alokacije (zapisi se ne brišu — storno je novi zapis)">
+        <Card title="Alokacije" hint="Zapisi se ne brišu — storno je novi zapis.">
           <Table headers={["Vrijeme", "Faktura", "Iznos", "Napomena", ""]} empty={payment.allocations.length === 0}>
             {payment.allocations.map((a) => (
               <tr key={a.id} className={Number(a.amount) < 0 ? "text-red-700" : ""}>

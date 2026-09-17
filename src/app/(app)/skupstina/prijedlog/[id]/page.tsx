@@ -224,7 +224,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
 
       {isPresident && (
         <div className="mt-4">
-          <Card title="Glasačka baza i lični linkovi (tokeni se čuvaju samo kao hash)">
+          <Card title="Glasačka baza i lični linkovi" hint="Tokeni se čuvaju samo kao hash — sami linkovi se ne mogu ponovo prikazati.">
             <Table headers={["Vlasnik", "Punomoćnik", "Težina", "Token status", "Izjašnjenje", "Radnje"]} empty={p.eligibleVoters.length === 0}>
               {p.eligibleVoters.map((ev) => {
                 const activeToken = ev.tokens.find((t) => t.status === "ACTIVE");
@@ -321,7 +321,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
               <SubmitBtn>Evidentiraj i generiši PDF odluke</SubmitBtn>
             </form>
           </Card>
-          <Card title="Ispravka glasa (samo uz razlog i osnov — trag ostaje)">
+          <Card title="Ispravka glasa" hint="Moguće samo uz razlog i osnov — prethodni glas ostaje u evidenciji, ispravka je novi zapis.">
             <form action={correctVoteAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="hidden" name="proposalId" value={p.id} />
               <Field label="Glas">
