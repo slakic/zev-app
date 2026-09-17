@@ -7,7 +7,7 @@ import { listSuppliers } from "@/server/services/expenses";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction } from "@/components/ui";
 import type { IssueStatus } from "@/generated/prisma/client";
 
 async function transitionAction(formData: FormData) {
@@ -223,7 +223,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
                       <form action={selectOfferAction}>
                         <input type="hidden" name="issueId" value={issue.id} />
                         <input type="hidden" name="offerId" value={o.id} />
-                        <button className="text-sm text-blue-700 hover:underline">izaberi</button>
+                        <RowAction variant="tonal">izaberi</RowAction>
                       </form>
                     )}
                   </Td>
@@ -260,8 +260,8 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
                       <form action={completeWoAction} className="flex items-center gap-1">
                         <input type="hidden" name="issueId" value={issue.id} />
                         <input type="hidden" name="workOrderId" value={wo.id} />
-                        <input name="note" placeholder="dokaz o završetku" className="w-32 rounded border border-slate-300 px-1 py-0.5 text-xs" />
-                        <button className="text-xs text-blue-700 hover:underline">završi</button>
+                        <input name="note" placeholder="dokaz o završetku" className={`${inputCls} w-32 py-1 text-[13px]`} />
+                        <RowAction variant="tonal">završi</RowAction>
                       </form>
                     )}
                   </Td>

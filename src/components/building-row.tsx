@@ -3,7 +3,7 @@
 // pdf-statement-import.tsx) purely so "Otkaži" can close the panel without a page reload —
 // the actual save still goes through the normal server action + redirect.
 import { useState } from "react";
-import { Td, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { Td, Field, inputCls, SubmitBtn, RowAction, Btn } from "@/components/ui";
 
 type BuildingRowData = {
   id: string;
@@ -48,13 +48,9 @@ export function BuildingRow({
         <Td right>{b._count.units}</Td>
         {canEdit && (
           <Td>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              className="text-sm font-medium text-blue-700 hover:underline"
-            >
+            <RowAction type="button" onClick={() => setOpen((v) => !v)}>
               {open ? "Zatvori" : "Uredi"}
-            </button>
+            </RowAction>
           </Td>
         )}
       </tr>
@@ -70,13 +66,7 @@ export function BuildingRow({
               <Field label="Broj spratova"><input name="floorsCount" type="number" defaultValue={b.floorsCount ?? ""} className={inputCls} /></Field>
               <Field label="Napomena"><input name="note" defaultValue={b.note ?? ""} className={inputCls} /></Field>
               <div className="flex items-center justify-end gap-2 border-t border-slate-200 pt-3 sm:col-span-3">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-                >
-                  Otkaži
-                </button>
+                <Btn type="button" onClick={() => setOpen(false)}>Otkaži</Btn>
                 <SubmitBtn>Sačuvaj izmjene</SubmitBtn>
               </div>
             </form>

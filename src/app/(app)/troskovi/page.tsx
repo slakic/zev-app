@@ -9,7 +9,7 @@ import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction } from "@/components/ui";
 
 async function addSupplierAction(formData: FormData) {
   "use server";
@@ -181,19 +181,25 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
                 <Td><StatusBadge status={e.status} label={tEnum("expenseStatus", e.status)} /></Td>
                 <Td>
                   {(e.status === "UNPAID" || e.status === "PARTIALLY_PAID") && actor.roles.includes("ACCOUNTANT") && (
-                    <div className="flex items-center gap-2">
-                      <form action={payExpenseAction} className="flex items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <form action={payExpenseAction} className="flex items-center gap-1.5">
                         <input type="hidden" name="expenseId" value={e.id} />
-                        <select name="accountId" className="rounded border border-slate-300 px-1 py-0.5 text-xs">
+                        <select name="accountId" className={`${inputCls} w-32 py-1 text-[13px]`}>
                           {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                         </select>
-                        <button className="text-xs text-blue-700 hover:underline">plati</button>
+                        <RowAction variant="tonal">plati</RowAction>
                       </form>
-                      <form action={cancelExpenseAction} className="flex items-center gap-1">
-                        <input type="hidden" name="expenseId" value={e.id} />
-                        <input name="reason" placeholder="razlog" className="w-20 rounded border border-slate-300 px-1 py-0.5 text-xs" />
-                        <button className="text-xs text-red-700 hover:underline">storno</button>
-                      </form>
+                      <ConfirmAction
+                        trigger="storno"
+                        triggerVariant="caution"
+                        title="Storniranje troška je nepovratno"
+                        confirmLabel="Da, storniraj trošak"
+                        confirmVariant="caution"
+                        action={cancelExpenseAction}
+                        hiddenFields={{ expenseId: e.id }}
+                      >
+                        <Field label="Razlog storniranja"><input name="reason" className={inputCls} /></Field>
+                      </ConfirmAction>
                     </div>
                   )}
                 </Td>

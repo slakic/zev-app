@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
@@ -8,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { listBuildings } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink } from "@/components/ui";
 import { ChargeItemRow } from "@/components/charge-item-row";
 
 async function addChargeItemAction(formData: FormData) {
@@ -170,7 +169,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
             <Table headers={["Period", "Status", "Faktura", "Kreirana"]} empty={batches.length === 0}>
               {batches.map((b) => (
                 <tr key={b.id}>
-                  <Td><Link href={`/fakture/serija/${b.id}`} className="text-blue-700 hover:underline">{b.period}</Link></Td>
+                  <Td><RowLink href={`/fakture/serija/${b.id}`}>{b.period}</RowLink></Td>
                   <Td><StatusBadge status={b.status} label={b.status === "DRAFT" ? "Nacrt" : b.status === "ISSUED" ? "Izdata" : "Stornirana"} /></Td>
                   <Td right>{b._count.invoices}</Td>
                   <Td>{formatDate(b.createdAt)}</Td>
@@ -195,7 +194,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
               const overdue = inv.status === "ISSUED" && inv.dueDate < new Date();
               return (
                 <tr key={inv.id}>
-                  <Td><Link href={`/fakture/${inv.id}`} className="text-blue-700 hover:underline">{inv.number}</Link></Td>
+                  <Td><RowLink href={`/fakture/${inv.id}`}>{inv.number}</RowLink></Td>
                   <Td>{inv.unit.building.name} / {inv.unit.label}</Td>
                   <Td>{inv.debtor.kind === "PERSON" ? `${inv.debtor.firstName ?? ""} ${inv.debtor.lastName ?? ""}` : inv.debtor.orgName}</Td>
                   <Td>{inv.periodLabel ?? "—"}</Td>

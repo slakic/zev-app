@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash } from "@/components/ui";
 
 async function allocateAction(formData: FormData) {
   "use server";
@@ -96,7 +96,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
                     <input type="hidden" name="paymentId" value={payment.id} />
                     <input type="hidden" name="invoiceId" value={s.invoiceId} />
                     <input type="hidden" name="amount" value={dec(s.open).lessThan(free) ? s.open : free.toFixed(2)} />
-                    <button className="text-sm text-blue-700 hover:underline">upari</button>
+                    <RowAction variant="tonal">upari</RowAction>
                   </form>
                 </Td>
               </tr>
@@ -159,12 +159,17 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
                 <Td>{a.reason ?? "—"}</Td>
                 <Td>
                   {Number(a.amount) > 0 && !a.reversalOfId && payment.status !== "REVERSED" && (
-                    <form action={reverseAllocAction} className="flex gap-1">
-                      <input type="hidden" name="paymentId" value={payment.id} />
-                      <input type="hidden" name="allocationId" value={a.id} />
-                      <input name="reason" placeholder="razlog" className="w-28 rounded border border-slate-300 px-1 text-xs" />
-                      <button className="text-xs text-red-700 hover:underline">storno</button>
-                    </form>
+                    <ConfirmAction
+                      trigger="storno"
+                      triggerVariant="caution"
+                      title="Storniranje alokacije je nepovratno"
+                      confirmLabel="Da, storniraj alokaciju"
+                      confirmVariant="caution"
+                      action={reverseAllocAction}
+                      hiddenFields={{ paymentId: payment.id, allocationId: a.id }}
+                    >
+                      <Field label="Razlog storniranja"><input name="reason" className={inputCls} /></Field>
+                    </ConfirmAction>
                   )}
                 </Td>
               </tr>

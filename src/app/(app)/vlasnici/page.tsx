@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
@@ -8,7 +7,7 @@ import { listUnits } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
@@ -127,7 +126,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
         <Table headers={["Ime / naziv", "Vrsta", "E-mail", "Telefon", "Vlasništvo (aktivno)", "Nalog"]} empty={parties.length === 0}>
           {parties.map((p) => (
             <tr key={p.id}>
-              <Td><Link href={`/vlasnici/${p.id}`} className="text-blue-700 hover:underline">{partyDisplayName(p)}</Link></Td>
+              <Td><RowLink href={`/vlasnici/${p.id}`}>{partyDisplayName(p)}</RowLink></Td>
               <Td>{p.kind === "PERSON" ? "Fizičko lice" : "Pravno lice"}</Td>
               <Td>{p.email ?? "—"}</Td>
               <Td>{p.phone ?? "—"}</Td>

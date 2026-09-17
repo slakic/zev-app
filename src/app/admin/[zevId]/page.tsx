@@ -5,7 +5,7 @@ import { getTenant, setTenantActive, createTenantAccount, grantMembership, revok
 import { switchActiveZev } from "@/server/services/memberships";
 import { formatDate, t } from "@/lib/i18n";
 import { PasswordField } from "@/components/password-field";
-import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash } from "@/components/ui";
 import type { Role } from "@/generated/prisma/client";
 
 const TIER_LABELS: Record<string, string> = {
@@ -201,25 +201,22 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
                     {m.userId === actor.userId && (
                       <form action={enterZevAction}>
                         <input type="hidden" name="zevId" value={zev.id} />
-                        <button type="submit" className="text-blue-700 hover:underline">
-                          {t("tenant.enterThisZev")}
-                        </button>
+                        <RowAction type="submit" variant="ghost">{t("tenant.enterThisZev")}</RowAction>
                       </form>
                     )}
-                    <form action={revokeAction} className="flex items-center gap-1.5">
-                      <input type="hidden" name="zevId" value={zev.id} />
-                      <input type="hidden" name="userId" value={m.userId} />
-                      <input type="hidden" name="role" value={m.role} />
-                      <input
-                        name="reason"
-                        required
-                        placeholder={t("tenant.revokeReasonPlaceholder")}
-                        className={`${inputCls} w-36 py-1 text-xs`}
-                      />
-                      <button type="submit" className="text-red-700 hover:underline">
-                        {t("tenant.revokeAccess")}
-                      </button>
-                    </form>
+                    <ConfirmAction
+                      trigger={t("tenant.revokeAccess")}
+                      triggerVariant="caution"
+                      title="Uklanjanje pristupa je nepovratno"
+                      confirmLabel={t("tenant.revokeAccess")}
+                      confirmVariant="caution"
+                      action={revokeAction}
+                      hiddenFields={{ zevId: zev.id, userId: m.userId, role: m.role }}
+                    >
+                      <Field label={t("tenant.revokeReasonPlaceholder")}>
+                        <input name="reason" required className={inputCls} />
+                      </Field>
+                    </ConfirmAction>
                   </div>
                 </Td>
               </tr>
@@ -304,9 +301,7 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
                       placeholder={t("tenant.revokeReasonPlaceholder")}
                       className={`${inputCls} py-1 text-xs`}
                     />
-                    <button type="submit" className="shrink-0 text-sm text-red-700 hover:underline">
-                      {t("tenant.removeMyAccess")} ({ROLE_LABELS[m.role]})
-                    </button>
+                    <SubmitBtn variant="caution">{t("tenant.removeMyAccess")} ({ROLE_LABELS[m.role]})</SubmitBtn>
                   </form>
                 ))}
               </div>

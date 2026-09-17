@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listPlans, createPlan, listProjects, createProject } from "@/server/services/plans";
 import { parseMoneyInput } from "@/lib/money";
 import { tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink } from "@/components/ui";
 
 async function addPlanAction(formData: FormData) {
   "use server";
@@ -40,7 +39,7 @@ export default async function PlansPage() {
             <tr key={p.id}>
               <Td>{p.year}.</Td>
               <Td>{tEnum("planKind", p.kind)}</Td>
-              <Td><Link href={`/planovi/${p.id}`} className="text-blue-700 hover:underline">{p.title}</Link></Td>
+              <Td><RowLink href={`/planovi/${p.id}`}>{p.title}</RowLink></Td>
               <Td right>v{p.version}</Td>
               <Td><StatusBadge status={p.status} label={tEnum("planStatus", p.status)} /></Td>
             </tr>

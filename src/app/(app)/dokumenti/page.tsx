@@ -4,7 +4,7 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listDocuments, publishDocument } from "@/server/services/documents";
 import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/server/services/attachments";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, RowAction, RowActionLink } from "@/components/ui";
 
 async function publishAction(formData: FormData) {
   "use server";
@@ -66,12 +66,12 @@ export default async function DocumentsPage({
               <Td>{d.publishedToOwners ? "Da" : "—"}</Td>
               <Td>{formatDateTime(d.createdAt)}</Td>
               <Td>
-                <div className="flex items-center gap-2">
-                  <a className="text-sm text-blue-700 hover:underline" href={`/api/dokumenti/${d.id}`}>PDF</a>
+                <div className="flex items-center gap-1.5">
+                  <RowActionLink href={`/api/dokumenti/${d.id}`}>PDF</RowActionLink>
                   {management && !d.publishedToOwners && actor.roles.includes("PRESIDENT") && (
                     <form action={publishAction}>
                       <input type="hidden" name="documentId" value={d.id} />
-                      <button className="text-sm text-emerald-700 hover:underline">objavi vlasnicima</button>
+                      <RowAction variant="tonal">objavi vlasnicima</RowAction>
                     </form>
                   )}
                 </div>
@@ -106,7 +106,7 @@ export default async function DocumentsPage({
                 <Td>{tEnum("attachmentCategory", a.category)}</Td>
                 <Td>{a.filename}</Td>
                 <Td>{formatDateTime(a.createdAt)}</Td>
-                <Td><a className="text-blue-700 hover:underline" href={`/api/prilozi/${a.id}`}>preuzmi</a></Td>
+                <Td><RowActionLink href={`/api/prilozi/${a.id}`}>preuzmi</RowActionLink></Td>
               </tr>
             ))}
           </Table>

@@ -43,6 +43,36 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.1] - 2026-09-17
+
+### Izmijenjeno
+
+- **Faza 3b plana UI/UX redizajna** — uniformnost radnji i linkova u redovima
+  tabela kroz cijelu aplikaciju, direktan odgovor na nalaze posmatrane sesije
+  (N1: "uredi" link nedosljedan sa ostalim dugmadima; N7: "Action buttons
+  should be uniformed"). Koristi primitive iz Faze 3a (`RowAction`,
+  `RowActionLink`, `RowLink`, `Btn`), bez izmjene `ui.tsx`.
+  - 18 radnji u redovima tabela (dugmad "uredi"/"plati"/"upari"/"izaberi"/
+    "završi"/"objavi vlasnicima"/"preuzmi"/itd.) prevedeno sa ručno pisanih
+    klasa ili teksta-kao-linka na `RowAction`/`RowActionLink` (ghost ili
+    tonal, prema radnji).
+  - 13 linkova identiteta reda (broj fakture, naziv vlasnika/zgrade/ZEV-a i
+    sl.) prevedeno na `RowLink`.
+  - 3 dugmeta u client komponentama (`building-row.tsx`, `unit-row.tsx`,
+    `charge-item-row.tsx`) sa ručno prepisanim `btnBase` klasama prevedeno na
+    `Btn`.
+  - Destruktivne-ali-povratne radnje u redovima (storno troška, storno
+    alokacije uplate, storno uplate, uklanjanje pristupa ZEV nalogu)
+    prevedene na `ConfirmAction` (uveden u Fazi 2) — razlog storniranja sada
+    eksplicitno polje, a ne go trag u formi.
+  - ~12 preostalih "golih" polja (datum/select filteri na `/aktivnosti`,
+    `/admin/aktivnosti`, `/podesavanja/audit`) dobili `inputCls` radi
+    vizuelne dosljednosti sa ostatkom aplikacije.
+  - 20 izmijenjenih fajlova; 247/247 testova prolazi; uživo provjereno na
+    1440px i 375px (uključujući ulogovanog kao računovođa radi provjere
+    role-gated radnji plaćanja/storna, i predsjednika radi provjere radnji
+    održavanja i uklanjanja pristupa).
+
 ## [2.19.0] - 2026-09-17
 
 ### Dodano

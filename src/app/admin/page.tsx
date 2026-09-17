@@ -3,7 +3,7 @@ import Link from "next/link";
 import { requireSuperAdminActor } from "@/server/actor";
 import { listTenants, createTenant } from "@/server/services/admin";
 import { switchActiveZev } from "@/server/services/memberships";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowAction, RowActionLink, RowLink } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { t } from "@/lib/i18n";
 
@@ -74,9 +74,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
               return (
                 <tr key={z.id}>
                   <Td>
-                    <Link href={`/admin/${z.id}`} className="font-medium text-blue-700 hover:underline">
-                      {z.legalName}
-                    </Link>
+                    <RowLink href={`/admin/${z.id}`}>{z.legalName}</RowLink>
                     {z.shortName && <div className="text-xs text-slate-500">{z.shortName}</div>}
                   </Td>
                   <Td>{TIER_LABELS[z.tier] ?? z.tier}</Td>
@@ -87,14 +85,12 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
                     <StatusBadge status={z.active ? "ACTIVE" : "SUSPENDED"} label={z.active ? "Aktivan" : "Suspendovan"} />
                   </Td>
                   <Td>
-                    <div className="flex items-center gap-3">
-                      <Link href={`/admin/${z.id}`} className="text-blue-700 hover:underline">
-                        Detalji
-                      </Link>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <RowActionLink href={`/admin/${z.id}`}>Detalji</RowActionLink>
                       {z.hasMyMembership && (
                         <form action={enterZevAction}>
                           <input type="hidden" name="zevId" value={z.id} />
-                          <SubmitBtn variant="ghost">{t("tenant.enter")}</SubmitBtn>
+                          <RowAction type="submit" variant="ghost">{t("tenant.enter")}</RowAction>
                         </form>
                       )}
                     </div>

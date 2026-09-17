@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
@@ -6,7 +5,7 @@ import { listIssues, reportIssue } from "@/server/services/maintenance";
 import { listBuildings, listUnits } from "@/server/services/property";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowLink } from "@/components/ui";
 
 async function reportAction(formData: FormData) {
   "use server";
@@ -79,7 +78,7 @@ export default async function MaintenancePage({ searchParams }: { searchParams: 
           <Table headers={["Naslov", "Prijavio", "Kategorija", "Hitnost", "Status", "Prijavljena"]} empty={issues.length === 0}>
             {issues.map((i) => (
               <tr key={i.id}>
-                <Td><Link href={`/odrzavanje/${i.id}`} className="text-blue-700 hover:underline">{i.title}</Link></Td>
+                <Td><RowLink href={`/odrzavanje/${i.id}`}>{i.title}</RowLink></Td>
                 <Td>{partyDisplayName(i.reporter)}</Td>
                 <Td>{i.category ?? "—"}</Td>
                 <Td>{tEnum("urgency", i.urgency)}{i.isEmergency ? " ⚠" : ""}</Td>

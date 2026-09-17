@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
@@ -7,7 +6,7 @@ import { listAccounts } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink } from "@/components/ui";
 import { PdfStatementImport } from "@/components/pdf-statement-import";
 
 async function enterPaymentAction(formData: FormData) {
@@ -148,9 +147,9 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
                 <Td><StatusBadge status={p.status} label={tEnum("paymentStatus", p.status)} /></Td>
                 <Td>
                   {management && (
-                    <Link href={`/fakture/uplate/${p.id}`} className="text-sm text-blue-700 hover:underline">
+                    <RowActionLink href={`/fakture/uplate/${p.id}`}>
                       {p.status === "UNAPPLIED" || p.status === "PARTIALLY_APPLIED" ? "uparivanje" : "detalji"}
-                    </Link>
+                    </RowActionLink>
                   )}
                 </Td>
               </tr>

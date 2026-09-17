@@ -3,7 +3,7 @@ import { listAllActivity, listActivityActorsForZev } from "@/server/services/act
 import { listTenants } from "@/server/services/admin";
 import { ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Pagination, SubmitBtn } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls } from "@/components/ui";
 
 function daysAgoIso(n: number): string {
   const d = new Date();
@@ -75,15 +75,15 @@ export default async function AdminActivityPage({
       <form className="mb-4 flex flex-wrap items-end gap-4 rounded-lg border border-slate-200 bg-white p-3">
         <label className="text-sm">
           Od{" "}
-          <input type="date" name="from" defaultValue={from} className="ml-1 rounded border border-slate-300 px-2 py-1" />
+          <input type="date" name="from" defaultValue={from} className={`${inputCls} ml-1 w-36`} />
         </label>
         <label className="text-sm">
           Do{" "}
-          <input type="date" name="to" defaultValue={to} className="ml-1 rounded border border-slate-300 px-2 py-1" />
+          <input type="date" name="to" defaultValue={to} className={`${inputCls} ml-1 w-36`} />
         </label>
         <label className="text-sm">
           ZEV{" "}
-          <select name="zev" defaultValue={zevId ?? ""} className="ml-1 rounded border border-slate-300 px-2 py-1">
+          <select name="zev" defaultValue={zevId ?? ""} className={`${inputCls} ml-1 w-48`}>
             <option value="">Svi ZEV nalozi</option>
             {tenants.map((z) => (
               <option key={z.id} value={z.id}>
@@ -110,7 +110,7 @@ export default async function AdminActivityPage({
             defaultValue={sp.akter ?? ""}
             disabled={!zevId}
             title={zevId ? undefined : "Prvo izaberite konkretan ZEV"}
-            className="ml-1 rounded border border-slate-300 px-2 py-1 disabled:bg-slate-50 disabled:text-slate-400"
+            className={`${inputCls} ml-1 w-48 disabled:bg-slate-50 disabled:text-slate-400`}
           >
             <option value="">Svi</option>
             {actors.map((a) => (

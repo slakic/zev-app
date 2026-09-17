@@ -7,7 +7,7 @@ import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
-import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
@@ -195,7 +195,7 @@ export default async function PartyDetailPage({
                   <Td>{s.validTo ? formatDate(s.validTo) : "aktivno"}</Td>
                   <Td>
                     {proof ? (
-                      <a href={`/api/prilozi/${proof.id}`} className="text-blue-700 hover:underline">dokument</a>
+                      <RowActionLink href={`/api/prilozi/${proof.id}`}>dokument</RowActionLink>
                     ) : (
                       "—"
                     )}
@@ -258,9 +258,7 @@ export default async function PartyDetailPage({
                 <div>
                   <dt className="inline font-medium">Skenirani dokument: </dt>
                   <dd className="inline">
-                    <a href={`/api/prilozi/${party.eVoteConsentDocumentId}`} className="text-blue-700 hover:underline">
-                      pregledaj
-                    </a>
+                    <RowLink href={`/api/prilozi/${party.eVoteConsentDocumentId}`}>pregledaj</RowLink>
                   </dd>
                 </div>
               )}

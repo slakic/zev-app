@@ -1,7 +1,7 @@
 "use client";
 // A unit's table row plus its inline edit panel — same pattern as building-row.tsx.
 import { useState } from "react";
-import { Td, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { Td, Field, inputCls, SubmitBtn, RowAction, Btn } from "@/components/ui";
 
 const UNIT_TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: "APARTMENT", label: "Stan" },
@@ -60,13 +60,9 @@ export function UnitRow({
         <Td>{u.occupantsDisplay}</Td>
         {canEdit && (
           <Td>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              className="text-sm font-medium text-blue-700 hover:underline"
-            >
+            <RowAction type="button" onClick={() => setOpen((v) => !v)}>
               {open ? "Zatvori" : "Uredi"}
-            </button>
+            </RowAction>
           </Td>
         )}
       </tr>
@@ -98,13 +94,7 @@ export function UnitRow({
               <Field label="Broj korisnika"><input name="occupantCount" type="number" defaultValue={u.occupantCount} className={inputCls} /></Field>
               <Field label="Koeficijent tipa"><input name="typeCoefficient" defaultValue={u.typeCoefficient} className={inputCls} /></Field>
               <div className="flex items-center justify-end gap-2 border-t border-slate-200 pt-3 sm:col-span-4">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-                >
-                  Otkaži
-                </button>
+                <Btn type="button" onClick={() => setOpen(false)}>Otkaži</Btn>
                 <SubmitBtn>Sačuvaj izmjene</SubmitBtn>
               </div>
             </form>

@@ -2,7 +2,7 @@ import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td } from "@/components/ui";
+import { PageHeader, Card, Table, Td, inputCls } from "@/components/ui";
 
 export default async function AuditPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
@@ -27,7 +27,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
     <div>
       <PageHeader title="Revizorski trag" subtitle="Append-only zapis svih bitnih radnji (UPDATE/DELETE blokiran na nivou baze)" />
       <form className="mb-3">
-        <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className="w-72 rounded-md border border-slate-300 px-3 py-1.5 text-sm" />
+        <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className={`${inputCls} w-72`} />
       </form>
       <Card>
         <Table headers={["Vrijeme", "Akter", "Radnja", "Cilj", "Razlog", "Detalji"]} empty={events.length === 0}>

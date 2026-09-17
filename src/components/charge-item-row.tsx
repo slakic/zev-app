@@ -2,7 +2,7 @@
 // A charge item's table row plus its inline edit panel — same pattern as
 // building-row.tsx / unit-row.tsx.
 import { useState } from "react";
-import { Td, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { Td, Field, inputCls, SubmitBtn, RowAction, Btn } from "@/components/ui";
 import { tEnum } from "@/lib/i18n";
 
 type ChargeItemData = {
@@ -45,13 +45,9 @@ export function ChargeItemRow({
         <Td>{tEnum("frequency", c.frequency)}</Td>
         <Td>{c.isReserveFund ? "Da" : "—"}</Td>
         <Td>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="text-sm font-medium text-blue-700 hover:underline"
-          >
+          <RowAction type="button" onClick={() => setOpen((v) => !v)}>
             {open ? "Zatvori" : "Uredi"}
-          </button>
+          </RowAction>
         </Td>
       </tr>
       {open && (
@@ -111,13 +107,7 @@ export function ChargeItemRow({
                 <input type="checkbox" name="active" defaultChecked={c.active} /> Aktivna (uključena u naredne obračune)
               </label>
               <div className="flex items-end justify-end gap-2 sm:col-span-3">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-                >
-                  Otkaži
-                </button>
+                <Btn type="button" onClick={() => setOpen(false)}>Otkaži</Btn>
                 <SubmitBtn>Sačuvaj izmjene</SubmitBtn>
               </div>
             </form>
