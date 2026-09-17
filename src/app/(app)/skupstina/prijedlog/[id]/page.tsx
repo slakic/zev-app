@@ -7,7 +7,7 @@ import { serializeResult } from "@/server/engines/voting";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatWeight } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
 
 async function openVotingAction(formData: FormData) {
   "use server";
@@ -161,10 +161,24 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 <SubmitBtn>Otvori glasanje i pošalji linkove</SubmitBtn>
               </form>
             ) : p.status === "VOTING_OPEN" ? (
-              <form action={closeVotingAction}>
-                <input type="hidden" name="proposalId" value={p.id} />
-                <SubmitBtn variant="caution">Zatvori glasanje i utvrdi rezultat</SubmitBtn>
-              </form>
+              <ConfirmAction
+                trigger="Zatvori glasanje i utvrdi rezultat"
+                title="Zatvaranje glasanja je nepovratno"
+                body={
+                  result ? (
+                    <div className="rounded-md bg-white/70 p-2 text-sm text-amber-950">
+                      <p><b>Kvorum:</b> {result.quorumReached ? "postignut" : "NIJE postignut"} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
+                      <p><b>Za:</b> {formatWeight(result.approveWeight)} · <b>Protiv:</b> {formatWeight(result.rejectWeight)} · <b>Uzdržani:</b> {formatWeight(result.abstainWeight)}</p>
+                      <p><b>Ishod ako se sada zatvori:</b> {result.accepted ? "USVOJENO" : "NIJE USVOJENO"}</p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-amber-900">Rezultat još nije dostupan.</p>
+                  )
+                }
+                confirmLabel="Da, zatvori glasanje"
+                action={closeVotingAction}
+                hiddenFields={{ proposalId: p.id }}
+              />
             ) : undefined
           ) : undefined
         }

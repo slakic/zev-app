@@ -9,7 +9,7 @@ import { getSettings, setSetting } from "@/server/services/settings";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash } from "@/components/ui";
 
 async function saveZevAction(formData: FormData) {
   "use server";
@@ -172,12 +172,19 @@ export default async function SettingsPage({
                 </BtnLink>
               </p>
               {myParty.eVoteConsentStatus !== "NONE" && myParty.eVoteConsentStatus !== "REVOKED" && (
-                <form action={revokeMyConsentAction} className="space-y-2 border-t border-slate-100 pt-3">
-                  <Field label="Razlog opoziva (opciono)">
-                    <input name="reason" className={inputCls} />
-                  </Field>
-                  <SubmitBtn variant="caution">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
-                </form>
+                <div className="border-t border-slate-100 pt-3">
+                  <ConfirmAction
+                    trigger="Povuci saglasnost za elektronsko glasanje"
+                    title="Nakon opoziva više nećete moći da glasate elektronski"
+                    body={<p className="text-sm text-amber-900">Saglasnost možete ponovo dati istim postupkom (izjava predsjedniku) u bilo kom trenutku.</p>}
+                    confirmLabel="Da, povuci saglasnost"
+                    action={revokeMyConsentAction}
+                  >
+                    <Field label="Razlog opoziva (opciono)">
+                      <input name="reason" className={inputCls} />
+                    </Field>
+                  </ConfirmAction>
+                </div>
               )}
             </div>
           </Card>

@@ -43,6 +43,31 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.15.0] - 2026-09-17
+
+### Dodano
+
+- **Faza 2 plana UI/UX redizajna** (`Plans/ui-ux-redesign-plan.md`) — potvrda
+  za nepovratne radnje. Novi primitiv `ConfirmAction` u `ui.tsx`: isti
+  `<details>/<summary>` obrazac koji već postoji u projektu (bez ijedne
+  linije novog client JS-a), ali sa semantikom potvrde — naslov + tekst koji
+  korisnik mora pročitati prije nego što se pojavi stvarno dugme za potvrdu.
+  Primijenjeno na svih 6 mjesta iz plana:
+  - **Zatvori glasanje i utvrdi rezultat** — sažetak kvoruma i trenutnog
+    rezultata glasanja sada se prikazuje **unutar panela potvrde**, tačno u
+    trenutku odluke, umjesto samo u odvojenoj kartici niže na stranici koju
+    je trebalo skrolovati do nje (heuristički nalaz H5).
+  - **Povuci saglasnost za elektronsko glasanje** — na `/podesavanja` i na
+    `/vlasnici/[id]` (predsjednik u ime vlasnika).
+  - **Storniraj** (faktura) i **Storniraj uplatu** — potvrda ostaje
+    puna crvena (`danger`) težina, jer poništavaju novac/izdate dokumente.
+  - **Suspenduj ZEV** (super admin) — dodatno traži da se ukuca skraćeni
+    naziv ZEV-a prije potvrde (standardni obrazac za radnje sa širokim
+    posljedicama), provjereno HTML `pattern` atributom bez JS-a.
+  - Bez izmjene rasporeda van neposredne okoline svakog dugmeta; provjereno
+    uživo na 1440px i 375px na šest ključnih stranica plus `/fakture/uplate/[id]`
+    i `/admin/[zevId]`, bez regresija. 247/247 testova prolazi (nepromijenjeno).
+
 ## [2.14.0] - 2026-09-16
 
 ### Izmijenjeno

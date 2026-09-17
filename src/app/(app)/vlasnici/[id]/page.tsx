@@ -7,7 +7,7 @@ import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
-import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
@@ -291,13 +291,20 @@ export default async function PartyDetailPage({
             )}
 
             {(isPresident || isSelf) && party.eVoteConsentStatus !== "NONE" && party.eVoteConsentStatus !== "REVOKED" && (
-              <form action={revokeConsentAction} className="space-y-2 border-t border-slate-100 pt-3">
-                <input type="hidden" name="id" value={party.id} />
-                <Field label="Razlog opoziva (opciono)">
-                  <input name="reason" className={inputCls} />
-                </Field>
-                <SubmitBtn variant="caution">Povuci saglasnost za elektronsko glasanje</SubmitBtn>
-              </form>
+              <div className="border-t border-slate-100 pt-3">
+                <ConfirmAction
+                  trigger="Povuci saglasnost za elektronsko glasanje"
+                  title="Nakon opoziva vlasnik više neće moći da glasa elektronski"
+                  body={<p className="text-sm text-amber-900">Saglasnost se može ponovo dati istim postupkom (izjava predsjedniku) u bilo kom trenutku.</p>}
+                  confirmLabel="Da, povuci saglasnost"
+                  action={revokeConsentAction}
+                  hiddenFields={{ id: party.id }}
+                >
+                  <Field label="Razlog opoziva (opciono)">
+                    <input name="reason" className={inputCls} />
+                  </Field>
+                </ConfirmAction>
+              </div>
             )}
           </div>
         </Card>

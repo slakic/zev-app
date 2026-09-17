@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
 
 async function allocateAction(formData: FormData) {
   "use server";
@@ -131,11 +131,19 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
             </form>
           )}
           {payment.status !== "REVERSED" && (
-            <form action={reversePaymentAction} className="mt-4 flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
-              <input type="hidden" name="paymentId" value={payment.id} />
-              <Field label="Storniraj cijelu uplatu — razlog"><input name="reason" required className={inputCls} /></Field>
-              <SubmitBtn variant="danger">Storniraj uplatu</SubmitBtn>
-            </form>
+            <div className="mt-4 border-t border-slate-100 pt-3">
+              <ConfirmAction
+                trigger="Storniraj uplatu"
+                title="Storniranje uplate je nepovratno"
+                body={<p className="text-sm text-amber-900">Poništava se cijela uplata od {formatMoney(payment.amount.toString())}, uključujući sve raspoređene alokacije. Storno je novi zapis — ništa se ne briše.</p>}
+                confirmLabel="Da, storniraj uplatu"
+                confirmVariant="danger"
+                action={reversePaymentAction}
+                hiddenFields={{ paymentId: payment.id }}
+              >
+                <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
+              </ConfirmAction>
+            </div>
           )}
         </Card>
       </div>

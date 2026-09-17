@@ -6,7 +6,7 @@ import { generateInvoicePdf } from "@/server/services/documents";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
 
 async function pdfAction(formData: FormData) {
   "use server";
@@ -135,11 +135,17 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
           </Card>
           <Card title="Storniranje">
             <p className="mb-2 text-xs text-slate-500">Moguće samo dok nema raspoređenih uplata. Faktura ostaje u evidenciji sa statusom „stornirana”.</p>
-            <form action={cancelAction} className="flex flex-wrap items-end gap-2">
-              <input type="hidden" name="invoiceId" value={inv.id} />
+            <ConfirmAction
+              trigger="Storniraj"
+              title="Storniranje fakture je nepovratno"
+              body={<p className="text-sm text-amber-900">Faktura {inv.number} ostaje vidljiva u evidenciji sa statusom „stornirana”, ali se više ne može naplatiti.</p>}
+              confirmLabel="Da, storniraj fakturu"
+              confirmVariant="danger"
+              action={cancelAction}
+              hiddenFields={{ invoiceId: inv.id }}
+            >
               <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
-              <SubmitBtn variant="danger">Storniraj</SubmitBtn>
-            </form>
+            </ConfirmAction>
           </Card>
         </div>
       )}

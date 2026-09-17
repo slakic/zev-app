@@ -5,7 +5,7 @@ import { getTenant, setTenantActive, createTenantAccount, grantMembership, revok
 import { switchActiveZev } from "@/server/services/memberships";
 import { formatDate, t } from "@/lib/i18n";
 import { PasswordField } from "@/components/password-field";
-import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
 import type { Role } from "@/generated/prisma/client";
 
 const TIER_LABELS: Record<string, string> = {
@@ -13,6 +13,12 @@ const TIER_LABELS: Record<string, string> = {
   BASIC_FINANCE: "Basic + finansije",
   FULL: "Full (+ e-glasanje)",
 };
+
+// HTML `pattern` requires a full-string regex match — escape any regex-special characters
+// in the ZEV's own name so a name like "ZEV VM 10-12" or "Dom d.o.o." still matches literally.
+function escapeForPattern(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
 
@@ -336,12 +342,27 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
                 arhiviranje tenanta koji više ne koristiš (npr. demo podaci) prije nego kreiraš
                 novi, prazan ZEV za stvarne podatke.
               </p>
-              <form action={setActiveAction} className="flex flex-wrap items-end gap-2">
-                <input type="hidden" name="zevId" value={zev.id} />
-                <input type="hidden" name="active" value="false" />
+              <ConfirmAction
+                trigger="Suspenduj ZEV"
+                title="Suspenzija odmah blokira prijavu svih naloga u ovom ZEV-u"
+                body={<p className="text-sm text-amber-900">Nijedan podatak se ne briše i ZEV se može reaktivirati u bilo kom trenutku — ovo samo blokira prijavu.</p>}
+                confirmLabel="Suspenduj ZEV"
+                confirmVariant="danger"
+                action={setActiveAction}
+                hiddenFields={{ zevId: zev.id, active: "false" }}
+              >
                 <Field label="Razlog suspenzije"><input name="reason" required className={inputCls} /></Field>
-                <SubmitBtn variant="danger">Suspenduj ZEV</SubmitBtn>
-              </form>
+                <Field label={`Ukucajte „${zev.shortName ?? zev.legalName}” za potvrdu`}>
+                  <input
+                    name="confirmName"
+                    required
+                    pattern={escapeForPattern(zev.shortName ?? zev.legalName)}
+                    title={`Mora se tačno poklapati sa „${zev.shortName ?? zev.legalName}”`}
+                    autoComplete="off"
+                    className={inputCls}
+                  />
+                </Field>
+              </ConfirmAction>
             </>
           ) : (
             <>

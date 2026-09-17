@@ -186,6 +186,50 @@ export function ToggleBtn({ children, variant }: { children: ReactNode; variant?
   );
 }
 
+/** Confirmation step for an irreversible or high-consequence server action, without a single
+ *  line of client JS (Plans/ui-ux-redesign-plan.md §3.8) — same `<details>`/`ToggleBtn` reveal
+ *  idiom as the rest of the app, but with confirmation semantics: a `title` + `body` the user
+ *  must read (e.g. a quorum/tally summary, right where the decision is made — not in another
+ *  card the user has to scroll to find), then a separately-styled `confirmLabel` button that
+ *  actually submits `action`. `hiddenFields` covers the common case (just an id to pass
+ *  through); `children` renders extra visible fields (a reason, a type-to-confirm input) between
+ *  the body and the confirm button. */
+export function ConfirmAction({
+  trigger,
+  triggerVariant,
+  title,
+  body,
+  confirmLabel,
+  confirmVariant,
+  action,
+  hiddenFields,
+  children,
+}: {
+  trigger: ReactNode;
+  triggerVariant?: BtnVariant;
+  title: string;
+  body?: ReactNode;
+  confirmLabel: string;
+  confirmVariant?: BtnVariant;
+  action: (formData: FormData) => void | Promise<void>;
+  hiddenFields?: Record<string, string>;
+  children?: ReactNode;
+}) {
+  return (
+    <details className="group">
+      <ToggleBtn variant={triggerVariant ?? "caution"}>{trigger}</ToggleBtn>
+      <form action={action} className="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+        <p className="text-sm font-semibold text-amber-900">{title}</p>
+        {body}
+        {hiddenFields &&
+          Object.entries(hiddenFields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
+        {children}
+        <SubmitBtn variant={confirmVariant ?? "caution"}>{confirmLabel}</SubmitBtn>
+      </form>
+    </details>
+  );
+}
+
 /** Prev/next + "page N of M" for a server-rendered, offset-paginated list (Plans/
  *  user-activity-log-plan.md §5) — `hrefFor(page)` builds the full URL for that page,
  *  including whatever filters the caller already has selected. Renders nothing for a
