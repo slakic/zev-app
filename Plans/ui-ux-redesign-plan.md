@@ -1,9 +1,11 @@
 # UI/UX redizajn — heuristička evaluacija (Nielsen) i vizuelni sistem — plan za pregled
 
-**Status: ODLUKE DONESENE (2026-09-16) — spreman za implementaciju od Faze 0.**
-Trenutni obim je **Faza 0, 1, 2, 4 i 6**; Faza 3 (tabele/gustina) i Faza 5
-(admin oblast) su **svjesno odložene** (P3), ali njihove odluke su već
-donesene (P4, P5, P7, P8) i primjenjuju se čim se te faze pokrenu.
+**Status: ODLUKE DONESENE (2026-09-16); Faza 3 pokrenuta 2026-09-17 nakon
+ispunjenog P8 preduslova.** Faza 0, 1, 2, 4 i 6 su isporučene. Faza 3
+(tabele/gustina/navigacija kroz sekcije) je u toku — vidi §11 za detaljan,
+proširen plan pod-faza 3a-3h zasnovan na nalazima posmatrane sesije. Faza 5
+(admin oblast) ostaje **svjesno odložena** (P3); njena odluka (P4) je već
+donesena i primjenjuje se čim se ta faza pokrene.
 Nastalo na zahtjev korisnika (2026-09-16), nakon puštanja aplikacije u produkciju
 na Vercel: „aplikacija treba da bude super upotrebljiva, prijatna oku i laka za
 korištenje, bez agresivnih boja". Izrađeno kroz plansku analizu (Opus model,
@@ -969,27 +971,605 @@ pomjera; rizik regresije minimalan.
   rješava H5 nalaz iz §2.5), `podesavanja:179`, `vlasnici/[id]:299`,
   `fakture/[id]:141`, `uplate/[id]:137`, `admin/[zevId]:343` (sa ukucavanjem
   naziva).
-### Faza 3 — Tabele i gustina *(srednja–velika; najveći dio posla — VAN TRENUTNOG OBIMA, vidi P3)*
+### Faza 3 — Tabele, gustina i navigacija kroz sekcije *(velika; U OBIMU od 2026-09-17)*
 
-**Ne pokreće se sada.** Odluke P5, P7 i P8 su donesene unaprijed za kad se
-ova faza zaista pokrene — uključujući P8, dogovorenu 20-minutnu posmatranu
-sesiju sa stvarnim korisnikom **prije** početka ove faze. Podsjetiti
-korisnika na taj dogovor pri pokretanju.
-- `Table` prima `ColumnSpec[]` uz zadržan `string[]` (§4.2) — unazad
-  kompatibilno, migracija tabela jedna po jedna.
-- Card-transform ispod `md`; `<caption>`, `scope="col"` (A8).
-- Migracija redoslijedom: `zgrade` (11 kol.) → `troskovi:171` (9) →
-  `fakture:192` (8) → `dokumenti:58` (8) → `fakture:91` (7) → `izvjestaji:98` (7).
-- **Rasporedna ispravka:** tabele sa >5 kolona izlaze iz `lg:grid-cols-2`
-  (`fakture:89`, `izvjestaji:130`, `podesavanja:127`).
-- Progresivno otkrivanje na preostalih ~13 formi (§4.1, B) + `<fieldset>`
-  grupisanje za forme >6 polja (§4.1, E).
-- Sažeci iznad tabela (§4.1) — počevši od zbira vlasničkih udjela na `/zgrade`.
-- `Tabs` primitiv; `/skupstina:55-71` prelazi na njega.
-- `EmptyState` + `emptyHint` (uslovno po P7).
-- `StatusTimeline` za `/skupstina/[id]` (H1).
-- Role-based zaglavlje tabele na `/fakture` za vlasnika (§4.2).
-- Mobilni drawer `role="dialog"` + fokus zamka (A9).
+**Preduslov P8 je ispunjen.** Posmatrana sesija sa stvarnim korisnikom je
+održana prije pokretanja faze, kako je dogovoreno. Nalazi iz te sesije su niže
+(§3.A) i **mijenjaju obim ove faze** u odnosu na ono što je pisalo dok je bila
+odložena: jedan nalaz (filtriranje/sortiranje) uopšte nije bio u planu.
+
+Odluke P5 (kartice ispod `md`), P6 (ručno crtane ikone) i P7 (`emptyHint`) su
+donesene ranije i ovdje se **ne preispituju** — samo se razrađuju.
+
+Verzionisanje po §11 „Uz svaku fazu": Faza 3 ide kao **jedan minor + niz
+patch-eva** (`2.19.0` za 3a, pa `2.19.1`…`2.19.7`), jer su pod-faze iteracije
+unutar istog nezavršenog poduhvata — tačno slučaj koji `CHANGELOG.md`
+§„Verzionisanje" opisuje za patch. Tip podizanja se i dalje potvrđuje sa
+korisnikom prije svake isporuke.
+
+#### 3.A Nalazi posmatrane sesije (2026-09-17) i gdje slijeću
+
+| # | Nalaz korisnika (doslovno) | Dijagnoza u kodu | Pod-faza |
+|---|---|---|---|
+| N1 | „having 'uredi' link is not consistent with the other buttons" | `building-row.tsx:51-57`, `unit-row.tsx:63-69`, `charge-item-row.tsx:48-54` — golo `<button className="text-sm font-medium text-blue-700 hover:underline">`; Faza 1 je `ghost` primijenila samo na 4 mjesta (`organi:152`, `prijedlog:247,253`, `admin/page:97`), ostatak nije dirala | **3b** |
+| N2 | „too much space between rows" | `Td` je `px-4 py-2.5` (`ui.tsx:126`) → red od 40px. **Faza 0 je ovo pogoršala:** `btnBase` `py-1.5 → py-2.5` (`ui.tsx:131-134`) je svaki red koji sadrži radnju podigao sa ~30px na ~40px | **3a** |
+| N3 | „…user needs to scroll down to see [sections], there should be ability to switch between sections without scrolling, like tabs" | `/zgrade` slaže 4 `Card`+`Table` sekcije vertikalno (`zgrade:88, :103, :129, :198`). Isti oblik ima još 7 stranica (§3.D) | **3e** |
+| N4 | „alignment in the table cells differs whether it is a number or text, which gives impression of an offset" | **Korijenski uzrok nije nedosljedna primjena `right`-a nego to što `th` nema poravnanje uopšte:** `ui.tsx:109` je `text-left` za cijeli `thead`, a `ui.tsx:126` desno poravnava tijelo. Dakle **svih 59 `<Td right>` poziva u aplikaciji danas ima lijevo poravnat naslov iznad desno poravnatih brojeva** | **3a + 3e (poravnanje)** |
+| N5 | „There is no filtering or sorting in the tables anywhere." | **Novi obim, nije bio u planu.** Vidi §3.H za obim i preporuku | **3g** |
+| N6 | „Some of the tables have horizontal scroll." | Potvrđuje §4.2; rješenje već odobreno kroz P5 | **3c** |
+| N7 | „Action buttons should be uniformed." | Generalizacija N1; potpun spisak nesaobraznih radnji u §3.F | **3b** |
+
+**Šta ovo mijenja u odnosu na raniji tekst Faze 3:** N4 je bio potcijenjen
+(mislilo se da je stvar pojedinačnih poziva, a mehanizma za poravnanje zaglavlja
+**nema u primitivu**), N2 nije bio prepoznat uopšte (i djelimično ga je izazvala
+Faza 0), N3 je podigao `Tabs` sa „jedna upotreba, nema gdje da se ponovi" na
+osam stranica, a N5 je potpuno nova stavka.
+
+#### 3.B `Table` / `Td` / `ColumnSpec` — finalizovan dizajn (§4.2 zaključano po P5)
+
+##### Izmjereno stanje danas
+
+| Mjera | Vrijednost | Izvor |
+|---|---|---|
+| `<Table>` poziva u aplikaciji | **51** | `grep -rn "<Table" src --include=*.tsx` |
+| `<Td>` poziva | **263** | `grep -rno "<Td" src \| wc -l` |
+| od toga `<Td right>` | **59** | `grep -rno "<Td right" src \| wc -l` |
+| tabela sa ≥6 kolona (obuhvaćene P5) | **18** | §3.G |
+| responzivni mehanizam | `overflow-x-auto` + inset sjenka, jedno mjesto | `ui.tsx:101-105` |
+| poravnanje zaglavlja | **ne postoji kao koncept** | `ui.tsx:109, :111` |
+
+##### Potpis
+
+```tsx
+type ColumnSpec = {
+  label: string;
+  priority?: "primary" | "secondary" | "detail"; // podrazumijevano "secondary"
+  align?: "left" | "right";                       // podrazumijevano "left"
+  sortKey?: string;                               // vidi 3g; do tada neaktivno
+  nowrap?: boolean;                               // datumi, šifre
+};
+
+<Table
+  id="jedinice"                    // obavezan kad se koristi ColumnSpec[]
+  caption="Posebni dijelovi"       // <caption> (A8), sr-only
+  headers={string[] | ColumnSpec[]}
+  empty={boolean}
+  emptyHint={ReactNode}            // P7, vidi §3.I
+>
+```
+
+- `string[]` se ponaša **identično kao danas** → nijedan od 51 poziva se ne mora
+  mijenjati odjednom (rizik 3 iz §12).
+- `priority` → `hidden md:table-cell` (`secondary`) / `hidden lg:table-cell`
+  (`detail`); `primary` je uvijek vidljivo.
+- `align: "right"` se primjenjuje na **`th` i `td` istovremeno** — to je
+  ispravka za N4 i ona je **strukturna**: kad tabela pređe na `ColumnSpec`,
+  `<Td right>` se na njoj **prestaje koristiti** i nesklad zaglavlja i ćelije
+  postaje nemoguć po konstrukciji, a ne stvar pažnje recenzenta.
+- `<caption className="sr-only">` + `scope="col"` na svakom `th` — rješava A8.
+
+##### Kako `Table` saznaje labelu za karticu ispod `md` (opcija C iz §4.2)
+
+Ovo je jedino stvarno tehničko pitanje u cijeloj fazi i vrijedi ga izvagati, jer
+pogrešan izbor znači 263 ručne izmjene ili komponentu koja se lomi na granici
+server/client.
+
+| # | Opcija | Za | Protiv | Ocjena |
+|---|---|---|---|---|
+| A | `Td` dobija eksplicitan `label` prop | Trivijalno za razumjeti i debagovati; radi svuda | 263 izmjena, od čega 118 na tabelama koje uopšte ne trebaju kartični prikaz; labela se duplira sa `headers` pa se njih dvoje mogu tiho razići — **isti tip greške kao N4, samo na drugom mjestu** | Rezervna |
+| B | `Table` generiše **ograničen `<style>` blok** sa `#id td:nth-child(n)::before { content: "Labela" }` i `#id thead{display:none}` ispod `md` | **Nula izmjena na pozivaocima** osim prelaska `headers` na `ColumnSpec[]`; radi i za `BuildingRow`/`UnitRow`/`ChargeItemRow` koji su client komponente; labela ne može da se raziđe sa zaglavljem jer dolazi iz istog niza; **isti blok nosi i poravnanje kolona** (`nth-child(n){text-align:right}`), pa jedna generisana pravila rješavaju i N4 i P5 | Generisani CSS traži escape-ovanje navodnika u labelama; `nth-child` se lomi ako red ima uslovnu ćeliju **koja nije uslovna i u `headers`** (danas nema takvog slučaja — `zgrade:80-81` i `zgrade:133` uslovljavaju i zaglavlje i ćeliju zajedno); redovi sa `colSpan` (inline panel za uređivanje, `building-row.tsx:63`, `unit-row.tsx:75`, `charge-item-row.tsx:59`) moraju biti izuzeti pravilom `td[colspan]::before{content:none}` | **✓ preporuka** |
+| C | `Table` introspektira `children` preko `React.Children.map` i sam sklapa kartice | Nema CSS-a, čist React | **Ne radi:** `zgrade:138` i `fakture:94` predaju `<UnitRow>`/`<ChargeItemRow>` (client komponente), a ne `<tr>` — `Table` ne može da im zaviri u sadržaj. Context nije opcija jer je `Table` server komponenta | ✗ |
+| D | Svaka stranica ručno piše drugi markup za mobilni | Potpuna kontrola | Dupliranje na 18 mjesta; garantovano raziđe s vremenom | ✗ |
+
+**Preporuka: B.** Jedan generisani `<style>` blok po tabeli nosi tri stvari
+odjednom — poravnanje kolona (N4), sakrivanje po prioritetu (§4.2 B) i kartični
+prelom ispod `md` (§4.2 C, P5). `id` je obavezan jer je selektor vezan za njega;
+on usput služi i za `aria-labelledby` na skrolabilnom kontejneru
+(`ui.tsx:101-105`), pa zamjenjuje današnji generički `aria-label`.
+
+**Kartični izgled ispod `md`** (po P5, za tabele sa >5 kolona): `thead` nestaje,
+svaki `tr` postaje kartica sa ivicom, svaki `td` postaje red `grid-cols-[40%_1fr]`
+gdje `::before` nosi labelu; `priority: "primary"` kolone gube labelu i idu kao
+naslov kartice; stubac „Radnje" ide u podnožje kartice u punoj širini — i tu
+`RowAction` (§3.C) ponovo dobija punih 44px, jer prostora ima.
+
+#### 3.C Gustina redova (N2) — konkretna vrijednost
+
+**Šta se stvarno desilo:** `Td` je oduvijek `px-4 py-2.5` (potvrđeno kroz
+`git show a7f6993 -- src/components/ui.tsx` — Faza 0 ga nije dirala). Ali Faza 0
+**jeste** podigla `btnBase` sa `py-1.5` na `py-2.5` (`ui.tsx:131-134`), pa je
+svaki red koji sadrži radnju porastao sa ~30px na ~40px. Korisnik je to osjetio
+kao „too much space between rows" — i nije u krivu; dio toga smo mu sami
+napravili prije mjesec dana. Zato ispravka **mora dirati i ćeliju i dugme u
+ćeliji**, inače se gustina ne mijenja ni za jednu tabelu sa stupcem „Radnje"
+(a takvih je 14).
+
+##### Razmotrene opcije
+
+| # | Opcija | Za | Protiv | Ocjena |
+|---|---|---|---|---|
+| A | `py-2.5` → `py-2` (36px reda) | Najniži rizik | Razlika od 4px se **ne vidi**; korisnik bi ponovo prijavio isto | ✗ |
+| B | **`px-4 py-2.5` → `px-3 py-1.5` (32px reda), uz `RowAction` na 28px** | 20% niži red, ~25% više redova po ekranu; `px-3` usput oduzima 8px × 11 kolona = 88px širine tabeli `zgrade:130` — direktno pomaže N6; 32px je standardna „dense" visina reda (Material dense = 32, default = 52) | Traži `hover:bg-slate-50` na `tr` da se oko ne izgubi u redu od 11 kolona; traži i zaseban `RowAction` (inače ostaje 40px) | **✓ preporuka** |
+| C | `px-3 py-1` (28px) | Maksimalna gustina | Za netehničke, starije korisnike (§uvod) ovo je ispod udobnog; gubi se i priča o dodiru | ✗ |
+| D | `density="dense" \| "comfortable"` prop | Izbor po tabeli | Otvara novu osu neusklađenosti — ista zamjerka zbog koje je odbijena opcija C u §3.6 | ✗ |
+
+##### Preporuka: opcija B, sa `RowAction` primitivom
+
+| Element | Danas | Prijedlog | Visina |
+|---|---|---|---|
+| `Td` | `px-4 py-2.5` | **`px-3 py-1.5`** | 32px |
+| `th` | `px-4 py-2.5` | **`px-3 py-2`** | zaglavlje ostaje malo teže od reda |
+| `tr` (tbody) | — | **`hover:bg-slate-50/70`** | pomoć pri praćenju reda |
+| radnja u redu | `btnBase` (`py-2.5`, 40px) | **`RowAction`: `px-2.5 py-1 text-[13px] min-h-[28px]`, `max-md:min-h-[44px]`** | 28px / 44px |
+
+**Zašto ovo ne ruši rad na dodirnim metama iz Faze 0/1 — eksplicitno:**
+
+- `btnBase` se **ne mijenja**. Sva dugmad van redova tabele ostaju 40px na
+  desktopu i 44px ispod `md`, tačno kako je Faza 0 postavila (`ui.tsx:131-134`).
+- `RowAction` zadržava `max-md:min-h-[44px]`, dakle **na telefonu meta ostaje
+  44×44** — a ispod `md` je i kartični prelom aktivan (§3.B), pa radnja dobija
+  cijeli red kartice, ne 28px ćeliju.
+- Na desktopu meta pada sa 40px na 28px. To **i dalje prolazi WCAG 2.2 AA
+  (2.5.8 Target Size Minimum, 24×24 CSS px)**; gubi se samo AAA nivo (2.5.5
+  Enhanced, 44×44) i to isključivo tamo gdje je ulazni uređaj miš. Ovo je
+  **svjesno vaganje**, ne previd, i treba da bude zapisano u CHANGELOG-u: N2 je
+  došao od stvarnog korisnika na desktopu, a AAA na desktopu nije bio ni cilj
+  Faze 0 (ona je i tada stavila `min-h-[44px]` **samo** pod `max-md:`).
+- Redovi bez radnje (a takvih je 37 od 51 tabele) dobijaju punih 32px bez ikakve
+  kolizije sa dodirom.
+
+#### 3.D `Tabs` primitiv (N3)
+
+##### Razmotrene opcije
+
+| # | Opcija | Za | Protiv | Ocjena |
+|---|---|---|---|---|
+| A | Client komponenta sa `useState` | Trenutna zamjena, čuva skrol poziciju | Prva `"use client"` stranica u aplikaciji zbog rasporeda; §8 izričito kaže „ne prebacuje stranice na client komponente"; sav sadržaj svih tabova mora biti serijalizovan u klijent | ✗ |
+| B | **URL search param (`?tab=…`) + server render** | **Obrazac već postoji i radi u ovoj aplikaciji** (`skupstina/page.tsx:39-68` — tab mijenja i sam upit, `listMeetings(actor, activeBody)`); deep-link i „nazad" rade; može se **preskočiti upit za neaktivne tabove** (`/zgrade` danas uvijek izvršava 4 upita, `zgrade:72-77`); `hrefFor` je isti idiom kao `Pagination` (`ui.tsx:240`) | Puna RSC navigacija po prelasku (brza, ali nije trenutna); `<Link>` podrazumijevano skače na vrh → treba `scroll={false}`; **server akcije koje rade `redirect` gube tab** (`property.ts:26-27, :47-48`; `podesavanja` 5×, `troskovi` 4×, `organi` 3×, `vlasnici` 3×) | **✓ preporuka** |
+| C | CSS-only tabovi (`<input type="radio">` + `peer-checked`) | Nula JS-a, nula navigacije, skrol se ne pomjera, nema problema sa `redirect`-om | Nije deep-linkable ni bookmarkable („pošalji mi link na posebne dijelove" ne radi); sav sadržaj svih tabova ide u DOM (na `/izvjestaji` to je 9 tabela odjednom); a11y je klimav (radio grupa koja glumi tablist) | Rezervna, ako se B pokaže prespor |
+| D | `<details>` harmonika po sekciji | Već je idiom projekta (`ToggleBtn`, `ui.tsx:179`) | Ne rješava nalaz — korisnik i dalje skroluje, samo kroz zatvorene naslove; i dalje nema „prebaci se" | ✗ |
+
+##### Preporuka: opcija B
+
+```tsx
+<Tabs
+  tabs={[{ key: "zgrade", label: "Zgrade", count: buildings.length }, …]}
+  active={tab}
+  hrefFor={(key) => `/zgrade?tab=${key}`}   // isti idiom kao Pagination, ui.tsx:240
+/>
+```
+
+- `hrefFor` (a ne interno sklapanje URL-a) je namjerno: stranica sama zna koje
+  još parametre mora sačuvati (`?err=`, `?msg=`, kasnije `?sort=`/`?filter=`) —
+  isto obrazloženje koje `Pagination` već nosi u komentaru (`ui.tsx:236-239`).
+- `<Link scroll={false}>` — bez ovoga prelazak na tab skoči na vrh stranice, što
+  je upravo suprotno od onoga što je korisnik tražio.
+- **Pristupačnost:** ovo su linkovi, ne ARIA tabovi. Pogrešno bi bilo staviti
+  `role="tablist"`/`role="tab"` na `<a>` jer bi čitač ekrana obećao strelice
+  lijevo/desno kojih nema. Ispravno: `<nav aria-label="Sekcije">` + `aria-current="page"`
+  na aktivnom. Zapisati ovo kao komentar u `ui.tsx`, jer je to greška koju je
+  lako „popraviti" u pogrešnom smjeru.
+- Ispod `md`: traka `overflow-x-auto snap-x` sa `min-h-[44px]` po tabu
+  (dodirna meta ostaje puna — ovdje `RowAction` izuzetak iz §3.C **ne važi**).
+- Brojač uz labelu (`Zgrade · 4`) rješava dio H6 („ništa ne sumira tabelu") već
+  u navigaciji.
+
+##### Definitivan spisak stranica koje dobijaju `Tabs`
+
+Pravilo koje se zapisuje uz primitiv: **tabovi idu samo tamo gdje su sekcije
+ravnopravne (nezavisne liste iste porodice objekata), nikad tamo gdje je
+stranica jedan linearan proces ili detalj jednog objekta.**
+
+| Stranica | `Card` sekcija | Odluka | Tabovi |
+|---|---|---|---|
+| `/zgrade` | 4 (`:88, :103, :129, :198`) | **✓ — izvorni nalaz N3** | Zgrade · Ulazi · Posebni dijelovi · Zajednički dijelovi |
+| `/skupstina` | 2 + ručno pisani tabovi (`:55-68`) | **✓ — migracija na primitiv** (razlog iz §4.3) | Skupština · Upravni odbor |
+| `/izvjestaji` | 9 (`:73, :131, :147, :160, :176, :190, :195, :208, :221`) | **✓ — najduži skrol u aplikaciji** | Dugovanja · Novac · Fakture · Pregledi |
+| `/vlasnici` | 5 (`:126, :166, :188, :218, :243`) | **✓** | Lica · Vlasništvo i korištenje · Punomoći |
+| `/podesavanja` | 6 (`:129, :145, :194, :211, :240, :261`) | **✓ za upravu**; vlasnik vidi 2 kartice → bez tabova | Moji podaci · ZEV · Parametri |
+| `/organi` | 7 (`:81, :92, :103, :117, :140, :162, :176`) | **✓ — 2 taba** | Aktuelni organi · Istorija mandata |
+| `/troskovi` | 3 (`:106, :130, :170`) | **✓ — 2 taba** | Dobavljači · Troškovi |
+| `/fakture` | 3 (`:90, :169, :191`) | **✓ samo za upravu** (vlasnik ima 1 karticu) | Naknade i serije · Fakture |
+| `/odrzavanje/[id]` | 6 | **✗** — jedan tok koji se čita odozgo nadolje; ovdje je pravi odgovor `StatusTimeline` (3h), ne tabovi | |
+| `/skupstina/prijedlog/[id]` | 10 | **✗** — dijeljenje bi kvorum ponovo odvojilo od dugmeta koje o njemu odlučuje, a §3.8 ga je upravo spojio | |
+| `/vlasnici/[id]`, `/admin/[zevId]`, `/fakture/[id]`, `/planovi/[id]`, `/skupstina/[id]`, `/` | 4–6 | **✗** — detalj jednog objekta / pregled | |
+
+##### Očuvanje taba kroz server akcije
+
+Konkretan, mjerljiv posao: svaka forma na tabovanoj stranici dobija
+`<input type="hidden" name="tab" value={tab} />`, a odgovarajuća akcija
+redirektuje na `?tab=${tab}&msg=saved` umjesto na goli put. Pogođeno:
+
+| Fajl | Formi | `redirect()` poziva |
+|---|---|---|
+| `zgrade/page.tsx` + `server/actions/property.ts` | 4 | 4 (`property.ts:22, :26, :46, :48`) |
+| `vlasnici/page.tsx` | 5 | 3 |
+| `troskovi/page.tsx` | 4 | 4 |
+| `organi/page.tsx` | 3 | 3 |
+| `podesavanja/page.tsx` | 3 | 5 |
+| `fakture/page.tsx` | 2 | 2 |
+| `izvjestaji/page.tsx` | 0 (samo GET forme) | 0 |
+
+Ukupno 21 forma i 21 `redirect`. Ako se ovo preskoči, korisnik doda jedinicu i
+bude izbačen nazad na prvi tab — regresija gora od problema koji rješavamo.
+
+#### 3.E Revizija numeričkog poravnanja (N4) — sistematski, ne uzorkom
+
+**Korijenski uzrok nije nedosljedna primjena `right`-a.** `<Td right>` je
+primijenjen prilično uredno za novac (provjereno na svih 51 tabela). Problem je
+što `Table` **nema pojam poravnanja zaglavlja**: `ui.tsx:109` postavlja
+`text-left` za cijeli `thead`, a `ui.tsx:126` desno poravnava tijelo. Dakle
+**svaka od 59 desno poravnatih ćelija u aplikaciji danas ima lijevo poravnat
+naslov iznad sebe.** To je „offset" koji je korisnik vidio.
+
+##### Postupak (ponovljiv, pokriva svih 51 tabela)
+
+1. Inventar: `grep -rn "<Table\|<Td\|</Table>" <fajl>` daje, po fajlu, blok po
+   tabelu — `headers` niz i redoslijed `<Td>`-ova jedan ispod drugog. Ovo je već
+   urađeno za sve 51 tabele pri izradi ovog plana; spisak je u §3.G.
+2. Svaka kolona se svrstava u jednu od četiri klase i dobija poravnanje po
+   pravilu:
+
+| Klasa | Poravnanje | Primjeri iz koda |
+|---|---|---|
+| Novac, količina, procenat, brojač, verzija | **desno**, `tabular-nums` | „Iznos", „Plaćeno", „Udio %", „Korisnika", „Tačke", „Prijedlozi", „v{version}", „Pokušaja" |
+| Datum / vrijeme | **lijevo**, `nowrap`, `tabular-nums` | „Datum", „Rok", „Dospijeće", „Vrijeme", „Termin", „Od"/„Do" |
+| Identifikator (broj, šifra, IBAN, poziv na broj) | **lijevo**, `tabular-nums` | „Broj", „Br. fakture", „Poziv na broj", „Račun" |
+| Tekst, status, radnje | **lijevo** | ostalo |
+
+3. Poravnanje se upisuje **jednom, u `columns`**, i generisani stil (§3.B, opcija
+   B) ga primjenjuje i na `th` i na `td`. `<Td right>` se na migriranoj tabeli
+   briše. **Time nesklad prestaje da bude moguć** — to je odgovor na „kako da se
+   ovo ne vrati", a ne još jedna runda pažljivog pregleda.
+4. Prelazni period: `Td` zadržava `right` prop dok sve 51 tabele ne pređu, uz
+   `@deprecated` komentar.
+
+##### Šta je revizija zatekla mimo problema zaglavlja
+
+| Mjesto | Nalaz | Radnja |
+|---|---|---|
+| `izvjestaji:107` | `<Td>{r.units}</Td>` izgleda numerički, ali je **spisak oznaka jedinica** (`reports.ts:170-171`) | lijevo — bez izmjene, samo deklarisati |
+| `planovi/page.tsx:41` | `<Td>{p.year}.</Td>` — godina sa tačkom, čita se kao oznaka | lijevo — deklarisati |
+| `planovi/page.tsx:72` | `<Td>{p.status}</Td>` — **sirov enum umjesto `tEnum`**, dok susjedna tabela na `:45` radi ispravno. Nije poravnanje nego tiha copy greška | ispraviti u 3d |
+| `troskovi:112`, `uplate:146`, `podesavanja:217`, `dokumenti:61`, `audit:38` | `font-mono text-xs` identifikatori unutar `text-sm` tabele — druga porodica pisma i druga veličina u istom redu | `tabular-nums text-[13px]`, bez `font-mono` |
+| `troskovi:171` | Datum(L) · Kategorija(L) · Iznos(D) · Plaćeno(D) · **Rok(L)** · Status(L) — desno poravnat par usred lijevo poravnatih | grupisati novčane kolone; `Rok` ostaje lijevo, ali sa `nowrap` |
+| `fakture:192` | Dospijeće(L) · Iznos(D) · Plaćeno(D) · Status(L) — isti cik-cak | isto |
+| `organi:182-183` | `text-xs` datumi unutar `text-sm` tabele | na `text-[13px]` po §3.3 |
+
+#### 3.F Uniformna dugmad u redovima (N1 / N7) — potpun spisak
+
+Faza 1 je `ghost` primijenila na **tačno 4 mjesta**: `organi:152`,
+`prijedlog:247`, `prijedlog:253`, `admin/page:97`. Sve ostalo je i dalje ručno
+pisano. Uvode se **dva** primitiva, jer se u redovima miješaju dvije različite
+stvari koje danas izgledaju isto:
+
+- **`RowLink`** — *identitet reda* (prvi stubac, vodi na detalj). Ostaje link:
+  `font-medium text-primary-ink underline-offset-2 hover:underline`, sa fokus
+  prstenom.
+- **`RowAction`** — *glagol* (stubac „Radnje"). Dugme po §3.6 težinama, sa
+  geometrijom iz §3.C.
+
+Pravilo: **prvi stubac = `RowLink`, stubac „Radnje" = `RowAction`. Nikad
+obrnuto, nikad golo `<a>`/`<button>`.**
+
+##### Radnje u redovima koje ne poštuju sistem (18)
+
+| Mjesto | Danas | Postaje |
+|---|---|---|
+| `building-row.tsx:51-57` | `<button className="text-sm font-medium text-blue-700 hover:underline">Uredi/Zatvori` | `RowAction` `ghost` |
+| `unit-row.tsx:63-69` | isto | `RowAction` `ghost` |
+| `charge-item-row.tsx:48-54` | isto | `RowAction` `ghost` |
+| `dokumenti:70` | `<a className="text-sm text-blue-700 hover:underline">PDF` | `RowAction` `ghost` (kao `<a>`) |
+| `dokumenti:74` | `<button className="text-sm text-emerald-700 hover:underline">objavi vlasnicima` — **jedina zelena radnja u aplikaciji** | `RowAction` `tonal` |
+| `dokumenti:109` | `<a …>preuzmi` | `RowAction` `ghost` |
+| `troskovi:190` | `<button className="text-xs text-blue-700 hover:underline">plati` | `RowAction` `tonal` |
+| `troskovi:195` | `<button className="text-xs text-red-700 hover:underline">storno` | `RowAction` `caution` + `ConfirmAction` |
+| `uplate:151` | `<Link className="text-sm text-blue-700 hover:underline">uparivanje/detalji` | `RowAction` `ghost` |
+| `uplate/[id]:99` | `<button className="text-sm text-blue-700 hover:underline">upari` | `RowAction` `tonal` |
+| `uplate/[id]:166` | `<button className="text-xs text-red-700 hover:underline">storno` | `RowAction` `caution` + potvrda |
+| `odrzavanje/[id]:226` | `<button className="text-sm text-blue-700 hover:underline">izaberi` | `RowAction` `tonal` |
+| `odrzavanje/[id]:264` | `<button className="text-xs text-blue-700 hover:underline">završi` | `RowAction` `tonal` |
+| `admin/page.tsx:77` | `<Link className="font-medium text-blue-700 hover:underline">` (naziv ZEV-a) | `RowLink` |
+| `admin/page.tsx:91` | `<Link className="text-blue-700 hover:underline">Detalji` — **stoji u istoj ćeliji pored `SubmitBtn variant="ghost"` (`:97`)**; najčistiji pojedinačni dokaz nalaza N1 | `BtnLink`/`RowAction` `ghost` |
+| `admin/[zevId]:204` | `<button className="text-blue-700 hover:underline">{t("tenant.enterThisZev")}` — **ista radnja je već `ghost` na `admin/page:97`**, dva izgleda za istu stvar | `RowAction` `ghost` |
+| `admin/[zevId]:219` | `<button className="text-red-700 hover:underline">{t("tenant.revokeAccess")}` | `RowAction` `caution` + potvrda |
+| `admin/[zevId]:307` | `<button className="shrink-0 text-sm text-red-700 hover:underline">` (nije u tabeli, ali isti obrazac) | `SubmitBtn` `caution` |
+
+##### Identifikatorski linkovi u redovima → `RowLink` (13)
+
+`fakture:173`, `fakture:198`, `vlasnici:130`, `skupstina:73`,
+`skupstina/[id]:186`, `planovi:43`, `odrzavanje:82`, `uplate:151` (kad je u
+ulozi identifikatora), `vlasnici/[id]:198`, `vlasnici/[id]:261`,
+`admin/page:77`, `admin/page:91`, `dokumenti:109`.
+
+##### Ručno prepisan `btnBase` u tri client komponente (3)
+
+`building-row.tsx:73-79`, `unit-row.tsx:101-107`, `charge-item-row.tsx:114-120`
+— dugme „Otkaži" doslovno prepisuje klase (`rounded-full border border-slate-300
+… px-4 py-1.5`). Faza 1 je `btnBase` i `btnVariantCls` **već eksportovala**
+(`ui.tsx:131`, `:144`), pa kopija nema opravdanje; usput je zadržala staru
+`py-1.5` visinu i izgubila `max-md:min-h-[44px]` koji je Faza 0 uvela. Prelaze
+na zajednički `Btn` (client-safe omotač nad `btnBase`).
+
+##### Gola polja u redovima i filter tracima koja zaobilaze `inputCls` (11)
+
+Faza 1 je ovo popravila na `izvjestaji` i `organi`, ali je promašila:
+`troskovi:187`, `troskovi:194`, `odrzavanje/[id]:263`, `uplate/[id]:165`,
+`aktivnosti:72`, `aktivnosti:76`, `aktivnosti:91`, `admin/aktivnosti:78`,
+`admin/aktivnosti:82`, `admin/aktivnosti:86`, `admin/aktivnosti:113`,
+`podesavanja/audit:30`. Prelaze na `inputCls` (uz `py-1 text-[13px]` gdje su
+unutar reda tabele) — i time postaju osnova za `FilterBar` iz §3.H.
+
+#### 3.G Redoslijed migracije tabela — svih 51, ne samo 6
+
+Originalni plan je imenovao 6 tabela. Provjera linija (2026-09-17): `troskovi:171`,
+`fakture:192`, `dokumenti:58`, `fakture:91` i `izvjestaji:97-98` su **i dalje
+tačni**; `zgrade` posebni dijelovi su se pomjerili sa `:131-135` na **`:130-136`**
+(11 kolona za predsjednika, 10 za vlasnika). Spisak je dopunjen na svih 51.
+
+**Talas 3c-1 — ≥8 kolona (kartični prelom obavezan):**
+`zgrade:130` (11/10) → `troskovi:171` (9) → `dokumenti:58` (8) → `fakture:192` (8)
+
+**Talas 3c-2 — 7 kolona:**
+`fakture:91` → `izvjestaji:97` → `fakture/serija/[id]:76` → `admin/page:68`
+
+**Talas 3c-3 — 6 kolona:**
+`vlasnici:127` → `skupstina:70` → `odrzavanje:79` → `fakture/uplate:141` →
+`izvjestaji:132` → `izvjestaji:161` → `planovi/[id]:130` →
+`skupstina/prijedlog/[id]:228` → `podesavanja/audit:33` → `podesavanja/poruke:24`
+
+**Talas 3c-4 — 5 kolona (samo `align` + `caption` + `emptyHint`, bez kartičnog preloma):**
+`zgrade:89` · `vlasnici:244` · `vlasnici/[id]:187` · `organi:177` · `planovi:38` ·
+`odrzavanje/[id]:214` · `odrzavanje/[id]:251` · `fakture/uplate/[id]:87` ·
+`fakture/uplate/[id]:153` · `admin/aktivnosti:127` · `admin/[zevId]:183`
+
+**Talas 3c-5 — ≤4 kolone (samo `align` + `caption` + `emptyHint`):**
+`zgrade:104` · `zgrade:199` · `troskovi:107` · `vlasnici/[id]:209` ·
+`organi:141` · `planovi:66` · `planovi/[id]:190` · `podesavanja:212` ·
+`skupstina:121` · `skupstina/[id]:183` · `skupstina/[id]:239` ·
+`fakture:170` · `fakture/[id]:91` · `fakture/[id]:110` · `dokumenti:103` ·
+`odrzavanje/[id]:306` · `izvjestaji:148` · `izvjestaji:177` · `izvjestaji:196` ·
+`izvjestaji:209` · `izvjestaji:222` · `aktivnosti:104`
+
+Zbir: 4 + 4 + 10 + 11 + 22 = **51**. Tabele iz 3c-1…3c-3 (18 komada, sve sa >5
+kolona) su tačno one koje po P5 dobijaju kartični prelom.
+
+**Rasporedna ispravka (tabela >5 kolona ne ide u dvokolonski grid):**
+`fakture:89` (7-kolona „Stavke naknada" u `lg:grid-cols-2`) i `izvjestaji:130`
+(dvije 6-kolone tabele u istom gridu). `podesavanja:127` **više nije prekršilac**
+— tabela na `:212` ima 4 kolone. `admin/page:62` već koristi `lg:col-span-2` za
+7-kolonu tabelu i to je uzor.
+
+#### 3.H Filtriranje i sortiranje (N5) — novi obim, go/no-go
+
+Ovo je jedina stavka koja **nije bila u planu**. Zato dobija posebno vaganje.
+
+##### Šta kod već nudi (i što mijenja procjenu)
+
+- **Filtriranje kroz GET formu je već dokazan, JS-free obrazac u ovoj
+  aplikaciji:** `aktivnosti:69-101` (datumi, checkbox grupa, select, `SubmitBtn`),
+  `admin/aktivnosti:77-116`, `izvjestaji:67-71`, `izvjestaji:76-89`,
+  `podesavanja/audit:30` (tekstualni `q`). Forma bez `action` šalje se na istu
+  rutu kao query string, stranica se ponovo renderuje na serveru. Nula klijentskog
+  JS-a.
+- **Servisni sloj već prima filtere koje stranice ne prosljeđuju:**
+  `listInvoices(actor, { debtorId, unitId, status, period })` (`billing.ts:387`) —
+  `/fakture` ga zove **bez ijednog filtera** (`fakture:70`);
+  `listExpenses(actor, { status, supplierId, buildingId, projectId })`
+  (`expenses.ts:191`); `listPayments(actor, { status, payerId })`
+  (`payments.ts:774`); `listIssues(actor, { status, mineOnly })`
+  (`maintenance.ts:14`); `listUnits(actor, { buildingId, entranceId })`
+  (`property.ts:96`); `listAttachments(...)` (`attachments.ts:140`).
+  **Dakle filtriranje je uglavnom posao ožičenja na stranici, ne preprojektovanje
+  servisa.**
+- **Sortiranje nije podržano nigdje** — svaki `list*` ima tvrdo kodiran `orderBy`.
+  Ali: te liste nisu paginirane, pa su svi redovi ionako već u memoriji stranice,
+  i sortiranje se može uraditi `.sort()`-om nad dobijenim nizom — **bez ijedne
+  izmjene u servisima i bez ijednog dodatnog upita.**
+- `Pagination` (`ui.tsx:240-267`) postoji i njegov `hrefFor` je gotov obrazac za
+  gradnju „isti URL, jedan parametar drugačiji" — tačno ono što sortiranje treba.
+  Koristi se **samo na 2 mjesta** (`aktivnosti:121`, `admin/aktivnosti:145`).
+
+##### Razmotrene opcije
+
+| # | Opcija | Za | Protiv | Ocjena |
+|---|---|---|---|---|
+| A | Odložiti u cjelosti u posebnu fazu | Faza 3 je već najveći komad posla; ovo je jedina stavka koja nije prošla plansku analizu | Nalaz je došao od stvarnog korisnika, uz P8 sesiju koja je cijelu fazu i otključala; odlaganje jedinog *funkcionalnog* nalaza u korist kozmetike je pogrešan signal | ✗ |
+| B | **Filter traka (GET forma) na listama koje realno rastu** | Reciklira postojeći, dokazani obrazac; servisni filteri **već postoje** za 4 od 5 ciljanih lista; nula klijentskog JS-a; `FilterBar` je ionako već tražen u §4.3 | Traži `FilterBar` primitiv i po jednu odluku „šta se filtrira" po listi (~5 odluka) | **✓ preporuka, u 3g** |
+| C | **Sortivna zaglavlja kao query-param linkovi (`?sort=iznos&dir=desc`)** | `ColumnSpec` ionako dobija `sortKey` (§3.B); `th` postaje `<Link>` sa strelicom; sortira se nad već dobijenim nizom → nula izmjena u servisima; `aria-sort` na `th` | Bez paginacije sortiranje velike liste je zamka: `/fakture` za ZEV od 40 jedinica poslije 3 godine = ~1400 redova u jednoj tabeli, i sortiranje to ne ublažava nego pogoršava utisak | **✓ uz B i uz D** |
+| D | `Pagination` na `/fakture` i `/fakture/uplate` | Primitiv postoji i radi; bez njega C nema smisla na te dvije liste | Traži `skip`/`take` u `listInvoices`/`listPayments` — **jedina izmjena servisa u cijeloj Fazi 3**, i time izlazak iz „čisto prezentacionog sloja" (§8) | **✓ ali samo za te dvije liste, i eksplicitno zapisano kao svjestan izuzetak od §8** |
+| E | Puna klijentska tabela (TanStack ili ručni `useState` filter) | Trenutan odziv, sve kolone sortive besplatno | Prva prava client stranica; svi redovi u JS bundle; §8 („ne prebacuje stranice na client komponente") pada; a11y i fokus po redu postaju naš problem | ✗ |
+| F | Sortiranje i filtriranje na **svih 51 tabela** | Dosljedno | 37 tabela ima <20 redova i fiksni redoslijed koji nosi značenje (npr. `fakture/[id]:91` stavke fakture idu `order: asc` jer je to redoslijed na dokumentu — sortiranje ih kvari); čist trošak bez koristi | ✗ |
+
+##### Preporuka i granica obima
+
+**Go — ali samo B + C + D, i samo na 6 lista.** Nikad F.
+
+| Lista | Filter (B) | Sort (C) | Paginacija (D) |
+|---|---|---|---|
+| `/fakture` — sve fakture (`fakture:192`) | status, period, jedinica *(servis već prima, `billing.ts:387`)* | Broj, Dospijeće, Iznos, Plaćeno | ✓ |
+| `/troskovi` — troškovi (`troskovi:171`) | status, dobavljač *(`expenses.ts:191`)* | Datum, Iznos, Rok | — |
+| `/fakture/uplate` — uplate (`uplate:141`) | status *(`payments.ts:774`)* | Datum, Iznos | ✓ |
+| `/vlasnici` — lica (`vlasnici:127`) | tekst po imenu *(nema u servisu → `.filter()` u stranici)* | Ime | — |
+| `/zgrade` — posebni dijelovi (`zgrade:130`) | zgrada, ulaz *(`property.ts:96`)* | Oznaka, Površina, Udio % | — |
+| `/odrzavanje` — prijave (`odrzavanje:79`) | status, „samo moje" *(`maintenance.ts:14`)* | Prijavljena, Hitnost | — |
+
+**Van obima, izričito:** ostalih 45 tabela; sortiranje po više kolona; snimljeni
+pogledi/„moji filteri"; sortiranje tabela čiji redoslijed nosi značenje
+(`fakture/[id]:91` stavke fakture, `fakture/serija/[id]:76` obračun,
+`skupstina/[id]:161` dnevni red, `odrzavanje/[id]:176` tok statusa); bilo kakav
+klijentski JS.
+
+**Uslovni no-go:** ako se pri isporuci 3f pokaže da je vremena manje nego što je
+procijenjeno, **3g se u cjelosti odsijeca i ide kao Faza 7** — pod-faze su
+namjerno poredane tako da 3g bude posljednja i da ništa prije nje ne zavisi od
+nje. Jedini trag koji ostaje je neiskorišćeno `sortKey` polje u `ColumnSpec`,
+što ne smeta nikome.
+
+#### 3.I Prazna stanja (`emptyHint`, P7)
+
+Danas: `ui.tsx:117` ispisuje doslovno „Nema podataka." na **svih 51 tabela**.
+Novi predsjednik koji prvi put otvori `/zgrade` dobije četiri identične rečenice.
+
+```tsx
+<Table … empty={buildings.length === 0} emptyHint={t("empty.buildings")} />
+```
+
+Render: ikona (ručno crtana, po P6, u stilu `IconBase`/`strokeWidth 1.6`) +
+naslov `text-[15px] font-medium text-ink` („Još nema zgrada.") + rečenica
+`text-[13px] text-ink-muted` sa sljedećim korakom. Podrazumijevano ponašanje bez
+`emptyHint` ostaje današnje, pa se uvodi tabela po tabela.
+
+**Odluka o obliku sljedećeg koraka** (ovo je jedini nezgodan detalj): dugme
+„Dodaj prvu zgradu →" ne može da otvori `<details>` formu koja se nalazi **izvan**
+tabele (`zgrade:95` je siblings, ne dijete) — bez JS-a se do nje ne može doprijeti.
+Zato:
+
+- **Pravilo:** `emptyHint` je **rečenica koja imenuje kontrolu**, npr. „Dodajte
+  prvu zgradu obrascem *Dodaj zgradu* ispod." — a ne dugme.
+- **Izuzetak:** kad sljedeći korak živi na **drugoj stranici**, `emptyHint` prima
+  `BtnLink` `tonal` (npr. na `/fakture` prazna lista faktura → „Prvo podesite
+  stavke naknada" vodi na karticu/tab naknada).
+
+**Dvije klase praznih stanja** (razlika je bitna, jer je poruka suprotna):
+
+| Klasa | Kada | Tekst |
+|---|---|---|
+| „još ničega nema" | baza je prazna | sljedeći korak koji nešto kreira |
+| „nema rezultata za ovaj filter" | aktivan filter/period (`aktivnosti`, `audit`, `poruke`, `izvjestaji`, i sve iz 3g) | „Nema zapisa u izabranom periodu. Proširite period ili uklonite filtere." + link koji čisti query |
+
+Stranica zna koja je klasa u pitanju (ima svoje `searchParams`), pa `Table` ne
+mora da pogađa — prosljeđuje se pravi `emptyHint`.
+
+**Copy ide kroz rječnik**, po §7: nova **ugniježđena** grupa u `sr-Latn.ts`
+(`empty: { buildings: "…", units: "…", … }`), nikad ravni ključevi — inače `t()`
+tiho vrati sam ključ (`i18n/index.ts:30-34`, rizik 6 iz §12). ~30 bespoke
+tekstova; 21 izvedena/read-only tabela dijeli 3–4 generičke varijante.
+
+---
+
+#### Pod-faze, preporučeni redoslijed i kapije
+
+Redoslijed je izabran tako da **svaka pod-faza ostavlja aplikaciju ispravnom i
+može biti posljednja** — ako se faza prekine bilo gdje, ono što je isporučeno
+ima smisla samo za sebe.
+
+##### 3a — Primitivi *(mala; `ui.tsx` + `globals.css`, nijedna `page.tsx`)* → `2.19.0`
+- `ColumnSpec` + prošireni `Table` potpis (`string[]` i dalje radi identično).
+- Generisani ograničeni `<style>` blok (§3.B, opcija B): poravnanje po koloni,
+  prioritet, kartični prelom ispod `md`.
+- `<caption className="sr-only">` + `scope="col"` (A8); `aria-labelledby` umjesto
+  generičkog `aria-label` na skrolabilnom kontejneru (`ui.tsx:101-105`).
+- Gustina (§3.C): `Td` → `px-3 py-1.5`, `th` → `px-3 py-2`, `tr:hover`.
+- Novi primitivi: `RowAction`, `RowLink`, `Btn` (client-safe omotač nad
+  `btnBase`), `Tabs`, `emptyHint` u `Table`.
+- **Vidljiv efekat:** samo gušće tabele u cijeloj aplikaciji. Sve ostalo je
+  uspavano dok tabele ne pređu na `ColumnSpec`.
+
+##### 3b — Uniformna dugmad i linkovi u redovima *(srednja; bez izmjene rasporeda)* → `2.19.1`
+- 18 radnji iz §3.F → `RowAction` sa dodijeljenom težinom.
+- 13 identifikatorskih linkova → `RowLink`.
+- 3 kopije `btnBase` u client komponentama → `Btn`.
+- 11 golih polja → `inputCls`.
+- 3 nove potvrde (`troskovi:195`, `uplate/[id]:166`, `admin/[zevId]:219`) preko
+  postojećeg `ConfirmAction` (`ui.tsx:200`).
+- **Ovo direktno odgovara na N1 i N7 i vrijedi ga isporučiti rano** — korisnik
+  koji je prijavio nalaz vidi rezultat prije nego što počne najduži dio posla.
+
+##### 3c — Migracija tabela na `ColumnSpec` *(velika; pet talasa, pet commit-a)* → `2.19.2`
+Redoslijed i spisak u §3.G. Svaki talas je zasebna isporuka sa vizuelnom
+provjerom. **Poslije 3c-1 se zaustaviti i pogledati `/zgrade` i `/troskovi` na
+375px prije nego što se krene dalje** — ako se kartični prelom pokaže pogrešnim,
+ovdje je najjeftinije odustati (preostale 47 tabele nisu dirnute).
+
+##### 3d — Raspored, sažeci, progresivno otkrivanje *(srednja)* → `2.19.3`
+- Tabele >5 kolona izlaze iz dvokolonskog grida (`fakture:89`, `izvjestaji:130`).
+- Sažetak iznad tabele (§4.1, uzor `izvjestaji:74`): za `/zgrade` posebne
+  dijelove „38 jedinica · 2.140,50 m² · **ukupan udio 100,00 %**", sa `warning`
+  tonom kad zbir nije 100 — po H6 jedini podatak koji predsjedniku vrijedi više
+  od cijele tabele.
+- Role-based zaglavlje `/fakture` za vlasnika (bez „Dužnik", skraćena jedinica).
+- Progresivno otkrivanje na preostalim formama (§4.1 B): danas **10 od 85** formi
+  ima `ToggleBtn`. Nedostaje na `zgrade:95, :114, :165, :210`; `vlasnici:167,
+  :192, :220, :255`; `organi:118, :163`; `podesavanja:222`; `skupstina/[id]:196`.
+- `<fieldset>` grupisanje za forme >6 polja (§4.1 E): `fakture:116-165` (11),
+  `zgrade:165-192` (9). Danas u aplikaciji postoje 4 `<fieldset>`-a ukupno.
+- Sitna ispravka: `planovi:72` sirov enum → `tEnum`.
+
+##### 3e — `Tabs` *(srednja)* → `2.19.4`
+- 8 stranica po spisku iz §3.D, počevši od `/skupstina` (migracija postojećeg
+  ručnog taba — najmanji rizik, dokazuje primitiv) pa `/zgrade` (izvorni nalaz).
+- 21 forma dobija skriveno `tab` polje; 21 `redirect` ga vraća.
+- Neaktivni tabovi **ne izvršavaju svoje upite** — `/zgrade` sa 4 upita
+  (`zgrade:72-77`) pada na 1–2.
+
+##### 3f — Prazna stanja *(mala–srednja; uglavnom pisanje teksta)* → `2.19.5`
+§3.I. ~30 tekstova u `sr-Latn.ts` + primjena na svih 51 tabela.
+**Ovo je prirodna tačka za isporuku ako se obim mora skratiti.**
+
+##### 3g — Filtriranje i sortiranje *(srednja; NOVI OBIM, zasebna go/no-go odluka)* → `2.19.6`
+§3.H, opcije B + C + D na 6 lista. `FilterBar` primitiv (§4.3) apsorbuje i
+postojeće ručne filter trake (`aktivnosti:69`, `admin/aktivnosti:77`,
+`izvjestaji:67`, `audit:30`). Jedini dio Faze 3 koji dodiruje servise
+(`skip`/`take` u `listInvoices`, `listPayments`) — **zapisati kao svjestan
+izuzetak od §8**, jer §8 kaže da plan ne dira servise.
+
+##### 3h — Ostatak iz originalnog opisa Faze 3 *(mala; može i poslije)* → `2.19.7`
+- `StatusTimeline` za `/skupstina/[id]` (devetostepeni proces, H1). Nije vezan za
+  tabele i ne blokira ništa — može i u zasebnu fazu.
+- Mobilni drawer `role="dialog"` + zamka fokusa (A9, `nav-shell.tsx:159`);
+  `nav-shell.tsx` je ionako već client komponenta.
+
+##### Kapija između svake pod-faze (obavezno, bez izuzetka)
+1. `npm run typecheck && npm test && npm run lint && npm run build` — trenutno
+   **247/247** testova.
+2. `npm run test:e2e` (`e2e/smoke.e2e.mjs`).
+3. **Vizuelna provjera uživo na 1440px i 375px** — fiksna lista iz §11
+   (`/`, `/zgrade`, `/fakture`, `/skupstina/prijedlog/[id]`, `/podesavanja`,
+   `/login`) **proširena za Fazu 3** sa `/troskovi`, `/vlasnici`, `/izvjestaji`
+   i `/dokumenti`, jer tu slijeće kartični prelom. Build koji prolazi ne dokazuje
+   ništa za ovaj tip izmjene (§12, rizik 5).
+4. Unos u `CHANGELOG.md` + potvrđeno podizanje verzije.
+
+**O vizuelnom regresionom testiranju** (§12, rizik 5 kaže „vrijedi razmotriti
+prije Faze 3"): preporuka je **ne uvoditi snapshot diffing**. Umjesto toga,
+Playwright skripta u `e2e/` koja obiđe 10 stranica × 2 širine i **zapiše PNG-ove
+u gitignore-ovan folder**, da bi se gledali okom uz svaku kapiju. Trošak: pola
+dana. Pravo snapshot poređenje bi na 10 pod-faza koje **namjerno** mijenjaju
+izgled svake tabele proizvelo 200 lažnih padova i bilo bi isključeno već poslije
+3a.
+
+#### Rizici specifični za Fazu 3
+
+1. **`nth-child` generisani CSS je najosjetljiviji dio.** Lomi se ako red ima
+   uslovnu ćeliju koja nije uslovna i u `headers`. Danas takvog slučaja nema
+   (provjereno na sve 51 tabele; `zgrade:80-81` naspram `zgrade:133` uslovljavaju
+   par zajedno), ali je to pravilo koje niko ne zna dok ga ne prekrši. **Mjera:**
+   `Table` u dev režimu upoređuje broj `<th>`-ova sa brojem `<td>`-ova prvog reda
+   i loguje neslaganje.
+2. **Gustina je subjektivna i vraća se kao „sad je pretijesno".** 40 → 32px je
+   20% i osjetiće se. **Mjera:** 3a se isporučuje sama, prije svega ostalog, baš
+   zato da se ova jedna promjena može ocijeniti izolovano — i po potrebi vratiti
+   na 36px jednom izmjenom.
+3. **Tabovi mijenjaju naučenu navigaciju na živoj produkciji** — predsjednik koji
+   zna da skroluje do „Posebnih dijelova" sad mora da klikne. Isti tip rizika kao
+   #2 iz §12 (promjena boje dugmadi). U CHANGELOG, i po mogućnosti najaviti.
+4. **Izgubljen tab poslije snimanja** je najvjerovatnija regresija 3e. 21 forma ×
+   21 `redirect`; propušteno jedno mjesto = korisnik izbačen na prvi tab poslije
+   unosa. **Mjera:** e2e korak koji na `/zgrade?tab=jedinice` doda jedinicu i
+   provjeri da je URL i dalje `tab=jedinice`.
+5. **`RowAction` na 28px je svjesno odstupanje od cilja iz Faze 0.** Ako se
+   ispostavi da korisnik promašuje mete na desktopu, vraćanje je jedna vrijednost
+   u `ui.tsx` — ali to treba **pitati istog korisnika** na sljedećoj sesiji, ne
+   pretpostaviti.
+6. **3g izlazi iz „čisto prezentacionog sloja".** `skip`/`take` u dva servisa je
+   prva izmjena van UI-ja u cijelom ovom planu. Šema se ne mijenja, pa se pravilo
+   o produkcionoj provjeri migracija i dalje ne aktivira — **ali to treba
+   potvrditi pri isporuci, ne pretpostaviti** (§11).
+7. **Faza 3 je 8 isporuka.** Rizik nije tehnički nego ljudski: da se negdje na
+   3c-3 izgubi disciplina „mala, provjerena, commit-ovana izmjena" i da posljednje
+   tri pod-faze odu u jedan nepregledan commit. Zato je redoslijed napravljen tako
+   da se poslije **3b**, **3c-1** i **3f** može stati bez štete.
 ### Faza 4 — Javni i neautentifikovani tokovi *(srednja)*
 - `AuthShell` primitiv; `/login`, `/zaboravljena-lozinka`, `/reset-lozinka/[token]`
   prelaze na njega (§6.2).
