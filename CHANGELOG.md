@@ -43,6 +43,33 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.16.0] - 2026-09-17
+
+### Ispravljeno
+
+- **Rušenje stranice uplate za predsjednika** (prijavljeno iz produkcije,
+  `/fakture/uplate/[id]`) — `suggestMatches()` je tražio isključivo ulogu
+  `ACCOUNTANT`, dok je sama stranica dostupna i računovođi i predsjedniku i
+  poziva tu funkciju bezuslovno za svaku neraspoređenu/djelimično raspoređenu
+  uplatu. Predsjednik bez uloge računovođe je zato dobijao sirovu grešku
+  (Next.js digest stranicu) umjesto prijedloga uparivanja. Ispravljeno da
+  prihvata i `PRESIDENT`, u skladu sa pristupom same stranice.
+
+### Dodano
+
+- **`error.tsx` granice grešaka** — jedna za sve stranice pod `(app)`
+  (zadržava bočnu navigaciju vidljivom, ispisuje smiren tekst objašnjenja) i
+  jedna na korijenu aplikacije (samostalna, bez pretpostavke da bilo koji
+  layout postoji — hvata npr. grešku iz `admin/layout.tsx` koja se dešava u
+  samom layout-u, van dometa granice na tom nivou). Next.js briše stvarnu
+  poruku greške u produkcijskom build-u iz bezbjednosnih razloga, pa ove
+  granice ne tvrde tačan uzrok — samo daju miran, koristan izlaz (nazad na
+  početnu / pokušaj ponovo) umjesto sirove tehničke stranice sa digest kodom
+  koju je vidio korisnik u produkciji.
+- Provjereno: 247/247 testova prolazi; greška je uživo reprodukovana lokalno
+  (predsjednik bez računovodstvene uloge, uplata sa slobodnim iznosom) i
+  potvrđeno da je stranica nakon ispravke ponovo upotrebljiva.
+
 ## [2.15.0] - 2026-09-17
 
 ### Dodano

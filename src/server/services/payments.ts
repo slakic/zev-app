@@ -595,7 +595,11 @@ function scoreExpenseMatch(
  *  statements where the payment purpose carries a unit number or the real owner's name —
  *  by what the payer actually wrote in "svrha uplate"). */
 export async function suggestMatches(actor: Actor, paymentId: string) {
-  requireRole(actor, "ACCOUNTANT");
+  // Matches PaymentDetailPage's own access level (ACCOUNTANT or PRESIDENT) — it calls
+  // this unconditionally for any unmatched/partially-applied payment with a free
+  // balance, so requiring ACCOUNTANT alone here crashed the page for a president-only
+  // account with a raw ForbiddenError (reported in production, 2026-09-17).
+  requireRole(actor, "ACCOUNTANT", "PRESIDENT");
   const zevId = requireZev(actor);
   const payment = await prisma.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { payer: true } });
   const candidates = await fetchOpenInvoiceCandidates(zevId);
