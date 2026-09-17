@@ -10,6 +10,12 @@ import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, type ColumnSpec } from "@/components/ui";
 import type { IssueStatus } from "@/generated/prisma/client";
 
+const relatedExpenseHeaders: ColumnSpec[] = [
+  { label: "Br. fakture" },
+  { label: "Iznos", align: "right" },
+  { label: "Status" },
+];
+
 const offerHeaders: ColumnSpec[] = [
   { label: "Izvođač" },
   { label: "Iznos", align: "right" },
@@ -319,11 +325,11 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
 
         {management && issue.expenses.length > 0 && (
           <Card title="Povezani troškovi">
-            <Table headers={["Br. fakture", "Iznos", "Status"]} empty={false}>
+            <Table id="related-expenses-table" caption="Povezani troškovi" headers={relatedExpenseHeaders} empty={false}>
               {issue.expenses.map((e) => (
                 <tr key={e.id}>
                   <Td>{e.invoiceNumber ?? e.id.slice(-8)}</Td>
-                  <Td right>{formatMoney(e.amount.toString())}</Td>
+                  <Td>{formatMoney(e.amount.toString())}</Td>
                   <Td><StatusBadge status={e.status} label={tEnum("expenseStatus", e.status)} /></Td>
                 </tr>
               ))}

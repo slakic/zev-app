@@ -6,7 +6,21 @@ import { generateInvoicePdf } from "@/server/services/documents";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+
+const invoiceLineHeaders: ColumnSpec[] = [
+  { label: "Stavka" },
+  { label: "Formula" },
+  { label: "Ulazi" },
+  { label: "Iznos", align: "right" },
+];
+
+const invoiceAllocationHeaders: ColumnSpec[] = [
+  { label: "Datum evidencije" },
+  { label: "Uplata" },
+  { label: "Iznos", align: "right" },
+  { label: "Napomena" },
+];
 
 async function pdfAction(formData: FormData) {
   "use server";
@@ -88,7 +102,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
         </Card>
         <div className="lg:col-span-2">
           <Card title="Stavke sa obračunom">
-            <Table headers={["Stavka", "Formula", "Ulazi", "Iznos"]} empty={inv.lines.length === 0}>
+            <Table id="invoice-lines-table" caption="Stavke sa obračunom" headers={invoiceLineHeaders} empty={inv.lines.length === 0}>
               {inv.lines.map((l) => {
                 const snap = l.calcSnapshot as { formula?: string; inputs?: Record<string, unknown> } | null;
                 return (
@@ -96,7 +110,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                     <Td>{l.description}</Td>
                     <Td className="text-xs">{snap?.formula ?? ""}</Td>
                     <Td className="text-xs">{snap?.inputs ? Object.entries(snap.inputs).map(([k, v]) => `${k}=${v}`).join(", ") : ""}</Td>
-                    <Td right>{formatMoney(l.amount.toString(), "")}</Td>
+                    <Td>{formatMoney(l.amount.toString(), "")}</Td>
                   </tr>
                 );
               })}
@@ -107,12 +121,12 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
 
       <div className="mt-4">
         <Card title="Uplate po ovoj fakturi">
-          <Table headers={["Datum evidencije", "Uplata", "Iznos", "Napomena"]} empty={inv.allocations.length === 0}>
+          <Table id="invoice-allocations-table" caption="Uplate po ovoj fakturi" headers={invoiceAllocationHeaders} empty={inv.allocations.length === 0}>
             {inv.allocations.map((a) => (
               <tr key={a.id} className={Number(a.amount) < 0 ? "text-red-700" : ""}>
                 <Td>{formatDateTime(a.createdAt)}</Td>
                 <Td>{a.payment.payerNameRaw ?? a.payment.reference ?? a.paymentId.slice(-8)}</Td>
-                <Td right>{formatMoney(a.amount.toString())}</Td>
+                <Td>{formatMoney(a.amount.toString())}</Td>
                 <Td>{a.reason ?? (Number(a.amount) < 0 ? "storno alokacije" : "—")}</Td>
               </tr>
             ))}

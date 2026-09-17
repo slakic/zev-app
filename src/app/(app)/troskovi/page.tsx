@@ -11,6 +11,13 @@ import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, type ColumnSpec } from "@/components/ui";
 
+const supplierHeaders: ColumnSpec[] = [
+  { label: "Naziv" },
+  { label: "JIB" },
+  { label: "Račun" },
+  { label: "Kontakt" },
+];
+
 const expenseHeaders: ColumnSpec[] = [
   { label: "Dobavljač", priority: "primary" },
   { label: "Br. fakture", priority: "detail" },
@@ -116,7 +123,7 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
       <Flash err={err} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Dobavljači i izvođači">
-          <Table headers={["Naziv", "JIB", "Račun", "Kontakt"]} empty={suppliers.length === 0}>
+          <Table id="suppliers-table" caption="Dobavljači i izvođači" headers={supplierHeaders} empty={suppliers.length === 0}>
             {suppliers.map((s) => (
               <tr key={s.id}>
                 <Td>{s.name}</Td>

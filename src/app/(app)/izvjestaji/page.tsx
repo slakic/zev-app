@@ -7,6 +7,40 @@ import { formatDate, endOfDay, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
+const incExpHeaders: ColumnSpec[] = [
+  { label: "Kategorija" },
+  { label: "Vrsta" },
+  { label: "Iznos", align: "right" },
+];
+
+const supplierSummaryHeaders: ColumnSpec[] = [
+  { label: "Dobavljač" },
+  { label: "Faktura", align: "right" },
+  { label: "Ukupno", align: "right" },
+  { label: "Neplaćeno", align: "right" },
+];
+
+const supplierUnpaidHeaders: ColumnSpec[] = [
+  { label: "Dobavljač" },
+  { label: "Br. fakture" },
+  { label: "Rok" },
+  { label: "Otvoreno", align: "right" },
+];
+
+const byBuildingHeaders: ColumnSpec[] = [
+  { label: "Zgrada" },
+  { label: "Prilivi", align: "right" },
+  { label: "Odlivi", align: "right" },
+  { label: "Neto", align: "right" },
+];
+
+const byProjectHeaders: ColumnSpec[] = [
+  { label: "Projekat" },
+  { label: "Prilivi", align: "right" },
+  { label: "Odlivi", align: "right" },
+  { label: "Neto", align: "right" },
+];
+
 const cashFlowHeaders: ColumnSpec[] = [
   { label: "Račun", priority: "primary" },
   { label: "Početno", align: "right", priority: "detail" },
@@ -170,12 +204,12 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Prihodi i rashodi po kategorijama">
-          <Table headers={["Kategorija", "Vrsta", "Iznos"]} empty={incExp.length === 0}>
+          <Table id="incexp-table" caption="Prihodi i rashodi po kategorijama" headers={incExpHeaders} empty={incExp.length === 0}>
             {incExp.map((r, i) => (
               <tr key={i}>
                 <Td>{r.category}</Td>
                 <Td>{r.kind === "INCOME" ? "Prihod" : "Rashod"}</Td>
-                <Td right>{formatMoney(r.total, "")}</Td>
+                <Td>{formatMoney(r.total, "")}</Td>
               </tr>
             ))}
           </Table>
@@ -199,13 +233,13 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Dobavljači">
-          <Table headers={["Dobavljač", "Faktura", "Ukupno", "Neplaćeno"]} empty={suppliers.length === 0}>
+          <Table id="supplier-summary-table" caption="Dobavljači" headers={supplierSummaryHeaders} empty={suppliers.length === 0}>
             {suppliers.map((s, i) => (
               <tr key={i}>
                 <Td>{s.supplier}</Td>
-                <Td right>{s.count}</Td>
-                <Td right>{formatMoney(s.total, "")}</Td>
-                <Td right>{formatMoney(s.unpaid, "")}</Td>
+                <Td>{s.count}</Td>
+                <Td>{formatMoney(s.total, "")}</Td>
+                <Td>{formatMoney(s.unpaid, "")}</Td>
               </tr>
             ))}
           </Table>
@@ -218,39 +252,39 @@ export default async function ReportsPage({
         </Card>
 
         <Card title="Neplaćene fakture dobavljača">
-          <Table headers={["Dobavljač", "Br. fakture", "Rok", "Otvoreno"]} empty={supplierUnpaid.length === 0}>
+          <Table id="supplier-unpaid-table" caption="Neplaćene fakture dobavljača" headers={supplierUnpaidHeaders} empty={supplierUnpaid.length === 0}>
             {supplierUnpaid.map((e) => (
               <tr key={e.id}>
                 <Td>{e.supplier?.name ?? "—"}</Td>
                 <Td>{e.invoiceNumber ?? "—"}</Td>
                 <Td>{formatDate(e.dueDate)}</Td>
-                <Td right>{formatMoney((Number(e.amount) - Number(e.paidAmount)).toFixed(2), "")}</Td>
+                <Td>{formatMoney((Number(e.amount) - Number(e.paidAmount)).toFixed(2), "")}</Td>
               </tr>
             ))}
           </Table>
         </Card>
 
         <Card title="Pregled po zgradama">
-          <Table headers={["Zgrada", "Prilivi", "Odlivi", "Neto"]} empty={byBuilding.length === 0}>
+          <Table id="by-building-table" caption="Pregled po zgradama" headers={byBuildingHeaders} empty={byBuilding.length === 0}>
             {byBuilding.map((r) => (
               <tr key={r.key}>
                 <Td>{r.name}</Td>
-                <Td right>{formatMoney(r.income, "")}</Td>
-                <Td right>{formatMoney(r.expense, "")}</Td>
-                <Td right>{formatMoney(r.net, "")}</Td>
+                <Td>{formatMoney(r.income, "")}</Td>
+                <Td>{formatMoney(r.expense, "")}</Td>
+                <Td>{formatMoney(r.net, "")}</Td>
               </tr>
             ))}
           </Table>
         </Card>
 
         <Card title="Pregled po projektima">
-          <Table headers={["Projekat", "Prilivi", "Odlivi", "Neto"]} empty={byProject.length === 0}>
+          <Table id="by-project-table" caption="Pregled po projektima" headers={byProjectHeaders} empty={byProject.length === 0}>
             {byProject.map((r) => (
               <tr key={r.key}>
                 <Td>{r.name}</Td>
-                <Td right>{formatMoney(r.income, "")}</Td>
-                <Td right>{formatMoney(r.expense, "")}</Td>
-                <Td right>{formatMoney(r.net, "")}</Td>
+                <Td>{formatMoney(r.income, "")}</Td>
+                <Td>{formatMoney(r.expense, "")}</Td>
+                <Td>{formatMoney(r.net, "")}</Td>
               </tr>
             ))}
           </Table>

@@ -6,6 +6,13 @@ import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/serv
 import { formatDateTime, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, RowAction, RowActionLink, type ColumnSpec } from "@/components/ui";
 
+const attachmentHeaders: ColumnSpec[] = [
+  { label: "Kategorija" },
+  { label: "Naziv fajla" },
+  { label: "Otpremljen" },
+  { label: "Preuzmi" },
+];
+
 const documentHeaders: ColumnSpec[] = [
   { label: "Broj", priority: "primary", nowrap: true },
   { label: "Vrsta", priority: "detail" },
@@ -111,7 +118,7 @@ export default async function DocumentsPage({
             <SubmitBtn variant="secondary">Filtriraj</SubmitBtn>
           </form>
 
-          <Table headers={["Kategorija", "Naziv fajla", "Otpremljen", "Preuzmi"]} empty={attachments.length === 0}>
+          <Table id="attachments-table" caption="Otpremljeni dokumenti" headers={attachmentHeaders} empty={attachments.length === 0}>
             {attachments.map((a) => (
               <tr key={a.id}>
                 <Td>{tEnum("attachmentCategory", a.category)}</Td>

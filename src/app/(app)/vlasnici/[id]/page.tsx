@@ -10,6 +10,13 @@ import { formatMoney } from "@/lib/money";
 import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
 
+const occupancyHeaders: ColumnSpec[] = [
+  { label: "Jedinica" },
+  { label: "Vrsta" },
+  { label: "Od" },
+  { label: "Do" },
+];
+
 const stakeHeaders: ColumnSpec[] = [
   { label: "Jedinica" },
   { label: "Udio %", align: "right" },
@@ -214,7 +221,7 @@ export default async function PartyDetailPage({
           </Table>
         </Card>
         <Card title="Korištenje jedinica">
-          <Table headers={["Jedinica", "Vrsta", "Od", "Do"]} empty={party.occupancies.length === 0}>
+          <Table id="occupancies-table" caption="Korištenje jedinica" headers={occupancyHeaders} empty={party.occupancies.length === 0}>
             {party.occupancies.map((o) => (
               <tr key={o.id}>
                 <Td>{o.unit.label}</Td>

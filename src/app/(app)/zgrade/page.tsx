@@ -83,6 +83,8 @@ export default async function BuildingsPage({
     { label: "Jedinica", align: "right" },
     ...(isPresident ? [{ label: "Radnje" } as ColumnSpec] : []),
   ];
+  const entranceHeaders: ColumnSpec[] = [{ label: "Zgrada" }, { label: "Ulaz" }, { label: "Adresa" }];
+  const assetHeaders: ColumnSpec[] = [{ label: "Naziv" }, { label: "Vrsta" }, { label: "Zgrada" }, { label: "Opis" }];
   const unitHeaders: ColumnSpec[] = [
     { label: "Zgrada" },
     { label: "Ulaz", priority: "detail" },
@@ -118,7 +120,7 @@ export default async function BuildingsPage({
           )}
         </Card>
         <Card title="Ulazi / lamele">
-          <Table headers={["Zgrada", "Ulaz", "Adresa"]} empty={entrances.length === 0}>
+          <Table id="entrances-table" caption="Ulazi / lamele" headers={entranceHeaders} empty={entrances.length === 0}>
             {entrances.map((e) => (
               <tr key={e.id}>
                 <Td>{e.buildingName}</Td>
@@ -212,7 +214,7 @@ export default async function BuildingsPage({
 
       <div className="mt-4">
         <Card title="Zajednički dijelovi, sistemi i oprema">
-          <Table headers={["Naziv", "Vrsta", "Zgrada", "Opis"]} empty={assets.length === 0}>
+          <Table id="assets-table" caption="Zajednički dijelovi, sistemi i oprema" headers={assetHeaders} empty={assets.length === 0}>
             {assets.map((a) => (
               <tr key={a.id}>
                 <Td>{a.name}</Td>

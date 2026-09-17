@@ -6,6 +6,13 @@ import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 
+const votingRuleHeaders: ColumnSpec[] = [
+  { label: "Naziv" },
+  { label: "Kvorum" },
+  { label: "Većina" },
+  { label: "Težina glasa" },
+];
+
 const meetingHeaders: ColumnSpec[] = [
   { label: "Sjednica", priority: "primary" },
   { label: "Vrsta", priority: "detail" },
@@ -132,7 +139,7 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
       {management && (
         <div className="mt-4">
           <Card title="Pravila glasanja" hint="Konfigurabilna — snimak pravila se čuva uz svaki prijedlog, pa kasnija izmjena ne utiče na već otvorena glasanja.">
-            <Table headers={["Naziv", "Kvorum", "Većina", "Težina glasa"]} empty={rules.length === 0}>
+            <Table id="voting-rules-table" caption="Pravila glasanja" headers={votingRuleHeaders} empty={rules.length === 0}>
               {rules.map((r) => (
                 <tr key={r.id}>
                   <Td>{r.name}</Td>

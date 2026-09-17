@@ -9,7 +9,14 @@ import { getSettings, setSetting } from "@/server/services/settings";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+
+const accountHeaders: ColumnSpec[] = [
+  { label: "Naziv" },
+  { label: "Vrsta" },
+  { label: "Broj računa" },
+  { label: "Početno stanje", align: "right" },
+];
 
 async function saveZevAction(formData: FormData) {
   "use server";
@@ -209,13 +216,13 @@ export default async function SettingsPage({
 
         {isManagement && (
           <Card title="Računi (banka i blagajna)">
-            <Table headers={["Naziv", "Vrsta", "Broj računa", "Početno stanje"]} empty={accounts.length === 0}>
+            <Table id="accounts-table" caption="Računi (banka i blagajna)" headers={accountHeaders} empty={accounts.length === 0}>
               {accounts.map((a) => (
                 <tr key={a.id}>
                   <Td>{a.name}</Td>
                   <Td>{a.type === "BANK" ? "Banka" : "Blagajna"}</Td>
                   <Td className="font-mono text-xs">{a.iban ?? "—"}</Td>
-                  <Td right>{formatMoney(a.openingBalance.toString())}</Td>
+                  <Td>{formatMoney(a.openingBalance.toString())}</Td>
                 </tr>
               ))}
             </Table>

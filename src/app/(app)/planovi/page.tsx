@@ -5,6 +5,13 @@ import { parseMoneyInput } from "@/lib/money";
 import { tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink, type ColumnSpec } from "@/components/ui";
 
+const projectsHeaders: ColumnSpec[] = [
+  { label: "Naziv" },
+  { label: "Opis" },
+  { label: "Procjena (KM)", align: "right" },
+  { label: "Status" },
+];
+
 const plansHeaders: ColumnSpec[] = [
   { label: "Godina" },
   { label: "Vrsta" },
@@ -70,12 +77,12 @@ export default async function PlansPage() {
       {isManagement(actor) && (
         <div className="mt-4">
           <Card title="Investicioni projekti">
-            <Table headers={["Naziv", "Opis", "Procjena (KM)", "Status"]} empty={projects.length === 0}>
+            <Table id="projects-table" caption="Investicioni projekti" headers={projectsHeaders} empty={projects.length === 0}>
               {projects.map((p) => (
                 <tr key={p.id}>
                   <Td>{p.name}</Td>
                   <Td>{p.description ?? "—"}</Td>
-                  <Td right>{p.estimatedCost?.toString() ?? "—"}</Td>
+                  <Td>{p.estimatedCost?.toString() ?? "—"}</Td>
                   <Td>{p.status}</Td>
                 </tr>
               ))}

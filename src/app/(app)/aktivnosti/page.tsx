@@ -2,7 +2,14 @@ import { requireActor } from "@/server/actor";
 import { listActivity, listActivityActors } from "@/server/services/activity";
 import { ACTIVITY_CATEGORIES, DEFAULT_ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
+
+const activityHeaders: ColumnSpec[] = [
+  { label: "Vrijeme", nowrap: true },
+  { label: "Akter" },
+  { label: "Kategorija" },
+  { label: "Aktivnost" },
+];
 
 function daysAgoIso(n: number): string {
   const d = new Date();
@@ -101,13 +108,13 @@ export default async function ActivityPage({
       </form>
 
       <Card>
-        <Table headers={["Vrijeme", "Akter", "Kategorija", "Aktivnost"]} empty={result.rows.length === 0}>
+        <Table id="activity-table" caption="Aktivnosti" headers={activityHeaders} empty={result.rows.length === 0}>
           {result.rows.map((e) => {
             const label = labelForAction(e.action);
             const summary = summarize(e);
             return (
               <tr key={e.id}>
-                <Td className="whitespace-nowrap text-xs">{formatDateTime(e.createdAt)}</Td>
+                <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>
                 <Td className="text-xs">{e.actorId ? actorLabelById.get(e.actorId) ?? e.actorLabel ?? "—" : e.actorLabel ?? "—"}</Td>
                 <Td className="text-xs">{categoryLabel(categoryForAction(e.action))}</Td>
                 <Td className={label.translated ? "text-sm" : "font-mono text-xs text-slate-500"}>

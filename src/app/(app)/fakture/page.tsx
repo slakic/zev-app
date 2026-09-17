@@ -19,6 +19,13 @@ const chargeItemHeaders: ColumnSpec[] = [
   { label: "Radnje" },
 ];
 
+const batchHeaders: ColumnSpec[] = [
+  { label: "Period" },
+  { label: "Status" },
+  { label: "Faktura", align: "right" },
+  { label: "Kreirana" },
+];
+
 const invoiceHeaders: ColumnSpec[] = [
   { label: "Broj", priority: "primary", nowrap: true },
   { label: "Jedinica" },
@@ -187,12 +194,12 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
           </Card>
 
           <Card title="Serije faktura">
-            <Table headers={["Period", "Status", "Faktura", "Kreirana"]} empty={batches.length === 0}>
+            <Table id="batches-table" caption="Serije faktura" headers={batchHeaders} empty={batches.length === 0}>
               {batches.map((b) => (
                 <tr key={b.id}>
                   <Td><RowLink href={`/fakture/serija/${b.id}`}>{b.period}</RowLink></Td>
                   <Td><StatusBadge status={b.status} label={b.status === "DRAFT" ? "Nacrt" : b.status === "ISSUED" ? "Izdata" : "Stornirana"} /></Td>
-                  <Td right>{b._count.invoices}</Td>
+                  <Td>{b._count.invoices}</Td>
                   <Td>{formatDate(b.createdAt)}</Td>
                 </tr>
               ))}

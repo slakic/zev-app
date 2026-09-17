@@ -9,6 +9,13 @@ import { getSettings } from "@/server/services/settings";
 import { formatDate, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
 
+const boardHeaders: ColumnSpec[] = [
+  { label: "Član" },
+  { label: "Mandat od" },
+  { label: "Osnov" },
+  { label: "Radnje" },
+];
+
 const officeHistoryHeaders: ColumnSpec[] = [
   { label: "Funkcija" },
   { label: "Lice" },
@@ -146,7 +153,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
       )}
 
       <Card title={`Upravni odbor (${holders.boardMembers.length} ${holders.boardMembers.length === 1 ? "član" : "člana"})`}>
-        <Table headers={["Član", "Mandat od", "Osnov", isPresident ? "Akcija" : ""]} empty={holders.boardMembers.length === 0}>
+        <Table id="board-table" caption="Upravni odbor" headers={boardHeaders} empty={holders.boardMembers.length === 0}>
           {holders.boardMembers.map((m) => (
             <tr key={m.id}>
               <Td>{partyDisplayName(m.party)}</Td>

@@ -10,6 +10,13 @@ import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
+const pvaHeaders: ColumnSpec[] = [
+  { label: "Stavka" },
+  { label: "Planirano", align: "right" },
+  { label: "Realizovano", align: "right" },
+  { label: "Razlika", align: "right" },
+];
+
 const planItemHeaders: ColumnSpec[] = [
   { label: "Stavka", priority: "primary" },
   { label: "Vrsta" },
@@ -196,13 +203,13 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       {pva && (
         <div className="mt-4">
           <Card title={`Plan vs. realizacija (ukupno: ${formatMoney(pva.totalPlanned)} planirano / ${formatMoney(pva.totalActual)} realizovano)`}>
-            <Table headers={["Stavka", "Planirano", "Realizovano", "Razlika"]} empty={pva.rows.length === 0}>
+            <Table id="pva-table" caption="Plan vs. realizacija" headers={pvaHeaders} empty={pva.rows.length === 0}>
               {pva.rows.map((r) => (
                 <tr key={r.planItemId}>
                   <Td>{r.name}</Td>
-                  <Td right>{formatMoney(r.planned, "")}</Td>
-                  <Td right>{formatMoney(r.actual, "")}</Td>
-                  <Td right className={Number(r.difference) < 0 ? "text-red-700" : "text-emerald-700"}>{formatMoney(r.difference, "")}</Td>
+                  <Td>{formatMoney(r.planned, "")}</Td>
+                  <Td>{formatMoney(r.actual, "")}</Td>
+                  <Td className={Number(r.difference) < 0 ? "text-red-700" : "text-emerald-700"}>{formatMoney(r.difference, "")}</Td>
                 </tr>
               ))}
             </Table>

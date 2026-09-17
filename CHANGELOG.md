@@ -105,6 +105,22 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
     horizontalno-skrolabilne tabele na 375px, kao i prije migracije.
   - 247/247 testova prolazi; provjereno na 1440px i 375px za svih 29 tabela
     (3c-1 + 3c-2 + 3c-3 + 3c-4) isporučenih do sada.
+  - **Talas 3c-5 (posljednji) — tabele sa ≤4 kolone (22 tabele, isti obim kao 3c-4,
+    bez kartičnog preloma):** `/zgrade` ulazi + zajednički dijelovi, `/troskovi`
+    dobavljači, `/vlasnici/[id]` korištenje jedinica, `/organi` upravni odbor,
+    `/planovi` investicioni projekti, `/planovi/[id]` plan vs. realizacija,
+    `/podesavanja` računi, `/skupstina` pravila glasanja, `/skupstina/[id]`
+    prijedlozi + prisustvo, `/fakture` serije faktura, `/fakture/[id]` stavke
+    obračuna + uplate, `/dokumenti` otpremljeni dokumenti, `/odrzavanje/[id]`
+    povezani troškovi, `/izvjestaji` (prihodi/rashodi, dobavljači, neplaćene
+    fakture dobavljača, pregled po zgradama, pregled po projektima),
+    `/aktivnosti`.
+  - **Time je svih 51 tabela u aplikaciji migrirano na `ColumnSpec`** (§3.G) —
+    poravnanje brojčanih kolona sada svugdje dolazi iz jednog izvora istine za
+    zaglavlje i ćelije (strukturno rješenje N4 nalaza), 18 tabela sa >5 kolona
+    ima kartični prelom na mobilnom (strukturno rješenje N6 nalaza — nema više
+    horizontalnog skrolovanja tabela), svih 51 ima `id`+`caption` (a11y, A8).
+  - 247/247 testova prolazi; provjereno na 1440px i 375px za svih 51 tabela.
 
 ## [2.19.1] - 2026-09-17
 

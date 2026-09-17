@@ -10,8 +10,21 @@ import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
+
+const proposalsHeaders: ColumnSpec[] = [
+  { label: "Šifra" },
+  { label: "Naziv" },
+  { label: "Verzija", align: "right" },
+  { label: "Status" },
+];
+
+const attendanceHeaders: ColumnSpec[] = [
+  { label: "Lice" },
+  { label: "Prisutan" },
+  { label: "Putem punomoćnika" },
+];
 
 async function addAgendaAction(formData: FormData) {
   "use server";
@@ -179,12 +192,12 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         </Card>
 
         <Card title="Prijedlozi">
-          <Table headers={["Šifra", "Naziv", "Verzija", "Status"]} empty={meeting.proposals.length === 0}>
+          <Table id="proposals-table" caption="Prijedlozi" headers={proposalsHeaders} empty={meeting.proposals.length === 0}>
             {meeting.proposals.map((p) => (
               <tr key={p.id}>
                 <Td><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink></Td>
                 <Td>{p.title}</Td>
-                <Td right>v{p.version}</Td>
+                <Td>v{p.version}</Td>
                 <Td><StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} /></Td>
               </tr>
             ))}
@@ -235,7 +248,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
 
         {isPresident && (
           <Card title="Prisustvo (za sjednicu uživo)">
-            <Table headers={["Lice", "Prisutan", "Putem punomoćnika"]} empty={meeting.attendances.length === 0}>
+            <Table id="attendance-table" caption="Prisustvo" headers={attendanceHeaders} empty={meeting.attendances.length === 0}>
               {meeting.attendances.map((a) => (
                 <tr key={a.id}>
                   <Td>{partyDisplayName(a.party)}</Td>
