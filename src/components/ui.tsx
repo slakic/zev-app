@@ -4,7 +4,7 @@
 // utilities so every page (which composes these primitives) picks up the
 // look at once.
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ReactNode, ButtonHTMLAttributes } from "react";
 
 export function PageHeader({
   title, subtitle, actions, backHref, backLabel,
@@ -90,31 +90,141 @@ export function StatusBadge({ status, label }: { status: string; label: string }
   );
 }
 
-export function Table({ headers, children, empty }: { headers: string[]; children: ReactNode; empty?: boolean }) {
+/** A table column's behavior across breakpoints (Plans/ui-ux-redesign-plan.md §3.B).
+ *  `priority` controls desktop/tablet progressive disclosure: "primary" is always a real table
+ *  column; "secondary" only becomes one from `md`; "detail" only from `lg`. Below `md`, none of
+ *  that matters — if the table has more than 5 columns (`useCardTransform` below, per P5) the
+ *  whole table becomes a stack of row-cards instead, and *every* column reappears there as a
+ *  label:value line (nothing "disappears", it just moves — see `buildTableCss`). `sortKey` is
+ *  inert until Faza 3g wires up sortable headers; it's here now so 3g doesn't need to touch
+ *  every call site's `headers` array again. */
+export type ColumnSpec = {
+  label: string;
+  priority?: "primary" | "secondary" | "detail";
+  align?: "left" | "right";
+  sortKey?: string;
+  nowrap?: boolean;
+};
+
+function isColumnSpecArray(headers: string[] | ColumnSpec[]): headers is ColumnSpec[] {
+  return headers.length > 0 && typeof headers[0] === "object";
+}
+
+/** Escapes a string for safe use inside a generated CSS `content: "…"` value — the only
+ *  untrusted-ish input here is a column label, and only quotes/backslashes can break out of it. */
+function cssStringEscape(s: string): string {
+  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+/** One `<style>` block per table instance, keyed by `id`, replacing what would otherwise be a
+ *  `label` prop on every one of the ~260 `<Td>` call sites in the app (rejected in §3.B — it can
+ *  silently drift from `headers`, which is the exact "offset" bug this whole mechanism exists to
+ *  prevent). `nth-child` reads the column's position, so alignment/priority/card-labels all come
+ *  from one source of truth (`columns`) that `<thead>` and `<tbody>` both render from.
+ *  Breakpoint reasoning, since it's easy to get backwards:
+ *  - `align`/`nowrap` apply at every width — they're about the *content*, not the layout mode.
+ *  - `priority` "secondary"/"detail" hide a column *as a table column* between `md` and `lg` (or
+ *    below `lg` entirely for "detail") — but only when the table ISN'T using the card transform.
+ *    Once `useCardTransform` is on, those same columns reappear as card rows below `md`, so the
+ *    "hide below md" half of the rule would fight the card CSS for the same cells — it's omitted
+ *    in that case, and only the md-to-lg "detail" hide (still real table layout there) applies. */
+function buildTableCss(id: string, columns: ColumnSpec[], useCardTransform: boolean): string {
+  const rules: string[] = [];
+
+  columns.forEach((col, i) => {
+    const n = i + 1;
+    const sel = `#${id} thead th:nth-child(${n}), #${id} tbody td:nth-child(${n})`;
+    if (col.align === "right") rules.push(`${sel}{text-align:right}`);
+    if (col.nowrap) rules.push(`${sel}{white-space:nowrap}`);
+    if (col.priority === "secondary" && !useCardTransform) {
+      rules.push(`@media (max-width:767px){${sel}{display:none}}`);
+    }
+    if (col.priority === "detail") {
+      const lowerBound = useCardTransform ? " and (min-width:768px)" : "";
+      rules.push(`@media (max-width:1023px)${lowerBound}{${sel}{display:none}}`);
+    }
+  });
+
+  if (useCardTransform) {
+    rules.push(`@media (max-width:767px) {
+  #${id} thead { display:none; }
+  #${id} tbody tr { display:block; border:1px solid #e2e8f0; border-radius:0.75rem; padding:0.75rem 1rem; margin-bottom:0.75rem; background:#fff; }
+  #${id} tbody tr:last-child { margin-bottom:0; }
+  #${id} tbody td { display:grid; grid-template-columns:40% 1fr; gap:0.5rem; align-items:baseline; padding:0.375rem 0; border:none !important; text-align:left !important; white-space:normal !important; }
+  #${id} tbody td[colspan] { display:block; grid-template-columns:none; }
+}`);
+    columns.forEach((col, i) => {
+      const n = i + 1;
+      if (col.priority === "primary") {
+        rules.push(`@media (max-width:767px){#${id} tbody td:nth-child(${n}){display:block;font-weight:600;font-size:0.9375rem;color:#0f172a;}}`);
+      } else {
+        rules.push(
+          `@media (max-width:767px){#${id} tbody td:nth-child(${n}):not([colspan])::before{content:"${cssStringEscape(col.label)}";font-weight:500;font-size:0.8125rem;color:#64748b;}}`,
+        );
+      }
+    });
+  }
+
+  return rules.join("\n");
+}
+
+export function Table({
+  id, caption, headers, children, empty, emptyHint,
+}: {
+  /** Required when `headers` is `ColumnSpec[]` — it's the hook the generated `<style>` (above)
+   *  is keyed to. A plain `string[]` table doesn't need one (no per-column behavior to generate). */
+  id?: string;
+  /** Screen-reader-only `<caption>` (WCAG A8) — falls back to the scroll-region's `aria-label`. */
+  caption?: string;
+  headers: string[] | ColumnSpec[];
+  children: ReactNode;
+  empty?: boolean;
+  /** Shown under "Nema podataka." when `empty` — a concrete next step, not just the empty fact
+   *  (P7). Left out on purpose is fine; every table works without it, this rolls out table by
+   *  table (Faza 3f). */
+  emptyHint?: ReactNode;
+}) {
+  const columns: ColumnSpec[] = isColumnSpecArray(headers) ? headers : headers.map((label) => ({ label }));
+  const useCardTransform = columns.length > 5; // P5: only tables with >5 columns get the card fallback
+  const css = id ? buildTableCss(id, columns, useCardTransform) : null;
+  if (process.env.NODE_ENV !== "production" && isColumnSpecArray(headers) && !id) {
+    // eslint-disable-next-line no-console
+    console.warn("Table: `id` is required when `headers` is ColumnSpec[] (Plans/ui-ux-redesign-plan.md §3.B) — column alignment/priority/card-layout will not apply without it.");
+  }
   return (
     // No own border/shadow: every caller already wraps this in a Card, which supplies that —
     // a border here too was a box-in-a-box (Plans/ui-ux-redesign-plan.md §3.5). tabIndex +
     // role + aria-label make horizontally-scrolled content reachable by keyboard, and the
-    // inset shadow on the trailing edge is a static hint that there's more to scroll to
-    // (§4.2, "A+" patch) — cheap now; Faza 3 replaces overflow-x-auto with a real responsive
-    // table for the worst offenders.
+    // inset shadow on the trailing edge is a static hint that there's more to scroll to (§4.2,
+    // "A+" patch) — for tables still on `string[]` headers; ColumnSpec tables with >5 columns
+    // don't need it below `md` since they stop scrolling and stack instead (§3.B).
     <div
+      id={id}
       tabIndex={0}
       role="region"
-      aria-label="Tabela — sadržaj se može horizontalno pomjerati na užim ekranima"
+      aria-label={caption ?? "Tabela — sadržaj se može horizontalno pomjerati na užim ekranima"}
       className="overflow-x-auto rounded-lg [box-shadow:inset_-10px_0_8px_-10px_rgba(15,23,42,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
     >
-      <table className="w-full text-sm">
+      {css && <style dangerouslySetInnerHTML={{ __html: css }} />}
+      <table className="w-full text-sm [&_tbody_tr:hover]:bg-slate-50/70">
+        {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50/80 text-left">
-            {headers.map((h) => (
-              <th key={h} className="px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-slate-500">{h}</th>
+            {columns.map((c, i) => (
+              <th key={c.label + i} scope="col" className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                {c.label}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
           {empty ? (
-            <tr><td colSpan={headers.length} className="px-4 py-8 text-center text-slate-500">Nema podataka.</td></tr>
+            <tr>
+              <td colSpan={columns.length} className="px-3 py-8 text-center text-slate-500">
+                <div>Nema podataka.</div>
+                {emptyHint && <div className="mt-1 text-[13px]">{emptyHint}</div>}
+              </td>
+            </tr>
           ) : children}
         </tbody>
       </table>
@@ -122,8 +232,61 @@ export function Table({ headers, children, empty }: { headers: string[]; childre
   );
 }
 
-export function Td({ children, right, className }: { children: ReactNode; right?: boolean; className?: string }) {
-  return <td className={`px-4 py-2.5 ${right ? "text-right tabular-nums" : ""} ${className ?? ""}`}>{children}</td>;
+export function Td({
+  children, right, className,
+}: { children: ReactNode; /** @deprecated pass `align: "right"` in the column's ColumnSpec instead — kept only until every table has migrated (Plans/ui-ux-redesign-plan.md §3.E) */ right?: boolean; className?: string }) {
+  return <td className={`px-3 py-1.5 ${right ? "text-right tabular-nums" : ""} ${className ?? ""}`}>{children}</td>;
+}
+
+// Compact geometry for a "Radnje" column cell, distinct from btnBase (Plans/ui-ux-redesign-plan.md
+// §3.C): 28px tall on desktop — still clears WCAG 2.2 AA's 24px minimum target size, trading the
+// 44px AAA target Faza 0 aimed for in exchange for the row density a real user asked for — but
+// max-md:min-h-[44px] keeps the full touch target below `md`, where the card transform (above)
+// also gives the action a whole card-width row to sit in rather than a cramped cell.
+const rowActionBase =
+  "inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium " +
+  "min-h-[28px] max-md:min-h-[44px] transition-all active:scale-[0.97] focus-visible:outline-none " +
+  "focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50";
+
+/** A "Radnje" (actions) column cell — a verb, not an identity (see `RowLink` below). Defaults to
+ *  `ghost` since most row actions are secondary to the row's own identity link. Forwards standard
+ *  button props, so it works as a form submit (`type="submit"`) or a client-side toggle
+ *  (`type="button" onClick={...}`) — both patterns exist across the app's row components. */
+export function RowAction({
+  children, variant, className, ...rest
+}: { children: ReactNode; variant?: BtnVariant; className?: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button className={`${rowActionBase} ${btnVariantCls[variant ?? "ghost"]} ${className ?? ""}`} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+/** `RowAction`'s `<Link>` counterpart, for a row action that navigates instead of submitting
+ *  (e.g. "preuzmi" linking to a document download). */
+export function RowActionLink({
+  href, children, variant, className,
+}: { href: string; children: ReactNode; variant?: BtnVariant; className?: string }) {
+  return (
+    <Link href={href} className={`${rowActionBase} ${btnVariantCls[variant ?? "ghost"]} ${className ?? ""}`}>
+      {children}
+    </Link>
+  );
+}
+
+/** A row's *identity* link (first column, usually — the invoice number, the person's name —
+ *  whatever the row is "about"), as distinct from a `RowAction` verb in the "Radnje" column.
+ *  Plain underlined text, not a pill: it needs to read as part of the row's data, not as a
+ *  separate control competing with the real actions (Plans/ui-ux-redesign-plan.md §3.F). */
+export function RowLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
+  return (
+    <Link
+      href={href}
+      className={`rounded font-medium text-primary-ink underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${className ?? ""}`}
+    >
+      {children}
+    </Link>
+  );
 }
 
 // py-2.5 + a 44px floor below md keeps every button a real touch target (WCAG 2.5.5) —
@@ -163,6 +326,22 @@ export function BtnLink({ href, children, variant }: { href: string; children: R
 export function SubmitBtn({ children, variant, name, value }: { children: ReactNode; variant?: BtnVariant; name?: string; value?: string }) {
   return (
     <button type="submit" name={name} value={value} className={`${btnBase} ${btnVariantCls[variant ?? "primary"]}`}>
+      {children}
+    </button>
+  );
+}
+
+/** Full-size, client-safe generic button — same chrome as `SubmitBtn`/`BtnLink` but usable with
+ *  `onClick`/`type="button"` from inside a `"use client"` row component (e.g. a "Zatvori"/"Otkaži"
+ *  toggle that closes an inline edit panel without a page reload). Exists so those components stop
+ *  hand-copying `btnBase`'s classes — three of them did, and drifted out of sync with Faza 0's
+ *  touch-target fix in the process (Plans/ui-ux-redesign-plan.md §3.F). For a *row-level* action use
+ *  `RowAction` instead — this one keeps the full 40px/44px geometry `btnBase` already has. */
+export function Btn({
+  children, variant, className, ...rest
+}: { children: ReactNode; variant?: BtnVariant; className?: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button className={`${btnBase} ${btnVariantCls[variant ?? "secondary"]} ${className ?? ""}`} {...rest}>
       {children}
     </button>
   );
@@ -262,6 +441,42 @@ export function Pagination({ page, pageCount, hrefFor }: { page: number; pageCou
       >
         Sljedeća ›
       </Link>
+    </nav>
+  );
+}
+
+/** Server-rendered switcher between several equal-weight, independent page sections — never for
+ *  a single linear process or one object's detail (the definitive per-page list is Plans/
+ *  ui-ux-redesign-plan.md §3.D). Plain `<Link>`s to `hrefFor(key)`, not ARIA tabs: a real
+ *  `role="tab"` promises left/right arrow-key navigation between tabs, which these don't have, so
+ *  faking that role would be a worse a11y story than not having one. `hrefFor` (not an internal
+ *  URL builder) mirrors `Pagination` below — the caller knows what other query params (`?err=`,
+ *  a future `?sort=`) need to survive the tab switch, `Tabs` doesn't. `scroll={false}` keeps the
+ *  page where it is instead of jumping to the top on every click. */
+export function Tabs({
+  tabs, active, hrefFor,
+}: { tabs: { key: string; label: string; count?: number }[]; active: string; hrefFor: (key: string) => string }) {
+  return (
+    <nav aria-label="Sekcije" className="mb-4 flex gap-1 overflow-x-auto border-b border-slate-200">
+      {tabs.map((tab) => {
+        const isActive = tab.key === active;
+        return (
+          <Link
+            key={tab.key}
+            href={hrefFor(tab.key)}
+            scroll={false}
+            aria-current={isActive ? "page" : undefined}
+            className={`flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${
+              isActive
+                ? "border-primary text-primary-ink"
+                : "border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
+            }`}
+          >
+            {tab.label}
+            {tab.count !== undefined && <span className="ml-1.5 text-xs text-slate-400">· {tab.count}</span>}
+          </Link>
+        );
+      })}
     </nav>
   );
 }

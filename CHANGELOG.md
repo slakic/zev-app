@@ -43,6 +43,37 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.0] - 2026-09-17
+
+### Dodano
+
+- **Faza 3a plana UI/UX redizajna** (`Plans/ui-ux-redesign-plan.md`) — prvi
+  korak Faze 3 (tabele, gustina, navigacija kroz sekcije), pokrenute nakon
+  posmatrane sesije sa stvarnim korisnikom (P8 preduslov ispunjen). Ovaj
+  korak mijenja samo dijeljene primitive u `ui.tsx` — nijedna stranica još
+  ne koristi novi sistem (dolazi u Fazi 3c).
+  - `Table` prima `headers` kao `ColumnSpec[]` (pored postojećeg `string[]`,
+    koji nastavlja da radi identično) — po koloni: poravnanje, prioritet
+    vidljivosti na širim ekranima, i preobražaj u kartice ispod 768px za
+    tabele sa više od 5 kolona. Poravnanje zaglavlja i sadržaja se sada
+    generiše iz istog izvora istine, pa je nesklad (đipovan tekst iznad
+    poravnatih brojeva) strukturno nemoguć na migriranim tabelama.
+  - **Gušći redovi:** `Td`/`th` sa `px-4 py-2.5` (40px red) na `px-3 py-1.5`
+    / `px-3 py-2` (32px red) — direktan odgovor na nalaz posmatrane sesije.
+    Dugmad van redova tabele (van `Table`-a) ostaju nepromijenjena.
+  - Novi primitivi: `RowAction` (radnja u redu, kompaktnija geometrija —
+    28px na desktopu uz zadržanih 44px na dodirnim ekranima), `RowActionLink`,
+    `RowLink` (identitet reda), `Btn` (client-safe generički omotač nad
+    `btnBase`, zamjenjuje ručno prepisane klase u tri client komponente),
+    `Tabs` (URL-bazirana navigacija kroz sekcije stranice, bez client JS-a).
+  - `<caption>` (sr-only) + `scope="col"` na zaglavljima — pristupačnost.
+  - Mehanizam preobražaja u kartice provjeren uživo na stvarnoj,
+    najsloženijoj tabeli u aplikaciji (`/zgrade`, posebni dijelovi, 11
+    kolona) prije isporuke, pa vraćen na prethodno stanje — ova faza
+    isporučuje samo primitive, migracija stvarnih tabela je Faza 3c.
+  - Bez izmjene ijedne stranice. 247/247 testova prolazi; uživo provjereno
+    na 1440px i 375px na šest ključnih stranica.
+
 ## [2.18.0] - 2026-09-17
 
 ### Izmijenjeno
