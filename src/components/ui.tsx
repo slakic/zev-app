@@ -90,6 +90,64 @@ export function StatusBadge({ status, label }: { status: string; label: string }
   );
 }
 
+function CheckCircleIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+      <path d="M5 10.5l3 3 7-7" />
+    </svg>
+  );
+}
+
+/** Read-only progress display for a strictly linear, multi-step process (Plans/
+ *  ui-ux-redesign-plan.md §2.1, H1 — "korisnik vidi samo sljedeći korak, nikad gdje je
+ *  u nizu ni šta slijedi poslije"). `StatusBadge` alone answers "what's the status now";
+ *  this answers "where in the sequence, and what's still ahead" — the two are
+ *  complementary, not redundant. Not a `Tabs`-style navigator: steps aren't clickable,
+ *  since jumping the underlying process out of order isn't a thing a caller of this
+ *  component supports. `activeKey` not found in `steps` renders every step as upcoming
+ *  (harmless fallback, not an error state). */
+export function StatusTimeline({
+  steps, activeKey,
+}: { steps: { key: string; label: string }[]; activeKey: string }) {
+  const activeIndex = steps.findIndex((s) => s.key === activeKey);
+  return (
+    <ol className="mb-4 flex flex-wrap items-start gap-x-1 gap-y-3" aria-label="Tok procesa">
+      {steps.map((s, i) => {
+        const done = activeIndex >= 0 && i < activeIndex;
+        const current = i === activeIndex;
+        return (
+          <li key={s.key} className="flex items-center">
+            <div className="flex w-16 flex-col items-center gap-1 text-center">
+              <span
+                aria-current={current ? "step" : undefined}
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
+                  done
+                    ? "bg-primary text-white"
+                    : current
+                      ? "border-2 border-primary text-primary-ink"
+                      : "border border-slate-300 text-slate-400"
+                }`}
+              >
+                {done ? <CheckCircleIcon /> : i + 1}
+              </span>
+              <span
+                className={`text-[11px] leading-tight ${
+                  current ? "font-semibold text-slate-700" : done ? "text-slate-500" : "text-slate-400"
+                }`}
+              >
+                {s.label}
+              </span>
+            </div>
+            {i < steps.length - 1 && (
+              <span aria-hidden="true" className={`mx-1 mb-4 h-px w-4 shrink-0 sm:w-6 ${done ? "bg-primary" : "bg-slate-200"}`} />
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 /** A table column's behavior across breakpoints (Plans/ui-ux-redesign-plan.md §3.B).
  *  `priority` controls desktop/tablet progressive disclosure: "primary" is always a real table
  *  column; "secondary" only becomes one from `md`; "detail" only from `lg`. Below `md`, none of

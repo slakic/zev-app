@@ -10,8 +10,13 @@ import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
+
+const MEETING_STATUS_ORDER: MeetingStatus[] = [
+  "DRAFT", "SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN",
+  "VOTING_CLOSED", "RESULTS_REVIEW", "DECISION_RECORDED", "MINUTES_FINALIZED", "ARCHIVED",
+];
 
 const proposalsHeaders: ColumnSpec[] = [
   { label: "Šifra" },
@@ -167,7 +172,10 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         }
       />
       <Flash err={err} />
-      <div className="mb-4"><StatusBadge status={meeting.status} label={tEnum("meetingStatus", meeting.status)} /></div>
+      <StatusTimeline
+        steps={MEETING_STATUS_ORDER.map((s) => ({ key: s, label: tEnum("meetingStatus", s) }))}
+        activeKey={meeting.status}
+      />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Dnevni red">

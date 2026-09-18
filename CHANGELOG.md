@@ -43,6 +43,55 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.7] - 2026-09-18
+
+### Izmijenjeno
+
+- **Faza 3h plana UI/UX redizajna — ostatak iz originalnog opisa Faze 3.**
+  Posljednja pod-faza; zatvara čitavu Fazu 3.
+  - **`StatusTimeline` primitiv (§2.1, H1 — „korisnik vidi samo sljedeći
+    korak, nikad gdje je u nizu ni šta slijedi poslije").** Nov u `ui.tsx`,
+    uz `StatusBadge` (komplementaran, ne zamjena: badge kaže „šta je sada",
+    timeline kaže „gdje u nizu i šta slijedi"). Čitljiv niz koraka (broj ili
+    kvačica za završen, uokviren za trenutni, sivo za predstojeći), sa
+    poveznicom između — namjerno nije klikabilan kao `Tabs`: koraci procesa
+    se ne mogu preskočiti klikom, samo eksplicitnom radnjom (dugme koje već
+    postoji).
+  - Primijenjen na `/skupstina/[id]`, koja je bila „najjasniji H1 propust u
+    aplikaciji" (devetostepeni linearni proces — `MeetingStatus` DRAFT →
+    ... → ARCHIVED, vođen jednim dugmetom čiji se natpis mijenja) — jedina
+    dosadašnja naznaka statusa bio je `StatusBadge` bez konteksta „korak 5 od
+    10". Zamijenjen samostalni `StatusBadge` red punim `StatusTimeline` nizom
+    (postojeći `NEXT_STATUS`-redoslijed statusa, oznake iz `meetingStatus`
+    rječnika).
+  - **Mobilni drawer `role="dialog"` + zamka fokusa (A9, `nav-shell.tsx:159`).**
+    Do sada: klik na „☰" otvarao je preklopni meni preko cijele stranice bez
+    ijednog dijaloškog obilježja — fokus je ostajao gdje je bio, Tab je
+    slobodno izlazio u sadržaj iza zatamnjenja, a zatvaranje nije vraćalo
+    fokus nigdje.
+    - `role="dialog"` + `aria-modal="true"` + `aria-label` na `<aside>`,
+      uslovno samo dok je otvoren (na desktopu, gdje je ista `<aside>`
+      trajno vidljiv bočni meni a ne modalni preklop, ova obilježja se
+      namjerno ne postavljaju).
+    - Fokus se pri otvaranju pomjera u meni; Tab/Shift+Tab zamka drži fokus
+      unutar menija (petlja sa zadnjeg na prvi fokusabilni element i obratno);
+      Escape i zatvaranje vraćaju fokus tačno na dugme koje je meni otvorilo
+      (snimljeno kao `document.activeElement` u trenutku otvaranja, ne
+      pretpostavljeno).
+    - Ostatak stranice (`aria-hidden`) postaje nevidljiv za čitače ekrana dok
+      je meni otvoren — prirodna pratnja uz `role="dialog"`.
+    - **Nalaz tokom uživo provjere:** prva verzija zamke propuštala je
+      Shift+Tab kao *prvi* pritisak tastera nakon otvaranja — fokus tada
+      stoji na samom kontejneru menija (ne na „prvom" fokusabilnom elementu
+      unutar njega), pa provjera `aktivni === prvi` nije pogađala i fokus je
+      pobjegao na dugme iza zatamnjenja. Ispravljeno dodavanjem `aktivni ===
+      kontejner` kao dodatnog uslova za omot na kraj liste.
+  - 247/247 testova prolazi; uživo provjereno na 1440px i 375px —
+    `StatusTimeline` na svih 10 statusa sjednice (kvačice/trenutni/brojevi,
+    prelom u redove na 375px), i zamka fokusa tastaturom korak po korak
+    (otvaranje → fokus u meniju, Shift+Tab odmah → omot na zadnji, Tab s
+    zadnjeg → omot na prvi, Escape → zatvara i vraća fokus na „☰" dugme).
+
 ## [2.19.6] - 2026-09-18
 
 ### Izmijenjeno

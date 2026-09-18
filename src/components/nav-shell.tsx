@@ -85,6 +85,7 @@ export function NavShell({
   // server and first client render always agree on the expanded default.
   const [collapsed, setCollapsed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     try {
@@ -122,13 +123,51 @@ export function NavShell({
     };
   }, [menuOpen]);
 
+  // A9 (Plans/ui-ux-redesign-plan.md) — the mobile drawer is a modal overlay (it sits
+  // above a backdrop and blocks the page behind it), so it needs the same keyboard
+  // contract as any dialog: focus moves in when it opens, Tab/Shift+Tab can't escape it
+  // while it's open, and focus returns to whatever opened it on close.
   useEffect(() => {
     if (!drawerOpen) return;
-    const onEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setDrawerOpen(false);
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const container = drawerRef.current;
+    container?.focus();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setDrawerOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !container) return;
+      const focusable = Array.from(
+        container.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+      if (focusable.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      // `active === container` covers the instant after opening, before the user has
+      // tabbed anywhere: focus starts on the drawer itself (see `container?.focus()`
+      // above), not on `first` — without this branch, a Shift+Tab as the very first
+      // keystroke would fall through to native behavior and escape onto whatever sits
+      // right before the drawer in the DOM, defeating the trap before it does anything.
+      if (e.shiftKey && (active === first || active === container)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-    document.addEventListener("keydown", onEscape);
-    return () => document.removeEventListener("keydown", onEscape);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previouslyFocused?.focus();
+    };
   }, [drawerOpen]);
 
   // Close the mobile drawer whenever the route changes.
@@ -157,7 +196,12 @@ export function NavShell({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-60 overflow-y-auto bg-white shadow-xl transition-all duration-200 md:static md:z-auto md:translate-x-0 md:border-r md:border-slate-200 md:shadow-none ${
+        ref={drawerRef}
+        role={drawerOpen ? "dialog" : undefined}
+        aria-modal={drawerOpen ? true : undefined}
+        aria-label={drawerOpen ? "Meni navigacije" : undefined}
+        tabIndex={-1}
+        className={`fixed inset-y-0 left-0 z-40 w-60 overflow-y-auto bg-white shadow-xl transition-all duration-200 focus:outline-none md:static md:z-auto md:translate-x-0 md:border-r md:border-slate-200 md:shadow-none ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         } ${collapsed ? "md:w-[76px]" : "md:w-60"}`}
       >
@@ -217,7 +261,7 @@ export function NavShell({
         </nav>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col" aria-hidden={drawerOpen ? true : undefined}>
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
           <button
             type="button"
