@@ -2,12 +2,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
-import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount } from "@/server/services/billing";
+import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount, type InvoiceSortKey } from "@/server/services/billing";
 import { prisma } from "@/lib/prisma";
-import { listBuildings } from "@/server/services/property";
+import { listBuildings, listUnits } from "@/server/services/property";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, Tabs, FilterBar, Pagination, type ColumnSpec } from "@/components/ui";
 
 const chargeItemHeaders: ColumnSpec[] = [
   { label: "Naziv", priority: "primary" },
@@ -28,13 +28,13 @@ const batchHeaders: ColumnSpec[] = [
 
 function invoiceHeadersFor(management: boolean): ColumnSpec[] {
   return [
-    { label: "Broj", priority: "primary", nowrap: true },
+    { label: "Broj", priority: "primary", nowrap: true, sortKey: "number" },
     { label: "Jedinica" },
     ...(management ? [{ label: "Dužnik" } as ColumnSpec] : []),
     { label: "Period", priority: "detail" },
-    { label: "Dospijeće" },
-    { label: "Iznos", align: "right", nowrap: true },
-    { label: "Plaćeno", align: "right", nowrap: true },
+    { label: "Dospijeće", sortKey: "dueDate" },
+    { label: "Iznos", align: "right", nowrap: true, sortKey: "total" },
+    { label: "Plaćeno", align: "right", nowrap: true, sortKey: "paid" },
     { label: "Status" },
   ];
 }
@@ -92,12 +92,35 @@ async function createBatchAction(formData: FormData) {
   }
 }
 
-export default async function InvoicesPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string; msg?: string }> }) {
+const INVOICE_SORT_KEYS: InvoiceSortKey[] = ["number", "dueDate", "total", "paid"];
+
+export default async function InvoicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; err?: string; msg?: string; status?: string; period?: string; unit?: string; sort?: string; dir?: string; page?: string }>;
+}) {
   const actor = await requireActor();
   const management = isManagement(actor);
-  const { tab, err, msg } = await searchParams;
+  const sp = await searchParams;
+  const { tab, err, msg } = sp;
   const activeTab = tab === "fakture" ? "fakture" : "naknade";
-  const invoices = !management || activeTab === "fakture" ? await listInvoices(actor) : [];
+
+  function fakturaHref(overrides: Partial<{ status: string; period: string; unit: string; sort: string; dir: string; page: string }>) {
+    const merged = { status: sp.status, period: sp.period, unit: sp.unit, sort: sp.sort, dir: sp.dir, page: sp.page, ...overrides };
+    const params = new URLSearchParams({ tab: "fakture" });
+    for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
+    return `/fakture?${params.toString()}`;
+  }
+
+  const invoiceSortBy = INVOICE_SORT_KEYS.includes(sp.sort as InvoiceSortKey) ? (sp.sort as InvoiceSortKey) : undefined;
+  const invoiceDir = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
+  const invoicePage = Math.max(1, Number(sp.page) || 1);
+  const invoiceFilter = management ? { status: sp.status || undefined, period: sp.period || undefined, unitId: sp.unit || undefined } : undefined;
+  const invoiceResult =
+    !management || activeTab === "fakture"
+      ? await listInvoices(actor, invoiceFilter, { sortBy: invoiceSortBy, sortDir: invoiceDir, page: invoicePage })
+      : { rows: [], page: 1, pageCount: 1 };
+  const invoices = invoiceResult.rows;
   const [chargeItems, batches, buildings] =
     management && activeTab === "naknade"
       ? await Promise.all([
@@ -106,6 +129,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
           listBuildings(actor),
         ])
       : [[], [], []];
+  const filterUnits = management && activeTab === "fakture" ? await listUnits(actor) : [];
 
   return (
     <div>
@@ -254,14 +278,57 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
 
       {(!management || activeTab === "fakture") && (
       <div className="mt-4">
+        {management && (
+          <FilterBar>
+            <input type="hidden" name="tab" value="fakture" />
+            {invoiceSortBy && <input type="hidden" name="sort" value={invoiceSortBy} />}
+            {invoiceDir && <input type="hidden" name="dir" value={invoiceDir} />}
+            <Field label="Status">
+              <select name="status" defaultValue={sp.status ?? ""} className={inputCls}>
+                <option value="">Svi</option>
+                <option value="ISSUED">{tEnum("invoiceStatus", "ISSUED")}</option>
+                <option value="PAID">{tEnum("invoiceStatus", "PAID")}</option>
+                <option value="CANCELLED">{tEnum("invoiceStatus", "CANCELLED")}</option>
+                <option value="CORRECTED">{tEnum("invoiceStatus", "CORRECTED")}</option>
+              </select>
+            </Field>
+            <Field label="Period (GGGG-MM)">
+              <input type="text" name="period" defaultValue={sp.period ?? ""} pattern="\d{4}-\d{2}" placeholder="2026-08" className={inputCls} />
+            </Field>
+            <Field label="Jedinica">
+              <select name="unit" defaultValue={sp.unit ?? ""} className={inputCls}>
+                <option value="">Sve</option>
+                {filterUnits.map((u) => (
+                  <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>
+                ))}
+              </select>
+            </Field>
+            {(sp.status || sp.period || sp.unit) && (
+              <BtnLink href="/fakture?tab=fakture" variant="secondary">Poništi filter</BtnLink>
+            )}
+          </FilterBar>
+        )}
         <Card title={management ? "Sve fakture" : "Moje fakture"}>
           <Table
             id="invoices-table"
             caption={management ? "Sve fakture" : "Moje fakture"}
             headers={invoiceHeadersFor(management)}
+            sort={{ active: invoiceSortBy, dir: invoiceDir, hrefFor: (key, d) => fakturaHref({ sort: key, dir: d }) }}
             empty={invoices.length === 0}
-            emptyTitle={t(management ? "empty.invoicesManagement.title" : "empty.invoicesOwner.title")}
-            emptyHint={management ? <BtnLink href="/fakture?tab=naknade" variant="tonal">Naknade i serije</BtnLink> : undefined}
+            emptyTitle={t(
+              invoices.length === 0 && (sp.status || sp.period || sp.unit)
+                ? "empty.filteredQuery.title"
+                : management
+                  ? "empty.invoicesManagement.title"
+                  : "empty.invoicesOwner.title"
+            )}
+            emptyHint={
+              invoices.length === 0 && (sp.status || sp.period || sp.unit)
+                ? t("empty.filteredQuery.hint")
+                : management
+                  ? <BtnLink href="/fakture?tab=naknade" variant="tonal">Naknade i serije</BtnLink>
+                  : undefined
+            }
           >
             {invoices.map((inv) => {
               const paid = invoicePaidAmount(inv);
@@ -287,6 +354,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
               );
             })}
           </Table>
+          <Pagination page={invoiceResult.page} pageCount={invoiceResult.pageCount} hrefFor={(p) => fakturaHref({ page: String(p) })} />
         </Card>
       </div>
       )}

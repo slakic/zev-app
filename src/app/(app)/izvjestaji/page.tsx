@@ -5,7 +5,7 @@ import { reserveFundBalance } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
 import { formatDate, endOfDay, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, Tabs, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, Tabs, FilterBar, type ColumnSpec } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
 const incExpHeaders: ColumnSpec[] = [
@@ -149,12 +149,11 @@ export default async function ReportsPage({
         subtitle="Operativni finansijski pregledi — izvoz u CSV za eksternog računovođu ili u PDF za štampu/arhivu"
         actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="primary">Izvoz svih izvještaja (PDF)</BtnLink>}
       />
-      <form className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
+      <FilterBar submitLabel="Primijeni period">
         <input type="hidden" name="tab" value={activeTab} />
         <label className="text-sm">Od <input type="date" name="from" defaultValue={sp.from} className={`${inputCls} ml-1 w-36`} /></label>
         <label className="text-sm">Do <input type="date" name="to" defaultValue={sp.to} className={`${inputCls} ml-1 w-36`} /></label>
-        <SubmitBtn variant="tonal">Primijeni period</SubmitBtn>
-      </form>
+      </FilterBar>
 
       <Tabs
         tabs={[

@@ -43,6 +43,62 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.19.6] - 2026-09-18
+
+### Izmijenjeno
+
+- **Faza 3g plana UI/UX redizajna — filtriranje, sortiranje i paginacija (§3.H,
+  opcije B+C+D).** Jedini dio čitave Faze 3 koji dira serverski sloj — svjesan,
+  dokumentovan izuzetak od §8 (koji inače drži cijeli plan na nivou prezentacije).
+  Obim namjerno ograničen na tačno 6 lista iz definitivne tabele plana; ostalih
+  45 tabela, višekolonsko sortiranje, „sačuvani filteri" i tabele čiji redoslijed
+  nosi značenje (stavke fakture, obračun serije, dnevni red sjednice, vremenska
+  linija statusa prijave) su izričito van obima.
+  - **Novi primitivi u `ui.tsx`:** `TableSort` tip + `SortIcon` (neutralna
+    dvosmjerna strelica kad kolona nije aktivna, jednosmjerna kad jeste) —
+    `Table` dobija `sort` prop; kolone sa `ColumnSpec.sortKey` (izgrađeno inertno
+    još u Fazi 3a) postaju klikabilni `<th>` linkovi. Query-param sortiranje
+    (`?sort=&dir=`), ne klijentsko stanje — bookmarkable, radi bez JS-a, sastavlja
+    se sa `Pagination`. `FilterBar` — GET forma sa istom `rounded-lg border ... p-3`
+    ljuskom koja je do sada bila ručno kopirana na 4 stranice.
+  - **Dvije lige sortiranja po listi**, po eksplicitnom uputstvu plana:
+    - `/fakture` i `/fakture/uplate` (paginirane) — sortiranje MORA biti na nivou
+      baze (`orderBy` prije `skip`/`take`), inače bi klijentski `.sort()` samo
+      promiješao redoslijed unutar jedne stranice, a ne globalno.
+    - `/troskovi`, `/vlasnici`, `/zgrade`, `/odrzavanje` (nisu paginirane, sav
+      red je već u memoriji) — čist `.sort()` u JS-u nad već preuzetim nizom,
+      bez ijedne izmjene servisa.
+  - **`listInvoices`/`listPayments` (`billing.ts`/`payments.ts`)** dobijaju
+    `opts?: { sortBy, sortDir, page }` i mijenjaju povratni oblik iz golog niza
+    u `{ rows, page, pageCount }` (jedini pozivaoci svakog — `/fakture` i
+    `/fakture/uplate` — ažurirani da destrukturišu novi oblik; potvrđeno grepom
+    da drugih pozivalaca nema).
+  - **Tehnički nalaz:** sortiranje `/fakture` po „Plaćeno" (zbir `allocations.amount`)
+    prvobitno je pokušano kao `orderBy: { allocations: { _sum: { amount: dir } } }`
+    po analogiji sa `_count` na relaciji — Prisma 7 to ne podržava za
+    to-many relaciju (`PaymentAllocationOrderByRelationAggregateInput` ima samo
+    `_count`, build je pao sa jasnom greškom tipa). Umjesto raw SQL-a, za ovaj
+    jedini slučaj se cijela filtrirana lista fakture preuzme, sortira u memoriji
+    istim `invoicePaidAmount()` helperom koji se koristi i za prikaz (pa se
+    zbir i sortiranje nikad ne mogu razići), pa ručno pagira isječkom niza —
+    prihvatljivo na obimu ove aplikacije (stotine faktura po ZEV-u, ne milioni).
+  - `/vlasnici` pretraga po imenu namjerno NIJE dodata u `listParties` servis
+    (nema takav parametar i ne bi trebalo da ga dobije po uputstvu plana) —
+    implementirana kao `.filter()` nad već preuzetim nizom u samoj stranici;
+    brojač na tabu i dalje pokazuje neisfiltrirani ukupan broj.
+  - `/zgrade` (Posebni dijelovi): zbirna linija (jedinica/m²/udio, iz Faze 3d)
+    sada se preračunava nad filtriranim skupom, ne nad svim jedinicama —
+    namjerna odluka, ne bag.
+  - **Retroaktivna zamjena ručno kopiranog filter-bara** (`FilterBar` primitiv)
+    na `/aktivnosti`, `/admin/aktivnosti`, `/izvjestaji` (period-forma) i
+    `/podesavanja/audit` (jednostavan tekstualni filter bez dugmeta za
+    potvrdu ranije — sada ima i vidljivo dugme „Filtriraj").
+  - 247/247 testova prolazi (`tests/tenant-isolation.test.ts` ažuriran za novi
+    `{ rows, ... }` oblik `listInvoices`/`listPayments`); uživo provjereno na
+    1440px i 375px kao predsjednik (filter+sort+kombinacija oba, „Poništi
+    filter" linkovi) i kao vlasnik (filter bar ispravno sakriven, sort i dalje
+    dostupan, vidi samo svoje fakture).
+
 ## [2.19.5] - 2026-09-17
 
 ### Izmijenjeno

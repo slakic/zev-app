@@ -7,7 +7,7 @@ import { listUnits } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
@@ -20,7 +20,7 @@ const proxyHeaders: ColumnSpec[] = [
 ];
 
 const partyHeaders: ColumnSpec[] = [
-  { label: "Ime / naziv", priority: "primary" },
+  { label: "Ime / naziv", priority: "primary", sortKey: "name" },
   { label: "Vrsta", priority: "detail" },
   { label: "E-mail" },
   { label: "Telefon", priority: "detail" },
@@ -125,13 +125,35 @@ async function grantProxyAction(formData: FormData) {
   revalidatePath("/vlasnici");
 }
 
-export default async function OwnersPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string }> }) {
+export default async function OwnersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; err?: string; q?: string; sort?: string; dir?: string }>;
+}) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const isPresident = actor.roles.includes("PRESIDENT");
-  const { tab, err } = await searchParams;
+  const sp = await searchParams;
+  const { tab, err, q } = sp;
   const activeTab = tab === "vlasnistvo" || tab === "punomoci" ? tab : "lica";
+
+  function licaHref(overrides: Partial<{ q: string; sort: string; dir: string }>) {
+    const merged = { q: sp.q, sort: sp.sort, dir: sp.dir, ...overrides };
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
+    return `/vlasnici?${params.toString()}`;
+  }
+
+  const partySort = sp.sort === "name" ? "name" : undefined;
+  const partyDir: "asc" | "desc" = sp.dir === "desc" ? "desc" : "asc";
   const parties = await listParties(actor);
+  let displayParties = partySort
+    ? [...parties].sort((a, b) => partyDisplayName(a).localeCompare(partyDisplayName(b), "sr") * (partyDir === "desc" ? -1 : 1))
+    : parties;
+  if (q) {
+    const qLower = q.toLowerCase();
+    displayParties = displayParties.filter((p) => partyDisplayName(p).toLowerCase().includes(qLower));
+  }
   const units = isPresident && activeTab === "vlasnistvo" ? await listUnits(actor) : [];
   const proxies =
     isPresident && activeTab === "punomoci"
@@ -155,16 +177,26 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
         hrefFor={(key) => `/vlasnici?tab=${key}`}
       />
       {activeTab === "lica" && (
+      <>
+      <FilterBar submitLabel="Pretraži">
+        {partySort && <input type="hidden" name="sort" value={partySort} />}
+        {sp.dir && <input type="hidden" name="dir" value={sp.dir} />}
+        <Field label="Pretraga po imenu">
+          <input type="text" name="q" defaultValue={q ?? ""} placeholder="Ime, prezime ili naziv" className={inputCls} />
+        </Field>
+        {q && <BtnLink href="/vlasnici" variant="secondary">Poništi filter</BtnLink>}
+      </FilterBar>
       <Card title="Lica (fizička i pravna)">
         <Table
           id="parties-table"
           caption="Lica (fizička i pravna)"
           headers={partyHeaders}
-          empty={parties.length === 0}
-          emptyTitle={t("empty.parties.title")}
-          emptyHint={isPresident ? t("empty.parties.hint") : undefined}
+          sort={{ active: partySort, dir: partyDir, hrefFor: (key, d) => licaHref({ sort: key, dir: d }) }}
+          empty={displayParties.length === 0}
+          emptyTitle={t(displayParties.length === 0 && q ? "empty.filteredQuery.title" : "empty.parties.title")}
+          emptyHint={displayParties.length === 0 && q ? t("empty.filteredQuery.hint") : isPresident ? t("empty.parties.hint") : undefined}
         >
-          {parties.map((p) => (
+          {displayParties.map((p) => (
             <tr key={p.id}>
               <Td><RowLink href={`/vlasnici/${p.id}`}>{partyDisplayName(p)}</RowLink></Td>
               <Td>{p.kind === "PERSON" ? "Fizičko lice" : "Pravno lice"}</Td>
@@ -199,6 +231,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
           </details>
         )}
       </Card>
+      </>
       )}
 
       {isPresident && activeTab === "vlasnistvo" && (

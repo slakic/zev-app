@@ -4,7 +4,7 @@ import { listAllActivity, listActivityActorsForZev } from "@/server/services/act
 import { listTenants } from "@/server/services/admin";
 import { ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Pagination, inputCls, FilterBar, type ColumnSpec } from "@/components/ui";
 
 const adminActivityHeaders: ColumnSpec[] = [
   { label: "Vrijeme", nowrap: true },
@@ -81,7 +81,7 @@ export default async function AdminActivityPage({
         title="Aktivnosti — svi ZEV nalozi"
         subtitle="Platformski pregled aktivnosti preko svih tenanata — podrazumijevano zadnjih 30 dana"
       />
-      <form className="mb-4 flex flex-wrap items-end gap-4 rounded-lg border border-slate-200 bg-white p-3">
+      <FilterBar>
         <label className="text-sm">
           Od{" "}
           <input type="date" name="from" defaultValue={from} className={`${inputCls} ml-1 w-36`} />
@@ -129,8 +129,7 @@ export default async function AdminActivityPage({
             ))}
           </select>
         </label>
-        <SubmitBtn variant="tonal">Primijeni</SubmitBtn>
-      </form>
+      </FilterBar>
 
       <Card>
         <Table

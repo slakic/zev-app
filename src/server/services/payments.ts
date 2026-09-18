@@ -771,16 +771,36 @@ export async function reversePayment(actor: Actor, paymentId: string, reason: st
   });
 }
 
-export async function listPayments(actor: Actor, filter?: { status?: string; payerId?: string }) {
+export type PaymentSortKey = "date" | "amount";
+
+const PAYMENT_PAGE_SIZE = 20;
+
+/** `sortBy`/`page` — same deliberate §8 exception as `listInvoices` (Plans/
+ *  ui-ux-redesign-plan.md §3.H, option C+D). */
+export async function listPayments(
+  actor: Actor,
+  filter?: { status?: string; payerId?: string },
+  opts?: { sortBy?: PaymentSortKey; sortDir?: "asc" | "desc"; page?: number }
+) {
   requireAnyUser(actor);
   const zevId = requireZev(actor);
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   const payerId = isManagement ? filter?.payerId : actor.partyId ?? "__none__";
-  return prisma.payment.findMany({
-    where: { zevId, status: filter?.status as never, payerId: payerId ?? undefined },
-    include: { payer: true, account: true, allocations: { include: { invoice: true } } },
-    orderBy: { date: "desc" },
-  });
+  const where: Prisma.PaymentWhereInput = { zevId, status: filter?.status as never, payerId: payerId ?? undefined };
+  const dir = opts?.sortDir ?? "desc";
+  const orderBy: Prisma.PaymentOrderByWithRelationInput = opts?.sortBy === "amount" ? { amount: dir } : { date: dir };
+  const page = Math.max(1, opts?.page ?? 1);
+  const [rows, total] = await Promise.all([
+    prisma.payment.findMany({
+      where,
+      include: { payer: true, account: true, allocations: { include: { invoice: true } } },
+      orderBy,
+      skip: (page - 1) * PAYMENT_PAGE_SIZE,
+      take: PAYMENT_PAGE_SIZE,
+    }),
+    prisma.payment.count({ where }),
+  ]);
+  return { rows, page, pageCount: Math.max(1, Math.ceil(total / PAYMENT_PAGE_SIZE)) };
 }
 
 // ---- Balances ----

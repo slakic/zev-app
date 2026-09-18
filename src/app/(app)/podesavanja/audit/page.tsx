@@ -3,7 +3,7 @@ import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { formatDateTime, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, inputCls, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, FilterBar, type ColumnSpec } from "@/components/ui";
 
 const auditHeaders: ColumnSpec[] = [
   { label: "Vrijeme", nowrap: true },
@@ -36,9 +36,11 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
   return (
     <div>
       <PageHeader title="Revizorski trag" subtitle="Append-only zapis svih bitnih radnji (UPDATE/DELETE blokiran na nivou baze)" />
-      <form className="mb-3">
-        <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className={`${inputCls} w-72`} />
-      </form>
+      <FilterBar submitLabel="Filtriraj">
+        <Field label="Pretraga">
+          <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className={`${inputCls} w-72`} />
+        </Field>
+      </FilterBar>
       <Card>
         <Table
           id="audit-table"

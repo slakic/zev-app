@@ -1,6 +1,6 @@
 {
   "name": "zev-app",
-  "version": "2.19.5",
+  "version": "2.19.6",
   "private": true,
   "engines": {
     "node": ">=22"

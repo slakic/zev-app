@@ -1,21 +1,23 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
-import { listPayments, enterPayment, importBankCsv } from "@/server/services/payments";
+import { listPayments, enterPayment, importBankCsv, type PaymentSortKey } from "@/server/services/payments";
 import { listAccounts } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, FilterBar, Pagination, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const paymentHeaders: ColumnSpec[] = [
-  { label: "Datum" },
+  { label: "Datum", sortKey: "date" },
   { label: "Platilac", priority: "primary" },
   { label: "Poziv na broj", priority: "detail" },
-  { label: "Iznos", align: "right", nowrap: true },
+  { label: "Iznos", align: "right", nowrap: true, sortKey: "amount" },
   { label: "Status" },
   { label: "Radnje" },
 ];
+
+const PAYMENT_SORT_KEYS: PaymentSortKey[] = ["date", "amount"];
 import { PdfStatementImport } from "@/components/pdf-statement-import";
 
 async function enterPaymentAction(formData: FormData) {
@@ -67,11 +69,29 @@ async function importCsvAction(formData: FormData) {
   }
 }
 
-export default async function PaymentsPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string }> }) {
+export default async function PaymentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ err?: string; msg?: string; status?: string; sort?: string; dir?: string; page?: string }>;
+}) {
   const actor = await requireActor();
   const management = isManagement(actor);
-  const { err, msg } = await searchParams;
-  const payments = await listPayments(actor);
+  const sp = await searchParams;
+  const { err, msg } = sp;
+
+  function uplateHref(overrides: Partial<{ status: string; sort: string; dir: string; page: string }>) {
+    const merged = { status: sp.status, sort: sp.sort, dir: sp.dir, page: sp.page, ...overrides };
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
+    return `/fakture/uplate?${params.toString()}`;
+  }
+
+  const paymentSortBy = PAYMENT_SORT_KEYS.includes(sp.sort as PaymentSortKey) ? (sp.sort as PaymentSortKey) : undefined;
+  const paymentDir = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
+  const paymentPage = Math.max(1, Number(sp.page) || 1);
+  const paymentFilter = management ? { status: sp.status || undefined } : undefined;
+  const paymentResult = await listPayments(actor, paymentFilter, { sortBy: paymentSortBy, sortDir: paymentDir, page: paymentPage });
+  const payments = paymentResult.rows;
   const [accounts, parties] = management ? await Promise.all([listAccounts(actor), listParties(actor)]) : [[], []];
 
   return (
@@ -145,14 +165,37 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
       )}
 
       <div className="mt-4">
+        {management && (
+          <FilterBar>
+            {paymentSortBy && <input type="hidden" name="sort" value={paymentSortBy} />}
+            {paymentDir && <input type="hidden" name="dir" value={paymentDir} />}
+            <Field label="Status">
+              <select name="status" defaultValue={sp.status ?? ""} className={inputCls}>
+                <option value="">Svi</option>
+                <option value="UNAPPLIED">{tEnum("paymentStatus", "UNAPPLIED")}</option>
+                <option value="PARTIALLY_APPLIED">{tEnum("paymentStatus", "PARTIALLY_APPLIED")}</option>
+                <option value="APPLIED">{tEnum("paymentStatus", "APPLIED")}</option>
+                <option value="REVERSED">{tEnum("paymentStatus", "REVERSED")}</option>
+              </select>
+            </Field>
+            {sp.status && <BtnLink href="/fakture/uplate" variant="secondary">Poništi filter</BtnLink>}
+          </FilterBar>
+        )}
         <Card title={management ? "Sve uplate" : "Moje evidentirane uplate"}>
           <Table
             id="payments-table"
             caption={management ? "Sve uplate" : "Moje evidentirane uplate"}
             headers={paymentHeaders}
+            sort={{ active: paymentSortBy, dir: paymentDir, hrefFor: (key, d) => uplateHref({ sort: key, dir: d }) }}
             empty={payments.length === 0}
-            emptyTitle={t("empty.payments.title")}
-            emptyHint={management && actor.roles.includes("ACCOUNTANT") ? t("empty.payments.hint") : undefined}
+            emptyTitle={t(payments.length === 0 && sp.status ? "empty.filteredQuery.title" : "empty.payments.title")}
+            emptyHint={
+              payments.length === 0 && sp.status
+                ? t("empty.filteredQuery.hint")
+                : management && actor.roles.includes("ACCOUNTANT")
+                  ? t("empty.payments.hint")
+                  : undefined
+            }
           >
             {payments.map((p) => (
               <tr key={p.id}>
@@ -171,6 +214,7 @@ export default async function PaymentsPage({ searchParams }: { searchParams: Pro
               </tr>
             ))}
           </Table>
+          <Pagination page={paymentResult.page} pageCount={paymentResult.pageCount} hrefFor={(p) => uplateHref({ page: String(p) })} />
         </Card>
       </div>
     </div>

@@ -182,8 +182,35 @@ function EmptyTrayIcon() {
   );
 }
 
+/** Sort state + link-builder for `Table`'s sortable headers (Plans/ui-ux-redesign-plan.md
+ *  §3.H, option C) — same `hrefFor` idiom as `Tabs`/`Pagination`: the caller knows what other
+ *  query params (filters, tab) need to survive the click, `Table` doesn't. Only columns that
+ *  declare a `sortKey` in their `ColumnSpec` become clickable; everything else stays a plain
+ *  `<th>`. Query-param sorting (not client state) so it's a real link — bookmarkable, works
+ *  without JS, and composes with server-side pagination on the two lists that have it. */
+export type TableSort = {
+  active?: string;
+  dir?: "asc" | "desc";
+  hrefFor: (key: string, dir: "asc" | "desc") => string;
+};
+
+function SortIcon({ dir }: { dir?: "asc" | "desc" }) {
+  if (!dir) {
+    return (
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 shrink-0 text-slate-300" aria-hidden="true">
+        <path d="M6 8l4-4 4 4M6 12l4 4 4-4" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 shrink-0 text-slate-600" aria-hidden="true">
+      {dir === "asc" ? <path d="M6 12l4-4 4 4" /> : <path d="M6 8l4 4 4-4" />}
+    </svg>
+  );
+}
+
 export function Table({
-  id, caption, headers, children, empty, emptyTitle, emptyHint,
+  id, caption, headers, children, empty, emptyTitle, emptyHint, sort,
 }: {
   /** Required when `headers` is `ColumnSpec[]` — it's the hook the generated `<style>` (above)
    *  is keyed to. A plain `string[]` table doesn't need one (no per-column behavior to generate). */
@@ -203,6 +230,9 @@ export function Table({
    *  reach outside the table (§3.I). For filtered lists (activity logs, reports), a sentence
    *  explaining the filter instead ("Nema zapisa u izabranom periodu…") plus a clear-filters link. */
   emptyHint?: ReactNode;
+  /** Enables sortable headers for any column with a `sortKey` (§3.H). Omitted entirely on the
+   *  45 tables outside 3g's scope — those columns' `sortKey` (if set) just stays inert. */
+  sort?: TableSort;
 }) {
   const columns: ColumnSpec[] = isColumnSpecArray(headers) ? headers : headers.map((label) => ({ label }));
   const useCardTransform = columns.length > 5; // P5: only tables with >5 columns get the card fallback
@@ -230,11 +260,33 @@ export function Table({
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50/80 text-left">
-            {columns.map((c, i) => (
-              <th key={c.label + i} scope="col" className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                {c.label}
-              </th>
-            ))}
+            {columns.map((c, i) => {
+              if (!c.sortKey || !sort) {
+                return (
+                  <th key={c.label + i} scope="col" className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    {c.label}
+                  </th>
+                );
+              }
+              const isActive = sort.active === c.sortKey;
+              const nextDir: "asc" | "desc" = isActive && sort.dir === "asc" ? "desc" : "asc";
+              return (
+                <th
+                  key={c.label + i}
+                  scope="col"
+                  aria-sort={isActive ? (sort.dir === "asc" ? "ascending" : "descending") : "none"}
+                  className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                >
+                  <Link
+                    href={sort.hrefFor(c.sortKey, nextDir)}
+                    className={`inline-flex items-center gap-1 rounded hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${isActive ? "text-slate-700" : ""}`}
+                  >
+                    {c.label}
+                    <SortIcon dir={isActive ? sort.dir : undefined} />
+                  </Link>
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -508,6 +560,21 @@ export function Tabs({
         );
       })}
     </nav>
+  );
+}
+
+/** GET-form filter row (Plans/ui-ux-redesign-plan.md §4.3, §3.H option B) — the same
+ *  `rounded-lg border ... p-3` shell already hand-copied on `aktivnosti`, `admin/aktivnosti`,
+ *  `izvjestaji`, and `podesavanja/audit` before Faza 3g, now shared. No `action` (submits as a
+ *  GET to the current path, which is what a filter bar wants — the server re-renders from the
+ *  query string, zero client JS). Children are the filter controls (usually wrapped in `Field`
+ *  or a bare `<label>`); the submit button is fixed so every filter bar reads the same way. */
+export function FilterBar({ children, submitLabel = "Primijeni" }: { children: ReactNode; submitLabel?: string }) {
+  return (
+    <form className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
+      {children}
+      <SubmitBtn variant="tonal">{submitLabel}</SubmitBtn>
+    </form>
   );
 }
 

@@ -9,7 +9,7 @@ import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, Tabs, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const supplierHeaders: ColumnSpec[] = [
   { label: "Naziv" },
@@ -21,11 +21,11 @@ const supplierHeaders: ColumnSpec[] = [
 const expenseHeaders: ColumnSpec[] = [
   { label: "Dobavljač", priority: "primary" },
   { label: "Br. fakture", priority: "detail" },
-  { label: "Datum" },
+  { label: "Datum", sortKey: "date" },
   { label: "Kategorija", priority: "detail" },
-  { label: "Iznos", align: "right", nowrap: true },
+  { label: "Iznos", align: "right", nowrap: true, sortKey: "amount" },
   { label: "Plaćeno", align: "right", nowrap: true },
-  { label: "Rok" },
+  { label: "Rok", sortKey: "due" },
   { label: "Status" },
   { label: "Radnje" },
 ];
@@ -102,16 +102,31 @@ async function cancelExpenseAction(formData: FormData) {
   revalidatePath("/troskovi");
 }
 
-export default async function ExpensesPage({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string }> }) {
+export default async function ExpensesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; err?: string; status?: string; supplier?: string; sort?: string; dir?: string }>;
+}) {
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
   const zevId = requireZev(actor);
-  const { tab, err } = await searchParams;
+  const sp = await searchParams;
+  const { tab, err } = sp;
   const activeTab = tab === "troskovi" ? "troskovi" : "dobavljaci";
+
+  function troskoviHref(overrides: Partial<{ status: string; supplier: string; sort: string; dir: string }>) {
+    const merged = { status: sp.status, supplier: sp.supplier, sort: sp.sort, dir: sp.dir, ...overrides };
+    const params = new URLSearchParams({ tab: "troskovi" });
+    for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
+    return `/troskovi?${params.toString()}`;
+  }
+
+  const expenseSort = sp.sort === "amount" || sp.sort === "due" ? sp.sort : sp.sort === "date" ? "date" : undefined;
+  const expenseDir: "asc" | "desc" | undefined = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
   const suppliers = await listSuppliers(actor);
-  const [expenses, accounts, buildings, projects, planItems] =
+  const [rawExpenses, accounts, buildings, projects, planItems] =
     activeTab === "troskovi"
       ? await Promise.all([
-          listExpenses(actor),
+          listExpenses(actor, { status: sp.status || undefined, supplierId: sp.supplier || undefined }),
           listAccounts(actor),
           listBuildings(actor),
           listProjects(actor),
@@ -121,6 +136,14 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
           prisma.planItem.findMany({ where: { zevId, plan: { status: "APPROVED" } }, include: { plan: true } }),
         ])
       : [[], [], [], [], []];
+  const expenses = expenseSort
+    ? [...rawExpenses].sort((a, b) => {
+        const dir = expenseDir === "desc" ? -1 : 1;
+        const av = expenseSort === "amount" ? Number(a.amount.toString()) : (expenseSort === "due" ? a.dueDate : a.invoiceDate)?.getTime() ?? 0;
+        const bv = expenseSort === "amount" ? Number(b.amount.toString()) : (expenseSort === "due" ? b.dueDate : b.invoiceDate)?.getTime() ?? 0;
+        return (av - bv) * dir;
+      })
+    : rawExpenses;
   return (
     <div>
       <PageHeader title="Troškovi i dobavljači" subtitle="Ulazne fakture, plaćanja, veza sa planom i održavanjem" />
@@ -168,14 +191,40 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
 
       {activeTab === "troskovi" && (
       <>
+        <FilterBar>
+          <input type="hidden" name="tab" value="troskovi" />
+          {expenseSort && <input type="hidden" name="sort" value={expenseSort} />}
+          {expenseDir && <input type="hidden" name="dir" value={expenseDir} />}
+          <Field label="Status">
+            <select name="status" defaultValue={sp.status ?? ""} className={inputCls}>
+              <option value="">Svi</option>
+              <option value="UNPAID">{tEnum("expenseStatus", "UNPAID")}</option>
+              <option value="PARTIALLY_PAID">{tEnum("expenseStatus", "PARTIALLY_PAID")}</option>
+              <option value="PAID">{tEnum("expenseStatus", "PAID")}</option>
+              <option value="CANCELLED">{tEnum("expenseStatus", "CANCELLED")}</option>
+            </select>
+          </Field>
+          <Field label="Dobavljač">
+            <select name="supplier" defaultValue={sp.supplier ?? ""} className={inputCls}>
+              <option value="">Svi</option>
+              {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          </Field>
+          {(sp.status || sp.supplier) && <BtnLink href="/troskovi?tab=troskovi" variant="secondary">Poništi filter</BtnLink>}
+        </FilterBar>
         <Card title="Troškovi">
           <Table
             id="expenses-table"
             caption="Troškovi"
             headers={expenseHeaders}
+            sort={{ active: expenseSort, dir: expenseDir, hrefFor: (key, d) => troskoviHref({ sort: key, dir: d }) }}
             empty={expenses.length === 0}
-            emptyTitle={t("empty.expenses.title")}
-            emptyHint={t("empty.expenses.hint")}
+            emptyTitle={t(expenses.length === 0 && (sp.status || sp.supplier) ? "empty.filteredQuery.title" : "empty.expenses.title")}
+            emptyHint={
+              expenses.length === 0 && (sp.status || sp.supplier)
+                ? t("empty.filteredQuery.hint")
+                : t("empty.expenses.hint")
+            }
           >
             {expenses.map((e) => (
               <tr key={e.id}>

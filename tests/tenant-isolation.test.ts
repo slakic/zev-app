@@ -305,7 +305,7 @@ describe("tenant isolation — no service function may read or write another ten
       const bIds = (await prisma.chargeItem.findMany({ where: { zevId: b.zev.id } })).map((i) => i.id);
       expect(items.some((i) => bIds.includes(i.id))).toBe(false);
       const invoices = await billing.listInvoices(a.president);
-      expect(invoices.some((i) => i.id === bInvoice.id)).toBe(false);
+      expect(invoices.rows.some((i) => i.id === bInvoice.id)).toBe(false);
     });
   });
 
@@ -343,7 +343,7 @@ describe("tenant isolation — no service function may read or write another ten
 
     it("listPayments never includes the other tenant's rows", async () => {
       const list = await payments.listPayments(a.president);
-      expect(list.some((p) => p.id === bPaymentId)).toBe(false);
+      expect(list.rows.some((p) => p.id === bPaymentId)).toBe(false);
     });
 
     it("ownerBalance/ownerBalanceBreakdown/ownerAdvance never surface another tenant's charges for a foreign party id", async () => {

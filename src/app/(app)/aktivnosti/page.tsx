@@ -3,7 +3,7 @@ import { requireActor } from "@/server/actor";
 import { listActivity, listActivityActors } from "@/server/services/activity";
 import { ACTIVITY_CATEGORIES, DEFAULT_ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Pagination, SubmitBtn, inputCls, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Pagination, inputCls, FilterBar, type ColumnSpec } from "@/components/ui";
 
 const activityHeaders: ColumnSpec[] = [
   { label: "Vrijeme", nowrap: true },
@@ -74,7 +74,7 @@ export default async function ActivityPage({
         title="Aktivnosti"
         subtitle="Kurirani pregled aktivnosti vlasnika i uprave — podrazumijevano zadnjih 30 dana"
       />
-      <form className="mb-4 flex flex-wrap items-end gap-4 rounded-lg border border-slate-200 bg-white p-3">
+      <FilterBar>
         <label className="text-sm">
           Od{" "}
           <input type="date" name="from" defaultValue={from} className={`${inputCls} ml-1 w-36`} />
@@ -105,8 +105,7 @@ export default async function ActivityPage({
             ))}
           </select>
         </label>
-        <SubmitBtn variant="tonal">Primijeni</SubmitBtn>
-      </form>
+      </FilterBar>
 
       <Card>
         <Table

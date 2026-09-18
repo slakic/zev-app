@@ -384,21 +384,59 @@ export async function issueSingleInvoice(
 
 // ---- Invoice queries with owner isolation ----
 
-export async function listInvoices(actor: Actor, filter?: { debtorId?: string; unitId?: string; status?: string; period?: string }) {
+export type InvoiceSortKey = "number" | "dueDate" | "total" | "paid";
+
+const INVOICE_PAGE_SIZE = 20;
+
+/**
+ * `sortBy`/`page` (Plans/ui-ux-redesign-plan.md §3.H, option C+D) — the only service-layer
+ * change in the whole redesign plan (a deliberate, documented exception to §8, which otherwise
+ * keeps the plan to the presentation layer).
+ *
+ * "paid" is the exception to the DB-level sort: Prisma's generated types don't support ordering
+ * a to-many relation by an aggregate sum (`PaymentAllocationOrderByRelationAggregateInput` only
+ * has `_count`), and there's no `@@map`-free raw-SQL shortcut worth the complexity here — so for
+ * this one sort key only, this fetches every matching invoice, sorts in memory using the same
+ * `invoicePaidAmount` used for the on-page total (so the two never disagree), and paginates the
+ * sorted array by hand. Fine at this app's scale (a ZEV's invoice count is in the hundreds, not
+ * the millions a real DB-level sort would be needed for).
+ */
+export async function listInvoices(
+  actor: Actor,
+  filter?: { debtorId?: string; unitId?: string; status?: string; period?: string },
+  opts?: { sortBy?: InvoiceSortKey; sortDir?: "asc" | "desc"; page?: number }
+) {
   requireAnyUser(actor);
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   const debtorId = isManagement ? filter?.debtorId : actor.partyId ?? "__none__";
-  return prisma.invoice.findMany({
-    where: {
-      zevId: requireZev(actor),
-      debtorId: debtorId ?? undefined,
-      unitId: filter?.unitId,
-      status: filter?.status as never,
-      periodLabel: filter?.period,
-    },
-    include: { unit: { include: { building: true } }, debtor: true, allocations: true },
-    orderBy: { number: "desc" },
-  });
+  const where: Prisma.InvoiceWhereInput = {
+    zevId: requireZev(actor),
+    debtorId: debtorId ?? undefined,
+    unitId: filter?.unitId,
+    status: filter?.status as never,
+    periodLabel: filter?.period,
+  };
+  const dir = opts?.sortDir ?? "desc";
+  const page = Math.max(1, opts?.page ?? 1);
+  const include = { unit: { include: { building: true } }, debtor: true, allocations: true };
+
+  if (opts?.sortBy === "paid") {
+    const all = await prisma.invoice.findMany({ where, include });
+    all.sort((a, b) => invoicePaidAmount(a).comparedTo(invoicePaidAmount(b)) * (dir === "desc" ? -1 : 1));
+    const total = all.length;
+    const rows = all.slice((page - 1) * INVOICE_PAGE_SIZE, page * INVOICE_PAGE_SIZE);
+    return { rows, page, pageCount: Math.max(1, Math.ceil(total / INVOICE_PAGE_SIZE)) };
+  }
+
+  const orderBy: Prisma.InvoiceOrderByWithRelationInput =
+    opts?.sortBy === "dueDate" ? { dueDate: dir }
+    : opts?.sortBy === "total" ? { total: dir }
+    : { number: dir };
+  const [rows, total] = await Promise.all([
+    prisma.invoice.findMany({ where, include, orderBy, skip: (page - 1) * INVOICE_PAGE_SIZE, take: INVOICE_PAGE_SIZE }),
+    prisma.invoice.count({ where }),
+  ]);
+  return { rows, page, pageCount: Math.max(1, Math.ceil(total / INVOICE_PAGE_SIZE)) };
 }
 
 export async function getInvoice(actor: Actor, id: string) {

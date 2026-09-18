@@ -5,7 +5,7 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { updateBuildingAction, updateUnitAction } from "@/server/actions/property";
 import { parseMoneyInput, formatMoney } from "@/lib/money";
 import { t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
 import { BuildingRow } from "@/components/building-row";
 import { UnitRow } from "@/components/unit-row";
 
@@ -63,15 +63,30 @@ async function addAssetAction(formData: FormData) {
 export default async function BuildingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; err?: string; msg?: string }>;
+  searchParams: Promise<{ tab?: string; err?: string; msg?: string; building?: string; entrance?: string; sort?: string; dir?: string }>;
 }) {
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
-  const { tab, err, msg } = await searchParams;
+  const sp = await searchParams;
+  const { tab, err, msg } = sp;
   const okMsg = msg === "saved" ? "Sačuvano." : undefined;
   const activeTab = ["ulazi", "posebni", "zajednicki"].includes(tab ?? "") ? (tab as string) : "zgrade";
+
+  function posebniHref(overrides: Partial<{ building: string; entrance: string; sort: string; dir: string }>) {
+    const merged = { building: sp.building, entrance: sp.entrance, sort: sp.sort, dir: sp.dir, ...overrides };
+    const params = new URLSearchParams({ tab: "posebni" });
+    for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
+    return `/zgrade?${params.toString()}`;
+  }
+
   const [zev, buildings] = await Promise.all([getZev(actor), listBuildings(actor)]);
-  const units = activeTab === "posebni" ? await listUnits(actor) : [];
+  let units = activeTab === "posebni" ? await listUnits(actor, { buildingId: sp.building || undefined, entranceId: sp.entrance || undefined }) : [];
+  const unitSort = sp.sort === "area" || sp.sort === "share" || sp.sort === "label" ? sp.sort : undefined;
+  const unitDir: "asc" | "desc" | undefined = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
+  const sortMul = unitDir === "desc" ? -1 : 1;
+  if (unitSort === "label") units = [...units].sort((a, b) => a.label.localeCompare(b.label, "sr") * sortMul);
+  else if (unitSort === "area") units = [...units].sort((a, b) => (Number(a.usableArea.toString()) - Number(b.usableArea.toString())) * sortMul);
+  else if (unitSort === "share") units = [...units].sort((a, b) => (Number(a.ownershipShare.toString()) - Number(b.ownershipShare.toString())) * sortMul);
   const assets = activeTab === "zajednicki" ? await listCommonAssets(actor) : [];
   const entrances = buildings.flatMap((b) => b.entrances.map((e) => ({ ...e, buildingName: b.name })));
   const totalArea = units.reduce((sum, u) => sum + Number(u.usableArea), 0);
@@ -89,11 +104,11 @@ export default async function BuildingsPage({
   const unitHeaders: ColumnSpec[] = [
     { label: "Zgrada" },
     { label: "Ulaz", priority: "detail" },
-    { label: "Oznaka", priority: "primary" },
+    { label: "Oznaka", priority: "primary", sortKey: "label" },
     { label: "Tip" },
     { label: "Sprat", align: "right", priority: "detail" },
-    { label: "Površina m²", align: "right", nowrap: true },
-    { label: "Udio %", align: "right", nowrap: true },
+    { label: "Površina m²", align: "right", nowrap: true, sortKey: "area" },
+    { label: "Udio %", align: "right", nowrap: true, sortKey: "share" },
     { label: "Korisnika", align: "right", priority: "detail" },
     { label: "Vlasnici" },
     { label: "Stanari/zakupci", priority: "detail" },
@@ -200,18 +215,47 @@ export default async function BuildingsPage({
             ) : undefined
           }
         >
+          {buildings.length > 0 && (
+            <FilterBar>
+              <input type="hidden" name="tab" value="posebni" />
+              {unitSort && <input type="hidden" name="sort" value={unitSort} />}
+              {unitDir && <input type="hidden" name="dir" value={unitDir} />}
+              <Field label="Zgrada">
+                <select name="building" defaultValue={sp.building ?? ""} className={inputCls}>
+                  <option value="">Sve</option>
+                  {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+              </Field>
+              <Field label="Ulaz">
+                <select name="entrance" defaultValue={sp.entrance ?? ""} className={inputCls}>
+                  <option value="">Svi</option>
+                  {entrances.map((e) => <option key={e.id} value={e.id}>{e.buildingName} / {e.name}</option>)}
+                </select>
+              </Field>
+              {(sp.building || sp.entrance) && <BtnLink href="/zgrade?tab=posebni" variant="secondary">Poništi filter</BtnLink>}
+            </FilterBar>
+          )}
           <Table
             id="units-table"
             caption="Posebni dijelovi — stanovi, poslovni prostori i garaže"
             headers={unitHeaders}
+            sort={{ active: unitSort, dir: unitDir, hrefFor: (key, d) => posebniHref({ sort: key, dir: d }) }}
             empty={units.length === 0}
-            emptyTitle={t(buildings.length === 0 ? "empty.unitsNoBuilding.title" : "empty.units.title")}
+            emptyTitle={t(
+              units.length === 0 && (sp.building || sp.entrance)
+                ? "empty.filteredQuery.title"
+                : buildings.length === 0
+                  ? "empty.unitsNoBuilding.title"
+                  : "empty.units.title"
+            )}
             emptyHint={
-              buildings.length === 0
-                ? t("empty.unitsNoBuilding.hint")
-                : isPresident
-                  ? t("empty.units.hint")
-                  : undefined
+              units.length === 0 && (sp.building || sp.entrance)
+                ? t("empty.filteredQuery.hint")
+                : buildings.length === 0
+                  ? t("empty.unitsNoBuilding.hint")
+                  : isPresident
+                    ? t("empty.units.hint")
+                    : undefined
             }
           >
             {units.map((u) => (
