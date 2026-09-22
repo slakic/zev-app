@@ -4,6 +4,7 @@ import { createFixture, createProposalFixture, openVotingWithLinks, type Fixture
 import {
   submitVote, reissueToken, revokeToken, closeVoting, recordManualVote,
   createProposalRevision, updateDraftProposal, computeProposalResult, createVotingRule,
+  openVoting, advanceMeetingStatus, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
 } from "@/server/services/meetings";
 import { computeVotingResult, type RuleSnapshot } from "@/server/engines/voting";
 import { dec } from "@/lib/money";
@@ -221,5 +222,71 @@ describe("secure electronic approval", () => {
     await openVotingWithLinks(f, proposal.id);
     const evTenant = await prisma.eligibleVoter.findFirst({ where: { proposalId: proposal.id, ownerId: tenant.id } });
     expect(evTenant).toBeNull();
+  });
+});
+
+// Plans/skupstina-draft-management-and-test-outbox-plan.md, Dio A — a DRAFT proposal
+// previously couldn't be edited or removed at all (updateDraftProposal existed but had
+// no caller; there was no delete/withdraw). §A.8's test list.
+describe("draft proposal management (Dio A)", () => {
+  let f: Fixture;
+  beforeAll(async () => {
+    f = await createFixture("draft-mgmt");
+  });
+
+  it("updateDraftProposal edits text and scope, and writes a proposal.update audit with before/after", async () => {
+    const { proposal } = await createProposalFixture(f);
+    const updated = await updateDraftProposal(f.president, proposal.id, {
+      text: "Novi tekst nacrta.",
+      scopeType: "BUILDING",
+      buildingId: f.b1.id,
+    });
+    expect(updated.text).toBe("Novi tekst nacrta.");
+    expect(updated.scopeType).toBe("BUILDING");
+    expect(updated.buildingId).toBe(f.b1.id);
+    const audits = await prisma.auditEvent.findMany({ where: { action: "proposal.update", targetId: proposal.id } });
+    expect(audits.length).toBeGreaterThan(0);
+    const last = audits[audits.length - 1];
+    expect((last.after as { scopeType?: string })?.scopeType).toBe("BUILDING");
+  });
+
+  it("withdrawProposal sets WITHDRAWN, and openVoting on a withdrawn proposal is rejected", async () => {
+    const { proposal } = await createProposalFixture(f);
+    const withdrawn = await withdrawProposal(f.president, proposal.id, "Više nije aktuelno.");
+    expect(withdrawn.status).toBe("WITHDRAWN");
+    await expect(openVoting(f.president, proposal.id)).rejects.toThrow(/Nacrt/);
+  });
+
+  it("withdrawProposal without a reason fails", async () => {
+    const { proposal } = await createProposalFixture(f);
+    await expect(withdrawProposal(f.president, proposal.id, "")).rejects.toThrow(/razlog/);
+  });
+
+  it("deleteDraftProposal removes the row and its ProposalUnit rows, but the audit event survives with the deleted content", async () => {
+    const { proposal } = await createProposalFixture(f);
+    const unitsBefore = await prisma.proposalUnit.count({ where: { proposalId: proposal.id } });
+    expect(unitsBefore).toBeGreaterThan(0);
+    await deleteDraftProposal(f.president, proposal.id, "Duplikat unosa.");
+    const gone = await prisma.proposal.findUnique({ where: { id: proposal.id } });
+    expect(gone).toBeNull();
+    const unitsAfter = await prisma.proposalUnit.count({ where: { proposalId: proposal.id } });
+    expect(unitsAfter).toBe(0);
+    const audits = await prisma.auditEvent.findMany({ where: { action: "proposal.delete", targetId: proposal.id } });
+    expect(audits).toHaveLength(1);
+    expect((audits[0].before as { text?: string })?.text).toBe(proposal.text);
+  });
+
+  it("deleteDraftProposal fails once the meeting has sent invitations, even though the proposal is still a draft", async () => {
+    const { meeting, proposal } = await createProposalFixture(f);
+    await advanceMeetingStatus(f.president, meeting.id, "INVITATIONS_SENT");
+    await expect(deleteDraftProposal(f.president, proposal.id, "Greška.")).rejects.toThrow(/saopštena/);
+    expect(canDeleteDraftProposal("INVITATIONS_SENT")).toBe(false);
+    expect(canDeleteDraftProposal("SCHEDULED")).toBe(true);
+  });
+
+  it("deleteDraftProposal fails for a VOTING_OPEN proposal", async () => {
+    const { proposal } = await createProposalFixture(f);
+    await openVotingWithLinks(f, proposal.id);
+    await expect(deleteDraftProposal(f.president, proposal.id, "Greška.")).rejects.toThrow(/nacrt/);
   });
 });

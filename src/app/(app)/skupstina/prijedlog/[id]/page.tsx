@@ -1,13 +1,30 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
-import { getProposal, openVoting, closeVoting, recordManualVote, correctVote, recordDecision, reissueToken, revokeToken, computeProposalResult, createProposalRevision } from "@/server/services/meetings";
+import {
+  getProposal, openVoting, closeVoting, recordManualVote, correctVote, recordDecision,
+  reissueToken, revokeToken, computeProposalResult, createProposalRevision,
+  updateDraftProposal, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
+  listVotingRules, getMeeting,
+} from "@/server/services/meetings";
 import { generateDecisionPdf, generateVotingListPdf } from "@/server/services/documents";
 import { serializeResult } from "@/server/engines/voting";
 import { partyDisplayName } from "@/server/services/ownership";
-import { formatWeight } from "@/lib/money";
+import { listBuildings } from "@/server/services/property";
+import { formatWeight, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+
+/** `<input type="datetime-local">` pre-fill for a stored Date — the inverse of how the
+ *  proposal-creation form's own `votingClosesAt` already gets parsed on submit
+ *  (`new Date(String(formData.get("votingClosesAt")))`, which reads a timezone-less
+ *  string as local time). Using the same local getters here keeps editing-without-
+ *  touching-the-field a no-op round trip, whatever the server's local timezone is. */
+function toDatetimeLocal(d: Date | null | undefined): string {
+  if (!d) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
 const voterHeaders: ColumnSpec[] = [
   { label: "Vlasnik", priority: "primary" },
@@ -125,6 +142,54 @@ async function reviseAction(formData: FormData) {
   }
 }
 
+async function updateDraftAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const id = String(formData.get("proposalId"));
+  try {
+    await updateDraftProposal(actor, id, {
+      code: String(formData.get("code")),
+      title: String(formData.get("title")),
+      text: String(formData.get("text")),
+      rationale: (formData.get("rationale") as string) || null,
+      financialImpact: parseMoneyInput(formData.get("financialImpact") as string | null),
+      agendaItemId: (formData.get("agendaItemId") as string) || null,
+      scopeType: (formData.get("scopeType") as never) ?? "ZEV",
+      buildingId: (formData.get("buildingId") as string) || null,
+      votingRuleId: String(formData.get("votingRuleId")),
+      votingClosesAt: formData.get("votingClosesAt") ? new Date(String(formData.get("votingClosesAt"))) : null,
+    });
+  } catch (e) {
+    redirect(`/skupstina/prijedlog/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath(`/skupstina/prijedlog/${id}`);
+}
+
+async function withdrawDraftAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const id = String(formData.get("proposalId"));
+  try {
+    await withdrawProposal(actor, id, String(formData.get("reason") ?? ""));
+  } catch (e) {
+    redirect(`/skupstina/prijedlog/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath(`/skupstina/prijedlog/${id}`);
+}
+
+async function deleteDraftAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const id = String(formData.get("proposalId"));
+  const meetingId = String(formData.get("meetingId"));
+  try {
+    await deleteDraftProposal(actor, id, String(formData.get("reason") ?? ""));
+  } catch (e) {
+    redirect(`/skupstina/prijedlog/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect(`/skupstina/${meetingId}?msg=${encodeURIComponent("Nacrt prijedloga je obrisan.")}`);
+}
+
 export default async function ProposalPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string }> }) {
   const { id } = await params;
   const { err, msg } = await searchParams;
@@ -156,6 +221,13 @@ export default async function ProposalPage({ params, searchParams }: { params: P
 
   const result = p.ruleSnapshot ? serializeResult(await computeProposalResult(p.zevId, p.id)) : null;
   const rule = p.ruleSnapshot as { ruleName?: string; quorumType?: string; quorumPercent?: string; majorityType?: string; majorityPercent?: string; weightMethod?: string } | null;
+
+  const [votingRules, buildings, meetingWithAgenda] =
+    isPresident && p.status === "DRAFT"
+      ? await Promise.all([listVotingRules(actor), listBuildings(actor), getMeeting(actor, p.meetingId)])
+      : [[], [], null];
+  const agendaItems = meetingWithAgenda?.agendaItems ?? [];
+  const canDelete = canDeleteDraftProposal(p.meeting.status);
 
   return (
     <div>
@@ -280,6 +352,96 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 <input type="hidden" name="proposalId" value={p.id} />
                 <SubmitBtn variant="secondary">Glasačka lista (PDF)</SubmitBtn>
               </form>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {isPresident && p.status === "DRAFT" && (
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Card title="Izmjena nacrta prijedloga" hint="Nacrt se može slobodno mijenjati dok glasanje nije otvoreno.">
+            <details className="group">
+              <ToggleBtn>Izmijeni nacrt</ToggleBtn>
+              <form action={updateDraftAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="hidden" name="proposalId" value={p.id} />
+                <Field label="Šifra"><input name="code" required defaultValue={p.code} className={inputCls} /></Field>
+                <Field label="Naslov"><input name="title" required defaultValue={p.title} className={inputCls} /></Field>
+                <div className="sm:col-span-2">
+                  <Field label="Tačan tekst prijedloga"><textarea name="text" required rows={3} defaultValue={p.text} className={inputCls} /></Field>
+                </div>
+                <div className="sm:col-span-2">
+                  <Field label="Obrazloženje"><textarea name="rationale" rows={2} defaultValue={p.rationale ?? ""} className={inputCls} /></Field>
+                </div>
+                <Field label="Procjena finansijskog uticaja (KM)">
+                  <input name="financialImpact" defaultValue={p.financialImpact?.toString() ?? ""} className={inputCls} placeholder="0.00" />
+                </Field>
+                <Field label="Tačka dnevnog reda">
+                  <select name="agendaItemId" defaultValue={p.agendaItemId ?? ""} className={inputCls}>
+                    <option value="">—</option>
+                    {agendaItems.map((a) => <option key={a.id} value={a.id}>{a.order}. {a.title}</option>)}
+                  </select>
+                </Field>
+                <Field label="Obuhvat">
+                  <select name="scopeType" defaultValue={p.scopeType} className={inputCls}>
+                    <option value="ZEV">Cijela ZEV</option>
+                    <option value="BUILDING">Jedna zgrada</option>
+                  </select>
+                </Field>
+                <Field label="Zgrada (ako je obuhvat zgrada)">
+                  <select name="buildingId" defaultValue={p.buildingId ?? ""} className={inputCls}>
+                    <option value="">—</option>
+                    {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                  </select>
+                </Field>
+                <Field label="Pravilo glasanja">
+                  <select name="votingRuleId" required defaultValue={p.votingRuleId ?? ""} className={inputCls}>
+                    {votingRules.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
+                </Field>
+                <Field label="Glasanje otvoreno do">
+                  <input name="votingClosesAt" type="datetime-local" defaultValue={toDatetimeLocal(p.votingClosesAt)} className={inputCls} />
+                </Field>
+                <div className="sm:col-span-2"><SubmitBtn>Sačuvaj izmjene</SubmitBtn></div>
+              </form>
+            </details>
+          </Card>
+          <Card title="Uklanjanje nacrta">
+            <div className="space-y-3">
+              <ConfirmAction
+                trigger="Povuci prijedlog"
+                triggerVariant="caution"
+                title="Povlačenje prijedloga"
+                confirmLabel="Da, povuci prijedlog"
+                confirmVariant="caution"
+                action={withdrawDraftAction}
+                hiddenFields={{ proposalId: p.id }}
+              >
+                <Field label="Razlog povlačenja"><input name="reason" required className={inputCls} /></Field>
+              </ConfirmAction>
+              {canDelete ? (
+                <ConfirmAction
+                  trigger="Obriši nacrt (trajno)"
+                  triggerVariant="danger"
+                  title="Brisanje nacrta je nepovratno"
+                  body={
+                    <p className="text-sm text-red-950">
+                      Prijedlog <b>{p.code}</b> se briše iz evidencije sjednice. Zapis o njegovom nastanku i brisanju
+                      ostaje u revizorskom tragu i ne može se ukloniti.
+                    </p>
+                  }
+                  confirmLabel="Da, obriši nacrt"
+                  confirmVariant="danger"
+                  action={deleteDraftAction}
+                  hiddenFields={{ proposalId: p.id, meetingId: p.meetingId }}
+                >
+                  <Field label="Razlog brisanja"><input name="reason" required className={inputCls} /></Field>
+                </ConfirmAction>
+              ) : (
+                <p className="text-sm text-slate-500">
+                  Sjednica je već saopštena vlasnicima (pozivi poslati) — prijedlog se više ne može trajno obrisati,
+                  samo povući.
+                </p>
+              )}
             </div>
           </Card>
         </div>

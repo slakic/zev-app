@@ -348,6 +348,8 @@ const srLatn = {
       create: "Kreiran prijedlog odluke",
       revise: "Revidiran prijedlog odluke",
       update: "Izmijenjen prijedlog odluke",
+      withdraw: "Povučen prijedlog odluke",
+      delete: "Obrisan nacrt prijedloga",
       voting: { open: "Otvoreno glasanje", close: "Zatvoreno glasanje" },
       decision: { record: "Evidentirana odluka" },
     },

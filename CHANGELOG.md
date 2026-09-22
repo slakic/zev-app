@@ -43,6 +43,49 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.23.0] - 2026-09-22
+
+### Dodato
+
+- **Izmjena i uklanjanje nacrta prijedloga na sjednici** (Dio A,
+  `Plans/skupstina-draft-management-and-test-outbox-plan.md`). Do sada je
+  jedina radnja nad prijedlogom u statusu „Nacrt" bila „Otvori glasanje" —
+  nije postojao nijedan način da se ispravi greška u nacrtu ili da se on
+  ukloni, iako je servisna funkcija za izmjenu postojala u kodu (bez ijednog
+  pozivaoca) i iako je vrijednost enuma „Povučen" postojala bez ijednog
+  pisca.
+  - **Izmjena nacrta** — nova kartica na stranici prijedloga (vidljiva samo
+    dok je status „Nacrt"), ogledalo obrasca za kreiranje: šifra, naslov,
+    tekst, obrazloženje, procjena finansijskog uticaja, tačka dnevnog reda,
+    obuhvat (cijela ZEV / jedna zgrada), pravilo glasanja i rok glasanja.
+    Sva ova polja su prije otvaranja glasanja bez ikakve posljedice — sadržaj
+    se zamrzava tek pri otvaranju (`contentHash`, snimak pravila).
+  - **Povlačenje nacrta** — nova radnja, prvi pisac vrijednosti `WITHDRAWN`
+    u čitavom kodu. Za prijedlog koji predsjednik više ne želi da vodi, a
+    koji ostaje trajno vidljiv u listi (dnevni red sjednice je vidljiv
+    vlasnicima i prije glasanja) — status se mijenja, ništa se ne briše.
+    Zahtijeva razlog.
+  - **Trajno brisanje nacrta** — dozvoljeno samo dok sjednica još nije
+    poslala pozive vlasnicima (prvi trenutak kad aplikacija bilo šta
+    saopšti o sjednici izvan interne pripreme). Nakon toga dugme za
+    brisanje nestaje i zamjenjuje ga rečenica zašto brisanje više nije
+    moguće — provjera se radi na istom uslovu koji koristi i servisna
+    funkcija, tako da UI i stvarno pravilo ne mogu da se razminu. Zapis o
+    obrisanom prijedlogu (šifra, verzija, tekst, obrazloženje...) upisuje se
+    u revizorski trag **prije** brisanja, u istoj transakciji — trajno
+    ostaje, iako je red iz baze nestao.
+  - Zajednička validacija (`assertProposalRefs`) izdvojena iz kreiranja
+    prijedloga tako da izmjena nacrta ne može tiho zaostati za onim što
+    kreiranje već dozvoljava.
+  - Nove kategorije u dnevniku aktivnosti (`proposal.withdraw`,
+    `proposal.delete`) i sr-Latn prevodi — obje izmjene se odmah pojavljuju
+    u „Aktivnosti".
+  - 6 novih testova u `tests/voting.test.ts` (268/268 ukupno prolazi);
+    uživo provjereno na 1440px i 375px — puni ciklus (kreiranje → izmjena →
+    povlačenje → brisanje) na testnoj sjednici, i provjera da se prijedlog
+    na već saopštenoj sjednici (stvarni podaci iz demo baze) više ne može
+    obrisati, samo povući.
+
 ## [2.22.0] - 2026-09-22
 
 ### Dodato

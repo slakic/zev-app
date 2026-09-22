@@ -167,6 +167,28 @@ export async function getProposal(actor: Actor, id: string) {
   });
 }
 
+/** Shared referential validation for a proposal's optional cross-references — extracted
+ *  so createProposal and updateDraftProposal (which can edit these same fields before
+ *  voting opens, Plans/skupstina-draft-management-and-test-outbox-plan.md §A.2) can't
+ *  silently drift apart. `meetingId` is passed separately since an update never changes
+ *  which meeting a proposal belongs to. */
+async function assertProposalRefs(
+  zevId: string,
+  meetingId: string,
+  data: { agendaItemId?: string | null; buildingId?: string | null; entranceId?: string | null; allocationGroupId?: string | null; unitIds?: string[] }
+) {
+  if (data.agendaItemId) {
+    await prisma.agendaItem.findUniqueOrThrow({ where: { id: data.agendaItemId, meetingId } });
+  }
+  if (data.buildingId) await prisma.building.findUniqueOrThrow({ where: { id: data.buildingId, zevId } });
+  if (data.entranceId) await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
+  if (data.allocationGroupId) await prisma.allocationGroup.findUniqueOrThrow({ where: { id: data.allocationGroupId, zevId } });
+  if (data.unitIds?.length) {
+    const count = await prisma.unit.count({ where: { zevId, id: { in: data.unitIds } } });
+    if (count !== new Set(data.unitIds).size) throw new Error("Jedna ili više jedinica ne pripadaju ovom ZEV-u.");
+  }
+}
+
 export async function createProposal(
   actor: Actor,
   data: {
@@ -190,17 +212,8 @@ export async function createProposal(
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
   await prisma.meeting.findUniqueOrThrow({ where: { id: data.meetingId, zevId } });
-  if (data.agendaItemId) {
-    await prisma.agendaItem.findUniqueOrThrow({ where: { id: data.agendaItemId, meetingId: data.meetingId } });
-  }
-  if (data.buildingId) await prisma.building.findUniqueOrThrow({ where: { id: data.buildingId, zevId } });
-  if (data.entranceId) await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
-  if (data.allocationGroupId) await prisma.allocationGroup.findUniqueOrThrow({ where: { id: data.allocationGroupId, zevId } });
+  await assertProposalRefs(zevId, data.meetingId, data);
   await prisma.votingRule.findUniqueOrThrow({ where: { id: data.votingRuleId, zevId } });
-  if (data.unitIds?.length) {
-    const count = await prisma.unit.count({ where: { zevId, id: { in: data.unitIds } } });
-    if (count !== new Set(data.unitIds).size) throw new Error("Jedna ili više jedinica ne pripadaju ovom ZEV-u.");
-  }
   const p = await prisma.proposal.create({
     data: {
       zevId,
@@ -227,7 +240,33 @@ export async function createProposal(
   return p;
 }
 
-export async function updateDraftProposal(actor: Actor, id: string, data: { title?: string; text?: string; rationale?: string | null; financialImpact?: string | null; votingRuleId?: string; votingOpensAt?: Date | null; votingClosesAt?: Date | null }) {
+/** A nacrt (DRAFT) proposal has no content-hash, rule snapshot, eligible voters, tokens
+ *  or votes yet (Plans/skupstina-draft-management-and-test-outbox-plan.md §A.1.4) — none
+ *  of it has produced any legal effect, so every field createProposal accepts (short of
+ *  the versioning/proof machinery: version, supersedesId, status, contentHash,
+ *  ruleSnapshot, frozenAt, resultSummary, decisionNumber) is safe to edit here, including
+ *  scope and code. Once VOTING_OPEN, editing goes through createProposalRevision instead
+ *  (a new version, not an in-place edit) — the guard below is what enforces that split. */
+export async function updateDraftProposal(
+  actor: Actor,
+  id: string,
+  data: {
+    code?: string;
+    title?: string;
+    text?: string;
+    rationale?: string | null;
+    financialImpact?: string | null;
+    agendaItemId?: string | null;
+    scopeType?: ScopeType;
+    buildingId?: string | null;
+    entranceId?: string | null;
+    allocationGroupId?: string | null;
+    unitIds?: string[];
+    votingRuleId?: string;
+    votingOpensAt?: Date | null;
+    votingClosesAt?: Date | null;
+  }
+) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
   const before = await prisma.proposal.findUniqueOrThrow({ where: { id, zevId } });
@@ -236,10 +275,127 @@ export async function updateDraftProposal(actor: Actor, id: string, data: { titl
       "Prijedlog je zamrznut — sadržaj se ne može mijenjati nakon otvaranja glasanja. Kreirajte novu verziju."
     );
   }
+  await assertProposalRefs(zevId, before.meetingId, data);
   if (data.votingRuleId) await prisma.votingRule.findUniqueOrThrow({ where: { id: data.votingRuleId, zevId } });
-  const p = await prisma.proposal.update({ where: { id, zevId }, data });
-  await audit(actor, { action: "proposal.update", targetType: "Proposal", targetId: id, before: { title: before.title }, after: { title: p.title } });
+  const { unitIds, ...rest } = data;
+  const p = await prisma.$transaction(async (tx) => {
+    const updated = await tx.proposal.update({ where: { id, zevId }, data: rest });
+    // undefined = "not touched" (field omitted by the caller); a present array (even
+    // empty) means "replace the scope with exactly this set" — distinguishing the two is
+    // why this isn't just `data.unitIds ?? []`.
+    if (unitIds !== undefined) {
+      await tx.proposalUnit.deleteMany({ where: { proposalId: id } });
+      const distinct = [...new Set(unitIds)];
+      if (distinct.length) {
+        await tx.proposalUnit.createMany({ data: distinct.map((unitId) => ({ proposalId: id, unitId })) });
+      }
+    }
+    return updated;
+  });
+  await audit(actor, {
+    action: "proposal.update",
+    targetType: "Proposal",
+    targetId: id,
+    before: { code: before.code, title: before.title, scopeType: before.scopeType },
+    after: { code: p.code, title: p.title, scopeType: p.scopeType },
+  });
   return p;
+}
+
+/** Withdraws a DRAFT proposal (sets ProposalStatus.WITHDRAWN) — for a proposal the
+ *  president no longer wants to pursue but that shouldn't vanish without a trace, e.g.
+ *  because it's already visible to owners in the meeting's proposal list (getMeeting
+ *  includes every proposal regardless of status, not just management-visible ones).
+ *  Deliberately limited to DRAFT in this phase — withdrawing an already-VOTING_OPEN
+ *  proposal is a harder decision (what happens to issued tokens and already-cast votes)
+ *  and is out of scope here (Plans/skupstina-draft-management-and-test-outbox-plan.md
+ *  §A.4.1, §A.9 risk 2). For "this was a mistake, make it disappear entirely" instead,
+ *  see deleteDraftProposal below. */
+export async function withdrawProposal(actor: Actor, id: string, reason: string) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  if (!reason.trim()) throw new Error("Povlačenje prijedloga zahtijeva razlog.");
+  const before = await prisma.proposal.findUniqueOrThrow({ where: { id, zevId } });
+  if (before.status !== "DRAFT") {
+    throw new ForbiddenError("Samo nacrt prijedloga se može povući ovom radnjom.");
+  }
+  const p = await prisma.proposal.update({ where: { id, zevId }, data: { status: "WITHDRAWN" } });
+  await audit(actor, {
+    action: "proposal.withdraw",
+    targetType: "Proposal",
+    targetId: id,
+    before: { status: before.status },
+    after: { status: "WITHDRAWN" },
+    reason,
+  });
+  return p;
+}
+
+/**
+ * Permanently deletes a DRAFT proposal — referentially safe only while still a draft
+ * (no EligibleVoter/ApprovalToken/Vote rows exist yet; those are created exclusively by
+ * openVoting) and only while the meeting hasn't yet told owners anything about it.
+ * `INVITATIONS_SENT` is the first point in MEETING_FLOW where the app itself notifies
+ * owners about the meeting (skupstina/[id]/page.tsx's statusAction) — before that, the
+ * agenda is internal preparation; after it, deleting a proposal silently would be
+ * confusing for anyone who's already seen it. Past that point, withdrawProposal is the
+ * only option. The audit write happens BEFORE the delete, in the same transaction, so
+ * the append-only audit trail (DB trigger forbids UPDATE/DELETE on it) keeps a permanent
+ * record of exactly what was deleted even though the Proposal row itself is gone —
+ * that's what makes a hard delete acceptable in an otherwise append-only project (see
+ * Plans/skupstina-draft-management-and-test-outbox-plan.md §A.3).
+ */
+
+/** Whether a DRAFT proposal on a meeting in `meetingStatus` is still eligible for a hard
+ *  delete — exported so the UI can decide whether to show the "obriši" control at all
+ *  instead of showing it and letting deleteDraftProposal reject it server-side. Kept as a
+ *  pure function of the meeting's status (not the proposal's) so it can't drift from the
+ *  guard actually enforced below. */
+export function canDeleteDraftProposal(meetingStatus: MeetingStatus): boolean {
+  return MEETING_FLOW.indexOf(meetingStatus) < MEETING_FLOW.indexOf("INVITATIONS_SENT");
+}
+
+export async function deleteDraftProposal(actor: Actor, id: string, reason: string) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  if (!reason.trim()) throw new Error("Brisanje prijedloga zahtijeva razlog.");
+  const p = await prisma.proposal.findUniqueOrThrow({
+    where: { id, zevId },
+    include: { meeting: true, _count: { select: { eligibleVoters: true, votes: true } } },
+  });
+  if (p.status !== "DRAFT") {
+    throw new ForbiddenError("Samo nacrt prijedloga se može trajno obrisati.");
+  }
+  if (!canDeleteDraftProposal(p.meeting.status)) {
+    throw new ForbiddenError(
+      "Sjednica je već saopštena vlasnicima — prijedlog se ne može obrisati, ali može biti povučen."
+    );
+  }
+  // Structurally always true for a DRAFT proposal — belt and suspenders, not trusting
+  // status alone for a permanent, irreversible write.
+  if (p._count.eligibleVoters > 0 || p._count.votes > 0) {
+    throw new ForbiddenError("Prijedlog ima evidentirane glasače ili glasove i ne može se obrisati.");
+  }
+  await prisma.$transaction(async (tx) => {
+    await audit(actor, {
+      action: "proposal.delete",
+      targetType: "Proposal",
+      targetId: id,
+      before: {
+        code: p.code,
+        version: p.version,
+        title: p.title,
+        text: p.text,
+        rationale: p.rationale,
+        financialImpact: p.financialImpact?.toString() ?? null,
+        scopeType: p.scopeType,
+        status: p.status,
+        meetingId: p.meetingId,
+      },
+      reason,
+    }, tx);
+    await tx.proposal.delete({ where: { id, zevId } });
+  });
 }
 
 /**

@@ -146,9 +146,9 @@ const NEXT_STATUS: Partial<Record<MeetingStatus, { to: MeetingStatus; label: str
   MINUTES_FINALIZED: { to: "ARCHIVED", label: "Arhiviraj" },
 };
 
-export default async function MeetingPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string }> }) {
+export default async function MeetingPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string }> }) {
   const { id } = await params;
-  const { err } = await searchParams;
+  const { err, msg } = await searchParams;
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
   const meeting = await getMeeting(actor, id);
@@ -171,7 +171,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
           ) : undefined
         }
       />
-      <Flash err={err} />
+      <Flash err={err} msg={msg} />
       <StatusTimeline
         steps={MEETING_STATUS_ORDER.map((s) => ({ key: s, label: tEnum("meetingStatus", s) }))}
         activeKey={meeting.status}
