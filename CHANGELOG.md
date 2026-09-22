@@ -43,6 +43,38 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.20.0] - 2026-09-22
+
+### Izmijenjeno
+
+- **Nevidljivo dugme za radnje u tabelama (`ghost` varijanta bez ivice/pozadine
+  u mirovanju).** Prijavljeno kao problem uočen u praksi: dugme „Uredi" na
+  tabeli zgrada (`/zgrade`) izgledalo je kao obična tekstualna ćelija — nije
+  imalo ivicu ni pozadinu dok ga korisnik ne pređe mišem, pa se stapalo sa
+  ostalim sadržajem tabele umjesto da se prepozna kao kontrola.
+  - `RowAction`/`RowActionLink` (`ui.tsx`) mijenjaju podrazumijevanu
+    varijantu sa `ghost` na `secondary` (bijela pozadina, vidljiva siva
+    ivica u mirovanju) — jedna izmjena na nivou primitiva popravlja svaku
+    tabelu koja ga koristi bez eksplicitne varijante: „Uredi" na `/zgrade`
+    (zgrade, posebni dijelovi, stavke naknada), „Detalji"/„Uđi" na
+    `/admin` (lista ZEV naloga), „PDF"/„preuzmi" na `/dokumenti`,
+    „dokument" na `/vlasnici/[id]`, „uparivanje"/„detalji" na
+    `/fakture/uplate`.
+  - Dva mjesta koja su eksplicitno tražila `variant="ghost"` (iako je to već
+    bio podrazumijevani izbor) — dugmad „uđi u ovaj ZEV" na `/admin` i
+    `/admin/[zevId]` — ažurirana da prate isti novi podrazumijevani izgled.
+  - Tri `SubmitBtn variant="ghost"` unutar ćelija tabele (van `RowAction`
+    obrasca, pa ih prva izmjena nije pokrila) ručno prebačena na
+    `variant="secondary"`: „Okončaj mandat" (`/organi`), „ponovo izdaj" i
+    „opozovi" (`/skupstina/prijedlog/[id]`).
+  - `ghost` varijanta ostaje definisana u `btnVariantCls` (nije obrisana —
+    legitimna opcija za istinski sporedne radnje van tabela), ali je poslije
+    ove izmjene ne koristi nijedno mjesto u aplikaciji.
+  - 247/247 testova prolazi; uživo provjereno na 1440px i 375px — dugmad sa
+    vidljivom ivicom u mirovanju na `/zgrade`, `/admin`, `/organi`, sa istim
+    ponašanjem i na mobilnom kartičnom prelomu (provjereno preko
+    `getComputedStyle`: bijela pozadina + siva ivica bez potrebe za hoverom).
+
 ## [2.19.7] - 2026-09-18
 
 ### Izmijenjeno

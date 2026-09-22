@@ -215,7 +215,7 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
                     {m.userId === actor.userId && (
                       <form action={enterZevAction}>
                         <input type="hidden" name="zevId" value={zev.id} />
-                        <RowAction type="submit" variant="ghost">{t("tenant.enterThisZev")}</RowAction>
+                        <RowAction type="submit">{t("tenant.enterThisZev")}</RowAction>
                       </form>
                     )}
                     <ConfirmAction

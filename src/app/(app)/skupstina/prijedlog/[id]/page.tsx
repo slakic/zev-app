@@ -260,13 +260,13 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                             <input type="hidden" name="proposalId" value={p.id} />
                             <input type="hidden" name="tokenId" value={lastToken.id} />
                             <input type="hidden" name="op" value="reissue" />
-                            <SubmitBtn variant="ghost">ponovo izdaj</SubmitBtn>
+                            <SubmitBtn variant="secondary">ponovo izdaj</SubmitBtn>
                           </form>
                           <form action={tokenAction}>
                             <input type="hidden" name="proposalId" value={p.id} />
                             <input type="hidden" name="tokenId" value={lastToken.id} />
                             <input type="hidden" name="op" value="revoke" />
-                            <SubmitBtn variant="ghost">opozovi</SubmitBtn>
+                            <SubmitBtn variant="secondary">opozovi</SubmitBtn>
                           </form>
                         </div>
                       )}

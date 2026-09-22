@@ -186,7 +186,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
                   <form action={endBoardMemberAction} className="flex flex-wrap items-center gap-2">
                     <input type="hidden" name="termId" value={m.id} />
                     <input type="date" name="validTo" className={`${inputCls} w-36 py-1 text-xs`} />
-                    <SubmitBtn variant="ghost">Okončaj mandat</SubmitBtn>
+                    <SubmitBtn variant="secondary">Okončaj mandat</SubmitBtn>
                   </form>
                 )}
               </Td>

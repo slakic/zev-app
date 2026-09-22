@@ -389,14 +389,16 @@ const rowActionBase =
   "focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50";
 
 /** A "Radnje" (actions) column cell — a verb, not an identity (see `RowLink` below). Defaults to
- *  `ghost` since most row actions are secondary to the row's own identity link. Forwards standard
+ *  `secondary` (visible border, at rest — not just on hover): `ghost` has no border or fill until
+ *  hovered, so at a glance it reads as plain table text, not a control (found in a live review —
+ *  the "Uredi" button in `/zgrade`'s Ulazi table was invisible except on hover). Forwards standard
  *  button props, so it works as a form submit (`type="submit"`) or a client-side toggle
  *  (`type="button" onClick={...}`) — both patterns exist across the app's row components. */
 export function RowAction({
   children, variant, className, ...rest
 }: { children: ReactNode; variant?: BtnVariant; className?: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button className={`${rowActionBase} ${btnVariantCls[variant ?? "ghost"]} ${className ?? ""}`} {...rest}>
+    <button className={`${rowActionBase} ${btnVariantCls[variant ?? "secondary"]} ${className ?? ""}`} {...rest}>
       {children}
     </button>
   );
@@ -408,7 +410,7 @@ export function RowActionLink({
   href, children, variant, className,
 }: { href: string; children: ReactNode; variant?: BtnVariant; className?: string }) {
   return (
-    <Link href={href} className={`${rowActionBase} ${btnVariantCls[variant ?? "ghost"]} ${className ?? ""}`}>
+    <Link href={href} className={`${rowActionBase} ${btnVariantCls[variant ?? "secondary"]} ${className ?? ""}`}>
       {children}
     </Link>
   );
@@ -441,9 +443,13 @@ export const btnBase =
 // `caution` takes over most of what used to be `danger`; the plain-red `danger` weight is now
 // reserved for irreversible destruction or undoing money/rights, and always behind a confirm
 // step (Faza 2). `tonal` is the new default for supporting actions inside a card ("Sačuvaj",
-// "Dodaj stavku") — the single biggest source of calming the page down. `ghost` is for
-// row-level text actions in tables, replacing bare `<button className="text-xs ...">` calls
-// that had no real tap target.
+// "Dodaj stavku") — the single biggest source of calming the page down. `secondary` (visible
+// border at rest) is `RowAction`/`RowActionLink`'s default for row-level actions in tables,
+// replacing bare `<button className="text-xs ...">` calls that had no real tap target. `ghost`
+// (no border/fill until hovered) reads as plain text at a glance, not a control — a live review
+// caught this on `RowAction`'s old default (the "Uredi" button in `/zgrade`'s Ulazi table was
+// invisible except on hover) — so it's kept only for a genuinely de-emphasized action that isn't
+// sitting inside a data table, not used anywhere in the app today.
 export const btnVariantCls: Record<string, string> = {
   primary: "bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:shadow focus-visible:ring-blue-500",
   tonal: "bg-blue-50 text-blue-700 hover:bg-blue-100 focus-visible:ring-blue-500",

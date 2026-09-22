@@ -104,7 +104,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
                       {z.hasMyMembership && (
                         <form action={enterZevAction}>
                           <input type="hidden" name="zevId" value={z.id} />
-                          <RowAction type="submit" variant="ghost">{t("tenant.enter")}</RowAction>
+                          <RowAction type="submit">{t("tenant.enter")}</RowAction>
                         </form>
                       )}
                     </div>
