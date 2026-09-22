@@ -158,8 +158,10 @@ detalja o konekciji — provjerava samo dohvatljivost baze (`SELECT 1`). Koristi
 | Vlasnik (Marko Jovanović) | `marko@zev.ba` | `Lozinka123!` |
 | Vlasnik/suvlasnik (Nikola Ilić) | `nikola@zev.ba` | `Lozinka123!` |
 
-Seed ostavlja prijedlog **P-<godina>-02 otvoren za glasanje**: lični linkovi i verifikacioni
-kodovi vide se u *Podešavanja → Poslate poruke* (mock e-mail outbox).
+Seed ostavlja prijedlog **P-<godina>-02 otvoren za glasanje**. Bez pravog e-mail
+provajdera, lični link i verifikacioni kod postoje samo u outbox tijelu poruke
+(`NotificationMessage.body`) — vidi `npm run test:links` niže za način da im se pristupi
+bez ijedne izmjene produkcionog koda.
 
 ## Testovi i provjere
 
@@ -171,6 +173,22 @@ npm run test:e2e    # Playwright smoke (zahtijeva pokrenut server + seed)
 ```
 
 Testovi koriste `TEST_DATABASE_URL` (baza se resetuje pri svakom pokretanju).
+
+### Ručno testiranje toka glasanja bez pravog e-maila
+
+`npm run test:e2e` (bez argumenata) sam pronalazi najnoviji link/kod u outbox-u i kroz
+njega provede cijeli tok. Za ručno klikanje kroz UI u pregledaču:
+
+```bash
+npm run test:links   # ili: docker compose exec app npm run test:links
+```
+
+Ispisuje link i verifikacioni kod za svaku nedavnu poruku pozivnice/ponovnog izdavanja,
+zajedno sa trenutnim statusom tokena (aktivan/iskorišten/opozvan/zamijenjen) — poništeni
+linkovi se time ne mogu pomiješati sa važećim. Radi samo kad su **oba** uslova ispunjena:
+`SHOW_TEST_LINKS="1"` i `EMAIL_PROVIDER="mock"` (podrazumijevano uključeno u
+`docker-compose.yml` za lokalni razvoj; nikad postavljati na pravom deployment-u — vidi
+komentar u `.env.example` i `src/server/notifications/testOutbox.ts`).
 
 ## Šta je mock / poznata ograničenja
 

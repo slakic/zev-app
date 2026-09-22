@@ -38,6 +38,10 @@ services:
       APP_URL: http://localhost:3000
       EMAIL_PROVIDER: mock
       VIBER_PROVIDER: mock
+      # Testno okruženje — vidi src/server/notifications/testOutbox.ts. NIKADA ne
+      # postavljati na pravom deployment-u (Vercel ne čita docker-compose.yml, pa ovo
+      # ne dopire donde, ali ostaje eksplicitno i ovdje da se ne kopira nepažljivo).
+      SHOW_TEST_LINKS: "1"
       STORAGE_DIR: ./var/storage
       # 1 = pri prvom pokretanju ubaci demo podatke (preskače se ako ih već ima)
       SEED_ON_START: "1"

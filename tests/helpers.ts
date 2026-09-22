@@ -7,6 +7,7 @@ import * as finance from "@/server/services/finance";
 import * as meetings from "@/server/services/meetings";
 import * as billing from "@/server/services/billing";
 import { seedDefaultSettings } from "@/server/services/settings";
+import { extractApprovalSecrets } from "@/server/notifications/testOutbox";
 
 let counter = 0;
 export function uid(prefix: string): string {
@@ -192,8 +193,7 @@ export async function openVotingWithLinks(f: Fixture, proposalId: string) {
   });
   // extract token + code from the mock e-mail bodies
   return messages.map((m) => {
-    const link = m.body.match(/http\S+\/glasanje\/(\S+)/);
-    const code = m.body.match(/verifikacioni kod: (\d{6})/i);
-    return { toAddress: m.toAddress, token: link?.[1] ?? "", code: code?.[1] ?? "" };
+    const { token, code } = extractApprovalSecrets(m.body);
+    return { toAddress: m.toAddress, token: token ?? "", code: code ?? "" };
   });
 }

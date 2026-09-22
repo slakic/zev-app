@@ -43,6 +43,62 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.22.0] - 2026-09-22
+
+### Dodato
+
+- **Testni alat za pristup glasačkim linkovima bez pravog e-mail provajdera
+  (Faza B1, `Plans/skupstina-draft-management-and-test-outbox-plan.md`, Dio B).**
+  Do sada je jedini način da se dobije stvaran link/kod za glasanje bio ručno
+  čitanje `NotificationMessage.body` iz baze — nije postojao ni alat ni gejtovan
+  prikaz.
+  - `npm run test:links` (`scripts/show-test-links.ts`) ispisuje posljednje
+    poslate glasačke pozivnice/reizdate linkove, sa **trenutnim statusom
+    tokena** (aktivan/iskorišten/opozvan/istekao/zamijenjen), tako da se ne
+    kliktka na poništene linkove misleći da nešto ne radi.
+  - `npm run test:e2e` sada zaista radi bez argumenata — zaglavlje skripte je
+    to odavno obećavalo (`e2e/smoke.e2e.mjs`), ali kod je čitao samo
+    `process.argv`; sada, kad argumenti izostanu, sam pronalazi najnoviji
+    link/kod direktno iz baze (`DATABASE_URL`) prije nego što uopšte otvori
+    pregledač.
+  - Novi dijeljeni modul `src/server/notifications/testOutbox.ts`
+    (`isTestOutboxEnabled`, `extractApprovalSecrets`, `listApprovalLinks`) —
+    `tests/helpers.ts` sada koristi istu funkciju umjesto vlastite kopije
+    regexa, čime se krhka veza između teksta e-maila i testova svodi na jedno
+    mjesto.
+  - **Bezbjednosna kapija:** funkcija je isključena po difoltu i zahtijeva OBA
+    uslova: novu env varijablu `SHOW_TEST_LINKS="1"` (striktno, ne „truthy") i
+    `EMAIL_PROVIDER="mock"` (bijela lista, ne crna listа „nije mailjet" —
+    budući treći pravi provajder ostaje bezbjedan po difoltu). Nijedan uslov
+    sam po sebi nije dovoljan, a oba su podrazumijevano isključena — uključujući
+    i na današnjoj produkciji, koja već radi sa `EMAIL_PROVIDER=mock` i bez
+    `SHOW_TEST_LINKS`.
+  - **Nalaz tokom implementacije, ispravljen u odnosu na plan:** izvorni plan je
+    kao treću, dodatnu bravu predlagao `NODE_ENV !== "production"`. Provjereno
+    u `Dockerfile:27` da ovaj projekat **tvrdo postavlja `NODE_ENV=production`**
+    i u lokalnom Docker razvoju/testiranju i (isto ponašanje `next start` daje)
+    na pravoj Vercel produkciji — `NODE_ENV` dakle ne razlikuje ta dva
+    okruženja uopšte, i njegovo uključivanje bi trajno ugasilo funkciju tačno
+    tamo gdje treba da radi, bez ijedne stvarne bezbjednosne dobiti. Izbačen iz
+    kapije; `Plans/skupstina-draft-management-and-test-outbox-plan.md` ažuriran
+    da to odražava. `docker-compose.yml` (samo lokalni razvoj — Vercel ga ne
+    čita) sada postavlja `SHOW_TEST_LINKS: "1"` pored postojećeg
+    `EMAIL_PROVIDER: mock`, pa alat radi odmah iz kutije za lokalno testiranje.
+  - Ispravljena i zastarjela, netačna napomena u `README.md` koja je tvrdila
+    da se glasački linkovi već vide u *Podešavanja → Poslate poruke* — ta
+    stranica danas prikazuje samo metapodatke, ne i sadržaj poruke (dolazi u
+    Fazi B2).
+  - Novi testovi `tests/testOutbox.test.ts` (15) pokrivaju kapiju za svaki
+    režim otkaza iz plana (nedostaje varijabla, pravi provajder, izmišljen
+    provajder, „truthy" umjesto striktnog `"1"`, i eksplicitno — da
+    `NODE_ENV=production` ne utiče na ishod) plus integrativni test protiv
+    stvarnog `openVoting` izlaza. 262/262 testova prolazi.
+  - Uživo provjereno: `npm run test:links` ispravno odbija bez
+    `SHOW_TEST_LINKS` (izlazni kod 1, objašnjenje koji uslov nedostaje), i
+    ispravno ispisuje stvaran, radan link kad je uključen — link je i ručno
+    otvoren u pregledaču i potvrđeno da vodi na pravu stranicu za glasanje
+    ispravnog vlasnika.
+
 ## [2.21.0] - 2026-09-22
 
 ### Popravljeno
