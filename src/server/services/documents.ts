@@ -27,7 +27,22 @@ import { getFonts } from "@/server/pdf/fonts";
 type PdfBuild = (doc: PDFKit.PDFDocument) => Promise<void> | void;
 
 async function renderPdf(build: PdfBuild): Promise<Buffer> {
-  const doc = new PDFDocument({ size: "A4", margin: 50, bufferPages: true });
+  const doc = new PDFDocument({
+    size: "A4",
+    margin: 50,
+    bufferPages: true,
+    // Without this, pdfkit's constructor defaults to font "Helvetica" and eagerly loads it —
+    // via `createRequire()(...)` calling its own bundled `#standard-fonts/Helvetica` subpath
+    // import, a dynamic require that Vercel's serverless bundler can't trace (unlike our own
+    // assets/fonts/** — see outputFileTracingIncludes in next.config.ts, which can't help here
+    // since this file lives inside node_modules/pdfkit, not our own source tree). Docker never
+    // hit this because it ships the whole node_modules folder, not a traced subset. We always
+    // switch to "reg"/"bold" (DejaVuSans, registered below) before drawing anything, so pdfkit's
+    // bundled Helvetica is never actually needed — `font: false` skips loading it entirely.
+    // @types/pdfkit's `font` field is typed `string | undefined` and doesn't know pdfkit
+    // accepts `false` here, hence the cast.
+    font: false as unknown as string,
+  });
   const fonts = getFonts();
   doc.registerFont("reg", fonts.regular);
   doc.registerFont("bold", fonts.bold);

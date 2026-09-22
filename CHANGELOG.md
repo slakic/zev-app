@@ -43,6 +43,38 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.21.0] - 2026-09-22
+
+### Popravljeno
+
+- **Generisanje PDF-a puca na Vercel-u sa „Cannot find module '#standard-fonts/Helvetica'"
+  (radi lokalno/Docker, ne na produkciji).** Prijavljeno sa stvarnim ekranom greške pri
+  pomjeranju sjednice skupštine u status „Pozivi pripremljeni" (generiše poziv na
+  sjednicu kao PDF), ali greška je u zajedničkom `renderPdf` helperu — pogađa svako
+  generisanje PDF-a u aplikaciji (pozivi, zapisnici, fakture, izvještaji, kartice
+  vlasnika, radni nalozi).
+  - **Uzrok:** `pdfkit`-ov konstruktor podrazumijevano postavlja font na „Helvetica" i
+    odmah ga učitava — internim `createRequire()(...)` pozivom koji učitava sopstveni
+    ugrađeni font preko `#standard-fonts/Helvetica` subpath importa iz `pdfkit`-ovog
+    `package.json`-a. Taj `require` poziv je *dinamički* (obavijen kroz
+    `createRequire()`), pa ga Vercel-ov serverless bundler ne može statički
+    ispratiti/upakovati — za razliku od naših sopstvenih fontova
+    (`assets/fonts/**`, već pokriveno sa `outputFileTracingIncludes` u
+    `next.config.ts`, vidi `Plans/deployment-portability-plan.md` §4), ova putanja
+    živi unutar `node_modules/pdfkit` i taj mehanizam je ne može pokriti. Docker
+    build nikad nije pogodio ovaj problem jer u image kopira čitav `node_modules`,
+    ne samo praćeni (traced) podskup fajlova.
+  - **Popravka (`documents.ts`, `renderPdf`):** `new PDFDocument({ ..., font: false })`
+    — aplikacija nikad ne koristi `pdfkit`-ov ugrađeni font: odmah nakon
+    konstruisanja registruje i prebacuje na sopstveni „reg"/„bold" (DejaVu Sans),
+    pa `font: false` u potpunosti preskače učitavanje Helvetice, umjesto da se
+    oslanja na to da neka platforma uspije da isprati taj interni `pdfkit` fajl.
+    `@types/pdfkit` ne zna da ova opcija prihvata `false` (tipizirano samo kao
+    `string | undefined`) — otuda uz nju eksplicitan, komentarisan cast.
+  - 247/247 testova prolazi; funkcionalno provjereno uživo — generisan stvaran PDF
+    (nacrt zapisnika sjednice) i preuzet preko API rute: ispravan `%PDF-1.3`
+    zaglavlje, `content-type: application/pdf`, 23,7 KB, bez greške.
+
 ## [2.20.0] - 2026-09-22
 
 ### Izmijenjeno
