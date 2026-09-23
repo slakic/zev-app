@@ -53,6 +53,89 @@ export async function getMeeting(actor: Actor, id: string) {
   });
 }
 
+/**
+ * Single-query summary for the live-meeting screen (Plans/live-meeting-mode-plan.md §2.3,
+ * §3) — deliberately narrow and cheap: `LiveRefresh` (Faza 3) polls this every ~10s, so it
+ * must never grow with the number of proposals in the meeting. A voting result is computed
+ * only for `opts.proposalId` (the one open agenda item), never for every proposal in the
+ * meeting — that's the whole reason this exists instead of reusing `getMeeting` +
+ * `computeProposalResult` in a loop.
+ */
+export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?: { proposalId?: string }) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({
+    where: { id: meetingId, zevId },
+    include: {
+      agendaItems: { orderBy: { order: "asc" }, include: { proposals: { orderBy: { code: "asc" } } } },
+    },
+  });
+
+  // Same source as openVoting's own eligible-voter basis (§3.2: "lista je lista glasača, ne
+  // lista lica") — the roll-call and the voting base can never disagree about who counts.
+  const isBoard = meeting.body === "BOARD";
+  const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId);
+  const ownerIds = basis.map((b) => b.ownerId);
+
+  const [attendances, parties] = await Promise.all([
+    prisma.attendance.findMany({
+      where: { meetingId },
+      select: { partyId: true, present: true, viaProxyId: true },
+    }),
+    prisma.party.findMany({
+      where: { zevId, id: { in: ownerIds } },
+      select: { id: true, eVoteConsentStatus: true },
+    }),
+  ]);
+  const attendanceByOwner = new Map(attendances.map((a) => [a.partyId, a]));
+  const consentByOwner = new Map(parties.map((p) => [p.id, p.eVoteConsentStatus]));
+
+  const voters = basis.map((b) => {
+    const att = attendanceByOwner.get(b.ownerId);
+    return {
+      ownerId: b.ownerId,
+      ownerName: b.ownerName,
+      // `marked` distinguishes "explicitly recorded absent" from "not prozivka'd yet" —
+      // the roll-call screen's default "Neoznačeni" filter (§3.2) needs this, a plain
+      // boolean `present` alone can't tell the two apart.
+      marked: att !== undefined,
+      present: att?.present ?? false,
+      viaProxyId: att?.viaProxyId ?? null,
+      eVoteConsentSigned: consentByOwner.get(b.ownerId) === "SIGNED",
+      unitLabels: b.units.map((u) => u.label),
+    };
+  });
+  const presentCount = voters.filter((v) => v.present).length;
+
+  let activeResult = null;
+  if (opts?.proposalId) {
+    const proposal = await prisma.proposal.findUniqueOrThrow({ where: { id: opts.proposalId, zevId } });
+    if (proposal.status === "VOTING_OPEN" && proposal.ruleSnapshot) {
+      activeResult = serializeResult(await computeProposalResult(zevId, opts.proposalId));
+    }
+  }
+
+  return {
+    meetingId: meeting.id,
+    title: meeting.title,
+    status: meeting.status,
+    body: meeting.body,
+    agendaItems: meeting.agendaItems.map((a) => ({
+      id: a.id,
+      order: a.order,
+      title: a.title,
+      note: a.note,
+      proposals: a.proposals.map((p) => ({ id: p.id, code: p.code, title: p.title, status: p.status })),
+    })),
+    voters,
+    presentCount,
+    absentCount: voters.length - presentCount,
+    totalCount: voters.length,
+    activeProposalId: opts?.proposalId ?? null,
+    activeResult,
+  };
+}
+
 export async function createMeeting(
   actor: Actor,
   data: { title: string; type: MeetingType; body?: MeetingBody; location?: string | null; scheduledAt?: Date | null; eVoteOpensAt?: Date | null; eVoteClosesAt?: Date | null }
@@ -77,7 +160,10 @@ export async function updateMeeting(actor: Actor, id: string, data: Prisma.Meeti
 }
 
 export async function advanceMeetingStatus(actor: Actor, id: string, to: MeetingStatus, reason?: string) {
-  requireRole(actor, "PRESIDENT");
+  // PRESIDENT + ACCOUNTANT (Plans/live-meeting-mode-plan.md §2.7, P7) — widened so the
+  // live-meeting screen can advance a session to VOTING_OPEN without a desktop trip;
+  // applies here too, not only from /uzivo, since this is the one shared function.
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id, zevId } });
   const fromIdx = MEETING_FLOW.indexOf(meeting.status);
@@ -109,7 +195,8 @@ export async function addAgendaItem(actor: Actor, data: { meetingId: string; tit
 }
 
 export async function recordAttendance(actor: Actor, data: { meetingId: string; partyId: string; present: boolean; viaProxyId?: string | null }) {
-  requireRole(actor, "PRESIDENT");
+  // PRESIDENT + ACCOUNTANT — see advanceMeetingStatus above for rationale (§2.7, P7).
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   // Attendance has no zevId column of its own — tenant checked via its two
   // required parents (Meeting, Party) before the write.
@@ -122,6 +209,35 @@ export async function recordAttendance(actor: Actor, data: { meetingId: string; 
   });
   await audit(actor, { action: "attendance.record", targetType: "Attendance", targetId: a.id, after: { partyId: data.partyId, present: data.present } });
   return a;
+}
+
+/**
+ * Roll-call in bulk, for the live-meeting screen (Plans/live-meeting-mode-plan.md §3.2) —
+ * same upsert semantics and same audit shape as recordAttendance above, one row and one
+ * audit entry per person, all in a single transaction so a phone marking 20 owners at once
+ * doesn't leave a partial roll-call behind if the connection drops mid-way.
+ */
+export async function recordAttendanceBulk(
+  actor: Actor,
+  data: { meetingId: string; entries: { partyId: string; present: boolean; viaProxyId?: string | null }[] }
+) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  await prisma.meeting.findUniqueOrThrow({ where: { id: data.meetingId, zevId } });
+  return prisma.$transaction(async (tx) => {
+    const results = [];
+    for (const entry of data.entries) {
+      await tx.party.findUniqueOrThrow({ where: { id: entry.partyId, zevId } });
+      const a = await tx.attendance.upsert({
+        where: { meetingId_partyId: { meetingId: data.meetingId, partyId: entry.partyId } },
+        create: { meetingId: data.meetingId, partyId: entry.partyId, present: entry.present, viaProxyId: entry.viaProxyId ?? null },
+        update: { present: entry.present, viaProxyId: entry.viaProxyId ?? null },
+      });
+      await audit(actor, { action: "attendance.record", targetType: "Attendance", targetId: a.id, after: { partyId: entry.partyId, present: entry.present } }, tx);
+      results.push(a);
+    }
+    return results;
+  });
 }
 
 // ---- Voting rules ----
@@ -469,10 +585,25 @@ function proposalContentHash(p: { text: string; title: string; version: number }
  *  3. issue one hashed token + verification code per eligible voter
  * Returns delivery payloads (plaintext links + codes) exactly once, for delivery.
  */
-export async function openVoting(actor: Actor, proposalId: string, opts?: { expiresAt?: Date }) {
-  requireRole(actor, "PRESIDENT");
+export async function openVoting(
+  actor: Actor,
+  proposalId: string,
+  opts?: {
+    expiresAt?: Date;
+    /** "ALL" (default) is today's behavior, bit for bit — every eligible owner gets an
+     * e-mail. "LIVE" (Plans/live-meeting-mode-plan.md §2.1-§2.2) is the live-meeting
+     * screen's mode: owners marked present in Attendance vote in the room instead, so
+     * their e-mail is suppressed; everyone still gets an EligibleVoter + ApprovalToken
+     * row either way (needed for reissueToken and for a uniform closeVoting), only
+     * ApprovalToken.deliveredVia and whether queueNotification actually runs differ. */
+    delivery?: "ALL" | "LIVE";
+  }
+) {
+  // PRESIDENT + ACCOUNTANT — see advanceMeetingStatus above for rationale (§2.7, P7).
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const appUrl = getEnv().APP_URL;
+  const delivery = opts?.delivery ?? "ALL";
 
   // Explicit timeout: this loops 3-4 sequential queries per eligible voter (proxy lookup,
   // EligibleVoter + ApprovalToken + audit writes) inside one interactive transaction.
@@ -512,18 +643,76 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
       throw new Error(isBoard ? "Upravni odbor trenutno nema evidentiranih članova." : "Nema nijednog vlasnika u obuhvatu prijedloga.");
     }
 
+    // Live-meeting suppression inputs (Plans/live-meeting-mode-plan.md §2.1-§2.2) — computed
+    // once for the whole batch, not per voter. Untouched (both stay null) in "ALL" mode, so
+    // the loop below falls through to today's behavior exactly.
+    const presentOwnerIds =
+      delivery === "LIVE"
+        ? new Set(
+            (
+              await tx.attendance.findMany({
+                where: { meetingId: p.meetingId, present: true },
+                select: { partyId: true },
+              })
+            ).map((a) => a.partyId)
+          )
+        : null;
+    const consentById =
+      delivery === "LIVE"
+        ? new Map(
+            (
+              await tx.party.findMany({
+                where: { zevId, id: { in: [...new Set(basis.map((b) => b.ownerId))] } },
+                select: { id: true, eVoteConsentStatus: true },
+              })
+            ).map((pt) => [pt.id, pt.eVoteConsentStatus])
+          )
+        : null;
+
     const weightMethod = p.votingRule.weightMethod;
     let totalWeight = ZERO;
     const voterRows: {
       ownerId: string; ownerName: string; email: string | null; weight: string;
       proxyId: string | null; proxyRecordId: string | null; proxyName: string | null; proxyEmail: string | null;
       basis: unknown;
+      /** Whether this voter's e-mail actually goes out. Always true in "ALL" mode. */
+      deliver: boolean;
+      /** Why delivery was suppressed, only set in "LIVE" mode. */
+      suppressReason: "PRESENT" | "NO_CONSENT" | "NO_EMAIL" | null;
     }[] = [];
     for (const b of basis) {
       const w = computeVoterWeight(weightMethod, b);
       totalWeight = totalWeight.plus(w);
       // Board members vote personally — no proxy voting in upravni odbor (assumption, see docs).
       const proxy = isBoard ? null : await activeProxyFor(zevId, b.ownerId, p.meetingId);
+
+      let deliver = true;
+      let suppressReason: "PRESENT" | "NO_CONSENT" | "NO_EMAIL" | null = null;
+      if (delivery === "LIVE") {
+        if (presentOwnerIds!.has(b.ownerId)) {
+          // Korpa A (§2.1) — in the room, votes IN_PERSON via recordManualVote instead.
+          deliver = false;
+          suppressReason = "PRESENT";
+        } else {
+          const recipientEmail = proxy?.holder.email ?? b.email;
+          // P1 (§Odluke korisnika): when a proxy represents the owner, BOTH must have
+          // signed e-vote consent — the declaration is personal, not transferable.
+          const consentOk = proxy
+            ? consentById!.get(b.ownerId) === "SIGNED" && proxy.holder.eVoteConsentStatus === "SIGNED"
+            : consentById!.get(b.ownerId) === "SIGNED";
+          if (!recipientEmail) {
+            // Korpa C (§2.1) — stays in the eligible base and in the quorum denominator;
+            // never silently dropped just because there's no channel to reach them.
+            deliver = false;
+            suppressReason = "NO_EMAIL";
+          } else if (!consentOk) {
+            deliver = false;
+            suppressReason = "NO_CONSENT";
+          }
+          // else: Korpa B — absent, registered, has an e-mail — delivers as normal.
+        }
+      }
+
       voterRows.push({
         ownerId: b.ownerId,
         ownerName: b.ownerName,
@@ -534,6 +723,8 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
         proxyName: proxy ? partyDisplayName(proxy.holder) : null,
         proxyEmail: proxy?.holder.email ?? null,
         basis: { units: b.units, ownershipShareSum: b.ownershipShareSum.toFixed(6), areaSum: b.areaSum.toFixed(6) },
+        deliver,
+        suppressReason,
       });
     }
 
@@ -563,7 +754,7 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
 
     const out: {
       ownerName: string; email: string | null; link: string; verificationCode: string;
-      tokenId: string; eligibleVoterId: string; viaProxy: string | null;
+      tokenId: string; eligibleVoterId: string; viaProxy: string | null; deliver: boolean;
     }[] = [];
     for (const row of voterRows) {
       const ev = await tx.eligibleVoter.create({
@@ -584,7 +775,10 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
           tokenHash: sha256(token),
           verificationHash: sha256(code),
           expiresAt,
-          deliveredVia: "EMAIL",
+          // null (not "EMAIL") for a suppressed live-meeting recipient — nothing was
+          // actually delivered to them (§2.2). The field is already nullable and this is
+          // its only other value today, so no migration is needed.
+          deliveredVia: row.deliver ? "EMAIL" : null,
         },
       });
       await audit(actor, {
@@ -601,21 +795,33 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
         tokenId: t.id,
         eligibleVoterId: ev.id,
         viaProxy: row.proxyName ? row.ownerName : null,
+        deliver: row.deliver,
       });
     }
+
+    // Suppression counts (§2.2) — captured in the audit trail so "why didn't this owner
+    // get an e-mail" is answerable permanently, not just from the current Attendance state
+    // (which can change after the fact).
+    const deliveredCount = voterRows.filter((r) => r.deliver).length;
+    const suppressedPresent = voterRows.filter((r) => r.suppressReason === "PRESENT").length;
+    const suppressedNoConsent = voterRows.filter((r) => r.suppressReason === "NO_CONSENT").length;
+    const suppressedNoEmail = voterRows.filter((r) => r.suppressReason === "NO_EMAIL").length;
 
     await audit(actor, {
       action: "proposal.voting.open",
       targetType: "Proposal",
       targetId: p.id,
-      after: { contentHash, totalEligibleWeight: ruleSnapshot.totalEligibleWeight, voters: out.length },
+      after: {
+        contentHash, totalEligibleWeight: ruleSnapshot.totalEligibleWeight, voters: out.length,
+        delivery, deliveredCount, suppressedPresent, suppressedNoConsent, suppressedNoEmail,
+      },
     }, tx);
     return out;
   }, { timeout: 20000 });
 
   // Queue deliveries (outside the tx; mock providers in MVP).
   for (const d of deliveries) {
-    if (d.email) {
+    if (d.email && d.deliver) {
       await queueNotification({
         zevId,
         channel: "EMAIL",
@@ -634,8 +840,13 @@ export async function openVoting(actor: Actor, proposalId: string, opts?: { expi
       });
     }
   }
-  return deliveries.map(({ ownerName, email, tokenId, eligibleVoterId, viaProxy }) => ({
-    ownerName, email, tokenId, eligibleVoterId, viaProxy,
+  // link/verificationCode/deliver included from here on (Plans/live-meeting-mode-plan.md
+  // §2.2): no existing caller captures this return value at all (checked — the desktop
+  // action discards it), and a suppressed live-meeting recipient's link/code are otherwise
+  // unrecoverable — they're never queued into a NotificationMessage, so the caller (the
+  // live-meeting flow, later phases) needs them straight from here.
+  return deliveries.map(({ ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode }) => ({
+    ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode,
   }));
 }
 
@@ -957,7 +1168,8 @@ export async function recordManualVote(
   actor: Actor,
   data: { eligibleVoterId: string; choice: VoteChoice; channel: Exclude<VoteChannel, "ELECTRONIC">; note?: string }
 ) {
-  requireRole(actor, "PRESIDENT");
+  // PRESIDENT + ACCOUNTANT — see advanceMeetingStatus above for rationale (§2.7, P7).
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   return prisma.$transaction(async (tx) => {
     const ev = await tx.eligibleVoter.findUniqueOrThrow({
@@ -1077,7 +1289,8 @@ export async function computeProposalResult(zevId: string, proposalId: string) {
 }
 
 export async function closeVoting(actor: Actor, proposalId: string) {
-  requireRole(actor, "PRESIDENT");
+  // PRESIDENT + ACCOUNTANT — see advanceMeetingStatus above for rationale (§2.7, P7).
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const result = await computeProposalResult(zevId, proposalId);
   const serialized = serializeResult(result);

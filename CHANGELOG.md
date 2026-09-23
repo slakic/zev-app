@@ -43,6 +43,37 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.26.0] - 2026-09-23
+
+### Dodato
+
+- **`Plans/live-meeting-mode-plan.md`** — plan za vođenje skupštine sa telefona (prozivka,
+  glasanje po tačkama, e-glasački linkovi samo za odsutne registrovane vlasnike, rezultati
+  u realnom vremenu), sa donesenim odlukama korisnika (§Odluke korisnika).
+- **Faza 0 (servisni sloj, bez UI-ja)** iz tog plana:
+  - `openVoting(actor, proposalId, opts?)` dobija `opts.delivery?: "ALL" | "LIVE"`
+    (podrazumijevano `"ALL"`, bit-za-bit isto ponašanje kao do sad). U režimu `"LIVE"`
+    e-glasački link se šalje samo odsutnim vlasnicima registrovanim za elektronsko
+    glasanje (`Party.eVoteConsentStatus = "SIGNED"`) — kad vlasnika zastupa punomoćnik,
+    zahtijeva se saglasnost **i** vlasnika **i** punomoćnika. Prisutni i neregistrovani
+    odsutni vlasnici i dalje dobijaju `EligibleVoter`/`ApprovalToken` red (radi
+    `reissueToken` izlaza za nuždu i jednoobraznog `closeVoting`) i ostaju u glasačkoj
+    bazi i u imeniocu kvoruma — samo im se ne šalje e-mail. Audit `proposal.voting.open`
+    sad nosi i broj isporučenih/potisnutih glasova po razlogu.
+  - `getLiveMeetingState(actor, meetingId, opts?)` — jedan jeftin upit za ekran uživo:
+    prozivka (prisutnost, punomoć, saglasnost za e-glasanje po vlasniku) + rezultat
+    isključivo aktivne tačke dnevnog reda, nikad svih prijedloga sjednice.
+  - `recordAttendanceBulk(actor, { meetingId, entries })` — prozivka više lica u jednoj
+    transakciji, sa istim upsert/audit obrascem kao postojeći `recordAttendance`.
+  - `advanceMeetingStatus`, `recordAttendance`, `openVoting`, `recordManualVote`,
+    `closeVoting` sad prihvataju i `PRESIDENT` i `ACCOUNTANT` (bilo isključivo
+    `PRESIDENT`) — namjerno proširenje ovlašćenja (ne samo za režim uživo, već i za
+    postojeće desktop stranice koje pozivaju iste funkcije), po odluci korisnika.
+  - 11 novih testova u `tests/live-meeting.test.ts` — postojeći `tests/voting.test.ts`
+    prolazi bez ijedne izmjene, potvrđujući da je podrazumijevano ponašanje netaknuto
+    (287/287 ukupno prolazi).
+- Nema izmjene šeme baze — nijedna migracija nije potrebna za ovu fazu.
+
 ## [2.25.1] - 2026-09-23
 
 ### Izmijenjeno
