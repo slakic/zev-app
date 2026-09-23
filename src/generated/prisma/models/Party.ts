@@ -41,6 +41,7 @@ export type PartyMinAggregateOutputType = {
   eVoteConsentStatus: string | null
   eVoteConsentEmail: string | null
   eVoteConsentDocumentId: string | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +63,7 @@ export type PartyMaxAggregateOutputType = {
   eVoteConsentStatus: string | null
   eVoteConsentEmail: string | null
   eVoteConsentDocumentId: string | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -83,6 +85,7 @@ export type PartyCountAggregateOutputType = {
   eVoteConsentStatus: number
   eVoteConsentEmail: number
   eVoteConsentDocumentId: number
+  userId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -106,6 +109,7 @@ export type PartyMinAggregateInputType = {
   eVoteConsentStatus?: true
   eVoteConsentEmail?: true
   eVoteConsentDocumentId?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -127,6 +131,7 @@ export type PartyMaxAggregateInputType = {
   eVoteConsentStatus?: true
   eVoteConsentEmail?: true
   eVoteConsentDocumentId?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -148,6 +153,7 @@ export type PartyCountAggregateInputType = {
   eVoteConsentStatus?: true
   eVoteConsentEmail?: true
   eVoteConsentDocumentId?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -242,6 +248,7 @@ export type PartyGroupByOutputType = {
   eVoteConsentStatus: string
   eVoteConsentEmail: string | null
   eVoteConsentDocumentId: string | null
+  userId: string | null
   createdAt: Date
   updatedAt: Date
   _count: PartyCountAggregateOutputType | null
@@ -284,10 +291,12 @@ export type PartyWhereInput = {
   eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
+  userId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  legacyUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
   occupancies?: Prisma.OccupancyListRelationFilter
   proxiesGiven?: Prisma.ProxyListRelationFilter
@@ -326,10 +335,12 @@ export type PartyOrderByWithRelationInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  legacyUser?: Prisma.UserOrderByWithRelationInput
   ownershipStakes?: Prisma.OwnershipStakeOrderByRelationAggregateInput
   occupancies?: Prisma.OccupancyOrderByRelationAggregateInput
   proxiesGiven?: Prisma.ProxyOrderByRelationAggregateInput
@@ -353,6 +364,7 @@ export type PartyOrderByWithRelationInput = {
 
 export type PartyWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId_zevId?: Prisma.PartyUserIdZevIdCompoundUniqueInput
   AND?: Prisma.PartyWhereInput | Prisma.PartyWhereInput[]
   OR?: Prisma.PartyWhereInput[]
   NOT?: Prisma.PartyWhereInput | Prisma.PartyWhereInput[]
@@ -371,10 +383,12 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
+  userId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  legacyUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
   occupancies?: Prisma.OccupancyListRelationFilter
   proxiesGiven?: Prisma.ProxyListRelationFilter
@@ -394,7 +408,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   viberSubscriber?: Prisma.XOR<Prisma.ViberSubscriberNullableScalarRelationFilter, Prisma.ViberSubscriberWhereInput> | null
   attendances?: Prisma.AttendanceListRelationFilter
   balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
-}, "id">
+}, "id" | "userId_zevId">
 
 export type PartyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -413,6 +427,7 @@ export type PartyOrderByWithAggregationInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PartyCountOrderByAggregateInput
@@ -440,6 +455,7 @@ export type PartyScalarWhereWithAggregatesInput = {
   eVoteConsentStatus?: Prisma.StringWithAggregatesFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
 }
@@ -463,7 +479,8 @@ export type PartyCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -502,9 +519,10 @@ export type PartyUncheckedCreateInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -545,7 +563,8 @@ export type PartyUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -584,9 +603,10 @@ export type PartyUncheckedUpdateInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -625,6 +645,7 @@ export type PartyCreateManyInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -666,6 +687,7 @@ export type PartyUncheckedUpdateManyInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -673,6 +695,21 @@ export type PartyUncheckedUpdateManyInput = {
 export type PartyNullableScalarRelationFilter = {
   is?: Prisma.PartyWhereInput | null
   isNot?: Prisma.PartyWhereInput | null
+}
+
+export type PartyListRelationFilter = {
+  every?: Prisma.PartyWhereInput
+  some?: Prisma.PartyWhereInput
+  none?: Prisma.PartyWhereInput
+}
+
+export type PartyOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type PartyUserIdZevIdCompoundUniqueInput = {
+  userId: string
+  zevId: string
 }
 
 export type PartyCountOrderByAggregateInput = {
@@ -692,6 +729,7 @@ export type PartyCountOrderByAggregateInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -713,6 +751,7 @@ export type PartyMaxOrderByAggregateInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -734,18 +773,9 @@ export type PartyMinOrderByAggregateInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type PartyListRelationFilter = {
-  every?: Prisma.PartyWhereInput
-  some?: Prisma.PartyWhereInput
-  none?: Prisma.PartyWhereInput
-}
-
-export type PartyOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
 }
 
 export type PartyScalarRelationFilter = {
@@ -753,20 +783,62 @@ export type PartyScalarRelationFilter = {
   isNot?: Prisma.PartyWhereInput
 }
 
-export type PartyCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutUserInput
+export type PartyCreateNestedOneWithoutLegacyUserInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutLegacyUserInput, Prisma.PartyUncheckedCreateWithoutLegacyUserInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutLegacyUserInput
   connect?: Prisma.PartyWhereUniqueInput
 }
 
-export type PartyUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutUserInput
-  upsert?: Prisma.PartyUpsertWithoutUserInput
+export type PartyCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput> | Prisma.PartyCreateWithoutUserInput[] | Prisma.PartyUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutUserInput | Prisma.PartyCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.PartyCreateManyUserInputEnvelope
+  connect?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+}
+
+export type PartyUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput> | Prisma.PartyCreateWithoutUserInput[] | Prisma.PartyUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutUserInput | Prisma.PartyCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.PartyCreateManyUserInputEnvelope
+  connect?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+}
+
+export type PartyUpdateOneWithoutLegacyUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutLegacyUserInput, Prisma.PartyUncheckedCreateWithoutLegacyUserInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutLegacyUserInput
+  upsert?: Prisma.PartyUpsertWithoutLegacyUserInput
   disconnect?: Prisma.PartyWhereInput | boolean
   delete?: Prisma.PartyWhereInput | boolean
   connect?: Prisma.PartyWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutUserInput, Prisma.PartyUpdateWithoutUserInput>, Prisma.PartyUncheckedUpdateWithoutUserInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutLegacyUserInput, Prisma.PartyUpdateWithoutLegacyUserInput>, Prisma.PartyUncheckedUpdateWithoutLegacyUserInput>
+}
+
+export type PartyUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput> | Prisma.PartyCreateWithoutUserInput[] | Prisma.PartyUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutUserInput | Prisma.PartyCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.PartyUpsertWithWhereUniqueWithoutUserInput | Prisma.PartyUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.PartyCreateManyUserInputEnvelope
+  set?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  disconnect?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  delete?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  connect?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  update?: Prisma.PartyUpdateWithWhereUniqueWithoutUserInput | Prisma.PartyUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.PartyUpdateManyWithWhereWithoutUserInput | Prisma.PartyUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
+}
+
+export type PartyUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput> | Prisma.PartyCreateWithoutUserInput[] | Prisma.PartyUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutUserInput | Prisma.PartyCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.PartyUpsertWithWhereUniqueWithoutUserInput | Prisma.PartyUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.PartyCreateManyUserInputEnvelope
+  set?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  disconnect?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  delete?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  connect?: Prisma.PartyWhereUniqueInput | Prisma.PartyWhereUniqueInput[]
+  update?: Prisma.PartyUpdateWithWhereUniqueWithoutUserInput | Prisma.PartyUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.PartyUpdateManyWithWhereWithoutUserInput | Prisma.PartyUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
 }
 
 export type EnumPartyKindFieldUpdateOperationsInput = {
@@ -1095,6 +1167,93 @@ export type PartyUpdateOneRequiredWithoutViberSubscriberNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutViberSubscriberInput, Prisma.PartyUpdateWithoutViberSubscriberInput>, Prisma.PartyUncheckedUpdateWithoutViberSubscriberInput>
 }
 
+export type PartyCreateWithoutLegacyUserInput = {
+  id?: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+}
+
+export type PartyUncheckedCreateWithoutLegacyUserInput = {
+  id?: string
+  zevId: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+}
+
+export type PartyCreateOrConnectWithoutLegacyUserInput = {
+  where: Prisma.PartyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartyCreateWithoutLegacyUserInput, Prisma.PartyUncheckedCreateWithoutLegacyUserInput>
+}
+
 export type PartyCreateWithoutUserInput = {
   id?: string
   kind: $Enums.PartyKind
@@ -1114,6 +1273,7 @@ export type PartyCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -1154,6 +1314,7 @@ export type PartyUncheckedCreateWithoutUserInput = {
   eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -1180,18 +1341,23 @@ export type PartyCreateOrConnectWithoutUserInput = {
   create: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput>
 }
 
-export type PartyUpsertWithoutUserInput = {
-  update: Prisma.XOR<Prisma.PartyUpdateWithoutUserInput, Prisma.PartyUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput>
+export type PartyCreateManyUserInputEnvelope = {
+  data: Prisma.PartyCreateManyUserInput | Prisma.PartyCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type PartyUpsertWithoutLegacyUserInput = {
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutLegacyUserInput, Prisma.PartyUncheckedUpdateWithoutLegacyUserInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutLegacyUserInput, Prisma.PartyUncheckedCreateWithoutLegacyUserInput>
   where?: Prisma.PartyWhereInput
 }
 
-export type PartyUpdateToOneWithWhereWithoutUserInput = {
+export type PartyUpdateToOneWithWhereWithoutLegacyUserInput = {
   where?: Prisma.PartyWhereInput
-  data: Prisma.XOR<Prisma.PartyUpdateWithoutUserInput, Prisma.PartyUncheckedUpdateWithoutUserInput>
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutLegacyUserInput, Prisma.PartyUncheckedUpdateWithoutLegacyUserInput>
 }
 
-export type PartyUpdateWithoutUserInput = {
+export type PartyUpdateWithoutLegacyUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1210,6 +1376,7 @@ export type PartyUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -1231,7 +1398,7 @@ export type PartyUpdateWithoutUserInput = {
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
 }
 
-export type PartyUncheckedUpdateWithoutUserInput = {
+export type PartyUncheckedUpdateWithoutLegacyUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   zevId?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
@@ -1248,6 +1415,7 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1271,6 +1439,47 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
 }
 
+export type PartyUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.PartyWhereUniqueInput
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutUserInput, Prisma.PartyUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutUserInput, Prisma.PartyUncheckedCreateWithoutUserInput>
+}
+
+export type PartyUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.PartyWhereUniqueInput
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutUserInput, Prisma.PartyUncheckedUpdateWithoutUserInput>
+}
+
+export type PartyUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.PartyScalarWhereInput
+  data: Prisma.XOR<Prisma.PartyUpdateManyMutationInput, Prisma.PartyUncheckedUpdateManyWithoutUserInput>
+}
+
+export type PartyScalarWhereInput = {
+  AND?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
+  OR?: Prisma.PartyScalarWhereInput[]
+  NOT?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
+  id?: Prisma.StringFilter<"Party"> | string
+  zevId?: Prisma.StringFilter<"Party"> | string
+  kind?: Prisma.EnumPartyKindFilter<"Party"> | $Enums.PartyKind
+  firstName?: Prisma.StringNullableFilter<"Party"> | string | null
+  lastName?: Prisma.StringNullableFilter<"Party"> | string | null
+  orgName?: Prisma.StringNullableFilter<"Party"> | string | null
+  orgIdNumber?: Prisma.StringNullableFilter<"Party"> | string | null
+  email?: Prisma.StringNullableFilter<"Party"> | string | null
+  phone?: Prisma.StringNullableFilter<"Party"> | string | null
+  address?: Prisma.StringNullableFilter<"Party"> | string | null
+  correspondenceAddress?: Prisma.StringNullableFilter<"Party"> | string | null
+  note?: Prisma.StringNullableFilter<"Party"> | string | null
+  active?: Prisma.BoolFilter<"Party"> | boolean
+  eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
+  eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
+  eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
+  userId?: Prisma.StringNullableFilter<"Party"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
+}
+
 export type PartyCreateWithoutZevInput = {
   id?: string
   kind: $Enums.PartyKind
@@ -1289,7 +1498,8 @@ export type PartyCreateWithoutZevInput = {
   eVoteConsentDocumentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -1327,9 +1537,10 @@ export type PartyUncheckedCreateWithoutZevInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -1377,30 +1588,6 @@ export type PartyUpdateManyWithWhereWithoutZevInput = {
   data: Prisma.XOR<Prisma.PartyUpdateManyMutationInput, Prisma.PartyUncheckedUpdateManyWithoutZevInput>
 }
 
-export type PartyScalarWhereInput = {
-  AND?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
-  OR?: Prisma.PartyScalarWhereInput[]
-  NOT?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
-  id?: Prisma.StringFilter<"Party"> | string
-  zevId?: Prisma.StringFilter<"Party"> | string
-  kind?: Prisma.EnumPartyKindFilter<"Party"> | $Enums.PartyKind
-  firstName?: Prisma.StringNullableFilter<"Party"> | string | null
-  lastName?: Prisma.StringNullableFilter<"Party"> | string | null
-  orgName?: Prisma.StringNullableFilter<"Party"> | string | null
-  orgIdNumber?: Prisma.StringNullableFilter<"Party"> | string | null
-  email?: Prisma.StringNullableFilter<"Party"> | string | null
-  phone?: Prisma.StringNullableFilter<"Party"> | string | null
-  address?: Prisma.StringNullableFilter<"Party"> | string | null
-  correspondenceAddress?: Prisma.StringNullableFilter<"Party"> | string | null
-  note?: Prisma.StringNullableFilter<"Party"> | string | null
-  active?: Prisma.BoolFilter<"Party"> | boolean
-  eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
-  eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
-  eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
-}
-
 export type PartyCreateWithoutInvoiceRecipientForInput = {
   id?: string
   kind: $Enums.PartyKind
@@ -1420,7 +1607,8 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -1458,9 +1646,10 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -1505,7 +1694,8 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -1543,9 +1733,10 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -1601,7 +1792,8 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -1639,9 +1831,10 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -1692,7 +1885,8 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -1730,9 +1924,10 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -1772,7 +1967,8 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
@@ -1810,9 +2006,10 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
@@ -1868,7 +2065,8 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
@@ -1906,9 +2104,10 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
@@ -1948,7 +2147,8 @@ export type PartyCreateWithoutOccupanciesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
@@ -1986,9 +2186,10 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
@@ -2044,7 +2245,8 @@ export type PartyUpdateWithoutOccupanciesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
@@ -2082,9 +2284,10 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
@@ -2124,7 +2327,8 @@ export type PartyCreateWithoutProxiesGivenInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
@@ -2162,9 +2366,10 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
@@ -2209,7 +2414,8 @@ export type PartyCreateWithoutProxiesHeldInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -2247,9 +2453,10 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -2305,7 +2512,8 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
@@ -2343,9 +2551,10 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
@@ -2396,7 +2605,8 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -2434,9 +2644,10 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -2476,7 +2687,8 @@ export type PartyCreateWithoutOfficeTermsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -2514,9 +2726,10 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -2572,7 +2785,8 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -2610,9 +2824,10 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -2652,7 +2867,8 @@ export type PartyCreateWithoutAttendancesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -2690,9 +2906,10 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -2748,7 +2965,8 @@ export type PartyUpdateWithoutAttendancesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -2786,9 +3004,10 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -2828,7 +3047,8 @@ export type PartyCreateWithoutEligibleVotersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -2866,9 +3086,10 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -2913,7 +3134,8 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -2951,9 +3173,10 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -3009,7 +3232,8 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -3047,9 +3271,10 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -3100,7 +3325,8 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -3138,9 +3364,10 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -3180,7 +3407,8 @@ export type PartyCreateWithoutVotesCastInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -3218,9 +3446,10 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -3265,7 +3494,8 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -3303,9 +3533,10 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -3361,7 +3592,8 @@ export type PartyUpdateWithoutVotesCastInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -3399,9 +3631,10 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -3452,7 +3685,8 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -3490,9 +3724,10 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -3532,7 +3767,8 @@ export type PartyCreateWithoutInvoicesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -3570,9 +3806,10 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -3628,7 +3865,8 @@ export type PartyUpdateWithoutInvoicesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -3666,9 +3904,10 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -3708,7 +3947,8 @@ export type PartyCreateWithoutPaymentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -3746,9 +3986,10 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -3804,7 +4045,8 @@ export type PartyUpdateWithoutPaymentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -3842,9 +4084,10 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -3884,7 +4127,8 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -3922,9 +4166,10 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -3980,7 +4225,8 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -4018,9 +4264,10 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -4060,7 +4307,8 @@ export type PartyCreateWithoutReportedIssuesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -4098,9 +4346,10 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -4145,7 +4394,8 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -4183,9 +4433,10 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -4241,7 +4492,8 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -4279,9 +4531,10 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -4332,7 +4585,8 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -4370,9 +4624,10 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -4412,7 +4667,8 @@ export type PartyCreateWithoutNotificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -4450,9 +4706,10 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -4508,7 +4765,8 @@ export type PartyUpdateWithoutNotificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -4546,9 +4804,10 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -4588,7 +4847,8 @@ export type PartyCreateWithoutViberSubscriberInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
-  user?: Prisma.UserCreateNestedOneWithoutPartyInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
@@ -4626,9 +4886,10 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
@@ -4684,7 +4945,8 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -4722,9 +4984,10 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -4745,6 +5008,130 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
 }
 
+export type PartyCreateManyUserInput = {
+  id?: string
+  zevId: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PartyUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type PartyCreateManyZevInput = {
   id?: string
   kind: $Enums.PartyKind
@@ -4761,6 +5148,7 @@ export type PartyCreateManyZevInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -4783,7 +5171,8 @@ export type PartyUpdateWithoutZevInput = {
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
@@ -4821,9 +5210,10 @@ export type PartyUncheckedUpdateWithoutZevInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
@@ -4861,6 +5251,7 @@ export type PartyUncheckedUpdateManyWithoutZevInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -5066,10 +5457,12 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Party$userArgs<ExtArgs>
+  legacyUser?: boolean | Prisma.Party$legacyUserArgs<ExtArgs>
   ownershipStakes?: boolean | Prisma.Party$ownershipStakesArgs<ExtArgs>
   occupancies?: boolean | Prisma.Party$occupanciesArgs<ExtArgs>
   proxiesGiven?: boolean | Prisma.Party$proxiesGivenArgs<ExtArgs>
@@ -5109,9 +5502,11 @@ export type PartySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Party$userArgs<ExtArgs>
 }, ExtArgs["result"]["party"]>
 
 export type PartySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -5131,9 +5526,11 @@ export type PartySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Party$userArgs<ExtArgs>
 }, ExtArgs["result"]["party"]>
 
 export type PartySelectScalar = {
@@ -5153,14 +5550,16 @@ export type PartySelectScalar = {
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "kind" | "firstName" | "lastName" | "orgName" | "orgIdNumber" | "email" | "phone" | "address" | "correspondenceAddress" | "note" | "active" | "eVoteConsentStatus" | "eVoteConsentEmail" | "eVoteConsentDocumentId" | "createdAt" | "updatedAt", ExtArgs["result"]["party"]>
+export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "kind" | "firstName" | "lastName" | "orgName" | "orgIdNumber" | "email" | "phone" | "address" | "correspondenceAddress" | "note" | "active" | "eVoteConsentStatus" | "eVoteConsentEmail" | "eVoteConsentDocumentId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["party"]>
 export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Party$userArgs<ExtArgs>
+  legacyUser?: boolean | Prisma.Party$legacyUserArgs<ExtArgs>
   ownershipStakes?: boolean | Prisma.Party$ownershipStakesArgs<ExtArgs>
   occupancies?: boolean | Prisma.Party$occupanciesArgs<ExtArgs>
   proxiesGiven?: boolean | Prisma.Party$proxiesGivenArgs<ExtArgs>
@@ -5184,16 +5583,30 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 }
 export type PartyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Party$userArgs<ExtArgs>
 }
 export type PartyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Party$userArgs<ExtArgs>
 }
 
 export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Party"
   objects: {
     zev: Prisma.$ZevPayload<ExtArgs>
+    /**
+     * Portal account for this Party, if it has one — most Party rows never will (an owner
+     * with no e-mail, a tenant, a proxy-only contact). At most one Party per (userId, zevId)
+     * pair (see @@unique below): a login can hold this relation to a different Party in each
+     * tenant it has a Membership in, but never two in the same tenant.
+     */
     user: Prisma.$UserPayload<ExtArgs> | null
+    /**
+     * LEGACY back-reference only — required by Prisma for the other side of User.party
+     * above, never read by application code. Removed in the same migration that drops
+     * User.partyId (Plans/party-per-tenant-plan.md §2.3, §3.4).
+     */
+    legacyUser: Prisma.$UserPayload<ExtArgs> | null
     ownershipStakes: Prisma.$OwnershipStakePayload<ExtArgs>[]
     occupancies: Prisma.$OccupancyPayload<ExtArgs>[]
     proxiesGiven: Prisma.$ProxyPayload<ExtArgs>[]
@@ -5236,6 +5649,7 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     eVoteConsentStatus: string
     eVoteConsentEmail: string | null
     eVoteConsentDocumentId: string | null
+    userId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["party"]>
@@ -5634,6 +6048,7 @@ export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.Party$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  legacyUser<T extends Prisma.Party$legacyUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$legacyUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   ownershipStakes<T extends Prisma.Party$ownershipStakesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$ownershipStakesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OwnershipStakePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   occupancies<T extends Prisma.Party$occupanciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$occupanciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OccupancyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proxiesGiven<T extends Prisma.Party$proxiesGivenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$proxiesGivenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProxyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5698,6 +6113,7 @@ export interface PartyFieldRefs {
   readonly eVoteConsentStatus: Prisma.FieldRef<"Party", 'String'>
   readonly eVoteConsentEmail: Prisma.FieldRef<"Party", 'String'>
   readonly eVoteConsentDocumentId: Prisma.FieldRef<"Party", 'String'>
+  readonly userId: Prisma.FieldRef<"Party", 'String'>
   readonly createdAt: Prisma.FieldRef<"Party", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Party", 'DateTime'>
 }
@@ -6104,6 +6520,25 @@ export type PartyDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
  * Party.user
  */
 export type Party$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Party.legacyUser
+ */
+export type Party$legacyUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the User
    */

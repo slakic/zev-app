@@ -35,8 +35,19 @@ model User {
   deactivatedAt DateTime?
   passwordResetTokenHash String?   // sha256(token); cleared on use, overwritten by a new request
   passwordResetExpiresAt DateTime? // null = no pending reset request
-  party        Party?    @relation(fields: [partyId], references: [id])
+  /// LEGACY — dropped in the follow-up migration once Party.userId (below) is confirmed
+  /// live in production (Plans/party-per-tenant-plan.md §2.3, §3.4). Double-written
+  /// alongside Party.userId during the transition; never READ by application code after
+  /// that fix lands (only session.ts's dead SessionUser type used to read it, and that's
+  /// removed in the same change) — kept only so a rollback to the prior deployment during
+  /// the transition window stays correct.
+  party        Party?    @relation("LegacyUserParty", fields: [partyId], references: [id])
   partyId      String?   @unique
+  /// One Party per Zev this user holds a Membership in and is also a real person/org in
+  /// that tenant's own records — not one Party ever, globally (Plans/party-per-tenant-plan.md
+  /// §2). Most users have at most one; a platform admin or a service account (e.g. an
+  /// accounting firm) with Memberships in several tenants can have one per tenant.
+  parties      Party[]   @relation("PartyAccount")
   sessions     Session[]
   memberships  Membership[]
   createdAt    DateTime  @default(now())
@@ -91,7 +102,16 @@ model Party {
   eVoteConsentStatus     String     @default("NONE")
   eVoteConsentEmail      String?    // email named on the signed consent form
   eVoteConsentDocumentId String?    // Attachment.id of the scanned signed copy (category CONSENT)
-  user                  User?
+  /// Portal account for this Party, if it has one — most Party rows never will (an owner
+  /// with no e-mail, a tenant, a proxy-only contact). At most one Party per (userId, zevId)
+  /// pair (see @@unique below): a login can hold this relation to a different Party in each
+  /// tenant it has a Membership in, but never two in the same tenant.
+  user                  User?      @relation("PartyAccount", fields: [userId], references: [id])
+  userId                String?
+  /// LEGACY back-reference only — required by Prisma for the other side of User.party
+  /// above, never read by application code. Removed in the same migration that drops
+  /// User.partyId (Plans/party-per-tenant-plan.md §2.3, §3.4).
+  legacyUser            User?      @relation("LegacyUserParty")
   ownershipStakes       OwnershipStake[]
   occupancies           Occupancy[]
   proxiesGiven          Proxy[]    @relation("ProxyGrantor")
@@ -113,6 +133,11 @@ model Party {
   balanceCorrections    BalanceCorrection[]
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
+
+  // NULLs are NOT considered equal in a Postgres unique index by default (NULLS DISTINCT),
+  // so any number of Party rows with userId = NULL are allowed per Zev — only an actual
+  // (userId, zevId) pair must be unique. See Plans/party-per-tenant-plan.md §2.2 point 1.
+  @@unique([userId, zevId])
 }
 
 // ---------------------------------------------------------------------------

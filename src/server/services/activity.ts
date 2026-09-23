@@ -50,16 +50,7 @@ export async function listActivity(actor: Actor, input: ListActivityInput = {}) 
 export async function listActivityActors(actor: Actor) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  const memberships = await prisma.membership.findMany({
-    where: { zevId },
-    distinct: ["userId"],
-    include: { user: { include: { party: true } } },
-    orderBy: { createdAt: "asc" },
-  });
-  return memberships.map((m) => ({
-    id: m.user.id,
-    label: (m.user.party ? partyDisplayName(m.user.party) : "") || m.user.email,
-  }));
+  return listZevMembersWithPartyLabel(zevId);
 }
 
 export type ListAllActivityInput = {
@@ -116,14 +107,25 @@ export async function listAllActivity(actor: Actor, input: ListAllActivityInput 
  */
 export async function listActivityActorsForZev(actor: Actor, zevId: string) {
   requireSuperAdmin(actor);
+  return listZevMembersWithPartyLabel(zevId);
+}
+
+/**
+ * Shared by listActivityActors/listActivityActorsForZev above — each member's Party is now
+ * looked up scoped to THIS zevId (Plans/party-per-tenant-plan.md §4), not the old global
+ * user.party, so a platform admin with Memberships (and Parties) in several tenants shows
+ * the right name for each tenant's actor list instead of whichever Party they happened to
+ * get first.
+ */
+async function listZevMembersWithPartyLabel(zevId: string) {
   const memberships = await prisma.membership.findMany({
     where: { zevId },
     distinct: ["userId"],
-    include: { user: { include: { party: true } } },
+    include: { user: { include: { parties: { where: { zevId }, take: 1 } } } },
     orderBy: { createdAt: "asc" },
   });
   return memberships.map((m) => ({
     id: m.user.id,
-    label: (m.user.party ? partyDisplayName(m.user.party) : "") || m.user.email,
+    label: (m.user.parties[0] ? partyDisplayName(m.user.parties[0]) : "") || m.user.email,
   }));
 }

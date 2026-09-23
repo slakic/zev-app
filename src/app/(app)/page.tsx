@@ -150,9 +150,11 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
     ownerAdvance(actor, partyId),
   ]);
   // invoice/payment/eligibleVoter/maintenanceIssue queries below are filtered by
-  // partyId, which is itself tenant-unique (a Party belongs to exactly one Zev), so
-  // they can't cross tenants even without an explicit zevId — meeting/document below
-  // have no such implicit scoping and did need the fix (see ManagementDashboard above).
+  // partyId, which is itself tenant-unique (a Party belongs to exactly one Zev, and
+  // actor.partyId above is now resolveActiveContext's per-tenant resolution — see
+  // Plans/party-per-tenant-plan.md §4, not a stale global User.partyId), so they can't
+  // cross tenants even without an explicit zevId — meeting/document below have no such
+  // implicit scoping and did need the fix (see ManagementDashboard above).
   const [unpaid, recentPayments, openVoting, meetings, decisions, myIssues] = await Promise.all([
     prisma.invoice.findMany({ where: { debtorId: partyId, status: "ISSUED" }, include: { allocations: true, unit: true }, orderBy: { dueDate: "asc" } }),
     prisma.payment.findMany({ where: { payerId: partyId, reversedAt: null }, orderBy: { date: "desc" }, take: 5 }),

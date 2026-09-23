@@ -12,6 +12,9 @@ export type Actor = {
   /** Scoped to the actor's active ZEV (see zevId below), not global — sourced from
    * Membership, not User.roles (see docs/multitenancy-plan.md §5). */
   roles: Role[];
+  /** The actor's Party in their active ZEV, if any — not one global Party (a login can
+   * have a different Party per tenant it holds a Membership in). See
+   * Plans/party-per-tenant-plan.md §4. */
   partyId: string | null;
   /**
    * The ZEV (tenant) this actor is currently acting within; null for a super admin

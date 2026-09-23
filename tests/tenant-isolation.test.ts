@@ -36,6 +36,9 @@ import * as reports from "@/server/services/reports";
 import * as users from "@/server/services/users";
 import * as evoteConsent from "@/server/services/evoteConsent";
 import * as settings from "@/server/services/settings";
+import * as activity from "@/server/services/activity";
+import { grantMembership } from "@/server/services/admin";
+import { resolveActiveContext } from "@/server/auth/session";
 
 const proof = { buffer: Buffer.from("dokaz o vlasnistvu"), filename: "dokaz.pdf", mime: "application/pdf" };
 
@@ -719,5 +722,125 @@ describe("session/membership switching (switchActiveZev, listMyTenants)", () => 
     const session = await prisma.session.create({ data: { userId: admin.userId, expiresAt: new Date(Date.now() + 3600_000) } });
     const actor = { ...admin, sessionId: session.id };
     await expectBlocked(() => memberships.switchActiveZev(actor, y.zev.id));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// resolveActiveContext / Party-per-tenant (Plans/party-per-tenant-plan.md §7.2) — this
+// is the fix itself: one User can now have a different Party per tenant it holds a
+// Membership in, instead of at most one Party ever, globally. Before this fix, a
+// platform admin (or any user with Memberships in more than one tenant) switching active
+// ZEV kept seeing the FIRST tenant's Party/data everywhere, because User.partyId was a
+// single global column. resolveActiveContext is exported (src/server/auth/session.ts)
+// specifically so these cases can be exercised directly against real Session/Membership/
+// Party rows, without needing next/headers or a signed cookie.
+// ---------------------------------------------------------------------------
+describe("resolveActiveContext / Party-per-tenant isolation (Plans/party-per-tenant-plan.md)", () => {
+  it("resolves roles AND partyId scoped to the currently active zevId, not any other tenant's", async () => {
+    const x = await createFixture("rac-scope-x");
+    const y = await createFixture("rac-scope-y");
+    // x's accountant also holds a Membership (a different role) and a Party in y.
+    await prisma.membership.create({ data: { userId: x.accountant.userId, zevId: y.zev.id, role: "PRESIDENT" } });
+    const yParty = await prisma.party.create({
+      data: { zevId: y.zev.id, kind: "PERSON", firstName: "Y", lastName: "Party", userId: x.accountant.userId },
+    });
+    const memberships = await prisma.membership.findMany({ where: { userId: x.accountant.userId } });
+    const parties = await prisma.party.findMany({ where: { userId: x.accountant.userId } });
+
+    const inX = await resolveActiveContext("fake-session", x.zev.id, memberships, parties);
+    expect(inX.zevId).toBe(x.zev.id);
+    expect(inX.roles).toEqual(["ACCOUNTANT"]);
+    expect(inX.partyId).toBe(x.accountantParty.id);
+
+    const inY = await resolveActiveContext("fake-session", y.zev.id, memberships, parties);
+    expect(inY.zevId).toBe(y.zev.id);
+    expect(inY.roles).toEqual(["PRESIDENT"]);
+    expect(inY.partyId).toBe(yParty.id);
+  });
+
+  it("a Membership without a Party in that tenant resolves partyId: null, never a Party from another tenant", async () => {
+    const admin = await createSuperAdminActor("rac-null");
+    const y = await createFixture("rac-null-y");
+    await prisma.membership.create({ data: { userId: admin.userId, zevId: y.zev.id, role: "PRESIDENT" } });
+    const memberships = await prisma.membership.findMany({ where: { userId: admin.userId } });
+    const parties = await prisma.party.findMany({ where: { userId: admin.userId } });
+    const ctx = await resolveActiveContext("fake-session", y.zev.id, memberships, parties);
+    expect(ctx.roles).toEqual(["PRESIDENT"]);
+    expect(ctx.partyId).toBeNull();
+  });
+
+  it("auto-picks the earliest membership when the current active zev is unset, and resolves THAT tenant's partyId", async () => {
+    const x = await createFixture("rac-autopick");
+    const memberships = await prisma.membership.findMany({ where: { userId: x.president.userId } });
+    const parties = await prisma.party.findMany({ where: { userId: x.president.userId } });
+    const session = await prisma.session.create({ data: { userId: x.president.userId, expiresAt: new Date(Date.now() + 3600_000) } });
+    const ctx = await resolveActiveContext(session.id, null, memberships, parties);
+    expect(ctx.zevId).toBe(x.zev.id);
+    expect(ctx.partyId).toBe(x.presidentParty.id);
+    const updated = await prisma.session.findUniqueOrThrow({ where: { id: session.id } });
+    expect(updated.activeZevId).toBe(x.zev.id);
+  });
+
+  it("assertUserInZev (users.ts) blocks managing a Membership-only account — protects a platform admin granted access via grantMembership from a tenant president's deactivateUser/updateUserRoles", async () => {
+    const admin = await createSuperAdminActor("rac-protect");
+    const home = await createFixture("rac-protect-home");
+    const target = await createFixture("rac-protect-target");
+    const accountantUser = await prisma.user.findUniqueOrThrow({ where: { id: home.accountant.userId } });
+    await grantMembership(admin, target.zev.id, { email: accountantUser.email, role: "ACCOUNTANT" });
+    await expectBlocked(() => users.deactivateUser(target.president, accountantUser.id, "pokusaj"));
+    await expectBlocked(() => users.updateUserRoles(target.president, accountantUser.id, ["OWNER"]));
+  });
+
+  it("Party.@@unique([userId, zevId]) rejects a second Party for the same user in the same tenant at the DB level", async () => {
+    const x = await createFixture("rac-unique");
+    const extraParty = await prisma.party.create({ data: { zevId: x.zev.id, kind: "PERSON", firstName: "Extra", lastName: "Party" } });
+    await expect(prisma.party.update({ where: { id: extraParty.id }, data: { userId: x.president.userId } })).rejects.toThrow();
+  });
+
+  it("multiple Party rows with userId: null are allowed in the same tenant (NULLS DISTINCT)", async () => {
+    const x = await createFixture("rac-nulls");
+    await expect(
+      Promise.all([
+        prisma.party.create({ data: { zevId: x.zev.id, kind: "PERSON", firstName: "Null1", lastName: "Party" } }),
+        prisma.party.create({ data: { zevId: x.zev.id, kind: "PERSON", firstName: "Null2", lastName: "Party" } }),
+      ])
+    ).resolves.toBeDefined();
+  });
+
+  it("maintenance.reportIssue attributes reporterId to the CURRENTLY active tenant's party after a zev switch, not the source tenant's (Group D regression)", async () => {
+    const x = await createFixture("rac-maint-x");
+    const y = await createFixture("rac-maint-y");
+    await prisma.membership.create({ data: { userId: x.actorA.userId, zevId: y.zev.id, role: "OWNER" } });
+    const yParty = await prisma.party.create({
+      data: { zevId: y.zev.id, kind: "PERSON", firstName: "Y", lastName: "Owner", userId: x.actorA.userId },
+    });
+    const memberships = await prisma.membership.findMany({ where: { userId: x.actorA.userId } });
+    const parties = await prisma.party.findMany({ where: { userId: x.actorA.userId } });
+    const ctxInY = await resolveActiveContext("fake-session", y.zev.id, memberships, parties);
+    const actorInY = { ...x.actorA, zevId: y.zev.id, partyId: ctxInY.partyId };
+
+    const issue = await maintenance.reportIssue(actorInY, { title: "Kvar", description: "test" });
+    expect(issue.reporterId).toBe(yParty.id);
+    expect(issue.reporterId).not.toBe(x.ownerA.id);
+    expect(issue.zevId).toBe(y.zev.id);
+  });
+
+  it("listActivityActors/listActivityActorsForZev show the ACTIVE tenant's Party name, not a name carried over from another tenant (Group G regression)", async () => {
+    const x = await createFixture("rac-actors-x");
+    const y = await createFixture("rac-actors-y");
+    await prisma.membership.create({ data: { userId: x.accountant.userId, zevId: y.zev.id, role: "PRESIDENT" } });
+    await prisma.party.create({
+      data: { zevId: y.zev.id, kind: "PERSON", firstName: "Y-Ime", lastName: "Y-Prezime", userId: x.accountant.userId },
+    });
+
+    const actorsInX = await activity.listActivityActors(x.president);
+    const meInX = actorsInX.find((a) => a.id === x.accountant.userId);
+    expect(meInX?.label).toContain(x.accountantParty.lastName);
+
+    const admin = await createSuperAdminActor("rac-actors-admin");
+    const actorsInY = await activity.listActivityActorsForZev(admin, y.zev.id);
+    const meInY = actorsInY.find((a) => a.id === x.accountant.userId);
+    expect(meInY?.label).toContain("Y-Prezime");
+    expect(meInY?.label).not.toContain(x.accountantParty.lastName!);
   });
 });

@@ -75,18 +75,20 @@ export async function createFixture(tag: string) {
     data: { zevId: zev.id, kind: "PERSON", firstName: "Cvijeta", lastName: `C-${t}`, email: `${t}-c@example.com` },
   });
 
-  const presidentUser = await prisma.user.create({
-    data: { email: `${t}-pres@zev.test`, passwordHash: pw, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id },
-  });
-  const accountantUser = await prisma.user.create({
-    data: { email: `${t}-acc@zev.test`, passwordHash: pw, roles: ["ACCOUNTANT"], partyId: accountantParty.id },
-  });
-  const ownerAUser = await prisma.user.create({
-    data: { email: `${t}-a@zev.test`, passwordHash: pw, roles: ["OWNER"], partyId: ownerA.id },
-  });
-  const ownerBUser = await prisma.user.create({
-    data: { email: `${t}-b@zev.test`, passwordHash: pw, roles: ["OWNER"], partyId: ownerB.id },
-  });
+  // Mirrors the createUserForParty write-path pattern (src/server/services/users.ts):
+  // User created first with no partyId, then Party.userId links it (the source of truth —
+  // Plans/party-per-tenant-plan.md §2), then User.partyId is set too only as the LEGACY
+  // double-write, dropped once the follow-up migration lands.
+  const mkUser = async (party: { id: string }, email: string, roles: Actor["roles"]) => {
+    const user = await prisma.user.create({ data: { email, passwordHash: pw, roles } });
+    await prisma.party.update({ where: { id: party.id }, data: { userId: user.id } });
+    await prisma.user.update({ where: { id: user.id }, data: { partyId: party.id } }); // LEGACY
+    return user;
+  };
+  const presidentUser = await mkUser(presidentParty, `${t}-pres@zev.test`, ["PRESIDENT", "OWNER"]);
+  const accountantUser = await mkUser(accountantParty, `${t}-acc@zev.test`, ["ACCOUNTANT"]);
+  const ownerAUser = await mkUser(ownerA, `${t}-a@zev.test`, ["OWNER"]);
+  const ownerBUser = await mkUser(ownerB, `${t}-b@zev.test`, ["OWNER"]);
 
   // Membership rows mirroring each Actor's `roles` below — updateUserRoles/
   // createUserForParty now require actor.zevId (see users.ts) and reconcile

@@ -11,6 +11,7 @@ import { prisma } from "../src/lib/prisma";
 import { hashPassword } from "../src/server/auth/password";
 import { generateToken, sha256 } from "../src/server/auth/tokens";
 import type { Actor } from "../src/server/auth/guards";
+import type { Role } from "../src/generated/prisma/client";
 import * as property from "../src/server/services/property";
 import * as ownership from "../src/server/services/ownership";
 import * as meetings from "../src/server/services/meetings";
@@ -81,21 +82,21 @@ async function main() {
 
   // --- Users ---------------------------------------------------------------
   const pw = await hashPassword(PASSWORD);
-  const presidentUser = await prisma.user.create({
-    data: { email: "predsjednik@zev.ba", passwordHash: pw, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id },
-  });
-  const accountantUser = await prisma.user.create({
-    data: { email: "racunovodja@zev.ba", passwordHash: pw, roles: ["ACCOUNTANT"], partyId: accountantParty.id },
-  });
-  const anaUser = await prisma.user.create({
-    data: { email: "vlasnik@zev.ba", passwordHash: pw, roles: ["OWNER"], partyId: ownerAna.id },
-  });
-  const markoUser = await prisma.user.create({
-    data: { email: "marko@zev.ba", passwordHash: pw, roles: ["OWNER"], partyId: ownerMarko.id },
-  });
-  const nikolaUser = await prisma.user.create({
-    data: { email: "nikola@zev.ba", passwordHash: pw, roles: ["OWNER"], partyId: ownerNikola.id },
-  });
+  // Mirrors the createUserForParty write-path pattern (src/server/services/users.ts):
+  // User created first with no partyId, then Party.userId links it (the source of truth —
+  // Plans/party-per-tenant-plan.md §2), then User.partyId is set too only as the LEGACY
+  // double-write, dropped once the follow-up migration lands.
+  const mkUser = async (party: { id: string }, email: string, roles: Role[]) => {
+    const user = await prisma.user.create({ data: { email, passwordHash: pw, roles } });
+    await prisma.party.update({ where: { id: party.id }, data: { userId: user.id } });
+    await prisma.user.update({ where: { id: user.id }, data: { partyId: party.id } }); // LEGACY
+    return user;
+  };
+  const presidentUser = await mkUser(presidentParty, "predsjednik@zev.ba", ["PRESIDENT", "OWNER"]);
+  const accountantUser = await mkUser(accountantParty, "racunovodja@zev.ba", ["ACCOUNTANT"]);
+  const anaUser = await mkUser(ownerAna, "vlasnik@zev.ba", ["OWNER"]);
+  const markoUser = await mkUser(ownerMarko, "marko@zev.ba", ["OWNER"]);
+  const nikolaUser = await mkUser(ownerNikola, "nikola@zev.ba", ["OWNER"]);
 
   const president: Actor = { userId: presidentUser.id, roles: ["PRESIDENT", "OWNER"], partyId: presidentParty.id, zevId: zev.id };
   const accountant: Actor = { userId: accountantUser.id, roles: ["ACCOUNTANT"], partyId: accountantParty.id, zevId: zev.id };

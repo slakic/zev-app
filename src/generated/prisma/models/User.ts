@@ -235,6 +235,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   party?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
+  parties?: Prisma.PartyListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
 }
@@ -253,6 +254,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   party?: Prisma.PartyOrderByWithRelationInput
+  parties?: Prisma.PartyOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
 }
@@ -274,6 +276,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   party?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
+  parties?: Prisma.PartyListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
 }, "id" | "email" | "partyId">
@@ -326,7 +329,8 @@ export type UserCreateInput = {
   passwordResetExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  party?: Prisma.PartyCreateNestedOneWithoutUserInput
+  party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
+  parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
 }
@@ -344,6 +348,7 @@ export type UserUncheckedCreateInput = {
   partyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
 }
@@ -360,7 +365,8 @@ export type UserUpdateInput = {
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  party?: Prisma.PartyUpdateOneWithoutUserNestedInput
+  party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
 }
@@ -378,6 +384,7 @@ export type UserUncheckedUpdateInput = {
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -530,6 +537,12 @@ export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
+export type UserCreateNestedOneWithoutPartiesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPartiesInput, Prisma.UserUncheckedCreateWithoutPartiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartiesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserCreateNestedOneWithoutPartyInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPartyInput, Prisma.UserUncheckedCreateWithoutPartyInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartyInput
@@ -540,6 +553,16 @@ export type UserUncheckedCreateNestedOneWithoutPartyInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPartyInput, Prisma.UserUncheckedCreateWithoutPartyInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartyInput
   connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutPartiesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPartiesInput, Prisma.UserUncheckedCreateWithoutPartiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartiesInput
+  upsert?: Prisma.UserUpsertWithoutPartiesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPartiesInput, Prisma.UserUpdateWithoutPartiesInput>, Prisma.UserUncheckedUpdateWithoutPartiesInput>
 }
 
 export type UserUpdateOneWithoutPartyNestedInput = {
@@ -588,7 +611,8 @@ export type UserCreateWithoutSessionsInput = {
   passwordResetExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  party?: Prisma.PartyCreateNestedOneWithoutUserInput
+  party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
+  parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
 }
 
@@ -605,6 +629,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   partyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -636,7 +661,8 @@ export type UserUpdateWithoutSessionsInput = {
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  party?: Prisma.PartyUpdateOneWithoutUserNestedInput
+  party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
 }
 
@@ -653,7 +679,47 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPartiesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isSuperAdmin?: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  passwordResetTokenHash?: string | null
+  passwordResetExpiresAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPartiesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isSuperAdmin?: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  passwordResetTokenHash?: string | null
+  passwordResetExpiresAt?: Date | string | null
+  partyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPartiesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPartiesInput, Prisma.UserUncheckedCreateWithoutPartiesInput>
 }
 
 export type UserCreateWithoutPartyInput = {
@@ -668,6 +734,7 @@ export type UserCreateWithoutPartyInput = {
   passwordResetExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
 }
@@ -684,6 +751,7 @@ export type UserUncheckedCreateWithoutPartyInput = {
   passwordResetExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
 }
@@ -691,6 +759,51 @@ export type UserUncheckedCreateWithoutPartyInput = {
 export type UserCreateOrConnectWithoutPartyInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutPartyInput, Prisma.UserUncheckedCreateWithoutPartyInput>
+}
+
+export type UserUpsertWithoutPartiesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPartiesInput, Prisma.UserUncheckedUpdateWithoutPartiesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPartiesInput, Prisma.UserUncheckedCreateWithoutPartiesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPartiesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPartiesInput, Prisma.UserUncheckedUpdateWithoutPartiesInput>
+}
+
+export type UserUpdateWithoutPartiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isSuperAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPartiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isSuperAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutPartyInput = {
@@ -716,6 +829,7 @@ export type UserUpdateWithoutPartyInput = {
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
 }
@@ -732,6 +846,7 @@ export type UserUncheckedUpdateWithoutPartyInput = {
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -748,7 +863,8 @@ export type UserCreateWithoutMembershipsInput = {
   passwordResetExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  party?: Prisma.PartyCreateNestedOneWithoutUserInput
+  party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
+  parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
@@ -765,6 +881,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   partyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -796,7 +913,8 @@ export type UserUpdateWithoutMembershipsInput = {
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  party?: Prisma.PartyUpdateOneWithoutUserNestedInput
+  party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
@@ -813,6 +931,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -822,11 +941,13 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
  */
 
 export type UserCountOutputType = {
+  parties: number
   sessions: number
   memberships: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parties?: boolean | UserCountOutputTypeCountPartiesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
 }
@@ -839,6 +960,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPartiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartyWhereInput
 }
 
 /**
@@ -870,6 +998,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.User$partyArgs<ExtArgs>
+  parties?: boolean | Prisma.User$partiesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -925,6 +1054,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "roles" | "isSuperAdmin" | "active" | "deactivatedAt" | "passwordResetTokenHash" | "passwordResetExpiresAt" | "partyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.User$partyArgs<ExtArgs>
+  parties?: boolean | Prisma.User$partiesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -939,7 +1069,22 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    /**
+     * LEGACY — dropped in the follow-up migration once Party.userId (below) is confirmed
+     * live in production (Plans/party-per-tenant-plan.md §2.3, §3.4). Double-written
+     * alongside Party.userId during the transition; never READ by application code after
+     * that fix lands (only session.ts's dead SessionUser type used to read it, and that's
+     * removed in the same change) — kept only so a rollback to the prior deployment during
+     * the transition window stays correct.
+     */
     party: Prisma.$PartyPayload<ExtArgs> | null
+    /**
+     * One Party per Zev this user holds a Membership in and is also a real person/org in
+     * that tenant's own records — not one Party ever, globally (Plans/party-per-tenant-plan.md
+     * §2). Most users have at most one; a platform admin or a service account (e.g. an
+     * accounting firm) with Memberships in several tenants can have one per tenant.
+     */
+    parties: Prisma.$PartyPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     memberships: Prisma.$MembershipPayload<ExtArgs>[]
   }
@@ -1355,6 +1500,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   party<T extends Prisma.User$partyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$partyArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  parties<T extends Prisma.User$partiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$partiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1815,6 +1961,30 @@ export type User$partyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   include?: Prisma.PartyInclude<ExtArgs> | null
   where?: Prisma.PartyWhereInput
+}
+
+/**
+ * User.parties
+ */
+export type User$partiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Party
+   */
+  select?: Prisma.PartySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Party
+   */
+  omit?: Prisma.PartyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartyInclude<ExtArgs> | null
+  where?: Prisma.PartyWhereInput
+  orderBy?: Prisma.PartyOrderByWithRelationInput | Prisma.PartyOrderByWithRelationInput[]
+  cursor?: Prisma.PartyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartyScalarFieldEnum | Prisma.PartyScalarFieldEnum[]
 }
 
 /**

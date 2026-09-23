@@ -34,6 +34,9 @@ describe("createTenant (super admin, cross-tenant onboarding)", () => {
     expect(party.email).toBe(`${t}-pres@platform-created.test`);
 
     const user = await prisma.user.findUniqueOrThrow({ where: { email: `${t}-pres@platform-created.test` } });
+    // Party.userId is the source of truth now (Plans/party-per-tenant-plan.md §2);
+    // user.partyId is only the LEGACY double-write, still checked below too.
+    expect(party.userId).toBe(user.id);
     expect(user.partyId).toBe(party.id);
 
     const membership = await prisma.membership.findFirstOrThrow({ where: { zevId: zev.id, userId: user.id } });
@@ -104,6 +107,7 @@ describe("createTenantAccount (super admin creates a brand-new account in an exi
 
     const party = await prisma.party.findFirstOrThrow({ where: { zevId: f.zev.id, email } });
     expect(party.firstName).toBe("Nova");
+    expect(party.userId).toBe(user.id);
     expect(user.partyId).toBe(party.id);
 
     const membership = await prisma.membership.findFirstOrThrow({ where: { zevId: f.zev.id, userId: user.id } });
@@ -198,12 +202,17 @@ describe("grantMembership (existing user gets a Membership in another tenant, no
       where: { userId_zevId_role: { userId: accountantUser.id, zevId: other.zev.id, role: "ACCOUNTANT" } },
     });
     expect(membership.zevId).toBe(other.zev.id);
-    // The known, accepted limitation (§5.3/§8): no Party is created for this account in
-    // the *second* tenant — User.partyId is @unique, so it keeps its one Party in "home".
+    // Deliberate design choice (§5.3), not a schema limitation anymore (Party.userId now
+    // allows one Party per Zev per user — Plans/party-per-tenant-plan.md §2): grantMembership
+    // still creates no Party in the *second* tenant, because assertUserInZev's protection
+    // against a tenant president deactivating a platform admin's account relies on that
+    // admin having no Party there. The account keeps its one Party in "home" only.
     const partyCountAfter = await prisma.party.count({ where: { zevId: other.zev.id } });
     expect(partyCountAfter).toBe(partyCountBefore);
-    const stillOnlyOneParty = await prisma.user.findUniqueOrThrow({ where: { id: accountantUser.id } });
-    expect(stillOnlyOneParty.partyId).toBe(home.accountantParty.id);
+    const stillNoPartyInOther = await prisma.party.findFirst({ where: { userId: accountantUser.id, zevId: other.zev.id } });
+    expect(stillNoPartyInOther).toBeNull();
+    const homeParty = await prisma.party.findUniqueOrThrow({ where: { id: home.accountantParty.id } });
+    expect(homeParty.userId).toBe(accountantUser.id);
   });
 
   it("rejects an unknown e-mail address", async () => {

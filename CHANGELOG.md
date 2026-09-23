@@ -43,6 +43,70 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.24.0] - 2026-09-23
+
+### Ispravljeno
+
+- **Curenje podataka između ZEV naloga pri prebacivanju aktivnog ZEV-a**
+  (`Plans/party-per-tenant-plan.md`, prijavio korisnik: kao platformski admin
+  nakon prebacivanja na drugi ZEV i dalje su se vidjeli linkovi/glasanja
+  vezani za prvi ZEV na početnoj stranici). Korijen: `User.partyId` je bio
+  `@unique` — jedan `Party` ikada, globalno, po korisniku — dok su role
+  ispravno birane po aktivnom ZEV-u (`Membership`). `partyId` nije pratio
+  isti obrazac, pa su sve stranice koje čitaju `actor.partyId` (početna,
+  fakture, glasanja, prijave kvara...) nastavljale da pokazuju podatke
+  prvog ZEV-a u koji je korisnik ikad ušao.
+  - Veza okrenuta sa `User.partyId` na `Party.userId`
+    (`@@unique([userId, zevId])`) — jedan login sada može imati poseban
+    `Party` red u svakom ZEV-u u kojem ima `Membership`, riješeno po istom
+    obrascu kao role (`resolveActiveContext`, ranije `resolveActiveZev` u
+    `src/server/auth/session.ts`, sada eksplicitno rješava i `partyId` po
+    aktivnom ZEV-u, ne samo role).
+  - Usput otkrivene i ispravljene dvije srodne, do sad neprijavljene greške
+    istog porijekla: `maintenance.reportIssue` je nakon prebacivanja ZEV-a
+    upisivao prijavu kvara sa `reporterId` iz **pogrešnog** (izvornog) ZEV-a;
+    `listActivityActors`/`listActivityActorsForZev` su u filteru aktera na
+    „Aktivnosti" prikazivali ime lica iz pogrešnog ZEV-a.
+  - Uživo reprodukovan i potvrđeno ispravljen tačan scenario iz prijave:
+    platformski admin sa `Membership` u dva ZEV-a prebačen između njih —
+    prije ispravke bi drugi (prazan) ZEV pokazivao podatke prvog; sad je
+    svaki ZEV ispravno izolovan u oba smjera.
+
+### Izmijenjeno
+
+- Migracija u dva koraka, zbog Vercel rolling deploy-a (stari kod ostaje
+  živ dok se novi build ne promoviše): **Korak 1** (ova izmjena) je
+  aditivan — nova kolona `Party.userId`, backfill iz `User.partyId`,
+  `@@unique([userId, zevId])` indeks, FK; `User.partyId` ostaje
+  (LEGACY dvostruki upis) do **Koraka 2** (odvojen, kasniji rad), koji ga
+  briše.
+  - Provjera zatečenih pokvarenih redova na Neon produkcionoj bazi prije
+    primjene migracije (`Plans/party-per-tenant-plan.md` §8, rizik 6):
+    **0** redova sa cross-tenant `reporterId`/`partyId` u
+    `MaintenanceIssue`, `Attendance`, `OfficeTerm`, `Occupancy` — dakle
+    nijedan stvarni korisnik do sad nije bio pogođen ovim bagom van
+    prikaza na početnoj stranici. Migracija primijenjena na Neon
+    2026-09-23, svih 7 postojećih naloga sa `partyId` uspješno prebačeno.
+- `grantMembership` (postojeći korisnik dobija pristup drugom ZEV-u — npr.
+  platformski admin ili knjigovođa koji opslužuje više zajednica) i dalje
+  namjerno NE pravi `Party` u tom drugom ZEV-u. Ranije je to bilo
+  ograničenje šeme (`User.partyId` `@unique`); sad je to svjestan
+  sigurnosni izbor — štiti `assertUserInZev` od toga da predsjednik jednog
+  ZEV-a deaktivira nalog platformskog admina kojem je pristup dodijeljen
+  ovim putem. `Plans/tenant-switching-admin-accounts-plan.md` ažuriran da
+  to odražava.
+- `Plans/owner-cross-tenant-party-user-plan.md` označen kao zastarjeo,
+  zamijenjen ovim planom.
+
+### Dodato
+
+- 8 novih testova u `tests/tenant-isolation.test.ts`
+  (`resolveActiveContext` skopiran po aktivnom ZEV-u, null-slučaj bez
+  `Party`-ja, auto-izbor ZEV-a pri praznoj sesiji, `assertUserInZev`
+  zaštita platformskog admina, `@@unique([userId, zevId])` na nivou baze,
+  više `Party` redova sa `userId: null` u istom ZEV-u dozvoljeno, regresije
+  za `reportIssue` i `listActivityActors`) — 276/276 ukupno prolazi.
+
 ## [2.23.0] - 2026-09-22
 
 ### Dodato

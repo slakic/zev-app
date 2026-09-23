@@ -321,9 +321,16 @@ vlasništva. To je rizik pogrešnog odabira, ne integritetski bag — i **već p
   može tim nalogom upravljati sa `/vlasnici` (što je i ispravno — ne treba da može da
   deaktivira platformskog admina), i dobija čistu, već postojeću poruku *"Korisnik nije
   pronađen u ovom ZEV-u."*. Opoziv se radi iz `/admin` (§3.4).
-- **Postojeći korisnik koji se dodaje u drugi tenant → `Party` NIJE moguć.** Nije odluka nego
-  ograničenje: `User.partyId` je `@unique` (`schema.prisma:39`). Korisnik koji već ima `Party`
-  bilo gdje **ne može** dobiti drugi. Vidi §5.3 i §8.
+- **Postojeći korisnik koji se dodaje u drugi tenant → `Party` se NE pravi ni tu.** *(Ažurirano
+  2026-09-22, `Plans/party-per-tenant-plan.md`: ovo više nije ograničenje šeme — otkako
+  `Party.userId` zamjenjuje `User.partyId`, jedan korisnik može imati poseban `Party` red u
+  svakom tenantu u kojem ima `Membership`. Odluka ostaje ista, ali sada je to svjesan izbor iz
+  istog razloga kao gornja tačka: `grantMembership()` (§5.3) postoji upravo za slučaj kad
+  dodijeljeni nalog nije lice u poslovnoj evidenciji tog tenanta (npr. platformski admin, ili
+  vanjski knjigovođa koji tamo nema vlasnički udio) — dodavanje `Party`-ja bi zaobišlo istu
+  zaštitu iz §4.2 druge tačke. Ko stvarno TREBA `Party` u drugom tenantu (npr. knjigovođa koji
+  tamo i posjeduje jedinicu) ide kroz `/vlasnici` te zajednice, ne kroz ovaj put.)* Vidi §5.3 i
+  §8.
 
 ---
 
@@ -378,9 +385,18 @@ violation.
 
 Ograničenje koje uz ovo ide (iz §4.2): takav nalog u drugom tenantu nema `Party`, pa
 **ne može biti upisan u organe tog ZEV-a** i **ne može se administrirati sa `/vlasnici`**.
-Preporuka je da se to prihvati u v1 i dokumentuje, a ne da se blokira funkcionalnost. Trajno
-rješenje je okretanje veze (`Party.userId` umjesto `User.partyId`, jedan korisnik → više
-`Party` redova, po jedan po tenantu) — izmjena šeme, izričito van obima ovog plana.
+Preporuka je da se to prihvati u v1 i dokumentuje, a ne da se blokira funkcionalnost.
+
+*(Ažurirano 2026-09-22, `Plans/party-per-tenant-plan.md`: šema je u međuvremenu okrenuta
+(`Party.userId` umjesto `User.partyId`) — ali iz drugog, hitnijeg razloga (curenje podataka
+između zakupaca pri prebacivanju aktivnog ZEV-a), ne zbog ovog reda. Ta izmjena tehnički
+dozvoljava `grantMembership()`-u da sada napravi `Party` i u drugom tenantu — ali namjerno to
+i dalje ne radi. Razlog više nije "šema to ne dozvoljava" nego isti kao u §4.2 druga tačka:
+`assertUserInZev()` (`users.ts`) je Party-bazirano baš zato da predsjednik tenanta ne može
+deaktivirati nalog platformskog admina kojem je pristup dodijeljen ovim putem — davanje
+`Party`-ja ovdje bi tu zaštitu tiho ukinulo. Ograničenje iz ovog pasusa (nema upisa u organe,
+nema administracije sa `/vlasnici`) ostaje na snazi kao svjestan izbor, ne kao posljedica
+šeme; ko stvarno treba `Party` u drugom tenantu ide kroz `/vlasnici` te zajednice.)*
 
 ### 5.4 UI
 
@@ -554,9 +570,12 @@ zaseban, mehanički zadatak — vrijedi ga zapisati kao dug, ne raditi ga usput.
 
 ## 8. Rizici i posljedice koje treba svjesno prihvatiti
 
-1. **`User.partyId @unique`** — korisnik u dva tenanta ima `Party` u najviše jednom. U drugom:
-   nevidljiv na `/vlasnici`, neupravljiv od strane tog predsjednika, ne može u organe. Zaobići
-   se ne može bez izmjene šeme (§5.3).
+1. **Korisnik u drugom tenantu (preko `grantMembership`) nema `Party` tamo, namjerno.** U tom
+   tenantu: nevidljiv na `/vlasnici`, neupravljiv od strane tog predsjednika, ne može u organe.
+   *(Ažurirano 2026-09-22: prije se ovo zaobići nije moglo bez izmjene šeme — `User.partyId` je
+   bio `@unique`. Šema je od tad okrenuta (`Plans/party-per-tenant-plan.md`), pa je tehnički
+   moguće, ali se svjesno i dalje ne radi — vidi §5.3: to je jedina zaštita koja sprječava
+   predsjednika tenanta da deaktivira nalog platformskog admina.)*
 2. **Super admin sa PRESIDENT članstvom se broji u `assertNotLastActivePresident`** (§3.5).
 3. **Bez obavezne promjene lozinke, super admin trajno zna kredencijal predsjednika** (§6.4).
 4. **Prekidač tenanta = nova klasa korisničkih grešaka** (unos u pogrešan ZEV). Ublaženo

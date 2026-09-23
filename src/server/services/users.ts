@@ -61,32 +61,45 @@ export async function createUserForParty(
 ) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  // Confirmed invariant (docs/multitenancy-plan.md §8.3): a Party always belongs to
-  // exactly one ZEV. Party.zevId has been a required, backfilled column since Korak 3
-  // (no longer the soft/nullable field this check used to worry about) — scoping the
-  // lookup itself is enough; a mismatched or foreign party now surfaces as "not found"
-  // rather than a separate ForbiddenError branch.
-  await prisma.party.findUniqueOrThrow({ where: { id: input.partyId, zevId } });
   assertPasswordStrong(input.password);
-  const user = await prisma.user.create({
-    data: {
-      email: input.email.toLowerCase(),
-      passwordHash: await hashPassword(input.password),
-      roles: input.roles,
-      partyId: input.partyId,
-    },
-  });
-  if (input.roles.length > 0) {
-    await prisma.membership.createMany({
-      data: input.roles.map((role) => ({ userId: user.id, zevId, role })),
-      skipDuplicates: true,
+  // The Party->User link is now set on the Party side (Party.userId — one Party can have
+  // a login in each ZEV it's real in, Plans/party-per-tenant-plan.md §5.4), which means a
+  // Party that already has a login must be rejected explicitly here — previously that was
+  // enforced for free by User.partyId's @unique constraint.
+  const user = await prisma.$transaction(async (tx) => {
+    // Confirmed invariant (docs/multitenancy-plan.md §8.3): a Party always belongs to
+    // exactly one ZEV. Party.zevId has been a required, backfilled column since Korak 3
+    // (no longer the soft/nullable field this check used to worry about) — scoping the
+    // lookup itself is enough; a mismatched or foreign party now surfaces as "not found"
+    // rather than a separate ForbiddenError branch.
+    const party = await tx.party.findUniqueOrThrow({ where: { id: input.partyId, zevId } });
+    if (party.userId) throw new Error("Ovo lice je već povezano sa korisničkim nalogom.");
+    const user = await tx.user.create({
+      data: {
+        email: input.email.toLowerCase(),
+        passwordHash: await hashPassword(input.password),
+        roles: input.roles,
+      },
     });
-  }
+    await tx.party.update({ where: { id: input.partyId, zevId }, data: { userId: user.id } });
+    // LEGACY double-write, Korak 1 only — dropped in the follow-up migration once
+    // Party.userId is confirmed live (Plans/party-per-tenant-plan.md §3.4, §5.4). Captured
+    // back into `user` since the returned object is read by callers (e.g. audit() below,
+    // tests asserting user.partyId) — the bare tx.user.create() result above predates this.
+    const updatedUser = await tx.user.update({ where: { id: user.id }, data: { partyId: input.partyId } });
+    if (input.roles.length > 0) {
+      await tx.membership.createMany({
+        data: input.roles.map((role) => ({ userId: user.id, zevId, role })),
+        skipDuplicates: true,
+      });
+    }
+    return updatedUser;
+  });
   await audit(actor, {
     action: "user.create",
     targetType: "User",
     targetId: user.id,
-    after: { email: user.email, roles: user.roles, partyId: user.partyId },
+    after: { email: user.email, roles: user.roles, partyId: input.partyId },
   });
   return user;
 }
@@ -143,9 +156,16 @@ export async function requestPasswordReset(email: string, appUrl: string, ipHash
   // ZEV, and this user may hold memberships in several (or none) — see queueNotification's
   // own doc comment and docs/multitenancy-plan.md §6.4 Modul 6 for the open question this
   // leaves (the row falls back to the temporary default_zev_id() DB default).
+  //
+  // recipientId is always null now, deliberately (Plans/party-per-tenant-plan.md §5.5):
+  // there's no longer "the user's one Party" to attribute this to — they may have none, or
+  // one per tenant — and picking one arbitrarily would misfile this notification under
+  // whichever tenant happened to come first. toAddress already carries everything this
+  // needs. This closes half of the docs/multitenancy-plan.md §6.4 Modul 6 gap instead of
+  // widening it.
   await queueNotification({
     channel: "EMAIL",
-    recipientId: user.partyId,
+    recipientId: null,
     toAddress: user.email,
     template: "password-reset",
     subject: "Resetovanje lozinke",
@@ -193,14 +213,23 @@ export async function resetPassword(token: string, newPassword: string): Promise
 // User is deliberately NOT tenant-scoped (docs/multitenancy-plan.md §4.3/§5) — one
 // account can hold Memberships in several ZEVs, or none, so there's no zevId column
 // on User itself to filter by. Every function below that acts on a specific userId
-// must instead confirm that user belongs to the *acting* president's own tenant —
-// via their linked Party, same invariant createUserForParty already relies on
-// (§8.3: a Party always belongs to exactly one ZEV) — before touching anything.
-// Getting this wrong would let a PRESIDENT of one ZEV manage a user who has no
-// relationship to it at all.
+// must instead confirm that user is a real Party in the *acting* president's own
+// tenant (docs/multitenancy-plan.md §8.3: a Party always belongs to exactly one ZEV)
+// before touching anything.
+//
+// Deliberately Party-based, not Membership-based, even though Membership is "the actual
+// source of authorization" for everything else (roles, requireRole). A super admin who
+// grants themselves a Membership in a tenant (admin.ts's grantMembership) gets no Party
+// there on purpose (Plans/tenant-switching-admin-accounts-plan.md §4.2) — specifically so
+// that tenant's own president CANNOT reach that platform-admin account through
+// deactivateUser/updateUserRoles here. Porting this to Membership (or to
+// `user.parties[0]?.zevId`, whose array order is not guaranteed) would silently remove
+// that protection — see Plans/party-per-tenant-plan.md §5.5 and the regression test in
+// tests/tenant-isolation.test.ts that locks this down.
 async function assertUserInZev(zevId: string, userId: string) {
-  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, include: { party: true } });
-  if (!user.party || user.party.zevId !== zevId) {
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  const party = await prisma.party.findFirst({ where: { userId, zevId }, select: { id: true } });
+  if (!party) {
     throw new Error("Korisnik nije pronađen u ovom ZEV-u.");
   }
   return user;

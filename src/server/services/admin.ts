@@ -165,6 +165,13 @@ export async function createTenant(
         tier: data.tier,
       },
     });
+    const user = await tx.user.create({
+      data: {
+        email,
+        passwordHash,
+        roles: ["PRESIDENT"], // legacy column — see User.roles comment in schema.prisma
+      },
+    });
     const party = await tx.party.create({
       data: {
         zevId: zev.id,
@@ -173,16 +180,12 @@ export async function createTenant(
         lastName,
         email,
         phone: data.presidentPhone?.trim() || null,
+        userId: user.id,
       },
     });
-    const user = await tx.user.create({
-      data: {
-        email,
-        passwordHash,
-        roles: ["PRESIDENT"], // legacy column — see User.roles comment in schema.prisma
-        partyId: party.id,
-      },
-    });
+    // LEGACY double-write, Korak 1 only — dropped in the follow-up migration once
+    // Party.userId is confirmed live (Plans/party-per-tenant-plan.md §3.4, §5.1).
+    await tx.user.update({ where: { id: user.id }, data: { partyId: party.id } });
     await tx.membership.create({ data: { userId: user.id, zevId: zev.id, role: "PRESIDENT" } });
     await seedDefaultSettings(tx, zev.id);
     return { zev, party };
@@ -266,6 +269,13 @@ export async function createTenantAccount(
   const passwordHash = await hashPassword(data.password);
 
   const { user, party } = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        email,
+        passwordHash,
+        roles: [data.role], // legacy column — see User.roles comment in schema.prisma
+      },
+    });
     const party = await tx.party.create({
       data: {
         zevId,
@@ -275,18 +285,16 @@ export async function createTenantAccount(
         orgName: orgName || null,
         email,
         phone: data.phone?.trim() || null,
+        userId: user.id,
       },
     });
-    const user = await tx.user.create({
-      data: {
-        email,
-        passwordHash,
-        roles: [data.role], // legacy column — see User.roles comment in schema.prisma
-        partyId: party.id,
-      },
-    });
+    // LEGACY double-write, Korak 1 only — dropped in the follow-up migration once
+    // Party.userId is confirmed live (Plans/party-per-tenant-plan.md §3.4, §5.2). Captured
+    // back into `user` since the returned object is read by callers (e.g. tests asserting
+    // user.partyId) — the bare tx.user.create() result above predates this update.
+    const updatedUser = await tx.user.update({ where: { id: user.id }, data: { partyId: party.id } });
     await tx.membership.create({ data: { userId: user.id, zevId, role: data.role } });
-    return { user, party };
+    return { user: updatedUser, party };
   });
 
   await audit(
@@ -327,9 +335,18 @@ export async function createTenantAccount(
  * passes their own email for the latter, and the audit action distinguishes the two
  * (admin.membership.grant_self vs admin.membership.grant) without a separate code path.
  *
- * Known, accepted limitation carried from §5.3/§8 item 1: the granted user gets no
- * Party in this tenant (User.partyId is @unique — one Party per user, ever), so they
- * won't appear on this tenant's /vlasnici and can't be entered into /organi here.
+ * Deliberately does NOT create a Party here, even though Party.userId (Plans/
+ * party-per-tenant-plan.md §2) removed the technical reason this used to lean on
+ * ("User.partyId is @unique — one Party per user, ever"). The real reason is a
+ * security one, not a schema limitation: assertUserInZev() (users.ts) — the only
+ * thing stopping this tenant's own president from deactivating a platform admin's
+ * account via /vlasnici — is Party-based specifically because a super admin granting
+ * themselves access here gets no Party. Giving this function a "create a Party too"
+ * option would silently remove that protection (§5.3 of the plan above). The granted
+ * user correctly won't appear on this tenant's /vlasnici and can't be entered into
+ * /organi here — that's the intended boundary, not a gap. Linking an existing account
+ * to a real Party belongs in the tenant itself, at /vlasnici, where a president already
+ * has to supply ownership proof — not from the platform console.
  */
 export async function grantMembership(
   actor: Actor,

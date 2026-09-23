@@ -1,5 +1,12 @@
 # Jedan nalog — vlasnik u više ZEV-ova (okretanje veze `User`↔`Party`) — plan za pregled
 
+> **ZASTARJELO (2026-09-22): zamijenjeno planom `Plans/party-per-tenant-plan.md`.** Ista
+> izmjena šeme (`Party.userId` umjesto `User.partyId`) je u međuvremenu implementirana — ne po
+> ovom planu, nego povodom hitnijeg razloga: otkrivenog curenja podataka između zakupaca kada
+> platformski admin prebacuje aktivni ZEV (vidi taj plan §1). Ovaj dokument je ostavljen kao
+> istorijski zapis analize/motivacije "vlasnik u više ZEV-ova"; za trenutni dizajn i stanje šeme
+> vidi `Plans/party-per-tenant-plan.md`.
+
 **Status: PLAN, implementacija nije počela.** Nastalo na zahtjev korisnika (2026-09-10), kao
 *zaseban* poduhvat izdvojen iz `Plans/tenant-switching-admin-accounts-plan.md`, čiji §5.3 ovu
 izmjenu izričito ostavlja van svog obima:

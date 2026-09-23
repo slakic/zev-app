@@ -1305,6 +1305,14 @@ implementacije.
    ZEV-u A a istovremeno imati `OWNER` članstvo u ZEV-u B — jedan `Party`
    red pripada tačno jednom ZEV-u.
 
+   **Napomena (2026-09-22, Plans/party-per-tenant-plan.md):** ovo i dalje
+   važi za svaki pojedinačni `Party` red — nije se promijenilo. Promijenilo
+   se to da jedan `User` (login) sada može imati poseban `Party` red u
+   svakom ZEV-u u kojem ima `Membership` (`Party.userId`, umjesto ranijeg
+   `User.partyId` koje je dozvoljavalo najviše jedan `Party` ikada,
+   globalno) — vidi pomenuti plan §2-§4 za razlog (curenje podataka između
+   zakupaca pri prebacivanju aktivnog ZEV-a) i puni dizajn.
+
 ## 9. Šta NIJE u ovom planu
 
 Namjerno izostavljeno kao poseban poduhvat kasnije, ne dio multitenancy

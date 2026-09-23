@@ -3,7 +3,7 @@ import { cookies, headers } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { prisma } from "@/lib/prisma";
 import { sha256 } from "./tokens";
-import type { Role, User, Party } from "@/generated/prisma/client";
+import type { Role } from "@/generated/prisma/client";
 
 const COOKIE_NAME = "zev_session";
 const SESSION_TTL_HOURS = 12;
@@ -14,18 +14,19 @@ function secret(): Uint8Array {
   return new TextEncoder().encode(s);
 }
 
-export type SessionUser = User & { party: Party | null };
-
 export type AuthContext = {
   userId: string;
   /** Scoped to zevId below (from Membership), not User.roles — see requireActor. */
   roles: Role[];
+  /** The user's Party in this session's active ZEV, if any (Plans/party-per-tenant-plan.md
+   *  §4) — not "the user's one global Party" (that no longer exists as a concept: one login
+   *  can have a different Party in each tenant it holds a Membership in, or none at all). */
   partyId: string | null;
   email: string;
   displayName: string;
   sessionId: string;
   /** Active tenant for this session; null if unresolved (no Membership at all) or the
-   * user is a super admin who hasn't chosen one. See resolveActiveZev() below. */
+   * user is a super admin who hasn't chosen one. See resolveActiveContext() below. */
   zevId: string | null;
   /** True if the active ZEV (zevId above) is currently suspended (Zev.active = false).
    * Null when zevId is null (nothing to be suspended). requireActor() acts on this. */
@@ -72,20 +73,27 @@ export async function destroySession(): Promise<void> {
 }
 
 /**
- * Which ZEV a session acts within, and that ZEV's current roles for the user — sourced
- * from Membership, never from the (soon superseded) User.roles column. See
- * docs/multitenancy-plan.md §5. Auto-picks the user's sole Membership on first read
- * after login (or after this migration, for a pre-existing session) and persists that
- * choice on the session row; a user with more than one Membership also defaults to the
- * first (by createdAt) — see setSessionActiveZev() below for how a user with several
- * memberships then switches to a different one on purpose (the account-menu switcher in
- * nav-shell.tsx, or "Uđi u ovaj ZEV" from /admin).
+ * Which ZEV a session acts within, that ZEV's current roles for the user, and that
+ * user's Party in that same ZEV — all three sourced from collections already scoped per
+ * tenant (Membership for roles, Party for partyId — see Plans/party-per-tenant-plan.md
+ * §4), never from a global column. See docs/multitenancy-plan.md §5 for the roles side.
+ * Auto-picks the user's sole Membership on first read after login (or after this
+ * migration, for a pre-existing session) and persists that choice on the session row; a
+ * user with more than one Membership also defaults to the first (by createdAt) — see
+ * setSessionActiveZev() below for how a user with several memberships then switches to a
+ * different one on purpose (the account-menu switcher in nav-shell.tsx, or "Uđi u ovaj
+ * ZEV" from /admin).
+ *
+ * Exported (unlike the rest of this file's session/cookie plumbing) so it can be tested
+ * directly against real Session/Membership/Party rows without needing next/headers or a
+ * signed cookie — see tests/tenant-isolation.test.ts.
  */
-async function resolveActiveZev(
+export async function resolveActiveContext(
   sessionId: string,
   currentActiveZevId: string | null,
-  memberships: { zevId: string; role: Role; createdAt: Date }[]
-): Promise<{ zevId: string | null; roles: Role[] }> {
+  memberships: { zevId: string; role: Role; createdAt: Date }[],
+  parties: { id: string; zevId: string }[]
+): Promise<{ zevId: string | null; roles: Role[]; partyId: string | null }> {
   let zevId = currentActiveZevId;
   if (!zevId || !memberships.some((m) => m.zevId === zevId)) {
     const sorted = [...memberships].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
@@ -95,7 +103,10 @@ async function resolveActiveZev(
     }
   }
   const roles = zevId ? memberships.filter((m) => m.zevId === zevId).map((m) => m.role) : [];
-  return { zevId, roles };
+  // @@unique([userId, zevId]) on Party guarantees at most one row can match here — never a
+  // "which one do I pick" ambiguity.
+  const partyId = zevId ? (parties.find((p) => p.zevId === zevId)?.id ?? null) : null;
+  return { zevId, roles, partyId };
 }
 
 /** Resolve the authenticated user from the session cookie. Returns null when not logged in. */
@@ -114,28 +125,44 @@ export async function getAuthContext(): Promise<AuthContext | null> {
   const session = await prisma.session.findUnique({
     where: { id: sid },
     include: {
-      user: { include: { party: true, memberships: true } },
+      user: {
+        include: {
+          memberships: true,
+          // select narrowed to what's actually used below (id/zevId to pick the active
+          // one, the rest only for displayName) — not the full Party row with every
+          // financial/legal field.
+          parties: { select: { id: true, zevId: true, kind: true, firstName: true, lastName: true, orgName: true, createdAt: true } },
+        },
+      },
       activeZev: { select: { active: true } },
     },
   });
   if (!session || session.revokedAt || session.expiresAt < new Date()) return null;
   if (!session.user.active) return null;
   const u = session.user;
-  const displayName = u.party
-    ? u.party.kind === "PERSON"
-      ? `${u.party.firstName ?? ""} ${u.party.lastName ?? ""}`.trim()
-      : u.party.orgName ?? u.email
+  const { zevId, roles, partyId } = await resolveActiveContext(session.id, session.activeZevId, u.memberships, u.parties);
+  // displayName: the Party in the active ZEV, if any; otherwise the oldest Party this
+  // login has anywhere (a platform admin with Memberships in several tenants but a Party
+  // in only one still gets a real name, not just an e-mail); otherwise the e-mail. Never a
+  // cross-tenant data leak — displayName is shown only to the signed-in user themselves
+  // (nav-shell.tsx, via requireActor), never rendered for anyone else.
+  const activeParty = partyId ? u.parties.find((p) => p.id === partyId) : undefined;
+  const fallbackParty = activeParty ?? [...u.parties].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[0];
+  const displayName = fallbackParty
+    ? fallbackParty.kind === "PERSON"
+      ? `${fallbackParty.firstName ?? ""} ${fallbackParty.lastName ?? ""}`.trim()
+      : fallbackParty.orgName ?? u.email
     : u.email;
-  const { zevId, roles } = await resolveActiveZev(session.id, session.activeZevId, u.memberships);
-  // activeZev was included using the session's *previous* activeZevId — if resolveActiveZev
-  // just picked a different one (first login, or a stale/removed membership), re-check that
-  // new Zev's active flag instead of trusting the (now stale) include.
+  // activeZev was included using the session's *previous* activeZevId — if
+  // resolveActiveContext just picked a different one (first login, or a stale/removed
+  // membership), re-check that new Zev's active flag instead of trusting the (now stale)
+  // include.
   const zevSuspended =
     zevId === null ? null : zevId === session.activeZevId ? session.activeZev?.active === false : await zevIsSuspended(zevId);
   return {
     userId: u.id,
     roles,
-    partyId: u.partyId,
+    partyId,
     email: u.email,
     displayName,
     sessionId: session.id,
@@ -146,7 +173,7 @@ export async function getAuthContext(): Promise<AuthContext | null> {
 }
 
 /**
- * Change which ZEV a session acts within — the only place besides resolveActiveZev's own
+ * Change which ZEV a session acts within — the only place besides resolveActiveContext's own
  * auto-pick (line ~93 above) that writes Session.activeZevId. Deliberately unauthorized —
  * the caller (switchActiveZev in src/server/services/memberships.ts) is responsible for
  * confirming the session's own user actually holds a Membership in zevId, and that zevId's

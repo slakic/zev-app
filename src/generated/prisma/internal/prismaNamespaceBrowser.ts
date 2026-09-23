@@ -174,6 +174,7 @@ export const PartyScalarFieldEnum = {
   eVoteConsentStatus: 'eVoteConsentStatus',
   eVoteConsentEmail: 'eVoteConsentEmail',
   eVoteConsentDocumentId: 'eVoteConsentDocumentId',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

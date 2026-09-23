@@ -66,8 +66,11 @@ describe("user account administration (roles, activation)", () => {
       data: { zevId: f.zev.id, kind: "PERSON", firstName: "Drugi", lastName: `Predsjednik-${f.t}` },
     });
     const secondPresident = await prisma.user.create({
-      data: { email: `second-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"], partyId: secondParty.id },
+      data: { email: `second-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"] },
     });
+    // assertUserInZev (users.ts) now looks up Party.userId, not User.partyId — see
+    // Plans/party-per-tenant-plan.md §4.
+    await prisma.party.update({ where: { id: secondParty.id }, data: { userId: secondPresident.id } });
     await prisma.membership.create({ data: { userId: secondPresident.id, zevId: f.zev.id, role: "PRESIDENT" } });
     await expect(updateUserRoles(f.president, secondPresident.id, ["OWNER"])).resolves.toBeTruthy();
 
@@ -75,8 +78,9 @@ describe("user account administration (roles, activation)", () => {
       data: { zevId: f.zev.id, kind: "PERSON", firstName: "Treći", lastName: `Predsjednik2-${f.t}` },
     });
     const secondPresident2 = await prisma.user.create({
-      data: { email: `third-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"], partyId: thirdParty.id },
+      data: { email: `third-${f.t}@zev.test`, passwordHash: "x", roles: ["PRESIDENT"] },
     });
+    await prisma.party.update({ where: { id: thirdParty.id }, data: { userId: secondPresident2.id } });
     await prisma.membership.create({ data: { userId: secondPresident2.id, zevId: f.zev.id, role: "PRESIDENT" } });
     await expect(deactivateUser(f.president, secondPresident2.id, "cleanup")).resolves.toBeTruthy();
   });
