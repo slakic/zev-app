@@ -231,9 +231,31 @@ export async function advanceMeetingStatus(actor: Actor, id: string, to: Meeting
     throw new Error("Vraćanje statusa unazad zahtijeva razlog (evidentira se u auditu).");
   }
   const m = await prisma.meeting.update({ where: { id, zevId }, data: { status: to } });
+
+  // Meeting.status was deliberately never a gate for Proposal.status (§1.1) — but that also
+  // meant nothing ever closed a proposal's own voting when the session itself moved past
+  // VOTING_OPEN, so a proposal could sit "VOTING_OPEN" forever after the meeting was
+  // otherwise done. Once the meeting moves forward past VOTING_OPEN, every proposal of this
+  // meeting still VOTING_OPEN is closed through the same closeVoting() used everywhere else
+  // (§2.5: no new vote-writing/closing code path) — same result computation, same
+  // ACCEPTED/REJECTED write, same expiry of unused ApprovalTokens (so outstanding e-vote
+  // links stop working, per the same reasoning as closeVoting's own doc comment).
+  const votingOpenIdx = MEETING_FLOW.indexOf("VOTING_OPEN");
+  const autoClosedProposalIds: string[] = [];
+  if (toIdx > fromIdx && toIdx > votingOpenIdx) {
+    const openProposals = await prisma.proposal.findMany({
+      where: { meetingId: id, status: "VOTING_OPEN" },
+      select: { id: true },
+    });
+    for (const p of openProposals) {
+      await closeVoting(actor, p.id);
+      autoClosedProposalIds.push(p.id);
+    }
+  }
+
   await audit(actor, {
     action: "meeting.status", targetType: "Meeting", targetId: id,
-    before: { status: meeting.status }, after: { status: to }, reason: reason ?? null,
+    before: { status: meeting.status }, after: { status: to, autoClosedProposalIds }, reason: reason ?? null,
   });
   return m;
 }

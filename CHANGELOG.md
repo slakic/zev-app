@@ -43,6 +43,31 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.30.1] - 2026-09-23
+
+### Ispravljeno
+
+- **Zatvaranje sjednice nije zatvaralo preostala otvorena glasanja.** Prijavljeno od
+  korisnika: kad se sjednica prevede u status „Glasanje zatvoreno” (dugme „Označi glasanje
+  zatvorenim” na `/skupstina/[id]`), prijedlozi koji su i dalje bili u statusu „Glasanje
+  otvoreno” su tu i ostajali — bez konačnog rezultata, sa aktivnim (neisteklim) linkovima za
+  elektronsko izjašnjavanje. `Meeting.status` je namjerno nikad nije bio kapija za
+  `Proposal.status` (Plans/live-meeting-mode-plan.md §1.1), ali ništa dosad nije ni
+  zatvaralo pojedinačna glasanja u ime sjednice.
+  - `advanceMeetingStatus` sada, kad sjednica pređe unaprijed preko „Glasanje otvoreno”,
+    zatvara svaki prijedlog te sjednice koji je još u statusu „Glasanje otvoreno” —
+    pozivom postojeće `closeVoting` (isti izračun rezultata, isti upis
+    ACCEPTED/REJECTED, isti istek neiskorišćenih tokena — nijedan nov kod-put za
+    zatvaranje glasanja). Audit `meeting.status` sada bilježi i listu automatski
+    zatvorenih prijedloga.
+  - `/skupstina/[id]`: dugme „Označi glasanje zatvorenim” je jedina statusna radnja koja
+    sada ide iza `ConfirmAction` — poimenično nabraja koji će prijedlozi biti automatski
+    zatvoreni prije nego što se potvrdi, jer ta radnja sad nosi stvarnu, nepovratnu
+    posljedicu koju ostali koraci statusa nemaju.
+  - 4 nova testa. Uživo provjereno na 1440px: prijedlog u statusu „Glasanje otvoreno” se
+    ispravno automatski zatvara (i dobija konačan rezultat) čim se sjednica označi kao
+    „Glasanje zatvoreno”.
+
 ## [2.30.0] - 2026-09-23
 
 ### Dodato

@@ -225,6 +225,80 @@ describe("secure electronic approval", () => {
   });
 });
 
+// Gap reported by the user (2026-09-23): advancing the meeting past VOTING_OPEN (e.g. the
+// desktop "Označi glasanje zatvorenim" button) left any still-open proposal's own voting
+// untouched — Proposal.status stayed VOTING_OPEN and its e-vote links kept working, even
+// though the session itself had moved on. Meeting.status was deliberately never a gate for
+// Proposal.status (§1.1 of Plans/live-meeting-mode-plan.md), but nothing ever closed the
+// individual votes on the session's behalf either — this is that missing link.
+describe("advanceMeetingStatus auto-closes proposals left VOTING_OPEN", () => {
+  it("moving the meeting to VOTING_CLOSED closes a still-open proposal: result computed, status ACCEPTED/REJECTED, unused links stop working", async () => {
+    const f: Fixture = await createFixture("auto-close");
+    const { meeting, proposal } = await createProposalFixture(f);
+    const links = await openVotingWithLinks(f, proposal.id);
+    // Nobody votes — proposal stays VOTING_OPEN right up until the meeting itself closes.
+    expect((await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).status).toBe("VOTING_OPEN");
+
+    await advanceMeetingStatus(f.president, meeting.id, "VOTING_CLOSED");
+
+    const closed = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
+    expect(["ACCEPTED", "REJECTED"]).toContain(closed.status);
+    expect(closed.resultSummary).not.toBeNull();
+    // The same audit as a manual closeVoting() call — no second, divergent close-code-path.
+    expect(await prisma.auditEvent.findFirst({ where: { action: "proposal.voting.close", targetId: proposal.id } })).toBeTruthy();
+    // Every previously-active token for this proposal is now expired...
+    const tokens = await prisma.approvalToken.findMany({ where: { eligibleVoter: { proposalId: proposal.id } } });
+    expect(tokens.some((t) => t.status === "ACTIVE")).toBe(false);
+    // ...and a never-used link can no longer cast a vote at all.
+    const l = links[0];
+    const res = await submitVote({ tokenPlain: l.token, verificationCode: l.code, choice: "APPROVE" });
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.error).toBe("voting_closed");
+  });
+
+  it("records which proposals were auto-closed in the meeting.status audit event", async () => {
+    const f: Fixture = await createFixture("auto-close-audit");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await openVoting(f.president, proposal.id);
+
+    await advanceMeetingStatus(f.president, meeting.id, "VOTING_CLOSED");
+
+    const ev = await prisma.auditEvent.findFirstOrThrow({ where: { action: "meeting.status", targetId: meeting.id } });
+    const after = ev.after as { status: string; autoClosedProposalIds: string[] };
+    expect(after.status).toBe("VOTING_CLOSED");
+    expect(after.autoClosedProposalIds).toContain(proposal.id);
+  });
+
+  it("a proposal already closed (manually, before the meeting advances) is left untouched — no double-close, no error", async () => {
+    const f: Fixture = await createFixture("auto-close-idempotent");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await openVotingWithLinks(f, proposal.id);
+    const { result: manualResult } = await closeVoting(f.president, proposal.id);
+
+    await expect(advanceMeetingStatus(f.president, meeting.id, "VOTING_CLOSED")).resolves.toBeTruthy();
+
+    const p = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
+    expect(p.status).toBe(manualResult.accepted ? "ACCEPTED" : "REJECTED");
+    // Only the one manual close — advanceMeetingStatus must not have tried (and failed, or
+    // silently re-run) closeVoting on a proposal that isn't VOTING_OPEN any more.
+    const closeAudits = await prisma.auditEvent.findMany({ where: { action: "proposal.voting.close", targetId: proposal.id } });
+    expect(closeAudits).toHaveLength(1);
+  });
+
+  it("moving the meeting only as far as VOTING_OPEN itself never touches an open proposal's voting", async () => {
+    // createProposalFixture's meeting starts at DRAFT and is never advanced by
+    // openVoting/openVotingWithLinks (§1.1: meeting status is not a voting gate) — so this
+    // is a genuine forward move (DRAFT -> VOTING_OPEN), landing exactly ON the boundary
+    // index, not past it. The fix must trigger only on "past VOTING_OPEN", not "at or past".
+    const f: Fixture = await createFixture("auto-close-boundary");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await openVotingWithLinks(f, proposal.id);
+
+    await advanceMeetingStatus(f.president, meeting.id, "VOTING_OPEN");
+    expect((await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).status).toBe("VOTING_OPEN");
+  });
+});
+
 // Plans/skupstina-draft-management-and-test-outbox-plan.md, Dio A — a DRAFT proposal
 // previously couldn't be edited or removed at all (updateDraftProposal existed but had
 // no caller; there was no delete/withdraw). §A.8's test list.

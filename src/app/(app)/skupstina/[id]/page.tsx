@@ -10,7 +10,7 @@ import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 const MEETING_STATUS_ORDER: MeetingStatus[] = [
@@ -163,6 +163,11 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
     ? await Promise.all([listVotingRules(actor), listParties(actor), listBuildings(actor)])
     : [[], [], []];
   const next = NEXT_STATUS[meeting.status];
+  // Closing the session now also closes every proposal still VOTING_OPEN (advanceMeetingStatus,
+  // §1.1/§2.6 gap fix) — that's a real, irreversible consequence the plain one-tap status button
+  // doesn't carry for any other step, so this one transition alone gets a confirmation that names
+  // exactly what will be closed, same as openVoting/closeVoting elsewhere in this feature.
+  const proposalsToAutoClose = next?.to === "VOTING_CLOSED" ? meeting.proposals.filter((p) => p.status === "VOTING_OPEN") : [];
   return (
     <div>
       <PageHeader
@@ -176,11 +181,38 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               </BtnLink>
             )}
             {isPresident && next && (
-              <form action={statusAction}>
-                <input type="hidden" name="meetingId" value={meeting.id} />
-                <input type="hidden" name="to" value={next.to} />
-                <SubmitBtn>{next.label}</SubmitBtn>
-              </form>
+              next.to === "VOTING_CLOSED" ? (
+                <ConfirmAction
+                  trigger={next.label}
+                  triggerVariant="primary"
+                  title="Zatvaranje glasanja na sjednici je nepovratno"
+                  body={
+                    proposalsToAutoClose.length > 0 ? (
+                      <div className="space-y-1 text-sm text-amber-950">
+                        <p>Sljedeći prijedlozi su još uvijek u statusu „Glasanje otvoreno” i biće automatski zatvoreni, sa konačnim rezultatom i istekom svih neiskorišćenih linkova za elektronsko izjašnjavanje:</p>
+                        <ul className="list-disc pl-5">
+                          {proposalsToAutoClose.map((p) => (
+                            <li key={p.id}>
+                              {p.code} — {p.title}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-amber-950">Nema otvorenih glasanja koja bi ovim bila zatvorena.</p>
+                    )
+                  }
+                  confirmLabel="Da, zatvori glasanje na sjednici"
+                  action={statusAction}
+                  hiddenFields={{ meetingId: meeting.id, to: next.to }}
+                />
+              ) : (
+                <form action={statusAction}>
+                  <input type="hidden" name="meetingId" value={meeting.id} />
+                  <input type="hidden" name="to" value={next.to} />
+                  <SubmitBtn>{next.label}</SubmitBtn>
+                </form>
+              )
             )}
           </>
         }
