@@ -43,6 +43,16 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.24.1] - 2026-09-23
+
+### Izmijenjeno
+
+- Ikonica za „Super admin" u glavnom meniju — do sad je padala na generičku
+  tačkicu (`IconDot`, ništa u `NAV_ICONS` mapi nije bilo dodijeljeno za
+  `/admin`). Dodata nova `IconShield` (štit sa kvačicom), u istom
+  ručno-crtanom monohromnom stilu kao i ostale ikonice u
+  `src/components/nav-icons.tsx`.
+
 ## [2.24.0] - 2026-09-23
 
 ### Ispravljeno
