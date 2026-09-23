@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, type Fixture } from "./helpers";
 import {
   openVoting, recordAttendance, recordAttendanceBulk, recordManualVote, submitVote,
-  advanceMeetingStatus, closeVoting, getLiveMeetingState,
+  advanceMeetingStatus, closeVoting, getLiveMeetingState, previewLiveDelivery, createVotingRule,
 } from "@/server/services/meetings";
 import { grantProxy } from "@/server/services/ownership";
 import { ForbiddenError } from "@/server/auth/guards";
@@ -200,6 +200,47 @@ describe("live meeting — getLiveMeetingState", () => {
     expect(voterC.marked).toBe(false); // never prozivka'd -> distinct from "explicitly absent"
     expect(voterC.eVoteConsentSigned).toBe(false);
     expect(state.activeResult).not.toBeNull();
+
+    // activeVoters (§3.4): present+unvoted (manual entry), electronic (read-only), and
+    // no-channel (paper entry) all derive from the same three buckets as the delivery
+    // classification above — ownerA present, ownerB delivered, ownerC no channel.
+    expect(state.activeVoters).toHaveLength(3);
+    const avA = state.activeVoters.find((v) => v.ownerId === f.ownerA.id)!;
+    expect(avA.present).toBe(true);
+    expect(avA.voted).toBe(false);
+    expect(avA.deliveredVia).toBeNull();
+    const avB = state.activeVoters.find((v) => v.ownerId === f.ownerB.id)!;
+    expect(avB.present).toBe(false);
+    expect(avB.deliveredVia).toBe("EMAIL");
+    const avC = state.activeVoters.find((v) => v.ownerId === f.ownerC.id)!;
+    expect(avC.present).toBe(false);
+    expect(avC.deliveredVia).toBeNull();
+  });
+
+  it("activeVoters reflects a submitted electronic vote and an in-person manual vote", async () => {
+    const f: Fixture = await createFixture("lm-state-votes");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true });
+    await markSigned(f.ownerB.id);
+    const deliveries = await openVoting(f.president, proposal.id, { delivery: "LIVE" });
+
+    const evA = await prisma.eligibleVoter.findFirstOrThrow({ where: { proposalId: proposal.id, ownerId: f.ownerA.id } });
+    await recordManualVote(f.president, { eligibleVoterId: evA.id, choice: "APPROVE", channel: "IN_PERSON" });
+
+    const bDelivery = deliveries.find((d) => d.email === f.ownerB.email)!;
+    const bToken = bDelivery.link.split("/").pop()!;
+    const submitted = await submitVote({ tokenPlain: bToken, verificationCode: bDelivery.verificationCode, choice: "REJECT" });
+    expect(submitted.ok).toBe(true);
+
+    const state = await getLiveMeetingState(f.president, meeting.id, { proposalId: proposal.id });
+    const avA = state.activeVoters.find((v) => v.ownerId === f.ownerA.id)!;
+    expect(avA.voted).toBe(true);
+    expect(avA.channel).toBe("IN_PERSON");
+    const avB = state.activeVoters.find((v) => v.ownerId === f.ownerB.id)!;
+    expect(avB.voted).toBe(true);
+    expect(avB.channel).toBe("ELECTRONIC");
+    const avC = state.activeVoters.find((v) => v.ownerId === f.ownerC.id)!;
+    expect(avC.voted).toBe(false);
   });
 
   it("is zevId-scoped and PRESIDENT/ACCOUNTANT-only", async () => {
@@ -207,5 +248,62 @@ describe("live meeting — getLiveMeetingState", () => {
     const other: Fixture = await createFixture("lm-state-scope-other");
     const { meeting } = await createProposalFixture(f);
     await expect(getLiveMeetingState(other.president, meeting.id)).rejects.toThrow();
+  });
+});
+
+describe("live meeting — previewLiveDelivery (Faza 2, §2.1/§3.4 confirmation panel)", () => {
+  it("matches exactly what openVoting(delivery: \"LIVE\") actually does, and creates nothing itself", async () => {
+    const f: Fixture = await createFixture("lm-preview-match");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true });
+    await markSigned(f.ownerB.id);
+    // ownerC: absent, no consent -> no channel
+
+    const preview = await previewLiveDelivery(f.president, proposal.id);
+    expect(preview.presentCount).toBe(1);
+    expect(preview.deliverCount).toBe(1);
+    expect(preview.noChannelCount).toBe(1);
+    // Read-only: nothing created yet.
+    expect(await prisma.eligibleVoter.count({ where: { proposalId: proposal.id } })).toBe(0);
+    expect((await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).status).toBe("DRAFT");
+
+    // The real call must land on the exact same three numbers.
+    await openVoting(f.president, proposal.id, { delivery: "LIVE" });
+    const audit = await prisma.auditEvent.findFirstOrThrow({ where: { action: "proposal.voting.open", targetId: proposal.id } });
+    const after = audit.after as { deliveredCount: number; suppressedPresent: number; suppressedNoConsent: number; suppressedNoEmail: number };
+    expect(after.suppressedPresent).toBe(preview.presentCount);
+    expect(after.deliveredCount).toBe(preview.deliverCount);
+    expect(after.suppressedNoConsent + after.suppressedNoEmail).toBe(preview.noChannelCount);
+  });
+
+  it("quorumReachable is true when korpa A+B weight clears the rule's quorum, false when it doesn't", async () => {
+    const f: Fixture = await createFixture("lm-preview-quorum");
+    // "Veći radovi" style rule: 2/3 of total weight required for quorum.
+    const strictRule = await createVotingRule(f.president, {
+      name: `Strogi kvorum ${f.t}`,
+      quorumType: "PERCENT_OF_TOTAL_WEIGHT",
+      quorumPercent: "66.67",
+      majorityType: "SIMPLE_OF_VOTES_CAST",
+      weightMethod: "OWNERSHIP_SHARE",
+    });
+    const { meeting, proposal } = await createProposalFixture(f, { ruleId: strictRule.id });
+    // Nobody present, nobody consented -> reachable weight is 0, quorum unreachable.
+    const unreachable = await previewLiveDelivery(f.president, proposal.id);
+    expect(unreachable.quorumReachable).toBe(false);
+
+    // Mark everyone present -> full weight reachable, quorum met.
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerB.id, present: true });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerC.id, present: true });
+    const reachable = await previewLiveDelivery(f.president, proposal.id);
+    expect(reachable.quorumReachable).toBe(true);
+    expect(reachable.presentCount).toBe(3);
+  });
+
+  it("is PRESIDENT/ACCOUNTANT-only and zevId-scoped", async () => {
+    const f: Fixture = await createFixture("lm-preview-auth");
+    const { proposal } = await createProposalFixture(f);
+    await expect(previewLiveDelivery(f.actorA, proposal.id)).rejects.toThrow(ForbiddenError);
+    await expect(previewLiveDelivery(f.accountant, proposal.id)).resolves.toBeTruthy();
   });
 });

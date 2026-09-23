@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/tokens";
-import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot } from "@/server/engines/voting";
+import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
 import { ownersVotingBasis, boardVotingBasis, activeProxyFor, partyDisplayName } from "./ownership";
 import { unitsInScope } from "./property";
 import { queueNotification } from "@/server/notifications/service";
@@ -108,10 +108,38 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
   const presentCount = voters.filter((v) => v.present).length;
 
   let activeResult = null;
+  // Per-voter breakdown for the active proposal's tally screen (§3.4) — present/unvoted
+  // (manual entry), electronic (read-only), no-channel (paper entry). Bounded by that one
+  // proposal's own eligible-voter count, not the whole meeting, so this stays cheap even
+  // though getLiveMeetingState is polled (Faza 3).
+  let activeVoters: {
+    eligibleVoterId: string; ownerId: string; ownerName: string; present: boolean;
+    voted: boolean; channel: VoteChannel | null; deliveredVia: string | null;
+  }[] = [];
   if (opts?.proposalId) {
     const proposal = await prisma.proposal.findUniqueOrThrow({ where: { id: opts.proposalId, zevId } });
     if (proposal.status === "VOTING_OPEN" && proposal.ruleSnapshot) {
       activeResult = serializeResult(await computeProposalResult(zevId, opts.proposalId));
+      const eligibleVoters = await prisma.eligibleVoter.findMany({
+        where: { proposalId: opts.proposalId },
+        include: {
+          owner: true,
+          proxy: true,
+          tokens: { select: { deliveredVia: true }, take: 1 },
+          // "Effective" vote only (§2.5 pattern, same as effectiveVotes()): a corrected-away
+          // row has correctedBy set on itself and is excluded, leaving 0 or 1 current row.
+          votes: { where: { invalid: false, correctedBy: null }, select: { channel: true }, take: 1 },
+        },
+      });
+      activeVoters = eligibleVoters.map((ev) => ({
+        eligibleVoterId: ev.id,
+        ownerId: ev.ownerId,
+        ownerName: ev.proxy ? partyDisplayName(ev.proxy) : partyDisplayName(ev.owner),
+        present: attendanceByOwner.get(ev.ownerId)?.present ?? false,
+        voted: ev.votes.length > 0,
+        channel: ev.votes[0]?.channel ?? null,
+        deliveredVia: ev.tokens[0]?.deliveredVia ?? null,
+      }));
     }
   }
 
@@ -125,13 +153,14 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
       order: a.order,
       title: a.title,
       note: a.note,
-      proposals: a.proposals.map((p) => ({ id: p.id, code: p.code, title: p.title, status: p.status })),
+      proposals: a.proposals.map((p) => ({ id: p.id, code: p.code, title: p.title, status: p.status, text: p.text })),
     })),
     voters,
     presentCount,
     absentCount: voters.length - presentCount,
     totalCount: voters.length,
     activeProposalId: opts?.proposalId ?? null,
+    activeVoters,
     activeResult,
   };
 }
@@ -578,6 +607,44 @@ function proposalContentHash(p: { text: string; title: string; version: number }
   return sha256(JSON.stringify({ title: p.title, text: p.text, version: p.version, attachments: attachmentHashes.sort() }));
 }
 
+type DeliverySuppressReason = "PRESENT" | "NO_CONSENT" | "NO_EMAIL";
+
+/**
+ * Pure classification rule for live-meeting delivery (Plans/live-meeting-mode-plan.md
+ * §2.1-§2.2) — shared between openVoting's "LIVE" branch (which writes tokens/suppresses
+ * e-mail accordingly) and previewLiveDelivery below (read-only, shows the same three
+ * numbers in the confirmation panel before the president commits). Kept as one function
+ * specifically so the preview can never show a different answer than what actually happens
+ * once voting opens — the whole point of previewing it at all.
+ */
+function classifyLiveDelivery(input: {
+  ownerId: string;
+  ownerEmail: string | null;
+  proxyEmail: string | null;
+  ownerConsentSigned: boolean;
+  /** null when this owner has no proxy. */
+  proxyConsentSigned: boolean | null;
+  presentOwnerIds: Set<string>;
+}): { deliver: boolean; suppressReason: DeliverySuppressReason | null } {
+  if (input.presentOwnerIds.has(input.ownerId)) {
+    // Korpa A — in the room, votes IN_PERSON via recordManualVote instead.
+    return { deliver: false, suppressReason: "PRESENT" };
+  }
+  const recipientEmail = input.proxyEmail ?? input.ownerEmail;
+  // P1: when a proxy represents the owner, BOTH must have signed e-vote consent — the
+  // declaration is personal, not transferable.
+  const consentOk =
+    input.proxyConsentSigned !== null ? input.ownerConsentSigned && input.proxyConsentSigned : input.ownerConsentSigned;
+  if (!recipientEmail) {
+    // Korpa C — stays in the eligible base and in the quorum denominator; never silently
+    // dropped just because there's no channel to reach them.
+    return { deliver: false, suppressReason: "NO_EMAIL" };
+  }
+  if (!consentOk) return { deliver: false, suppressReason: "NO_CONSENT" };
+  // Korpa B — absent, registered, has an e-mail — delivers as normal.
+  return { deliver: true, suppressReason: null };
+}
+
 /**
  * Freeze the proposal and open electronic voting:
  *  1. snapshot the voting rule + eligible voting base
@@ -678,7 +745,7 @@ export async function openVoting(
       /** Whether this voter's e-mail actually goes out. Always true in "ALL" mode. */
       deliver: boolean;
       /** Why delivery was suppressed, only set in "LIVE" mode. */
-      suppressReason: "PRESENT" | "NO_CONSENT" | "NO_EMAIL" | null;
+      suppressReason: DeliverySuppressReason | null;
     }[] = [];
     for (const b of basis) {
       const w = computeVoterWeight(weightMethod, b);
@@ -687,30 +754,18 @@ export async function openVoting(
       const proxy = isBoard ? null : await activeProxyFor(zevId, b.ownerId, p.meetingId);
 
       let deliver = true;
-      let suppressReason: "PRESENT" | "NO_CONSENT" | "NO_EMAIL" | null = null;
+      let suppressReason: DeliverySuppressReason | null = null;
       if (delivery === "LIVE") {
-        if (presentOwnerIds!.has(b.ownerId)) {
-          // Korpa A (§2.1) — in the room, votes IN_PERSON via recordManualVote instead.
-          deliver = false;
-          suppressReason = "PRESENT";
-        } else {
-          const recipientEmail = proxy?.holder.email ?? b.email;
-          // P1 (§Odluke korisnika): when a proxy represents the owner, BOTH must have
-          // signed e-vote consent — the declaration is personal, not transferable.
-          const consentOk = proxy
-            ? consentById!.get(b.ownerId) === "SIGNED" && proxy.holder.eVoteConsentStatus === "SIGNED"
-            : consentById!.get(b.ownerId) === "SIGNED";
-          if (!recipientEmail) {
-            // Korpa C (§2.1) — stays in the eligible base and in the quorum denominator;
-            // never silently dropped just because there's no channel to reach them.
-            deliver = false;
-            suppressReason = "NO_EMAIL";
-          } else if (!consentOk) {
-            deliver = false;
-            suppressReason = "NO_CONSENT";
-          }
-          // else: Korpa B — absent, registered, has an e-mail — delivers as normal.
-        }
+        const cls = classifyLiveDelivery({
+          ownerId: b.ownerId,
+          ownerEmail: b.email,
+          proxyEmail: proxy?.holder.email ?? null,
+          ownerConsentSigned: consentById!.get(b.ownerId) === "SIGNED",
+          proxyConsentSigned: proxy ? proxy.holder.eVoteConsentStatus === "SIGNED" : null,
+          presentOwnerIds: presentOwnerIds!,
+        });
+        deliver = cls.deliver;
+        suppressReason = cls.suppressReason;
       }
 
       voterRows.push({
@@ -848,6 +903,110 @@ export async function openVoting(
   return deliveries.map(({ ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode }) => ({
     ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode,
   }));
+}
+
+/**
+ * Read-only preview of what `openVoting(actor, proposalId, { delivery: "LIVE" })` would do
+ * — the three numbers shown in the `ConfirmAction` panel before that irreversible call
+ * (Plans/live-meeting-mode-plan.md §2.1, §3.4): the single most valuable safety check in
+ * the whole live-meeting feature, so it reuses `classifyLiveDelivery` above rather than
+ * risking a second, possibly-diverging count. Creates nothing — the proposal stays DRAFT.
+ * `quorumReachable` answers "if everyone in korpa A+B votes, is quorum even reachable" by
+ * feeding synthetic full-weight votes through the same `computeVotingResult` a real, closed
+ * vote uses — only its `quorumReached` flag is meaningful here, not the vote counts.
+ */
+export async function previewLiveDelivery(actor: Actor, proposalId: string) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const p = await prisma.proposal.findUniqueOrThrow({
+    where: { id: proposalId, zevId },
+    include: { votingRule: true, scopeUnits: true, meeting: true },
+  });
+  if (p.status !== "DRAFT") throw new Error("Pregled dostave ima smisla samo dok je prijedlog u statusu Nacrt.");
+  if (!p.votingRule) throw new Error("Prijedlog nema definisano pravilo glasanja.");
+
+  const isBoard = p.meeting.body === "BOARD";
+  const scopedUnits =
+    isBoard || p.scopeType === "ZEV"
+      ? undefined
+      : (
+          await unitsInScope(zevId, {
+            scopeType: p.scopeType,
+            buildingId: p.buildingId,
+            entranceId: p.entranceId,
+            allocationGroupId: p.allocationGroupId,
+            unitIds: p.scopeUnits.map((s) => s.unitId),
+          })
+        ).map((u) => u.id);
+  const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId, scopedUnits);
+  if (basis.length === 0) {
+    return { presentCount: 0, deliverCount: 0, noChannelCount: 0, totalEligibleWeight: "0", reachableWeight: "0", quorumReachable: false };
+  }
+
+  const presentOwnerIds = new Set(
+    (await prisma.attendance.findMany({ where: { meetingId: p.meetingId, present: true }, select: { partyId: true } })).map(
+      (a) => a.partyId
+    )
+  );
+  const consentById = new Map(
+    (
+      await prisma.party.findMany({
+        where: { zevId, id: { in: [...new Set(basis.map((b) => b.ownerId))] } },
+        select: { id: true, eVoteConsentStatus: true },
+      })
+    ).map((pt) => [pt.id, pt.eVoteConsentStatus])
+  );
+
+  const weightMethod = p.votingRule.weightMethod;
+  let totalWeight = ZERO;
+  let reachableWeight = ZERO;
+  let presentCount = 0;
+  let deliverCount = 0;
+  let noChannelCount = 0;
+  const syntheticVotes: CountedVote[] = [];
+  for (const b of basis) {
+    const w = computeVoterWeight(weightMethod, b);
+    totalWeight = totalWeight.plus(w);
+    const proxy = isBoard ? null : await activeProxyFor(zevId, b.ownerId, p.meetingId);
+    const cls = classifyLiveDelivery({
+      ownerId: b.ownerId,
+      ownerEmail: b.email,
+      proxyEmail: proxy?.holder.email ?? null,
+      ownerConsentSigned: consentById.get(b.ownerId) === "SIGNED",
+      proxyConsentSigned: proxy ? proxy.holder.eVoteConsentStatus === "SIGNED" : null,
+      presentOwnerIds,
+    });
+    if (cls.suppressReason === "PRESENT") {
+      presentCount++;
+      reachableWeight = reachableWeight.plus(w);
+      syntheticVotes.push({ eligibleVoterId: b.ownerId, choice: "APPROVE", weight: w, countsForQuorum: true, invalid: false });
+    } else if (cls.deliver) {
+      deliverCount++;
+      reachableWeight = reachableWeight.plus(w);
+      syntheticVotes.push({ eligibleVoterId: b.ownerId, choice: "APPROVE", weight: w, countsForQuorum: true, invalid: false });
+    } else {
+      noChannelCount++;
+    }
+  }
+
+  const ruleSnapshot: RuleSnapshot = {
+    ruleName: p.votingRule.name,
+    quorumType: p.votingRule.quorumType,
+    quorumPercent: p.votingRule.quorumPercent?.toString() ?? null,
+    majorityType: p.votingRule.majorityType,
+    majorityPercent: p.votingRule.majorityPercent?.toString() ?? null,
+    weightMethod,
+    totalEligibleWeight: totalWeight.toFixed(6),
+    totalEligibleOwners: basis.length,
+  };
+  const quorumReachable = computeVotingResult(ruleSnapshot, syntheticVotes).quorumReached;
+
+  return {
+    presentCount, deliverCount, noChannelCount,
+    totalEligibleWeight: totalWeight.toFixed(6),
+    reachableWeight: reachableWeight.toFixed(6),
+    quorumReachable,
+  };
 }
 
 // ---- Token lifecycle ----

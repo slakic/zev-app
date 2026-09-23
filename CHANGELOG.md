@@ -43,6 +43,35 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.28.0] - 2026-09-23
+
+### Dodato
+
+- **Faza 2 (MVP-B) — glasanje po tačkama sa sjednice uživo** (`Plans/live-meeting-mode-plan.md`).
+  Novi tab „Dnevni red” na `/uzivo/[meetingId]`, uz „Prozivku” iz Faze 1.
+  - Traka na vrhu nudi napredovanje `Meeting.status` u „Glasanje otvoreno” direktno sa
+    sjednice, kad je potrebno (§2.6, P5) — poziva istu `advanceMeetingStatus` koju
+    desktop dugme već koristi.
+  - Tačka bez prijedloga: oznaka „Diskusija”. Tačka sa prijedlogom u statusu Nacrt: tekst
+    prijedloga iza `ToggleBtn`, i „Otvori glasanje” iza `ConfirmAction` sa tri broja — u
+    sali (glasaju ručno), dobiće e-mail, bez ikakvog kanala — plus upozorenje kad zbir
+    težina ne dostiže kvorum. Otvara glasanje u `"LIVE"` režimu iz Faze 0.
+  - Tačka sa prijedlogom u statusu „Glasanje otvoreno”: tabla rezultata (Za/Protiv/Uzdržan,
+    kvorum, ishod ako se sada zatvori), „Unos iz sale” (prisutni koji još nisu glasali,
+    jedan dodir po osobi, brojač preostalih), sklopivi spiskovi „Glasali elektronski” i
+    „Bez kanala” (sa mogućnošću naknadnog papirnog unosa), i „Zatvori glasanje” iza
+    `ConfirmAction` — isti oblik potvrde kao na `/skupstina/prijedlog/[id]`.
+  - Nova servisna funkcija `previewLiveDelivery` — read-only pregled tri broja i
+    dostižnosti kvoruma prije nepovratnog otvaranja glasanja; dijeli klasifikacionu logiku
+    (`classifyLiveDelivery`) sa `openVoting`-om iz Faze 0, tako da pregled nikad ne može
+    pokazati drugačiji broj od onoga što se stvarno desi.
+  - `getLiveMeetingState` proširen sa `activeVoters` — ko je glasao, kojim kanalom, i da li
+    je e-mail uopšte dostavljen, za aktivnu tačku.
+  - 4 nova testa (previewLiveDelivery, activeVoters) — 291/291 ukupno prolazi.
+  - Uživo provjeren kompletan tok (Nacrt → pregled → otvaranje → ručni unos, uključujući
+    punomoćnika → papirni unos → zatvaranje) na 1440px i 375px; standardne desktop
+    stranice ostaju nepromijenjene.
+
 ## [2.27.0] - 2026-09-23
 
 ### Dodato
