@@ -43,6 +43,32 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.27.0] - 2026-09-23
+
+### Dodato
+
+- **Faza 1 (MVP-A) — prozivka za sjednicu uživo** (`Plans/live-meeting-mode-plan.md`).
+  Nova ruta `/uzivo/[meetingId]`, sopstvena minimalna školjka (`LiveShell`, bez sidebar-a
+  i bez menija naloga — isti presedan kao `/glasanje/[token]`), potpuno odvojena od
+  standardnog UI-ja na velikom ekranu (nula izmjena na `/skupstina/prijedlog/[id]`, jedno
+  novo dugme „Vodi sjednicu uživo” na `/skupstina/[id]`, vidljivo za `PRESIDENT` i
+  `ACCOUNTANT` i samo dok je sjednica zakazana ili u toku).
+  - Ekran prozivke: sticky traka „Prisutno N · Odsutno M”, pretraga po imenu (client-side,
+    preživljava osvježavanje stranice), filter čipovi (Neoznačeni/Prisutni/Odsutni/Svi —
+    „Neoznačeni” podrazumijevano), jedan dodir za Prisutan/Odsutan po vlasniku, upozorenje
+    kad vlasnik nije registrovan za elektronsko glasanje.
+  - Novi primitiv **`SegmentedAction`** u `ui.tsx` — dopuna `Plans/design-system.md`
+    (odobreno kao P11): red od 2-3 međusobno isključive radnje veličine dodira (44px
+    bezuslovno), geometrija/boje isključivo iz postojećih `btnBase`/`btnVariantCls`, bez
+    ijednog novog tokena. Radi bez ijedne linije klijentskog JS-a (pravi `type="submit"`
+    dugmad u formi).
+  - Nova ugniježđena grupa `live` u `sr-Latn.ts`.
+  - Uživo provjereno na 1440px i 375px, za oba `PRESIDENT` i `ACCOUNTANT`, uz potvrdu da
+    `/skupstina/[id]` i `/skupstina/prijedlog/[id]` ostaju vizuelno nepromijenjeni.
+- Usput ispravljena dva zastarjela mjesta u `Plans/live-meeting-mode-plan.md` (§2.4, §5
+  rizik 8) koja su i dalje govorila „samo PRESIDENT” — plan nije bio ažuriran do kraja
+  nakon odluke P7 (Faza 0) da i `ACCOUNTANT` smije da vodi sjednicu uživo.
+
 ## [2.26.0] - 2026-09-23
 
 ### Dodato

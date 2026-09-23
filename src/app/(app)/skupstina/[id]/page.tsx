@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireActor } from "@/server/actor";
+import { requireActor, isManagement } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, recordAttendance } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
@@ -10,12 +10,18 @@ import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 const MEETING_STATUS_ORDER: MeetingStatus[] = [
   "DRAFT", "SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN",
   "VOTING_CLOSED", "RESULTS_REVIEW", "DECISION_RECORDED", "MINUTES_FINALIZED", "ARCHIVED",
+];
+
+// Plans/live-meeting-mode-plan.md §2.4: not before the session is at least scheduled, and
+// no longer once results review has started — the live screen has nothing to do there.
+const LIVE_MEETING_STATUSES: MeetingStatus[] = [
+  "SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN", "VOTING_CLOSED",
 ];
 
 const proposalsHeaders: ColumnSpec[] = [
@@ -151,6 +157,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
   const { err, msg } = await searchParams;
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
+  const canRunLive = isManagement(actor);
   const meeting = await getMeeting(actor, id);
   const [rules, parties, buildings] = isPresident
     ? await Promise.all([listVotingRules(actor), listParties(actor), listBuildings(actor)])
@@ -162,13 +169,20 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         title={meeting.title}
         subtitle={`${meeting.body === "BOARD" ? "Upravni odbor" : "Skupština"} · ${tEnum("meetingType", meeting.type)} · ${formatDateTime(meeting.scheduledAt)} · ${meeting.location ?? ""}`}
         actions={
-          isPresident && next ? (
-            <form action={statusAction}>
-              <input type="hidden" name="meetingId" value={meeting.id} />
-              <input type="hidden" name="to" value={next.to} />
-              <SubmitBtn>{next.label}</SubmitBtn>
-            </form>
-          ) : undefined
+          <>
+            {canRunLive && LIVE_MEETING_STATUSES.includes(meeting.status) && (
+              <BtnLink href={`/uzivo/${meeting.id}`} variant="secondary">
+                {t("live.entryButton")}
+              </BtnLink>
+            )}
+            {isPresident && next && (
+              <form action={statusAction}>
+                <input type="hidden" name="meetingId" value={meeting.id} />
+                <input type="hidden" name="to" value={next.to} />
+                <SubmitBtn>{next.label}</SubmitBtn>
+              </form>
+            )}
+          </>
         }
       />
       <Flash err={err} msg={msg} />

@@ -480,6 +480,54 @@ export function SubmitBtn({ children, variant, name, value }: { children: ReactN
   );
 }
 
+function SegmentCheckIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0" aria-hidden="true">
+      <path d="M4.5 10.4 8 14l7.5-8.5" />
+    </svg>
+  );
+}
+
+/** Row of 2-3 mutually exclusive, thumb-sized actions where at most one is "current" —
+ *  Plans/design-system.md §4.2 dopuna, odobreno kao P11 u Plans/live-meeting-mode-plan.md
+ *  §3.3. Each option is a real `type="submit"` button carrying `name`/`value`, so a caller
+ *  just wraps this in a `<form action={...}>` — same no-JS-required idiom as `SubmitBtn`,
+ *  grouped. Deliberately its own geometry, not `SubmitBtn` reused: height is
+ *  unconditionally 44px (not just `max-md:`), because this primitive exists purely for
+ *  touch — the roll-call and per-vote rows on the live-meeting screen (`/uzivo/[meetingId]`).
+ *  Colors still come only from `btnVariantCls` (no new tokens): inactive = `secondary`,
+ *  active = `tonal` by default, overridable per option (e.g. an active "Protiv" choice
+ *  uses `caution`, never `danger` — rejecting a proposal isn't destroying data). */
+export function SegmentedAction({
+  name, options, active,
+}: {
+  name: string;
+  options: { value: string; label: string; activeVariant?: BtnVariant }[];
+  active?: string;
+}) {
+  return (
+    <div role="group" className="flex gap-2">
+      {options.map((opt) => {
+        const isActive = opt.value === active;
+        const variant = isActive ? (opt.activeVariant ?? "tonal") : "secondary";
+        return (
+          <button
+            key={opt.value}
+            type="submit"
+            name={name}
+            value={opt.value}
+            aria-pressed={isActive}
+            className={`inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${btnVariantCls[variant]}`}
+          >
+            {isActive && <SegmentCheckIcon />}
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Full-size, client-safe generic button — same chrome as `SubmitBtn`/`BtnLink` but usable with
  *  `onClick`/`type="button"` from inside a `"use client"` row component (e.g. a "Zatvori"/"Otkaži"
  *  toggle that closes an inline edit panel without a page reload). Exists so those components stop
