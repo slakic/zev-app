@@ -11,7 +11,7 @@ import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/tokens";
 import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
-import { ownersVotingBasis, boardVotingBasis, activeProxyFor, partyDisplayName } from "./ownership";
+import { ownersVotingBasis, boardVotingBasis, activeProxyFor, activeProxiesFor, partyDisplayName } from "./ownership";
 import { unitsInScope } from "./property";
 import { queueNotification } from "@/server/notifications/service";
 import { dec, ZERO } from "@/lib/money";
@@ -77,7 +77,7 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
   const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId);
   const ownerIds = basis.map((b) => b.ownerId);
 
-  const [attendances, parties] = await Promise.all([
+  const [attendances, parties, proxiesByOwner] = await Promise.all([
     prisma.attendance.findMany({
       where: { meetingId },
       select: { partyId: true, present: true, viaProxyId: true },
@@ -86,12 +86,17 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
       where: { zevId, id: { in: ownerIds } },
       select: { id: true, eVoteConsentStatus: true },
     }),
+    // Batched, not per-owner (Faza 4, §3.2 "punomoćnik, inline") — this whole function is
+    // polled every ~10s (Faza 3), so an N+1 here would defeat the point of getLiveMeetingState.
+    // Board members don't hold proxies (openVoting skips proxy lookup for isBoard too).
+    isBoard ? Promise.resolve(new Map<string, { id: string; holderId: string; holderName: string }>()) : activeProxiesFor(zevId, ownerIds, meetingId),
   ]);
   const attendanceByOwner = new Map(attendances.map((a) => [a.partyId, a]));
   const consentByOwner = new Map(parties.map((p) => [p.id, p.eVoteConsentStatus]));
 
   const voters = basis.map((b) => {
     const att = attendanceByOwner.get(b.ownerId);
+    const proxy = proxiesByOwner.get(b.ownerId) ?? null;
     return {
       ownerId: b.ownerId,
       ownerName: b.ownerName,
@@ -103,6 +108,10 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
       viaProxyId: att?.viaProxyId ?? null,
       eVoteConsentSigned: consentByOwner.get(b.ownerId) === "SIGNED",
       unitLabels: b.units.map((u) => u.label),
+      // Already-granted proxy for this meeting, if any — shown inline as a third roll-call
+      // option ("prisutan preko punomoćnika"); creating a new proxy from the phone stays out
+      // of scope (P9).
+      proxy: proxy ? { id: proxy.id, name: proxy.holderName } : null,
     };
   });
   const presentCount = voters.filter((v) => v.present).length;
@@ -115,6 +124,7 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
   let activeVoters: {
     eligibleVoterId: string; ownerId: string; ownerName: string; present: boolean;
     voted: boolean; channel: VoteChannel | null; deliveredVia: string | null;
+    notifyStatus: string | null;
   }[] = [];
   if (opts?.proposalId) {
     const proposal = await prisma.proposal.findUniqueOrThrow({ where: { id: opts.proposalId, zevId } });
@@ -131,6 +141,23 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
           votes: { where: { invalid: false, correctedBy: null }, select: { channel: true }, take: 1 },
         },
       });
+      // Delivery status per voter (Faza 4, §5 risk 3: "e-mail ne ode, a niko ne primijeti")
+      // — one batched query keyed by the recipientId openVoting now stamps on each
+      // NotificationMessage it queues, not a per-voter lookup (same "jedan set upita" rule
+      // as the rest of this polled function).
+      const recipientIds = eligibleVoters
+        .filter((ev) => ev.tokens[0]?.deliveredVia === "EMAIL")
+        .map((ev) => ev.proxyId ?? ev.ownerId);
+      const notifyStatusByRecipient = recipientIds.length
+        ? new Map(
+            (
+              await prisma.notificationMessage.findMany({
+                where: { zevId, relatedType: "Proposal", relatedId: opts.proposalId, recipientId: { in: recipientIds } },
+                select: { recipientId: true, status: true },
+              })
+            ).map((n) => [n.recipientId as string, n.status as string])
+          )
+        : new Map<string, string>();
       activeVoters = eligibleVoters.map((ev) => ({
         eligibleVoterId: ev.id,
         ownerId: ev.ownerId,
@@ -139,6 +166,8 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
         voted: ev.votes.length > 0,
         channel: ev.votes[0]?.channel ?? null,
         deliveredVia: ev.tokens[0]?.deliveredVia ?? null,
+        notifyStatus:
+          ev.tokens[0]?.deliveredVia === "EMAIL" ? notifyStatusByRecipient.get(ev.proxyId ?? ev.ownerId) ?? null : null,
       }));
     }
   }
@@ -741,6 +770,10 @@ export async function openVoting(
     const voterRows: {
       ownerId: string; ownerName: string; email: string | null; weight: string;
       proxyId: string | null; proxyRecordId: string | null; proxyName: string | null; proxyEmail: string | null;
+      /** Who the e-mail is actually addressed to (proxy if any, else the owner) — stamped
+       *  onto NotificationMessage.recipientId below so Faza 4's per-voter delivery status
+       *  (§5 risk 3) can look it up without guessing from a shared toAddress. */
+      recipientPartyId: string;
       basis: unknown;
       /** Whether this voter's e-mail actually goes out. Always true in "ALL" mode. */
       deliver: boolean;
@@ -777,6 +810,7 @@ export async function openVoting(
         proxyRecordId: proxy?.id ?? null,
         proxyName: proxy ? partyDisplayName(proxy.holder) : null,
         proxyEmail: proxy?.holder.email ?? null,
+        recipientPartyId: proxy?.holderId ?? b.ownerId,
         basis: { units: b.units, ownershipShareSum: b.ownershipShareSum.toFixed(6), areaSum: b.areaSum.toFixed(6) },
         deliver,
         suppressReason,
@@ -810,6 +844,7 @@ export async function openVoting(
     const out: {
       ownerName: string; email: string | null; link: string; verificationCode: string;
       tokenId: string; eligibleVoterId: string; viaProxy: string | null; deliver: boolean;
+      recipientPartyId: string;
     }[] = [];
     for (const row of voterRows) {
       const ev = await tx.eligibleVoter.create({
@@ -851,6 +886,7 @@ export async function openVoting(
         eligibleVoterId: ev.id,
         viaProxy: row.proxyName ? row.ownerName : null,
         deliver: row.deliver,
+        recipientPartyId: row.recipientPartyId,
       });
     }
 
@@ -879,6 +915,9 @@ export async function openVoting(
     if (d.email && d.deliver) {
       await queueNotification({
         zevId,
+        // Faza 4 (§5 risk 3): recipientId lets getLiveMeetingState look up this message's
+        // delivery status per voter, instead of guessing from a possibly-shared toAddress.
+        recipientId: d.recipientPartyId,
         channel: "EMAIL",
         toAddress: d.email,
         template: "approval-link",
@@ -1370,6 +1409,33 @@ export async function recordManualVote(
     }, tx);
     return vote;
   });
+}
+
+/**
+ * Bulk hand-raise entry, for the live-meeting "Svi preostali prisutni: Za" action
+ * (Plans/live-meeting-mode-plan.md §3.4, Faza 4). Deliberately NOT one wrapping
+ * transaction: it calls `recordManualVote` once per person — the only function that ever
+ * writes a `Vote` row (§2.5, "nijedan glas se ne kreira novim kodom") — so the input stays
+ * bulk while the evidence stays one row per person, exactly as the plan requires. A single
+ * shared transaction would also mean one already-voted person (e.g. a race with an
+ * electronic vote arriving between page load and this submit) aborts everyone else's vote
+ * too; recording best-effort and reporting failures instead means the other 17 in the room
+ * aren't held hostage by the 18th.
+ */
+export async function recordManualVoteBulk(
+  actor: Actor,
+  data: { eligibleVoterIds: string[]; choice: VoteChoice; channel: Exclude<VoteChannel, "ELECTRONIC">; note?: string }
+) {
+  const results: { eligibleVoterId: string; ok: boolean; error?: string }[] = [];
+  for (const eligibleVoterId of data.eligibleVoterIds) {
+    try {
+      await recordManualVote(actor, { eligibleVoterId, choice: data.choice, channel: data.channel, note: data.note });
+      results.push({ eligibleVoterId, ok: true });
+    } catch (e) {
+      results.push({ eligibleVoterId, ok: false, error: e instanceof Error ? e.message : String(e) });
+    }
+  }
+  return results;
 }
 
 /**

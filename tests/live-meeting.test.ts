@@ -6,7 +6,7 @@ import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, type Fixture } from "./helpers";
 import {
-  openVoting, recordAttendance, recordAttendanceBulk, recordManualVote, submitVote,
+  openVoting, recordAttendance, recordAttendanceBulk, recordManualVote, recordManualVoteBulk, submitVote,
   advanceMeetingStatus, closeVoting, getLiveMeetingState, previewLiveDelivery, createVotingRule,
 } from "@/server/services/meetings";
 import { grantProxy } from "@/server/services/ownership";
@@ -305,5 +305,84 @@ describe("live meeting — previewLiveDelivery (Faza 2, §2.1/§3.4 confirmation
     const { proposal } = await createProposalFixture(f);
     await expect(previewLiveDelivery(f.actorA, proposal.id)).rejects.toThrow(ForbiddenError);
     await expect(previewLiveDelivery(f.accountant, proposal.id)).resolves.toBeTruthy();
+  });
+});
+
+describe("live meeting — Faza 4 (poliranje)", () => {
+  it("recordManualVoteBulk writes one Vote per person via recordManualVote, and skips (not aborts) an entry that already voted", async () => {
+    const f: Fixture = await createFixture("lm-bulk-vote");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerB.id, present: true });
+    await openVoting(f.president, proposal.id, { delivery: "LIVE" });
+    const evA = await prisma.eligibleVoter.findFirstOrThrow({ where: { proposalId: proposal.id, ownerId: f.ownerA.id } });
+    const evB = await prisma.eligibleVoter.findFirstOrThrow({ where: { proposalId: proposal.id, ownerId: f.ownerB.id } });
+
+    // ownerA already voted (e.g. a race with an earlier manual entry) before the bulk call.
+    await recordManualVote(f.president, { eligibleVoterId: evA.id, choice: "REJECT", channel: "IN_PERSON" });
+
+    const results = await recordManualVoteBulk(f.president, {
+      eligibleVoterIds: [evA.id, evB.id],
+      choice: "APPROVE",
+      channel: "IN_PERSON",
+    });
+    expect(results.find((r) => r.eligibleVoterId === evA.id)?.ok).toBe(false);
+    expect(results.find((r) => r.eligibleVoterId === evB.id)?.ok).toBe(true);
+
+    // ownerA's original REJECT vote is untouched (bulk never overwrites); ownerB got a new APPROVE.
+    const voteA = await prisma.vote.findFirstOrThrow({ where: { eligibleVoterId: evA.id, invalid: false, correctedBy: null } });
+    expect(voteA.choice).toBe("REJECT");
+    const voteB = await prisma.vote.findFirstOrThrow({ where: { eligibleVoterId: evB.id, invalid: false, correctedBy: null } });
+    expect(voteB.choice).toBe("APPROVE");
+    expect(voteB.channel).toBe("IN_PERSON");
+    const audits = await prisma.auditEvent.findMany({ where: { action: "vote.manual_entry", zevId: f.zev.id } });
+    // One per successful call (evA's earlier single call + evB's bulk call) — the skipped
+    // evA bulk entry never reaches recordManualVote's own audit write.
+    expect(audits.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("getLiveMeetingState surfaces an already-granted proxy inline, for roll-call's 'prisutan preko punomoćnika' control", async () => {
+    const f: Fixture = await createFixture("lm-proxy-inline");
+    const { meeting } = await createProposalFixture(f);
+    await grantProxy(f.president, {
+      grantorId: f.ownerA.id, holderId: f.ownerC.id, scope: "MEETING", meetingId: meeting.id, validFrom: new Date("2020-01-01"),
+    });
+
+    const state = await getLiveMeetingState(f.president, meeting.id);
+    const voterA = state.voters.find((v) => v.ownerId === f.ownerA.id)!;
+    expect(voterA.proxy).not.toBeNull();
+    expect(voterA.proxy!.id).toBeTruthy();
+    const voterB = state.voters.find((v) => v.ownerId === f.ownerB.id)!;
+    expect(voterB.proxy).toBeNull();
+
+    // Marking present via that proxy round-trips through recordAttendance's existing
+    // viaProxyId field — no service-layer change needed for this part (only the UI is new).
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true, viaProxyId: voterA.proxy!.id });
+    const after = await getLiveMeetingState(f.president, meeting.id);
+    const voterAAfter = after.voters.find((v) => v.ownerId === f.ownerA.id)!;
+    expect(voterAAfter.present).toBe(true);
+    expect(voterAAfter.viaProxyId).toBe(voterA.proxy!.id);
+  });
+
+  it("getLiveMeetingState reports each pending electronic voter's NotificationMessage delivery status (§5 risk 3)", async () => {
+    const f: Fixture = await createFixture("lm-notify-status");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await markSigned(f.ownerB.id); // korpa B: absent + signed + has email -> delivered
+    await openVoting(f.president, proposal.id, { delivery: "LIVE" });
+
+    const state = await getLiveMeetingState(f.president, meeting.id, { proposalId: proposal.id });
+    const avB = state.activeVoters.find((v) => v.ownerId === f.ownerB.id)!;
+    expect(avB.deliveredVia).toBe("EMAIL");
+    // Mock provider (src/server/notifications/providers.ts) always reports sent+delivered.
+    expect(avB.notifyStatus).toBe("DELIVERED");
+
+    const avA = state.activeVoters.find((v) => v.ownerId === f.ownerA.id)!;
+    expect(avA.notifyStatus).toBeNull(); // korpa C here — no channel, nothing to report status for
+
+    // Confirm recipientId was actually stamped, since notifyStatus is looked up through it.
+    const msg = await prisma.notificationMessage.findFirstOrThrow({
+      where: { relatedType: "Proposal", relatedId: proposal.id, toAddress: f.ownerB.email! },
+    });
+    expect(msg.recipientId).toBe(f.ownerB.id);
   });
 });

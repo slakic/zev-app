@@ -295,6 +295,44 @@ export async function activeProxyFor(zevId: string, ownerId: string, meetingId: 
   });
 }
 
+/** Bulk variant of activeProxyFor for a batch of owners in one query
+ *  (Plans/live-meeting-mode-plan.md §3.2 "punomoćnik, inline", Faza 4) — the roll-call
+ *  screen is re-fetched every ~10s (Faza 3's LiveRefresh), so a per-owner N+1 here would
+ *  break the "jedan set upita" rule getLiveMeetingState already follows for the same
+ *  reason. Same filter as activeProxyFor, applied once for the whole batch; if an owner
+ *  somehow matches more than one proxy, the first one found wins — same "arbitrary but
+ *  consistent" behavior as activeProxyFor's own findFirst. */
+export async function activeProxiesFor(
+  zevId: string, ownerIds: string[], meetingId: string | null, asOf: Date = new Date()
+): Promise<Map<string, { id: string; holderId: string; holderName: string }>> {
+  const byOwner = new Map<string, { id: string; holderId: string; holderName: string }>();
+  if (ownerIds.length === 0) return byOwner;
+  const proxies = await prisma.proxy.findMany({
+    where: {
+      zevId,
+      grantorId: { in: ownerIds },
+      revokedAt: null,
+      validFrom: { lte: asOf },
+      OR: [{ validTo: null }, { validTo: { gt: asOf } }],
+      AND: [
+        {
+          OR: [
+            { scope: "ALL" },
+            ...(meetingId ? [{ scope: "MEETING" as const, meetingId }] : []),
+          ],
+        },
+      ],
+    },
+    include: { holder: true },
+  });
+  for (const p of proxies) {
+    if (!byOwner.has(p.grantorId)) {
+      byOwner.set(p.grantorId, { id: p.id, holderId: p.holderId, holderName: partyDisplayName(p.holder) });
+    }
+  }
+  return byOwner;
+}
+
 // ---- Office terms ----
 
 export async function setOfficeTerm(

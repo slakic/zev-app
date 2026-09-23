@@ -6,7 +6,7 @@
 // reason recordAttendance-triggered refreshes stay cheap for the user is that this
 // component's own useState survives them; only its props (the voter list) change.
 import { useMemo, useState } from "react";
-import { SegmentedAction, inputCls } from "@/components/ui";
+import { SegmentedAction, ConfirmAction, inputCls } from "@/components/ui";
 import { t } from "@/lib/i18n";
 
 export type RollCallVoter = {
@@ -14,8 +14,11 @@ export type RollCallVoter = {
   ownerName: string;
   marked: boolean;
   present: boolean;
+  viaProxyId: string | null;
   eVoteConsentSigned: boolean;
   unitLabels: string[];
+  // Already-granted proxy for this meeting, if any (Faza 4, §3.2 "punomoćnik, inline").
+  proxy: { id: string; name: string } | null;
 };
 
 type Filter = "all" | "unmarked" | "present" | "absent";
@@ -28,13 +31,14 @@ const FILTERS: { value: Filter; key: string }[] = [
 ];
 
 export function RollCall({
-  meetingId, voters, presentCount, absentCount, action,
+  meetingId, voters, presentCount, absentCount, action, bulkAbsentAction,
 }: {
   meetingId: string;
   voters: RollCallVoter[];
   presentCount: number;
   absentCount: number;
   action: (formData: FormData) => void | Promise<void>;
+  bulkAbsentAction: (formData: FormData) => void | Promise<void>;
 }) {
   const [search, setSearch] = useState("");
   // Default view during an in-progress roll call: "who haven't I called yet" (§3.2).
@@ -54,6 +58,10 @@ export function RollCall({
       })
       .sort((a, b) => a.ownerName.localeCompare(b.ownerName, "sr-Latn"));
   }, [voters, search, filter]);
+
+  // Independent of search/filter — "the rest is absent by definition" means every
+  // not-yet-marked person, not just the ones currently visible under a search term (§3.2).
+  const unmarked = useMemo(() => voters.filter((v) => !v.marked), [voters]);
 
   return (
     <div>
@@ -107,17 +115,27 @@ export function RollCall({
                 ) : (
                   <span className="text-amber-700">⚠ {t("live.eVoteNo")}</span>
                 )}
+                {v.proxy && (
+                  <>
+                    {" · "}
+                    {t("live.proxyLabel")}: {v.proxy.name}
+                  </>
+                )}
               </div>
             </div>
             <form action={action}>
               <input type="hidden" name="meetingId" value={meetingId} />
               <input type="hidden" name="partyId" value={v.ownerId} />
+              {v.proxy && <input type="hidden" name="proxyId" value={v.proxy.id} />}
               <SegmentedAction
                 name="present"
-                active={v.marked ? String(v.present) : undefined}
+                active={
+                  v.marked ? (v.viaProxyId && v.proxy && v.viaProxyId === v.proxy.id ? "proxy" : String(v.present)) : undefined
+                }
                 options={[
                   { value: "true", label: t("live.markPresent") },
                   { value: "false", label: t("live.markAbsent") },
+                  ...(v.proxy ? [{ value: "proxy", label: t("live.markViaProxy") }] : []),
                 ]}
               />
             </form>
@@ -127,6 +145,28 @@ export function RollCall({
           <li className="py-10 text-center text-[15px] text-slate-500">{t("live.empty")}</li>
         )}
       </ul>
+
+      {unmarked.length > 0 && (
+        <div className="mt-4">
+          <ConfirmAction
+            trigger={t("live.markRestAbsentTrigger")}
+            triggerVariant="secondary"
+            title={t("live.markRestAbsentTitle")}
+            body={
+              <p className="text-sm text-amber-950">
+                {t("live.markRestAbsentBodyPrefix")} <b>{unmarked.length}</b> {t("live.markRestAbsentBodySuffix")}
+              </p>
+            }
+            confirmLabel={t("live.markRestAbsentConfirm")}
+            action={bulkAbsentAction}
+            hiddenFields={{ meetingId }}
+          >
+            {unmarked.map((v) => (
+              <input key={v.ownerId} type="hidden" name="partyId" value={v.ownerId} />
+            ))}
+          </ConfirmAction>
+        </div>
+      )}
     </div>
   );
 }

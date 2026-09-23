@@ -2,8 +2,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import {
-  getLiveMeetingState, recordAttendance, openVoting, closeVoting, recordManualVote,
-  previewLiveDelivery, advanceMeetingStatus,
+  getLiveMeetingState, recordAttendance, recordAttendanceBulk, openVoting, closeVoting,
+  recordManualVote, recordManualVoteBulk, previewLiveDelivery, advanceMeetingStatus,
 } from "@/server/services/meetings";
 import { LiveShell } from "@/components/live-shell";
 import { LiveRefresh } from "@/components/live-refresh";
@@ -23,11 +23,27 @@ async function markAttendanceAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const meetingId = String(formData.get("meetingId"));
+  // "present" carries a third sentinel value, "proxy" (Faza 4, §3.2 "punomoćnik, inline"):
+  // present via the owner's already-granted proxy, not in person.
+  const presentRaw = String(formData.get("present"));
   await recordAttendance(actor, {
     meetingId,
     partyId: String(formData.get("partyId")),
-    present: formData.get("present") === "true",
+    present: presentRaw !== "false",
+    viaProxyId: presentRaw === "proxy" ? String(formData.get("proxyId")) : null,
   });
+  revalidatePath(`/uzivo/${meetingId}`);
+}
+
+/** "Označi sve neoznačene kao odsutne" (Faza 4, §3.2) — the rest of the roll call after the
+ *  unmarked list is empty, by definition. Reuses recordAttendanceBulk from Faza 0 unchanged;
+ *  this is just a new caller. */
+async function bulkAbsentAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+  const meetingId = String(formData.get("meetingId"));
+  const partyIds = formData.getAll("partyId").map(String);
+  await recordAttendanceBulk(actor, { meetingId, entries: partyIds.map((partyId) => ({ partyId, present: false })) });
   revalidatePath(`/uzivo/${meetingId}`);
 }
 
@@ -77,6 +93,28 @@ async function manualVoteAction(formData: FormData) {
     errRedirect(meetingId, agendaItemId, e);
   }
   revalidatePath(`/uzivo/${meetingId}`);
+}
+
+/** "Svi preostali prisutni: Za" (Faza 4, §3.4 dizanje ruku) — bulk trigger, one Vote row
+ *  per person via recordManualVoteBulk -> recordManualVote (§2.5: no new vote-writing code
+ *  path). Best-effort: a person who somehow already voted between page load and this submit
+ *  (e.g. an electronic vote landing seconds earlier) is skipped, not fatal to the rest. */
+async function bulkApproveAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
+  const meetingId = String(formData.get("meetingId"));
+  const agendaItemId = String(formData.get("agendaItemId"));
+  const eligibleVoterIds = formData.getAll("eligibleVoterId").map(String);
+  const results = await recordManualVoteBulk(actor, { eligibleVoterIds, choice: "APPROVE", channel: "IN_PERSON" });
+  revalidatePath(`/uzivo/${meetingId}`);
+  const failed = results.filter((r) => !r.ok).length;
+  if (failed > 0) {
+    redirect(
+      `/uzivo/${meetingId}?tab=dnevni-red&t=${agendaItemId}&err=${encodeURIComponent(
+        `${failed} od ${results.length} glasova nije evidentirano (već su se izjasnili u međuvremenu).`
+      )}`
+    );
+  }
 }
 
 async function advanceMeetingAction(formData: FormData) {
@@ -144,6 +182,7 @@ export default async function LiveMeetingPage({
           presentCount={base.presentCount}
           absentCount={base.absentCount}
           action={markAttendanceAction}
+          bulkAbsentAction={bulkAbsentAction}
         />
       ) : (
         <>
@@ -169,6 +208,7 @@ export default async function LiveMeetingPage({
               openVotingAction={openVotingAction}
               closeVotingAction={closeVotingAction}
               manualVoteAction={manualVoteAction}
+              bulkApproveAction={bulkApproveAction}
             />
           ) : (
             <p className="py-8 text-center text-[15px] text-slate-500">

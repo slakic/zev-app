@@ -43,6 +43,37 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.30.0] - 2026-09-23
+
+### Dodato
+
+- **Faza 4 — poliranje sjednice uživo** (`Plans/live-meeting-mode-plan.md` §4).
+  - **Punomoćnik, inline (Prozivka).** Za vlasnika koji već ima aktivnu punomoć za ovu
+    sjednicu, prozivka nudi treću opciju pored „Prisutan”/„Odsutan”: „Punomoćnik” — jedan
+    dodir upisuje prisustvo sa `viaProxyId` na već postojeći način (`recordAttendance`),
+    bez ijedne nove servisne funkcije. Ime punomoćnika je vidljivo u podnaslovu reda i
+    prije nego što se bilo šta označi.
+  - **„Označi sve neoznačene kao odsutne”** — na dnu prozivke, iza `ConfirmAction` sa
+    brojem lica u `body`; poziva postojeću `recordAttendanceBulk` iz Faze 0 (nova
+    kontrola, ne nova logika).
+  - **„Svi preostali prisutni: Za”** — u kartici „Unos iz sale” na tabu „Dnevni red”, iza
+    `ConfirmAction` koji nabraja svako ime prije potvrde. Nova `recordManualVoteBulk`
+    poziva postojeću `recordManualVote` po osobi (jedan `Vote` red po glasaču, bez novog
+    koda koji piše glasove) i best-effort preskače (ne ruši cijeli unos) nekog ko se u
+    međuvremenu već izjasnio.
+  - **Status dostave po glasaču.** Novi odjeljak „Čeka se elektronski glas” na tabu
+    „Dnevni red” prikazuje svakog odsutnog, registrovanog glasača koji još nije glasao,
+    uz status njegove e-mail poruke (U redu čekanja / Poslato / Isporučeno / Pročitano /
+    Neuspješno) i upozorenje kad je bilo koja poruka za tu tačku `FAILED`. `openVoting`
+    sada bilježi `NotificationMessage.recipientId`, pa `getLiveMeetingState` može tačno
+    povezati poruku sa glasačem umjesto da nagađa po adresi.
+  - 3 nova testa (294/294 ukupno). Uživo provjereno na 375px (punomoćnik u prozivci,
+    masovno označavanje odsutnih, masovni unos „Za” sa tri glasača, status dostave sa
+    „Isporučeno”) i na 1440px (standardne `/skupstina/[id]` i `/uzivo/[meetingId]`
+    stranice nepromijenjene van ovog dodatka).
+
+Ovim je zaokružen fazni plan iz `Plans/live-meeting-mode-plan.md` (Faze 0-4).
+
 ## [2.29.0] - 2026-09-23
 
 ### Dodato

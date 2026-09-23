@@ -40,6 +40,15 @@ export type ActiveVoter = {
   voted: boolean;
   channel: string | null;
   deliveredVia: string | null;
+  notifyStatus: string | null;
+};
+
+const NOTIFY_STATUS_KEY: Record<string, string> = {
+  QUEUED: "live.notifyQueued",
+  SENT: "live.notifySent",
+  DELIVERED: "live.notifyDelivered",
+  SEEN: "live.notifySeen",
+  FAILED: "live.notifyFailed",
 };
 
 /** Horizontal picker for which agenda item is "open" on screen — state lives in the URL
@@ -99,7 +108,7 @@ function ResultSummary({ result }: { result: LiveResult }) {
 
 export function AgendaItemPanel({
   meetingId, item, proposal, preview, activeResult, activeVoters,
-  openVotingAction, closeVotingAction, manualVoteAction,
+  openVotingAction, closeVotingAction, manualVoteAction, bulkApproveAction,
 }: {
   meetingId: string;
   item: AgendaItemData;
@@ -110,6 +119,7 @@ export function AgendaItemPanel({
   openVotingAction: (formData: FormData) => void | Promise<void>;
   closeVotingAction: (formData: FormData) => void | Promise<void>;
   manualVoteAction: (formData: FormData) => void | Promise<void>;
+  bulkApproveAction: (formData: FormData) => void | Promise<void>;
 }) {
   if (!proposal) {
     return (
@@ -165,7 +175,9 @@ export function AgendaItemPanel({
   if (proposal.status === "VOTING_OPEN") {
     const notYetVoted = activeVoters.filter((v) => v.present && !v.voted);
     const electronic = activeVoters.filter((v) => v.voted && v.channel === "ELECTRONIC");
+    const pendingElectronic = activeVoters.filter((v) => !v.present && !v.voted && v.deliveredVia === "EMAIL");
     const noChannel = activeVoters.filter((v) => !v.present && !v.voted && !v.deliveredVia);
+    const anyFailed = pendingElectronic.some((v) => v.notifyStatus === "FAILED");
 
     return (
       <div className="space-y-4">
@@ -175,6 +187,12 @@ export function AgendaItemPanel({
         </div>
 
         {activeResult && <ResultSummary result={activeResult} />}
+
+        {anyFailed && (
+          <p className="rounded-lg border-l-4 border-l-red-500 bg-red-50 px-3 py-2.5 text-[13px] text-red-800">
+            ⚠ {t("live.notifyFailedWarning")}
+          </p>
+        )}
 
         <Card
           title={`${t("live.manualEntryTitle")} — ${t("live.manualEntryRemaining")}: ${notYetVoted.length} / ${activeVoters.filter((v) => v.present).length}`}
@@ -202,7 +220,56 @@ export function AgendaItemPanel({
             ))}
             {notYetVoted.length === 0 && <li className="py-4 text-center text-[13px] text-slate-500">—</li>}
           </ul>
+
+          {notYetVoted.length > 0 && (
+            <div className="mt-3 border-t border-slate-100 pt-3">
+              <ConfirmAction
+                trigger={t("live.bulkApproveTrigger")}
+                triggerVariant="secondary"
+                title={t("live.bulkApproveTitle")}
+                body={
+                  <div className="space-y-1 text-sm text-amber-950">
+                    <p>{t("live.bulkApproveBody")}:</p>
+                    <ul className="list-disc pl-5">
+                      {notYetVoted.map((v) => (
+                        <li key={v.eligibleVoterId}>{v.ownerName}</li>
+                      ))}
+                    </ul>
+                  </div>
+                }
+                confirmLabel={t("live.bulkApproveConfirm")}
+                action={bulkApproveAction}
+                hiddenFields={{ proposalId: proposal.id, meetingId, agendaItemId: item.id }}
+              >
+                {notYetVoted.map((v) => (
+                  <input key={v.eligibleVoterId} type="hidden" name="eligibleVoterId" value={v.eligibleVoterId} />
+                ))}
+              </ConfirmAction>
+            </div>
+          )}
         </Card>
+
+        <details className="group">
+          <ToggleBtn variant="secondary">
+            {t("live.pendingElectronicTitle")} ({pendingElectronic.length})
+            {anyFailed && <span className="ml-1 text-red-700">⚠</span>}
+          </ToggleBtn>
+          <ul className="mt-2 space-y-1.5">
+            {pendingElectronic.map((v) => (
+              <li
+                key={v.eligibleVoterId}
+                className="flex items-center justify-between gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-[15px] text-slate-700"
+              >
+                <span>{v.ownerName}</span>
+                <span className={`text-[13px] ${v.notifyStatus === "FAILED" ? "font-medium text-red-700" : "text-slate-500"}`}>
+                  {v.notifyStatus === "FAILED" && "⚠ "}
+                  {v.notifyStatus ? t(NOTIFY_STATUS_KEY[v.notifyStatus] ?? "live.notifyQueued") : "—"}
+                </span>
+              </li>
+            ))}
+            {pendingElectronic.length === 0 && <li className="text-[13px] text-slate-500">—</li>}
+          </ul>
+        </details>
 
         <details className="group">
           <ToggleBtn variant="secondary">
