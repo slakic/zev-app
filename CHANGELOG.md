@@ -43,6 +43,27 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.29.0] - 2026-09-23
+
+### Dodato
+
+- **Faza 3 — realno vrijeme za sjednicu uživo** (`Plans/live-meeting-mode-plan.md` §2.3, §4).
+  Novi klijentski primitiv `LiveRefresh` na `/uzivo/[meetingId]`, vidljiv na oba taba
+  (Prozivka i Dnevni red):
+  - `router.refresh()` na 10 sekundi — bez nove rute i bez druge serijalizacije istih
+    brojeva (§2.3, opcija (a)); server komponente se ponovo izvrše, a klijentsko stanje
+    (tekst u pretrazi, izabrani filter čip, skrol) preživljava, jer `router.refresh()` to
+    već garantuje.
+  - Pauzira kad kartica/telefon nije vidljiv (`document.visibilityState`), i nastavlja čim
+    se vrati u prvi plan.
+  - Traka „Ažurirano prije Xs” se resetuje tek kad osvježavanje stvarno stigne (prati
+    `useTransition`-ov `isPending`, ne trenutak poziva) — tako brojač vjerno raste i preko
+    10 sekundi ako veza u sali zapne, umjesto da lažno pokaže „svježe”.
+  - Ručno dugme „Osvježi” pored, za slučaj loše veze.
+  - Uživo provjereno na 375px (prozivka i dnevni red, sa unijetim prisustvom preko
+    pretrage i filtera koji preživljavaju automatsko osvježavanje) i na 1440px (standardne
+    `/skupstina/[id]` i `/uzivo/[meetingId]` stranice nepromijenjene van ovog dodatka).
+
 ## [2.28.0] - 2026-09-23
 
 ### Dodato

@@ -342,6 +342,8 @@ const srLatn = {
     closeVotingConfirm: "Da, zatvori glasanje",
     advanceMeetingBanner: "Sjednica još nije označena kao „Glasanje otvoreno”.",
     advanceMeetingTrigger: "Otvori glasanje (sjednica)",
+    updatedPrefix: "Ažurirano prije",
+    refreshNow: "Osvježi",
   },
   eVoteConsentStatus: {
     NONE: "Nije pokrenuto",

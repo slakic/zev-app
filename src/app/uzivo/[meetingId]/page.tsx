@@ -6,6 +6,7 @@ import {
   previewLiveDelivery, advanceMeetingStatus,
 } from "@/server/services/meetings";
 import { LiveShell } from "@/components/live-shell";
+import { LiveRefresh } from "@/components/live-refresh";
 import { RollCall } from "@/components/roll-call";
 import { AgendaTabs, AgendaItemPanel } from "@/components/agenda-voting";
 import { Tabs, Flash, SubmitBtn, BtnLink } from "@/components/ui";
@@ -133,6 +134,7 @@ export default async function LiveMeetingPage({
         active={tab}
         hrefFor={(key) => `/uzivo/${meetingId}?tab=${key}`}
       />
+      <LiveRefresh />
       <Flash err={sp.err} />
 
       {tab === "prozivka" ? (
