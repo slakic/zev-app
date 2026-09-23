@@ -290,6 +290,12 @@ const srLatn = {
     myAccessGranted: "Imate pristup ovom ZEV-u kao: ",
     myAccessNone: "Nemate pristup ovom ZEV-u.",
   },
+  admin: {
+    badge: "Super admin",
+    accounts: "ZEV nalozi",
+    activity: "Aktivnosti",
+    myZev: "Moj ZEV",
+  },
   eVoteConsentStatus: {
     NONE: "Nije pokrenuto",
     PENDING: "Izjava preuzeta — čeka se potpis",

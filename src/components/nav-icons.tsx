@@ -148,6 +148,14 @@ export function IconShield(props: IconProps) {
   );
 }
 
+export function IconActivity(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 12h3l2-6 4 12 2-8 1.5 2H17" />
+    </IconBase>
+  );
+}
+
 export function IconDot(props: IconProps) {
   return (
     <IconBase {...props}>
@@ -196,4 +204,5 @@ export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/izvjestaji": IconChart,
   "/podesavanja": IconSliders,
   "/admin": IconShield,
+  "/admin/aktivnosti": IconActivity,
 };

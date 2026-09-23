@@ -15,6 +15,7 @@ import {
   IconCheck,
   IconLogout,
   IconSliders,
+  IconShield,
 } from "@/components/nav-icons";
 import { t } from "@/lib/i18n";
 
@@ -57,6 +58,7 @@ export function NavShell({
   tenants,
   activeZevId,
   switchZevAction,
+  variant = "tenant",
   children,
 }: {
   appName: string;
@@ -73,12 +75,38 @@ export function NavShell({
   tenants?: TenantOption[];
   activeZevId?: string | null;
   switchZevAction?: (formData: FormData) => void | Promise<void>;
+  /** "platform" is the admin/[super admin] shell (Plans/design-system.md §7) — same
+   * component, same primitives and icons, but a graphite accent instead of blue and a
+   * permanent "Super admin" badge in place of the tenant chip. Invariant: a "platform"
+   * caller never passes `tenants`/`switchZevAction` — a super admin has no "own" tenant
+   * to switch into from here. */
+  variant?: "tenant" | "platform";
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const showSwitcher = Boolean(tenants && tenants.length > 1 && switchZevAction);
   const activeTenant = tenants?.find((tt) => tt.zevId === activeZevId);
+  const platform = variant === "platform";
+  // Same values used across the shell for a given variant — kept in one place instead of
+  // scattering the ternary at every call site (Plans/design-system.md §7). Deliberately
+  // raw Tailwind shades, not the --color-platform tokens: the avatar/active-link/badge
+  // are each a different shade on purpose (see design-system.md §7's comparison table),
+  // matching how the tenant variant already mixes bg-blue-600 (avatar) with bg-blue-50
+  // (active link) rather than one flat color.
+  const accent = platform
+    ? {
+        activeLink: "bg-slate-800 text-white",
+        appName: "text-slate-800",
+        avatar: "bg-slate-700 hover:bg-slate-800",
+        avatarStatic: "bg-slate-700",
+      }
+    : {
+        activeLink: "bg-blue-50 text-blue-700",
+        appName: "text-blue-700",
+        avatar: "bg-blue-600 hover:bg-blue-700",
+        avatarStatic: "bg-blue-600",
+      };
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Desktop-only "icon rail" collapse. Defaults to expanded (visible) on every
   // fresh load; a remembered preference (if any) is applied after mount so
@@ -178,11 +206,7 @@ export function NavShell({
   const linkCls = (href: string) =>
     `flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
       collapsed ? "md:mx-auto md:w-11 md:justify-center md:gap-0 md:rounded-xl md:px-0" : ""
-    } ${
-      pathname === href
-        ? "bg-blue-50 text-blue-700"
-        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-    }`;
+    } ${pathname === href ? accent.activeLink : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"}`;
 
   return (
     <div className="min-h-screen md:flex">
@@ -219,7 +243,7 @@ export function NavShell({
               className="h-8 w-auto shrink-0"
               priority
             />
-            <div className="text-lg font-bold tracking-tight text-blue-700">{appName}</div>
+            <div className={`text-lg font-bold tracking-tight ${accent.appName}`}>{appName}</div>
           </div>
           <div className={`hidden shrink-0 items-center justify-center ${collapsed ? "md:flex" : ""}`}>
             <Image
@@ -273,14 +297,22 @@ export function NavShell({
           </button>
           <div className="flex-1" />
 
-          {showSwitcher && activeTenant && (
-            <span
-              title={tenantTitle(activeTenant) ?? activeTenant.label}
-              className="hidden max-w-[16rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:inline-flex"
-            >
-              <IconBuilding className="h-3.5 w-3.5 shrink-0 text-blue-500" />
-              <span className="truncate">{activeTenant.label}</span>
+          {platform ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white ring-1 ring-inset ring-slate-900/10">
+              <IconShield className="h-3.5 w-3.5 shrink-0" />
+              {t("admin.badge")}
             </span>
+          ) : (
+            showSwitcher &&
+            activeTenant && (
+              <span
+                title={tenantTitle(activeTenant) ?? activeTenant.label}
+                className="hidden max-w-[16rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:inline-flex"
+              >
+                <IconBuilding className="h-3.5 w-3.5 shrink-0 text-blue-500" />
+                <span className="truncate">{activeTenant.label}</span>
+              </span>
+            )
           )}
 
           <div className="relative" ref={menuRef}>
@@ -290,7 +322,7 @@ export function NavShell({
               aria-haspopup="menu"
               aria-expanded={menuOpen}
               aria-label={`Nalog: ${displayName}`}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm transition-shadow hover:bg-blue-700 hover:shadow"
+              className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm transition-shadow hover:shadow ${accent.avatar}`}
             >
               {initials(displayName)}
             </button>
@@ -300,7 +332,7 @@ export function NavShell({
                 className="dropdown-in absolute right-0 z-30 mt-2 w-64 origin-top-right rounded-2xl border border-slate-200/80 bg-white py-1.5 shadow-xl ring-1 ring-slate-900/5"
               >
                 <div className="flex items-center gap-3 border-b border-slate-100 px-3.5 py-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ${accent.avatarStatic}`}>
                     {initials(displayName)}
                   </div>
                   <div className="min-w-0">
@@ -359,15 +391,17 @@ export function NavShell({
                   </div>
                 )}
                 <div className="py-1">
-                  <Link
-                    href={settingsHref}
-                    role="menuitem"
-                    onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
-                  >
-                    <IconSliders className="h-4 w-4 shrink-0 text-slate-400" />
-                    {settingsLabel}
-                  </Link>
+                  {!platform && (
+                    <Link
+                      href={settingsHref}
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
+                    >
+                      <IconSliders className="h-4 w-4 shrink-0 text-slate-400" />
+                      {settingsLabel}
+                    </Link>
+                  )}
                   <form action={logoutAction}>
                     <button
                       type="submit"

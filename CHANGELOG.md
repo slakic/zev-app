@@ -43,6 +43,57 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.25.0] - 2026-09-23
+
+### Dodato
+
+- **`Plans/design-system.md`** — konsolidovan dizajn sistem: dokumentuje **već isporučeno**
+  stanje (boje, tipografska skala, razmak, elevacija, šest težina dugmadi, inventar svih
+  `ui.tsx` primitiva, konvencija ikona) kao izvor istine za svaki budući UI rad, umjesto
+  da to bude razbacano kroz `Plans/ui-ux-redesign-plan.md`-ov 1681-linijski istorijski
+  zapis. Svaka tvrdnja je vezana za konkretan fajl/liniju u zatečenom kodu.
+- **`CLAUDE.md`** — nov fajl; upućuje agente da prije bilo kakvog UI rada koriste skill
+  `frontend-design` i pročitaju `Plans/design-system.md`, ponovo koriste postojeće tokene
+  i primitive umjesto da improvizuju nove, i da stanu i pitaju korisnika ako zadatak
+  zaista traži obrazac koji sistem nema.
+
+### Izmijenjeno
+
+- **Faza 5 — vizuelna konzistentnost `/admin` oblasti**
+  (`Plans/ui-ux-redesign-plan.md` §5, odluka P4, opcija C — jedina svjesno odložena faza
+  ranijeg UI/UX plana, sad dovršena). `admin/layout.tsx` je do sad bio ručno pisano
+  zaglavlje bez sidebar-a — isti čovjek koji se svakodnevno prebacuje između `/admin` i
+  svog ZEV-a je pri svakom prelasku dobijao aplikaciju koja izgleda kao drugi proizvod.
+  - `NavShell` dobija `variant?: "tenant" | "platform"` prop (podrazumijevano `"tenant"`,
+    nula izmjene za postojeće pozivaoce). Platformska varijanta: ista školjka, isti
+    primitivi i ikone, ali **grafitni (slate-800) akcenat** umjesto plavog — svjestan
+    izbor da se ne uvodi nova brend boja, nego da se ukloni boja (inverzija postojećih
+    neutrala, ne nova nijansa). Trajna oznaka „Super admin" (bez `sm:` sakrivanja na
+    telefonu, za razliku od tenant chip-a) zamjenjuje chip aktivnog ZEV-a; „Podešavanja"
+    se ne prikazuje u meniju naloga (nema `zevId`-scoped stranicu za platformski nivo);
+    prekidač tenanata se nikad ne prosljeđuje (super admin nema „svoj" ZEV).
+  - `admin/layout.tsx` sad koristi `<NavShell variant="platform">` sa sidebar navigacijom
+    („ZEV nalozi", „Aktivnosti", „Moj ZEV" — kad aktor ima svoj ZEV) umjesto ručno pisanog
+    `<header>`-a. Admin stranice (`admin/page.tsx`, `admin/[zevId]/page.tsx`,
+    `admin/aktivnosti/page.tsx`) su nedirane — već su koristile `ui.tsx` primitive
+    ispravno.
+  - Nova ikona `IconActivity` (`nav-icons.tsx`), registrovana za `/admin/aktivnosti`.
+  - Nova ugniježđena grupa `admin` u `sr-Latn.ts` (badge/labele nav linkova).
+  - Uživo provjereno na 1440px i 375px (otvoreni i suženi sidebar, mobilni drawer sa
+    fokus zamkom), prelaz `/admin` ↔ `/` u oba smjera, meni naloga u obje varijante —
+    tenant školjka ostaje bajt-za-bajt nepromijenjena.
+
+### Ispravljeno
+
+- **Latentan CSS bag u `globals.css`** (postojao prije ove izmjene, otkriven usput):
+  komentar iznad `@theme` bloka je sadržavao doslovni `*/` unutar teksta
+  (`bg-*/text-*/border-*/ring-*`), što po CSS specifikaciji **prevremeno zatvara
+  komentar** — sve od te tačke do sljedećeg stvarnog `*/` (uključujući cio `@theme` blok)
+  bi se moglo parsirati kao sirov CSS umjesto kao komentar. Ispravljeno preformulisanjem
+  bez uzastopnog `*/` (`bg-*, text-*, border-* i ring-*`). Build je ovo iznenada počeo da
+  prijavljuje kao grešku nakon dodavanja novih `--color-platform-*` tokena u isti blok —
+  uzrok je bio zatečeni tekst, ne novi tokeni.
+
 ## [2.24.1] - 2026-09-23
 
 ### Izmijenjeno

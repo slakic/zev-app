@@ -7,8 +7,8 @@
    already in use (slate neutrals, blue-600 primary, tonal emerald/amber/red) — no colors
    are actually changing here, this just gives them a role-based name so future code (and
    Faza 1's button-weight rework) can reach for `bg-primary`/`bg-danger-soft`/etc. instead
-   of a raw Tailwind shade. Generates bg-*/text-*/border-*/ring-* utilities automatically
-   per Tailwind v4's @theme convention. */
+   of a raw Tailwind shade. Generates bg-*, text-*, border-* and ring-* utilities
+   automatically per Tailwind v4's @theme convention. */
 @theme {
   --color-canvas: #f8fafc;
   --color-surface: #ffffff;
@@ -32,6 +32,14 @@
   --color-danger: #dc2626;
   --color-danger-soft: #fef2f2;
   --color-danger-ink: #991b1b;
+  /* Platform (admin) accent — Faza 5, Plans/design-system.md §1.5/§7. Deliberately not a
+     new hue: these are the same slate neutrals already in the palette, used inverted
+     instead of tonal, so NavShell's "platform" variant reads as "no color" rather than
+     as a second brand color. */
+  --color-platform: #1e293b;
+  --color-platform-hover: #0f172a;
+  --color-platform-ink: #1e293b;
+  --color-platform-soft: #f1f5f9;
 }
 
 body {
