@@ -43,15 +43,18 @@ export function Card({
 export function Stat({ label, value, tone }: { label: string; value: string; tone?: "ok" | "warn" | "bad" | "neutral" }) {
   const toneCls =
     tone === "ok" ? "text-emerald-700" : tone === "warn" ? "text-amber-700" : tone === "bad" ? "text-red-700" : "text-slate-900";
-  const barCls =
+  const dotCls =
     tone === "ok" ? "bg-emerald-500" : tone === "warn" ? "bg-amber-500" : tone === "bad" ? "bg-red-500" : "bg-blue-500";
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
-      <div className={`h-1 ${barCls}`} />
-      <div className="p-4">
-        <div className="text-xs font-medium uppercase tracking-wider text-slate-500">{label}</div>
-        <div className={`mt-1.5 text-2xl font-semibold tabular-nums ${toneCls}`}>{value}</div>
+    // A full-width colored top bar duplicated the same signal the number's own color
+    // already carries (Plans/design-system.md §4.1) — replaced with a small dot next to
+    // the label, a legend-style marker rather than a painted stripe across the card.
+    <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+      <div className="flex items-start gap-1.5">
+        <span className={`mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full ${dotCls}`} />
+        <span className="text-xs font-medium uppercase tracking-wider text-slate-500">{label}</span>
       </div>
+      <div className={`mt-1.5 text-2xl font-semibold tabular-nums ${toneCls}`}>{value}</div>
     </div>
   );
 }

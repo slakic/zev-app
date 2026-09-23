@@ -43,6 +43,18 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.25.1] - 2026-09-23
+
+### Izmijenjeno
+
+- **`Stat` kartica** (`ui.tsx`, KPI kartice na početnoj i na saldu vlasnika) — puna
+  obojena traka preko vrha kartice je uklonjena. Ton (ok/warn/bad/neutral) je bio
+  dupliran — nosila ga je i traka i boja samog broja ispod nje; traka je zamijenjena
+  sitnom tačkom uz labelu, kao tiša oznaka kategorije umjesto pune obojene ivice.
+  Ništa drugo (token, tipografija, elevacija) nije mijenjano — samo unutrašnja
+  kompozicija jedne komponente, ista na svih 20 mjesta gdje se `Stat` koristi. Mockup
+  odobren od korisnika prije implementacije.
+
 ## [2.25.0] - 2026-09-23
 
 ### Dodato
