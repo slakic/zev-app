@@ -30,7 +30,8 @@ export type SessionMinAggregateOutputType = {
   activeZevId: string | null
   expiresAt: Date | null
   revokedAt: Date | null
-  ip: string | null
+  ipHash: string | null
+  ipAddress: string | null
   userAgent: string | null
   createdAt: Date | null
 }
@@ -41,7 +42,8 @@ export type SessionMaxAggregateOutputType = {
   activeZevId: string | null
   expiresAt: Date | null
   revokedAt: Date | null
-  ip: string | null
+  ipHash: string | null
+  ipAddress: string | null
   userAgent: string | null
   createdAt: Date | null
 }
@@ -52,7 +54,8 @@ export type SessionCountAggregateOutputType = {
   activeZevId: number
   expiresAt: number
   revokedAt: number
-  ip: number
+  ipHash: number
+  ipAddress: number
   userAgent: number
   createdAt: number
   _all: number
@@ -65,7 +68,8 @@ export type SessionMinAggregateInputType = {
   activeZevId?: true
   expiresAt?: true
   revokedAt?: true
-  ip?: true
+  ipHash?: true
+  ipAddress?: true
   userAgent?: true
   createdAt?: true
 }
@@ -76,7 +80,8 @@ export type SessionMaxAggregateInputType = {
   activeZevId?: true
   expiresAt?: true
   revokedAt?: true
-  ip?: true
+  ipHash?: true
+  ipAddress?: true
   userAgent?: true
   createdAt?: true
 }
@@ -87,7 +92,8 @@ export type SessionCountAggregateInputType = {
   activeZevId?: true
   expiresAt?: true
   revokedAt?: true
-  ip?: true
+  ipHash?: true
+  ipAddress?: true
   userAgent?: true
   createdAt?: true
   _all?: true
@@ -171,7 +177,8 @@ export type SessionGroupByOutputType = {
   activeZevId: string | null
   expiresAt: Date
   revokedAt: Date | null
-  ip: string | null
+  ipHash: string | null
+  ipAddress: string | null
   userAgent: string | null
   createdAt: Date
   _count: SessionCountAggregateOutputType | null
@@ -203,7 +210,8 @@ export type SessionWhereInput = {
   activeZevId?: Prisma.StringNullableFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
-  ip?: Prisma.StringNullableFilter<"Session"> | string | null
+  ipHash?: Prisma.StringNullableFilter<"Session"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"Session"> | string | null
   userAgent?: Prisma.StringNullableFilter<"Session"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -216,7 +224,8 @@ export type SessionOrderByWithRelationInput = {
   activeZevId?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  ip?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -232,7 +241,8 @@ export type SessionWhereUniqueInput = Prisma.AtLeast<{
   activeZevId?: Prisma.StringNullableFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
-  ip?: Prisma.StringNullableFilter<"Session"> | string | null
+  ipHash?: Prisma.StringNullableFilter<"Session"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"Session"> | string | null
   userAgent?: Prisma.StringNullableFilter<"Session"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -245,7 +255,8 @@ export type SessionOrderByWithAggregationInput = {
   activeZevId?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  ip?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.SessionCountOrderByAggregateInput
@@ -262,7 +273,8 @@ export type SessionScalarWhereWithAggregatesInput = {
   activeZevId?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
-  ip?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
+  ipHash?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
+  ipAddress?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
   userAgent?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
 }
@@ -271,7 +283,8 @@ export type SessionCreateInput = {
   id?: string
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSessionsInput
@@ -284,7 +297,8 @@ export type SessionUncheckedCreateInput = {
   activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
 }
@@ -293,7 +307,8 @@ export type SessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSessionsNestedInput
@@ -306,7 +321,8 @@ export type SessionUncheckedUpdateInput = {
   activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,7 +333,8 @@ export type SessionCreateManyInput = {
   activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
 }
@@ -326,7 +343,8 @@ export type SessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -337,7 +355,8 @@ export type SessionUncheckedUpdateManyInput = {
   activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -358,7 +377,8 @@ export type SessionCountOrderByAggregateInput = {
   activeZevId?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
-  ip?: Prisma.SortOrder
+  ipHash?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   userAgent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -369,7 +389,8 @@ export type SessionMaxOrderByAggregateInput = {
   activeZevId?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
-  ip?: Prisma.SortOrder
+  ipHash?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   userAgent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -380,7 +401,8 @@ export type SessionMinOrderByAggregateInput = {
   activeZevId?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
-  ip?: Prisma.SortOrder
+  ipHash?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   userAgent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -473,7 +495,8 @@ export type SessionCreateWithoutUserInput = {
   id?: string
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
   activeZev?: Prisma.ZevCreateNestedOneWithoutSessionsInput
@@ -484,7 +507,8 @@ export type SessionUncheckedCreateWithoutUserInput = {
   activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
 }
@@ -524,7 +548,8 @@ export type SessionScalarWhereInput = {
   activeZevId?: Prisma.StringNullableFilter<"Session"> | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
-  ip?: Prisma.StringNullableFilter<"Session"> | string | null
+  ipHash?: Prisma.StringNullableFilter<"Session"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"Session"> | string | null
   userAgent?: Prisma.StringNullableFilter<"Session"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
 }
@@ -533,7 +558,8 @@ export type SessionCreateWithoutActiveZevInput = {
   id?: string
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSessionsInput
@@ -544,7 +570,8 @@ export type SessionUncheckedCreateWithoutActiveZevInput = {
   userId: string
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
 }
@@ -580,7 +607,8 @@ export type SessionCreateManyUserInput = {
   activeZevId?: string | null
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
 }
@@ -589,7 +617,8 @@ export type SessionUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activeZev?: Prisma.ZevUpdateOneWithoutSessionsNestedInput
@@ -600,7 +629,8 @@ export type SessionUncheckedUpdateWithoutUserInput = {
   activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -610,7 +640,8 @@ export type SessionUncheckedUpdateManyWithoutUserInput = {
   activeZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -620,7 +651,8 @@ export type SessionCreateManyActiveZevInput = {
   userId: string
   expiresAt: Date | string
   revokedAt?: Date | string | null
-  ip?: string | null
+  ipHash?: string | null
+  ipAddress?: string | null
   userAgent?: string | null
   createdAt?: Date | string
 }
@@ -629,7 +661,8 @@ export type SessionUpdateWithoutActiveZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSessionsNestedInput
@@ -640,7 +673,8 @@ export type SessionUncheckedUpdateWithoutActiveZevInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -650,7 +684,8 @@ export type SessionUncheckedUpdateManyWithoutActiveZevInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -663,7 +698,8 @@ export type SessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
-  ip?: boolean
+  ipHash?: boolean
+  ipAddress?: boolean
   userAgent?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -676,7 +712,8 @@ export type SessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
-  ip?: boolean
+  ipHash?: boolean
+  ipAddress?: boolean
   userAgent?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -689,7 +726,8 @@ export type SessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
-  ip?: boolean
+  ipHash?: boolean
+  ipAddress?: boolean
   userAgent?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -702,12 +740,13 @@ export type SessionSelectScalar = {
   activeZevId?: boolean
   expiresAt?: boolean
   revokedAt?: boolean
-  ip?: boolean
+  ipHash?: boolean
+  ipAddress?: boolean
   userAgent?: boolean
   createdAt?: boolean
 }
 
-export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "activeZevId" | "expiresAt" | "revokedAt" | "ip" | "userAgent" | "createdAt", ExtArgs["result"]["session"]>
+export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "activeZevId" | "expiresAt" | "revokedAt" | "ipHash" | "ipAddress" | "userAgent" | "createdAt", ExtArgs["result"]["session"]>
 export type SessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   activeZev?: boolean | Prisma.Session$activeZevArgs<ExtArgs>
@@ -739,7 +778,22 @@ export type $SessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     activeZevId: string | null
     expiresAt: Date
     revokedAt: Date | null
-    ip: string | null
+    /**
+     * sha256(ip) — kept for correlation with AuditEvent.ipHash (rate-limiting, the auth.login
+     * audit trail). Despite the column name "ip" in the DB (unchanged to avoid a migration),
+     * this has only ever been a one-way hash, never a raw address — see `ipAddress` below for
+     * the one deliberate exception (Plans/live-sessions-admin-plan.md §O1).
+     */
+    ipHash: string | null
+    /**
+     * Raw IP address, super-admin-only display (Plans/live-sessions-admin-plan.md §O1) — a
+     * deliberate, narrowly-scoped exception to this app's otherwise hash-only IP handling
+     * (AuditEvent.ipHash, Vote.ipHash). Lives only as long as the session itself: cleared on
+     * logout/revocation and by lazy cleanup once expired (never backfillable for sessions
+     * created before this column existed — ipHash cannot be reversed). Never copied into
+     * AuditEvent, which is append-only and could never un-store it.
+     */
+    ipAddress: string | null
     userAgent: string | null
     createdAt: Date
   }, ExtArgs["result"]["session"]>
@@ -1172,7 +1226,8 @@ export interface SessionFieldRefs {
   readonly activeZevId: Prisma.FieldRef<"Session", 'String'>
   readonly expiresAt: Prisma.FieldRef<"Session", 'DateTime'>
   readonly revokedAt: Prisma.FieldRef<"Session", 'DateTime'>
-  readonly ip: Prisma.FieldRef<"Session", 'String'>
+  readonly ipHash: Prisma.FieldRef<"Session", 'String'>
+  readonly ipAddress: Prisma.FieldRef<"Session", 'String'>
   readonly userAgent: Prisma.FieldRef<"Session", 'String'>
   readonly createdAt: Prisma.FieldRef<"Session", 'DateTime'>
 }

@@ -294,6 +294,7 @@ const srLatn = {
     badge: "Super admin",
     accounts: "ZEV nalozi",
     activity: "Aktivnosti",
+    sessions: "Sesije",
     myZev: "Moj ZEV",
   },
   live: {

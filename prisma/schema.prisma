@@ -66,7 +66,18 @@ model Session {
   activeZevId String?
   expiresAt DateTime
   revokedAt DateTime?
-  ip        String?
+  /// sha256(ip) — kept for correlation with AuditEvent.ipHash (rate-limiting, the auth.login
+  /// audit trail). Despite the column name "ip" in the DB (unchanged to avoid a migration),
+  /// this has only ever been a one-way hash, never a raw address — see `ipAddress` below for
+  /// the one deliberate exception (Plans/live-sessions-admin-plan.md §O1).
+  ipHash    String?  @map("ip")
+  /// Raw IP address, super-admin-only display (Plans/live-sessions-admin-plan.md §O1) — a
+  /// deliberate, narrowly-scoped exception to this app's otherwise hash-only IP handling
+  /// (AuditEvent.ipHash, Vote.ipHash). Lives only as long as the session itself: cleared on
+  /// logout/revocation and by lazy cleanup once expired (never backfillable for sessions
+  /// created before this column existed — ipHash cannot be reversed). Never copied into
+  /// AuditEvent, which is append-only and could never un-store it.
+  ipAddress String?
   userAgent String?
   createdAt DateTime @default(now())
 

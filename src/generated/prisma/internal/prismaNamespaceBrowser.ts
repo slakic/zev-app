@@ -149,7 +149,8 @@ export const SessionScalarFieldEnum = {
   activeZevId: 'activeZevId',
   expiresAt: 'expiresAt',
   revokedAt: 'revokedAt',
-  ip: 'ip',
+  ipHash: 'ipHash',
+  ipAddress: 'ipAddress',
   userAgent: 'userAgent',
   createdAt: 'createdAt'
 } as const

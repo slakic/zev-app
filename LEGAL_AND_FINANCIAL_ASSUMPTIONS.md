@@ -56,6 +56,11 @@ prema službenom prečišćenom tekstu ZOZ RS 101/11 prije citiranja u dokumenti
 6. **Rokovi čuvanja podataka** (zapisnici, glasanje, finansije, logovi pristupa): konfigurabilni
    parametri u Podešavanjima; podrazumijevano 11 godina za finansijske dokumente, 30 dana za IP
    metapodatke glasanja. **[PRAVNA PROVJERA]**
+   - **Sirova IP adresa aktivne sesije** (`Session.ipAddress`, super-admin pregled na
+     `/admin/sesije` — Plans/live-sessions-admin-plan.md §O1/§O6): namjerna, uska izuzetka od
+     ovog inače isključivo heš-zasnovanog čuvanja IP adresa (`AuditEvent.ipHash`, `Vote.ipHash`,
+     `Session.ipHash`). Živi isključivo dok sesija traje — briše se pri odjavi, opozivu ili
+     isteku (najduže 12h, po TTL-u sesije), nikad se ne kopira u `AuditEvent`. **[PRAVNA PROVJERA]**
 7. **JMBG**: aplikacija namjerno NE evidentira JMBG; identifikacija lica vodi se preko imena,
    kontakta i internog ID-a. Ako registarski organ zahtijeva JMBG u obrascu, unosi se ručno u
    generisani dokument. **[PRAVNA PROVJERA]**

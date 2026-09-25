@@ -11,7 +11,9 @@ export function generateVerificationCode(): string {
   return String(n).padStart(6, "0");
 }
 
-/** Only hashes are ever stored or logged. */
+/** Only hashes are ever stored or logged — except Session.ipAddress, a deliberate, narrowly
+ *  scoped exception for super-admin session visibility (Plans/live-sessions-admin-plan.md
+ *  §O1), which is the one place this app stores a raw IP instead of this hash. */
 export function sha256(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }

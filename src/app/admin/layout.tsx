@@ -21,6 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const links = [
     { href: "/admin", label: t("admin.accounts") },
     { href: "/admin/aktivnosti", label: t("admin.activity") },
+    { href: "/admin/sesije", label: t("admin.sessions") },
   ];
   if (actor.zevId) links.push({ href: "/", label: t("admin.myZev") });
   return (

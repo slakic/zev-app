@@ -156,6 +156,15 @@ export function IconActivity(props: IconProps) {
   );
 }
 
+export function IconMonitor(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="3" y="4" width="14" height="9.5" rx="1" />
+      <path d="M7.5 17h5M10 13.5V17" />
+    </IconBase>
+  );
+}
+
 export function IconDot(props: IconProps) {
   return (
     <IconBase {...props}>
@@ -205,4 +214,5 @@ export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/podesavanja": IconSliders,
   "/admin": IconShield,
   "/admin/aktivnosti": IconActivity,
+  "/admin/sesije": IconMonitor,
 };

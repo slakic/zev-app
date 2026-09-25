@@ -40,10 +40,15 @@ export async function createSession(userId: string, ip?: string | null, userAgen
     data: {
       userId,
       expiresAt,
-      ip: ip ? sha256(ip) : null,
+      ipHash: ip ? sha256(ip) : null,
+      ipAddress: ip ?? null,
       userAgent: userAgent?.slice(0, 255) ?? null,
     },
   });
+  // Best-effort, fire-and-forget (same pattern as resolveActiveContext's own writes below) —
+  // every login is a natural opportunity to sweep ipAddress off sessions that have since
+  // expired or been revoked (Plans/live-sessions-admin-plan.md §O1) without needing a cron.
+  clearStaleSessionIps().catch(() => {});
   const jwt = await new SignJWT({ sid: session.id })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -65,11 +70,24 @@ export async function destroySession(): Promise<void> {
   if (ctx) {
     await prisma.session.update({
       where: { id: ctx.sessionId },
-      data: { revokedAt: new Date() },
+      data: { revokedAt: new Date(), ipAddress: null },
     }).catch(() => {});
   }
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
+}
+
+/**
+ * Sweeps Session.ipAddress off any session that's already expired or revoked — the raw IP
+ * (Plans/live-sessions-admin-plan.md §O1) is only ever meant to live as long as the session
+ * itself is actually current. Called lazily (fire-and-forget, best-effort) from createSession
+ * rather than a cron, since every login is itself a natural, frequent trigger for this.
+ */
+export async function clearStaleSessionIps(): Promise<void> {
+  await prisma.session.updateMany({
+    where: { ipAddress: { not: null }, OR: [{ expiresAt: { lt: new Date() } }, { revokedAt: { not: null } }] },
+    data: { ipAddress: null },
+  });
 }
 
 /**

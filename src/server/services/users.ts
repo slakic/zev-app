@@ -204,7 +204,7 @@ export async function resetPassword(token: string, newPassword: string): Promise
       data: { passwordHash: newHash, passwordResetTokenHash: null, passwordResetExpiresAt: null },
     });
     // Force re-login everywhere — a stolen/old session should not survive a password reset.
-    await tx.session.updateMany({ where: { userId: user.id }, data: { revokedAt: new Date() } });
+    await tx.session.updateMany({ where: { userId: user.id }, data: { revokedAt: new Date(), ipAddress: null } });
   });
   await audit({ userId: user.id }, { action: "password_reset.completed", targetType: "User", targetId: user.id });
   return { ok: true };
@@ -276,7 +276,7 @@ export async function deactivateUser(actor: Actor, userId: string, reason: strin
     where: { id: userId },
     data: { active: false, deactivatedAt: new Date() },
   });
-  await prisma.session.updateMany({ where: { userId }, data: { revokedAt: new Date() } });
+  await prisma.session.updateMany({ where: { userId }, data: { revokedAt: new Date(), ipAddress: null } });
   await audit(actor, {
     action: "user.deactivate",
     targetType: "User",

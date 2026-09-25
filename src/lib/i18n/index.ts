@@ -67,3 +67,25 @@ export function endOfDay(dateStr: string): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, (m || 1) - 1, d || 1, 23, 59, 59, 999);
 }
+
+/**
+ * Coarse relative time for a future or past instant, e.g. "za 7h", "prije 2 min" — used by
+ * /admin/sesije for "Ističe"/"Posljednja aktivnost" (Plans/live-sessions-admin-plan.md), not
+ * a general-purpose i18n primitive (Serbian phrasing is hardcoded, not dictionary-driven,
+ * since "za"/"prije" placement around the unit isn't a simple key substitution).
+ */
+export function formatRelativeTime(target: Date, now: Date = new Date()): string {
+  const diffMs = target.getTime() - now.getTime();
+  const future = diffMs >= 0;
+  const abs = Math.abs(diffMs);
+  const minutes = Math.round(abs / 60000);
+  const hours = Math.round(abs / 3600000);
+  const days = Math.round(abs / 86400000);
+  let amount: string;
+  if (minutes < 1) amount = future ? "manje od minut" : "upravo sada";
+  else if (minutes < 60) amount = `${minutes} min`;
+  else if (hours < 24) amount = `${hours}h`;
+  else amount = `${days} d.`;
+  if (minutes < 1 && !future) return amount;
+  return future ? `za ${amount}` : `prije ${amount}`;
+}

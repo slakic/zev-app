@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.31.0] - 2026-09-25
+
+### Dodato
+
+- **Faza 1: super admin sada ima uživo pregled trenutno prijavljenih sesija, sa IP
+  adresama** (`/admin/sesije`, novi link u meniju platforme). Prati plan u
+  `Plans/live-sessions-admin-plan.md` (§O1–§O5).
+  - `Session.ipAddress` — nova kolona, čuva sirovu IP adresu sesije (za razliku od
+    postojećeg `Session.ipHash`, koji ostaje sha256 heš, nepromijenjen). Namjerni,
+    uski izuzetak od inače isključivo heš-zasnovanog čuvanja IP adresa u aplikaciji
+    (`AuditEvent.ipHash`, `Vote.ipHash`) — vidi doc-komentare u `prisma/schema.prisma`
+    i napomenu u `LEGAL_AND_FINANCIAL_ASSUMPTIONS.md` §3.6.
+  - Živi isključivo dok sesija traje: briše se pri odjavi, opozivu (reset lozinke,
+    deaktivacija naloga) i lijenim čišćenjem isteklih sesija — nikad se ne kopira u
+    `AuditEvent` (append-only, ne bi se moglo naknadno ukloniti).
+  - Nova stranica prikazuje: korisnika, ZEV i uloge (sa oznakom ako je ZEV suspendovan),
+    IP adresu, uređaj/pretraživač (novi `describeUserAgent()`), vrijeme prijave i
+    preostalo vrijeme do isteka — uživo osvježavanje kroz postojeći `<LiveRefresh />`.
+  - Testovi: `tests/admin-sessions.test.ts` (guard, filtriranje samo živih sesija,
+    prikaz suspendovanog ZEV-a).
+  - Faza 2 (posljednja aktivnost) i Faza 3 (ručno okončanje tuđe sesije) slijede u
+    narednim izmjenama.
+
 ## [2.30.2] - 2026-09-25
 
 ### Ispravljeno
