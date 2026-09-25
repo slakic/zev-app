@@ -7,6 +7,13 @@ import type { Role } from "@/generated/prisma/client";
 
 const COOKIE_NAME = "zev_session";
 const SESSION_TTL_HOURS = 12;
+/** Faza 2 (Plans/live-sessions-admin-plan.md §O2) — how often getAuthContext() is allowed to
+ *  write Session.lastSeenAt, and how recent it must be for /admin/sesije to call a session
+ *  "aktivan sada". Two separate constants on purpose: the write throttle only needs to be
+ *  "frequent enough that lastSeenAt stays roughly current", while the activity threshold is a
+ *  product decision about what counts as "still here" — they don't have to move together. */
+const LAST_SEEN_THROTTLE_MS = 5 * 60 * 1000;
+export const ACTIVE_SESSION_THRESHOLD_MS = 15 * 60 * 1000;
 
 function secret(): Uint8Array {
   const s = process.env.SESSION_SECRET;
@@ -91,6 +98,16 @@ export async function clearStaleSessionIps(): Promise<void> {
 }
 
 /**
+ * Whether getAuthContext() should bother writing Session.lastSeenAt right now — pulled out as
+ * a pure function (mirrors resolveActiveContext below) so the 5-minute throttle itself can be
+ * tested directly without a live request scope. `now` is a parameter rather than `new Date()`
+ * inside, purely for deterministic tests.
+ */
+export function shouldUpdateLastSeen(lastSeenAt: Date | null, now: Date): boolean {
+  return !lastSeenAt || now.getTime() - lastSeenAt.getTime() > LAST_SEEN_THROTTLE_MS;
+}
+
+/**
  * Which ZEV a session acts within, that ZEV's current roles for the user, and that
  * user's Party in that same ZEV — all three sourced from collections already scoped per
  * tenant (Membership for roles, Party for partyId — see Plans/party-per-tenant-plan.md
@@ -155,8 +172,21 @@ export async function getAuthContext(): Promise<AuthContext | null> {
       activeZev: { select: { active: true } },
     },
   });
-  if (!session || session.revokedAt || session.expiresAt < new Date()) return null;
+  const now = new Date();
+  if (!session || session.revokedAt || session.expiresAt < now) return null;
   if (!session.user.active) return null;
+  // Fire-and-forget, throttled (Plans/live-sessions-admin-plan.md §O2) — getAuthContext runs
+  // on every request and is called multiple times per request in places, so this must never
+  // block the response, and the `where` repeats shouldUpdateLastSeen's own condition so
+  // concurrent calls in the same 5-minute window don't race into extra writes.
+  if (shouldUpdateLastSeen(session.lastSeenAt, now)) {
+    prisma.session
+      .updateMany({
+        where: { id: session.id, OR: [{ lastSeenAt: null }, { lastSeenAt: { lt: new Date(now.getTime() - LAST_SEEN_THROTTLE_MS) } }] },
+        data: { lastSeenAt: now },
+      })
+      .catch(() => {});
+  }
   const u = session.user;
   const { zevId, roles, partyId } = await resolveActiveContext(session.id, session.activeZevId, u.memberships, u.parties);
   // displayName: the Party in the active ZEV, if any; otherwise the oldest Party this

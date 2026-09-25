@@ -80,6 +80,12 @@ model Session {
   ipAddress String?
   userAgent String?
   createdAt DateTime @default(now())
+  /// Throttled "seen" heartbeat (Plans/live-sessions-admin-plan.md §O2, Faza 2) — updated at
+  /// most once per 5 minutes from getAuthContext(), not on every request, so a session that's
+  /// just an open, idle tab doesn't look identical to one someone actively left running vs.
+  /// one whose owner closed the browser hours ago. Null until the first throttled write after
+  /// this column existed. "Aktivan sada" in /admin/sesije means < 15 minutes old.
+  lastSeenAt DateTime?
 
   @@index([userId])
   @@index([activeZevId])

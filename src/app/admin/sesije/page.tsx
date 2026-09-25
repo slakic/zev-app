@@ -1,7 +1,7 @@
 import { requireSuperAdminActor } from "@/server/actor";
 import { listActiveSessions, describeUserAgent } from "@/server/services/sessions";
 import { tEnum, formatDateTime, formatRelativeTime } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Stat, Table, Td, StatusBadge, FilterBar, type ColumnSpec } from "@/components/ui";
 import { LiveRefresh } from "@/components/live-refresh";
 
 const sessionHeaders: ColumnSpec[] = [
@@ -10,19 +10,28 @@ const sessionHeaders: ColumnSpec[] = [
   { label: "IP adresa" },
   { label: "Uređaj" },
   { label: "Prijava", nowrap: true },
+  { label: "Posljednja aktivnost", nowrap: true },
   { label: "Ističe", nowrap: true },
 ];
 
 /**
  * Super-admin, read-only live view of currently logged-in sessions (Plans/
- * live-sessions-admin-plan.md, Faza 1) — same page pattern as /admin/aktivnosti (guard,
- * layout, Card+Table), auto-refreshing via <LiveRefresh /> rather than a manual reload.
- * Faza 2 adds a "Posljednja aktivnost" column, Faza 3 a "Radnje" revoke column — deliberately
- * not stubbed out here ahead of time.
+ * live-sessions-admin-plan.md, Faza 1 + Faza 2) — same page pattern as /admin/aktivnosti
+ * (guard, layout, Card+Table), auto-refreshing via <LiveRefresh /> rather than a manual
+ * reload. Faza 3 would add a "Radnje" revoke column — deliberately not stubbed out here
+ * ahead of being approved.
  */
-export default async function AdminSessionsPage() {
+export default async function AdminSessionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ aktivni?: string }>;
+}) {
   const actor = await requireSuperAdminActor();
-  const sessions = await listActiveSessions(actor);
+  const sp = await searchParams;
+  const activeOnly = sp.aktivni === "1";
+  const sessions = await listActiveSessions(actor, { activeOnly });
+  const activeNowCount = sessions.filter((s) => s.isActiveNow).length;
+  const distinctUserCount = new Set(sessions.map((s) => s.userId)).size;
 
   return (
     <div>
@@ -30,6 +39,17 @@ export default async function AdminSessionsPage() {
         title="Sesije — trenutno prijavljeni korisnici"
         subtitle="Uživo, do 200 najnovijih aktivnih sesija na cijeloj platformi"
       />
+      <div className="mb-4 grid grid-cols-3 gap-3">
+        <Stat label="Sesije" value={String(sessions.length)} />
+        <Stat label="Korisnici" value={String(distinctUserCount)} />
+        <Stat label="Aktivno sada" value={String(activeNowCount)} tone={activeNowCount > 0 ? "ok" : "neutral"} />
+      </div>
+      <FilterBar submitLabel="Primijeni">
+        <label className="inline-flex items-center gap-1.5 text-sm">
+          <input type="checkbox" name="aktivni" value="1" defaultChecked={activeOnly} />
+          Samo aktivni sada (zadnjih 15 min)
+        </label>
+      </FilterBar>
       <LiveRefresh />
       <Card>
         <Table
@@ -37,7 +57,7 @@ export default async function AdminSessionsPage() {
           caption="Sesije — trenutno prijavljeni korisnici"
           headers={sessionHeaders}
           empty={sessions.length === 0}
-          emptyTitle="Trenutno nema prijavljenih korisnika."
+          emptyTitle="Nema aktivnih sesija."
         >
           {sessions.map((s) => (
             <tr key={s.id}>
@@ -65,6 +85,12 @@ export default async function AdminSessionsPage() {
               <Td className="font-mono text-xs">{s.ipAddress ?? "—"}</Td>
               <Td className="text-xs">{describeUserAgent(s.userAgent)}</Td>
               <Td className="text-xs">{formatDateTime(s.createdAt)}</Td>
+              <Td className="text-xs">
+                <span className="inline-flex items-center gap-1.5">
+                  {s.isActiveNow && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" aria-hidden="true" />}
+                  {s.lastSeenAt ? formatRelativeTime(s.lastSeenAt) : "—"}
+                </span>
+              </Td>
               <Td className="text-xs">{formatRelativeTime(s.expiresAt)}</Td>
             </tr>
           ))}

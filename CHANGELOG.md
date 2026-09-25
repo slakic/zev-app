@@ -43,6 +43,24 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.32.0] - 2026-09-25
+
+### Dodato
+
+- **Faza 2: `/admin/sesije` sada prikazuje stvarnu aktivnost, ne samo da li je cookie
+  formalno važeći.** Prati `Plans/live-sessions-admin-plan.md` §O2.
+  - `Session.lastSeenAt` — nova kolona, upisuje se sa ograničenjem (najviše jednom na 5
+    minuta po sesiji) iz `getAuthContext()`, fire-and-forget, uslov ponovljen u `where`
+    klauzuli upisa da paralelni pozivi (više provjera sesije u istom zahtjevu) ne prave
+    više od jednog stvarnog upisa po intervalu.
+  - Nova kolona "Posljednja aktivnost" (relativno vrijeme + zelena tačka za "aktivan
+    sada" — manje od 15 minuta), filter "Samo aktivni sada" i tri brojača na vrhu
+    stranice (sesije / korisnici / aktivno sada). Sortiranje promijenjeno na
+    "posljednje viđen prvi" (nulls last za sesije koje throttling još nije upisao).
+  - Testovi za throttling upisa (`shouldUpdateLastSeen`) i za `isActiveNow`/filter u
+    `tests/admin-sessions.test.ts`. Uživo provjereno.
+  - Faza 3 (ručno okončanje tuđe sesije) ostaje opciona, čeka posebno odobrenje.
+
 ## [2.31.0] - 2026-09-25
 
 ### Dodato

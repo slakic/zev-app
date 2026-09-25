@@ -1,10 +1,9 @@
 // Live super-admin view of currently logged-in sessions (Plans/live-sessions-admin-plan.md,
-// Faza 1) — read-only for now; Faza 2 adds lastSeenAt, Faza 3 adds revoke. Deliberately its
-// own service file rather than growing admin.ts or activity.ts (matches the existing
-// one-domain-per-file split).
+// Faza 1 + Faza 2) — read-only for now; Faza 3 adds revoke. Deliberately its own service file
+// rather than growing admin.ts or activity.ts (matches the existing one-domain-per-file split).
 import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin, type Actor } from "@/server/auth/guards";
-import { clearStaleSessionIps } from "@/server/auth/session";
+import { clearStaleSessionIps, ACTIVE_SESSION_THRESHOLD_MS } from "@/server/auth/session";
 import { partyDisplayName } from "@/server/services/ownership";
 
 const MAX_ROWS = 200;
@@ -17,11 +16,22 @@ export type ActiveSessionRow = {
   ipAddress: string | null;
   userAgent: string | null;
   createdAt: Date;
+  lastSeenAt: Date | null;
+  /** < ACTIVE_SESSION_THRESHOLD_MS since lastSeenAt (Plans/live-sessions-admin-plan.md §O2) —
+   *  null lastSeenAt (pre-Faza-2 session, or the throttle hasn't fired yet) reads as false,
+   *  not "unknown", since the page has nothing better to show than "not recently seen". */
+  isActiveNow: boolean;
   expiresAt: Date;
   zevId: string | null;
   zevLabel: string | null;
   zevSuspended: boolean;
   roles: string[];
+};
+
+export type ListActiveSessionsInput = {
+  /** "Samo aktivni sada" filter (plan §UI) — applied at the query level so MAX_ROWS/summary
+   *  counts reflect the filtered set, not a client-side slice of the unfiltered one. */
+  activeOnly?: boolean;
 };
 
 /**
@@ -32,16 +42,24 @@ export type ActiveSessionRow = {
  * to show who's actually got a live cookie right now, not to pre-judge which of those are
  * "interesting".
  */
-export async function listActiveSessions(actor: Actor): Promise<ActiveSessionRow[]> {
+export async function listActiveSessions(actor: Actor, input: ListActiveSessionsInput = {}): Promise<ActiveSessionRow[]> {
   requireSuperAdmin(actor);
   // Best-effort lazy cleanup on page load too, not just at login (session.ts's own call) —
   // an admin loading this page is exactly when a stale raw IP should least likely still be
   // sitting around to view.
   await clearStaleSessionIps().catch(() => {});
   const now = new Date();
+  const activeSince = new Date(now.getTime() - ACTIVE_SESSION_THRESHOLD_MS);
   const sessions = await prisma.session.findMany({
-    where: { revokedAt: null, expiresAt: { gt: now }, user: { active: true } },
-    orderBy: { createdAt: "desc" },
+    where: {
+      revokedAt: null,
+      expiresAt: { gt: now },
+      user: { active: true },
+      ...(input.activeOnly ? { lastSeenAt: { gte: activeSince } } : {}),
+    },
+    // Faza 1 sorted by createdAt; Faza 2 switches to "most recently seen first", nulls (never
+    // throttle-written yet) sorting last rather than first — plan §UI "Sortiranje".
+    orderBy: [{ lastSeenAt: { sort: "desc", nulls: "last" } }, { createdAt: "desc" }],
     take: MAX_ROWS,
     include: {
       user: { select: { id: true, email: true } },
@@ -72,6 +90,8 @@ export async function listActiveSessions(actor: Actor): Promise<ActiveSessionRow
       ipAddress: s.ipAddress,
       userAgent: s.userAgent,
       createdAt: s.createdAt,
+      lastSeenAt: s.lastSeenAt,
+      isActiveNow: s.lastSeenAt != null && now.getTime() - s.lastSeenAt.getTime() < ACTIVE_SESSION_THRESHOLD_MS,
       expiresAt: s.expiresAt,
       zevId,
       zevLabel: s.activeZev ? s.activeZev.shortName || s.activeZev.legalName : null,

@@ -1,11 +1,13 @@
-// Plans/live-sessions-admin-plan.md, Faza 1: listActiveSessions must (1) block a
+// Plans/live-sessions-admin-plan.md, Faza 1 + Faza 2: listActiveSessions must (1) block a
 // non-super-admin actor, (2) only surface sessions that are actually live right now
-// (not revoked/expired/deactivated-user), and (3) resolve zev/roles/party display name
-// correctly for a session's active ZEV. describeUserAgent is a small pure function,
-// covered separately.
+// (not revoked/expired/deactivated-user), (3) resolve zev/roles/party display name
+// correctly for a session's active ZEV, and (4, Faza 2) compute isActiveNow from
+// lastSeenAt and honor the activeOnly filter. describeUserAgent and
+// shouldUpdateLastSeen are small pure functions, covered separately.
 import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { listActiveSessions, describeUserAgent } from "@/server/services/sessions";
+import { shouldUpdateLastSeen, ACTIVE_SESSION_THRESHOLD_MS } from "@/server/auth/session";
 import { ForbiddenError } from "@/server/auth/guards";
 import { createFixture, createSuperAdminActor } from "./helpers";
 
@@ -63,6 +65,48 @@ describe("listActiveSessions (super admin, cross-tenant)", () => {
     const row = rows.find((r) => r.id === session.id);
     expect(row).toBeDefined();
     expect(row?.zevSuspended).toBe(true);
+  });
+
+  it("isActiveNow reflects lastSeenAt against the 15-minute threshold; activeOnly filters accordingly", async () => {
+    const admin = await createSuperAdminActor("as-seen");
+    const fx = await createFixture("as-seen-fx");
+    const future = new Date(Date.now() + 3600_000);
+    const recentlySeen = new Date(Date.now() - 60_000);
+    const longAgoSeen = new Date(Date.now() - ACTIVE_SESSION_THRESHOLD_MS - 60_000);
+
+    const active = await prisma.session.create({
+      data: { userId: fx.president.userId, activeZevId: fx.zev.id, expiresAt: future, lastSeenAt: recentlySeen },
+    });
+    const stale = await prisma.session.create({
+      data: { userId: fx.accountant.userId, activeZevId: fx.zev.id, expiresAt: future, lastSeenAt: longAgoSeen },
+    });
+    const neverSeen = await prisma.session.create({
+      data: { userId: fx.actorA.userId, activeZevId: fx.zev.id, expiresAt: future },
+    });
+
+    const all = await listActiveSessions(admin);
+    expect(all.find((r) => r.id === active.id)?.isActiveNow).toBe(true);
+    expect(all.find((r) => r.id === stale.id)?.isActiveNow).toBe(false);
+    expect(all.find((r) => r.id === neverSeen.id)?.isActiveNow).toBe(false);
+    expect(all.find((r) => r.id === neverSeen.id)?.lastSeenAt).toBeNull();
+    // lastSeenAt desc, nulls last.
+    const orderedIds = all.map((r) => r.id).filter((id) => [active.id, stale.id, neverSeen.id].includes(id));
+    expect(orderedIds).toEqual([active.id, stale.id, neverSeen.id]);
+
+    const activeOnly = await listActiveSessions(admin, { activeOnly: true });
+    const activeOnlyIds = activeOnly.map((r) => r.id);
+    expect(activeOnlyIds).toContain(active.id);
+    expect(activeOnlyIds).not.toContain(stale.id);
+    expect(activeOnlyIds).not.toContain(neverSeen.id);
+  });
+});
+
+describe("shouldUpdateLastSeen (Faza 2 write throttle)", () => {
+  it("writes when never seen before, skips within the throttle window, writes again once it's passed", () => {
+    const now = new Date("2026-01-01T12:00:00Z");
+    expect(shouldUpdateLastSeen(null, now)).toBe(true);
+    expect(shouldUpdateLastSeen(new Date(now.getTime() - 60_000), now)).toBe(false); // 1 min ago
+    expect(shouldUpdateLastSeen(new Date(now.getTime() - 5 * 60_000 - 1), now)).toBe(true); // just over 5 min ago
   });
 });
 

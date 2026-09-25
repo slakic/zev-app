@@ -152,7 +152,8 @@ export const SessionScalarFieldEnum = {
   ipHash: 'ipHash',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  lastSeenAt: 'lastSeenAt'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
