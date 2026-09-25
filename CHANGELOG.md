@@ -43,6 +43,27 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.33.2] - 2026-09-25
+
+### Ispravljeno
+
+- **Vrijeme zatvaranja e-glasanja i termin sjednice mogli su biti upisani 1–2h kasnije od
+  onoga što je predsjednik zaista unio u obrazac.** Isti korijenski uzrok kao 2.33.1, samo
+  suprotan smjer: svako `<input type="datetime-local">` polje (termin sjednice, "e-glasanje
+  od/do", rok glasanja po prijedlogu) se pri slanju obrasca parsiralo sa
+  `new Date(String(formData.get(...)))`, a JavaScript takav string bez vremenske zone čita
+  kao vrijeme **servera** (UTC), ne kao bosansko vrijeme — unos "14:00" bi se upisao kao
+  16:00 po bosanskom vremenu tokom ljetnog računanja vremena. Ovo je ozbiljnije od 2.33.1:
+  nije samo pogrešan prikaz, nego pogrešno upisan stvarni rok glasanja/sjednice.
+  - Novi `parseZonedDateTime()`/`formatDateTimeLocalInput()` (`src/lib/i18n/index.ts`)
+    ispravno tumače/prikazuju ova polja u bosanskoj vremenskoj zoni. Primijenjeno na sva
+    četiri pogođena polja: `src/app/(app)/skupstina/page.tsx` (termin sjednice, e-glasanje
+    od/do), `src/app/(app)/skupstina/[id]/page.tsx` (rok glasanja novog prijedloga),
+    `src/app/(app)/skupstina/prijedlog/[id]/page.tsx` (rok glasanja pri izmjeni prijedloga,
+    uključujući i ispravan prikaz postojeće vrijednosti u obrascu).
+  - Testovi u `tests/i18n-timezone.test.ts`. Uživo provjereno: uneseno "14:00" ispravno
+    upisano kao 12:00 UTC i ispravno prikazano nazad kao "14:00".
+
 ## [2.33.1] - 2026-09-25
 
 ### Ispravljeno

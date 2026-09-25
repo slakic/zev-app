@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listMeetings, createMeeting, listVotingRules, createVotingRule } from "@/server/services/meetings";
 import { parseMoneyInput } from "@/lib/money";
-import { formatDateTime, tEnum, t } from "@/lib/i18n";
+import { formatDateTime, parseZonedDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ToggleBtn, RowLink, Tabs, type ColumnSpec } from "@/components/ui";
 
 const votingRuleHeaders: ColumnSpec[] = [
@@ -30,9 +30,9 @@ async function addMeetingAction(formData: FormData) {
     type: formData.get("type") as never,
     body: body as never,
     location: (formData.get("location") as string) || null,
-    scheduledAt: formData.get("scheduledAt") ? new Date(String(formData.get("scheduledAt"))) : null,
-    eVoteOpensAt: formData.get("eVoteOpensAt") ? new Date(String(formData.get("eVoteOpensAt"))) : null,
-    eVoteClosesAt: formData.get("eVoteClosesAt") ? new Date(String(formData.get("eVoteClosesAt"))) : null,
+    scheduledAt: parseZonedDateTime(formData.get("scheduledAt") as string | null),
+    eVoteOpensAt: parseZonedDateTime(formData.get("eVoteOpensAt") as string | null),
+    eVoteClosesAt: parseZonedDateTime(formData.get("eVoteClosesAt") as string | null),
   });
   revalidatePath("/skupstina");
 }

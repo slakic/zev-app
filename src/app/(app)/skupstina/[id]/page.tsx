@@ -9,7 +9,7 @@ import { listBuildings } from "@/server/services/property";
 import { queueNotification } from "@/server/notifications/service";
 import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
-import { formatDateTime, tEnum, t } from "@/lib/i18n";
+import { formatDateTime, parseZonedDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
@@ -61,7 +61,7 @@ async function addProposalAction(formData: FormData) {
       scopeType: (formData.get("scopeType") as never) ?? "ZEV",
       buildingId: (formData.get("buildingId") as string) || null,
       votingRuleId: String(formData.get("votingRuleId")),
-      votingClosesAt: formData.get("votingClosesAt") ? new Date(String(formData.get("votingClosesAt"))) : null,
+      votingClosesAt: parseZonedDateTime(formData.get("votingClosesAt") as string | null),
     });
   } catch (e) {
     redirect(`/skupstina/${meetingId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);

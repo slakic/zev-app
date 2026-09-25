@@ -12,19 +12,8 @@ import { serializeResult } from "@/server/engines/voting";
 import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { formatWeight, parseMoneyInput } from "@/lib/money";
-import { formatDateTime, tEnum, t } from "@/lib/i18n";
+import { formatDateTime, formatDateTimeLocalInput, parseZonedDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
-
-/** `<input type="datetime-local">` pre-fill for a stored Date — the inverse of how the
- *  proposal-creation form's own `votingClosesAt` already gets parsed on submit
- *  (`new Date(String(formData.get("votingClosesAt")))`, which reads a timezone-less
- *  string as local time). Using the same local getters here keeps editing-without-
- *  touching-the-field a no-op round trip, whatever the server's local timezone is. */
-function toDatetimeLocal(d: Date | null | undefined): string {
-  if (!d) return "";
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 const voterHeaders: ColumnSpec[] = [
   { label: "Vlasnik", priority: "primary" },
@@ -157,7 +146,7 @@ async function updateDraftAction(formData: FormData) {
       scopeType: (formData.get("scopeType") as never) ?? "ZEV",
       buildingId: (formData.get("buildingId") as string) || null,
       votingRuleId: String(formData.get("votingRuleId")),
-      votingClosesAt: formData.get("votingClosesAt") ? new Date(String(formData.get("votingClosesAt"))) : null,
+      votingClosesAt: parseZonedDateTime(formData.get("votingClosesAt") as string | null),
     });
   } catch (e) {
     redirect(`/skupstina/prijedlog/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
@@ -399,7 +388,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                   </select>
                 </Field>
                 <Field label="Glasanje otvoreno do">
-                  <input name="votingClosesAt" type="datetime-local" defaultValue={toDatetimeLocal(p.votingClosesAt)} className={inputCls} />
+                  <input name="votingClosesAt" type="datetime-local" defaultValue={formatDateTimeLocalInput(p.votingClosesAt)} className={inputCls} />
                 </Field>
                 <div className="sm:col-span-2"><SubmitBtn>Sačuvaj izmjene</SubmitBtn></div>
               </form>

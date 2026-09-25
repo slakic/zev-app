@@ -121,6 +121,39 @@ export function endOfDay(dateStr: string): Date {
 }
 
 /**
+ * Parses a `<input type="datetime-local">` value ("YYYY-MM-DDTHH:mm", no timezone component
+ * per the HTML spec) as wall-clock time in TIME_ZONE (Bosnia), returning the correct UTC
+ * instant. NOT the same as `new Date(value)`, which ECMA-262 defines as *server-local* time
+ * for a timezone-less datetime string — on this app's servers (this Docker container, Vercel)
+ * that's UTC, so a president typing "14:00" meaning 14:00 Bosnia time would silently have it
+ * stored as 14:00 UTC (16:00 Bosnia, during CEST) — a real governance bug, not just a display
+ * one, since it actually shifts a meeting/e-vote deadline by however many hours Bosnia is
+ * ahead of UTC. Returns null for an empty/unparseable value, matching how callers already
+ * treat an empty optional datetime-local field as "no value".
+ */
+export function parseZonedDateTime(value: string | null | undefined): Date | null {
+  if (!value) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/.exec(value);
+  if (!m) return null;
+  const [, y, mo, d, hh, mi, ss] = m;
+  const utcGuess = new Date(Date.UTC(Number(y), Number(mo) - 1, Number(d), Number(hh), Number(mi), Number(ss ?? "0")));
+  return new Date(utcGuess.getTime() - tzOffsetMs(utcGuess, TIME_ZONE));
+}
+
+/**
+ * The inverse of parseZonedDateTime — pre-fills a `<input type="datetime-local">` with a
+ * stored instant's Bosnia wall-clock value, so loading a form and resubmitting without
+ * touching the field is a true no-op round trip (not the case before this fix: the previous
+ * `toDatetimeLocal` read the server's own local getters, same bug as formatDate/formatDateTime).
+ */
+export function formatDateTimeLocalInput(d: Date | string | null | undefined): string {
+  if (!d) return "";
+  const date = typeof d === "string" ? new Date(d) : d;
+  const { year, month, day, hour, minute } = zonedParts(date);
+  return `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}`;
+}
+
+/**
  * Coarse relative time for a future or past instant, e.g. "za 7h", "prije 2 min" — used by
  * /admin/sesije for "Ističe"/"Posljednja aktivnost" (Plans/live-sessions-admin-plan.md), not
  * a general-purpose i18n primitive (Serbian phrasing is hardcoded, not dictionary-driven,

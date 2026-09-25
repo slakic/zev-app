@@ -6,7 +6,7 @@
 // CEST/CET-converted values, so they'd fail under the old implementation regardless of
 // whatever timezone the test process itself happens to run in.
 import { describe, it, expect } from "vitest";
-import { formatDate, formatDateTime, endOfDay } from "@/lib/i18n";
+import { formatDate, formatDateTime, endOfDay, parseZonedDateTime, formatDateTimeLocalInput } from "@/lib/i18n";
 
 describe("formatDate / formatDateTime (Europe/Sarajevo, not server-local)", () => {
   it("converts a UTC instant to Bosnia wall-clock time during CEST (UTC+2)", () => {
@@ -49,5 +49,29 @@ describe("endOfDay (Europe/Sarajevo, not server-local)", () => {
     // within the correct Sarajevo-day boundary.
     const recordedAt = new Date("2026-09-25T20:00:00.000Z");
     expect(recordedAt.getTime()).toBeLessThanOrEqual(endOfDay("2026-09-25").getTime());
+  });
+});
+
+describe("parseZonedDateTime (datetime-local form fields, not server-local)", () => {
+  it("interprets a datetime-local value as Bosnia wall-clock time during CEST, not server-local", () => {
+    // A president typing "14:00" during CEST means 14:00 Sarajevo = 12:00 UTC — NOT what
+    // `new Date("2026-09-25T14:00")` would give on a UTC server (14:00 UTC, 2h later than
+    // intended). This is the actual governance bug: a mis-stored e-vote close time.
+    expect(parseZonedDateTime("2026-09-25T14:00")?.toISOString()).toBe("2026-09-25T12:00:00.000Z");
+  });
+
+  it("interprets a datetime-local value as Bosnia wall-clock time during CET", () => {
+    expect(parseZonedDateTime("2026-01-15T09:30")?.toISOString()).toBe("2026-01-15T08:30:00.000Z");
+  });
+
+  it("returns null for an empty or missing value", () => {
+    expect(parseZonedDateTime("")).toBeNull();
+    expect(parseZonedDateTime(null)).toBeNull();
+    expect(parseZonedDateTime(undefined)).toBeNull();
+  });
+
+  it("round-trips with formatDateTimeLocalInput (load-and-resubmit-unchanged is a no-op)", () => {
+    const stored = parseZonedDateTime("2026-09-25T14:00")!;
+    expect(formatDateTimeLocalInput(stored)).toBe("2026-09-25T14:00");
   });
 });
