@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.33.0] - 2026-09-25
+
+### Dodato
+
+- **Faza 3 (posljednja): super admin sada može odjaviti tuđu sesiju direktno sa
+  `/admin/sesije`.** Prati `Plans/live-sessions-admin-plan.md` §O3/§O7 — ovim je plan u
+  potpunosti završen (sve tri faze).
+  - Novi `revokeSession(actor, sessionId)` postavlja `revokedAt` i briše `ipAddress`
+    (isti obrazac kao svaki drugi opoziv — odjava, reset lozinke, deaktivacija). Odbija
+    opoziv sopstvene trenutne sesije — za to i dalje postoji "Odjava".
+    Ne sprečava ponovnu prijavu (to radi jedino deaktivacija naloga), a UI to jasno kaže.
+  - Dugme "Odjavi" u novoj koloni "Radnje" traži potvrdu (`ConfirmAction`), sopstveni red
+    umjesto toga prikazuje "Vi (ova sesija)".
+  - Akcija se auditira kao `admin.session.revoke` (bez IP-a), pod tenantom **kome sesija
+    koja se opoziva pripada** — ne pod trenutno aktivnim ZEV-om super admina koji
+    izvršava akciju (bag uočen uživo tokom testiranja i ispravljen prije puštanja, sa
+    regresionim testom).
+  - Testovi u `tests/admin-sessions.test.ts`. Uživo provjereno.
+
 ## [2.32.0] - 2026-09-25
 
 ### Dodato

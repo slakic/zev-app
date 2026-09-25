@@ -1,10 +1,11 @@
 // Live super-admin view of currently logged-in sessions (Plans/live-sessions-admin-plan.md,
-// Faza 1 + Faza 2) — read-only for now; Faza 3 adds revoke. Deliberately its own service file
-// rather than growing admin.ts or activity.ts (matches the existing one-domain-per-file split).
+// Faza 1 + Faza 2 + Faza 3). Deliberately its own service file rather than growing admin.ts
+// or activity.ts (matches the existing one-domain-per-file split).
 import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin, type Actor } from "@/server/auth/guards";
 import { clearStaleSessionIps, ACTIVE_SESSION_THRESHOLD_MS } from "@/server/auth/session";
 import { partyDisplayName } from "@/server/services/ownership";
+import { audit } from "@/server/audit";
 
 const MAX_ROWS = 200;
 
@@ -99,6 +100,40 @@ export async function listActiveSessions(actor: Actor, input: ListActiveSessions
       roles,
     };
   });
+}
+
+/**
+ * Faza 3 (Plans/live-sessions-admin-plan.md §O3, approved) — ends one specific session
+ * immediately: sets revokedAt and clears ipAddress (same as every other revoke path —
+ * destroySession, resetPassword, deactivateUser). Deliberately refuses to revoke the caller's
+ * own current session (actor.sessionId) — "Odjava" already exists for that, and a super admin
+ * accidentally locking themselves out mid-review is exactly the mistake this guards against.
+ * Does NOT prevent the user from logging back in (only deactivateUser does that) — the caller
+ * (the confirm dialog in /admin/sesije) must say so, per the plan.
+ */
+export async function revokeSession(actor: Actor, sessionId: string): Promise<void> {
+  requireSuperAdmin(actor);
+  if (actor.sessionId === sessionId) {
+    throw new Error("Ne možete opozvati sopstvenu trenutnu sesiju — za to koristite Odjavu.");
+  }
+  const session = await prisma.session.findUniqueOrThrow({ where: { id: sessionId }, select: { userId: true, activeZevId: true } });
+  await prisma.session.update({ where: { id: sessionId }, data: { revokedAt: new Date(), ipAddress: null } });
+  // zevId is explicitly overridden to the TARGET session's own tenant — same pattern as
+  // admin.account.create/admin.tenant.activate (admin.ts) — rather than left to audit()'s
+  // default of `actor.zevId`, which is the acting super admin's own incidentally-active
+  // tenant and has nothing to do with whose session this actually is (a super admin who is
+  // also a president somewhere would otherwise misattribute this event to their own ZEV).
+  // No ipAddress in `after` — the target session's own raw IP was never meant to survive
+  // into the append-only audit trail (plan §O1/§O7).
+  await audit(
+    { ...actor, zevId: session.activeZevId },
+    {
+      action: "admin.session.revoke",
+      targetType: "Session",
+      targetId: sessionId,
+      after: { userId: session.userId, sessionId },
+    }
+  );
 }
 
 /**

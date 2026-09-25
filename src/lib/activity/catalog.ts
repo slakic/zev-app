@@ -117,6 +117,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "admin.membership.grant": "SYSTEM",
   "admin.membership.grant_self": "SYSTEM",
   "admin.membership.revoke": "SYSTEM",
+  "admin.session.revoke": "SYSTEM",
   "admin.tenant.activate": "SYSTEM",
   "admin.tenant.create": "SYSTEM",
   "admin.tenant.suspend": "SYSTEM",

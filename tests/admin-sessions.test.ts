@@ -1,12 +1,13 @@
-// Plans/live-sessions-admin-plan.md, Faza 1 + Faza 2: listActiveSessions must (1) block a
-// non-super-admin actor, (2) only surface sessions that are actually live right now
-// (not revoked/expired/deactivated-user), (3) resolve zev/roles/party display name
-// correctly for a session's active ZEV, and (4, Faza 2) compute isActiveNow from
-// lastSeenAt and honor the activeOnly filter. describeUserAgent and
-// shouldUpdateLastSeen are small pure functions, covered separately.
+// Plans/live-sessions-admin-plan.md, Faza 1 + Faza 2 + Faza 3: listActiveSessions must
+// (1) block a non-super-admin actor, (2) only surface sessions that are actually live right
+// now (not revoked/expired/deactivated-user), (3) resolve zev/roles/party display name
+// correctly for a session's active ZEV, and (4, Faza 2) compute isActiveNow from lastSeenAt
+// and honor the activeOnly filter. revokeSession (Faza 3) must refuse to revoke the caller's
+// own current session, actually revoke + clear ipAddress on another one, and audit it.
+// describeUserAgent and shouldUpdateLastSeen are small pure functions, covered separately.
 import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { listActiveSessions, describeUserAgent } from "@/server/services/sessions";
+import { listActiveSessions, revokeSession, describeUserAgent } from "@/server/services/sessions";
 import { shouldUpdateLastSeen, ACTIVE_SESSION_THRESHOLD_MS } from "@/server/auth/session";
 import { ForbiddenError } from "@/server/auth/guards";
 import { createFixture, createSuperAdminActor } from "./helpers";
@@ -98,6 +99,70 @@ describe("listActiveSessions (super admin, cross-tenant)", () => {
     expect(activeOnlyIds).toContain(active.id);
     expect(activeOnlyIds).not.toContain(stale.id);
     expect(activeOnlyIds).not.toContain(neverSeen.id);
+  });
+});
+
+describe("revokeSession (Faza 3)", () => {
+  it("requireSuperAdmin blocks a non-super-admin actor", async () => {
+    const fx = await createFixture("rs-guard");
+    const session = await prisma.session.create({
+      data: { userId: fx.actorA.userId, expiresAt: new Date(Date.now() + 3600_000) },
+    });
+    await expect(revokeSession(fx.president, session.id)).rejects.toThrow(ForbiddenError);
+  });
+
+  it("refuses to revoke the caller's own current session", async () => {
+    const admin = await createSuperAdminActor("rs-self");
+    const ownSession = await prisma.session.create({
+      data: { userId: admin.userId, expiresAt: new Date(Date.now() + 3600_000) },
+    });
+    const actorWithSession = { ...admin, sessionId: ownSession.id };
+    await expect(revokeSession(actorWithSession, ownSession.id)).rejects.toThrow(/sopstvenu/);
+    const after = await prisma.session.findUniqueOrThrow({ where: { id: ownSession.id } });
+    expect(after.revokedAt).toBeNull();
+  });
+
+  it("revokes another user's session, clears ipAddress, and audits admin.session.revoke", async () => {
+    const admin = await createSuperAdminActor("rs-other");
+    const fx = await createFixture("rs-other-fx");
+    const target = await prisma.session.create({
+      data: { userId: fx.actorA.userId, activeZevId: fx.zev.id, expiresAt: new Date(Date.now() + 3600_000), ipAddress: "198.51.100.9" },
+    });
+
+    await revokeSession(admin, target.id);
+
+    const after = await prisma.session.findUniqueOrThrow({ where: { id: target.id } });
+    expect(after.revokedAt).not.toBeNull();
+    expect(after.ipAddress).toBeNull();
+
+    const event = await prisma.auditEvent.findFirstOrThrow({
+      where: { action: "admin.session.revoke", targetId: target.id },
+      orderBy: { createdAt: "desc" },
+    });
+    expect(event.targetType).toBe("Session");
+    expect(event.zevId).toBe(fx.zev.id);
+    expect(event.after).toMatchObject({ userId: fx.actorA.userId, sessionId: target.id });
+  });
+
+  it("audits under the TARGET session's own tenant, not the acting admin's own active tenant (e.g. a super admin who is also president elsewhere)", async () => {
+    const adminHome = await createFixture("rs-admin-home");
+    const otherTenant = await createFixture("rs-other-tenant");
+    // A super admin who also happens to hold a Membership/active ZEV of their own — the
+    // scenario that surfaced this bug live: audit()'s default zevId comes from actor.zevId,
+    // which is this admin's own tenant, not the tenant of whichever session they're revoking.
+    const adminActor = { ...adminHome.president, isSuperAdmin: true };
+    const target = await prisma.session.create({
+      data: { userId: otherTenant.actorA.userId, activeZevId: otherTenant.zev.id, expiresAt: new Date(Date.now() + 3600_000) },
+    });
+
+    await revokeSession(adminActor, target.id);
+
+    const event = await prisma.auditEvent.findFirstOrThrow({
+      where: { action: "admin.session.revoke", targetId: target.id },
+      orderBy: { createdAt: "desc" },
+    });
+    expect(event.zevId).toBe(otherTenant.zev.id);
+    expect(event.zevId).not.toBe(adminHome.zev.id);
   });
 });
 

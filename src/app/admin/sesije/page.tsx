@@ -1,7 +1,9 @@
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireSuperAdminActor } from "@/server/actor";
-import { listActiveSessions, describeUserAgent } from "@/server/services/sessions";
+import { listActiveSessions, revokeSession, describeUserAgent } from "@/server/services/sessions";
 import { tEnum, formatDateTime, formatRelativeTime } from "@/lib/i18n";
-import { PageHeader, Card, Stat, Table, Td, StatusBadge, FilterBar, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Stat, Table, Td, StatusBadge, FilterBar, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
 import { LiveRefresh } from "@/components/live-refresh";
 
 const sessionHeaders: ColumnSpec[] = [
@@ -12,19 +14,31 @@ const sessionHeaders: ColumnSpec[] = [
   { label: "Prijava", nowrap: true },
   { label: "Posljednja aktivnost", nowrap: true },
   { label: "Ističe", nowrap: true },
+  { label: "Radnje" },
 ];
 
+async function revokeAction(formData: FormData) {
+  "use server";
+  const actor = await requireSuperAdminActor();
+  const sessionId = String(formData.get("sessionId") ?? "");
+  try {
+    await revokeSession(actor, sessionId);
+  } catch (e) {
+    redirect(`/admin/sesije?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath("/admin/sesije");
+  redirect(`/admin/sesije?msg=${encodeURIComponent("Sesija je odjavljena.")}`);
+}
+
 /**
- * Super-admin, read-only live view of currently logged-in sessions (Plans/
- * live-sessions-admin-plan.md, Faza 1 + Faza 2) — same page pattern as /admin/aktivnosti
- * (guard, layout, Card+Table), auto-refreshing via <LiveRefresh /> rather than a manual
- * reload. Faza 3 would add a "Radnje" revoke column — deliberately not stubbed out here
- * ahead of being approved.
+ * Super-admin, live view of currently logged-in sessions (Plans/live-sessions-admin-plan.md,
+ * Faza 1 + Faza 2 + Faza 3) — same page pattern as /admin/aktivnosti (guard, layout,
+ * Card+Table), auto-refreshing via <LiveRefresh /> rather than a manual reload.
  */
 export default async function AdminSessionsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ aktivni?: string }>;
+  searchParams: Promise<{ aktivni?: string; err?: string; msg?: string }>;
 }) {
   const actor = await requireSuperAdminActor();
   const sp = await searchParams;
@@ -39,6 +53,7 @@ export default async function AdminSessionsPage({
         title="Sesije — trenutno prijavljeni korisnici"
         subtitle="Uživo, do 200 najnovijih aktivnih sesija na cijeloj platformi"
       />
+      <Flash err={sp.err} msg={sp.msg} />
       <div className="mb-4 grid grid-cols-3 gap-3">
         <Stat label="Sesije" value={String(sessions.length)} />
         <Stat label="Korisnici" value={String(distinctUserCount)} />
@@ -92,6 +107,27 @@ export default async function AdminSessionsPage({
                 </span>
               </Td>
               <Td className="text-xs">{formatRelativeTime(s.expiresAt)}</Td>
+              <Td>
+                {s.id === actor.sessionId ? (
+                  <span className="text-xs text-slate-400">Vi (ova sesija)</span>
+                ) : (
+                  <ConfirmAction
+                    trigger="Odjavi"
+                    triggerVariant="caution"
+                    title="Odjava ove sesije je trenutna"
+                    body={
+                      <p className="text-sm text-amber-900">
+                        Korisnik {s.displayName} će odmah biti odjavljen sa ovog uređaja. Ovo ne sprečava ponovnu prijavu —
+                        za trajno onemogućavanje pristupa koristite deaktivaciju naloga.
+                      </p>
+                    }
+                    confirmLabel="Odjavi sesiju"
+                    confirmVariant="caution"
+                    action={revokeAction}
+                    hiddenFields={{ sessionId: s.id }}
+                  />
+                )}
+              </Td>
             </tr>
           ))}
         </Table>
