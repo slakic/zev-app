@@ -43,6 +43,22 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.34.0] - 2026-09-25
+
+### Dodato
+
+- **Korisničko uputstvo** (`docs/korisnicko-uputstvo.html`) — samostalna, statička HTML
+  stranica sa kompletnim uputstvom za predsjednike ZEV, računovođe i vlasnike, plus kratko
+  poglavlje o platformskom (Super admin) dijelu i rječnik pojmova. 15 poglavlja, generisano
+  istraživanjem cijele aplikacije (Opus 5.5), sa sadržajem/navigacijom sa strane i dugmetom
+  **Sačuvaj kao PDF** (štampa pregledača, bez ijedne spoljne biblioteke — radi i bez
+  interneta, direktnim otvaranjem fajla). Tekst koristi tačnu terminologiju sa stvarnih
+  ekrana (nazivi dugmadi, polja, statusa) iz `src/lib/i18n/sr-Latn.ts` i stranica aplikacije,
+  ne parafraze.
+  - Ubuduće se ažurira uz svaku izmjenu koja mijenja nešto što korisnik vidi ili radi
+    (novi ekran, izmijenjen tok, preimenovano dugme/polje, nova mogućnost neke role) —
+    isto kao CHANGELOG.md, ali ograničeno na ono što je relevantno za sam vodič.
+
 ## [2.33.2] - 2026-09-25
 
 ### Ispravljeno

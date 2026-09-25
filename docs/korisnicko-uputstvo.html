@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZEV upravnik — korisničko uputstvo</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-ink: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --ink: #0f172a;
+    --muted: #475569;
+    --border: #e2e8f0;
+    --bg: #ffffff;
+    --panel: #f8fafc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  a { color: var(--primary-ink); }
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 24px 18px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .brand .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--primary); }
+  .brand strong { font-size: 15px; }
+  .sidebar .subtitle { font-size: 12.5px; color: var(--muted); margin: 0 0 18px; }
+  .print-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    width: 100%; justify-content: center;
+    background: var(--primary); color: white; border: none;
+    padding: 9px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; margin-bottom: 20px;
+  }
+  .print-btn:hover { background: var(--primary-ink); }
+  nav.toc { font-size: 13.5px; }
+  nav.toc a {
+    display: block; text-decoration: none; color: var(--ink);
+    padding: 5px 8px; border-radius: 6px;
+  }
+  nav.toc a:hover { background: var(--primary-soft); color: var(--primary-ink); }
+  nav.toc a.lvl-1 { font-weight: 600; margin-top: 10px; }
+  nav.toc a.lvl-2 { padding-left: 20px; color: var(--muted); }
+  nav.toc a.lvl-3 { padding-left: 32px; color: var(--muted); font-size: 12.5px; }
+  nav.toc a.lvl-4 { display: none; }
+
+  main {
+    flex: 1;
+    max-width: 860px;
+    padding: 48px 56px 80px;
+  }
+  main h1 { font-size: 26px; margin: 48px 0 14px; padding-top: 8px; border-top: 1px solid var(--border); }
+  main h1:first-of-type { border-top: none; margin-top: 0; }
+  main h2 { font-size: 19px; margin: 30px 0 10px; color: var(--primary-ink); }
+  main h3 { font-size: 15.5px; margin: 22px 0 8px; }
+  main h4 { font-size: 14px; margin: 16px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+  main p { margin: 0 0 12px; color: #1e293b; }
+  main ul, main ol { margin: 0 0 14px; padding-left: 22px; color: #1e293b; }
+  main li { margin-bottom: 5px; }
+  main blockquote {
+    margin: 14px 0; padding: 10px 14px; background: var(--primary-soft);
+    border-left: 3px solid var(--primary); border-radius: 0 8px 8px 0; color: #1e3a8a;
+    font-size: 13.5px;
+  }
+  main blockquote p { margin: 0; color: inherit; }
+  main code {
+    background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 90%;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  main hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .table-wrap { overflow-x: auto; margin: 0 0 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--panel); font-weight: 600; }
+
+  .cover {
+    padding: 8px 0 32px;
+  }
+  .cover .badge {
+    display: inline-block; background: var(--primary-soft); color: var(--primary-ink);
+    font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .cover h1 { border: none; margin: 0 0 8px; font-size: 32px; padding: 0; }
+  .cover .meta { color: var(--muted); font-size: 13.5px; }
+
+  @media (max-width: 860px) {
+    .layout { display: block; }
+    .sidebar { position: static; width: auto; height: auto; }
+    main { max-width: none; padding: 28px 20px 60px; }
+  }
+
+  @media print {
+    .sidebar { display: none; }
+    .layout { display: block; }
+    main { max-width: none; padding: 0; }
+    main h1 { break-before: page; }
+    main h1:first-of-type { break-before: auto; }
+    a { color: inherit; text-decoration: none; }
+    body { font-size: 12px; }
+    main h1 { font-size: 22px; }
+    main h2 { font-size: 16px; }
+    main h3 { font-size: 13.5px; }
+    .table-wrap, table, tr, blockquote { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span><strong>ZEV upravnik</strong></div>
+    <p class="subtitle">Korisničko uputstvo</p>
+    <button class="print-btn" onclick="window.print()">⭳ Sačuvaj kao PDF</button>
+    <nav class="toc">
+      <a class="lvl-1" href="#zev-upravnik-korisnicko-uputstvo">ZEV upravnik — korisničko uputstvo</a>
+      <a class="lvl-2" href="#sadrzaj">Sadržaj</a>
+      <a class="lvl-2" href="#1-uvod">1. Uvod</a>
+      <a class="lvl-3" href="#11-cemu-sluzi-aplikacija">1.1 Čemu služi aplikacija</a>
+      <a class="lvl-3" href="#12-uloge">1.2 Uloge</a>
+      <a class="lvl-3" href="#13-prijava">1.3 Prijava</a>
+      <a class="lvl-3" href="#14-zaboravljena-lozinka">1.4 Zaboravljena lozinka</a>
+      <a class="lvl-3" href="#15-izgled-aplikacije-i-odjava">1.5 Izgled aplikacije i odjava</a>
+      <a class="lvl-3" href="#16-ako-imate-pristup-u-vise-zev-ova">1.6 Ako imate pristup u više ZEV-ova</a>
+      <a class="lvl-3" href="#17-oznaka-super-admin">1.7 Oznaka „Super admin"</a>
+      <a class="lvl-3" href="#18-kako-rade-dugmad-i-obrasci">1.8 Kako rade dugmad i obrasci</a>
+      <a class="lvl-3" href="#19-prvo-postavljanje-preporuceni-redoslijed-za-predsjednika">1.9 Prvo postavljanje (preporučeni redoslijed za predsjednika)</a>
+      <a class="lvl-2" href="#2-pocetna">2. Početna</a>
+      <a class="lvl-3" href="#21-predsjednik-i-racunovodja">2.1 Predsjednik i računovođa</a>
+      <a class="lvl-3" href="#22-vlasnik">2.2 Vlasnik</a>
+      <a class="lvl-2" href="#3-zgrade-i-jedinice">3. Zgrade i jedinice</a>
+      <a class="lvl-3" href="#31-tab-zgrade">3.1 Tab „Zgrade"</a>
+      <a class="lvl-3" href="#32-tab-ulazi">3.2 Tab „Ulazi"</a>
+      <a class="lvl-3" href="#33-tab-posebni-dijelovi">3.3 Tab „Posebni dijelovi"</a>
+      <a class="lvl-3" href="#34-tab-zajednicki-dijelovi">3.4 Tab „Zajednički dijelovi"</a>
+      <a class="lvl-2" href="#4-vlasnici-i-korisnici">4. Vlasnici i korisnici</a>
+      <a class="lvl-3" href="#41-tab-lica">4.1 Tab „Lica"</a>
+      <a class="lvl-3" href="#42-stranica-jednog-lica">4.2 Stranica jednog lica</a>
+      <a class="lvl-3" href="#43-tab-vlasnistvo-i-koristenje-predsjednik">4.3 Tab „Vlasništvo i korištenje" (predsjednik)</a>
+      <a class="lvl-3" href="#44-tab-punomoci-predsjednik">4.4 Tab „Punomoći" (predsjednik)</a>
+      <a class="lvl-3" href="#45-owner-prodaje-stan-tipican-tok">4.5 Owner prodaje stan — tipičan tok</a>
+      <a class="lvl-3" href="#46-saglasnost-za-elektronsko-glasanje">4.6 Saglasnost za elektronsko glasanje</a>
+      <a class="lvl-2" href="#5-organi-zev">5. Organi ZEV</a>
+      <a class="lvl-3" href="#51-tab-aktuelni-organi">5.1 Tab „Aktuelni organi"</a>
+      <a class="lvl-3" href="#52-tab-istorija-mandata">5.2 Tab „Istorija mandata"</a>
+      <a class="lvl-2" href="#6-skupstina-i-odluke">6. Skupština i odluke</a>
+      <a class="lvl-3" href="#61-glavni-ekran-sjednice-i-pravila-glasanja">6.1 Glavni ekran: sjednice i pravila glasanja</a>
+      <a class="lvl-3" href="#62-pravila-glasanja">6.2 Pravila glasanja</a>
+      <a class="lvl-3" href="#63-pravljenje-sjednice">6.3 Pravljenje sjednice</a>
+      <a class="lvl-3" href="#64-stranica-sjednice">6.4 Stranica sjednice</a>
+      <a class="lvl-3" href="#65-pravljenje-prijedloga-odluke">6.5 Pravljenje prijedloga odluke</a>
+      <a class="lvl-3" href="#66-stranica-prijedloga-predsjednik-i-racunovodja">6.6 Stranica prijedloga (predsjednik i računovođa)</a>
+      <a class="lvl-3" href="#67-tok-glasanja-o-prijedlogu-predsjednik">6.7 Tok glasanja o prijedlogu (predsjednik)</a>
+      <a class="lvl-3" href="#68-licni-linkovi-statusi-ponovno-izdavanje-i-opoziv">6.8 Lični linkovi: statusi, ponovno izdavanje i opoziv</a>
+      <a class="lvl-3" href="#69-sjednica-uzivo-vodi-sjednicu-uzivo">6.9 Sjednica uživo („Vodi sjednicu uživo")</a>
+      <a class="lvl-3" href="#610-kako-vlasnik-glasa-elektronski">6.10 Kako vlasnik glasa elektronski</a>
+      <a class="lvl-3" href="#611-sta-vlasnik-vidi-u-modulu-skupstina">6.11 Šta vlasnik vidi u modulu Skupština</a>
+      <a class="lvl-3" href="#612-kratak-pregled-cijelog-toka-sjednice-predsjednik">6.12 Kratak pregled cijelog toka sjednice (predsjednik)</a>
+      <a class="lvl-2" href="#7-fakture-i-uplate">7. Fakture i uplate</a>
+      <a class="lvl-3" href="#71-stavke-naknada">7.1 Stavke naknada</a>
+      <a class="lvl-3" href="#72-serija-faktura-od-nacrta-do-izdavanja-racunovodja">7.2 Serija faktura: od nacrta do izdavanja (računovođa)</a>
+      <a class="lvl-3" href="#73-tab-fakture">7.3 Tab „Fakture"</a>
+      <a class="lvl-3" href="#74-stranica-fakture">7.4 Stranica fakture</a>
+      <a class="lvl-3" href="#75-uplate-rucni-unos-racunovodja">7.5 Uplate: ručni unos (računovođa)</a>
+      <a class="lvl-3" href="#76-uvoz-bankovnog-izvoda">7.6 Uvoz bankovnog izvoda</a>
+      <a class="lvl-3" href="#77-uparivanje-uplata-sa-fakturama">7.7 Uparivanje uplata sa fakturama</a>
+      <a class="lvl-3" href="#78-sta-vlasnik-vidi">7.8 Šta vlasnik vidi</a>
+      <a class="lvl-2" href="#8-troskovi">8. Troškovi</a>
+      <a class="lvl-3" href="#81-tab-dobavljaci">8.1 Tab „Dobavljači"</a>
+      <a class="lvl-3" href="#82-tab-troskovi">8.2 Tab „Troškovi"</a>
+      <a class="lvl-2" href="#9-planovi">9. Planovi</a>
+      <a class="lvl-3" href="#91-lista-planova">9.1 Lista planova</a>
+      <a class="lvl-3" href="#92-investicioni-projekti">9.2 Investicioni projekti</a>
+      <a class="lvl-3" href="#93-stranica-plana-i-stavke">9.3 Stranica plana i stavke</a>
+      <a class="lvl-3" href="#94-usvajanje-plana">9.4 Usvajanje plana</a>
+      <a class="lvl-3" href="#95-plan-vs-realizacija">9.5 Plan vs. realizacija</a>
+      <a class="lvl-2" href="#10-odrzavanje">10. Održavanje</a>
+      <a class="lvl-3" href="#101-prijava-kvara-svi-korisnici">10.1 Prijava kvara (svi korisnici)</a>
+      <a class="lvl-3" href="#102-lista-prijava">10.2 Lista prijava</a>
+      <a class="lvl-3" href="#103-stranica-prijave">10.3 Stranica prijave</a>
+      <a class="lvl-3" href="#104-redovan-tok-rjesavanja-predsjednik">10.4 Redovan tok rješavanja (predsjednik)</a>
+      <a class="lvl-3" href="#105-hitna-intervencija-hitni-put">10.5 Hitna intervencija („hitni put")</a>
+      <a class="lvl-2" href="#11-dokumenti">11. Dokumenti</a>
+      <a class="lvl-3" href="#111-generisani-dokumenti">11.1 Generisani dokumenti</a>
+      <a class="lvl-3" href="#112-otpremljeni-dokumenti-predsjednik-i-racunovodja">11.2 Otpremljeni dokumenti (predsjednik i računovođa)</a>
+      <a class="lvl-2" href="#12-izvjestaji">12. Izvještaji</a>
+      <a class="lvl-3" href="#121-tab-dugovanja">12.1 Tab „Dugovanja"</a>
+      <a class="lvl-3" href="#122-tab-novac">12.2 Tab „Novac"</a>
+      <a class="lvl-3" href="#123-tab-fakture">12.3 Tab „Fakture"</a>
+      <a class="lvl-3" href="#124-tab-pregledi">12.4 Tab „Pregledi"</a>
+      <a class="lvl-2" href="#13-podesavanja">13. Podešavanja</a>
+      <a class="lvl-3" href="#131-moji-podaci">13.1 Moji podaci</a>
+      <a class="lvl-3" href="#132-tab-zev">13.2 Tab „ZEV"</a>
+      <a class="lvl-3" href="#133-tab-parametri">13.3 Tab „Parametri"</a>
+      <a class="lvl-3" href="#134-poslate-poruke">13.4 Poslate poruke</a>
+      <a class="lvl-3" href="#135-aktivnosti-predsjednik">13.5 Aktivnosti (predsjednik)</a>
+      <a class="lvl-3" href="#136-revizorski-trag-predsjednik-i-racunovodja">13.6 Revizorski trag (predsjednik i računovođa)</a>
+      <a class="lvl-2" href="#14-napredni-pregled-platforma-super-admin">14. Napredni pregled: platforma (Super admin)</a>
+      <a class="lvl-3" href="#141-zev-nalozi">14.1 ZEV nalozi</a>
+      <a class="lvl-3" href="#142-aktivnosti-svi-zev-nalozi">14.2 Aktivnosti — svi ZEV nalozi</a>
+      <a class="lvl-3" href="#143-sesije-trenutno-prijavljeni-korisnici">14.3 Sesije — trenutno prijavljeni korisnici</a>
+      <a class="lvl-2" href="#15-rjecnik-pojmova">15. Rječnik pojmova</a>
+    </nav>
+  </aside>
+  <main>
+<h1 id="zev-upravnik-korisnicko-uputstvo">ZEV upravnik — korisničko uputstvo</h1>
+<p><em>Uputstvo za predsjednike ZEV, računovođe i etažne vlasnike</em></p>
+<hr>
+<h2 id="sadrzaj">Sadržaj</h2>
+<ol><li>Uvod</li><li>Početna</li><li>Zgrade i jedinice</li><li>Vlasnici i korisnici</li><li>Organi ZEV</li><li>Skupština i odluke</li><li>Fakture i uplate</li><li>Troškovi</li><li>Planovi</li><li>Održavanje</li><li>Dokumenti</li><li>Izvještaji</li><li>Podešavanja (uz Poslate poruke, Aktivnosti i Revizorski trag)</li><li>Napredni pregled: platforma (Super admin)</li><li>Rječnik pojmova</li></ol>
+<hr>
+<h2 id="1-uvod">1. Uvod</h2>
+<h3 id="11-cemu-sluzi-aplikacija">1.1 Čemu služi aplikacija</h3>
+<p><strong>ZEV upravnik</strong> je aplikacija za vođenje jedne zajednice etažnih vlasnika (ZEV) u Republici Srpskoj, iz dana u dan i kroz cijelu godinu. Na jednom mjestu vodite:</p>
+<ul><li>zgrade, ulaze, stanove, poslovne prostore, garaže i zajedničke dijelove zgrade,</li><li>vlasnike, suvlasnike, stanare, zakupce i punomoćnike,</li><li>organe ZEV: predsjednika, računovođu i upravni odbor,</li><li>sjednice skupštine i upravnog odbora, prijedloge, glasanje (i elektronsko), odluke i zapisnike,</li><li>mjesečne naknade, fakture vlasnicima, uplate i salda,</li><li>troškove i dobavljače,</li><li>godišnji plan održavanja i finansijski plan,</li><li>prijave kvarova, ponude izvođača i radne naloge,</li><li>dokumente (PDF) i izvještaje.</li></ul>
+<p>Aplikacija pamti sve bitne radnje. Izdata faktura, predat glas ili evidentirana uplata ne mogu se tiho promijeniti ni obrisati. Greška se ispravlja <strong>novim zapisom</strong> (korekcijom ili stornom) uz obavezan razlog, a originalni zapis ostaje vidljiv.</p>
+<blockquote><p><strong>Napomena:</strong> Aplikacija služi za operativnu evidenciju. Nije zakonsko knjigovodstvo (nema kontnog plana, glavne knjige ni bilansa). Podatke za eksternog računovođu izvozite iz modula <strong>Izvještaji</strong>.</p></blockquote>
+<h3 id="12-uloge">1.2 Uloge</h3>
+<p>Postoje tri uloge. Uloge se dodjeljuju svakom nalogu posebno, a jedna osoba može imati i više uloga.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Uloga</th><th>Kako se prikazuje</th><th>Šta u praksi radi</th></tr></thead>
+<tbody>
+<tr><td><strong>Predsjednik ZEV</strong></td><td>„Predsjednik ZEV"</td><td>Upravlja svim: unosi zgrade, jedinice i vlasnike, otvara naloge vlasnicima, zakazuje sjednice, otvara i zatvara glasanje, evidentira odluke, vodi održavanje, usvaja planove i objavljuje dokumente vlasnicima.</td></tr>
+<tr><td><strong>Računovođa</strong></td><td>„Računovođa"</td><td>Vodi finansije: stavke naknada, serije faktura, uplate, uvoz bankovnih izvoda, troškove i plaćanja dobavljačima, izvještaje. Skupštinu, planove i održavanje uglavnom samo pregleda. Može pomagati u vođenju sjednice uživo.</td></tr>
+<tr><td><strong>Vlasnik / Član skupštine</strong></td><td>„Član skupštine / vlasnik"</td><td>Vidi svoje fakture, uplate i saldo, glasa elektronski preko ličnog linka, prijavljuje kvarove i prati svoje prijave, čita objavljene odluke i dokumente, mijenja svoje kontakt podatke.</td></tr>
+</tbody></table></div>
+<p>Kada kliknete na krug sa inicijalima u gornjem desnom uglu, ispod imena piše uloga (ili uloge) vašeg naloga.</p>
+<h3 id="13-prijava">1.3 Prijava</h3>
+<p>Nalog vam otvara predsjednik vaše zajednice etažnih vlasnika. Na ekranu za prijavu to piše i u napomeni.</p>
+<ol><li>Otvorite adresu aplikacije u pregledaču. Pojavljuje se ekran <strong>Prijava u aplikaciju</strong>.</li><li>U polje <strong>E-mail adresa</strong> upišite adresu na koju je nalog otvoren.</li><li>U polje <strong>Lozinka</strong> upišite lozinku. Klikom na ikonu oka u polju možete prikazati šta ste ukucali.</li><li>Kliknite <strong>Prijavi se</strong>.</li></ol>
+<p>Moguće poruke:</p>
+<ul><li><strong>„Pogrešan e-mail ili lozinka."</strong> Provjerite adresu i lozinku. Pazite na velika i mala slova.</li><li><strong>„Nalog je deaktiviran."</strong> Predsjednik je deaktivirao vaš nalog, na primjer nakon prodaje stana. Obratite mu se.</li><li><strong>„Previše pokušaja prijave. Pokušajte ponovo za 15 minuta."</strong> Bilo je previše neuspjelih pokušaja. Sačekajte 15 minuta.</li><li><strong>„Vaš ZEV nalog je trenutno suspendovan. Obratite se administratoru."</strong> Zajednica je privremeno isključena na nivou cijele usluge.</li></ul>
+<p>Prijava važi 12 sati. Nakon toga se ponovo prijavljujete.</p>
+<h3 id="14-zaboravljena-lozinka">1.4 Zaboravljena lozinka</h3>
+<ol><li>Na ekranu za prijavu kliknite <strong>Zaboravili ste lozinku?</strong></li><li>Upišite <strong>E-mail adresu</strong> naloga i kliknite <strong>Pošalji link za resetovanje</strong>.</li><li>Pojavljuje se poruka: <em>„Ako nalog sa tom e-mail adresom postoji, poslali smo link za postavljanje nove lozinke. Link važi 1 sat."</em> Poruka je ista i kada nalog ne postoji. Tako niko ne može provjeriti koje adrese imaju nalog.</li><li>Otvorite link iz e-maila. Pojavljuje se ekran <strong>Nova lozinka</strong>.</li><li>Upišite <strong>Nova lozinka</strong> (najmanje 8 karaktera), zatim istu lozinku u <strong>Ponovite novu lozinku</strong>.</li><li>Kliknite <strong>Postavi novu lozinku</strong>. Vraćate se na prijavu sa porukom <em>„Lozinka je uspješno promijenjena."</em></li></ol>
+<p>Link se može iskoristiti samo jednom. Ako je istekao ili je već iskorišten, kliknite <strong>Zatraži novi link</strong>.</p>
+<h3 id="15-izgled-aplikacije-i-odjava">1.5 Izgled aplikacije i odjava</h3>
+<ul><li><strong>Lijevi meni</strong> sadrži sve module. Uloge vide različit meni. Vlasnik ne vidi <strong>Vlasnici i korisnici</strong>, <strong>Troškovi</strong> ni <strong>Izvještaji</strong>.</li><li>Na širokom ekranu strelica u vrhu menija ga suzi na same ikone (<strong>Suzi meni</strong> / <strong>Proširi meni</strong>). Aplikacija pamti vaš izbor.</li><li>Na telefonu se meni otvara dugmetom ☰ u gornjem lijevom uglu, a zatvara sa ✕.</li><li><strong>Krug sa inicijalima</strong> (gore desno) otvara meni naloga. U njemu su vaše ime i uloga, <strong>Podešavanja</strong> i <strong>Odjava</strong>.</li></ul>
+<h3 id="16-ako-imate-pristup-u-vise-zev-ova">1.6 Ako imate pristup u više ZEV-ova</h3>
+<p>Većina korisnika ima pristup samo jednoj zajednici. Tada ne vide ništa od ovoga. Ako imate nalog u dvije ili više zajednica (na primjer, računovođa koji radi za nekoliko ZEV-ova):</p>
+<ul><li>U gornjoj traci stoji plava oznaka sa kratkim nazivom ZEV-a u kojem trenutno radite. Kad zadržite miša iznad nje, vidite puni naziv.</li><li>U meniju naloga pojavljuje se odjeljak <strong>Moji ZEV-ovi</strong>. Aktivni ZEV je označen kvačicom. Klikom na drugi ZEV prelazite u njega i vraćate se na <strong>Početnu</strong>.</li></ul>
+<p>Svi podaci na ekranu uvijek se odnose samo na aktivni ZEV.</p>
+<h3 id="17-oznaka-super-admin">1.7 Oznaka „Super admin"</h3>
+<p>Mali broj ljudi upravlja cijelom uslugom za sve zajednice. Ako ste jedan od njih i istovremeno predsjednik svoje zajednice, na dnu lijevog menija imate stavku <strong>Super admin</strong>. Ona vodi u platformski dio (vidi poglavlje 14). Iz tog dijela se u svoj ZEV vraćate stavkom <strong>Moj ZEV</strong>.</p>
+<h3 id="18-kako-rade-dugmad-i-obrasci">1.8 Kako rade dugmad i obrasci</h3>
+<p>Ovo važi za sve ekrane:</p>
+<ul><li><strong>Dugmad koja otvaraju obrazac</strong> (na primjer <strong>Dodaj zgradu</strong>, <strong>Nova sjednica</strong>, <strong>Novi prijedlog</strong>) ispod sebe otvaraju polja za unos. Ponovnim klikom na isto dugme obrazac se zatvara bez čuvanja.</li><li><strong>Nepovratne radnje</strong> (zatvaranje glasanja, storniranje, brisanje nacrta, povlačenje saglasnosti) imaju dvostepenu potvrdu. Prvi klik otvara žuti ili crveni okvir sa objašnjenjem šta će se desiti, a često i sa poljem <strong>Razlog</strong>. Radnja se izvršava tek klikom na dugme u tom okviru (na primjer <strong>Da, zatvori glasanje</strong>). Ako se predomislite, ponovo kliknite prvo dugme i okvir se zatvara.</li><li><strong>Filteri</strong> se nalaze iznad tabela. Kad je filter aktivan, pojavljuje se dugme <strong>Poništi filter</strong>.</li><li><strong>Sortiranje:</strong> klik na naslov kolone sortira tabelu tamo gdje je to moguće (na primjer <strong>Oznaka</strong>, <strong>Površina m²</strong>, <strong>Iznos</strong>, <strong>Dospijeće</strong>). Drugi klik obrće redoslijed.</li><li><strong>Poruke:</strong> zelena traka na vrhu potvrđuje uspjeh (<em>„Sačuvano."</em>). Crvena traka objašnjava zašto radnja nije izvršena.</li><li><strong>Prazne tabele</strong> pišu šta nedostaje i kako to dodati (na primjer <em>„Još nema zgrada. Dodajte prvu zgradu obrascem „Dodaj zgradu" ispod."</em>).</li></ul>
+<h3 id="19-prvo-postavljanje-preporuceni-redoslijed-za-predsjednika">1.9 Prvo postavljanje (preporučeni redoslijed za predsjednika)</h3>
+<ol><li><strong>Podešavanja → ZEV:</strong> unesite matične podatke ZEV i dodajte račune (banka, blagajna).</li><li><strong>Zgrade i jedinice:</strong> unesite zgrade, zatim ulaze, zatim posebne dijelove (stanove, lokale, garaže), a na kraju zajedničke dijelove.</li><li><strong>Vlasnici i korisnici:</strong> unesite lica i, po potrebi, otvorite im naloge. Na tabu <strong>Vlasništvo i korištenje</strong> evidentirajte vlasničke udjele, uz dokaz o vlasništvu.</li><li><strong>Organi ZEV:</strong> evidentirajte predsjednika, računovođu i upravni odbor.</li><li><strong>Skupština i odluke:</strong> napravite pravila glasanja.</li><li>Računovođa zatim podešava <strong>Fakture i uplate</strong>: stavke naknada i prvu seriju faktura.</li></ol>
+<hr>
+<h2 id="2-pocetna">2. Početna</h2>
+<p><strong>Početna</strong> je prva stavka menija. Na nju dolazite nakon prijave. Njen sadržaj zavisi od uloge.</p>
+<h3 id="21-predsjednik-i-racunovodja">2.1 Predsjednik i računovođa</h3>
+<p>Naslov je <strong>Pregled — predsjednik</strong> ili <strong>Pregled — računovođa</strong>, sa današnjim datumom („Stanje na dan …").</p>
+<p><strong>Gornji red brojeva:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Polje</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Stanje računa i blagajne</strong></td><td>Zbir trenutnih stanja svih aktivnih računa (banka i blagajna).</td></tr>
+<tr><td><strong>Potraživanja od vlasnika</strong></td><td>Ukupan iznos neplaćenih faktura vlasnika.</td></tr>
+<tr><td><strong>Dospjelo (kasni)</strong></td><td>Dio potraživanja kojem je prošao rok plaćanja. Crveno je ako postoji dug.</td></tr>
+<tr><td><strong>Neplaćeno dobavljačima</strong></td><td>Koliko ZEV još duguje po ulaznim fakturama.</td></tr>
+</tbody></table></div>
+<p><strong>Drugi red:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Polje</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Fond održavanja</strong></td><td>Stanje fonda (uplaćeno umanjeno za utrošeno).</td></tr>
+<tr><td><strong>Plan GGGG — planirano / realizovano</strong></td><td>Prikazuje se samo ako postoji usvojen plan za tekuću godinu. Realizovano je crveno ako je veće od planiranog.</td></tr>
+<tr><td><strong>Nacrti serija faktura</strong></td><td>Broj serija faktura koje su pripremljene, ali još nisu izdate.</td></tr>
+</tbody></table></div>
+<p><strong>Kartice ispod:</strong></p>
+<ul><li><strong>Prijedlozi na glasanju:</strong> otvorena glasanja sa brojem koliko je glasalo od ukupnog broja (na primjer „glasalo 12/30"). Klik na prijedlog otvara njegovu stranicu.</li><li><strong>Predstojeće sjednice:</strong> zakazane sjednice sa terminom.</li><li><strong>Otvorene prijave održavanja:</strong> kvarovi koji nisu zatvoreni, odbijeni ni plaćeni, sa statusom.</li><li><strong>Neraspoređene uplate:</strong> uplate koje još nisu vezane za fakturu. Klik vodi na uparivanje.</li><li><strong>Predstojeći pregledi i preventivno održavanje:</strong> zakazani termini iz usvojenog plana.</li></ul>
+<h3 id="22-vlasnik">2.2 Vlasnik</h3>
+<p>Naslov je <strong>Moj pregled</strong>, sa vašim imenom.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Polje</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Moj saldo (dugujem)</strong></td><td>Koliko trenutno dugujete. Narandžasto je ako dugujete.</td></tr>
+<tr><td><strong>Ukupno zaduženo</strong></td><td>Zbir svih vaših faktura.</td></tr>
+<tr><td><strong>Ukupno plaćeno</strong></td><td>Zbir svih vaših uplata.</td></tr>
+<tr><td><strong>Avans / preplata</strong></td><td>Uplaćen novac koji još nije raspoređen na fakture.</td></tr>
+</tbody></table></div>
+<p>Kartice:</p>
+<ul><li><strong>Moje neplaćene fakture:</strong> broj fakture, jedinica, rok i preostali iznos. Klik otvara fakturu.</li><li><strong>Otvorena glasanja:</strong> prijedlozi o kojima imate pravo glasa. Ako ste već glasali, piše <strong>Izjašnjeni ste</strong>. Ako niste, piše <strong>Link ste dobili e-poštom</strong>. Glasa se isključivo preko ličnog linka iz e-maila (vidi 6.10).</li><li><strong>Moje nedavne uplate:</strong> posljednjih pet uplata.</li><li><strong>Predstojeće sjednice</strong>.</li><li><strong>Objavljene odluke:</strong> PDF odluka koje je predsjednik objavio vlasnicima.</li><li><strong>Moje prijave održavanja:</strong> vaše prijave kvarova sa statusom.</li></ul>
+<p>Ako vidite poruku <em>„Vaš nalog nije povezan sa evidencijom vlasnika"</em>, obratite se predsjedniku. Vaš nalog nije vezan za lice u evidenciji.</p>
+<hr>
+<h2 id="3-zgrade-i-jedinice">3. Zgrade i jedinice</h2>
+<p>Ovaj modul sadrži fizičku strukturu ZEV-a. Ispod naslova piše puni naziv ZEV-a. Ako vidite poruku <em>„ZEV još nije konfigurisana — unesite matične podatke u Podešavanjima"</em>, prvo popunite <strong>Podešavanja → ZEV</strong>.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Pregled zgrada, ulaza, jedinica, zajedničkih dijelova</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>Unos i izmjena zgrada, ulaza i jedinica</td><td>✔</td><td>–</td><td>–</td></tr>
+<tr><td>Unos zajedničkih dijelova i opreme</td><td>✔</td><td>–</td><td>–</td></tr>
+</tbody></table></div>
+<p>Ekran ima četiri taba: <strong>Zgrade</strong>, <strong>Ulazi</strong>, <strong>Posebni dijelovi</strong> i <strong>Zajednički dijelovi</strong>.</p>
+<h3 id="31-tab-zgrade">3.1 Tab „Zgrade"</h3>
+<p>Kolone tabele su <strong>Naziv</strong>, <strong>Adresa</strong>, <strong>Ulazi</strong>, <strong>Jedinica</strong> (broj jedinica), a kod predsjednika i <strong>Radnje</strong>. Ispod naziva zgrade sitnije pišu katastarska oznaka (KO), godina izgradnje, broj spratova i napomena, ako su uneseni.</p>
+<p><strong>Dodavanje zgrade:</strong></p>
+<ol><li>Kliknite <strong>Dodaj zgradu</strong>.</li><li>Popunite <strong>Naziv zgrade</strong> (obavezno), <strong>Adresa</strong> (obavezno) i <strong>Godina izgradnje</strong>.</li><li>Kliknite <strong>Dodaj zgradu</strong>.</li></ol>
+<p><strong>Izmjena zgrade:</strong></p>
+<ol><li>U redu zgrade kliknite <strong>Uredi</strong>.</li><li>Ispod reda se otvaraju polja <strong>Naziv</strong>, <strong>Adresa</strong>, <strong>Katastarska oznaka</strong>, <strong>Godina izgradnje</strong>, <strong>Broj spratova</strong> i <strong>Napomena</strong>.</li><li>Kliknite <strong>Sačuvaj izmjene</strong>, ili <strong>Otkaži</strong> da odustanete.</li></ol>
+<h3 id="32-tab-ulazi">3.2 Tab „Ulazi"</h3>
+<p>Tabela ima kolone <strong>Zgrada</strong>, <strong>Ulaz</strong> i <strong>Adresa</strong>. Ulaz ili lamela nije obavezan. Koristite ga ako zgrada ima više ulaza koje želite razlikovati.</p>
+<p><strong>Dodavanje ulaza:</strong> kliknite <strong>Dodaj ulaz</strong>, izaberite <strong>Zgrada</strong>, upišite <strong>Naziv ulaza</strong> (obavezno) i po želji <strong>Adresa</strong>, pa kliknite <strong>Dodaj ulaz</strong>. Prvo morate imati bar jednu zgradu.</p>
+<h3 id="33-tab-posebni-dijelovi">3.3 Tab „Posebni dijelovi"</h3>
+<p>Ovdje su stanovi, poslovni prostori, garaže i ostale jedinice. Iznad tabele piše zbir: broj jedinica, ukupna površina u m² i <strong>ukupan udio</strong> u procentima.</p>
+<blockquote><p><strong>Važno:</strong> Zbir vlasničkih udjela svih jedinica u ZEV-u treba biti 100%. Ako nije, zbir je narandžast i piše <em>„provjerite raspodjelu, zbir treba biti 100%"</em>. Na udjelima se zasniva obračun „po vlasničkom udjelu" i težina glasa.</p></blockquote>
+<p><strong>Filteri:</strong> <strong>Zgrada</strong> i <strong>Ulaz</strong>, uz <strong>Poništi filter</strong>.</p>
+<p><strong>Kolone:</strong> Zgrada, Ulaz, <strong>Oznaka</strong>, Tip, Sprat, <strong>Površina m²</strong>, <strong>Udio %</strong>, Korisnika, Vlasnici (sa udjelom na jedinici), Stanari/zakupci. Po koloni <strong>Oznaka</strong>, <strong>Površina</strong> i <strong>Udio</strong> se može sortirati.</p>
+<p><strong>Dodavanje jedinice:</strong></p>
+<ol><li>Kliknite <strong>Dodaj jedinicu</strong>.</li><li>Popunite polja u grupi <strong>Lokacija</strong>:<ul><li><strong>Zgrada</strong></li><li><strong>Ulaz (opciono)</strong></li><li><strong>Oznaka</strong> (na primjer „Stan 12")</li></ul></li><li>Popunite polja u grupi <strong>Tip i mjere</strong>:<ul><li><strong>Tip:</strong> Stan, Poslovni prostor, Garaža ili Ostalo</li><li><strong>Sprat</strong></li><li><strong>Korisna površina (m²)</strong> (obavezno, na primjer 54.50)</li></ul></li><li>Popunite polja u grupi <strong>Obračun</strong>:<ul><li><strong>Vlasnički udio u ZEV (%)</strong> (obavezno, na primjer 3.25). Ovo je udio jedinice u cijeloj zajednici.</li><li><strong>Broj korisnika:</strong> koristi se za naknade „po broju korisnika".</li><li><strong>Koeficijent tipa</strong> (podrazumijevano 1): koristi se za naknade „koeficijent tipa jedinice", na primjer kada lokal plaća 1,5 puta više.</li></ul></li><li>Kliknite <strong>Dodaj jedinicu</strong>.</li></ol>
+<p><strong>Izmjena jedinice:</strong> kliknite <strong>Uredi</strong> u redu jedinice, izmijenite polja i kliknite <strong>Sačuvaj izmjene</strong>.</p>
+<h3 id="34-tab-zajednicki-dijelovi">3.4 Tab „Zajednički dijelovi"</h3>
+<p>Ovdje vodite zajedničke prostore, sisteme i opremu: lift, krov, kotlovnicu, hidrofor i slično. Kolone su <strong>Naziv</strong>, <strong>Vrsta</strong>, <strong>Zgrada</strong> i <strong>Opis</strong>.</p>
+<p><strong>Dodavanje:</strong> kliknite <strong>Dodaj zajednički dio</strong> i popunite:</p>
+<ul><li><strong>Naziv</strong> (na primjer „Lift — ulaz A")</li><li><strong>Vrsta:</strong> Zajednički prostor, Sistem ili Oprema</li><li><strong>Zgrada</strong> (ili <strong>Cijela ZEV</strong>)</li><li><strong>Opis</strong></li></ul>
+<p>Zatim kliknite <strong>Dodaj</strong>.</p>
+<hr>
+<h2 id="4-vlasnici-i-korisnici">4. Vlasnici i korisnici</h2>
+<p>Ovdje su sva lica (fizička i pravna) i njihov odnos prema jedinicama: vlasnici, suvlasnici, stanari, zakupci i punomoćnici. Modul je u meniju vidljiv samo predsjedniku i računovođi.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Unos lica, otvaranje naloga vlasnicima</td><td>✔</td><td>–</td><td>–</td></tr>
+<tr><td>Vlasnički udjeli, promjena vlasništva</td><td>✔</td><td>–</td><td>–</td></tr>
+<tr><td>Stanari, zakupci, punomoći</td><td>✔</td><td>–</td><td>svoju punomoć</td></tr>
+<tr><td>Pregled ličnih podataka drugih lica</td><td>✔</td><td>✔</td><td>✘</td></tr>
+<tr><td>Izmjena svojih kontakt podataka</td><td>✔</td><td>✔</td><td>✔ (samo kontakt)</td></tr>
+<tr><td>Role i (de)aktivacija naloga</td><td>✔</td><td>–</td><td>–</td></tr>
+<tr><td>Označavanje saglasnosti za e-glasanje kao potpisane</td><td>✔</td><td>✔</td><td>–</td></tr>
+</tbody></table></div>
+<p>Predsjednik vidi tri taba: <strong>Lica</strong>, <strong>Vlasništvo i korištenje</strong> i <strong>Punomoći</strong>. Računovođa vidi samo <strong>Lica</strong>.</p>
+<h3 id="41-tab-lica">4.1 Tab „Lica"</h3>
+<p><strong>Pretraga:</strong> u polje <strong>Pretraga po imenu</strong> upišite ime, prezime ili naziv i kliknite <strong>Pretraži</strong>.</p>
+<p><strong>Kolone:</strong> <strong>Ime / naziv</strong> (sortira se), Vrsta (Fizičko ili Pravno lice), E-mail, Telefon, <strong>Vlasništvo (aktivno)</strong> (jedinice sa udjelom) i <strong>Nalog</strong> (e-mail naloga ili „deaktiviran").</p>
+<p><strong>Dodavanje lica (predsjednik):</strong></p>
+<ol><li>Kliknite <strong>Dodaj lice</strong>.</li><li>Izaberite <strong>Vrsta</strong>: Fizičko lice ili Pravno lice.</li><li>Za fizičko lice popunite <strong>Ime</strong> i <strong>Prezime</strong>. Za pravno lice popunite <strong>Naziv (pravno lice)</strong>.</li><li>Popunite <strong>E-mail</strong>, <strong>Telefon</strong>, <strong>Adresa nekretnine</strong> i <strong>Adresa za prepisku (ako je različita)</strong>.</li><li>Ako lice treba da se prijavljuje u aplikaciju, popunite i:<ul><li><strong>Korisnički nalog — e-mail (opciono)</strong></li><li><strong>Početna lozinka</strong> (najmanje 8 znakova)</li></ul></li></ol>
+<p>   Nalog dobija ulogu vlasnika. Početnu lozinku saopštite vlasniku lično ili telefonom.</p>
+<ol><li>Kliknite <strong>Sačuvaj lice</strong>.</li></ol>
+<blockquote><p><strong>Savjet:</strong> E-mail u polju <strong>E-mail</strong> je adresa na koju stižu pozivi na sjednice, lični linkovi za glasanje i obavještenja o fakturama. Bez nje vlasnik ne može dobiti link za e-glasanje.</p></blockquote>
+<h3 id="42-stranica-jednog-lica">4.2 Stranica jednog lica</h3>
+<p>Klik na ime u tabeli otvara stranicu lica. Gore desno je dugme <strong>Kartica vlasnika (PDF)</strong>. To je pregled svih zaduženja i uplata tog lica.</p>
+<p><strong>Brojevi na vrhu:</strong></p>
+<ul><li><strong>Saldo (duguje)</strong></li><li><strong>Zaduženo</strong></li><li><strong>Plaćeno</strong></li><li><strong>Avans</strong></li></ul>
+<p><strong>Kartica „Kontakt":</strong></p>
+<ul><li>Predsjednik mijenja sva polja: <strong>Ime</strong>, <strong>Prezime</strong> (ili <strong>Naziv</strong>), <strong>E-mail</strong>, <strong>Telefon</strong>, <strong>Adresa nekretnine</strong> i <strong>Adresa za prepisku</strong>.</li><li>Vlasnik na svojoj stranici mijenja samo e-mail, telefon i adresu za prepisku (<em>„Kao vlasnik možete mijenjati samo svoje kontakt podatke."</em>).</li><li>Računovođa kontakt podatke drugih lica samo pregleda.</li></ul>
+<p>Kliknite <strong>Sačuvaj</strong>.</p>
+<p><strong>Kartica „Vlasnički udjeli":</strong> jedinica, <strong>Udio %</strong>, <strong>Od</strong>, <strong>Do</strong> („aktivno" ako udio i dalje važi) i <strong>Dokaz o vlasništvu</strong> (link „dokument"). Raniji udjeli ostaju vidljivi, samo posivljeni. Istorija se čuva.</p>
+<p><strong>Kartica „Korištenje jedinica":</strong> u kojim jedinicama lice stanuje ili ih koristi (Vlasnik stanuje, Zakupac, Korisnik), sa datumima.</p>
+<p><strong>Kartica „Punomoći":</strong> <strong>Date punomoći</strong> (kome je lice dalo punomoć) i <strong>Primljene punomoći</strong> (za koga je lice punomoćnik), sa oznakom „aktivna" ili „OPOZVANA".</p>
+<p><strong>Kartica „Saglasnost za elektronsko glasanje":</strong> vidi 4.6.</p>
+<p><strong>Kartica „Korisnički nalog"</strong> (samo predsjednik, ako lice ima nalog):</p>
+<ul><li>Prikazuje e-mail naloga i stanje „(aktivan)" ili „(deaktiviran)".</li><li><strong>Role naloga:</strong> označite Predsjednik, Računovođa i/ili Vlasnik, pa kliknite <strong>Sačuvaj role</strong>. Nalog mora imati bar jednu rolu.</li><li><strong>Deaktivacija ili aktivacija:</strong> upišite <strong>Razlog</strong> (obavezno, na primjer „prodaja stana") i kliknite <strong>Deaktiviraj nalog</strong> (ili <strong>Aktiviraj nalog</strong>). Deaktiviran nalog se više ne može prijaviti. Podaci ostaju sačuvani.</li></ul>
+<h3 id="43-tab-vlasnistvo-i-koristenje-predsjednik">4.3 Tab „Vlasništvo i korištenje" (predsjednik)</h3>
+<p>Ovaj tab ima tri kartice.</p>
+<p><strong>A) Dodaj vlasnički udio.</strong> Koristite ga za prvi unos vlasnika ili novog suvlasnika.</p>
+<ol><li>Kliknite <strong>Dodaj udio</strong>.</li><li>Izaberite <strong>Jedinica</strong> i <strong>Vlasnik</strong>.</li><li>Upišite <strong>Udio na jedinici (%)</strong>: 100 za jedinog vlasnika, 50 za suvlasnika sa pola.</li><li>Upišite <strong>Važi od</strong> (datum).</li><li>Priložite <strong>Dokaz o vlasništvu</strong>. Obavezan je: ugovor, izvod iz zemljišnih knjiga ili slično, u formatu PDF, JPG ili PNG, do 15 MB.</li><li>Kliknite <strong>Dodaj udio</strong>.</li></ol>
+<p><strong>B) Promjena vlasništva (promet jedinice).</strong> Koristite je kada se stan proda.</p>
+<ol><li>Kliknite <strong>Evidentiraj prenos</strong>.</li><li>Izaberite <strong>Jedinica</strong>, <strong>Dosadašnji vlasnik</strong> i <strong>Novi vlasnik</strong>. Novi vlasnik prvo mora biti unesen kao lice na tabu <strong>Lica</strong>.</li><li>Upišite <strong>Datum prenosa</strong> i <strong>Napomena / osnov</strong> (na primjer „kupoprodajni ugovor br. …").</li><li>Priložite <strong>Dokaz o vlasništvu</strong> (obavezno).</li><li>Kliknite <strong>Evidentiraj prenos</strong>.</li></ol>
+<blockquote><p><strong>Važno:</strong> <em>„Istorijski dug ostaje na prethodnom vlasniku; prenos duga moguć je samo izričitom korekcijom salda."</em> Stare fakture ostaju na starom vlasniku, a nove idu novom. Ako prodavac više ne treba pristup aplikaciji, deaktivirajte mu nalog (4.2).</p></blockquote>
+<p><strong>C) Evidentiraj stanara / zakupca.</strong></p>
+<ol><li>Kliknite <strong>Evidentiraj</strong>.</li><li>Izaberite <strong>Jedinica</strong>, <strong>Lice</strong> i <strong>Vrsta</strong>: Vlasnik stanuje, Zakupac ili Korisnik.</li><li>Upišite <strong>Broj lica u domaćinstvu</strong> i <strong>Od datuma</strong>.</li><li>Kliknite <strong>Evidentiraj</strong>.</li></ol>
+<blockquote><p><em>„Stanar ili zakupac NE stiče pravo glasa stanovanjem."</em> Pravo glasa imaju samo vlasnici (ili njihovi punomoćnici).</p></blockquote>
+<h3 id="44-tab-punomoci-predsjednik">4.4 Tab „Punomoći" (predsjednik)</h3>
+<p>Tabela aktivnih punomoći ima kolone <strong>Davalac</strong>, <strong>Punomoćnik</strong>, <strong>Obim</strong> (Sve sjednice, Jedna sjednica ili Jedan prijedlog), <strong>Važi od</strong> i <strong>Važi do</strong> („neograničeno" ako nema krajnjeg datuma).</p>
+<p><strong>Evidentiranje punomoći:</strong></p>
+<ol><li>Kliknite <strong>Evidentiraj punomoć</strong>.</li><li>Izaberite <strong>Davalac (vlasnik)</strong> i <strong>Punomoćnik</strong>.</li><li>Izaberite <strong>Obim</strong>: <strong>Sve sjednice</strong> ili <strong>Jedna sjednica</strong>.</li><li>Upišite <strong>Referenca dokumenta</strong> (na primjer „ovjerena punomoć br. …"), <strong>Važi od</strong> i po potrebi <strong>Važi do (opciono)</strong>.</li><li>Kliknite <strong>Evidentiraj punomoć</strong>.</li></ol>
+<p>Kada se otvori glasanje, za vlasnika sa aktivnom punomoći lični link dobija <strong>punomoćnik</strong>, a ne vlasnik. Punomoćnik glasa u ime vlasnika, sa težinom glasa tog vlasnika.</p>
+<h3 id="45-owner-prodaje-stan-tipican-tok">4.5 Owner prodaje stan — tipičan tok</h3>
+<ol><li><strong>Vlasnici i korisnici → Lica → Dodaj lice:</strong> unesite kupca i po želji mu otvorite nalog.</li><li><strong>Vlasništvo i korištenje → Evidentiraj prenos:</strong> unesite prenos sa datumom i ugovorom.</li><li>Na stranici prodavca: <strong>Korisnički nalog → Deaktiviraj nalog</strong>, uz razlog „prodaja stana".</li></ol>
+<h3 id="46-saglasnost-za-elektronsko-glasanje">4.6 Saglasnost za elektronsko glasanje</h3>
+<p>Da bi vlasnik mogao glasati elektronski kada se sjednica vodi uživo, ZEV mora imati njegovu potpisanu izjavu o saglasnosti. Status saglasnosti može biti:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Status</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Nije pokrenuto</strong></td><td>Izjava još nije preuzeta.</td></tr>
+<tr><td><strong>Izjava preuzeta — čeka se potpis</strong></td><td>Neko je preuzeo PDF izjave, a potpisana izjava još nije dostavljena.</td></tr>
+<tr><td><strong>Potpisana izjava dostavljena</strong></td><td>ZEV ima potpisanu izjavu i sačuvan sken.</td></tr>
+<tr><td><strong>Saglasnost povučena</strong></td><td>Vlasnik ili predsjednik je povukao saglasnost.</td></tr>
+</tbody></table></div>
+<p><strong>Tok:</strong></p>
+<ol><li>Vlasnik (u <strong>Podešavanja → Moji podaci</strong>) ili predsjednik (na stranici lica) klikne <strong>Preuzmi izjavu (PDF)</strong>. Status prelazi u „Izjava preuzeta — čeka se potpis".</li><li>Vlasnik izjavu odštampa, potpiše i preda predsjedniku.</li><li>Predsjednik ili računovođa na stranici lica, u kartici <strong>Saglasnost za elektronsko glasanje</strong>, priloži <strong>Skenirana potpisana izjava</strong> (PDF, JPG, PNG ili WEBP) i klikne <strong>Označi kao potpisanu i sačuvaj sken</strong>. Status postaje „Potpisana izjava dostavljena". Sken se kasnije otvara linkom <strong>pregledaj</strong>.</li></ol>
+<p><strong>Povlačenje saglasnosti:</strong> kliknite <strong>Povuci saglasnost za elektronsko glasanje</strong>, po želji upišite <strong>Razlog opoziva (opciono)</strong> i potvrdite sa <strong>Da, povuci saglasnost</strong>. Vlasnik tada više ne dobija e-mail za glasanje kada se sjednica vodi uživo. Saglasnost se može ponovo dati istim postupkom.</p>
+<hr>
+<h2 id="5-organi-zev">5. Organi ZEV</h2>
+<p>Ovdje su predsjednik, računovođa i upravni odbor: trenutni sastav i istorija mandata.</p>
+<p><strong>Ko šta može:</strong> svi vide ovu stranicu. Samo predsjednik unosi i mijenja podatke.</p>
+<p>Na vrhu je kratko objašnjenje. Po Zakonu o održavanju zgrada RS organi ZEV su <strong>skupština</strong> (svi vlasnici) i <strong>upravni odbor</strong>. Tu piše i preporučen broj članova odbora i trajanje mandata iz <strong>Podešavanja → Parametri</strong>.</p>
+<p>Stranica ima dva taba: <strong>Aktuelni organi</strong> i <strong>Istorija mandata</strong>.</p>
+<h3 id="51-tab-aktuelni-organi">5.1 Tab „Aktuelni organi"</h3>
+<ul><li>Kartica <strong>Predsjednik ZEV</strong> prikazuje ime, „Mandat od …" i osnov (odluku).</li><li>Kartica <strong>Računovođa</strong> prikazuje ime, „Angažman od …" i osnov (odluku ili ugovor).</li></ul>
+<p><strong>Postavljanje predsjednika ili računovođe:</strong></p>
+<ol><li>U kartici <strong>Postavi predsjednika / računovođu</strong> kliknite <strong>Postavi</strong>.</li><li>Izaberite <strong>Funkcija</strong> (Predsjednik ZEV ili Računovođa) i <strong>Lice</strong>.</li><li>Upišite <strong>Mandat od</strong> i <strong>Osnov (odluka/ugovor)</strong>.</li><li>Kliknite <strong>Postavi</strong>.</li></ol>
+<p>Postavljanjem nove osobe tekući mandat prethodnog nosioca te funkcije automatski završava na izabrani datum.</p>
+<blockquote><p><strong>Važno:</strong> Ovdje se evidentira funkcija u zajednici. <strong>Pristup aplikaciji</strong> novom predsjedniku ili računovođi dajete posebno: na stranici njegovog lica, u kartici <strong>Korisnički nalog → Role naloga</strong> (vidi 4.2).</p></blockquote>
+<p><strong>Upravni odbor:</strong> tabela ima kolone <strong>Član</strong>, <strong>Mandat od</strong>, <strong>Osnov</strong> i <strong>Radnje</strong>.</p>
+<ul><li><strong>Dodavanje člana:</strong> kliknite <strong>Dodaj člana</strong>, izaberite <strong>Lice</strong>, upišite <strong>Mandat od</strong> i <strong>Osnov (odluka skupštine)</strong>, pa kliknite <strong>Dodaj</strong>.</li><li><strong>Kraj mandata:</strong> u redu člana izaberite datum i kliknite <strong>Okončaj mandat</strong>. Ako datum ostavite prazan, uzima se današnji.</li></ul>
+<p>Članovi upravnog odbora i predsjednik čine glasačku bazu na sjednicama upravnog odbora (vidi 6.2).</p>
+<h3 id="52-tab-istorija-mandata">5.2 Tab „Istorija mandata"</h3>
+<p>Svi mandati, i trenutni i raniji, sa kolonama <strong>Funkcija</strong>, <strong>Lice</strong>, <strong>Od</strong>, <strong>Do</strong> („aktivno" ako traje) i <strong>Osnov</strong>. Zapisi se dodaju automatski kada se promijeni nosilac funkcije.</p>
+<hr>
+<h2 id="6-skupstina-i-odluke">6. Skupština i odluke</h2>
+<p>Ovo je najvažniji modul. U njemu vodite sjednice, dnevni red, prijedloge odluka i glasanje (elektronsko, papirno i lično u sali), a zatim odluke i zapisnike.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Sjednice, dnevni red, prijedlozi, pravila glasanja</td><td>✔</td><td>pregled</td><td>pregled</td></tr>
+<tr><td>Otvaranje glasanja, izdavanje, opoziv i ponovno izdavanje linkova</td><td>✔</td><td>uživo*</td><td>–</td></tr>
+<tr><td>Unos papirnih i ličnih glasova</td><td>✔</td><td>uživo*</td><td>–</td></tr>
+<tr><td>Elektronsko glasanje (lični link i kod)</td><td>–</td><td>–</td><td>✔ (svoje)</td></tr>
+<tr><td>Izmjena predatog glasa</td><td>✘ (samo ispravka uz razlog i osnov)</td><td>✘</td><td>✘</td></tr>
+<tr><td>Zatvaranje glasanja, odluka, zapisnik</td><td>✔</td><td>uživo*</td><td>–</td></tr>
+</tbody></table></div>
+<p>\* Računovođa može pomagati u vođenju sjednice na ekranu <strong>Vodi sjednicu uživo</strong> (6.9). Tamo može voditi prozivku, otvarati i zatvarati glasanje i unositi glasove iz sale. Na običnim stranicama sjednice i prijedloga ove radnje ima samo predsjednik.</p>
+<h3 id="61-glavni-ekran-sjednice-i-pravila-glasanja">6.1 Glavni ekran: sjednice i pravila glasanja</h3>
+<p>Stranica ima dva taba:</p>
+<ul><li><strong>Skupština:</strong> sjednice skupštine, u kojoj učestvuju svi vlasnici.</li><li><strong>Upravni odbor:</strong> sjednice upravnog odbora, na kojima glasaju članovi odbora.</li></ul>
+<p>Tabela sjednica ima kolone <strong>Sjednica</strong>, <strong>Vrsta</strong>, <strong>Termin</strong>, <strong>Status</strong>, <strong>Tačke</strong> (broj tačaka dnevnog reda) i <strong>Prijedlozi</strong>.</p>
+<h3 id="62-pravila-glasanja">6.2 Pravila glasanja</h3>
+<p>Pravilo glasanja određuje koliko ljudi mora učestvovati (kvorum), koliko glasova „Za" je potrebno (većina) i koliko vrijedi čiji glas (težina). Svaki prijedlog koristi jedno pravilo. Predsjednik i računovođa vide karticu <strong>Pravila glasanja</strong> ispod liste sjednica. Novo pravilo pravi samo predsjednik.</p>
+<p><strong>Pravljenje pravila:</strong></p>
+<ol><li>Kliknite <strong>Novo pravilo</strong>.</li><li>Upišite <strong>Naziv</strong> (na primjer „Redovno upravljanje").</li><li>Izaberite <strong>Tip kvoruma</strong>:<ul><li><strong>% ukupne težine:</strong> zbir težina onih koji su glasali mora dostići zadati procenat ukupne težine svih koji imaju pravo glasa.</li><li><strong>% broja vlasnika:</strong> broj onih koji su glasali mora dostići zadati procenat broja vlasnika sa pravom glasa.</li><li><strong>Bez kvoruma</strong>.</li></ul></li><li>Upišite <strong>Kvorum %</strong> (na primjer 50).</li><li>Izaberite <strong>Tip većine</strong>:<ul><li><strong>Prosta većina glasalih:</strong> prijedlog prolazi ako je težina „Za" veća od težine „Protiv". Uzdržani se ne računaju ni na jednu stranu.</li><li><strong>% glasalih:</strong> težina „Za" mora biti veća od zadatog procenta svih predatih glasova, uključujući i uzdržane.</li><li><strong>% ukupne baze:</strong> težina „Za" mora biti veća od zadatog procenta ukupne težine svih koji imaju pravo glasa, bez obzira koliko ih je glasalo.</li></ul></li><li>Upišite <strong>Većina %</strong> (koristi se kod druga dva tipa).</li><li>Izaberite <strong>Težina glasa</strong>:<ul><li><strong>Po vlasničkom udjelu:</strong> glas vrijedi koliko vlasnik ima udjela u ZEV-u (udio jedinice u ZEV-u × vlasnikov dio te jedinice, sabrano za sve njegove jedinice).</li><li><strong>Po vlasniku (1 glas):</strong> svako lice ima jedan glas.</li><li><strong>Po površini:</strong> glas vrijedi onoliko m² koliko vlasnik ima.</li></ul></li><li>Kliknite <strong>Sačuvaj pravilo</strong>.</li></ol>
+<p><strong>Ključne činjenice:</strong></p>
+<ul><li>Ako kvorum nije postignut, prijedlog <strong>nije usvojen</strong>, bez obzira na glasove.</li><li>Kada se glasanje otvori, pravilo se „zamrzne" uz prijedlog (<strong>snimak pravila</strong>). Kasnija izmjena ili novo pravilo ne utiču na glasanja koja su već otvorena.</li><li>Za sjednice <strong>upravnog odbora</strong> koristite pravilo sa težinom <strong>Po vlasniku (1 glas)</strong>. Članovi odbora glasaju kao članovi, a ne prema svojim stanovima.</li><li>Na dnu kartice stoji napomena: <em>„zakonski kvorum i većine po tipu odluke potvrđuje pravnik prije produkcijske upotrebe."</em></li></ul>
+<h3 id="63-pravljenje-sjednice">6.3 Pravljenje sjednice</h3>
+<ol><li>Na tabu <strong>Skupština</strong> (ili <strong>Upravni odbor</strong>) kliknite <strong>Nova sjednica</strong>.</li><li>Popunite:<ul><li><strong>Naziv</strong> (na primjer „Redovna godišnja sjednica 2026.")</li><li><strong>Organ:</strong> Skupština ili Upravni odbor</li><li><strong>Vrsta:</strong> Redovna, Vanredna, Konstitutivna ili Pismeno izjašnjavanje</li><li><strong>Mjesto</strong></li><li><strong>Datum i vrijeme</strong></li><li><strong>E-glasanje od</strong> i <strong>E-glasanje do.</strong> Datum „do" se koristi kao rok glasanja za svaki prijedlog koji nema svoj rok (polje <strong>Glasanje otvoreno do</strong>).</li></ul></li><li>Kliknite <strong>Kreiraj sjednicu</strong>. Sjednica nastaje u statusu <strong>Nacrt</strong>.</li></ol>
+<h3 id="64-stranica-sjednice">6.4 Stranica sjednice</h3>
+<p>Klik na naziv sjednice otvara njenu stranicu. U zaglavlju su organ, vrsta, termin i mjesto. Ispod je <strong>traka statusa</strong> koja pokazuje gdje je sjednica u toku rada.</p>
+<p><strong>Statusi sjednice i dugme za sljedeći korak</strong> (samo predsjednik; dugme je gore desno):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Trenutni status</th><th>Dugme</th><th>Šta se dešava</th></tr></thead>
+<tbody>
+<tr><td><strong>Nacrt</strong></td><td><strong>Zakaži sjednicu</strong></td><td>Sjednica prelazi u „Zakazana".</td></tr>
+<tr><td><strong>Zakazana</strong></td><td><strong>Pripremi pozive (PDF)</strong></td><td>Nastaje PDF poziva na sjednicu (vidi se u <strong>Dokumentima</strong>). Status postaje „Pozivi pripremljeni".</td></tr>
+<tr><td><strong>Pozivi pripremljeni</strong></td><td><strong>Pošalji pozive (e-mail)</strong></td><td>Svim vlasnicima sa aktivnim vlasništvom i e-mail adresom šalje se poziv. Kod upravnog odbora poziv ide članovima odbora i predsjedniku. Status postaje „Pozivi poslati".</td></tr>
+<tr><td><strong>Pozivi poslati</strong></td><td><strong>Označi glasanje otvorenim</strong></td><td>Status postaje „Glasanje otvoreno".</td></tr>
+<tr><td><strong>Glasanje otvoreno</strong></td><td><strong>Označi glasanje zatvorenim</strong></td><td>Traži potvrdu (vidi ispod). Status postaje „Glasanje zatvoreno".</td></tr>
+<tr><td><strong>Glasanje zatvoreno</strong></td><td><strong>Pređi na provjeru rezultata</strong></td><td>Status postaje „Provjera rezultata".</td></tr>
+<tr><td><strong>Provjera rezultata</strong></td><td><strong>Odluke evidentirane</strong></td><td>Status postaje „Odluka evidentirana".</td></tr>
+<tr><td><strong>Odluka evidentirana</strong></td><td><strong>Finalizuj zapisnik (PDF)</strong></td><td>Nastaje konačni zapisnik. Status postaje „Zapisnik finalizovan".</td></tr>
+<tr><td><strong>Zapisnik finalizovan</strong></td><td><strong>Arhiviraj</strong></td><td>Status postaje „Arhivirana".</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>Važno — zatvaranje glasanja na nivou sjednice.</strong> Klik na <strong>Označi glasanje zatvorenim</strong> otvara upozorenje <em>„Zatvaranje glasanja na sjednici je nepovratno"</em> sa spiskom prijedloga koji su još otvoreni. <strong>Svi ti prijedlozi se automatski zatvaraju</strong>: računa se konačni rezultat, a svi neiskorišteni lični linkovi prestaju da važe. Potvrđuje se sa <strong>Da, zatvori glasanje na sjednici</strong>. Isto se dešava kad god sjednica pređe preko statusa „Glasanje otvoreno".</p></blockquote>
+<blockquote><p><strong>Status sjednice i status prijedloga su odvojeni.</strong> Glasanje o pojedinačnom prijedlogu otvara se na stranici prijedloga (6.6), bez obzira na to da li je sjednica označena kao „Glasanje otvoreno".</p></blockquote>
+<p><strong>Kartice na stranici sjednice:</strong></p>
+<ul><li><strong>Dnevni red:</strong> numerisana lista tačaka. Pored tačke u zagradi stoje šifre prijedloga vezanih za nju. Predsjednik dodaje tačku tako što u polje <strong>Nova tačka dnevnog reda</strong> upiše naziv i klikne <strong>Dodaj</strong>. Tačke se dodaju redom. Nakon finalizacije zapisnika više se ne mogu dodavati.</li><li><strong>Prijedlozi:</strong> tabela sa kolonama <strong>Šifra</strong>, <strong>Naziv</strong>, <strong>Verzija</strong> i <strong>Status</strong>. Klik na šifru otvara prijedlog.</li><li><strong>Prisustvo (za sjednicu uživo)</strong> (predsjednik): ko je bio prisutan i da li putem punomoćnika. Pojedinačni unos: izaberite <strong>Lice</strong>, označite ili isključite „prisutan" i kliknite <strong>Evidentiraj</strong>. Za vođenje prozivke na samoj sjednici mnogo je praktičniji ekran <strong>Vodi sjednicu uživo</strong> (6.9).</li><li><strong>Dokumenti sjednice</strong> (predsjednik): dugme <strong>Generiši nacrt zapisnika (PDF)</strong> pravi radnu verziju zapisnika i vodi vas u <strong>Dokumente</strong>. <em>„Finalni zapisnik nastaje prelaskom u status „Zapisnik finalizovan" i tada postaje nepromjenjiv (nova verzija umjesto izmjene)."</em></li></ul>
+<p>Dugme <strong>Vodi sjednicu uživo</strong> (gore desno) vidljivo je predsjedniku i računovođi od statusa „Zakazana" do statusa „Glasanje zatvoreno".</p>
+<h3 id="65-pravljenje-prijedloga-odluke">6.5 Pravljenje prijedloga odluke</h3>
+<ol><li>Na stranici sjednice kliknite <strong>Novi prijedlog</strong>.</li><li>Popunite:<ul><li><strong>Šifra:</strong> jedinstvena oznaka, na primjer „P-2026-01".</li><li><strong>Naslov</strong>.</li><li><strong>Tačan tekst prijedloga:</strong> tekst o kojem se glasa, doslovno kako treba da glasi odluka.</li><li><strong>Obrazloženje</strong>.</li><li><strong>Procjena finansijskog uticaja (KM)</strong>.</li><li><strong>Tačka dnevnog reda</strong> kojoj prijedlog pripada.</li><li><strong>Obuhvat:</strong> <strong>Cijela ZEV</strong> ili <strong>Jedna zgrada</strong>. Ako izaberete zgradu, glasaju samo vlasnici jedinica u toj zgradi.</li><li><strong>Zgrada (ako je obuhvat zgrada)</strong>.</li><li><strong>Pravilo glasanja</strong> (obavezno).</li><li><strong>Glasanje otvoreno do:</strong> rok za glasanje. Ako ga ne upišete, koristi se <strong>E-glasanje do</strong> sa sjednice. Jedan od ta dva roka mora postojati da bi se glasanje moglo otvoriti.</li></ul></li><li>Kliknite <strong>Sačuvaj prijedlog</strong>. Prijedlog nastaje u statusu <strong>Nacrt</strong>.</li></ol>
+<h3 id="66-stranica-prijedloga-predsjednik-i-racunovodja">6.6 Stranica prijedloga (predsjednik i računovođa)</h3>
+<p>U zaglavlju su šifra i naslov, verzija, sjednica i rok („glasanje do …"). Ispod je oznaka statusa, a nakon evidentiranja odluke i „Odluka br. …". Nakon otvaranja glasanja vidi se i skraćeni <strong>hash</strong>, tehnički otisak teksta koji dokazuje da tekst nije mijenjan.</p>
+<p><strong>Statusi prijedloga:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Status</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Nacrt</strong></td><td>Prijedlog se priprema i slobodno mijenja. Glasanje nije otvoreno.</td></tr>
+<tr><td><strong>Glasanje otvoreno</strong></td><td>Tekst je zamrznut, lični linkovi su izdati i glasovi se primaju.</td></tr>
+<tr><td><strong>Usvojen</strong></td><td>Glasanje je zatvoreno, a prijedlog je dobio potrebnu većinu uz postignut kvorum.</td></tr>
+<tr><td><strong>Odbijen</strong></td><td>Glasanje je zatvoreno, a prijedlog nije usvojen (nema većine ili kvoruma).</td></tr>
+<tr><td><strong>Povučen</strong></td><td>Nacrt je povučen, uz razlog.</td></tr>
+<tr><td><strong>Zamijenjen novom verzijom</strong></td><td>Nakon otvaranja glasanja napravljena je nova verzija teksta. Ova verzija više ne važi.</td></tr>
+</tbody></table></div>
+<p><strong>Kartice:</strong></p>
+<ul><li><strong>Tekst prijedloga (zamrznut nakon otvaranja glasanja):</strong> tekst, obrazloženje, finansijski uticaj i obuhvat.</li><li><strong>Pravilo glasanja (snimak):</strong> dok je prijedlog nacrt, piše samo naziv pravila. Nakon otvaranja stoje tačan kvorum, većina i težina koji važe za ovo glasanje. Kada glasanje krene, ispod je <strong>trenutni rezultat</strong>:<ul><li><strong>Kvorum:</strong> postignut ili NIJE postignut (učestvovalo X od Y)</li><li><strong>Za / Protiv / Uzdržani</strong> (zbir težina)</li><li><strong>Prag većine</strong> i <strong>Ishod</strong> (USVOJENO ili NIJE USVOJENO)</li><li>Nevažećih glasova, i „Glasalo: X/Y vlasnika"</li></ul></li></ul>
+<p><strong>Kartica „Glasačka baza i lični linkovi"</strong> (predsjednik) popunjava se u trenutku otvaranja glasanja. Kolone su:</p>
+<ul><li><strong>Vlasnik</strong></li><li><strong>Punomoćnik</strong>, ako vlasnik ima aktivnu punomoć</li><li><strong>Težina</strong> glasa</li><li><strong>Token status</strong>: stanje ličnog linka (vidi 6.8)</li><li><strong>Izjašnjenje</strong>: izbor i kanal, na primjer „Za (odobravam) (Elektronski)"</li><li><strong>Radnje</strong>: <strong>ponovo izdaj</strong> i <strong>opozovi</strong>, dok je link aktivan</li></ul>
+<p>Ispod tabele je dugme <strong>Glasačka lista (PDF)</strong>. Ono pravi PDF glasačke liste i vodi u <strong>Dokumente</strong>.</p>
+<blockquote><p><em>„Tokeni se čuvaju samo kao hash — sami linkovi se ne mogu ponovo prikazati."</em> Ni predsjednik ne može vidjeti tuđi link. Ako vlasnik izgubi e-mail, izdajte mu novi link (6.8).</p></blockquote>
+<h3 id="67-tok-glasanja-o-prijedlogu-predsjednik">6.7 Tok glasanja o prijedlogu (predsjednik)</h3>
+<p><strong>Korak 1 — Izmjena nacrta (po potrebi).</strong> Dok je prijedlog u statusu <strong>Nacrt</strong>, u kartici <strong>Izmjena nacrta prijedloga</strong> kliknite <strong>Izmijeni nacrt</strong>. Promijenite bilo koje polje (isto kao pri pravljenju) i kliknite <strong>Sačuvaj izmjene</strong>.</p>
+<p><strong>Korak 2 — Povlačenje ili brisanje nacrta (po potrebi).</strong> Kartica <strong>Uklanjanje nacrta</strong> ima dvije mogućnosti:</p>
+<ul><li><strong>Povuci prijedlog:</strong> upišite <strong>Razlog povlačenja</strong> i potvrdite sa <strong>Da, povuci prijedlog</strong>. Prijedlog ostaje vidljiv u statusu „Povučen".</li><li><strong>Obriši nacrt (trajno):</strong> upišite <strong>Razlog brisanja</strong> i potvrdite sa <strong>Da, obriši nacrt</strong>. Brisanje je moguće samo dok pozivi za sjednicu nisu poslati. Poslije toga piše: <em>„Sjednica je već saopštena vlasnicima (pozivi poslati) — prijedlog se više ne može trajno obrisati, samo povući."</em> Zapis o brisanju uvijek ostaje u revizorskom tragu.</li></ul>
+<p><strong>Korak 3 — Otvaranje glasanja.</strong> Kliknite <strong>Otvori glasanje i pošalji linkove</strong>. U tom trenutku aplikacija:</p>
+<ol><li>zamrzne tekst prijedloga i izračuna njegov tehnički otisak,</li><li>sačuva snimak pravila glasanja,</li><li>formira <strong>glasačku bazu</strong>. Kod skupštine to su svi vlasnici sa aktivnim vlasništvom u obuhvatu prijedloga, sa težinom po pravilu. Kod upravnog odbora to su članovi odbora i predsjednik, koji glasaju lično, bez punomoći.</li><li>svakom glasaču izda <strong>lični link</strong> i poseban <strong>verifikacioni kod</strong>, pa oboje pošalje e-mailom vlasniku sa e-mail adresom (ili njegovom punomoćniku).</li></ol>
+<p>Poruka potvrde: <em>„Glasanje je otvoreno. Lični linkovi i kodovi poslati su e-poštom."</em></p>
+<blockquote><p>Ako se pojavi <em>„Nema nijednog vlasnika u obuhvatu prijedloga"</em> ili <em>„Upravni odbor trenutno nema evidentiranih članova"</em>, prvo dopunite evidenciju vlasništva ili organa. Ako se pojavi <em>„Vrijeme zatvaranja glasanja nije definisano"</em>, upišite rok u prijedlogu ili u polju <strong>E-glasanje do</strong> na sjednici.</p></blockquote>
+<p><strong>Korak 4 — Tok glasanja.</strong> Vlasnici glasaju preko svojih linkova (6.10). Rezultat na stranici se osvježava sa svakim glasom. Za vlasnike koji glasaju papirno ili lično koristite karticu <strong>Unos papirnog / ličnog glasa</strong>:</p>
+<ol><li>Izaberite <strong>Vlasnik</strong>.</li><li>Izaberite <strong>Izjašnjenje</strong>: Za, Protiv ili Uzdržan.</li><li>Izaberite <strong>Kanal</strong>: <strong>Papirni glas</strong> ili <strong>Lično na sjednici</strong>.</li><li>Po želji upišite <strong>Napomena</strong>.</li><li>Kliknite <strong>Evidentiraj glas</strong>.</li></ol>
+<p>Svaki vlasnik (odnosno svako mjesto u glasačkoj bazi) može glasati <strong>samo jednom</strong>, bilo kojim kanalom. Ako je već glasao, pojavljuje se <em>„Ovaj vlasnik se već izjasnio."</em></p>
+<p><strong>Korak 5 — Materijalna izmjena tokom glasanja (izuzetno).</strong> Ako se tekst mora suštinski promijeniti dok glasanje traje, koristite karticu <strong>Izmjena prijedloga (materijalna promjena)</strong>:</p>
+<ol><li>U polje <strong>Novi tekst prijedloga</strong> upišite izmijenjen tekst.</li><li>Upišite <strong>Razlog izmjene</strong> (obavezno).</li><li>Kliknite <strong>Kreiraj novu verziju</strong>.</li></ol>
+<p>Nastaje nova verzija prijedloga, a stara dobija status „Zamijenjen novom verzijom". <strong>Svi dotad izdati linkovi se poništavaju.</strong> Već predati glasovi ostaju evidentirani uz staru verziju. Za novu verziju glasanje se ponovo otvara.</p>
+<p><strong>Korak 6 — Zatvaranje glasanja.</strong> Kliknite <strong>Zatvori glasanje i utvrdi rezultat</strong>. Otvara se okvir <em>„Zatvaranje glasanja je nepovratno"</em> sa kvorumom, zbirovima Za/Protiv/Uzdržani i ishodom ako se sada zatvori. Potvrdite sa <strong>Da, zatvori glasanje</strong>. Prijedlog dobija status <strong>Usvojen</strong> ili <strong>Odbijen</strong>, a svi neiskorišteni linkovi ističu.</p>
+<blockquote><p>Kada prođe rok „Glasanje otvoreno do", linkovi prestaju da primaju glasove. Konačni rezultat i status prijedloga ipak nastaju tek kada predsjednik zatvori glasanje (ili kada sjednica pređe preko statusa „Glasanje otvoreno").</p></blockquote>
+<p><strong>Korak 7 — Evidentiranje odluke.</strong> Kod usvojenog ili odbijenog prijedloga, u kartici <strong>Evidentiraj odluku</strong>:</p>
+<ol><li>Upišite <strong>Broj odluke</strong> (na primjer OD-2026-01).</li><li>Kliknite <strong>Evidentiraj i generiši PDF odluke</strong>.</li></ol>
+<p>PDF odluke se pojavljuje u <strong>Dokumentima</strong>. Da bi ga vlasnici vidjeli, objavite ga (<strong>objavi vlasnicima</strong>, vidi 11.1).</p>
+<p><strong>Korak 8 — Ispravka glasa (izuzetno).</strong> Predat glas se nikada ne mijenja ni ne briše. Ako je potrebna ispravka (na primjer, pogrešno unesen papirni glas), koristite karticu <strong>Ispravka glasa</strong>. Ona je dostupna nakon zatvaranja glasanja.</p>
+<ol><li>Izaberite <strong>Glas</strong> (lice i prvobitni izbor).</li><li>Izaberite <strong>Novo izjašnjenje</strong>.</li><li>Upišite <strong>Razlog</strong> i <strong>Osnov / ovlašćenje</strong> (na primjer odluku skupštine). Oba polja su obavezna.</li><li>Kliknite <strong>Evidentiraj ispravku</strong>.</li></ol>
+<p>Ispravka je <strong>novi zapis</strong>. Prvobitni glas ostaje u evidenciji, a rezultat se računa sa ispravljenim izborom. Jedan glas se može ispraviti samo jednom.</p>
+<h3 id="68-licni-linkovi-statusi-ponovno-izdavanje-i-opoziv">6.8 Lični linkovi: statusi, ponovno izdavanje i opoziv</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Status linka</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Aktivan</strong></td><td>Link je izdat i još nije iskorišten.</td></tr>
+<tr><td><strong>Iskorišten</strong></td><td>Vlasnik je preko njega glasao.</td></tr>
+<tr><td><strong>Opozvan</strong></td><td>Predsjednik je poništio link, ili je link automatski poništen nakon 5 pogrešno unesenih verifikacionih kodova.</td></tr>
+<tr><td><strong>Istekao</strong></td><td>Glasanje je zatvoreno ili je prošao rok, a link nije iskorišten.</td></tr>
+<tr><td><strong>Zamijenjen</strong></td><td>Umjesto njega je izdat novi link.</td></tr>
+</tbody></table></div>
+<ul><li><strong>ponovo izdaj:</strong> stari link se odmah poništava. Vlasniku (ili punomoćniku) e-mailom stižu <strong>novi link i novi verifikacioni kod</strong> („Prethodni link je poništen."). Koristite ovo kada vlasnik nije dobio ili je izbrisao e-mail, ili sumnja da je neko drugi vidio poruku.</li><li><strong>opozovi:</strong> link se poništava, a novi se ne šalje. Koristite ovo ako link ne treba više da važi, na primjer kada će vlasnik glasati papirno.</li><li>Iskorišten link se ne može ni opozvati ni ponovo izdati.</li><li>Vlasnik koji otvori opozvan ili zamijenjen link vidi: <em>„Ovaj link je opozvan ili zamijenjen novim. Koristite najnoviji link koji ste dobili."</em></li></ul>
+<h3 id="69-sjednica-uzivo-vodi-sjednicu-uzivo">6.9 Sjednica uživo („Vodi sjednicu uživo")</h3>
+<p>Ovo je poseban ekran za vođenje sjednice u sali, sa telefona ili tableta. Predsjedniku i računovođi je dostupan dugmetom <strong>Vodi sjednicu uživo</strong> na stranici sjednice, od statusa „Zakazana" do statusa „Glasanje zatvoreno". Ekran nema lijevi meni. Za povratak kliknite <strong>‹ Nazad na sjednicu</strong>.</p>
+<p>Ekran se <strong>sam osvježava</strong> svakih 10 sekundi dok je otvoren. Gore piše „Ažurirano prije Xs", a dugme <strong>Osvježi</strong> osvježava odmah.</p>
+<p>Ekran ima dva taba: <strong>Prozivka</strong> i <strong>Dnevni red</strong>.</p>
+<h4 id="tab-prozivka">Tab „Prozivka"</h4>
+<p>Na vrhu stoji brojač: <strong>X Prisutno · Y Odsutno</strong>.</p>
+<ul><li>Polje <strong>Traži ime…</strong> filtrira listu.</li><li>Filteri: <strong>Neoznačeni</strong> (podrazumijevani), <strong>Prisutni</strong>, <strong>Odsutni</strong> i <strong>Svi</strong>.</li><li>Za svakog vlasnika piše ime, jedinice, oznaka <strong>e-glasanje: da</strong> ili <strong>⚠ e-glasanje: ne</strong> (da li je dostavio potpisanu saglasnost) i ime punomoćnika, ako ga ima.</li><li>Za svakog vlasnika kliknite <strong>Prisutan</strong> ili <strong>Odsutan</strong>. Ako ima punomoćnika, kliknite <strong>Punomoćnik</strong> kada je vlasnik prisutan preko punomoćnika.</li><li>Kada ste prozvali sve prisutne, kliknite <strong>Označi sve neoznačene kao odsutne</strong>. Potvrda pokazuje koliko će lica biti označeno. Potvrdite sa <strong>Da, označi kao odsutne</strong>.</li></ul>
+<p>Prozivka je važna jer određuje ko će glasati u sali, a ko će dobiti e-mail.</p>
+<h4 id="tab-dnevni-red">Tab „Dnevni red"</h4>
+<p>Ako sjednica još nije u statusu „Glasanje otvoreno", na vrhu piše <em>„Sjednica još nije označena kao „Glasanje otvoreno"."</em> i stoji dugme <strong>Otvori glasanje (sjednica)</strong>.</p>
+<p>Tačke dnevnog reda su poređane kao tabovi. Za izabranu tačku:</p>
+<ul><li>Ako tačka nema prijedlog: <em>„Diskusija — bez prijedloga za glasanje."</em></li><li>Ako prijedlog postoji, <strong>Tekst prijedloga</strong> se otvara klikom.</li></ul>
+<p><strong>Otvaranje glasanja uživo</strong> (prijedlog u statusu Nacrt):</p>
+<ol><li>Kliknite <strong>Otvori glasanje</strong>.</li><li>Pojavljuje se okvir <em>„Otvaranje glasanja je nepovratno"</em> sa pregledom:<ul><li><strong>U sali (glasaju ručno):</strong> broj prisutnih.</li><li><strong>Dobiće e-mail:</strong> broj odsutnih koji imaju e-mail <strong>i</strong> potpisanu saglasnost za e-glasanje. Ako vlasnik ima punomoćnika, saglasnost moraju imati i vlasnik i punomoćnik.</li><li><strong>Bez ikakvog kanala:</strong> odsutni bez e-maila ili bez saglasnosti. Oni <em>„ostaju u glasačkoj bazi i računaju se u kvorum"</em>.</li><li>Ako kvorum nije dostižan ni kada bi svi u sali i svi koji dobiju e-mail glasali, piše: <em>„Zbir težina u sali i onih koji dobijaju e-mail ne dostiže kvorum."</em></li></ul></li><li>Potvrdite sa <strong>Da, otvori glasanje</strong>.</li></ol>
+<blockquote><p>Razlika u odnosu na obično otvaranje (6.7): uživo <strong>prisutni ne dobijaju e-mail</strong> jer glasaju u sali, a odsutni dobijaju link samo ako su dali saglasnost za e-glasanje.</p></blockquote>
+<p><strong>Tok glasanja uživo</strong> (prijedlog u statusu Glasanje otvoreno):</p>
+<ul><li>Na vrhu su trenutni <strong>Za / Protiv / Uzdržan</strong>, <strong>Kvorum postignut</strong> ili <strong>Kvorum NIJE postignut</strong>, i <strong>Ishod ako se sada zatvori</strong> (USVOJENO ili NIJE USVOJENO).</li><li><strong>Unos iz sale — Ostalo: X / Y:</strong> lista prisutnih koji još nisu glasali. Za svakog kliknite <strong>Za</strong>, <strong>Protiv</strong> ili <strong>Uzdržan</strong>. Glas se odmah evidentira kao „Lično na sjednici".</li><li><strong>Svi preostali prisutni: Za:</strong> brzi unos kada svi preostali u sali dižu ruku „za". Potvrda nabraja imena. Potvrdite sa <strong>Da, evidentiraj glasove „Za"</strong>. Ako je neko u međuvremenu već glasao (na primjer elektronski), njegov glas se preskače, a aplikacija javlja koliko glasova nije evidentirano.</li><li><strong>Čeka se elektronski glas (N):</strong> odsutni kojima je poslat e-mail, sa statusom poruke: U redu čekanja, Poslato, Isporučeno, Pročitano ili Neuspješno. Ako je neka poruka neuspješna, pojavljuje se upozorenje <em>„Jedna ili više e-mail poruka za ovu tačku nije uspješno isporučena."</em></li><li><strong>Glasali elektronski (N):</strong> ko je već glasao preko linka.</li><li><strong>Bez kanala (N):</strong> odsutni bez e-maila ili saglasnosti. <strong>Naknadni papirni unos:</strong> ako takav vlasnik dostavi papirni glasački listić, unesite ga ovdje. Glas se evidentira kao „Papirni glas".</li></ul>
+<p><strong>Zatvaranje glasanja uživo:</strong> kliknite <strong>Zatvori glasanje</strong>. Okvir <em>„Zatvaranje glasanja je nepovratno"</em> prikazuje rezultat. Potvrdite sa <strong>Da, zatvori glasanje</strong>.</p>
+<h3 id="610-kako-vlasnik-glasa-elektronski">6.10 Kako vlasnik glasa elektronski</h3>
+<p>Kada predsjednik otvori glasanje, vlasnik (ili njegov punomoćnik) dobija e-mail <strong>„Poziv na elektronsko izjašnjavanje"</strong>. U njemu su:</p>
+<ul><li><strong>lični link</strong> za izjašnjavanje,</li><li><strong>verifikacioni kod</strong>.</li></ul>
+<p>Link je ličan i ne smije se prosljeđivati. Za glasanje nije potrebna prijava u aplikaciju.</p>
+<p><strong>Postupak:</strong></p>
+<ol><li>Otvorite link iz e-maila. Stranica ima tri koraka.</li><li><strong>1. Ko ste vi:</strong> vaše ime (ili „… — kao punomoćnik vlasnika …") i vaša glasačka težina. Provjerite da ste to vi.</li><li><strong>2. O čemu se izjašnjavate:</strong> naziv sjednice, šifra i verzija prijedloga, naslov, tačan tekst i obrazloženje, te rok („Glasanje otvoreno do …"). Ispod je tehnički otisak teksta. On <em>„garantuje da tekst prijedloga nije mijenjan nakon što vam je poslat"</em>.</li><li><strong>3. Vaše izjašnjenje:</strong><ul><li>Izaberite <strong>Za (odobravam)</strong>, <strong>Protiv (odbijam)</strong> ili <strong>Uzdržan/a</strong>.</li><li>Upišite <strong>Verifikacioni kod (dobili ste ga uz link)</strong>.</li><li>Označite polje sa tekstom izjave (potvrda da se izjašnjavate lično i svjesno).</li><li>Kliknite <strong>Potvrdi i pošalji izjašnjenje</strong>. Pojavljuje se završna provjera, na primjer <em>„Izjašnjavate se ZA prijedlog P-2026-01. Ovo je konačno i ne može se promijeniti."</em></li><li>Kliknite <strong>Da, pošalji izjašnjenje</strong>.</li></ul></li><li>Pojavljuje se potvrda <strong>„Izjašnjavanje je evidentirano"</strong> sa brojem potvrde. Stranicu možete zatvoriti.</li></ol>
+<p><strong>Zašto se glas ne može promijeniti?</strong> Elektronsko izjašnjavanje se čuva kao nepromjenjiv dokaz: šta ste izabrali, kada i o kojem tačno tekstu. Ako biste mogli mijenjati glas, taj dokaz ne bi imao vrijednost. Link se nakon glasanja više ne može koristiti (<em>„Po ovom linku je izjašnjavanje već izvršeno. Ponovno glasanje nije moguće."</em>).</p>
+<p><strong>Moguće poruke na stranici za glasanje:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Poruka</th><th>Šta uraditi</th></tr></thead>
+<tbody>
+<tr><td><em>Link nije prepoznat. Provjerite da li ste otvorili kompletan link iz poruke.</em></td><td>Kopirajte cijeli link iz e-maila.</td></tr>
+<tr><td><em>Ovaj link je opozvan ili zamijenjen novim.</em></td><td>Koristite najnoviji e-mail sa linkom.</td></tr>
+<tr><td><em>Link je istekao.</em> / <em>Glasanje po ovom prijedlogu je zatvoreno.</em></td><td>Rok je prošao. Obratite se predsjedniku.</td></tr>
+<tr><td><em>Verifikacioni kod nije ispravan.</em></td><td>Prepišite kod iz iste poruke. Nakon 5 pogrešnih pokušaja link se automatski poništava i predsjednik vam mora izdati novi.</td></tr>
+<tr><td><em>Previše pokušaja. Pokušajte ponovo za 15 minuta.</em></td><td>Sačekajte.</td></tr>
+<tr><td><em>Za ovog vlasnika je izjašnjavanje već evidentirano.</em></td><td>Glas je već predat, na primjer papirno ili u sali.</td></tr>
+<tr><td><em>Morate potvrditi izjavu prije slanja.</em></td><td>Označite polje sa izjavom.</td></tr>
+</tbody></table></div>
+<p>Na dnu stranice stoji: <em>„Ovaj postupak predstavlja evidentirano elektronsko odobravanje, a ne kvalifikovani elektronski potpis."</em></p>
+<h3 id="611-sta-vlasnik-vidi-u-modulu-skupstina">6.11 Šta vlasnik vidi u modulu Skupština</h3>
+<ul><li>Listu sjednica skupštine i upravnog odbora, sa statusima. Pravila glasanja vlasnik ne vidi.</li><li>Stranicu sjednice sa dnevnim redom i prijedlozima.</li><li>Stranicu prijedloga sa statusom, tekstom i obrazloženjem, te karticu <strong>Vaše učešće</strong>:<ul><li><em>„Imate pravo glasa o ovom prijedlogu. Lični link i verifikacioni kod dobili ste e-poštom — glasa se isključivo putem ličnog linka."</em>, ili</li><li><em>„Niste u glasačkoj bazi ovog prijedloga."</em></li></ul></li></ul>
+<p>Vlasnik nikada ne vidi kako su glasali drugi vlasnici.</p>
+<h3 id="612-kratak-pregled-cijelog-toka-sjednice-predsjednik">6.12 Kratak pregled cijelog toka sjednice (predsjednik)</h3>
+<ol><li><strong>Nova sjednica.</strong> Popunite i kliknite <strong>Kreiraj sjednicu</strong>.</li><li>Dodajte <strong>tačke dnevnog reda</strong>.</li><li>Dodajte <strong>prijedloge</strong> i vežite ih za tačke.</li><li><strong>Zakaži sjednicu</strong>, zatim <strong>Pripremi pozive (PDF)</strong>, zatim <strong>Pošalji pozive (e-mail)</strong>.</li><li>Po želji otvorite e-glasanje unaprijed: na svakom prijedlogu <strong>Otvori glasanje i pošalji linkove</strong>.</li><li>Na dan sjednice otvorite <strong>Vodi sjednicu uživo</strong>. Uradite prozivku, pa po tačkama otvarajte glasanje, unosite glasove iz sale i zatvarajte glasanje.</li><li>Na stranici sjednice redom kliknite <strong>Označi glasanje zatvorenim</strong>, <strong>Pređi na provjeru rezultata</strong> i <strong>Odluke evidentirane</strong>.</li><li>Na svakom usvojenom ili odbijenom prijedlogu kliknite <strong>Evidentiraj i generiši PDF odluke</strong>.</li><li><strong>Finalizuj zapisnik (PDF)</strong>, pa <strong>Arhiviraj</strong>.</li><li>U <strong>Dokumentima</strong> objavite odluke i zapisnik vlasnicima.</li></ol>
+<hr>
+<h2 id="7-fakture-i-uplate">7. Fakture i uplate</h2>
+<p>Ovdje su mjesečne (i druge) naknade, izdavanje faktura vlasnicima, evidencija uplata i njihovo raspoređivanje na fakture.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Stavke naknada (metode obračuna)</td><td>✔</td><td>✔</td><td>–</td></tr>
+<tr><td>Nacrt serije faktura i pregled obračuna</td><td>pregled</td><td>✔</td><td>–</td></tr>
+<tr><td>Izdavanje serije, korekcija, storno faktura</td><td>–</td><td>✔</td><td>–</td></tr>
+<tr><td>Pregled faktura</td><td>sve</td><td>sve</td><td>samo svoje</td></tr>
+<tr><td>Unos uplata, uvoz izvoda, uparivanje, storno</td><td>pregled</td><td>✔</td><td>–</td></tr>
+<tr><td>Salda</td><td>sva</td><td>sva</td><td>samo svoje</td></tr>
+</tbody></table></div>
+<p>Izdata faktura se nikada ne mijenja tiho niti briše. Ispravlja se korektivnom fakturom ili stornom, uz razlog.</p>
+<p>Predsjednik i računovođa vide dva taba: <strong>Naknade i serije</strong> i <strong>Fakture</strong>. Gore desno je dugme <strong>Uplate i uparivanje</strong>. Vlasnik odmah vidi svoje fakture, a gore desno ima dugme <strong>Moje uplate</strong>.</p>
+<h3 id="71-stavke-naknada">7.1 Stavke naknada</h3>
+<p>Stavka naknade opisuje šta se naplaćuje i kako se računa, na primjer „Redovno održavanje, 0,35 KM po m² mjesečno". Na kartici <strong>Stavke naknada (konfigurabilne)</strong> tabela ima kolone <strong>Naziv</strong>, <strong>Metoda</strong>, <strong>Stopa/iznos</strong>, <strong>Obuhvat</strong>, <strong>Frekvencija</strong>, <strong>Fond</strong> i <strong>Radnje</strong>.</p>
+<p><strong>Nova stavka:</strong></p>
+<ol><li>Kliknite <strong>Nova stavka naknade</strong>.</li><li>Popunite grupu <strong>Osnovno</strong>:<ul><li><strong>Naziv</strong> (na primjer „Redovno održavanje").</li><li><strong>Metoda obračuna</strong>, jedna od:<ul><li><strong>Fiksno po jedinici:</strong> isti iznos za svaku jedinicu.</li><li><strong>Po m²:</strong> stopa × korisna površina.</li><li><strong>Po vlasničkom udjelu:</strong> raspodjela prema udjelu jedinice u ZEV-u.</li><li><strong>Po broju korisnika:</strong> stopa × broj korisnika jedinice.</li><li><strong>Jednaka raspodjela:</strong> ukupan iznos podijeljen na jednake dijelove.</li><li><strong>Koeficijent tipa:</strong> raspodjela prema koeficijentu tipa jedinice.</li><li><strong>Po potrošnji:</strong> prema očitanjima.</li><li><strong>Prilagođeni ponderi</strong>.</li><li><strong>Ručni iznos</strong>.</li></ul></li><li><strong>Obuhvat:</strong> <strong>Cijela ZEV</strong> ili <strong>Zgrada</strong>.</li><li><strong>Zgrada (ako obuhvat = zgrada)</strong>.</li></ul></li><li>Popunite grupu <strong>Obračun</strong>:<ul><li><strong>Stopa / iznos (KM).</strong> <em>„Za raspodjele: ukupan iznos; za m²/udio/korisnika: cijena po jedinici mjere."</em></li><li><strong>Zaokruživanje:</strong> Polovina naviše (2 dec.), Naviše ili Naniže.</li><li><strong>Redoslijed na fakturi</strong>.</li><li><strong>Fond održavanja:</strong> označite ako ovaj novac ide u fond održavanja. Tako se prati stanje fonda.</li></ul></li><li>Popunite grupu <strong>Dospijeće i prikaz</strong>:<ul><li><strong>Važi od</strong> (obavezno)</li><li><strong>Frekvencija:</strong> Mjesečno, Godišnje ili Jednokratno</li><li><strong>Dan dospijeća u mjesecu</strong></li></ul></li><li>Kliknite <strong>Sačuvaj stavku</strong>.</li></ol>
+<p><strong>Izmjena stavke:</strong> kliknite <strong>Uredi</strong> u redu stavke. Pored navedenih polja možete isključiti stavku kao neaktivnu. Neaktivne stavke nose oznaku „(neaktivna)" i ne ulaze u nove serije. Kliknite <strong>Sačuvaj izmjene</strong>.</p>
+<h3 id="72-serija-faktura-od-nacrta-do-izdavanja-racunovodja">7.2 Serija faktura: od nacrta do izdavanja (računovođa)</h3>
+<p>Fakture se izdaju u <strong>serijama</strong>, po jedna serija za period (mjesec). Kartica <strong>Serije faktura</strong> prikazuje posljednje serije sa kolonama <strong>Period</strong>, <strong>Status</strong> (Nacrt, Izdata ili Stornirana), <strong>Faktura</strong> (broj) i <strong>Kreirana</strong>.</p>
+<ol><li>U polje <strong>Period (GGGG-MM)</strong> upišite mjesec, na primjer <code>2026-08</code>.</li><li>Kliknite <strong>Kreiraj nacrt serije sa pregledom obračuna</strong>.</li><li>Otvara se ekran <strong>Serija faktura — 2026-08</strong> sa pregledom obračuna <strong>za svaku jedinicu</strong> prije izdavanja. Za svaku jedinicu postoji kartica „Zgrada / Jedinica — Dužnik — ukupno …" sa stavkama i kolonama:<ul><li><strong>Stavka</strong>, <strong>Metoda</strong></li><li><strong>Formula</strong>: kako je iznos izračunat</li><li><strong>Ulazne vrijednosti</strong>: površina, udio, stopa…</li><li><strong>Osnov raspodjele</strong></li><li><strong>Prije zaokruž.</strong>: iznos prije zaokruživanja</li><li><strong>Iznos</strong></li></ul></li><li>Provjerite obračun. Ako nešto nije u redu (pogrešna površina, udio ili stopa), ispravite izvorne podatke u <strong>Zgradama i jedinicama</strong> ili u stavkama naknada, pa napravite novi nacrt.</li><li>Kliknite <strong>Izdaj N faktura (ukupan iznos)</strong>.</li></ol>
+<p>Poslije izdavanja:</p>
+<ul><li>Svaka faktura dobija broj u obliku <code>FAK-GGGG-000001</code> i <strong>poziv na broj</strong>.</li><li>Rok plaćanja je 15. u mjesecu obračunskog perioda.</li><li><strong>Dužnik</strong> je lice upisano kao primalac fakture za jedinicu. Ako takvo lice nije upisano, dužnik je vlasnik sa najvećim udjelom.</li><li>Za svaku fakturu nastaje PDF, a dužnik dobija e-mail „Nova faktura …". E-mail ne sadrži iznose, nego poziva na prijavu u aplikaciju.</li></ul>
+<p>Poruka potvrde: <em>„Serija je izdata, PDF fakture generisane i poslate."</em></p>
+<p><strong>Moguće prepreke:</strong></p>
+<ul><li><em>„Za period … već postoji izdata serija faktura."</em> Za jedan period može postojati samo jedna izdata serija.</li><li><em>„Jedinica … nema evidentiranog vlasnika/primaoca fakture."</em> Dopunite vlasništvo te jedinice.</li><li><em>„Serija nema obračunatih stavki."</em> Nijedna aktivna stavka naknade ne važi za taj period.</li></ul>
+<p>Predsjednik može otvoriti i pregledati seriju, ali je ne može izdati.</p>
+<h3 id="73-tab-fakture">7.3 Tab „Fakture"</h3>
+<p><strong>Filteri:</strong></p>
+<ul><li><strong>Status:</strong> Izdata, Plaćena, Stornirana ili Korigovana</li><li><strong>Period (GGGG-MM)</strong></li><li><strong>Jedinica</strong></li></ul>
+<p><strong>Kolone:</strong> <strong>Broj</strong>, Jedinica, Dužnik, Period, <strong>Dospijeće</strong>, <strong>Iznos</strong>, <strong>Plaćeno</strong> i Status. Sortira se po broju, dospijeću, iznosu i plaćenom. Lista je podijeljena na stranice.</p>
+<p>Izdata faktura kojoj je prošao rok prikazuje se sa statusom <strong>Dospjela (neplaćena)</strong>.</p>
+<p><strong>Statusi fakture:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Status</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Izdata</strong></td><td>Izdata, otvorena za plaćanje.</td></tr>
+<tr><td><strong>Djelimično plaćena</strong></td><td>Dio iznosa je raspoređen iz uplata.</td></tr>
+<tr><td><strong>Plaćena</strong></td><td>Cijeli iznos je pokriven uplatama.</td></tr>
+<tr><td><strong>Dospjela (neplaćena)</strong></td><td>Rok je prošao, a faktura nije plaćena.</td></tr>
+<tr><td><strong>Korigovana</strong></td><td>Zamijenjena korektivnom fakturom.</td></tr>
+<tr><td><strong>Stornirana</strong></td><td>Poništena. Ostaje vidljiva, ali se ne naplaćuje.</td></tr>
+</tbody></table></div>
+<h3 id="74-stranica-fakture">7.4 Stranica fakture</h3>
+<p>Zaglavlje prikazuje <strong>Faktura FAK-…</strong>, jedinicu i dužnika, a dugme <strong>Preuzmi PDF</strong> je gore desno.</p>
+<ul><li><strong>Iznosi:</strong> Ukupno, Plaćeno, Otvoreno, Izdata, Dospijeće i <strong>Poziv na broj</strong>.</li><li><strong>Stavke sa obračunom:</strong> stavka, formula, ulazi i iznos. Svaka stavka čuva tačan obračun kakav je bio u trenutku izdavanja.</li><li><strong>Uplate po ovoj fakturi:</strong> raspoređene uplate. Storno raspoređivanja prikazan je crveno, kao negativan iznos.</li><li>Oznake „Korekcija fakture …", „Korigovana fakturom …" ili „Storno: razlog", gdje postoje.</li></ul>
+<p><strong>Korekcija fakture</strong> (računovođa, samo za izdatu fakturu):</p>
+<ol><li>U kartici <strong>Korekcija fakture (original ostaje vidljiv)</strong> upišite <strong>Novi ukupan iznos (KM)</strong>, <strong>Opis korekcije</strong> i <strong>Razlog</strong>.</li><li>Kliknite <strong>Kreiraj korektivnu fakturu</strong>.</li></ol>
+<p>Original dobija status „Korigovana", a nastaje nova, povezana korektivna faktura. Vodi vas na nju sa porukom <em>„Korektivna faktura kreirana; original ostaje vidljiv."</em></p>
+<p><strong>Storniranje fakture</strong> (računovođa):</p>
+<ol><li>U kartici <strong>Storniranje</strong> kliknite <strong>Storniraj</strong>.</li><li>Upišite <strong>Razlog storniranja</strong>.</li><li>Potvrdite sa <strong>Da, storniraj fakturu</strong>.</li></ol>
+<p>Storniranje je moguće <strong>samo dok na fakturu nisu raspoređene uplate</strong>. Ako jesu, prvo stornirajte raspoređivanje (7.7).</p>
+<h3 id="75-uplate-rucni-unos-racunovodja">7.5 Uplate: ručni unos (računovođa)</h3>
+<p>Klik na <strong>Uplate i uparivanje</strong> otvara ekran uplata. Kartica <strong>Ručni unos uplate</strong>:</p>
+<ol><li>Popunite:<ul><li><strong>Račun:</strong> na koji račun ili u koju blagajnu je novac stigao</li><li><strong>Datum</strong></li><li><strong>Iznos (KM)</strong></li><li><strong>Platilac (iz evidencije)</strong>, ili „— nepoznat —"</li><li><strong>Naziv platioca (sa izvoda)</strong></li><li><strong>Poziv na broj</strong></li><li><strong>Način:</strong> Banka ili Blagajna</li></ul></li><li>Kliknite <strong>Evidentiraj uplatu</strong>.</li></ol>
+<p>Uplata nastaje sa statusom <strong>Neraspoređena</strong>. Zatim je rasporedite na fakturu (7.7).</p>
+<h3 id="76-uvoz-bankovnog-izvoda">7.6 Uvoz bankovnog izvoda</h3>
+<p><strong>A) CSV izvod</strong> (kartica <strong>Uvoz bankovnog izvoda (CSV)</strong>):</p>
+<ol><li>Izaberite <strong>CSV fajl</strong> i <strong>Račun</strong> (bankovni).</li><li>Podesite kako je fajl organizovan. Kolone se broje od 0.<ul><li><strong>Separator</strong> (obično <code>;</code>)</li><li><strong>Kolona datuma (0+)</strong></li><li><strong>Kolona iznosa</strong></li><li><strong>Kolona platioca</strong></li><li><strong>Kolona poziva na broj</strong></li><li><strong>Kolona svrhe uplate (opciono)</strong></li><li><strong>Preskoči redova (zaglavlje)</strong></li><li><strong>Format datuma:</strong> DD.MM.GGGG ili GGGG-MM-DD</li><li><strong>decimalni zarez (1.234,56)</strong></li></ul></li><li>Kliknite <strong>Uvezi</strong>. Poruka javlja koliko je uplata uvezeno i koliko je redova imalo grešku.</li></ol>
+<p>Uplate iz CSV-a nastaju kao neraspoređene. Raspoređujete ih u sljedećem koraku.</p>
+<p><strong>B) PDF izvod</strong> (kartica <strong>Uvoz bankovnog izvoda (PDF)</strong>). Ništa se ne upisuje dok ne potvrdite.</p>
+<ol><li>Izaberite <strong>PDF izvod</strong> i <strong>Račun</strong>, pa kliknite <strong>Učitaj i pregledaj</strong>.</li><li>Pojavljuje se pregled: <em>„Prepoznato N stavki … Provjerite/ispravite ispod prije uvoza — ništa još nije sačuvano."</em> Ako broj računa u izvodu ne odgovara izabranom računu, pojavljuje se upozorenje.</li><li>U tabeli za svaku stavku:<ul><li><strong>Uvezi:</strong> označite ili isključite stavku.</li><li><strong>Smjer:</strong> „uplata" ili „isplata".</li><li><strong>Datum</strong>, <strong>Iznos</strong>, <strong>Platilac / primalac</strong> i <strong>Svrha / opis</strong> možete ispraviti.</li><li><strong>Faktura / trošak:</strong><ul><li>Za uplatu izaberite fakturu na koju se odmah raspoređuje, ili „— ne uparuj sada —".</li><li>Za isplatu izaberite trošak koji se time plaća, ili „— bez veze (opšti izlaz) —" uz po želji upisanu <strong>kategoriju</strong>.</li></ul></li></ul></li></ol>
+<p>   Aplikacija sama predlaže fakture i troškove gdje prepozna podudaranje.</p>
+<ol><li>Kliknite <strong>Uvezi (N)</strong>. Poruka javlja koliko je uplata i isplata uvezeno. Uplate sa izabranom fakturom su odmah raspoređene. Ostale su u tabeli ispod, u koloni „uparivanje".</li></ol>
+<h3 id="77-uparivanje-uplata-sa-fakturama">7.7 Uparivanje uplata sa fakturama</h3>
+<p>Tabela <strong>Sve uplate</strong> ima filter <strong>Status</strong> i kolone <strong>Datum</strong>, <strong>Platilac</strong>, <strong>Poziv na broj</strong>, <strong>Iznos</strong>, <strong>Status</strong> i <strong>Radnje</strong>. Klik na <strong>uparivanje</strong> ili <strong>detalji</strong> otvara uplatu.</p>
+<p><strong>Statusi uplate:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Status</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Neraspoređena</strong></td><td>Nije vezana ni za jednu fakturu.</td></tr>
+<tr><td><strong>Djelimično raspoređena</strong></td><td>Dio uplate je vezan, a ostatak je slobodan (avans).</td></tr>
+<tr><td><strong>Raspoređena</strong></td><td>Cijela uplata je vezana za fakture.</td></tr>
+<tr><td><strong>Stornirana</strong></td><td>Uplata je poništena.</td></tr>
+</tbody></table></div>
+<p><strong>Na stranici uplate:</strong></p>
+<ul><li>Zaglavlje prikazuje iznos, datum, platioca i račun, uz <strong>Raspoređeno</strong> i <strong>Slobodno (avans)</strong>.</li><li><strong>Prijedlozi uparivanja:</strong> fakture koje vjerovatno odgovaraju ovoj uplati. Kolona <strong>Osnov prijedloga</strong> objašnjava zašto, na primjer „poziv na broj", „isti platilac", „naziv platioca", „broj stana u svrsi uplate", „ime vlasnika pomenuto u svrsi uplate" ili „tačan iznos". Klik na <strong>upari</strong> raspoređuje uplatu na tu fakturu, do otvorenog iznosa fakture.</li><li><strong>Ručno raspoređivanje:</strong> izaberite <strong>Faktura</strong> (prikazane su samo fakture sa otvorenim iznosom), upišite <strong>Iznos (KM)</strong> i kliknite <strong>Rasporedi</strong>. Uplata se može podijeliti na više faktura.</li></ul>
+<p>Ako je uplata veća od otvorenog dijela fakture, višak ostaje kao <strong>avans</strong> (slobodan iznos) i kasnije se može rasporediti na drugu fakturu.</p>
+<p><strong>Alokacije:</strong> tabela svih raspoređivanja ove uplate.</p>
+<ul><li><strong>storno</strong> u redu raspoređivanja poništava tu vezu. Upišite <strong>Razlog storniranja</strong> i potvrdite sa <strong>Da, storniraj alokaciju</strong>. Nastaje novi, negativan zapis. Ništa se ne briše.</li><li><strong>Storniraj uplatu</strong> poništava cijelu uplatu, zajedno sa svim raspoređivanjima. Obavezno upišite <strong>Razlog storniranja</strong> i potvrdite sa <strong>Da, storniraj uplatu</strong>. Koristite ovo kada je uplata greškom unesena.</li></ul>
+<h3 id="78-sta-vlasnik-vidi">7.8 Šta vlasnik vidi</h3>
+<ul><li><strong>Moje fakture:</strong> broj, jedinica, period, dospijeće, iznos, plaćeno i status. Klik otvara fakturu sa obračunom i dugmetom <strong>Preuzmi PDF</strong>.</li><li><strong>Moje uplate:</strong> tabela <strong>Moje evidentirane uplate</strong> (datum, iznos i status).</li></ul>
+<p>Vlasnik ne unosi uplate. Uplate evidentira računovođa na osnovu izvoda. Ako uplata nedostaje, obratite se računovođi ili predsjedniku.</p>
+<hr>
+<h2 id="8-troskovi">8. Troškovi</h2>
+<p>Ovdje su ulazne fakture (računi dobavljača), njihovo plaćanje i veza sa godišnjim planom, projektima i održavanjem. Modul vide predsjednik i računovođa. U zaglavlju piše <strong>Troškovi i dobavljači</strong>.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th></tr></thead>
+<tbody>
+<tr><td>Unos dobavljača</td><td>✔</td><td>✔</td></tr>
+<tr><td>Unos troška (ulazne fakture)</td><td>✔</td><td>✔</td></tr>
+<tr><td>Plaćanje troška, storno troška</td><td>–</td><td>✔</td></tr>
+</tbody></table></div>
+<p>Ekran ima dva taba: <strong>Dobavljači</strong> i <strong>Troškovi</strong>.</p>
+<h3 id="81-tab-dobavljaci">8.1 Tab „Dobavljači"</h3>
+<p>Tabela ima kolone <strong>Naziv</strong>, <strong>JIB</strong>, <strong>Račun</strong> i <strong>Kontakt</strong>. Dobavljači se koriste i u troškovima i u održavanju, za ponude izvođača i radne naloge.</p>
+<p><strong>Novi dobavljač:</strong> kliknite <strong>Novi dobavljač</strong>, popunite <strong>Naziv</strong> (obavezno), <strong>JIB</strong>, <strong>Žiro račun</strong>, <strong>E-mail</strong> i <strong>Telefon</strong>, pa kliknite <strong>Sačuvaj</strong>.</p>
+<h3 id="82-tab-troskovi">8.2 Tab „Troškovi"</h3>
+<p><strong>Filteri:</strong> <strong>Status</strong> (Neplaćen, Djelimično plaćen, Plaćen ili Storniran) i <strong>Dobavljač</strong>.</p>
+<p><strong>Kolone:</strong> Dobavljač, Br. fakture, <strong>Datum</strong>, Kategorija, <strong>Iznos</strong>, Plaćeno, <strong>Rok</strong>, Status i Radnje. Sortira se po datumu, iznosu i roku.</p>
+<p><strong>Evidentiranje troška:</strong> kartica <strong>Novi trošak (ulazna faktura)</strong>.</p>
+<ol><li>Popunite:<ul><li><strong>Dobavljač</strong></li><li><strong>Broj fakture dobavljača</strong></li><li><strong>Datum fakture</strong></li><li><strong>Iznos (KM)</strong> (obavezno)</li><li><strong>Rok plaćanja</strong></li><li><strong>Kategorija:</strong> slobodan tekst, na primjer „Struja zajedničkih prostorija". Nova kategorija nastaje automatski.</li><li><strong>Zgrada</strong> (ili „Cijela ZEV")</li><li><strong>Projekat</strong>: ako trošak pripada investicionom projektu</li><li><strong>Stavka godišnjeg plana</strong>: veže trošak za stavku usvojenog plana, pa se računa u „realizovano" (vidi 9.4)</li><li><strong>Opis</strong></li><li><strong>ponavljajući (mjesečno)</strong>: za redovne mjesečne račune</li></ul></li><li>Kliknite <strong>Evidentiraj trošak</strong>.</li></ol>
+<p><strong>Zaštita od duplikata.</strong> Ako aplikacija posumnja da je ista faktura već unesena, javlja se: <em>„UPOZORENJE: mogući duplikat (…). Označite "dozvoli duplikat" ako je unos ispravan."</em> Ako je unos zaista nov, označite <strong>dozvoli mogući duplikat</strong> i ponovo kliknite <strong>Evidentiraj trošak</strong>.</p>
+<p><strong>Plaćanje troška</strong> (računovođa): u redu neplaćenog troška izaberite račun sa kojeg se plaća i kliknite <strong>plati</strong>. Evidentira se isplata cijelog preostalog iznosa sa današnjim datumom, a trošak postaje „Plaćen".</p>
+<p><strong>Storno troška</strong> (računovođa): kliknite <strong>storno</strong>, upišite <strong>Razlog storniranja</strong> i potvrdite sa <strong>Da, storniraj trošak</strong>. Trošak koji već ima evidentirano plaćanje ne može se stornirati.</p>
+<hr>
+<h2 id="9-planovi">9. Planovi</h2>
+<p>Ovdje su godišnji plan održavanja i finansijski plan, investicioni projekti i praćenje „plan vs. realizacija". U zaglavlju piše <strong>Godišnji planovi</strong>.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Planovi, stavke, nove verzije</td><td>✔</td><td>pregled</td><td>pregled</td></tr>
+<tr><td>Usvajanje plana (samo uz usvojen prijedlog skupštine)</td><td>✔</td><td>–</td><td>–</td></tr>
+<tr><td>Plan vs. realizacija</td><td>✔</td><td>✔</td><td>–</td></tr>
+<tr><td>Investicioni projekti</td><td>✔ (unos)</td><td>pregled</td><td>–</td></tr>
+</tbody></table></div>
+<h3 id="91-lista-planova">9.1 Lista planova</h3>
+<p>Kartica <strong>Planovi (verzionisani)</strong> ima kolone <strong>Godina</strong>, <strong>Vrsta</strong>, <strong>Naziv</strong>, <strong>Verzija</strong> i <strong>Status</strong>.</p>
+<p><strong>Statusi plana:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Status</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Nacrt</strong></td><td>Plan se priprema.</td></tr>
+<tr><td><strong>Predložen skupštini</strong></td><td>Plan je predat skupštini na odlučivanje.</td></tr>
+<tr><td><strong>Usvojen</strong></td><td>Skupština ga je usvojila. Mijenja se samo kroz novu verziju.</td></tr>
+<tr><td><strong>Arhiviran</strong></td><td>Zamijenjen novijom verzijom.</td></tr>
+</tbody></table></div>
+<p><strong>Novi plan</strong> (predsjednik):</p>
+<ol><li>Upišite <strong>Godina</strong> (podrazumijevano sljedeća godina).</li><li>Izaberite <strong>Vrsta</strong>: <strong>Plan održavanja</strong> ili <strong>Finansijski plan</strong>.</li><li>Upišite <strong>Naziv</strong> (na primjer „Godišnji plan održavanja 2027.").</li><li>Kliknite <strong>Kreiraj plan</strong>.</li></ol>
+<h3 id="92-investicioni-projekti">9.2 Investicioni projekti</h3>
+<p>Kartica <strong>Investicioni projekti</strong> (predsjednik i računovođa) ima kolone <strong>Naziv</strong>, <strong>Opis</strong>, <strong>Procjena (KM)</strong> i <strong>Status</strong>. Predsjednik dodaje projekat tako što upiše <strong>Naziv</strong>, <strong>Opis</strong> i <strong>Procjena (KM)</strong>, pa klikne <strong>Dodaj projekat</strong>. Projekti se zatim biraju u stavkama plana i u troškovima.</p>
+<h3 id="93-stranica-plana-i-stavke">9.3 Stranica plana i stavke</h3>
+<p>U zaglavlju su naziv i verzija (na primjer „(v2)"), godina i vrsta. Dugmad (predsjednik):</p>
+<ul><li><strong>PDF:</strong> pravi PDF plana i vodi u <strong>Dokumente</strong>.</li><li><strong>Predloži skupštini:</strong> vidljivo dok je plan nacrt. Status postaje „Predložen skupštini".</li><li><strong>Nova verzija:</strong> pravi kopiju plana sa svim stavkama kao sljedeću verziju. Ako je stara verzija bila nacrt ili predložena, ona se arhivira.</li></ul>
+<p><strong>Kartica „Stavke plana"</strong> ima kolone <strong>Stavka</strong>, <strong>Vrsta</strong>, <strong>Mjesec</strong>, <strong>Obuhvat</strong>, <strong>Planirano (KM)</strong> i <strong>Termin</strong>.</p>
+<p><strong>Nova stavka</strong> (predsjednik, dok je plan nacrt ili predložen):</p>
+<ol><li>Kliknite <strong>Nova stavka</strong>.</li><li>Popunite:<ul><li><strong>Naziv</strong></li><li><strong>Vrsta:</strong> Trošak održavanja, Redovni trošak, Očekivani prihod, Investicioni projekat, Izdvajanje u fond, Rezerva za nepredviđeno, Preventivno održavanje ili Pregled / inspekcija</li><li><strong>Planirani iznos (KM)</strong></li><li><strong>Mjesec (1-12, za mjesečni tok novca)</strong></li><li><strong>Obuhvat</strong> (Cijela ZEV ili Zgrada) i <strong>Zgrada</strong></li><li><strong>Projekat</strong></li><li><strong>Termin (pregledi/preventiva):</strong> stavke sa terminom pojavljuju se na <strong>Početnoj</strong>, u kartici „Predstojeći pregledi i preventivno održavanje"</li></ul></li><li>Kliknite <strong>Dodaj stavku</strong>.</li></ol>
+<p><em>Usvojeni ili arhivirani plan mijenja se samo kroz novu verziju.</em></p>
+<h3 id="94-usvajanje-plana">9.4 Usvajanje plana</h3>
+<p>Plan se usvaja <strong>samo na osnovu usvojenog prijedloga skupštine</strong>.</p>
+<ol><li>U modulu <strong>Skupština i odluke</strong> napravite prijedlog, na primjer „Usvajanje godišnjeg plana održavanja 2027.", i provedite glasanje. Prijedlog mora dobiti status <strong>Usvojen</strong>.</li><li>Na stranici plana (status „Predložen skupštini") pojavljuje se kartica <strong>Usvajanje plana (veza sa odlukom skupštine)</strong>.</li><li>U polju <strong>Usvojeni prijedlog skupštine</strong> izaberite taj prijedlog.</li><li>Kliknite <strong>Usvoji plan</strong>.</li></ol>
+<p>Plan dobija status <strong>Usvojen</strong>, a pored statusa piše „Usvojen odlukom skupštine (datum)". Ako nema nijednog usvojenog prijedloga, piše: <em>„Nema usvojenih prijedloga — plan se usvaja tek nakon odluke skupštine."</em></p>
+<h3 id="95-plan-vs-realizacija">9.5 Plan vs. realizacija</h3>
+<p>Predsjednik i računovođa ispod stavki vide karticu <strong>Plan vs. realizacija</strong>. Za svaku stavku prikazani su <strong>Planirano</strong>, <strong>Realizovano</strong> i <strong>Razlika</strong>. Razlika je crvena kada je realizovano veće od planiranog. U naslovu kartice su ukupni iznosi.</p>
+<p>„Realizovano" su troškovi i isplate koji su pri unosu vezani za stavku plana, poljem <strong>Stavka godišnjeg plana</strong> u modulu <strong>Troškovi</strong>. Zato je važno da računovođa pri unosu troška bira stavku plana.</p>
+<hr>
+<h2 id="10-odrzavanje">10. Održavanje</h2>
+<p>Ovdje su prijave kvarova i problema i cijeli tok njihovog rješavanja: trijaža, odobrenje, ponude izvođača, radni nalog, radovi, primopredaja, faktura i plaćanje. Postoji i hitni put za situacije koje ne mogu čekati odobrenje.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Prijava kvara</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>Komentari na prijavi</td><td>✔</td><td>✔</td><td>✔ (na svojoj)</td></tr>
+<tr><td>Tok statusa, ponude, radni nalozi, hitni put</td><td>✔</td><td>pregled</td><td>–</td></tr>
+<tr><td>Praćenje prijava</td><td>sve</td><td>sve</td><td>samo svoje</td></tr>
+</tbody></table></div>
+<h3 id="101-prijava-kvara-svi-korisnici">10.1 Prijava kvara (svi korisnici)</h3>
+<p>Na vrhu ekrana <strong>Održavanje</strong> je kartica <strong>Prijavi kvar / problem</strong>.</p>
+<ol><li>Popunite:<ul><li><strong>Naslov</strong> (na primjer „Curenje u podrumu")</li><li><strong>Zgrada</strong></li><li><strong>Jedinica (ako se odnosi na jedinicu)</strong></li><li><strong>Opis problema</strong> (obavezno)</li><li><strong>Lokacija (napomena)</strong> (na primjer „podrum, kod liftovskog okna")</li><li><strong>Kategorija</strong> (na primjer vodovod, struja, lift…)</li><li><strong>Hitnost:</strong> Normalna, Niska, Visoka ili Hitno</li><li><strong>utiče na bezbjednost</strong>: označite ako kvar ugrožava ljude ili imovinu</li></ul></li><li>Kliknite <strong>Pošalji prijavu</strong>.</li></ol>
+<p>Prijava dobija status <strong>Prijavljen</strong>. Vlasnik je vidi u listi <strong>Moje prijave</strong> i na <strong>Početnoj</strong>.</p>
+<h3 id="102-lista-prijava">10.2 Lista prijava</h3>
+<ul><li>Vlasnik vidi <strong>Moje prijave</strong>.</li><li>Predsjednik i računovođa vide <strong>Sve prijave</strong>, sa filterima <strong>Status</strong> i <strong>samo moje prijave</strong>.</li></ul>
+<p><strong>Kolone:</strong> <strong>Naslov</strong>, <strong>Prijavio</strong>, <strong>Kategorija</strong>, <strong>Hitnost</strong> (⚠ znači hitna intervencija), <strong>Status</strong> i <strong>Prijavljena</strong>. Sortira se po hitnosti i datumu.</p>
+<p><strong>Statusi prijave:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Status</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Prijavljen</strong></td><td>Nova prijava.</td></tr>
+<tr><td><strong>Trijaža obavljena</strong></td><td>Predsjednik je pregledao prijavu i procijenio je.</td></tr>
+<tr><td><strong>Čeka odobrenje</strong></td><td>Za radove je potrebna odluka ili ovlašćenje.</td></tr>
+<tr><td><strong>Odobren</strong></td><td>Radovi su odobreni.</td></tr>
+<tr><td><strong>Traže se ponude</strong></td><td>Prikupljaju se ponude izvođača.</td></tr>
+<tr><td><strong>Izvođač izabran</strong></td><td>Izabrana je ponuda.</td></tr>
+<tr><td><strong>Zakazano</strong></td><td>Radni nalog je izdat i radovi su zakazani.</td></tr>
+<tr><td><strong>U toku</strong></td><td>Radovi su počeli.</td></tr>
+<tr><td><strong>Završeno</strong></td><td>Radni nalog je označen kao završen.</td></tr>
+<tr><td><strong>Provjereno</strong></td><td>Radovi su provjereni, primopredaja je obavljena.</td></tr>
+<tr><td><strong>Fakturisano</strong></td><td>Stigla je faktura izvođača.</td></tr>
+<tr><td><strong>Plaćeno</strong></td><td>Izvođač je plaćen.</td></tr>
+<tr><td><strong>Zatvoreno</strong></td><td>Prijava je završena.</td></tr>
+<tr><td><strong>Odbijen</strong></td><td>Prijava je odbijena.</td></tr>
+</tbody></table></div>
+<h3 id="103-stranica-prijave">10.3 Stranica prijave</h3>
+<ul><li><strong>Zaglavlje:</strong> naslov, ko je i kada prijavio, i lokacija. Ispod su oznake statusa, hitnosti, <strong>Bezbjednosni rizik</strong>, <strong>Hitna intervencija</strong>, procjena i stvarni trošak.</li><li><strong>Opis</strong>.</li><li><strong>Tok statusa:</strong> hronološki spisak svih promjena statusa, sa napomenama i vremenom.</li><li><strong>Ponude izvođača</strong> i <strong>Radni nalozi</strong> (predsjednik i računovođa).</li><li><strong>Komentari:</strong> svako ko vidi prijavu može upisati <strong>Novi komentar</strong> i kliknuti <strong>Dodaj</strong>. Vlasnik tako može dopuniti opis ili odgovoriti.</li><li><strong>Povezani troškovi</strong>, ako postoje.</li></ul>
+<h3 id="104-redovan-tok-rjesavanja-predsjednik">10.4 Redovan tok rješavanja (predsjednik)</h3>
+<p>U kartici <strong>Tok statusa</strong> predsjednik vidi dugmad za sljedeći korak:</p>
+<ol><li><strong>Prijavljen:</strong> <strong>Trijaža obavljena</strong> ili <strong>Odbij prijavu</strong>.</li><li><strong>Trijaža obavljena:</strong><ul><li><strong>Traži odobrenje</strong>, ako su radovi van ovlašćenja predsjednika i treba odluka upravnog odbora ili skupštine, ili</li><li><strong>Odobri (u okviru ovlašćenja)</strong>.</li></ul></li><li><strong>Čeka odobrenje:</strong> kada odluka postoji, kliknite <strong>Odobreno (odluka/ovlašćenje)</strong>.</li><li><strong>Odobren:</strong> kliknite <strong>Zatraži ponude</strong>.</li><li><strong>Ponude:</strong> u kartici <strong>Ponude izvođača</strong> za svaku ponudu izaberite <strong>Izvođač</strong> (iz liste dobavljača), upišite <strong>Iznos (KM)</strong> i <strong>Opis</strong>, pa kliknite <strong>Dodaj ponudu</strong>. Kada odlučite, kliknite <strong>izaberi</strong> u redu željene ponude. Status postaje <strong>Izvođač izabran</strong>.</li><li><strong>Radni nalog:</strong> u kartici <strong>Radni nalozi</strong> izaberite <strong>Izvođač</strong> (unaprijed je izabran onaj sa izabranom ponudom). Upišite <strong>Opis radova</strong>, <strong>Od</strong> i <strong>Do</strong>, pa kliknite <strong>Kreiraj radni nalog (PDF)</strong>. Nastaje numerisan radni nalog u PDF-u (u <strong>Dokumentima</strong>), a status postaje <strong>Zakazano</strong>.</li><li><strong>Zakazano:</strong> kada radovi počnu, kliknite <strong>Radovi počeli</strong>. Status postaje <strong>U toku</strong>.</li><li><strong>Završetak:</strong> u redu radnog naloga upišite napomenu (na primjer „dokaz o završetku") i kliknite <strong>završi</strong>. Status postaje <strong>Završeno</strong>.</li><li><strong>Završeno:</strong> kliknite <strong>Provjereno / primopredaja</strong>.</li><li><strong>Provjereno:</strong> kada stigne faktura izvođača, kliknite <strong>Faktura primljena</strong>. Kao stvarni trošak upisuje se iznos izabrane ponude. Samu fakturu izvođača računovođa evidentira u <strong>Troškovima</strong>.</li><li><strong>Fakturisano:</strong> nakon plaćanja kliknite <strong>Plaćeno</strong>.</li><li><strong>Plaćeno:</strong> kliknite <strong>Zatvori</strong>.</li></ol>
+<h3 id="105-hitna-intervencija-hitni-put">10.5 Hitna intervencija („hitni put")</h3>
+<p>Neki kvarovi ne mogu čekati redovno odobrenje: pukla cijev, kvar na elektroinstalaciji, zaglavljen lift sa ljudima. Za njih postoji hitni put. On <strong>preskače korak odobrenja</strong>, ali zahtijeva da se navede ko je odobrio i na osnovu čega, a kasnije i ratifikaciju.</p>
+<p>Dugme je dostupno predsjedniku dok je prijava u statusu <strong>Prijavljen</strong>, <strong>Trijaža obavljena</strong> ili <strong>Čeka odobrenje</strong>.</p>
+<ol><li>U kartici <strong>Tok statusa</strong> kliknite <strong>Hitna intervencija (preskače odobrenje)</strong>.</li><li>Popunite (sva polja osim procjene su obavezna):<ul><li><strong>Razlog:</strong> zašto je stvar hitna</li><li><strong>Odobrio (ime):</strong> ko je odobrio intervenciju</li><li><strong>Osnov ovlašćenja:</strong> na primjer „čl. ugovora/odluke …"</li><li><strong>Procjena troška (KM)</strong></li></ul></li><li>Kliknite <strong>Označi kao hitno i odobri</strong>.</li></ol>
+<p>Šta se tada dešava:</p>
+<ul><li>Hitnost prijave postaje <strong>Hitno</strong>, a prijava dobija crvenu oznaku <strong>Hitna intervencija</strong>. U listi prijava ima ⚠.</li><li>Status odmah postaje <strong>Odobren</strong>. U toku statusa piše „HITNO: razlog". Dalje se nastavlja redovno: ponude (ili direktan izbor izvođača), radni nalog, radovi…</li><li>U kartici <strong>Opis</strong> pojavljuje se crveni okvir sa razlogom, ko je odobrio i osnovom, te stavka <strong>Naknadna ratifikacija: još nije evidentirana</strong>.</li></ul>
+<p><strong>Ratifikacija:</strong> kada upravni odbor ili skupština naknadno potvrde intervenciju, u istom okviru upišite <strong>Broj odluke / zapisnika o ratifikaciji</strong> i kliknite <strong>Evidentiraj</strong>. U pregledu aktivnosti to se bilježi kao „Potvrđena hitna intervencija".</p>
+<blockquote><p>U <strong>Podešavanjima → Parametri</strong> postoji parametar <strong>Prag za hitne radove bez skupštine (KM)</strong> (podrazumijevano 500 KM). On služi kao interna smjernica do kojeg iznosa se hitni radovi obavljaju bez skupštine.</p></blockquote>
+<hr>
+<h2 id="11-dokumenti">11. Dokumenti</h2>
+<p>Ovdje su svi PDF dokumenti koje aplikacija generiše, kao i skenirana dokumentacija koju ZEV čuva.</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Pregled i preuzimanje generisanih dokumenata</td><td>sve</td><td>sve</td><td>objavljeni + svoji</td></tr>
+<tr><td>Objava dokumenta vlasnicima</td><td>✔</td><td>–</td><td>–</td></tr>
+<tr><td>Otpremanje skenirane dokumentacije</td><td>✔</td><td>✔</td><td>–</td></tr>
+</tbody></table></div>
+<h3 id="111-generisani-dokumenti">11.1 Generisani dokumenti</h3>
+<p>Tabela ima kolone <strong>Broj</strong>, <strong>Vrsta</strong>, <strong>Naziv</strong>, <strong>Verzija</strong>, <strong>Status</strong> (Nacrt ili Finalizovan), <strong>Objavljen vlasnicima</strong> i <strong>Generisan</strong>. U koloni <strong>Radnje</strong> su:</p>
+<ul><li><strong>PDF:</strong> otvara ili preuzima dokument.</li><li><strong>objavi vlasnicima</strong> (predsjednik): dokument postaje vidljiv svim vlasnicima u njihovim <strong>Dokumentima</strong>. Odluke se pojavljuju i na njihovoj <strong>Početnoj</strong>.</li></ul>
+<p>Finalizovani dokumenti su verzionisani i nepromjenjivi. Ispravka znači novu verziju, a ne izmjenu postojeće.</p>
+<p><strong>Gdje nastaju dokumenti:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Vrsta</th><th>Kako nastaje</th></tr></thead>
+<tbody>
+<tr><td><strong>Poziv na sjednicu</strong></td><td><strong>Pripremi pozive (PDF)</strong> na stranici sjednice</td></tr>
+<tr><td><strong>Zapisnik</strong></td><td><strong>Generiši nacrt zapisnika (PDF)</strong> (nacrt) ili <strong>Finalizuj zapisnik (PDF)</strong> (konačni)</td></tr>
+<tr><td><strong>Odluka skupštine</strong></td><td><strong>Evidentiraj i generiši PDF odluke</strong> na prijedlogu</td></tr>
+<tr><td><strong>Glasačka lista</strong></td><td><strong>Glasačka lista (PDF)</strong> na prijedlogu</td></tr>
+<tr><td><strong>Godišnji plan održavanja / finansijski plan</strong></td><td><strong>PDF</strong> na stranici plana</td></tr>
+<tr><td><strong>Faktura</strong></td><td>Automatski pri izdavanju serije, ili <strong>Preuzmi PDF</strong> na fakturi</td></tr>
+<tr><td><strong>Radni nalog</strong></td><td><strong>Kreiraj radni nalog (PDF)</strong> na prijavi kvara</td></tr>
+<tr><td><strong>Kartica vlasnika</strong></td><td><strong>Kartica vlasnika (PDF)</strong> na stranici lica</td></tr>
+</tbody></table></div>
+<p><strong>Vlasnik</strong> u ovoj listi vidi samo dokumente koje je predsjednik objavio (<em>„Dokumenti objavljeni članovima skupštine"</em>). Svoje fakture preuzima iz modula <strong>Fakture i uplate</strong>.</p>
+<h3 id="112-otpremljeni-dokumenti-predsjednik-i-racunovodja">11.2 Otpremljeni dokumenti (predsjednik i računovođa)</h3>
+<p>Ovdje je skenirana ili primljena dokumentacija: ugovori, izvještaji, zapisnici, prepiska… Ovdje se čuvaju i dokazi o vlasništvu priloženi uz vlasničke udjele, kao i skenirane izjave o saglasnosti za e-glasanje.</p>
+<ul><li><strong>Filtriraj po kategoriji:</strong> izaberite kategoriju i kliknite <strong>Filtriraj</strong>. Kategorije su Vlasnička dokumentacija, Fakture, Izvještaji, Zapisnici, Ugovori, Prepiska, Fotografije, Saglasnost za elektronsko glasanje i Ostalo.</li><li>Tabela ima kolone <strong>Kategorija</strong>, <strong>Naziv fajla</strong>, <strong>Otpremljen</strong> i <strong>Preuzmi</strong> (link <strong>preuzmi</strong>).</li></ul>
+<p><strong>Otpremanje:</strong> kliknite <strong>Otpremi dokument</strong>, izaberite <strong>Kategorija</strong> i <strong>Fajl</strong> (PDF, JPG, PNG ili WEBP, do 15 MB), pa kliknite <strong>Otpremi</strong>. Poruka potvrde: <em>„Dokument je otpremljen."</em></p>
+<hr>
+<h2 id="12-izvjestaji">12. Izvještaji</h2>
+<p>Ovdje su operativni finansijski pregledi, sa izvozom u CSV (za eksternog računovođu) ili u PDF (za štampu i arhivu). Modul vide predsjednik i računovođa.</p>
+<p><strong>Opšte kontrole:</strong></p>
+<ul><li><strong>Izvoz svih izvještaja (PDF)</strong> (gore desno): jedan PDF sa svim izvještajima za izabrani period.</li><li><strong>Od</strong> i <strong>Do</strong> (datumi), zatim <strong>Primijeni period</strong>: filter perioda za sve tabove.</li><li>Ako za filter nema podataka, pojavljuje se <em>„Nema zapisa u izabranom periodu."</em> sa linkom <strong>Obriši filtere</strong>.</li></ul>
+<p>Izvještaji su raspoređeni u četiri taba: <strong>Dugovanja</strong>, <strong>Novac</strong>, <strong>Fakture</strong> i <strong>Pregledi</strong>.</p>
+<h3 id="121-tab-dugovanja">12.1 Tab „Dugovanja"</h3>
+<p>Naslov je <strong>Dugovanja po vlasnicima — stanje na dan … (ukupno: …)</strong>.</p>
+<ol><li>Izaberite <strong>Stanje na dan</strong>.</li><li>U polju <strong>Vlasnici</strong> izaberite jednog ili više vlasnika. Prazan izbor (ili dugme „Obriši izbor") znači svi vlasnici.</li><li>Kliknite <strong>Prikaži</strong>.</li></ol>
+<p><strong>Kolone:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Kolona</th><th>Značenje</th></tr></thead>
+<tbody>
+<tr><td><strong>Vlasnik</strong>, <strong>Jedinica(e)</strong></td><td>Ko je vlasnik i koje jedinice ima.</td></tr>
+<tr><td><strong>Prethodni saldo</strong></td><td>Ukupno stanje prije izabranog dana.</td></tr>
+<tr><td><strong>Zaduženo (taj dan)</strong></td><td>Promjena knjižena na izabrani dan.</td></tr>
+<tr><td><strong>Plaćeno (taj dan)</strong></td><td>Promjena knjižena na izabrani dan.</td></tr>
+<tr><td><strong>Korekcije (taj dan)</strong></td><td>Promjena knjižena na izabrani dan.</td></tr>
+<tr><td><strong>Saldo</strong></td><td>Konačno stanje.</td></tr>
+</tbody></table></div>
+<p>Pored salda piše riječima: <strong>duguje</strong> (pozitivan iznos, vlasnik duguje ZEV-u), <strong>preplata</strong> (negativan iznos, vlasnik ima kredit ili avans) ili <strong>izmireno</strong> (0,00).</p>
+<p>Dugme <strong>Izvoz PDF</strong> pravi PDF ovog izvještaja.</p>
+<h3 id="122-tab-novac">12.2 Tab „Novac"</h3>
+<ul><li><strong>Stanje računa i tok novca:</strong> po računu su prikazani <strong>Početno</strong>, <strong>Prilivi</strong>, <strong>Odlivi</strong>, <strong>Neto</strong> i <strong>Trenutno stanje</strong>. Dugme <strong>Izvoz CSV</strong>.</li><li><strong>Prihodi i rashodi po kategorijama:</strong> <strong>Kategorija</strong>, <strong>Vrsta</strong> (Prihod ili Rashod) i <strong>Iznos</strong>. Dugme <strong>Izvoz CSV</strong>.</li><li><strong>Fond održavanja:</strong> koliko je uplaćeno, koliko utrošeno i trenutno stanje. Fond se prati preko oznake „Fond održavanja" na stavkama naknada.</li></ul>
+<h3 id="123-tab-fakture">12.3 Tab „Fakture"</h3>
+<ul><li><strong>Neplaćene fakture vlasnika (otvoreno … · dospjelo …):</strong> <strong>Faktura</strong>, <strong>Dužnik</strong>, <strong>Jedinica</strong>, <strong>Dospijeće</strong>, <strong>Otvoreno</strong> i <strong>Starost</strong> (nije dospjelo, 0-30, 31-60, 61-90 ili 90+ dana). Dugme <strong>Izvoz CSV (starosna struktura)</strong>.</li><li><strong>Dobavljači:</strong> broj faktura, ukupno i neplaćeno po dobavljaču. Dugme <strong>Izvoz CSV</strong>.</li><li><strong>Neplaćene fakture dobavljača:</strong> dobavljač, broj fakture, rok i otvoreni iznos.</li></ul>
+<h3 id="124-tab-pregledi">12.4 Tab „Pregledi"</h3>
+<ul><li><strong>Pregled po zgradama:</strong> prilivi, odlivi i neto po zgradi.</li><li><strong>Pregled po projektima:</strong> prilivi, odlivi i neto po investicionom projektu.</li></ul>
+<hr>
+<h2 id="13-podesavanja">13. Podešavanja</h2>
+<p><strong>Podešavanja</strong> otvarate iz lijevog menija ili iz menija naloga (krug sa inicijalima).</p>
+<p><strong>Ko šta može:</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Radnja</th><th>Predsjednik</th><th>Računovođa</th><th>Vlasnik</th></tr></thead>
+<tbody>
+<tr><td>Moji podaci (kontakt), e-glasanje</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>Matični podaci ZEV</td><td>✔</td><td>pregled</td><td>–</td></tr>
+<tr><td>Računi (banka, blagajna)</td><td>✔</td><td>✔</td><td>–</td></tr>
+<tr><td>Pravni i finansijski parametri</td><td>✔</td><td>pregled</td><td>–</td></tr>
+<tr><td>Poslate poruke</td><td>✔</td><td>✔</td><td>–</td></tr>
+<tr><td>Revizorski trag</td><td>✔</td><td>✔</td><td>–</td></tr>
+<tr><td>Aktivnosti</td><td>✔</td><td>–</td><td>–</td></tr>
+</tbody></table></div>
+<p>Predsjednik i računovođa vide tabove <strong>Moji podaci</strong>, <strong>ZEV</strong> i <strong>Parametri</strong>, a gore desno dugmad <strong>Poslate poruke</strong>, <strong>Aktivnosti</strong> (samo predsjednik) i <strong>Revizorski trag</strong>. Vlasnik vidi samo svoje podatke i elektronsko glasanje.</p>
+<h3 id="131-moji-podaci">13.1 Moji podaci</h3>
+<ul><li><strong>Moji podaci:</strong> <strong>E-mail</strong>, <strong>Telefon</strong> i <strong>Adresa za prepisku (ako je različita)</strong>, zatim <strong>Sačuvaj</strong>. Ime, prezime i adresu nekretnine mijenja predsjednik.</li><li><strong>Elektronsko glasanje:</strong> status vaše saglasnosti, e-mail naveden na izjavi i datumi potpisa ili povlačenja. Postupak je opisan na samom ekranu:<ol><li>Kliknite <strong>Preuzmi izjavu (PDF)</strong>.</li><li>Odštampajte je, potpišite i predajte predsjedniku ZEV-a.</li><li>Predsjednik po prijemu izjave omogućava elektronsko izjašnjavanje (vidi 4.6).</li></ol></li></ul>
+<p>  Saglasnost možete povući dugmetom <strong>Povuci saglasnost za elektronsko glasanje</strong>, uz opcioni razlog, i potvrdom <strong>Da, povuci saglasnost</strong>.</p>
+<blockquote><p><strong>Važno za vlasnike:</strong> e-mail koji ovdje upišete koristi se za pozive na sjednice, lične linkove za glasanje i obavještenja o fakturama. Održavajte ga tačnim.</p></blockquote>
+<h3 id="132-tab-zev">13.2 Tab „ZEV"</h3>
+<p><strong>Matični podaci ZEV</strong> (mijenja samo predsjednik): <strong>Puni naziv</strong> (obavezno), <strong>Skraćeni naziv</strong>, <strong>JIB</strong>, <strong>Registarski broj</strong>, <strong>Sjedište (adresa)</strong>, <strong>Grad</strong> i <strong>Opština</strong>, zatim <strong>Sačuvaj</strong>. Skraćeni naziv se prikazuje u izboru ZEV-a i na stranici za glasanje.</p>
+<p><strong>Računi (banka i blagajna):</strong> tabela ima kolone <strong>Naziv</strong>, <strong>Vrsta</strong>, <strong>Broj računa</strong> i <strong>Početno stanje</strong>. Novi račun dodajete dugmetom <strong>Dodaj račun</strong>:</p>
+<ol><li>Upišite <strong>Naziv</strong>.</li><li>Izaberite <strong>Vrsta</strong>: Bankovni račun ili Blagajna.</li><li>Upišite <strong>Broj računa</strong>, <strong>Banka</strong>, <strong>Početno stanje (KM)</strong> i <strong>Datum početnog stanja</strong> (obavezno).</li><li>Kliknite <strong>Dodaj račun</strong>.</li></ol>
+<p>Računi se biraju pri unosu uplata, uvozu izvoda i plaćanju troškova.</p>
+<h3 id="133-tab-parametri">13.3 Tab „Parametri"</h3>
+<p><strong>Konfigurabilni pravni i finansijski parametri.</strong> <em>„Ove vrijednosti utiču na obračun i na pravila glasanja. Prije izmjene se posavjetujte sa računovođom."</em> Svaki parametar se čuva posebno, dugmetom <strong>Sačuvaj</strong> pored njega. Mijenja ih samo predsjednik.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Parametar</th><th>Podrazumijevano</th></tr></thead>
+<tbody>
+<tr><td>Čuvanje finansijskih dokumenata (godina)</td><td>11</td></tr>
+<tr><td>Čuvanje IP metapodataka glasanja (dana)</td><td>30</td></tr>
+<tr><td>Prag za hitne radove bez skupštine (KM)</td><td>500</td></tr>
+<tr><td>Zatezna kamata (isključena dok pravnik ne potvrdi)</td><td>false</td></tr>
+<tr><td>Podrazumijevani dan dospijeća fakture</td><td>15</td></tr>
+<tr><td>Preporučen broj članova upravnog odbora (uključujući predsjednika)</td><td>3</td></tr>
+<tr><td>Trajanje mandata organa ZEV (godina)</td><td>4</td></tr>
+<tr><td>Predsjednik ZEV je ujedno predsjednik upravnog odbora</td><td>true</td></tr>
+</tbody></table></div>
+<p>Kartica <strong>Napomena o integracijama</strong> pokazuje preko čega se šalju e-mail i Viber poruke.</p>
+<h3 id="134-poslate-poruke">13.4 Poslate poruke</h3>
+<p>Dugme <strong>Poslate poruke</strong> otvara listu svih e-mail i Viber poruka koje je aplikacija poslala: pozive na sjednice, linkove za glasanje, obavještenja o fakturama… Kolone su <strong>Vrijeme</strong>, <strong>Kanal</strong>, <strong>Primalac</strong>, <strong>Naslov / šablon</strong>, <strong>Status</strong> (U redu čekanja, Poslato, Isporučeno, Pročitano ili Neuspješno) i <strong>Pokušaja</strong>.</p>
+<p>Ovdje provjeravate da li je neki vlasnik dobio poruku. <em>„Sadržaj poruka ne uključuje salda ni lične finansijske podatke — poruke vode na prijavu u aplikaciju."</em></p>
+<h3 id="135-aktivnosti-predsjednik">13.5 Aktivnosti (predsjednik)</h3>
+<p><strong>Aktivnosti</strong> su pregledan, „ljudski" spisak onoga što se dešavalo u zajednici. Na primjer: „Prijavio/la kvar", „Glasao/la elektronski", „Dokument objavljen vlasnicima", „Otvoreno glasanje", „Potvrđena hitna intervencija", „Prenos vlasništva".</p>
+<p><strong>Filteri:</strong></p>
+<ul><li><strong>Od</strong> i <strong>Do</strong> (podrazumijevano posljednjih 30 dana)</li><li><strong>Kategorija</strong>: Aktivnost vlasnika, Upravljanje i skupština, Finansije i Sistemski događaji. Podrazumijevano su uključene prve dvije.</li><li><strong>Akter</strong>: ko je izvršio radnju</li></ul>
+<p>Kolone su <strong>Vrijeme</strong>, <strong>Akter</strong>, <strong>Kategorija</strong> i <strong>Aktivnost</strong>. Uz aktivnost je kratak opis.</p>
+<blockquote><p>Pregled nikada ne pokazuje <strong>kako</strong> je neko glasao, nego samo da je glasao.</p></blockquote>
+<h3 id="136-revizorski-trag-predsjednik-i-racunovodja">13.6 Revizorski trag (predsjednik i računovođa)</h3>
+<p><strong>Revizorski trag</strong> je potpun i nepromjenjiv zapis svih bitnih radnji. Zapisi se ne mogu mijenjati ni brisati. Ovo je tehnički, detaljan zapis, namijenjen provjeri i reviziji.</p>
+<ul><li><strong>Pretraga:</strong> filter po nazivu radnje ili vrsti zapisa (na primjer „vote", „invoice"), zatim <strong>Filtriraj</strong>.</li><li>Kolone su <strong>Vrijeme</strong>, <strong>Akter</strong>, <strong>Radnja</strong>, <strong>Cilj</strong>, <strong>Razlog</strong> i <strong>Detalji</strong>. Prikazuje se posljednjih 200 zapisa.</li></ul>
+<hr>
+<h2 id="14-napredni-pregled-platforma-super-admin">14. Napredni pregled: platforma (Super admin)</h2>
+<p><em>Ovo poglavlje se odnosi samo na mali broj ljudi koji vode cijelu uslugu za sve zajednice. Predsjednici, računovođe i vlasnici ovaj dio ne vide.</em></p>
+<p>Platformski dio ima tamnosivi izgled i stalnu oznaku <strong>Super admin</strong> u gornjoj traci. Lijevi meni sadrži stavke <strong>ZEV nalozi</strong>, <strong>Aktivnosti</strong> i <strong>Sesije</strong>, a <strong>Moj ZEV</strong> ako super admin ima i svoj ZEV. Super admin koji nije član nijedne zajednice nakon prijave dolazi pravo ovdje.</p>
+<h3 id="141-zev-nalozi">14.1 ZEV nalozi</h3>
+<p><strong>Svi ZEV nalozi:</strong> tabela sa kolonama <strong>Naziv</strong>, <strong>Paket</strong> (Basic, Basic + finansije ili Full (+ e-glasanje)), <strong>Predsjednik</strong>, <strong>Zgrade</strong>, <strong>Vlasnici</strong>, <strong>Status</strong> (Aktivan ili Suspendovan) i <strong>Radnje</strong>. Radnje su <strong>Detalji</strong> i <strong>Uđi</strong>, ako ste član te zajednice.</p>
+<p><strong>Novi ZEV nalog:</strong></p>
+<ol><li>Popunite <strong>Naziv ZEV-a</strong>, <strong>Skraćeni naziv</strong>, <strong>Paket</strong>, <strong>JIB</strong>, <strong>Adresa sjedišta</strong>, <strong>Grad</strong> i <strong>Opština</strong>.</li><li>Popunite podatke o predsjedniku: <strong>Ime</strong>, <strong>Prezime</strong>, <strong>E-mail</strong>, <strong>Telefon</strong> i <strong>Početna lozinka</strong> (najmanje 8 znakova). Lozinku saopštite predsjedniku odvojenim putem.</li><li>Kliknite <strong>Kreiraj ZEV nalog</strong>.</li></ol>
+<p><strong>Detalji zajednice:</strong></p>
+<ul><li>Brojevi (Paket, Zgrade, Jedinice, Vlasnici/stranke) i <strong>Matični podaci</strong>.</li><li><strong>Nalozi u ovom ZEV-u:</strong> korisnik, rola, da li je nalog aktivan, član od kada, i <strong>Ukloni pristup</strong> (uz obavezan razlog). Ako zajednica nema aktivnog predsjednika koji nije platformski admin, prikazuje se upozorenje.</li><li><strong>Dodaj novi nalog:</strong> novi predsjednik ili računovođa sa početnom lozinkom.</li><li><strong>Dodaj postojeći nalog:</strong> daje ulogu u ovoj zajednici nekome ko već ima nalog.</li><li><strong>Moj pristup:</strong> <strong>Dodaj mi pristup ovom ZEV-u</strong>, <strong>Uđi u ovaj ZEV</strong> i <strong>Ukloni moj pristup</strong>.</li><li><strong>Suspenzija:</strong> <strong>Suspenduj ZEV</strong> odmah blokira prijavu svih naloga u zajednici. Ništa se ne briše. Traži razlog i prepisivanje naziva zajednice radi potvrde. Suspendovana zajednica se vraća dugmetom <strong>Reaktiviraj ZEV</strong>, uz razlog.</li></ul>
+<h3 id="142-aktivnosti-svi-zev-nalozi">14.2 Aktivnosti — svi ZEV nalozi</h3>
+<p>Isti pregled aktivnosti kao u 13.5, ali preko svih zajednica. Ima dodatnu kolonu i filter <strong>ZEV</strong>. Podrazumijevano su uključene sve četiri kategorije, uključujući i sistemske događaje. Filter <strong>Akter</strong> radi tek kada se izabere konkretan ZEV.</p>
+<h3 id="143-sesije-trenutno-prijavljeni-korisnici">14.3 Sesije — trenutno prijavljeni korisnici</h3>
+<p>Pregled uživo svih trenutno prijavljenih sesija na cijeloj platformi (do 200 najnovijih). Stranica se sama osvježava svakih 10 sekundi.</p>
+<ul><li><strong>Brojevi:</strong> <strong>Sesije</strong>, <strong>Korisnici</strong> i <strong>Aktivno sada</strong>.</li><li>Filter <strong>Samo aktivni sada (zadnjih 15 min)</strong>, zatim <strong>Primijeni</strong>.</li><li><strong>Kolone:</strong><ul><li><strong>Korisnik</strong>: ime i e-mail</li><li><strong>ZEV i uloge</strong>: sa oznakom „ZEV suspendovan" gdje važi</li><li><strong>IP adresa</strong></li><li><strong>Uređaj</strong>: pregledač i sistem</li><li><strong>Prijava</strong></li><li><strong>Posljednja aktivnost</strong>: zelena tačka znači aktivan u posljednjih 15 minuta</li><li><strong>Ističe</strong></li><li><strong>Radnje</strong></li></ul></li><li><strong>Odjavi:</strong> trenutno odjavljuje korisnika sa tog uređaja, uz potvrdu <strong>Odjavi sesiju</strong>. To ne sprečava ponovnu prijavu. Za trajno onemogućavanje pristupa koristite deaktivaciju naloga ili uklanjanje pristupa. Svoju trenutnu sesiju ne možete odjaviti odavde (piše „Vi (ova sesija)").</li></ul>
+<hr>
+<h2 id="15-rjecnik-pojmova">15. Rječnik pojmova</h2>
+<p><strong>Avans / preplata:</strong> novac koji je vlasnik uplatio, a koji još nije raspoređen na fakture. Kasnije se može rasporediti na nove fakture.</p>
+<p><strong>Alokacija (raspoređivanje):</strong> veza između uplate i fakture, koja kaže koliko je od uplate otišlo na koju fakturu.</p>
+<p><strong>Dnevni red:</strong> spisak tačaka o kojima se raspravlja na sjednici.</p>
+<p><strong>Dužnik:</strong> lice na koje glasi faktura. Obično je to vlasnik jedinice sa najvećim udjelom.</p>
+<p><strong>Etažna svojina:</strong> vlasništvo nad posebnim dijelom zgrade (stanom, lokalom, garažom), zajedno sa odgovarajućim suvlasničkim dijelom na zajedničkim dijelovima zgrade.</p>
+<p><strong>Etažni vlasnik:</strong> vlasnik posebnog dijela zgrade.</p>
+<p><strong>Fond održavanja (rezervni fond):</strong> novac koji se izdvaja za buduće održavanje i veće popravke. U aplikaciji se puni stavkama naknada označenim kao „Fond održavanja".</p>
+<p><strong>Glasačka baza:</strong> svi koji imaju pravo glasa o konkretnom prijedlogu, sa svojim težinama. Formira se u trenutku otvaranja glasanja.</p>
+<p><strong>Hash (tehnički otisak):</strong> kratki „digitalni otisak" teksta prijedloga. Ako bi se tekst promijenio i za jedno slovo, otisak bi bio potpuno drugačiji. Tako se dokazuje da je vlasnik glasao o tačno onom tekstu koji mu je poslat.</p>
+<p><strong>Hitna intervencija (hitni put):</strong> radovi odobreni odmah, bez redovnog odobrenja, zbog hitnosti. Mora se navesti ko je odobrio i na osnovu čega, a kasnije evidentirati ratifikacija.</p>
+<p><strong>Korektivna faktura:</strong> nova faktura koja zamjenjuje pogrešnu. Original ostaje vidljiv sa statusom „Korigovana".</p>
+<p><strong>Kvorum:</strong> najmanji broj učesnika (ili najmanja zbirna težina glasova) potreban da bi glasanje bilo punovažno. Bez kvoruma prijedlog nije usvojen.</p>
+<p><strong>Lični link i verifikacioni kod:</strong> jednokratni, lični pristup glasanju koji vlasnik dobija e-mailom. Link otvara stranicu za glasanje, a kod potvrđuje identitet.</p>
+<p><strong>Obuhvat:</strong> na šta se nešto odnosi. Može biti cijela ZEV, jedna zgrada, ulaz ili odabrane jedinice.</p>
+<p><strong>Poseban dio:</strong> stan, poslovni prostor, garaža ili druga samostalna jedinica u zgradi.</p>
+<p><strong>Poziv na broj:</strong> oznaka na fakturi koju vlasnik upisuje pri plaćanju, kako bi se uplata lakše povezala sa fakturom.</p>
+<p><strong>Punomoć / punomoćnik:</strong> ovlašćenje kojim vlasnik daje drugom licu pravo da u njegovo ime učestvuje i glasa na sjednicama. Punomoćnik je lice koje to pravo ima.</p>
+<p><strong>Ratifikacija:</strong> naknadna potvrda odluke ili radnje od strane nadležnog organa, na primjer potvrda hitne intervencije od strane skupštine.</p>
+<p><strong>Revizorski trag:</strong> nepromjenjiv zapis svih bitnih radnji u aplikaciji: ko, šta, kada i zašto.</p>
+<p><strong>Serija faktura:</strong> skup faktura za sve jedinice za jedan obračunski period (mjesec).</p>
+<p><strong>Skupština ZEV:</strong> najviši organ zajednice, koji čine svi etažni vlasnici.</p>
+<p><strong>Snimak pravila:</strong> kopija pravila glasanja (kvorum, većina, težina) sačuvana uz prijedlog u trenutku otvaranja glasanja. Kasnije izmjene pravila ne utiču na nju.</p>
+<p><strong>Stavka naknade:</strong> definicija onoga što se naplaćuje vlasnicima i načina na koji se obračunava.</p>
+<p><strong>Storno:</strong> poništavanje zapisa (fakture, uplate, raspoređivanja ili troška) novim zapisom, uz razlog. Originalni zapis ostaje vidljiv.</p>
+<p><strong>Težina glasa:</strong> koliko vrijedi glas jednog vlasnika. Zavisi od pravila: jedan glas po vlasniku, prema vlasničkom udjelu ili prema površini.</p>
+<p><strong>Upravni odbor:</strong> kolegijalno tijelo koje bira skupština i koje upravlja zajednicom između sjednica skupštine.</p>
+<p><strong>Većina:</strong> koliko glasova „Za" je potrebno da prijedlog bude usvojen. Može biti prosta većina glasalih, procenat glasalih ili procenat ukupne glasačke baze.</p>
+<p><strong>Vlasnički udio:</strong> udio jedinice u cijeloj ZEV (u procentima), odnosno udio pojedinog vlasnika u jednoj jedinici (100% za jedinog vlasnika, 50% za polovinu).</p>
+<p><strong>ZEV (Zajednica etažnih vlasnika):</strong> pravno lice koje čine svi vlasnici posebnih dijelova jedne ili više zgrada i koje upravlja održavanjem zgrade. Organizuje se prema Zakonu o održavanju zgrada Republike Srpske.</p>
+<p><strong>Zajednički dijelovi:</strong> dijelovi zgrade koji služe svim vlasnicima, kao što su krov, fasada, stepenište, lift, podrum, instalacije i kotlovnica.</p>
+<p><strong>Zakupac / stanar / korisnik:</strong> lice koje koristi jedinicu, a nije njen vlasnik. Ne stiče pravo glasa u skupštini.</p>
+<p><strong>Zapisnik:</strong> službeni zapis toka sjednice i donesenih odluka. Kada se finalizuje, postaje nepromjenjiv.</p>
+  </main>
+</div>
+</body>
+</html>
