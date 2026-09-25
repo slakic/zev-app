@@ -43,6 +43,30 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.30.2] - 2026-09-25
+
+### Ispravljeno
+
+- **`/admin/aktivnosti` (platformski pregled aktivnosti): kolona „Akter" je skoro uvijek
+  prikazivala „—", iako je stvarni izvršilac ispravno zabilježen u bazi.** Prijavljeno od
+  korisnika. Uzrok: ime aktera se za tu tabelu razrješavalo isključivo iz liste članova
+  izabranog ZEV-a (`listActivityActorsForZev`) — a ta lista je namjerno prazna dok se ne
+  izabere konkretan ZEV iz filtera „ZEV" (`Plans/user-activity-log-plan.md §9`: filter
+  „Akter" postaje aktivan tek kad je izabran konkretan ZEV). Sa „Svi ZEV nalozi" (podrazu-
+  mijevani prikaz), ta lista je uvijek bila prazna, pa je i za događaje sa ispravno
+  upisanim `actorId`-om prikaz padao na `actorLabel` — kolonu koja je `null` za skoro sve
+  osim par mjesta koja eksplicitno snimaju labelu u trenutku pisanja (npr. `user.update_roles`).
+  - Novi `resolveActorLabels` (`src/server/services/activity.ts`) razrješava ime aktera
+    po redu tabele, direktno preko para (`actorId`, `zevId`) tog konkretnog događaja —
+    nezavisno od toga da li je filter „ZEV" postavljen. Filter „Akter" i njegova lista
+    opcija ostaju nepromijenjeni (i dalje aktivni tek nakon izbora konkretnog ZEV-a — to
+    je namjerno, ne bag).
+  - Uživo provjereno: sa „Svi ZEV nalozi" imena aktera se sada ispravno prikazuju za
+    događaje koji ih imaju (npr. `Promijenjen status prijave kvara`, `expense.create`),
+    dok genuinely bezaktivni događaji (npr. `auth.login` prije razrješenja sesije) i
+    dalje ispravno prikazuju „—". Izbor konkretnog ZEV-a i dalje radi ispravno (bez
+    regresije).
+
 ## [2.30.1] - 2026-09-23
 
 ### Ispravljeno
@@ -411,7 +435,7 @@ Ovim je zaokružen fazni plan iz `Plans/live-meeting-mode-plan.md` (Faze 0-4).
     mjesto.
   - **Bezbjednosna kapija:** funkcija je isključena po difoltu i zahtijeva OBA
     uslova: novu env varijablu `SHOW_TEST_LINKS="1"` (striktno, ne „truthy") i
-    `EMAIL_PROVIDER="mock"` (bijela lista, ne crna listа „nije mailjet" —
+    `EMAIL_PROVIDER="mock"` (bijela lista, ne crna lista „nije mailjet" —
     budući treći pravi provajder ostaje bezbjedan po difoltu). Nijedan uslov
     sam po sebi nije dovoljan, a oba su podrazumijevano isključena — uključujući
     i na današnjoj produkciji, koja već radi sa `EMAIL_PROVIDER=mock` i bez

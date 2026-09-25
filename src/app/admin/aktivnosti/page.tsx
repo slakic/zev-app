@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireSuperAdminActor } from "@/server/actor";
-import { listAllActivity, listActivityActorsForZev } from "@/server/services/activity";
+import { listAllActivity, listActivityActorsForZev, resolveActorLabels } from "@/server/services/activity";
 import { listTenants } from "@/server/services/admin";
 import { ACTIVITY_CATEGORIES, categoryForAction, categoryLabel, labelForAction, summarize, type ActivityCategory } from "@/lib/activity/catalog";
 import { formatDateTime, endOfDay, t } from "@/lib/i18n";
@@ -73,7 +73,13 @@ export default async function AdminActivityPage({
       page,
     }),
   ]);
-  const actorLabelById = new Map(actors.map((a) => [a.id, a.label]));
+  // Filter dropdown options (actors) stay scoped to the chosen zev, per plan §9 — but the
+  // table's own Akter column resolves every row's (actorId, zevId) pair directly, so it shows
+  // correct names even with "Svi ZEV nalozi" active, where `actors` above is legitimately [].
+  const actorLabelByKey = await resolveActorLabels(
+    actor,
+    result.rows.map((e) => ({ userId: e.actorId, zevId: e.zevId }))
+  );
 
   return (
     <div>
@@ -154,7 +160,9 @@ export default async function AdminActivityPage({
               <tr key={e.id}>
                 <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>
                 <Td className="text-xs">{e.zev ? e.zev.shortName || e.zev.legalName : "—"}</Td>
-                <Td className="text-xs">{e.actorId ? actorLabelById.get(e.actorId) ?? e.actorLabel ?? "—" : e.actorLabel ?? "—"}</Td>
+                <Td className="text-xs">
+                  {e.actorId ? actorLabelByKey.get(`${e.actorId}:${e.zevId}`) || e.actorLabel || "—" : e.actorLabel ?? "—"}
+                </Td>
                 <Td className="text-xs">{categoryLabel(categoryForAction(e.action))}</Td>
                 <Td className={label.translated ? "text-sm" : "font-mono text-xs text-slate-500"}>
                   {label.label}

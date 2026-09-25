@@ -111,6 +111,43 @@ export async function listActivityActorsForZev(actor: Actor, zevId: string) {
 }
 
 /**
+ * Resolve display names for the (actorId, zevId) pairs actually present on a page of
+ * cross-tenant results, for /admin/aktivnosti's Akter column. Deliberately independent of
+ * whether a `zev` filter is active: listActivityActorsForZev's membership list only exists
+ * to populate the FILTER's dropdown options (plan §9's "akter aktivan tek kad je izabran
+ * konkretan ZEV" governs that select, not whether already-fetched rows can show a name) — with
+ * "Svi ZEV nalozi" selected that list is legitimately empty, but every row here already
+ * carries its own zevId, so each actorId can still be resolved correctly without it. Queries
+ * Party directly (party-per-tenant: at most one Party per (userId, zevId),
+ * Plans/party-per-tenant-plan.md §4) rather than walking Membership, since the exact
+ * (userId, zevId) pairs are already known and a full member list isn't needed. Falls back to
+ * User.email when a user has no Party in that specific zev (e.g. a super admin with no
+ * Membership there, or a legacy row).
+ */
+export async function resolveActorLabels(actor: Actor, pairs: { userId: string | null; zevId: string | null }[]) {
+  requireSuperAdmin(actor);
+  const known = pairs.filter((p): p is { userId: string; zevId: string } => p.userId != null && p.zevId != null);
+  const result = new Map<string, string>();
+  if (known.length === 0) return result;
+  const userIds = [...new Set(known.map((p) => p.userId))];
+  const zevIds = [...new Set(known.map((p) => p.zevId))];
+  const [parties, users] = await Promise.all([
+    prisma.party.findMany({
+      where: { userId: { in: userIds }, zevId: { in: zevIds } },
+      select: { userId: true, zevId: true, kind: true, firstName: true, lastName: true, orgName: true },
+    }),
+    prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true, email: true } }),
+  ]);
+  const partyByKey = new Map(parties.map((p) => [`${p.userId}:${p.zevId}`, partyDisplayName(p)]));
+  const emailById = new Map(users.map((u) => [u.id, u.email]));
+  for (const { userId, zevId } of known) {
+    const key = `${userId}:${zevId}`;
+    result.set(key, partyByKey.get(key) || emailById.get(userId) || "");
+  }
+  return result;
+}
+
+/**
  * Shared by listActivityActors/listActivityActorsForZev above — each member's Party is now
  * looked up scoped to THIS zevId (Plans/party-per-tenant-plan.md §4), not the old global
  * user.party, so a platform admin with Memberships (and Parties) in several tenants shows
