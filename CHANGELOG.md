@@ -43,6 +43,17 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.34.1] - 2026-09-25
+
+### Ispravljeno
+
+- **Korisničko uputstvo iz 2.34.0 nije bilo dostupno ni sa jednog mjesta u aplikaciji** —
+  `docs/` nije putanja koju Next.js servira, pa je stranica postojala samo u repozitoriju.
+  Premješteno u `public/korisnicko-uputstvo.html` (jedan izvor istine, bez dupliranja),
+  pa je sada dostupno na `/korisnicko-uputstvo.html`. Dodat link **Korisničko uputstvo**
+  u meni naloga (klik na inicijale), između „Podešavanja" i „Odjava", otvara se u novoj
+  kartici. Uživo provjereno.
+
 ## [2.34.0] - 2026-09-25
 
 ### Dodato

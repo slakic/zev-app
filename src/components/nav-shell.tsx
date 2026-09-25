@@ -16,6 +16,7 @@ import {
   IconLogout,
   IconSliders,
   IconShield,
+  IconHelp,
 } from "@/components/nav-icons";
 import { t } from "@/lib/i18n";
 
@@ -402,6 +403,17 @@ export function NavShell({
                       {settingsLabel}
                     </Link>
                   )}
+                  <a
+                    href="/korisnicko-uputstvo.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    <IconHelp className="h-4 w-4 shrink-0 text-slate-400" />
+                    {t("nav.userGuide")}
+                  </a>
                   <form action={logoutAction}>
                     <button
                       type="submit"

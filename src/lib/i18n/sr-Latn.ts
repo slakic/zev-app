@@ -21,6 +21,7 @@ const srLatn = {
     settings: "Podešavanja",
     logout: "Odjava",
     login: "Prijava",
+    userGuide: "Korisničko uputstvo",
   },
   auth: {
     email: "E-mail adresa",

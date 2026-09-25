@@ -198,6 +198,16 @@ export function IconLogout(props: IconProps) {
   );
 }
 
+export function IconHelp(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="10" cy="10" r="6.8" />
+      <path d="M7.8 8.1a2.2 2.2 0 1 1 3.1 2c-.7.4-1.1.8-1.1 1.7" />
+      <circle cx="9.9" cy="13.6" r="0.5" fill="currentColor" stroke="none" />
+    </IconBase>
+  );
+}
+
 /** href -> icon, for the sidebar. Falls back to IconDot for anything unmapped. */
 export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/": IconHome,
