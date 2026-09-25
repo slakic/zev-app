@@ -43,6 +43,26 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.33.1] - 2026-09-25
+
+### Ispravljeno
+
+- **Svi prikazani datumi/vremena (aktivnosti, dokumenti, fakture, sjednice...) bili su 1–2h
+  iza stvarnog vremena u Bosni.** Prijavljeno od korisnika (aktivnosti pokazivale 12:38 dok je
+  stvarno vrijeme bilo 14:38). Uzrok: `formatDate`/`formatDateTime`
+  (`src/lib/i18n/index.ts`) su čitali `Date.prototype.getHours()`/`getMinutes()` i slično —
+  ovi getteri vraćaju vrijeme u vremenskoj zoni **servera koji izvršava kod**, ne korisnika.
+  Docker kontejner (i Vercel serverless funkcije u produkciji) rade sa `TZ=UTC`, pa je svaki
+  prikazani datum/vrijeme zapravo bio UTC vrijeme, pogrešno predstavljeno kao da je
+  bosansko lokalno vrijeme — 2h iza tokom ljetnog (CEST), 1h iza tokom zimskog računanja
+  vremena (CET).
+  - `formatDate`/`formatDateTime`/`endOfDay` sada eksplicitno računaju u `Europe/Sarajevo`
+    vremenskoj zoni (preko `Intl.DateTimeFormat`), nezavisno od toga u kojoj se zoni nalazi
+    server — ispravno i za CET i za CEST, bez oslanjanja na `TZ` promjenljivu okruženja.
+  - Testovi u novom `tests/i18n-timezone.test.ts` fiksirani na poznate UTC trenutke, tako da
+    otkriju regresiju bez obzira na to u kojoj zoni radi test proces.
+  - Uživo provjereno na `/admin/aktivnosti`.
+
 ## [2.33.0] - 2026-09-25
 
 ### Dodato
