@@ -140,7 +140,7 @@ export function BankSmsReviewTable({ review, canConfirm }: { review: BankSmsRevi
                         value={r.date}
                         disabled={!canConfirm}
                         onChange={(e) => updateRow(i, { date: e.target.value })}
-                        className={`${inputCls} w-40`}
+                        className={`${inputCls} min-w-40`}
                         aria-label="Datum"
                       />
                     </td>
@@ -149,7 +149,7 @@ export function BankSmsReviewTable({ review, canConfirm }: { review: BankSmsRevi
                         value={r.amount}
                         disabled={!canConfirm}
                         onChange={(e) => updateRow(i, { amount: e.target.value })}
-                        className={`${inputCls} w-28 text-right tabular-nums`}
+                        className={`${inputCls} min-w-28 text-right tabular-nums`}
                         aria-label="Iznos"
                       />
                     </td>

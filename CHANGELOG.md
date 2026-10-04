@@ -43,6 +43,13 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.35.1] - 2026-10-04
+
+### Ispravljeno
+
+- Red čekanja SMS obavještenja banke: polja „Iznos“ i „Datum“ su u tabeli bila stisnuta
+  pa se vidjela samo prva cifra iznosa. Polja sada imaju minimalnu širinu.
+
 ## [2.35.0] - 2026-10-04
 
 ### Dodato
