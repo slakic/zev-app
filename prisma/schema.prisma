@@ -216,6 +216,7 @@ model Zev {
   invoiceBatches        InvoiceBatch[]
   invoices              Invoice[]
   bankImportBatches     BankImportBatch[]
+  incomingBankSms       IncomingBankSms[]
   payments              Payment[]
   balanceCorrections    BalanceCorrection[]
   suppliers             Supplier[]
@@ -823,6 +824,7 @@ model MoneyAccount {
   active         Boolean     @default(true)
   transactions   FinTransaction[]
   payments       Payment[]
+  incomingBankSms IncomingBankSms[]
   createdAt      DateTime    @default(now())
 }
 
@@ -1064,6 +1066,46 @@ model BankImportBatch {
   importedAt  DateTime  @default(now())
   importedById String?
   payments    Payment[]
+}
+
+/// SMS obavještenja Nova Banke ("Priliv na ..." / "Odliv sa ...") primljena preko iOS Shortcuts
+/// webhook-a (Plans/bank-sms-ingestion-plan.md). Ovo je ČEKAONICA, ne knjiženje: webhook nikad ne
+/// pravi Payment/FinTransaction — to radi tek čovjek (confirmBankSms), isto kao potvrda pregleda
+/// PDF izvoda. rawText je null za poruke koje ne počinju sa "NOVA BANKA" (privatnost: tuđe lične
+/// poruke ne smiju završiti u bazi ZEV-a ako je filter u Shortcut-u pogrešno podešen).
+model IncomingBankSms {
+  id                  String        @id @default(cuid())
+  zev                 Zev           @relation(fields: [zevId], references: [id])
+  zevId               String
+  receivedAt          DateTime      @default(now())
+  rawText             String?
+  /// sha256(normalizovani tekst) — zajedno sa zevId daje jedinstveni ključ za dedup (isti SMS
+  /// stigne dvaput: retry u Shortcut-u ili dva telefona). Tekst sadrži "Raspolozivo" stanje poslije
+  /// transakcije, pa dvije stvarne uplate istog iznosa nikad nemaju isti heš.
+  rawHash             String
+  kind                String        // PRILIV | ODLIV | UNKNOWN
+  status              String        // PENDING | CONFIRMING | CONFIRMED | DISMISSED | REJECTED
+  parseError          String?
+  ownAccount          String?       // samo cifre vlastitog računa iz poruke
+  account             MoneyAccount? @relation(fields: [accountId], references: [id])
+  accountId           String?       // null = račun iz poruke nije upisan ni na jednom računu ZEV-a
+  amount              Decimal?      @db.Decimal(14, 2)
+  purposeRaw          String?
+  counterpartyAccount String?       // račun druge strane (cifre); null npr. za bankovnu naknadu
+  counterpartyName    String?       // ime druge strane kako ga je banka ispisala (često skraćeno)
+  balanceAfter        Decimal?      @db.Decimal(14, 2) // "Raspolozivo" — informativno (lanac stanja je Faza 2)
+  duplicateHits       Int           @default(0)
+  lastDuplicateAt     DateTime?
+  paymentId           String?       @unique // PRILIV potvrđen -> Payment
+  transactionId       String?       @unique // ODLIV potvrđen -> FinTransaction (EXPENSE)
+  importBatchId       String?
+  reviewedById        String?
+  reviewedAt          DateTime?
+  dismissReason       String?
+  ipHash              String?
+
+  @@unique([zevId, rawHash])
+  @@index([zevId, status])
 }
 
 model Payment {

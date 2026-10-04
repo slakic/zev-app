@@ -285,6 +285,7 @@ export type ZevWhereInput = {
   invoiceBatches?: Prisma.InvoiceBatchListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
   bankImportBatches?: Prisma.BankImportBatchListRelationFilter
+  incomingBankSms?: Prisma.IncomingBankSmsListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
   suppliers?: Prisma.SupplierListRelationFilter
@@ -340,6 +341,7 @@ export type ZevOrderByWithRelationInput = {
   invoiceBatches?: Prisma.InvoiceBatchOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
   bankImportBatches?: Prisma.BankImportBatchOrderByRelationAggregateInput
+  incomingBankSms?: Prisma.IncomingBankSmsOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   balanceCorrections?: Prisma.BalanceCorrectionOrderByRelationAggregateInput
   suppliers?: Prisma.SupplierOrderByRelationAggregateInput
@@ -398,6 +400,7 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   invoiceBatches?: Prisma.InvoiceBatchListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
   bankImportBatches?: Prisma.BankImportBatchListRelationFilter
+  incomingBankSms?: Prisma.IncomingBankSmsListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
   suppliers?: Prisma.SupplierListRelationFilter
@@ -495,6 +498,7 @@ export type ZevCreateInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -550,6 +554,7 @@ export type ZevUncheckedCreateInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -605,6 +610,7 @@ export type ZevUpdateInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -660,6 +666,7 @@ export type ZevUncheckedUpdateInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -1122,6 +1129,20 @@ export type ZevUpdateOneRequiredWithoutBankImportBatchesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutBankImportBatchesInput, Prisma.ZevUpdateWithoutBankImportBatchesInput>, Prisma.ZevUncheckedUpdateWithoutBankImportBatchesInput>
 }
 
+export type ZevCreateNestedOneWithoutIncomingBankSmsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutIncomingBankSmsInput, Prisma.ZevUncheckedCreateWithoutIncomingBankSmsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutIncomingBankSmsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutIncomingBankSmsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutIncomingBankSmsInput, Prisma.ZevUncheckedCreateWithoutIncomingBankSmsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutIncomingBankSmsInput
+  upsert?: Prisma.ZevUpsertWithoutIncomingBankSmsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutIncomingBankSmsInput, Prisma.ZevUpdateWithoutIncomingBankSmsInput>, Prisma.ZevUncheckedUpdateWithoutIncomingBankSmsInput>
+}
+
 export type ZevCreateNestedOneWithoutPaymentsInput = {
   create?: Prisma.XOR<Prisma.ZevCreateWithoutPaymentsInput, Prisma.ZevUncheckedCreateWithoutPaymentsInput>
   connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPaymentsInput
@@ -1360,6 +1381,7 @@ export type ZevCreateWithoutSessionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -1414,6 +1436,7 @@ export type ZevUncheckedCreateWithoutSessionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -1484,6 +1507,7 @@ export type ZevUpdateWithoutSessionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -1538,6 +1562,7 @@ export type ZevUncheckedUpdateWithoutSessionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -1592,6 +1617,7 @@ export type ZevCreateWithoutPartiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -1646,6 +1672,7 @@ export type ZevUncheckedCreateWithoutPartiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -1716,6 +1743,7 @@ export type ZevUpdateWithoutPartiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -1770,6 +1798,7 @@ export type ZevUncheckedUpdateWithoutPartiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -1824,6 +1853,7 @@ export type ZevCreateWithoutMembershipsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -1878,6 +1908,7 @@ export type ZevUncheckedCreateWithoutMembershipsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -1948,6 +1979,7 @@ export type ZevUpdateWithoutMembershipsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -2002,6 +2034,7 @@ export type ZevUncheckedUpdateWithoutMembershipsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -2056,6 +2089,7 @@ export type ZevCreateWithoutBuildingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -2110,6 +2144,7 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -2180,6 +2215,7 @@ export type ZevUpdateWithoutBuildingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -2234,6 +2270,7 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -2288,6 +2325,7 @@ export type ZevCreateWithoutEntrancesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -2342,6 +2380,7 @@ export type ZevUncheckedCreateWithoutEntrancesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -2412,6 +2451,7 @@ export type ZevUpdateWithoutEntrancesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -2466,6 +2506,7 @@ export type ZevUncheckedUpdateWithoutEntrancesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -2520,6 +2561,7 @@ export type ZevCreateWithoutUnitsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -2574,6 +2616,7 @@ export type ZevUncheckedCreateWithoutUnitsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -2644,6 +2687,7 @@ export type ZevUpdateWithoutUnitsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -2698,6 +2742,7 @@ export type ZevUncheckedUpdateWithoutUnitsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -2752,6 +2797,7 @@ export type ZevCreateWithoutOwnershipStakesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -2806,6 +2852,7 @@ export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -2876,6 +2923,7 @@ export type ZevUpdateWithoutOwnershipStakesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -2930,6 +2978,7 @@ export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -2984,6 +3033,7 @@ export type ZevCreateWithoutOccupanciesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -3038,6 +3088,7 @@ export type ZevUncheckedCreateWithoutOccupanciesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -3108,6 +3159,7 @@ export type ZevUpdateWithoutOccupanciesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -3162,6 +3214,7 @@ export type ZevUncheckedUpdateWithoutOccupanciesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -3216,6 +3269,7 @@ export type ZevCreateWithoutProxiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -3270,6 +3324,7 @@ export type ZevUncheckedCreateWithoutProxiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -3340,6 +3395,7 @@ export type ZevUpdateWithoutProxiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -3394,6 +3450,7 @@ export type ZevUncheckedUpdateWithoutProxiesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -3448,6 +3505,7 @@ export type ZevCreateWithoutOfficeTermsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -3502,6 +3560,7 @@ export type ZevUncheckedCreateWithoutOfficeTermsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -3572,6 +3631,7 @@ export type ZevUpdateWithoutOfficeTermsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -3626,6 +3686,7 @@ export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -3680,6 +3741,7 @@ export type ZevCreateWithoutAllocationGroupsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -3734,6 +3796,7 @@ export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -3804,6 +3867,7 @@ export type ZevUpdateWithoutAllocationGroupsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -3858,6 +3922,7 @@ export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -3912,6 +3977,7 @@ export type ZevCreateWithoutCommonAssetsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -3966,6 +4032,7 @@ export type ZevUncheckedCreateWithoutCommonAssetsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -4036,6 +4103,7 @@ export type ZevUpdateWithoutCommonAssetsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -4090,6 +4158,7 @@ export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -4144,6 +4213,7 @@ export type ZevCreateWithoutMeetingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -4198,6 +4268,7 @@ export type ZevUncheckedCreateWithoutMeetingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -4268,6 +4339,7 @@ export type ZevUpdateWithoutMeetingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -4322,6 +4394,7 @@ export type ZevUncheckedUpdateWithoutMeetingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -4376,6 +4449,7 @@ export type ZevCreateWithoutVotingRulesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -4430,6 +4504,7 @@ export type ZevUncheckedCreateWithoutVotingRulesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -4500,6 +4575,7 @@ export type ZevUpdateWithoutVotingRulesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -4554,6 +4630,7 @@ export type ZevUncheckedUpdateWithoutVotingRulesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -4608,6 +4685,7 @@ export type ZevCreateWithoutProposalsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -4662,6 +4740,7 @@ export type ZevUncheckedCreateWithoutProposalsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -4732,6 +4811,7 @@ export type ZevUpdateWithoutProposalsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -4786,6 +4866,7 @@ export type ZevUncheckedUpdateWithoutProposalsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -4840,6 +4921,7 @@ export type ZevCreateWithoutVotesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -4894,6 +4976,7 @@ export type ZevUncheckedCreateWithoutVotesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -4964,6 +5047,7 @@ export type ZevUpdateWithoutVotesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -5018,6 +5102,7 @@ export type ZevUncheckedUpdateWithoutVotesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -5072,6 +5157,7 @@ export type ZevCreateWithoutAccountsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -5126,6 +5212,7 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -5196,6 +5283,7 @@ export type ZevUpdateWithoutAccountsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -5250,6 +5338,7 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -5304,6 +5393,7 @@ export type ZevCreateWithoutTransactionCategoriesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -5358,6 +5448,7 @@ export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -5428,6 +5519,7 @@ export type ZevUpdateWithoutTransactionCategoriesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -5482,6 +5574,7 @@ export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -5536,6 +5629,7 @@ export type ZevCreateWithoutFinTransactionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -5590,6 +5684,7 @@ export type ZevUncheckedCreateWithoutFinTransactionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -5660,6 +5755,7 @@ export type ZevUpdateWithoutFinTransactionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -5714,6 +5810,7 @@ export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -5768,6 +5865,7 @@ export type ZevCreateWithoutChargeItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -5822,6 +5920,7 @@ export type ZevUncheckedCreateWithoutChargeItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -5892,6 +5991,7 @@ export type ZevUpdateWithoutChargeItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -5946,6 +6046,7 @@ export type ZevUncheckedUpdateWithoutChargeItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -6000,6 +6101,7 @@ export type ZevCreateWithoutInvoiceBatchesInput = {
   chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -6054,6 +6156,7 @@ export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
   chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -6124,6 +6227,7 @@ export type ZevUpdateWithoutInvoiceBatchesInput = {
   chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -6178,6 +6282,7 @@ export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
   chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -6232,6 +6337,7 @@ export type ZevCreateWithoutInvoicesInput = {
   chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -6286,6 +6392,7 @@ export type ZevUncheckedCreateWithoutInvoicesInput = {
   chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -6356,6 +6463,7 @@ export type ZevUpdateWithoutInvoicesInput = {
   chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -6410,6 +6518,7 @@ export type ZevUncheckedUpdateWithoutInvoicesInput = {
   chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -6464,6 +6573,7 @@ export type ZevCreateWithoutBankImportBatchesInput = {
   chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -6518,6 +6628,7 @@ export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
   chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -6588,6 +6699,7 @@ export type ZevUpdateWithoutBankImportBatchesInput = {
   chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -6642,6 +6754,243 @@ export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
   chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutIncomingBankSmsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutIncomingBankSmsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutIncomingBankSmsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutIncomingBankSmsInput, Prisma.ZevUncheckedCreateWithoutIncomingBankSmsInput>
+}
+
+export type ZevUpsertWithoutIncomingBankSmsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutIncomingBankSmsInput, Prisma.ZevUncheckedUpdateWithoutIncomingBankSmsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutIncomingBankSmsInput, Prisma.ZevUncheckedCreateWithoutIncomingBankSmsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutIncomingBankSmsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutIncomingBankSmsInput, Prisma.ZevUncheckedUpdateWithoutIncomingBankSmsInput>
+}
+
+export type ZevUpdateWithoutIncomingBankSmsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutIncomingBankSmsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -6697,6 +7046,7 @@ export type ZevCreateWithoutPaymentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
@@ -6751,6 +7101,7 @@ export type ZevUncheckedCreateWithoutPaymentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
@@ -6821,6 +7172,7 @@ export type ZevUpdateWithoutPaymentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
@@ -6875,6 +7227,7 @@ export type ZevUncheckedUpdateWithoutPaymentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
@@ -6929,6 +7282,7 @@ export type ZevCreateWithoutBalanceCorrectionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
@@ -6983,6 +7337,7 @@ export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
@@ -7053,6 +7408,7 @@ export type ZevUpdateWithoutBalanceCorrectionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
@@ -7107,6 +7463,7 @@ export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
@@ -7161,6 +7518,7 @@ export type ZevCreateWithoutSuppliersInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
@@ -7215,6 +7573,7 @@ export type ZevUncheckedCreateWithoutSuppliersInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
@@ -7285,6 +7644,7 @@ export type ZevUpdateWithoutSuppliersInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
@@ -7339,6 +7699,7 @@ export type ZevUncheckedUpdateWithoutSuppliersInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
@@ -7393,6 +7754,7 @@ export type ZevCreateWithoutExpensesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -7447,6 +7809,7 @@ export type ZevUncheckedCreateWithoutExpensesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -7517,6 +7880,7 @@ export type ZevUpdateWithoutExpensesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -7571,6 +7935,7 @@ export type ZevUncheckedUpdateWithoutExpensesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -7625,6 +7990,7 @@ export type ZevCreateWithoutAnnualPlansInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -7679,6 +8045,7 @@ export type ZevUncheckedCreateWithoutAnnualPlansInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -7749,6 +8116,7 @@ export type ZevUpdateWithoutAnnualPlansInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -7803,6 +8171,7 @@ export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -7857,6 +8226,7 @@ export type ZevCreateWithoutPlanItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -7911,6 +8281,7 @@ export type ZevUncheckedCreateWithoutPlanItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -7981,6 +8352,7 @@ export type ZevUpdateWithoutPlanItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -8035,6 +8407,7 @@ export type ZevUncheckedUpdateWithoutPlanItemsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -8089,6 +8462,7 @@ export type ZevCreateWithoutProjectsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -8143,6 +8517,7 @@ export type ZevUncheckedCreateWithoutProjectsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -8213,6 +8588,7 @@ export type ZevUpdateWithoutProjectsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -8267,6 +8643,7 @@ export type ZevUncheckedUpdateWithoutProjectsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -8321,6 +8698,7 @@ export type ZevCreateWithoutMaintenanceIssuesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -8375,6 +8753,7 @@ export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -8445,6 +8824,7 @@ export type ZevUpdateWithoutMaintenanceIssuesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -8499,6 +8879,7 @@ export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -8553,6 +8934,7 @@ export type ZevCreateWithoutWorkOrdersInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -8607,6 +8989,7 @@ export type ZevUncheckedCreateWithoutWorkOrdersInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -8677,6 +9060,7 @@ export type ZevUpdateWithoutWorkOrdersInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -8731,6 +9115,7 @@ export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -8785,6 +9170,7 @@ export type ZevCreateWithoutDocumentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -8839,6 +9225,7 @@ export type ZevUncheckedCreateWithoutDocumentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -8909,6 +9296,7 @@ export type ZevUpdateWithoutDocumentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -8963,6 +9351,7 @@ export type ZevUncheckedUpdateWithoutDocumentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -9017,6 +9406,7 @@ export type ZevCreateWithoutAttachmentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -9071,6 +9461,7 @@ export type ZevUncheckedCreateWithoutAttachmentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -9141,6 +9532,7 @@ export type ZevUpdateWithoutAttachmentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -9195,6 +9587,7 @@ export type ZevUncheckedUpdateWithoutAttachmentsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -9249,6 +9642,7 @@ export type ZevCreateWithoutNotificationMessagesInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -9303,6 +9697,7 @@ export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -9373,6 +9768,7 @@ export type ZevUpdateWithoutNotificationMessagesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -9427,6 +9823,7 @@ export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -9481,6 +9878,7 @@ export type ZevCreateWithoutAuditEventsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -9535,6 +9933,7 @@ export type ZevUncheckedCreateWithoutAuditEventsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -9605,6 +10004,7 @@ export type ZevUpdateWithoutAuditEventsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -9659,6 +10059,7 @@ export type ZevUncheckedUpdateWithoutAuditEventsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -9713,6 +10114,7 @@ export type ZevCreateWithoutSettingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
@@ -9767,6 +10169,7 @@ export type ZevUncheckedCreateWithoutSettingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
   suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
@@ -9837,6 +10240,7 @@ export type ZevUpdateWithoutSettingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
@@ -9891,6 +10295,7 @@ export type ZevUncheckedUpdateWithoutSettingsInput = {
   invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
   bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
   suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
@@ -9935,6 +10340,7 @@ export type ZevCountOutputType = {
   invoiceBatches: number
   invoices: number
   bankImportBatches: number
+  incomingBankSms: number
   payments: number
   balanceCorrections: number
   suppliers: number
@@ -9975,6 +10381,7 @@ export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.In
   invoiceBatches?: boolean | ZevCountOutputTypeCountInvoiceBatchesArgs
   invoices?: boolean | ZevCountOutputTypeCountInvoicesArgs
   bankImportBatches?: boolean | ZevCountOutputTypeCountBankImportBatchesArgs
+  incomingBankSms?: boolean | ZevCountOutputTypeCountIncomingBankSmsArgs
   payments?: boolean | ZevCountOutputTypeCountPaymentsArgs
   balanceCorrections?: boolean | ZevCountOutputTypeCountBalanceCorrectionsArgs
   suppliers?: boolean | ZevCountOutputTypeCountSuppliersArgs
@@ -10165,6 +10572,13 @@ export type ZevCountOutputTypeCountBankImportBatchesArgs<ExtArgs extends runtime
 /**
  * ZevCountOutputType without action
  */
+export type ZevCountOutputTypeCountIncomingBankSmsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IncomingBankSmsWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
 export type ZevCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PaymentWhereInput
 }
@@ -10300,6 +10714,7 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   invoiceBatches?: boolean | Prisma.Zev$invoiceBatchesArgs<ExtArgs>
   invoices?: boolean | Prisma.Zev$invoicesArgs<ExtArgs>
   bankImportBatches?: boolean | Prisma.Zev$bankImportBatchesArgs<ExtArgs>
+  incomingBankSms?: boolean | Prisma.Zev$incomingBankSmsArgs<ExtArgs>
   payments?: boolean | Prisma.Zev$paymentsArgs<ExtArgs>
   balanceCorrections?: boolean | Prisma.Zev$balanceCorrectionsArgs<ExtArgs>
   suppliers?: boolean | Prisma.Zev$suppliersArgs<ExtArgs>
@@ -10396,6 +10811,7 @@ export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   invoiceBatches?: boolean | Prisma.Zev$invoiceBatchesArgs<ExtArgs>
   invoices?: boolean | Prisma.Zev$invoicesArgs<ExtArgs>
   bankImportBatches?: boolean | Prisma.Zev$bankImportBatchesArgs<ExtArgs>
+  incomingBankSms?: boolean | Prisma.Zev$incomingBankSmsArgs<ExtArgs>
   payments?: boolean | Prisma.Zev$paymentsArgs<ExtArgs>
   balanceCorrections?: boolean | Prisma.Zev$balanceCorrectionsArgs<ExtArgs>
   suppliers?: boolean | Prisma.Zev$suppliersArgs<ExtArgs>
@@ -10441,6 +10857,7 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     invoiceBatches: Prisma.$InvoiceBatchPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
     bankImportBatches: Prisma.$BankImportBatchPayload<ExtArgs>[]
+    incomingBankSms: Prisma.$IncomingBankSmsPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     balanceCorrections: Prisma.$BalanceCorrectionPayload<ExtArgs>[]
     suppliers: Prisma.$SupplierPayload<ExtArgs>[]
@@ -10896,6 +11313,7 @@ export interface Prisma__ZevClient<T, Null = never, ExtArgs extends runtime.Type
   invoiceBatches<T extends Prisma.Zev$invoiceBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$invoiceBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Zev$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bankImportBatches<T extends Prisma.Zev$bankImportBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$bankImportBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  incomingBankSms<T extends Prisma.Zev$incomingBankSmsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$incomingBankSmsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncomingBankSmsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.Zev$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   balanceCorrections<T extends Prisma.Zev$balanceCorrectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$balanceCorrectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BalanceCorrectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   suppliers<T extends Prisma.Zev$suppliersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$suppliersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -11896,6 +12314,30 @@ export type Zev$bankImportBatchesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.BankImportBatchScalarFieldEnum | Prisma.BankImportBatchScalarFieldEnum[]
+}
+
+/**
+ * Zev.incomingBankSms
+ */
+export type Zev$incomingBankSmsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IncomingBankSms
+   */
+  select?: Prisma.IncomingBankSmsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the IncomingBankSms
+   */
+  omit?: Prisma.IncomingBankSmsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IncomingBankSmsInclude<ExtArgs> | null
+  where?: Prisma.IncomingBankSmsWhereInput
+  orderBy?: Prisma.IncomingBankSmsOrderByWithRelationInput | Prisma.IncomingBankSmsOrderByWithRelationInput[]
+  cursor?: Prisma.IncomingBankSmsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IncomingBankSmsScalarFieldEnum | Prisma.IncomingBankSmsScalarFieldEnum[]
 }
 
 /**

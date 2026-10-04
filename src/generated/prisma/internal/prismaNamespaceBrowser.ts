@@ -85,6 +85,7 @@ export const ModelName = {
   Invoice: 'Invoice',
   InvoiceLine: 'InvoiceLine',
   BankImportBatch: 'BankImportBatch',
+  IncomingBankSms: 'IncomingBankSms',
   Payment: 'Payment',
   PaymentAllocation: 'PaymentAllocation',
   BalanceCorrection: 'BalanceCorrection',
@@ -716,6 +717,36 @@ export const BankImportBatchScalarFieldEnum = {
 } as const
 
 export type BankImportBatchScalarFieldEnum = (typeof BankImportBatchScalarFieldEnum)[keyof typeof BankImportBatchScalarFieldEnum]
+
+
+export const IncomingBankSmsScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  receivedAt: 'receivedAt',
+  rawText: 'rawText',
+  rawHash: 'rawHash',
+  kind: 'kind',
+  status: 'status',
+  parseError: 'parseError',
+  ownAccount: 'ownAccount',
+  accountId: 'accountId',
+  amount: 'amount',
+  purposeRaw: 'purposeRaw',
+  counterpartyAccount: 'counterpartyAccount',
+  counterpartyName: 'counterpartyName',
+  balanceAfter: 'balanceAfter',
+  duplicateHits: 'duplicateHits',
+  lastDuplicateAt: 'lastDuplicateAt',
+  paymentId: 'paymentId',
+  transactionId: 'transactionId',
+  importBatchId: 'importBatchId',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  dismissReason: 'dismissReason',
+  ipHash: 'ipHash'
+} as const
+
+export type IncomingBankSmsScalarFieldEnum = (typeof IncomingBankSmsScalarFieldEnum)[keyof typeof IncomingBankSmsScalarFieldEnum]
 
 
 export const PaymentScalarFieldEnum = {

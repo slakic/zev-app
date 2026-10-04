@@ -3,9 +3,10 @@ import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listPayments, enterPayment, importBankCsv, type PaymentSortKey } from "@/server/services/payments";
 import { listAccounts } from "@/server/services/finance";
+import { getBankSmsStatus } from "@/server/services/bankSms";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, tEnum, t } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, FilterBar, Pagination, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const paymentHeaders: ColumnSpec[] = [
@@ -93,11 +94,35 @@ export default async function PaymentsPage({
   const paymentResult = await listPayments(actor, paymentFilter, { sortBy: paymentSortBy, sortDir: paymentDir, page: paymentPage });
   const payments = paymentResult.rows;
   const [accounts, parties] = management ? await Promise.all([listAccounts(actor), listParties(actor)]) : [[], []];
+  const bankSms = management ? await getBankSmsStatus(actor) : null;
 
   return (
     <div>
       <PageHeader title={management ? "Uplate i uparivanje" : "Moje uplate"} subtitle={management ? "Ručni unos, uvoz izvoda i raspoređivanje na fakture" : undefined} />
       <Flash err={err} msg={msg} />
+
+      {bankSms && (
+        <Card
+          title="SMS obavještenja banke"
+          hint="Poruke Nova Banke sa telefona, sa vašom potvrdom prije knjiženja"
+          className="mb-4"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+            <div className="text-slate-700">
+              {bankSms.active ? (
+                <>
+                  Na čekanju: <b>{bankSms.pending}</b>
+                  {bankSms.rejected > 0 && <> · Neprepoznate: <b>{bankSms.rejected}</b></>}
+                  {" · "}Posljednja poruka: {bankSms.lastReceivedAt ? formatDateTime(new Date(bankSms.lastReceivedAt)) : "još nijedna"}
+                </>
+              ) : (
+                <>Automatski prijem nije uključen. Podesite ga u Podešavanja → ZEV → Automatski prijem SMS obavještenja banke.</>
+              )}
+            </div>
+            <BtnLink href="/fakture/uplate/sms" variant="secondary">Otvori</BtnLink>
+          </div>
+        </Card>
+      )}
 
       {management && actor.roles.includes("ACCOUNTANT") && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

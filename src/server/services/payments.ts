@@ -7,6 +7,7 @@ import { dec, ZERO, sumDecimals, type Decimal } from "@/lib/money";
 import type { Prisma } from "@/generated/prisma/client";
 import { extractPdfText, parseNovaBankaStatement, extractUnitNumberCandidates } from "@/server/services/bankStatementPdf";
 import { partyDisplayName } from "@/server/services/ownership";
+import { foldDiacritics } from "@/lib/text";
 
 // ---- Manual entry ----
 
@@ -220,6 +221,9 @@ export type PdfPreviewRow = {
   categoryName: string;
   /** Human-readable reasons behind the best automatic suggestion, for the reviewer's benefit only. */
   matchHint: string | null;
+  /** This row was already booked from a confirmed SMS notification (Plans/bank-sms-ingestion-plan.md
+   *  O4) — it arrives un-ticked so the same money is not booked twice; the reviewer can re-tick it. */
+  duplicateOf: { smsId: string; paymentId: string | null; transactionId: string | null } | null;
 };
 
 export type PdfImportPreview = {
@@ -268,6 +272,7 @@ export async function importPdfPreview(
   const dateIso = parsed.statementDate ? parsed.statementDate.toISOString().slice(0, 10) : "";
   let skipped = 0;
   const rows: PdfPreviewRow[] = [];
+  const partnerAccounts: (string | null)[] = []; // parallel to `rows`, for the SMS de-duplication below
   for (const r of parsed.rows) {
     if (r.credit.greaterThan(0)) {
       const amount = r.credit;
@@ -289,7 +294,9 @@ export async function importPdfPreview(
         expenseId: null,
         categoryName: "",
         matchHint: best ? `${best.number} (${best.unitLabel}) — ${best.reasons.join(", ")}` : null,
+        duplicateOf: null,
       });
+      partnerAccounts.push(r.partnerAccount);
     } else if (r.debit.greaterThan(0)) {
       const amount = r.debit;
       const best = unpaidExpenses
@@ -308,15 +315,19 @@ export async function importPdfPreview(
         expenseId: best && best.score >= 50 ? best.expenseId : null,
         categoryName: "",
         matchHint: best ? `${best.label} — ${best.reasons.join(", ")}` : null,
+        duplicateOf: null,
       });
+      partnerAccounts.push(r.partnerAccount);
     } else {
       skipped++;
     }
   }
 
+  await markRowsAlreadyBookedFromSms(zevId, input.accountId, parsed.statementDate, rows, partnerAccounts);
+
   const accountDigits = (account.iban ?? "").replace(/\D/g, "");
   const statementDigits = (parsed.ownAccountNumber ?? "").replace(/\D/g, "");
-  const accountMismatch = Boolean(accountDigits && statementDigits && accountDigits !== statementDigits);
+  const accountMismatch = Boolean(accountDigits && statementDigits && !accountDigitsMatch(accountDigits, statementDigits));
 
   return {
     filename: input.filename,
@@ -331,6 +342,45 @@ export async function importPdfPreview(
   };
 }
 
+/**
+ * Un-ticks statement-preview rows that were already booked from a CONFIRMED SMS notification
+ * (Plans/bank-sms-ingestion-plan.md, O4): same account, same amount, same direction, the other
+ * party's account agrees (or is unknown on either side), and the SMS was received within a couple
+ * of days of the statement date. One SMS accounts for at most one statement row. The reviewer can
+ * still re-tick a row. Mutates `rows` in place; `partnerAccounts` is parallel to `rows`.
+ */
+export async function markRowsAlreadyBookedFromSms(
+  zevId: string,
+  accountId: string,
+  statementDate: Date | null,
+  rows: PdfPreviewRow[],
+  partnerAccounts: (string | null)[]
+): Promise<void> {
+  if (!statementDate || rows.length === 0) return;
+  const day = 86400000;
+  const smsPool = await prisma.incomingBankSms.findMany({
+    where: {
+      zevId,
+      accountId,
+      status: "CONFIRMED",
+      receivedAt: { gte: new Date(statementDate.getTime() - 2 * day), lt: new Date(statementDate.getTime() + 3 * day) },
+    },
+  });
+  rows.forEach((row, i) => {
+    const wantKind = row.direction === "IN" ? "PRILIV" : "ODLIV";
+    const hit = smsPool.findIndex(
+      (s) =>
+        s.kind === wantKind &&
+        s.amount != null &&
+        dec(s.amount.toString()).equals(dec(row.amount)) &&
+        (!s.counterpartyAccount || !partnerAccounts[i] || accountDigitsMatch(s.counterpartyAccount, partnerAccounts[i]))
+    );
+    if (hit < 0) return;
+    const [sms] = smsPool.splice(hit, 1);
+    row.include = false;
+    row.duplicateOf = { smsId: sms.id, paymentId: sms.paymentId, transactionId: sms.transactionId };
+  });
+}
 /** Writes reviewed PDF-import rows (only rows the reviewer left checked). IN rows become
  *  Payments — allocated straight away when the reviewer accepted/chose an invoice, otherwise
  *  left unapplied for the usual "uparivanje" screen. OUT rows become expense-side
@@ -341,27 +391,44 @@ export async function commitPdfImport(
     accountId: string;
     filename: string;
     rawText: string;
-    rows: {
-      direction: "IN" | "OUT";
-      date: string;
-      amount: string;
-      payerNameRaw: string;
-      purposeRaw: string;
-      reference: string;
-      invoiceId?: string | null;
-      expenseId?: string | null;
-      categoryName?: string | null;
-    }[];
+    rows: StatementRowInput[];
   }
 ) {
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (input.rows.length === 0) throw new Error("Nema stavki za uvoz.");
   await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId, zevId } });
+  await assertStatementRowsCommittable(zevId, input.rows);
 
-  // Never partially commit a batch: if a chosen expense would end up overpaid, fail the
-  // whole commit up front with a clear message so the reviewer can fix that one row.
-  for (const r of input.rows) {
+  const batch = await prisma.$transaction(
+    (tx) => commitStatementRowsInTx(tx, actor, zevId, { source: "PDF", ...input }),
+    { timeout: 30000 }
+  );
+  return { batchId: batch.batchId, imported: input.rows.length };
+}
+
+/** One reviewed bank-statement row, as confirmed by a human — shared by the PDF import and the
+ *  SMS confirmation (Plans/bank-sms-ingestion-plan.md), which book through the same code. */
+export type StatementRowInput = {
+  direction: "IN" | "OUT";
+  date: string;
+  amount: string;
+  payerNameRaw: string;
+  purposeRaw: string;
+  reference: string;
+  invoiceId?: string | null;
+  expenseId?: string | null;
+  categoryName?: string | null;
+};
+
+/** What a committed row became: an IN row -> a Payment, an OUT row -> an expense-side FinTransaction. */
+export type CommittedStatementRow = { paymentId: string | null; transactionId: string | null };
+
+/** Never partially commit a batch: if a chosen expense would end up overpaid, fail the whole
+ *  commit up front with a clear message so the reviewer can fix that one row. Callers run this
+ *  BEFORE opening the transaction, with the actor's own zevId. */
+export async function assertStatementRowsCommittable(zevId: string, rows: StatementRowInput[]) {
+  for (const r of rows) {
     if (r.direction === "OUT" && r.expenseId) {
       const exp = await prisma.expense.findUniqueOrThrow({ where: { id: r.expenseId, zevId } });
       const open = dec(exp.amount.toString()).minus(dec(exp.paidAmount.toString()));
@@ -372,132 +439,156 @@ export async function commitPdfImport(
       }
     }
   }
+}
 
-  const batch = await prisma.$transaction(async (tx) => {
-    const b = await tx.bankImportBatch.create({
-      data: {
-        zevId,
-        filename: input.filename,
-        mapping: { source: "pdf-nova-banka" } as unknown as Prisma.InputJsonValue,
-        sourceType: "PDF",
-        rawText: input.rawText,
-        importedById: actor.userId,
-      },
-    });
+/**
+ * Writes reviewed statement rows inside the CALLER's transaction (so the SMS confirmation can
+ * flip its queue rows to CONFIRMED atomically with the booking). Extracted from the original
+ * commitPdfImport body without changing its behaviour; `source` only selects labels
+ * (batch sourceType/mapping, descriptions, audit action/`source`). The caller must have
+ * checked the role, the account (and that it belongs to `zevId`) and assertStatementRowsCommittable.
+ */
+export async function commitStatementRowsInTx(
+  tx: Prisma.TransactionClient,
+  actor: Actor,
+  zevId: string,
+  input: {
+    source: "PDF" | "SMS";
+    accountId: string;
+    filename: string;
+    rawText: string;
+    rows: StatementRowInput[];
+    /** SMS only: the IncomingBankSms ids this batch was booked from (kept in the audit trail). */
+    smsIds?: string[];
+  }
+): Promise<{ batchId: string; importedIn: number; importedOut: number; committed: CommittedStatementRow[] }> {
+  const isPdf = input.source === "PDF";
+  const sourceLabel = isPdf ? "pdf_import" : "sms_import";
+  const b = await tx.bankImportBatch.create({
+    data: {
+      zevId,
+      filename: input.filename,
+      mapping: { source: isPdf ? "pdf-nova-banka" : "sms-nova-banka" } as unknown as Prisma.InputJsonValue,
+      sourceType: input.source,
+      rawText: input.rawText,
+      importedById: actor.userId,
+    },
+  });
 
-    let importedIn = 0;
-    let importedOut = 0;
+  let importedIn = 0;
+  let importedOut = 0;
+  const committed: CommittedStatementRow[] = [];
 
-    for (const r of input.rows) {
-      const amount = dec(r.amount);
-      if (amount.lessThanOrEqualTo(0)) throw new Error(`Neispravan iznos: "${r.amount}"`);
-      const date = new Date(r.date);
-      if (isNaN(date.getTime())) throw new Error(`Neispravan datum: "${r.date}"`);
+  for (const r of input.rows) {
+    const amount = dec(r.amount);
+    if (amount.lessThanOrEqualTo(0)) throw new Error(`Neispravan iznos: "${r.amount}"`);
+    const date = new Date(r.date);
+    if (isNaN(date.getTime())) throw new Error(`Neispravan datum: "${r.date}"`);
 
-      if (r.direction === "OUT") {
-        let categoryId: string | null = null;
-        const categoryName = r.categoryName?.trim();
-        if (categoryName) {
-          const existingCat = await tx.transactionCategory.findFirst({ where: { zevId, name: categoryName } });
-          const cat = existingCat ?? await tx.transactionCategory.create({ data: { zevId, name: categoryName, kind: "EXPENSE" } });
-          categoryId = cat.id;
-        }
-        const t = await tx.finTransaction.create({
-          data: {
-            zevId,
-            accountId: input.accountId,
-            date,
-            type: "EXPENSE",
-            amount: amount.toFixed(2),
-            counterpartyName: r.payerNameRaw || null,
-            categoryId,
-            paymentMethod: "BANK",
-            description: r.purposeRaw || `Uvoz PDF izvoda: ${input.filename}`,
-            expenseId: r.expenseId || null,
-            createdById: actor.userId,
-          },
-        });
-        if (r.expenseId) {
-          const exp = await tx.expense.findUniqueOrThrow({ where: { id: r.expenseId, zevId } });
-          const newPaid = dec(exp.paidAmount.toString()).plus(amount);
-          await tx.expense.update({
-            where: { id: exp.id, zevId },
-            data: {
-              paidAmount: newPaid.toFixed(2),
-              status: newPaid.greaterThanOrEqualTo(dec(exp.amount.toString())) ? "PAID" : "PARTIALLY_PAID",
-              paidDate: date,
-            },
-          });
-          await audit(actor, {
-            action: "expense.pay", targetType: "Expense", targetId: exp.id,
-            after: { amount: amount.toFixed(2), transactionId: t.id, source: "pdf_import" },
-          }, tx);
-        }
-        importedOut++;
-        continue;
+    if (r.direction === "OUT") {
+      let categoryId: string | null = null;
+      const categoryName = r.categoryName?.trim();
+      if (categoryName) {
+        const existingCat = await tx.transactionCategory.findFirst({ where: { zevId, name: categoryName } });
+        const cat = existingCat ?? await tx.transactionCategory.create({ data: { zevId, name: categoryName, kind: "EXPENSE" } });
+        categoryId = cat.id;
       }
-
-      const payment = await tx.payment.create({
+      const t = await tx.finTransaction.create({
         data: {
           zevId,
           accountId: input.accountId,
           date,
-          amount: amount.toFixed(2),
-          payerNameRaw: r.payerNameRaw || null,
-          purposeRaw: r.purposeRaw || null,
-          reference: r.reference || null,
-          method: "BANK",
-          importBatchId: b.id,
-          createdById: actor.userId,
-        },
-      });
-      await tx.finTransaction.create({
-        data: {
-          zevId,
-          accountId: input.accountId,
-          date,
-          type: "INCOME",
+          type: "EXPENSE",
           amount: amount.toFixed(2),
           counterpartyName: r.payerNameRaw || null,
+          categoryId,
           paymentMethod: "BANK",
-          description: `Uvoz PDF izvoda: ${input.filename}`,
-          paymentId: payment.id,
+          description: r.purposeRaw || (isPdf ? `Uvoz PDF izvoda: ${input.filename}` : "SMS obavještenje banke"),
+          expenseId: r.expenseId || null,
           createdById: actor.userId,
         },
       });
-      if (r.invoiceId) {
-        const invoice = await tx.invoice.findUnique({ where: { id: r.invoiceId, zevId }, include: { allocations: true } });
-        if (invoice && invoice.status !== "CANCELLED" && invoice.status !== "DRAFT") {
-          const invoicePaid = sumDecimals(invoice.allocations.map((a) => dec(a.amount.toString())));
-          const invoiceOpen = dec(invoice.total.toString()).minus(invoicePaid);
-          const allocAmount = invoiceOpen.lessThan(amount) ? invoiceOpen : amount;
-          if (allocAmount.greaterThan(0)) {
-            const alloc = await tx.paymentAllocation.create({
-              data: {
-                paymentId: payment.id, invoiceId: invoice.id, amount: allocAmount.toFixed(2),
-                reason: "Automatski uparen pri uvozu PDF izvoda", createdById: actor.userId,
-              },
-            });
-            await refreshInvoiceStatus(tx, zevId, invoice.id);
-            await audit(actor, {
-              action: "payment.allocate", targetType: "PaymentAllocation", targetId: alloc.id,
-              after: { paymentId: payment.id, invoiceId: invoice.id, amount: allocAmount.toFixed(2), source: "pdf_import" },
-            }, tx);
-          }
-        }
+      if (r.expenseId) {
+        const exp = await tx.expense.findUniqueOrThrow({ where: { id: r.expenseId, zevId } });
+        const newPaid = dec(exp.paidAmount.toString()).plus(amount);
+        await tx.expense.update({
+          where: { id: exp.id, zevId },
+          data: {
+            paidAmount: newPaid.toFixed(2),
+            status: newPaid.greaterThanOrEqualTo(dec(exp.amount.toString())) ? "PAID" : "PARTIALLY_PAID",
+            paidDate: date,
+          },
+        });
+        await audit(actor, {
+          action: "expense.pay", targetType: "Expense", targetId: exp.id,
+          after: { amount: amount.toFixed(2), transactionId: t.id, source: sourceLabel },
+        }, tx);
       }
-      await refreshPaymentStatus(tx, zevId, payment.id);
-      importedIn++;
+      importedOut++;
+      committed.push({ paymentId: null, transactionId: t.id });
+      continue;
     }
 
-    await audit(actor, {
-      action: "payment.import_pdf", targetType: "BankImportBatch", targetId: b.id,
-      after: { filename: input.filename, importedIn, importedOut },
-    }, tx);
-    return b;
-  }, { timeout: 30000 });
+    const payment = await tx.payment.create({
+      data: {
+        zevId,
+        accountId: input.accountId,
+        date,
+        amount: amount.toFixed(2),
+        payerNameRaw: r.payerNameRaw || null,
+        purposeRaw: r.purposeRaw || null,
+        reference: r.reference || null,
+        method: "BANK",
+        importBatchId: b.id,
+        createdById: actor.userId,
+      },
+    });
+    await tx.finTransaction.create({
+      data: {
+        zevId,
+        accountId: input.accountId,
+        date,
+        type: "INCOME",
+        amount: amount.toFixed(2),
+        counterpartyName: r.payerNameRaw || null,
+        paymentMethod: "BANK",
+        description: isPdf ? `Uvoz PDF izvoda: ${input.filename}` : "Uplata vlasnika (SMS obavještenje banke)",
+        paymentId: payment.id,
+        createdById: actor.userId,
+      },
+    });
+    if (r.invoiceId) {
+      const invoice = await tx.invoice.findUnique({ where: { id: r.invoiceId, zevId }, include: { allocations: true } });
+      if (invoice && invoice.status !== "CANCELLED" && invoice.status !== "DRAFT") {
+        const invoicePaid = sumDecimals(invoice.allocations.map((a) => dec(a.amount.toString())));
+        const invoiceOpen = dec(invoice.total.toString()).minus(invoicePaid);
+        const allocAmount = invoiceOpen.lessThan(amount) ? invoiceOpen : amount;
+        if (allocAmount.greaterThan(0)) {
+          const alloc = await tx.paymentAllocation.create({
+            data: {
+              paymentId: payment.id, invoiceId: invoice.id, amount: allocAmount.toFixed(2),
+              reason: isPdf ? "Automatski uparen pri uvozu PDF izvoda" : "Uparen pri potvrdi SMS obavještenja banke",
+              createdById: actor.userId,
+            },
+          });
+          await refreshInvoiceStatus(tx, zevId, invoice.id);
+          await audit(actor, {
+            action: "payment.allocate", targetType: "PaymentAllocation", targetId: alloc.id,
+            after: { paymentId: payment.id, invoiceId: invoice.id, amount: allocAmount.toFixed(2), source: sourceLabel },
+          }, tx);
+        }
+      }
+    }
+    await refreshPaymentStatus(tx, zevId, payment.id);
+    importedIn++;
+    committed.push({ paymentId: payment.id, transactionId: null });
+  }
 
-  return { batchId: batch.id, imported: input.rows.length };
+  await audit(actor, {
+    action: isPdf ? "payment.import_pdf" : "payment.import_sms", targetType: "BankImportBatch", targetId: b.id,
+    after: { filename: input.filename, importedIn, importedOut, ...(input.smsIds ? { smsIds: input.smsIds } : {}) },
+  }, tx);
+  return { batchId: b.id, importedIn, importedOut, committed };
 }
 
 // ---- Matching ----
@@ -509,12 +600,28 @@ function unitNumberFromLabel(label: string): string | null {
   return m ? m[1] : null;
 }
 
-function nameMatchesText(nameLower: string, textLower: string): boolean {
+/** Does `textLower` mention the name `nameLower`? Compared with diacritics folded on both sides:
+ *  banks print "ZELJKO GALIC" for "Željko Galić" (and "DJURIC" or "DURIC" for "Đurić"), which a
+ *  plain lower-case comparison never matched — found while designing the SMS import
+ *  (Plans/bank-sms-ingestion-plan.md), and it equally affected PDF statement matching. */
+export function nameMatchesText(nameLower: string, textLower: string): boolean {
   if (!nameLower) return false;
-  return textLower.includes(nameLower) || nameLower.split(" ").every((part) => part && textLower.includes(part));
+  return (["dj", "d"] as const).some((mode) => {
+    const name = foldDiacritics(nameLower, mode);
+    const text = foldDiacritics(textLower, mode);
+    return text.includes(name) || name.split(" ").every((part) => part && text.includes(part));
+  });
 }
 
-type OpenInvoiceCandidate = {
+/** Do two account numbers denote the same account? Banks print them with dashes in one place
+ *  ("555-10000515469-32") and bare digits in another ("5551000051546932"). */
+export function accountDigitsMatch(a: string | null | undefined, b: string | null | undefined): boolean {
+  const da = (a ?? "").replace(/\D/g, "");
+  const db = (b ?? "").replace(/\D/g, "");
+  return Boolean(da && db && da === db);
+}
+
+export type OpenInvoiceCandidate = {
   inv: Prisma.InvoiceGetPayload<{ include: { allocations: true; debtor: true; unit: true } }>;
   open: Decimal;
 };
@@ -522,7 +629,7 @@ type OpenInvoiceCandidate = {
 /** All ISSUED invoices with a remaining open balance, for matching against payments (or,
  *  pre-commit, against parsed PDF rows that aren't Payments yet). Callers must pass the
  *  actor's own zevId — never a caller-supplied one — see requireZev(). */
-async function fetchOpenInvoiceCandidates(zevId: string): Promise<OpenInvoiceCandidate[]> {
+export async function fetchOpenInvoiceCandidates(zevId: string): Promise<OpenInvoiceCandidate[]> {
   const openInvoices = await prisma.invoice.findMany({
     where: { zevId, status: "ISSUED" },
     include: { allocations: true, debtor: true, unit: true },
@@ -538,7 +645,7 @@ async function fetchOpenInvoiceCandidates(zevId: string): Promise<OpenInvoiceCan
 /** Scores one open invoice against a payment signal (reference, payer, purpose text, amount) —
  *  shared by suggestMatches() (an existing Payment) and importPdfPreview() (a parsed row that
  *  isn't a Payment yet). */
-function scoreInvoiceMatch(
+export function scoreInvoiceMatch(
   inv: OpenInvoiceCandidate["inv"],
   open: Decimal,
   signal: { reference?: string | null; payerId?: string | null; payerNameRaw?: string | null; purposeRaw?: string | null; amount: Decimal }
@@ -573,7 +680,7 @@ function scoreInvoiceMatch(
 
 /** Scores one open (unpaid/partially paid) expense against an outgoing bank-statement row —
  *  used to suggest which Trošak a PDF-imported isplata should settle. */
-function scoreExpenseMatch(
+export function scoreExpenseMatch(
   exp: Prisma.ExpenseGetPayload<{ include: { supplier: true } }>,
   signal: { payerNameRaw?: string | null; purposeRaw?: string | null; amount: Decimal }
 ) {

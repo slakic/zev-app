@@ -431,6 +431,7 @@ export const ModelName = {
   Invoice: 'Invoice',
   InvoiceLine: 'InvoiceLine',
   BankImportBatch: 'BankImportBatch',
+  IncomingBankSms: 'IncomingBankSms',
   Payment: 'Payment',
   PaymentAllocation: 'PaymentAllocation',
   BalanceCorrection: 'BalanceCorrection',
@@ -468,7 +469,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2988,6 +2989,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    IncomingBankSms: {
+      payload: Prisma.$IncomingBankSmsPayload<ExtArgs>
+      fields: Prisma.IncomingBankSmsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IncomingBankSmsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IncomingBankSmsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>
+        }
+        findFirst: {
+          args: Prisma.IncomingBankSmsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IncomingBankSmsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>
+        }
+        findMany: {
+          args: Prisma.IncomingBankSmsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>[]
+        }
+        create: {
+          args: Prisma.IncomingBankSmsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>
+        }
+        createMany: {
+          args: Prisma.IncomingBankSmsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IncomingBankSmsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>[]
+        }
+        delete: {
+          args: Prisma.IncomingBankSmsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>
+        }
+        update: {
+          args: Prisma.IncomingBankSmsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>
+        }
+        deleteMany: {
+          args: Prisma.IncomingBankSmsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IncomingBankSmsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IncomingBankSmsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>[]
+        }
+        upsert: {
+          args: Prisma.IncomingBankSmsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IncomingBankSmsPayload>
+        }
+        aggregate: {
+          args: Prisma.IncomingBankSmsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIncomingBankSms>
+        }
+        groupBy: {
+          args: Prisma.IncomingBankSmsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IncomingBankSmsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IncomingBankSmsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IncomingBankSmsCountAggregateOutputType> | number
+        }
+      }
+    }
     Payment: {
       payload: Prisma.$PaymentPayload<ExtArgs>
       fields: Prisma.PaymentFieldRefs
@@ -5248,6 +5323,36 @@ export const BankImportBatchScalarFieldEnum = {
 export type BankImportBatchScalarFieldEnum = (typeof BankImportBatchScalarFieldEnum)[keyof typeof BankImportBatchScalarFieldEnum]
 
 
+export const IncomingBankSmsScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  receivedAt: 'receivedAt',
+  rawText: 'rawText',
+  rawHash: 'rawHash',
+  kind: 'kind',
+  status: 'status',
+  parseError: 'parseError',
+  ownAccount: 'ownAccount',
+  accountId: 'accountId',
+  amount: 'amount',
+  purposeRaw: 'purposeRaw',
+  counterpartyAccount: 'counterpartyAccount',
+  counterpartyName: 'counterpartyName',
+  balanceAfter: 'balanceAfter',
+  duplicateHits: 'duplicateHits',
+  lastDuplicateAt: 'lastDuplicateAt',
+  paymentId: 'paymentId',
+  transactionId: 'transactionId',
+  importBatchId: 'importBatchId',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  dismissReason: 'dismissReason',
+  ipHash: 'ipHash'
+} as const
+
+export type IncomingBankSmsScalarFieldEnum = (typeof IncomingBankSmsScalarFieldEnum)[keyof typeof IncomingBankSmsScalarFieldEnum]
+
+
 export const PaymentScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
@@ -6499,6 +6604,7 @@ export type GlobalOmitConfig = {
   invoice?: Prisma.InvoiceOmit
   invoiceLine?: Prisma.InvoiceLineOmit
   bankImportBatch?: Prisma.BankImportBatchOmit
+  incomingBankSms?: Prisma.IncomingBankSmsOmit
   payment?: Prisma.PaymentOmit
   paymentAllocation?: Prisma.PaymentAllocationOmit
   balanceCorrection?: Prisma.BalanceCorrectionOmit

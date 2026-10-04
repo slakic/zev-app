@@ -43,6 +43,38 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.35.0] - 2026-10-04
+
+### Dodato
+
+- **Automatski prijem SMS obavještenja Nova Banke (uplate i isplate) uz obaveznu potvrdu
+  računovođe.** Prati `Plans/bank-sms-ingestion-plan.md`. iPhone automatizacija (Shortcuts, filter
+  „Poruka sadrži: NOVA BANKA-") šalje svaku SMS poruku banke na novi `POST /api/uplate/sms` —
+  prvi javni endpoint u aplikaciji koji piše podatke bez prijave.
+  - **Webhook nikad ne knjiži.** Poruka samo ulazi u red čekanja (`IncomingBankSms`); `Payment`/
+    `FinTransaction` nastaju tek kad računovođa klikne „Potvrdi označene", kroz isti kod koji koristi
+    uvoz PDF izvoda (izdvojeno iz `commitPdfImport` u zajednički `commitStatementRowsInTx`, bez
+    promjene ponašanja PDF uvoza). Procureli ključ zato u najgorem slučaju puni red čekanja, nikad knjige.
+  - **Autentifikacija:** per-ZEV pristupni ključ (`Authorization: Bearer <zevId>.<tajna>`), čuva se samo
+    kao heš u `Setting` (ključ `bankSms.webhook`, koji nije u „Parametrima"), prikazuje se jednom.
+    Svaki neuspjeh je isti 401; ograničenje broja pokušaja po adresi i po ZEV-u; ključem upravljaju
+    predsjednik i računovođa. Javna adresa se uvijek gradi iz `APP_URL` (ništa hardkodirano).
+  - **Parser** (`bankSmsParser.ts`) čita tačno oblik „Priliv na…/Odliv sa…" (decimalni zarez, druga
+    strana opciona — bankovna naknada je nema); sve ostalo je „Neprepoznato" i vidljivo, ne nestaje
+    tiho. Poruke koje nisu od Nova Banke čuvaju se bez teksta (privatnost).
+  - **Isplate (Odliv) se knjiže kao isplate** (troškovna transakcija, opciono veza na otvoreni trošak),
+    nikad kao uplata vlasnika. Duplikati (isti SMS dvaput, dva telefona) prepoznaju se u bazi.
+  - **Uparivanje:** postojeći mehanizam (broj stana u svrsi + ime + iznos) sada ignoriše dijakritike
+    („ZELJKO GALIC" = „Željko Galić", „DJURIC"/„DURIC" = „Đurić") — to je popravilo i uparivanje PDF izvoda.
+  - **PDF izvod + SMS:** redovi koje je SMS već proknjižio dolaze neoznačeni, sa oznakom „Već
+    evidentirano preko SMS obavještenja", da ista uplata ne bude proknjižena dvaput.
+  - UI: kartica na „Uplate i uparivanje", stranica `/fakture/uplate/sms` (Na čekanju / Potvrđene /
+    Neprepoznate), kartica „Automatski prijem SMS obavještenja banke" u Podešavanja → ZEV (ključ,
+    uputstvo za iPhone, „Provjeri poruku"). Korisničko uputstvo dopunjeno (poglavlje 7.9).
+  - Migracija: nova tabela `IncomingBankSms`. Testovi: `tests/bankSmsParser.test.ts`,
+    `tests/bankSms.test.ts` (uključujući izolaciju tenanata); postojeći test u `payments.test.ts`
+    sada traži kategoriju unutar svog ZEV-a.
+
 ## [2.34.1] - 2026-09-25
 
 ### Ispravljeno

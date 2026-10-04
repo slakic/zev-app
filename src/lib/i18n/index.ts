@@ -91,6 +91,14 @@ function pad2(n: number): string {
   return String(n).padStart(2, "0");
 }
 
+/** `yyyy-mm-dd` of `d` as read on a Europe/Sarajevo wall clock — the calendar day a thing
+ *  (e.g. an SMS received at 00:30 local time) happened on for a Bosnian user, independent of the
+ *  server's own timezone. For pre-filling `<input type="date">` values. */
+export function toZonedDateIso(d: Date): string {
+  const { year, month, day } = zonedParts(d);
+  return `${year}-${pad2(month)}-${pad2(day)}`;
+}
+
 export function formatDate(d: Date | string | null | undefined): string {
   if (!d) return "";
   const date = typeof d === "string" ? new Date(d) : d;

@@ -33,6 +33,8 @@ Sva prava se provjeravaju u servisnom sloju (`src/server/services/*` + `src/serv
 | Pregled faktura | sve | sve | samo svoje |
 | **Uplate i salda** |
 | Unos uplata, uvoz CSV izvoda, uparivanje, storno | – | ✔ | – |
+| SMS obavještenja banke — ključ za prijem (generisanje/isključenje), pregled reda čekanja | ✔ | ✔ | – |
+| SMS obavještenja banke — potvrda knjiženja i odbacivanje (uplata → faktura, isplata → trošak) | – | ✔ | – |
 | Salda i kartice | sva | sva | samo svoje |
 | Korekcija salda (uz razlog i osnov, auditirano) | ✔ | ✔ | – |
 | **Troškovi** |

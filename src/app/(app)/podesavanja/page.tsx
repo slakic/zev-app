@@ -6,6 +6,8 @@ import { listAccounts, createAccount } from "@/server/services/finance";
 import { getParty, updateParty, requireOwnerParty } from "@/server/services/ownership";
 import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { getSettings, setSetting } from "@/server/services/settings";
+import { getBankSmsStatus } from "@/server/services/bankSms";
+import { BankSmsTokenCard } from "@/components/bank-sms-token-card";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, t, tEnum } from "@/lib/i18n";
@@ -105,9 +107,10 @@ export default async function SettingsPage({
   const showZev = isManagement && activeTab === "zev";
   const showParametri = isManagement && activeTab === "parametri";
 
-  const [zev, accounts, settings, myParty, myConsent] = await Promise.all([
+  const [zev, accounts, bankSmsStatus, settings, myParty, myConsent] = await Promise.all([
     showZev ? getZev(actor) : null,
     showZev ? listAccounts(actor) : Promise.resolve([]),
+    showZev ? getBankSmsStatus(actor) : null,
     showParametri ? getSettings(actor) : null,
     actor.partyId && showMoji ? getParty(actor, actor.partyId) : null,
     actor.partyId && showMoji ? getEVoteConsentHistory(actor, actor.partyId) : null,
@@ -267,6 +270,8 @@ export default async function SettingsPage({
             </details>
           </Card>
         )}
+
+        {showZev && bankSmsStatus && <BankSmsTokenCard status={bankSmsStatus} />}
 
         {showParametri && (
           <Card title="Konfigurabilni pravni i finansijski parametri">

@@ -327,7 +327,7 @@ describe("payments and owner balances", () => {
     });
     expect(tx.type).toBe("EXPENSE");
     expect(tx.expenseId).toBeNull();
-    const category = await prisma.transactionCategory.findFirstOrThrow({ where: { name: "Bankarske naknade" } });
+    const category = await prisma.transactionCategory.findFirstOrThrow({ where: { zevId: f.zev.id, name: "Bankarske naknade" } });
     expect(tx.categoryId).toBe(category.id);
   });
 

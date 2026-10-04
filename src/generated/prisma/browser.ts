@@ -195,6 +195,15 @@ export type InvoiceLine = Prisma.InvoiceLineModel
  */
 export type BankImportBatch = Prisma.BankImportBatchModel
 /**
+ * Model IncomingBankSms
+ * SMS obavještenja Nova Banke ("Priliv na ..." / "Odliv sa ...") primljena preko iOS Shortcuts
+ * webhook-a (Plans/bank-sms-ingestion-plan.md). Ovo je ČEKAONICA, ne knjiženje: webhook nikad ne
+ * pravi Payment/FinTransaction — to radi tek čovjek (confirmBankSms), isto kao potvrda pregleda
+ * PDF izvoda. rawText je null za poruke koje ne počinju sa "NOVA BANKA" (privatnost: tuđe lične
+ * poruke ne smiju završiti u bazi ZEV-a ako je filter u Shortcut-u pogrešno podešen).
+ */
+export type IncomingBankSms = Prisma.IncomingBankSmsModel
+/**
  * Model Payment
  * 
  */

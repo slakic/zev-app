@@ -6,6 +6,7 @@
 // commitPdfImport() in payments.ts for why reading a PDF's text layer isn't trusted
 // the same way structured CSV columns are.
 import { useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { parsePdfPreviewAction, commitPdfImportAction } from "@/server/actions/bankPdfImport";
 import type { PdfImportPreview, PdfPreviewRow } from "@/server/services/payments";
@@ -246,6 +247,16 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
                         </div>
                       )}
                       {r.matchHint && <p className="mt-1 max-w-64 text-[11px] text-slate-500">Predlog: {r.matchHint}</p>}
+                      {r.duplicateOf && (
+                        <p className="mt-1 max-w-64 text-[13px] text-amber-800">
+                          Već evidentirano preko SMS obavještenja (stavka nije označena za uvoz).{" "}
+                          {r.duplicateOf.paymentId && (
+                            <Link href={`/fakture/uplate/${r.duplicateOf.paymentId}`} className="font-medium underline underline-offset-2">
+                              Pogledaj uplatu
+                            </Link>
+                          )}
+                        </p>
+                      )}
                     </td>
                   </tr>
                 ))}
