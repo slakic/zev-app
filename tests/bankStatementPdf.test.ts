@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parseNovaBankaStatement, extractUnitNumberCandidates } from "@/server/services/bankStatementPdf";
 
-// Real text extracted (via pdf-parse) from an actual Nova Banka "IZVOD" PDF statement.
+// Real text extracted (via pdf-parse, before v2.36.2 — extractPdfText() keeps that shape) from an actual Nova Banka "IZVOD" PDF statement.
 // Columns are concatenated with no separators because the bank places them at fixed
 // coordinates rather than emitting real space characters — this fixture locks in that
 // real-world shape so the parser is tested against the format it actually has to handle,

@@ -43,6 +43,20 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.36.2] - 2026-10-19
+
+### Ispravljeno
+
+- **Uvoz PDF izvoda na produkciji i dalje je padao u većini pokušaja i poslije 2.36.1.** Novi log je
+  pokazao da server dobija neoštećen fajl (SHA-256 se poklapa), dakle kvarilo se samo čitanje: stari
+  pdf.js 1.10 ugrađen u `pdf-parse` ne radi pouzdano u Vercel runtime-u, ni kad se učitava iz
+  `node_modules`. `pdf-parse` je zamijenjen paketom `unpdf` (serverless izdanje aktuelnog pdf.js).
+  Tekst se sklapa na isti način kao ranije (stavke u istom redu bez razmaka, novi red pri promjeni
+  visine), uz preskakanje stavki koje su samo razmak, pa parser izvoda dobija isti oblik teksta.
+  Provjereno na stvarnom izvodu: iste prepoznate stavke kao ranije, 30/30 uzastopno i 10/10 paralelno.
+- `serverExternalPackages` sada sadrži `unpdf` umjesto `pdf-parse`: učitava se iz `node_modules`, kako je
+  i testiran (webpack ne pakuje čisto njegov `import.meta`). Provjera SHA-256 i upis grešaka u log ostaju.
+
 ## [2.36.1] - 2026-10-19
 
 ### Ispravljeno

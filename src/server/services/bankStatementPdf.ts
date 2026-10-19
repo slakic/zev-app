@@ -1,7 +1,7 @@
 // Parsing bank statements delivered as PDF (Nova Banka format, confirmed against a real
 // statement sample — "IZVOD BR. ... O PROMJENAMA SREDSTAVA NA RAČUNU").
 //
-// pdf-parse extracts the PDF's TEXT LAYER (these statements are digitally generated, not
+// extractPdfText() reads the PDF's TEXT LAYER (these statements are digitally generated, not
 // scanned images — no OCR involved, so extraction is essentially exact). Because the bank
 // renders each row's account/name/amount columns at fixed coordinates with no real space
 // characters between them, the extracted text often looks like:
@@ -13,10 +13,10 @@
 // anything to the database by itself — see importPdfPreview()/commitPdfImport() in
 // payments.ts, which always show a human a review/edit screen before any Payment is
 // created. Never wire this straight into a "commit" path.
-// NOTE: importing the package root ("pdf-parse") triggers a debug self-test in v1.1.1
-// that reads a hardcoded fixture path and crashes at import time outside its own repo.
-// Importing the internal module directly avoids that; see types/pdf-parse-internal.d.ts.
-import pdfParse from "pdf-parse/lib/pdf-parse.js";
+// The text layer is read with unpdf (a serverless build of current pdf.js). Until v2.36.2 this
+// was pdf-parse, whose bundled pdf.js 1.10 failed every other parse of the same statement on
+// Vercel ("bad XRef entry", "Illegal character", … — the bytes were verified intact).
+import { getDocumentProxy } from "unpdf";
 import { dec, type Decimal } from "@/lib/money";
 
 export type ParsedPdfRow = {
@@ -75,9 +75,36 @@ function parsePurposeLine(line: string): { bankReference: string; purpose: strin
   return { bankReference: m[1], purpose: normalizeSpaces(m[2]) };
 }
 
+/**
+ * The PDF's text, assembled exactly the way pdf-parse did (the parser above was built against
+ * that shape): text items on the same baseline are concatenated with NO separator, a change of
+ * baseline starts a new line, and pages are joined with a blank line. Current pdf.js also emits
+ * the gaps between columns as separate whitespace-only items, which pdf.js 1.10 did not — they
+ * are skipped, so a row still reads "5550070022595922VET CENTAR …0.0035.71". Checked against a
+ * real statement: parseNovaBankaStatement() gives identical rows for both extractors.
+ */
 export async function extractPdfText(buffer: Buffer): Promise<string> {
-  const data = await pdfParse(buffer);
-  return data.text as string;
+  // A copy: pdf.js may take ownership of (detach) the buffer it is given.
+  const doc = await getDocumentProxy(new Uint8Array(buffer));
+  try {
+    let out = "";
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      let lastY: number | undefined;
+      let text = "";
+      for (const item of content.items) {
+        if (!("str" in item) || (item.str.length <= 1 && item.str.trim() === "")) continue;
+        const y = item.transform[5] as number;
+        text += lastY === undefined || lastY === y ? item.str : "\n" + item.str;
+        lastY = y;
+      }
+      out = `${out}\n\n${text}`;
+    }
+    return out;
+  } finally {
+    await doc.loadingTask.destroy();
+  }
 }
 
 /**
