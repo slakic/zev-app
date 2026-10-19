@@ -21,6 +21,32 @@ export async function createAccount(
   return a;
 }
 
+/** Edits an account's identifying details only. Type, opening balance and opening date are
+ *  deliberately not editable: changing them would silently rewrite every balance already
+ *  reported. The account number matters beyond display — the PDF import compares it with the
+ *  statement, and incoming bank SMS are matched to an account by it. */
+export async function updateAccount(
+  actor: Actor,
+  id: string,
+  data: { name: string; bankName?: string | null; iban?: string | null }
+) {
+  requireRole(actor, "ACCOUNTANT", "PRESIDENT");
+  const zevId = requireZev(actor);
+  const name = data.name.trim();
+  if (!name) throw new Error("Naziv računa je obavezan.");
+  const before = await prisma.moneyAccount.findUniqueOrThrow({ where: { id, zevId } });
+  const a = await prisma.moneyAccount.update({
+    where: { id, zevId },
+    data: { name, bankName: data.bankName?.trim() || null, iban: data.iban?.trim() || null },
+  });
+  await audit(actor, {
+    action: "account.update", targetType: "MoneyAccount", targetId: id,
+    before: { name: before.name, bankName: before.bankName, iban: before.iban },
+    after: { name: a.name, bankName: a.bankName, iban: a.iban },
+  });
+  return a;
+}
+
 export async function accountBalance(actor: Actor, accountId: string, asOf?: Date): Promise<string> {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);

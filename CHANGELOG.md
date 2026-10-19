@@ -43,6 +43,16 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.37.0] - 2026-10-19
+
+### Dodato
+
+- **Izmjena postojećeg računa** (Podešavanja → ZEV → Računi, dugme „Uredi" u redu računa): naziv, banka
+  i broj računa. Mogu predsjednik i računovođa, a izmjena se bilježi u revizorski trag
+  (`account.update`, sa vrijednostima prije i poslije). Vrsta računa i početno stanje se namjerno ne
+  mijenjaju, jer bi to tiho promijenilo sva već prikazana stanja. Broj računa je bitan i za uvoz PDF
+  izvoda (provjera da izvod pripada računu) i za povezivanje SMS obavještenja banke sa računom.
+
 ## [2.36.2] - 2026-10-19
 
 ### Ispravljeno

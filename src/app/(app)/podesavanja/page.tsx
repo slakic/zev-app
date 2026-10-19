@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
 import { getZev, upsertZev } from "@/server/services/property";
-import { listAccounts, createAccount } from "@/server/services/finance";
+import { listAccounts, createAccount, updateAccount } from "@/server/services/finance";
+import { AccountRow } from "@/components/account-row";
 import { getParty, updateParty, requireOwnerParty } from "@/server/services/ownership";
 import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { getSettings, setSetting } from "@/server/services/settings";
@@ -11,13 +12,14 @@ import { BankSmsTokenCard } from "@/components/bank-sms-token-card";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
 
 const accountHeaders: ColumnSpec[] = [
   { label: "Naziv" },
   { label: "Vrsta" },
   { label: "Broj računa" },
   { label: "Početno stanje", align: "right" },
+  { label: "Radnje" },
 ];
 
 async function saveZevAction(formData: FormData) {
@@ -33,6 +35,22 @@ async function saveZevAction(formData: FormData) {
     municipality: (formData.get("municipality") as string) || null,
   });
   revalidatePath("/podesavanja");
+}
+
+async function updateAccountAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
+  try {
+    await updateAccount(actor, String(formData.get("id")), {
+      name: String(formData.get("name") ?? ""),
+      bankName: (formData.get("bankName") as string) || null,
+      iban: (formData.get("iban") as string) || null,
+    });
+  } catch (e) {
+    redirect(`/podesavanja?tab=zev&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath("/podesavanja");
+  redirect("/podesavanja?tab=zev&msg=saved");
 }
 
 async function addAccountAction(formData: FormData) {
@@ -243,12 +261,18 @@ export default async function SettingsPage({
               emptyHint={t("empty.accounts.hint")}
             >
               {accounts.map((a) => (
-                <tr key={a.id}>
-                  <Td>{a.name}</Td>
-                  <Td>{a.type === "BANK" ? "Banka" : "Blagajna"}</Td>
-                  <Td className="font-mono text-xs">{a.iban ?? "—"}</Td>
-                  <Td>{formatMoney(a.openingBalance.toString())}</Td>
-                </tr>
+                <AccountRow
+                  key={a.id}
+                  account={{
+                    id: a.id,
+                    name: a.name,
+                    type: a.type,
+                    bankName: a.bankName,
+                    iban: a.iban,
+                    openingBalanceLabel: formatMoney(a.openingBalance.toString()),
+                  }}
+                  action={updateAccountAction}
+                />
               ))}
             </Table>
             <details className="group mt-3">

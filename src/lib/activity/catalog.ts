@@ -85,6 +85,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
 
   // ---- FINANCE — bookkeeping (real actor, but "what did this owner do" doesn't ask this) ----
   "account.create": "FINANCE",
+  "account.update": "FINANCE",
   "allocation_group.create": "FINANCE",
   "balance.correction": "FINANCE",
   "charge_item.create": "FINANCE",
