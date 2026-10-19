@@ -432,6 +432,7 @@ export const ModelName = {
   InvoiceLine: 'InvoiceLine',
   BankImportBatch: 'BankImportBatch',
   IncomingBankSms: 'IncomingBankSms',
+  BankRecordMatch: 'BankRecordMatch',
   Payment: 'Payment',
   PaymentAllocation: 'PaymentAllocation',
   BalanceCorrection: 'BalanceCorrection',
@@ -469,7 +470,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3063,6 +3064,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BankRecordMatch: {
+      payload: Prisma.$BankRecordMatchPayload<ExtArgs>
+      fields: Prisma.BankRecordMatchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BankRecordMatchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BankRecordMatchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>
+        }
+        findFirst: {
+          args: Prisma.BankRecordMatchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BankRecordMatchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>
+        }
+        findMany: {
+          args: Prisma.BankRecordMatchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>[]
+        }
+        create: {
+          args: Prisma.BankRecordMatchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>
+        }
+        createMany: {
+          args: Prisma.BankRecordMatchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BankRecordMatchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>[]
+        }
+        delete: {
+          args: Prisma.BankRecordMatchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>
+        }
+        update: {
+          args: Prisma.BankRecordMatchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>
+        }
+        deleteMany: {
+          args: Prisma.BankRecordMatchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BankRecordMatchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BankRecordMatchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>[]
+        }
+        upsert: {
+          args: Prisma.BankRecordMatchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankRecordMatchPayload>
+        }
+        aggregate: {
+          args: Prisma.BankRecordMatchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBankRecordMatch>
+        }
+        groupBy: {
+          args: Prisma.BankRecordMatchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BankRecordMatchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BankRecordMatchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BankRecordMatchCountAggregateOutputType> | number
+        }
+      }
+    }
     Payment: {
       payload: Prisma.$PaymentPayload<ExtArgs>
       fields: Prisma.PaymentFieldRefs
@@ -5353,6 +5428,24 @@ export const IncomingBankSmsScalarFieldEnum = {
 export type IncomingBankSmsScalarFieldEnum = (typeof IncomingBankSmsScalarFieldEnum)[keyof typeof IncomingBankSmsScalarFieldEnum]
 
 
+export const BankRecordMatchScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  smsId: 'smsId',
+  statementBatchId: 'statementBatchId',
+  statementPaymentId: 'statementPaymentId',
+  statementTransactionId: 'statementTransactionId',
+  decision: 'decision',
+  origin: 'origin',
+  survivorPaymentId: 'survivorPaymentId',
+  reversedPaymentId: 'reversedPaymentId',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type BankRecordMatchScalarFieldEnum = (typeof BankRecordMatchScalarFieldEnum)[keyof typeof BankRecordMatchScalarFieldEnum]
+
+
 export const PaymentScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
@@ -6605,6 +6698,7 @@ export type GlobalOmitConfig = {
   invoiceLine?: Prisma.InvoiceLineOmit
   bankImportBatch?: Prisma.BankImportBatchOmit
   incomingBankSms?: Prisma.IncomingBankSmsOmit
+  bankRecordMatch?: Prisma.BankRecordMatchOmit
   payment?: Prisma.PaymentOmit
   paymentAllocation?: Prisma.PaymentAllocationOmit
   balanceCorrection?: Prisma.BalanceCorrectionOmit

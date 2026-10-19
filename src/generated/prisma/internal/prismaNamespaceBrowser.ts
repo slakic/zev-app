@@ -86,6 +86,7 @@ export const ModelName = {
   InvoiceLine: 'InvoiceLine',
   BankImportBatch: 'BankImportBatch',
   IncomingBankSms: 'IncomingBankSms',
+  BankRecordMatch: 'BankRecordMatch',
   Payment: 'Payment',
   PaymentAllocation: 'PaymentAllocation',
   BalanceCorrection: 'BalanceCorrection',
@@ -747,6 +748,24 @@ export const IncomingBankSmsScalarFieldEnum = {
 } as const
 
 export type IncomingBankSmsScalarFieldEnum = (typeof IncomingBankSmsScalarFieldEnum)[keyof typeof IncomingBankSmsScalarFieldEnum]
+
+
+export const BankRecordMatchScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  smsId: 'smsId',
+  statementBatchId: 'statementBatchId',
+  statementPaymentId: 'statementPaymentId',
+  statementTransactionId: 'statementTransactionId',
+  decision: 'decision',
+  origin: 'origin',
+  survivorPaymentId: 'survivorPaymentId',
+  reversedPaymentId: 'reversedPaymentId',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type BankRecordMatchScalarFieldEnum = (typeof BankRecordMatchScalarFieldEnum)[keyof typeof BankRecordMatchScalarFieldEnum]
 
 
 export const PaymentScalarFieldEnum = {

@@ -43,6 +43,35 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.36.0] - 2026-10-19
+
+### Dodato
+
+- **Usklađivanje uplata iz SMS-a i PDF izvoda: aplikacija prepoznaje istu bankovnu transakciju
+  evidentiranu dva puta.** Prati `Plans/sms-statement-payment-matching-plan.md`. Nova stranica
+  „Usklađivanje SMS-a i izvoda" (`/fakture/uplate/uskladjivanje`), link sa „Uplate i uparivanje" i sa
+  stranice SMS obavještenja.
+  - **Mogući duplikati:** SMS uplata/isplata i zapis iz izvoda (ili ručni unos) sa istim računom i
+    iznosom, u razmaku do 3 dana. Pouzdanost „visoka" kad se poklapa i ime platioca (bez obzira na
+    dijakritike) a razmak je do jednog dana, inače „moguća". Parovi se uparuju jedan-na-jedan.
+  - **„Spoji" (samo uplate):** zadržava se uplata koja je raspoređena na fakturu; ako su raspoređene
+    obje ili nijedna, zadržava se uplata iz izvoda. Druga se stornira redovnim stornom (append-only,
+    sa razlogom), a njeno raspoređivanje se prenosi na zadržanu uplatu koliko njen slobodan iznos
+    dozvoljava. Sve u jednoj transakciji, uz audit `payment.channel_merge`.
+  - **„Nisu iste":** par se pamti i više se ne predlaže. **Isplate se samo prepoznaju i povezuju**
+    („Ista isplata"), ne storniraju se automatski; povezana dupla isplata ostaje vidljiva dok se ne ispravi.
+  - **Bez potvrde izvodom:** proknjižene SMS stavke starije od 3 dana koje nijedan uvezeni izvod nije
+    potvrdio (SMS nije dokaz da je novac stigao). Računovođa ih može ručno označiti kao potvrđene.
+  - Na detalju uplate: oznaka „SMS, potvrđeno izvodom" / „SMS, čeka izvod" i veza na spojeni duplikat.
+
+### Izmijenjeno
+
+- **PDF uvoz pamti da je izvod potvrdio SMS.** Red koji je ostao odznačen jer je već proknjižen preko
+  SMS-a sada se pri uvozu bilježi kao veza sa tim SMS-om (ništa se ne knjiži ponovo). Izvod u kojem su
+  sve stavke već stigle SMS-om može se „uvesti" samo radi te potvrde.
+- Nova tabela `BankRecordMatch` (append-only, DB trigger) i migracija `20261019100000_add_bank_record_match`.
+  `reversePayment` je izdvojen u `reversePaymentInTx` bez promjene ponašanja.
+
 ## [2.35.1] - 2026-10-04
 
 ### Ispravljeno

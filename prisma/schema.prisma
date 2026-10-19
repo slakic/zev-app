@@ -217,6 +217,7 @@ model Zev {
   invoices              Invoice[]
   bankImportBatches     BankImportBatch[]
   incomingBankSms       IncomingBankSms[]
+  bankRecordMatches     BankRecordMatch[]
   payments              Payment[]
   balanceCorrections    BalanceCorrection[]
   suppliers             Supplier[]
@@ -1103,9 +1104,34 @@ model IncomingBankSms {
   reviewedAt          DateTime?
   dismissReason       String?
   ipHash              String?
+  matches             BankRecordMatch[]
 
   @@unique([zevId, rawHash])
   @@index([zevId, status])
+}
+
+/// Odluka da su SMS obavještenje i zapis iz drugog kanala (PDF izvod ili ručni unos) ista bankovna
+/// transakcija — ili da NISU (Plans/sms-statement-payment-matching-plan.md). Append-only: nova
+/// odluka za isti par se piše kao nov red, važi posljednja. `SAME` za smsId = SMS potvrđen izvodom.
+model BankRecordMatch {
+  id                     String          @id @default(cuid())
+  zev                    Zev             @relation(fields: [zevId], references: [id])
+  zevId                  String
+  sms                    IncomingBankSms @relation(fields: [smsId], references: [id])
+  smsId                  String
+  statementBatchId       String?  // PDF serija u kojoj je red nađen (null za ručni unos)
+  statementPaymentId     String?  // drugi zapis priliva; null ako je red izvoda odznačen pri uvozu
+  statementTransactionId String?  // drugi zapis odliva (FinTransaction EXPENSE)
+  decision               String   // SAME | NOT_SAME
+  origin                 String   // IMPORT_SKIP | MANUAL_LINK | MERGE | NOT_SAME
+  survivorPaymentId      String?  // MERGE: uplata koja ostaje
+  reversedPaymentId      String?  // MERGE: uplata stornirana kao duplikat
+  createdById            String?
+  createdAt              DateTime        @default(now())
+
+  @@index([zevId, smsId])
+  @@index([statementPaymentId])
+  @@index([statementTransactionId])
 }
 
 model Payment {

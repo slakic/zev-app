@@ -28,7 +28,7 @@ export async function parsePdfPreviewAction(formData: FormData): Promise<ParsePd
   }
 }
 
-export type CommitPdfResult = { ok: true; imported: number } | { ok: false; error: string };
+export type CommitPdfResult = { ok: true; imported: number; linkedToSms: number } | { ok: false; error: string };
 
 export async function commitPdfImportAction(input: {
   accountId: string;
@@ -45,6 +45,8 @@ export async function commitPdfImportAction(input: {
     expenseId?: string | null;
     categoryName?: string | null;
   }[];
+  /** smsId of rows left un-ticked as "already booked from SMS" — linked, not booked. */
+  skippedSmsIds?: string[];
 }): Promise<CommitPdfResult> {
   try {
     const actor = await requireActor("ACCOUNTANT");
@@ -52,7 +54,8 @@ export async function commitPdfImportAction(input: {
     const res = await commitPdfImport(actor, input);
     revalidatePath("/fakture/uplate");
     revalidatePath("/troskovi");
-    return { ok: true, imported: res.imported };
+    revalidatePath("/fakture/uplate/uskladjivanje");
+    return { ok: true, imported: res.imported, linkedToSms: res.linkedToSms };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Greška pri uvozu." };
   }

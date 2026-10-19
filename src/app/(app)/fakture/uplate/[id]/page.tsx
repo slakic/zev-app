@@ -4,6 +4,8 @@ import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
 import { suggestMatches, allocatePayment, reverseAllocation, reversePayment } from "@/server/services/payments";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import { getPaymentChannelInfo } from "@/server/services/paymentMatching";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
@@ -76,6 +78,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
   });
   const allocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
   const free = dec(payment.amount.toString()).minus(allocated);
+  const channel = await getPaymentChannelInfo(actor, id);
   const suggestions = payment.status !== "REVERSED" && free.greaterThan(0) ? await suggestMatches(actor, id) : [];
   const openInvoices = await prisma.invoice.findMany({
     where: { zevId, status: "ISSUED" },
@@ -96,6 +99,20 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
         <StatusBadge status={payment.status} label={tEnum("paymentStatus", payment.status)} />
         <span className="text-sm text-slate-600">Raspoređeno: {formatMoney(allocated.toFixed(2))} · Slobodno (avans): {formatMoney(free.toFixed(2))}</span>
         {payment.reference && <span className="font-mono text-xs text-slate-500">poziv: {payment.reference}</span>}
+        {channel.fromSms && (
+          <StatusBadge
+            status={channel.statementConfirmed ? "APPROVED" : "PENDING"}
+            label={channel.statementConfirmed ? "SMS, potvrđeno izvodom" : "SMS, čeka izvod"}
+          />
+        )}
+        {channel.merge && (
+          <span className="text-sm text-slate-600">
+            {channel.merge.role === "SURVIVOR" ? "Duplikat ove uplate je storniran: " : "Storniran duplikat, zadržana je uplata "}
+            <Link href={`/fakture/uplate/${channel.merge.otherPaymentId}`} className="font-medium text-blue-700 underline underline-offset-2">
+              pogledaj
+            </Link>
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

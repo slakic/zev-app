@@ -392,19 +392,60 @@ export async function commitPdfImport(
     filename: string;
     rawText: string;
     rows: StatementRowInput[];
+    /** SMS ids from `PdfPreviewRow.duplicateOf` of rows the reviewer LEFT UN-TICKED: the statement
+     *  confirms those already-booked SMS records, and that link is kept (BankRecordMatch,
+     *  Plans/sms-statement-payment-matching-plan.md R2). Re-checked server-side. */
+    skippedSmsIds?: string[];
   }
 ) {
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
-  if (input.rows.length === 0) throw new Error("Nema stavki za uvoz.");
+  const skippedSmsIds = input.skippedSmsIds ?? [];
+  if (input.rows.length === 0 && skippedSmsIds.length === 0) throw new Error("Nema stavki za uvoz.");
   await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId, zevId } });
   await assertStatementRowsCommittable(zevId, input.rows);
 
   const batch = await prisma.$transaction(
-    (tx) => commitStatementRowsInTx(tx, actor, zevId, { source: "PDF", ...input }),
+    async (tx) => {
+      const res = await commitStatementRowsInTx(tx, actor, zevId, { source: "PDF", ...input });
+      const linked = await recordStatementSkipsInTx(tx, actor, zevId, {
+        accountId: input.accountId,
+        batchId: res.batchId,
+        smsIds: skippedSmsIds,
+      });
+      return { ...res, linked };
+    },
     { timeout: 30000 }
   );
-  return { batchId: batch.batchId, imported: input.rows.length };
+  return { batchId: batch.batchId, imported: input.rows.length, linkedToSms: batch.linked };
+}
+
+/** Links PDF-statement rows the reviewer left un-ticked as "already booked from SMS" to that SMS
+ *  (BankRecordMatch SAME / IMPORT_SKIP — Plans/sms-statement-payment-matching-plan.md R2). Never
+ *  trusts the client: only CONFIRMED SMS of this ZEV on the same account count, and an SMS that
+ *  already has a SAME link is not linked again. Returns how many links were written. */
+export async function recordStatementSkipsInTx(
+  tx: Prisma.TransactionClient,
+  actor: Actor,
+  zevId: string,
+  input: { accountId: string; batchId: string; smsIds: string[] }
+): Promise<number> {
+  const ids = [...new Set(input.smsIds)];
+  if (ids.length === 0) return 0;
+  const sms = await tx.incomingBankSms.findMany({
+    where: { id: { in: ids }, zevId, accountId: input.accountId, status: "CONFIRMED", matches: { none: { decision: "SAME" } } },
+    select: { id: true },
+  });
+  for (const s of sms) {
+    const m = await tx.bankRecordMatch.create({
+      data: { zevId, smsId: s.id, statementBatchId: input.batchId, decision: "SAME", origin: "IMPORT_SKIP", createdById: actor.userId },
+    });
+    await audit(actor, {
+      action: "bank_match.link", targetType: "BankRecordMatch", targetId: m.id,
+      after: { smsId: s.id, statementBatchId: input.batchId, origin: "IMPORT_SKIP" },
+    }, tx);
+  }
+  return sms.length;
 }
 
 /** One reviewed bank-statement row, as confirmed by a human — shared by the PDF import and the
@@ -724,7 +765,7 @@ export async function suggestMatches(actor: Actor, paymentId: string) {
 // ---- Allocation (transactional) ----
 
 /** Callers must pass the actor's own zevId — never a caller-supplied one. */
-async function refreshPaymentStatus(tx: Prisma.TransactionClient, zevId: string, paymentId: string) {
+export async function refreshPaymentStatus(tx: Prisma.TransactionClient, zevId: string, paymentId: string) {
   const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { allocations: true } });
   const allocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
   const amount = dec(payment.amount.toString());
@@ -740,7 +781,7 @@ async function refreshPaymentStatus(tx: Prisma.TransactionClient, zevId: string,
 }
 
 /** Callers must pass the actor's own zevId — never a caller-supplied one. */
-async function refreshInvoiceStatus(tx: Prisma.TransactionClient, zevId: string, invoiceId: string) {
+export async function refreshInvoiceStatus(tx: Prisma.TransactionClient, zevId: string, invoiceId: string) {
   const inv = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { allocations: true } });
   if (inv.status === "CANCELLED" || inv.status === "CORRECTED" || inv.status === "DRAFT") return;
   const paid = sumDecimals(inv.allocations.map((a) => dec(a.amount.toString())));
@@ -836,46 +877,63 @@ export async function reversePayment(actor: Actor, paymentId: string, reason: st
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje uplate zahtijeva razlog.");
-  return prisma.$transaction(async (tx) => {
-    const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { allocations: true, transaction: true } });
-    if (payment.reversedAt) throw new Error("Uplata je već stornirana.");
-    // Reverse outstanding allocations.
-    const net = new Map<string, Decimal>();
-    for (const a of payment.allocations) {
-      const cur = net.get(a.invoiceId) ?? ZERO;
-      net.set(a.invoiceId, cur.plus(dec(a.amount.toString())));
-    }
-    for (const [invoiceId, amount] of net) {
-      if (amount.greaterThan(0)) {
-        await tx.paymentAllocation.create({
-          data: {
-            paymentId,
-            invoiceId,
-            amount: amount.negated().toFixed(2),
-            reason: `Storno uplate: ${reason}`,
-            createdById: actor.userId,
-          },
-        });
-        await refreshInvoiceStatus(tx, zevId, invoiceId);
-      }
-    }
-    const updated = await tx.payment.update({
-      where: { id: paymentId, zevId },
-      data: { reversedAt: new Date(), reversalReason: reason, status: "REVERSED" },
-    });
-    if (payment.transaction) {
-      await tx.finTransaction.update({
-        where: { id: payment.transaction.id, zevId },
-        data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: `Storno uplate: ${reason}` },
+  return prisma.$transaction((tx) => reversePaymentInTx(tx, actor, zevId, paymentId, reason));
+}
+
+/** reversePayment() inside the CALLER's transaction (the SMS ↔ izvod merge reverses the duplicate
+ *  and re-allocates the survivor atomically). The caller must have checked the role and pass the
+ *  actor's own zevId. */
+export async function reversePaymentInTx(
+  tx: Prisma.TransactionClient,
+  actor: Actor,
+  zevId: string,
+  paymentId: string,
+  reason: string
+) {
+  const payment = await tx.payment.findUniqueOrThrow({ where: { id: paymentId, zevId }, include: { allocations: true, transaction: true } });
+  if (payment.reversedAt) throw new Error("Uplata je već stornirana.");
+  // Reverse outstanding allocations.
+  const net = netAllocationsByInvoice(payment.allocations);
+  for (const [invoiceId, amount] of net) {
+    if (amount.greaterThan(0)) {
+      await tx.paymentAllocation.create({
+        data: {
+          paymentId,
+          invoiceId,
+          amount: amount.negated().toFixed(2),
+          reason: `Storno uplate: ${reason}`,
+          createdById: actor.userId,
+        },
       });
+      await refreshInvoiceStatus(tx, zevId, invoiceId);
     }
-    await audit(actor, {
-      action: "payment.reverse", targetType: "Payment", targetId: paymentId,
-      before: { amount: payment.amount.toString(), status: payment.status },
-      reason,
-    }, tx);
-    return updated;
+  }
+  const updated = await tx.payment.update({
+    where: { id: paymentId, zevId },
+    data: { reversedAt: new Date(), reversalReason: reason, status: "REVERSED" },
   });
+  if (payment.transaction) {
+    await tx.finTransaction.update({
+      where: { id: payment.transaction.id, zevId },
+      data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: `Storno uplate: ${reason}` },
+    });
+  }
+  await audit(actor, {
+    action: "payment.reverse", targetType: "Payment", targetId: paymentId,
+    before: { amount: payment.amount.toString(), status: payment.status },
+    reason,
+  }, tx);
+  return updated;
+}
+
+/** Net allocated amount per invoice (original rows minus their append-only reversal rows). */
+export function netAllocationsByInvoice(allocations: { invoiceId: string; amount: { toString(): string } }[]): Map<string, Decimal> {
+  const net = new Map<string, Decimal>();
+  for (const a of allocations) {
+    const cur = net.get(a.invoiceId) ?? ZERO;
+    net.set(a.invoiceId, cur.plus(dec(a.amount.toString())));
+  }
+  return net;
 }
 
 export type PaymentSortKey = "date" | "amount";

@@ -228,6 +228,13 @@ export type BankImportBatch = Prisma.BankImportBatchModel
  */
 export type IncomingBankSms = Prisma.IncomingBankSmsModel
 /**
+ * Model BankRecordMatch
+ * Odluka da su SMS obavještenje i zapis iz drugog kanala (PDF izvod ili ručni unos) ista bankovna
+ * transakcija — ili da NISU (Plans/sms-statement-payment-matching-plan.md). Append-only: nova
+ * odluka za isti par se piše kao nov red, važi posljednja. `SAME` za smsId = SMS potvrđen izvodom.
+ */
+export type BankRecordMatch = Prisma.BankRecordMatchModel
+/**
  * Model Payment
  * 
  */

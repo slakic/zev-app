@@ -4,6 +4,7 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listPayments, enterPayment, importBankCsv, type PaymentSortKey } from "@/server/services/payments";
 import { listAccounts } from "@/server/services/finance";
 import { getBankSmsStatus } from "@/server/services/bankSms";
+import { getChannelReconciliation } from "@/server/services/paymentMatching";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
@@ -95,6 +96,7 @@ export default async function PaymentsPage({
   const payments = paymentResult.rows;
   const [accounts, parties] = management ? await Promise.all([listAccounts(actor), listParties(actor)]) : [[], []];
   const bankSms = management ? await getBankSmsStatus(actor) : null;
+  const channel = management ? await getChannelReconciliation(actor) : null;
 
   return (
     <div>
@@ -114,12 +116,17 @@ export default async function PaymentsPage({
                   Na čekanju: <b>{bankSms.pending}</b>
                   {bankSms.rejected > 0 && <> · Neprepoznate: <b>{bankSms.rejected}</b></>}
                   {" · "}Posljednja poruka: {bankSms.lastReceivedAt ? formatDateTime(new Date(bankSms.lastReceivedAt)) : "još nijedna"}
+                  {channel && channel.duplicates.length > 0 && <> · Mogući duplikati sa izvodom: <b>{channel.duplicates.length}</b></>}
+                  {channel && channel.unconfirmed.length > 0 && <> · Bez potvrde izvodom: <b>{channel.unconfirmed.length}</b></>}
                 </>
               ) : (
                 <>Automatski prijem nije uključen. Podesite ga u Podešavanja → ZEV → Automatski prijem SMS obavještenja banke.</>
               )}
             </div>
-            <BtnLink href="/fakture/uplate/sms" variant="secondary">Otvori</BtnLink>
+            <div className="flex flex-wrap gap-2">
+              <BtnLink href="/fakture/uplate/uskladjivanje" variant="secondary">Usklađivanje sa izvodom</BtnLink>
+              <BtnLink href="/fakture/uplate/sms" variant="secondary">Otvori</BtnLink>
+            </div>
           </div>
         </Card>
       )}

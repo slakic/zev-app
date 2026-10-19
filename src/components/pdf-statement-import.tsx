@@ -54,7 +54,10 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
     if (!preview) return;
     setError(null);
     const included = rows.filter((r) => r.include);
-    if (included.length === 0) {
+    // Rows left un-ticked because the SMS already booked them: the statement confirms that SMS,
+    // and the link is kept (Plans/sms-statement-payment-matching-plan.md R2).
+    const skippedSmsIds = rows.flatMap((r) => (!r.include && r.duplicateOf ? [r.duplicateOf.smsId] : []));
+    if (included.length === 0 && skippedSmsIds.length === 0) {
       setError("Nijedna stavka nije označena za uvoz.");
       return;
     }
@@ -74,6 +77,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
           expenseId: r.expenseId,
           categoryName: r.categoryName,
         })),
+        skippedSmsIds,
       });
       if (!res.ok) {
         setError(res.error);
@@ -83,7 +87,8 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
       const outCount = included.filter((r) => r.direction === "OUT").length;
       setMessage(
         `Uvezeno ${res.imported} stavki (${inCount} uplata, ${outCount} isplata). Uplate sa izabranom fakturom su odmah raspoređene — ` +
-          `ostale pogledajte u tabeli ispod, u koloni "detalji/uparivanje".`
+          `ostale pogledajte u tabeli ispod, u koloni "detalji/uparivanje".` +
+          (res.linkedToSms > 0 ? ` Izvod je potvrdio ${res.linkedToSms} već proknjiženih SMS stavki (nisu uvezene ponovo).` : "")
       );
       setPreview(null);
       setRows([]);
@@ -93,6 +98,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
   }
 
   const includedCount = rows.filter((r) => r.include).length;
+  const smsConfirmCount = rows.filter((r) => !r.include && r.duplicateOf).length;
   const inCount = rows.filter((r) => r.include && r.direction === "IN").length;
   const outCount = rows.filter((r) => r.include && r.direction === "OUT").length;
 
@@ -249,7 +255,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
                       {r.matchHint && <p className="mt-1 max-w-64 text-[11px] text-slate-500">Predlog: {r.matchHint}</p>}
                       {r.duplicateOf && (
                         <p className="mt-1 max-w-64 text-[13px] text-amber-800">
-                          Već evidentirano preko SMS obavještenja (stavka nije označena za uvoz).{" "}
+                          Već evidentirano preko SMS obavještenja (stavka nije označena za uvoz; pri uvozu se bilježi da je izvod potvrdio SMS).{" "}
                           {r.duplicateOf.paymentId && (
                             <Link href={`/fakture/uplate/${r.duplicateOf.paymentId}`} className="font-medium underline underline-offset-2">
                               Pogledaj uplatu
@@ -267,10 +273,14 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
             <button
               type="button"
               onClick={handleCommit}
-              disabled={pending || includedCount === 0}
+              disabled={pending || (includedCount === 0 && smsConfirmCount === 0)}
               className={`${btnBase} ${btnVariantCls.primary}`}
             >
-              {pending ? "Uvozim…" : `Uvezi (${includedCount})`}
+              {pending
+                ? "Uvozim…"
+                : includedCount === 0
+                  ? `Potvrdi SMS stavke izvodom (${smsConfirmCount})`
+                  : `Uvezi (${includedCount})`}
             </button>
             <button
               type="button"

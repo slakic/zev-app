@@ -382,6 +382,7 @@ export type IncomingBankSmsWhereInput = {
   ipHash?: Prisma.StringNullableFilter<"IncomingBankSms"> | string | null
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   account?: Prisma.XOR<Prisma.MoneyAccountNullableScalarRelationFilter, Prisma.MoneyAccountWhereInput> | null
+  matches?: Prisma.BankRecordMatchListRelationFilter
 }
 
 export type IncomingBankSmsOrderByWithRelationInput = {
@@ -411,6 +412,7 @@ export type IncomingBankSmsOrderByWithRelationInput = {
   ipHash?: Prisma.SortOrderInput | Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
   account?: Prisma.MoneyAccountOrderByWithRelationInput
+  matches?: Prisma.BankRecordMatchOrderByRelationAggregateInput
 }
 
 export type IncomingBankSmsWhereUniqueInput = Prisma.AtLeast<{
@@ -444,6 +446,7 @@ export type IncomingBankSmsWhereUniqueInput = Prisma.AtLeast<{
   ipHash?: Prisma.StringNullableFilter<"IncomingBankSms"> | string | null
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   account?: Prisma.XOR<Prisma.MoneyAccountNullableScalarRelationFilter, Prisma.MoneyAccountWhereInput> | null
+  matches?: Prisma.BankRecordMatchListRelationFilter
 }, "id" | "paymentId" | "transactionId" | "zevId_rawHash">
 
 export type IncomingBankSmsOrderByWithAggregationInput = {
@@ -533,6 +536,7 @@ export type IncomingBankSmsCreateInput = {
   ipHash?: string | null
   zev: Prisma.ZevCreateNestedOneWithoutIncomingBankSmsInput
   account?: Prisma.MoneyAccountCreateNestedOneWithoutIncomingBankSmsInput
+  matches?: Prisma.BankRecordMatchCreateNestedManyWithoutSmsInput
 }
 
 export type IncomingBankSmsUncheckedCreateInput = {
@@ -560,6 +564,7 @@ export type IncomingBankSmsUncheckedCreateInput = {
   reviewedAt?: Date | string | null
   dismissReason?: string | null
   ipHash?: string | null
+  matches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutSmsInput
 }
 
 export type IncomingBankSmsUpdateInput = {
@@ -587,6 +592,7 @@ export type IncomingBankSmsUpdateInput = {
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zev?: Prisma.ZevUpdateOneRequiredWithoutIncomingBankSmsNestedInput
   account?: Prisma.MoneyAccountUpdateOneWithoutIncomingBankSmsNestedInput
+  matches?: Prisma.BankRecordMatchUpdateManyWithoutSmsNestedInput
 }
 
 export type IncomingBankSmsUncheckedUpdateInput = {
@@ -614,6 +620,7 @@ export type IncomingBankSmsUncheckedUpdateInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  matches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutSmsNestedInput
 }
 
 export type IncomingBankSmsCreateManyInput = {
@@ -803,6 +810,11 @@ export type IncomingBankSmsSumOrderByAggregateInput = {
   duplicateHits?: Prisma.SortOrder
 }
 
+export type IncomingBankSmsScalarRelationFilter = {
+  is?: Prisma.IncomingBankSmsWhereInput
+  isNot?: Prisma.IncomingBankSmsWhereInput
+}
+
 export type IncomingBankSmsCreateNestedManyWithoutZevInput = {
   create?: Prisma.XOR<Prisma.IncomingBankSmsCreateWithoutZevInput, Prisma.IncomingBankSmsUncheckedCreateWithoutZevInput> | Prisma.IncomingBankSmsCreateWithoutZevInput[] | Prisma.IncomingBankSmsUncheckedCreateWithoutZevInput[]
   connectOrCreate?: Prisma.IncomingBankSmsCreateOrConnectWithoutZevInput | Prisma.IncomingBankSmsCreateOrConnectWithoutZevInput[]
@@ -887,6 +899,20 @@ export type IncomingBankSmsUncheckedUpdateManyWithoutAccountNestedInput = {
   deleteMany?: Prisma.IncomingBankSmsScalarWhereInput | Prisma.IncomingBankSmsScalarWhereInput[]
 }
 
+export type IncomingBankSmsCreateNestedOneWithoutMatchesInput = {
+  create?: Prisma.XOR<Prisma.IncomingBankSmsCreateWithoutMatchesInput, Prisma.IncomingBankSmsUncheckedCreateWithoutMatchesInput>
+  connectOrCreate?: Prisma.IncomingBankSmsCreateOrConnectWithoutMatchesInput
+  connect?: Prisma.IncomingBankSmsWhereUniqueInput
+}
+
+export type IncomingBankSmsUpdateOneRequiredWithoutMatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.IncomingBankSmsCreateWithoutMatchesInput, Prisma.IncomingBankSmsUncheckedCreateWithoutMatchesInput>
+  connectOrCreate?: Prisma.IncomingBankSmsCreateOrConnectWithoutMatchesInput
+  upsert?: Prisma.IncomingBankSmsUpsertWithoutMatchesInput
+  connect?: Prisma.IncomingBankSmsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.IncomingBankSmsUpdateToOneWithWhereWithoutMatchesInput, Prisma.IncomingBankSmsUpdateWithoutMatchesInput>, Prisma.IncomingBankSmsUncheckedUpdateWithoutMatchesInput>
+}
+
 export type IncomingBankSmsCreateWithoutZevInput = {
   id?: string
   receivedAt?: Date | string
@@ -911,6 +937,7 @@ export type IncomingBankSmsCreateWithoutZevInput = {
   dismissReason?: string | null
   ipHash?: string | null
   account?: Prisma.MoneyAccountCreateNestedOneWithoutIncomingBankSmsInput
+  matches?: Prisma.BankRecordMatchCreateNestedManyWithoutSmsInput
 }
 
 export type IncomingBankSmsUncheckedCreateWithoutZevInput = {
@@ -937,6 +964,7 @@ export type IncomingBankSmsUncheckedCreateWithoutZevInput = {
   reviewedAt?: Date | string | null
   dismissReason?: string | null
   ipHash?: string | null
+  matches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutSmsInput
 }
 
 export type IncomingBankSmsCreateOrConnectWithoutZevInput = {
@@ -1019,6 +1047,7 @@ export type IncomingBankSmsCreateWithoutAccountInput = {
   dismissReason?: string | null
   ipHash?: string | null
   zev: Prisma.ZevCreateNestedOneWithoutIncomingBankSmsInput
+  matches?: Prisma.BankRecordMatchCreateNestedManyWithoutSmsInput
 }
 
 export type IncomingBankSmsUncheckedCreateWithoutAccountInput = {
@@ -1045,6 +1074,7 @@ export type IncomingBankSmsUncheckedCreateWithoutAccountInput = {
   reviewedAt?: Date | string | null
   dismissReason?: string | null
   ipHash?: string | null
+  matches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutSmsInput
 }
 
 export type IncomingBankSmsCreateOrConnectWithoutAccountInput = {
@@ -1071,6 +1101,130 @@ export type IncomingBankSmsUpdateWithWhereUniqueWithoutAccountInput = {
 export type IncomingBankSmsUpdateManyWithWhereWithoutAccountInput = {
   where: Prisma.IncomingBankSmsScalarWhereInput
   data: Prisma.XOR<Prisma.IncomingBankSmsUpdateManyMutationInput, Prisma.IncomingBankSmsUncheckedUpdateManyWithoutAccountInput>
+}
+
+export type IncomingBankSmsCreateWithoutMatchesInput = {
+  id?: string
+  receivedAt?: Date | string
+  rawText?: string | null
+  rawHash: string
+  kind: string
+  status: string
+  parseError?: string | null
+  ownAccount?: string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  purposeRaw?: string | null
+  counterpartyAccount?: string | null
+  counterpartyName?: string | null
+  balanceAfter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  duplicateHits?: number
+  lastDuplicateAt?: Date | string | null
+  paymentId?: string | null
+  transactionId?: string | null
+  importBatchId?: string | null
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  dismissReason?: string | null
+  ipHash?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutIncomingBankSmsInput
+  account?: Prisma.MoneyAccountCreateNestedOneWithoutIncomingBankSmsInput
+}
+
+export type IncomingBankSmsUncheckedCreateWithoutMatchesInput = {
+  id?: string
+  zevId: string
+  receivedAt?: Date | string
+  rawText?: string | null
+  rawHash: string
+  kind: string
+  status: string
+  parseError?: string | null
+  ownAccount?: string | null
+  accountId?: string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  purposeRaw?: string | null
+  counterpartyAccount?: string | null
+  counterpartyName?: string | null
+  balanceAfter?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  duplicateHits?: number
+  lastDuplicateAt?: Date | string | null
+  paymentId?: string | null
+  transactionId?: string | null
+  importBatchId?: string | null
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  dismissReason?: string | null
+  ipHash?: string | null
+}
+
+export type IncomingBankSmsCreateOrConnectWithoutMatchesInput = {
+  where: Prisma.IncomingBankSmsWhereUniqueInput
+  create: Prisma.XOR<Prisma.IncomingBankSmsCreateWithoutMatchesInput, Prisma.IncomingBankSmsUncheckedCreateWithoutMatchesInput>
+}
+
+export type IncomingBankSmsUpsertWithoutMatchesInput = {
+  update: Prisma.XOR<Prisma.IncomingBankSmsUpdateWithoutMatchesInput, Prisma.IncomingBankSmsUncheckedUpdateWithoutMatchesInput>
+  create: Prisma.XOR<Prisma.IncomingBankSmsCreateWithoutMatchesInput, Prisma.IncomingBankSmsUncheckedCreateWithoutMatchesInput>
+  where?: Prisma.IncomingBankSmsWhereInput
+}
+
+export type IncomingBankSmsUpdateToOneWithWhereWithoutMatchesInput = {
+  where?: Prisma.IncomingBankSmsWhereInput
+  data: Prisma.XOR<Prisma.IncomingBankSmsUpdateWithoutMatchesInput, Prisma.IncomingBankSmsUncheckedUpdateWithoutMatchesInput>
+}
+
+export type IncomingBankSmsUpdateWithoutMatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawHash?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  parseError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  purposeRaw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  counterpartyAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  counterpartyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  balanceAfter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  duplicateHits?: Prisma.IntFieldUpdateOperationsInput | number
+  lastDuplicateAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutIncomingBankSmsNestedInput
+  account?: Prisma.MoneyAccountUpdateOneWithoutIncomingBankSmsNestedInput
+}
+
+export type IncomingBankSmsUncheckedUpdateWithoutMatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawHash?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  parseError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  purposeRaw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  counterpartyAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  counterpartyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  balanceAfter?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  duplicateHits?: Prisma.IntFieldUpdateOperationsInput | number
+  lastDuplicateAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type IncomingBankSmsCreateManyZevInput = {
@@ -1123,6 +1277,7 @@ export type IncomingBankSmsUpdateWithoutZevInput = {
   dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account?: Prisma.MoneyAccountUpdateOneWithoutIncomingBankSmsNestedInput
+  matches?: Prisma.BankRecordMatchUpdateManyWithoutSmsNestedInput
 }
 
 export type IncomingBankSmsUncheckedUpdateWithoutZevInput = {
@@ -1149,6 +1304,7 @@ export type IncomingBankSmsUncheckedUpdateWithoutZevInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  matches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutSmsNestedInput
 }
 
 export type IncomingBankSmsUncheckedUpdateManyWithoutZevInput = {
@@ -1227,6 +1383,7 @@ export type IncomingBankSmsUpdateWithoutAccountInput = {
   dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zev?: Prisma.ZevUpdateOneRequiredWithoutIncomingBankSmsNestedInput
+  matches?: Prisma.BankRecordMatchUpdateManyWithoutSmsNestedInput
 }
 
 export type IncomingBankSmsUncheckedUpdateWithoutAccountInput = {
@@ -1253,6 +1410,7 @@ export type IncomingBankSmsUncheckedUpdateWithoutAccountInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dismissReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  matches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutSmsNestedInput
 }
 
 export type IncomingBankSmsUncheckedUpdateManyWithoutAccountInput = {
@@ -1282,6 +1440,35 @@ export type IncomingBankSmsUncheckedUpdateManyWithoutAccountInput = {
 }
 
 
+/**
+ * Count Type IncomingBankSmsCountOutputType
+ */
+
+export type IncomingBankSmsCountOutputType = {
+  matches: number
+}
+
+export type IncomingBankSmsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  matches?: boolean | IncomingBankSmsCountOutputTypeCountMatchesArgs
+}
+
+/**
+ * IncomingBankSmsCountOutputType without action
+ */
+export type IncomingBankSmsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IncomingBankSmsCountOutputType
+   */
+  select?: Prisma.IncomingBankSmsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * IncomingBankSmsCountOutputType without action
+ */
+export type IncomingBankSmsCountOutputTypeCountMatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BankRecordMatchWhereInput
+}
+
 
 export type IncomingBankSmsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1310,6 +1497,8 @@ export type IncomingBankSmsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   ipHash?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.IncomingBankSms$accountArgs<ExtArgs>
+  matches?: boolean | Prisma.IncomingBankSms$matchesArgs<ExtArgs>
+  _count?: boolean | Prisma.IncomingBankSmsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["incomingBankSms"]>
 
 export type IncomingBankSmsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1401,6 +1590,8 @@ export type IncomingBankSmsOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type IncomingBankSmsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.IncomingBankSms$accountArgs<ExtArgs>
+  matches?: boolean | Prisma.IncomingBankSms$matchesArgs<ExtArgs>
+  _count?: boolean | Prisma.IncomingBankSmsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type IncomingBankSmsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -1416,6 +1607,7 @@ export type $IncomingBankSmsPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     zev: Prisma.$ZevPayload<ExtArgs>
     account: Prisma.$MoneyAccountPayload<ExtArgs> | null
+    matches: Prisma.$BankRecordMatchPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1843,6 +2035,7 @@ export interface Prisma__IncomingBankSmsClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   account<T extends Prisma.IncomingBankSms$accountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.IncomingBankSms$accountArgs<ExtArgs>>): Prisma.Prisma__MoneyAccountClient<runtime.Types.Result.GetResult<Prisma.$MoneyAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  matches<T extends Prisma.IncomingBankSms$matchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.IncomingBankSms$matchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankRecordMatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2313,6 +2506,30 @@ export type IncomingBankSms$accountArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.MoneyAccountInclude<ExtArgs> | null
   where?: Prisma.MoneyAccountWhereInput
+}
+
+/**
+ * IncomingBankSms.matches
+ */
+export type IncomingBankSms$matchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BankRecordMatch
+   */
+  select?: Prisma.BankRecordMatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BankRecordMatch
+   */
+  omit?: Prisma.BankRecordMatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BankRecordMatchInclude<ExtArgs> | null
+  where?: Prisma.BankRecordMatchWhereInput
+  orderBy?: Prisma.BankRecordMatchOrderByWithRelationInput | Prisma.BankRecordMatchOrderByWithRelationInput[]
+  cursor?: Prisma.BankRecordMatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BankRecordMatchScalarFieldEnum | Prisma.BankRecordMatchScalarFieldEnum[]
 }
 
 /**

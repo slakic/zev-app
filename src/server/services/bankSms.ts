@@ -318,7 +318,9 @@ export type BankSmsReview = {
   expenseOptions: { id: string; label: string }[];
 };
 
-function namesSimilar(a: string | null | undefined, b: string | null | undefined): boolean {
+/** Loose name comparison across channels ("ZELJKO GALIC" vs "Željko Galić", or a name the bank
+ *  shortened): diacritics folded, either one contained in the other. */
+export function namesSimilar(a: string | null | undefined, b: string | null | undefined): boolean {
   const x = foldDiacritics((a ?? "").trim());
   const y = foldDiacritics((b ?? "").trim());
   return Boolean(x && y && (x.includes(y) || y.includes(x)));

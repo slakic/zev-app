@@ -5,7 +5,7 @@ import { formatDateTime } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
 import { BankSmsReviewTable } from "@/components/bank-sms-review";
 import {
-  PageHeader, Card, Table, Td, StatusBadge, Flash, Tabs, RowActionLink, ConfirmAction, Field, inputCls, type ColumnSpec,
+  PageHeader, Card, Table, Td, StatusBadge, Flash, Tabs, RowActionLink, ConfirmAction, Field, inputCls, BtnLink, type ColumnSpec,
 } from "@/components/ui";
 
 const confirmedHeaders: ColumnSpec[] = [
@@ -49,6 +49,7 @@ export default async function BankSmsPage({
         subtitle="Poruke koje stižu sa telefona čekaju vašu potvrdu — ništa se ne knjiži automatski"
         backHref="/fakture/uplate"
         backLabel="Uplate i uparivanje"
+        actions={<BtnLink href="/fakture/uplate/uskladjivanje">Usklađivanje sa izvodom</BtnLink>}
       />
       <Flash err={err} msg={msg} />
       <Tabs
