@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.36.1] - 2026-10-19
+
+### Ispravljeno
+
+- **Uvoz PDF izvoda je na produkciji (Vercel) padao na svakom drugom pokušaju** sa promjenljivim
+  greškama PDF čitača („End of file inside array", „bad XRef entry", „Illegal character: 41"), za isti
+  ispravan izvod. Pregledač je slao netaknut fajl, a lokalno je isti build prolazio 40 od 40 puta.
+  `pdf-parse` (sa ugrađenim pdf.js 1.10) se sada učitava direktno iz `node_modules`
+  (`serverExternalPackages`), a ne kroz webpack bundle (provjereno: pdf.js fajlovi su i dalje u
+  spisku fajlova koje build šalje na Vercel).
+
+### Dodato
+
+- Pregledač uz PDF šalje SHA-256 fajla, a server ga provjerava: oštećen prenos se prijavljuje jasnom
+  porukom umjesto nerazumljive greške čitača. Neuspjeli pregled izvoda se sada upisuje u log servera
+  (veličina, SHA-256, greška); ranije je poruka išla samo u pregledač.
+
 ## [2.36.0] - 2026-10-19
 
 ### Dodato

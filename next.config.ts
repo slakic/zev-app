@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["./assets/fonts/**"],
   },
+  // Load pdf-parse (and its bundled pdf.js 1.10) straight from node_modules, as plain Node does,
+  // instead of through webpack. On Vercel the webpacked copy failed every other parse of the same
+  // statement with varying pdf.js errors ("End of file inside array", "bad XRef entry",
+  // "Illegal character"), while plain Node parsed it 40 times out of 40 locally (v2.36.1).
+  // File tracing still ships pdf-parse's pdf.js builds (checked in the .nft.json output).
+  serverExternalPackages: ["pdf-parse"],
   // Matches MAX_UPLOAD_MB so a too-large upload is rejected by attachments.ts's own
   // sr-Latn message (assertUploadable), not by a bare Next/platform body-size error —
   // the default (1 MB) was smaller than either, which is the bug this closes (§8.1).

@@ -29,6 +29,13 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
     setMessage(null);
     formData.set("accountId", accountId);
     startTransition(async () => {
+      // SHA-256 of the file as the browser holds it, so the server can tell a file damaged on the
+      // way in from a PDF the parser genuinely cannot read (see parsePdfPreviewAction).
+      const file = formData.get("file");
+      if (file instanceof File && file.size > 0 && crypto?.subtle) {
+        const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+        formData.set("sha256", [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join(""));
+      }
       const res = await parsePdfPreviewAction(formData);
       if (!res.ok) {
         setError(res.error);
