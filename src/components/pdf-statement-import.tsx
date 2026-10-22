@@ -5,75 +5,102 @@
 // database until this component's user explicitly confirms — see importPdfPreview()/
 // commitPdfImport() in payments.ts for why reading a PDF's text layer isn't trusted
 // the same way structured CSV columns are.
-import { useRef, useState, useTransition } from "react";
+// Since v2.39.0 several statements can be chosen at once (FilePicker); they are reviewed in one
+// table grouped by statement and imported together, each still as its own import batch.
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { parsePdfPreviewAction, commitPdfImportAction } from "@/server/actions/bankPdfImport";
-import type { PdfImportPreview, PdfPreviewRow } from "@/server/services/payments";
+import { parsePdfPreviewsAction, commitPdfImportsAction } from "@/server/actions/bankPdfImport";
+import type { PdfPreviewRow, PdfStatementPreview } from "@/server/services/payments";
 import { inputCls, btnBase, btnVariantCls } from "@/components/ui";
+import { FilePicker } from "@/components/file-picker";
+import { formatDate, formatDateTime } from "@/lib/i18n";
 
 type Account = { id: string; name: string };
+
+// Server actions accept up to MAX_UPLOAD_MB (default 4 MB, next.config.ts) per request.
+const MAX_TOTAL_BYTES = 4 * 1024 * 1024;
+const MAX_FILES = 31;
+
+const cellInputCls = "rounded border border-slate-300 px-1.5 py-1 text-[13px]";
+const alertCls = "rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm";
+
+async function sha256Hex(file: File): Promise<string | null> {
+  if (!globalThis.crypto?.subtle) return null; // non-secure context: the server then skips the check
+  const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [accountId, setAccountId] = useState(accounts[0]?.id ?? "");
-  const [preview, setPreview] = useState<PdfImportPreview | null>(null);
-  const [rows, setRows] = useState<PdfPreviewRow[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<PdfStatementPreview[] | null>(null);
+  const [rows, setRows] = useState<PdfPreviewRow[][]>([]);
+  const [failures, setFailures] = useState<{ filename: string; error: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function handleParse(formData: FormData) {
+  function handleParse(e: React.FormEvent) {
+    e.preventDefault();
     setError(null);
     setMessage(null);
-    formData.set("accountId", accountId);
+    if (files.length === 0) {
+      setError("Izaberite bar jedan PDF izvod.");
+      return;
+    }
+    if (files.length > MAX_FILES) {
+      setError(`Najviše ${MAX_FILES} izvoda odjednom.`);
+      return;
+    }
+    if (files.reduce((n, f) => n + f.size, 0) > MAX_TOTAL_BYTES) {
+      setError("Izabrani fajlovi su zajedno veći od 4 MB. Učitajte ih u dva dijela.");
+      return;
+    }
     startTransition(async () => {
-      // SHA-256 of the file as the browser holds it, so the server can tell a file damaged on the
-      // way in from a PDF the parser genuinely cannot read (see parsePdfPreviewAction).
-      const file = formData.get("file");
-      if (file instanceof File && file.size > 0 && crypto?.subtle) {
-        const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
-        formData.set("sha256", [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join(""));
+      const fd = new FormData();
+      fd.set("accountId", accountId);
+      for (const f of files) {
+        fd.append("file", f);
+        fd.append("sha256", (await sha256Hex(f)) ?? "");
       }
-      const res = await parsePdfPreviewAction(formData);
+      const res = await parsePdfPreviewsAction(fd);
       if (!res.ok) {
         setError(res.error);
         return;
       }
-      setPreview(res.preview);
-      setRows(res.preview.rows);
+      setPreviews(res.previews);
+      setRows(res.previews.map((p) => p.rows));
+      setFailures(res.failures);
     });
   }
 
-  function updateRow(i: number, patch: Partial<PdfPreviewRow>) {
-    setRows((rs) => rs.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
+  function updateRow(si: number, ri: number, patch: Partial<PdfPreviewRow>) {
+    setRows((all) => all.map((rs, s) => (s !== si ? rs : rs.map((r, i) => (i === ri ? { ...r, ...patch } : r)))));
+  }
+
+  function reset() {
+    setPreviews(null);
+    setRows([]);
+    setFailures([]);
+    setFiles([]);
   }
 
   function handleCancel() {
-    setPreview(null);
-    setRows([]);
+    reset();
     setError(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   function handleCommit() {
-    if (!preview) return;
+    if (!previews) return;
     setError(null);
-    const included = rows.filter((r) => r.include);
-    // Rows left un-ticked because the SMS already booked them: the statement confirms that SMS,
-    // and the link is kept (Plans/sms-statement-payment-matching-plan.md R2).
-    const skippedSmsIds = rows.flatMap((r) => (!r.include && r.duplicateOf ? [r.duplicateOf.smsId] : []));
-    if (included.length === 0 && skippedSmsIds.length === 0) {
-      setError("Nijedna stavka nije označena za uvoz.");
-      return;
-    }
-    startTransition(async () => {
-      const res = await commitPdfImportAction({
-        accountId,
-        filename: preview.filename,
-        rawText: preview.rawText,
-        rows: included.map((r) => ({
+    const statements = previews.map((p, si) => ({
+      filename: p.filename,
+      rawText: p.rawText,
+      rows: rows[si]
+        .filter((r) => r.include)
+        .map((r) => ({
           direction: r.direction,
           date: r.date,
           amount: r.amount,
@@ -84,85 +111,88 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
           expenseId: r.expenseId,
           categoryName: r.categoryName,
         })),
-        skippedSmsIds,
-      });
+      // Rows left un-ticked because the SMS already booked them: the statement confirms that SMS,
+      // and the link is kept (Plans/sms-statement-payment-matching-plan.md R2).
+      skippedSmsIds: rows[si].flatMap((r) => (!r.include && r.duplicateOf ? [r.duplicateOf.smsId] : [])),
+    }));
+    if (statements.every((st) => st.rows.length === 0 && st.skippedSmsIds.length === 0)) {
+      setError("Nijedna stavka nije označena za uvoz.");
+      return;
+    }
+    startTransition(async () => {
+      const res = await commitPdfImportsAction({ accountId, statements });
       if (!res.ok) {
         setError(res.error);
         return;
       }
-      const inCount = included.filter((r) => r.direction === "IN").length;
-      const outCount = included.filter((r) => r.direction === "OUT").length;
+      const all = rows.flat().filter((r) => r.include);
+      const inCount = all.filter((r) => r.direction === "IN").length;
       setMessage(
-        `Uvezeno ${res.imported} stavki (${inCount} uplata, ${outCount} isplata). Uplate sa izabranom fakturom su odmah raspoređene — ` +
-          `ostale pogledajte u tabeli ispod, u koloni "detalji/uparivanje".` +
+        `Uvezeno ${res.imported} stavki (${inCount} uplata, ${res.imported - inCount} isplata) iz ${res.statements} izvoda. Uplate sa izabranom fakturom su odmah raspoređene — ostale pogledajte ` +
+          `u tabeli ispod, u koloni "detalji/uparivanje".` +
           (res.linkedToSms > 0 ? ` Izvod je potvrdio ${res.linkedToSms} već proknjiženih SMS stavki (nisu uvezene ponovo).` : "")
       );
-      setPreview(null);
-      setRows([]);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      reset();
       router.refresh();
     });
   }
 
-  const includedCount = rows.filter((r) => r.include).length;
-  const smsConfirmCount = rows.filter((r) => !r.include && r.duplicateOf).length;
-  const inCount = rows.filter((r) => r.include && r.direction === "IN").length;
-  const outCount = rows.filter((r) => r.include && r.direction === "OUT").length;
+  const flat = rows.flat();
+  const includedCount = flat.filter((r) => r.include).length;
+  const smsConfirmCount = flat.filter((r) => !r.include && r.duplicateOf).length;
+  const invoiceOptions = previews?.[0]?.invoiceOptions ?? [];
+  const expenseOptions = previews?.[0]?.expenseOptions ?? [];
 
   return (
     <div>
-      {error && (
-        <div role="alert" className="mb-3 rounded-xl border-l-4 border-l-red-500 bg-red-50 px-3 py-2.5 text-sm text-red-800 shadow-sm">
-          {error}
-        </div>
-      )}
-      {message && (
-        <div role="status" className="mb-3 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800 shadow-sm">
-          {message}
-        </div>
-      )}
+      {error && <div role="alert" className={`mb-3 ${alertCls} border-l-red-500 bg-red-50 text-red-800`}>{error}</div>}
+      {message && <div role="status" className={`mb-3 ${alertCls} border-l-emerald-500 bg-emerald-50 text-emerald-800`}>{message}</div>}
 
-      {!preview && (
-        <form action={handleParse} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="sm:col-span-2">
+      {!previews && (
+        <form onSubmit={handleParse} className="space-y-3">
+          <FilePicker
+            label="PDF izvodi"
+            buttonLabel="Izaberi PDF izvode…"
+            hint="Možete izabrati više izvoda odjednom ili ih prevući ovdje."
+            accept=".pdf,application/pdf"
+            multiple
+            files={files}
+            onChange={setFiles}
+            disabled={pending}
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className="block text-sm">
-              <span className="mb-1 block font-medium text-slate-700">PDF izvod</span>
-              <input ref={fileInputRef} name="file" type="file" accept=".pdf,application/pdf" required className={inputCls} />
+              <span className="mb-1 block font-medium text-slate-700">Račun</span>
+              <select value={accountId} onChange={(e) => setAccountId(e.target.value)} className={inputCls}>
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
             </label>
-          </div>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium text-slate-700">Račun</span>
-            <select value={accountId} onChange={(e) => setAccountId(e.target.value)} className={inputCls}>
-              {accounts.map((a) => (
-                <option key={a.id} value={a.id}>{a.name}</option>
-              ))}
-            </select>
-          </label>
-          <div className="flex items-end">
-            <button
-              type="submit"
-              disabled={pending}
-              className={`${btnBase} ${btnVariantCls.primary}`}
-            >
-              {pending ? "Čitam izvod…" : "Učitaj i pregledaj"}
-            </button>
+            <div className="flex items-end">
+              <button type="submit" disabled={pending || files.length === 0} className={`${btnBase} ${btnVariantCls.primary}`}>
+                {pending ? "Čitam izvode…" : files.length > 1 ? `Učitaj i pregledaj (${files.length})` : "Učitaj i pregledaj"}
+              </button>
+            </div>
           </div>
         </form>
       )}
 
-      {preview && (
+      {previews && (
         <div>
-          {preview.accountMismatch && (
-            <div className="mb-3 rounded-xl border-l-4 border-l-amber-500 bg-amber-50 px-3 py-2.5 text-sm text-amber-800 shadow-sm">
-              Upozorenje: broj računa u izvodu ({preview.ownAccountNumber}) ne izgleda kao odabrani račun. Provjerite da li ste
-              odabrali ispravan račun prije uvoza.
+          {failures.length > 0 && (
+            <div role="alert" className={`mb-3 ${alertCls} border-l-red-500 bg-red-50 text-red-800`}>
+              <p className="font-medium">Nisu učitani ({failures.length}):</p>
+              <ul className="mt-1 list-disc pl-5">
+                {failures.map((f) => (
+                  <li key={f.filename}>{f.filename}: {f.error}</li>
+                ))}
+              </ul>
             </div>
           )}
           <p className="mb-3 text-sm text-slate-600">
-            Prepoznato {rows.length} stavki iz &quot;{preview.filename}&quot; ({inCount} uplata, {outCount} isplata)
-            {preview.statementDateIso ? ` (datum izvoda: ${preview.statementDateIso})` : ""}. Provjerite/ispravite ispod prije
-            uvoza — ništa još nije sačuvano.
-            {preview.skipped > 0 && ` (${preview.skipped} stavki bez iznosa preskočeno.)`}
+            Prepoznato {flat.length} stavki iz {previews.length} izvoda. Provjerite/ispravite
+            ispod prije uvoza — ništa još nije sačuvano.
           </p>
           <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-sm">
@@ -177,103 +207,116 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
                   <th className="px-2 py-2 font-medium text-slate-600">Faktura / trošak</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
-                {rows.map((r, i) => (
-                  <tr key={i} className={r.include ? "" : "opacity-50"}>
-                    <td className="px-2 py-1.5">
-                      <input
-                        type="checkbox"
-                        checked={r.include}
-                        onChange={(e) => updateRow(i, { include: e.target.checked })}
-                      />
-                    </td>
-                    <td className="px-2 py-1.5">
-                      <span
-                        className={`inline-block rounded px-1.5 py-0.5 text-xs font-medium ${
-                          r.direction === "IN" ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800"
-                        }`}
-                      >
-                        {r.direction === "IN" ? "uplata" : "isplata"}
-                      </span>
-                    </td>
-                    <td className="px-2 py-1.5">
-                      <input
-                        type="date"
-                        value={r.date}
-                        onChange={(e) => updateRow(i, { date: e.target.value })}
-                        className="w-36 rounded border border-slate-300 px-1.5 py-1 text-xs"
-                      />
-                    </td>
-                    <td className="px-2 py-1.5">
-                      <input
-                        value={r.amount}
-                        onChange={(e) => updateRow(i, { amount: e.target.value })}
-                        className="w-20 rounded border border-slate-300 px-1.5 py-1 text-xs text-right"
-                      />
-                    </td>
-                    <td className="px-2 py-1.5">
-                      <input
-                        value={r.payerNameRaw}
-                        onChange={(e) => updateRow(i, { payerNameRaw: e.target.value })}
-                        className="w-40 rounded border border-slate-300 px-1.5 py-1 text-xs"
-                      />
-                    </td>
-                    <td className="px-2 py-1.5">
-                      <input
-                        value={r.purposeRaw}
-                        onChange={(e) => updateRow(i, { purposeRaw: e.target.value })}
-                        className="w-56 rounded border border-slate-300 px-1.5 py-1 text-xs"
-                      />
-                    </td>
-                    <td className="px-2 py-1.5">
-                      {r.direction === "IN" ? (
-                        <select
-                          value={r.invoiceId ?? ""}
-                          onChange={(e) => updateRow(i, { invoiceId: e.target.value || null })}
-                          className="w-64 rounded border border-slate-300 px-1.5 py-1 text-xs"
-                        >
-                          <option value="">— ne uparuj sada —</option>
-                          {preview.invoiceOptions.map((o) => (
-                            <option key={o.id} value={o.id}>{o.label}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <div className="space-y-1">
-                          <select
-                            value={r.expenseId ?? ""}
-                            onChange={(e) => updateRow(i, { expenseId: e.target.value || null })}
-                            className="w-64 rounded border border-slate-300 px-1.5 py-1 text-xs"
-                          >
-                            <option value="">— bez veze (opšti izlaz) —</option>
-                            {preview.expenseOptions.map((o) => (
-                              <option key={o.id} value={o.id}>{o.label}</option>
-                            ))}
-                          </select>
-                          {!r.expenseId && (
-                            <input
-                              value={r.categoryName}
-                              onChange={(e) => updateRow(i, { categoryName: e.target.value })}
-                              placeholder="kategorija (opciono)"
-                              className="w-64 rounded border border-slate-300 px-1.5 py-1 text-xs"
-                            />
-                          )}
+              {previews.map((p, si) => {
+                const rs = rows[si] ?? [];
+                const inCount = rs.filter((r) => r.include && r.direction === "IN").length;
+                const outCount = rs.filter((r) => r.include && r.direction === "OUT").length;
+                return (
+                  <tbody key={p.sha256} className="divide-y divide-slate-100 border-t-2 border-slate-200">
+                    <tr className="bg-slate-50/70">
+                      <td colSpan={7} className="px-3 py-2">
+                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          <span className="font-medium text-slate-900">{p.filename}</span>
+                          {p.statementDateIso && <span className="text-[13px] text-slate-600">izvod od {formatDate(p.statementDateIso)}</span>}
+                          <span className="text-[13px] text-slate-600">
+                            {rs.length} stavki, za uvoz {inCount} uplata i {outCount} isplata
+                            {p.skipped > 0 && `, ${p.skipped} bez iznosa preskočeno`}
+                          </span>
                         </div>
-                      )}
-                      {r.matchHint && <p className="mt-1 max-w-64 text-[11px] text-slate-500">Predlog: {r.matchHint}</p>}
-                      {r.duplicateOf && (
-                        <p className="mt-1 max-w-64 text-[13px] text-amber-800">
-                          Već evidentirano preko SMS obavještenja (stavka nije označena za uvoz; pri uvozu se bilježi da je izvod potvrdio SMS).{" "}
-                          {r.duplicateOf.paymentId && (
-                            <Link href={`/fakture/uplate/${r.duplicateOf.paymentId}`} className="font-medium underline underline-offset-2">
-                              Pogledaj uplatu
-                            </Link>
+                        {p.alreadyImportedAt && (
+                          <p className="mt-1 text-[13px] text-amber-800">
+                            Ovaj izvod je već uvezen {formatDateTime(p.alreadyImportedAt)} — stavke nisu označene za uvoz.
+                          </p>
+                        )}
+                        {p.accountMismatch && (
+                          <p className="mt-1 text-[13px] text-amber-800">
+                            Broj računa u izvodu ({p.ownAccountNumber}) ne izgleda kao odabrani račun. Provjerite izbor računa.
+                          </p>
+                        )}
+                      </td>
+                    </tr>
+                    {rs.map((r, ri) => (
+                      <tr key={ri} className={r.include ? "" : "opacity-50"}>
+                        <td className="px-2 py-1.5">
+                          <input
+                            type="checkbox"
+                            aria-label="Uvezi stavku"
+                            checked={r.include}
+                            onChange={(e) => updateRow(si, ri, { include: e.target.checked })}
+                          />
+                        </td>
+                        <td className="px-2 py-1.5">
+                          <span
+                            className={`inline-block rounded px-1.5 py-0.5 text-[13px] font-medium ${
+                              r.direction === "IN" ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800"
+                            }`}
+                          >
+                            {r.direction === "IN" ? "uplata" : "isplata"}
+                          </span>
+                        </td>
+                        <td className="px-2 py-1.5">
+                          <input type="date" value={r.date} onChange={(e) => updateRow(si, ri, { date: e.target.value })} className={`w-36 ${cellInputCls}`} />
+                        </td>
+                        <td className="px-2 py-1.5">
+                          <input value={r.amount} onChange={(e) => updateRow(si, ri, { amount: e.target.value })} className={`w-24 text-right ${cellInputCls}`} />
+                        </td>
+                        <td className="px-2 py-1.5">
+                          <input value={r.payerNameRaw} onChange={(e) => updateRow(si, ri, { payerNameRaw: e.target.value })} className={`w-40 ${cellInputCls}`} />
+                        </td>
+                        <td className="px-2 py-1.5">
+                          <input value={r.purposeRaw} onChange={(e) => updateRow(si, ri, { purposeRaw: e.target.value })} className={`w-56 ${cellInputCls}`} />
+                        </td>
+                        <td className="px-2 py-1.5">
+                          {r.direction === "IN" ? (
+                            <select
+                              value={r.invoiceId ?? ""}
+                              onChange={(e) => updateRow(si, ri, { invoiceId: e.target.value || null })}
+                              className={`w-64 ${cellInputCls}`}
+                            >
+                              <option value="">— ne uparuj sada —</option>
+                              {invoiceOptions.map((o) => (
+                                <option key={o.id} value={o.id}>{o.label}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <div className="space-y-1">
+                              <select
+                                value={r.expenseId ?? ""}
+                                onChange={(e) => updateRow(si, ri, { expenseId: e.target.value || null })}
+                                className={`w-64 ${cellInputCls}`}
+                              >
+                                <option value="">— bez veze (opšti izlaz) —</option>
+                                {expenseOptions.map((o) => (
+                                  <option key={o.id} value={o.id}>{o.label}</option>
+                                ))}
+                              </select>
+                              {!r.expenseId && (
+                                <input
+                                  value={r.categoryName}
+                                  onChange={(e) => updateRow(si, ri, { categoryName: e.target.value })}
+                                  placeholder="kategorija (opciono)"
+                                  className={`w-64 ${cellInputCls}`}
+                                />
+                              )}
+                            </div>
                           )}
-                        </p>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                          {r.matchHint && <p className="mt-1 max-w-64 text-[13px] text-slate-500">Predlog: {r.matchHint}</p>}
+                          {r.duplicateOf && (
+                            <p className="mt-1 max-w-64 text-[13px] text-amber-800">
+                              Već evidentirano preko SMS obavještenja (stavka nije označena za uvoz; pri uvozu se bilježi da je izvod potvrdio SMS).{" "}
+                              {r.duplicateOf.paymentId && (
+                                <Link href={`/fakture/uplate/${r.duplicateOf.paymentId}`} className="font-medium underline underline-offset-2">
+                                  Pogledaj uplatu
+                                </Link>
+                              )}
+                            </p>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                );
+              })}
             </table>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -285,16 +328,11 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
             >
               {pending
                 ? "Uvozim…"
-                : includedCount === 0
+                : includedCount === 0 && smsConfirmCount > 0
                   ? `Potvrdi SMS stavke izvodom (${smsConfirmCount})`
                   : `Uvezi (${includedCount})`}
             </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={pending}
-              className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50"
-            >
+            <button type="button" onClick={handleCancel} disabled={pending} className={`${btnBase} ${btnVariantCls.secondary}`}>
               Odustani
             </button>
           </div>

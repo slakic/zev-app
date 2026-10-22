@@ -43,6 +43,28 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.39.0] - 2026-10-22
+
+### Dodato
+
+- **Uvoz više PDF izvoda odjednom.** U „Uvoz bankovnog izvoda (PDF)" bira se više izvoda (najviše 31,
+  ukupno do 4 MB) ili se prevuku na formu. Svi se pregledaju u jednoj tabeli, grupisano po izvodu
+  (naziv fajla, datum izvoda, broj stavki, upozorenja), a jedno dugme „Uvezi" uvozi sve. Svaki izvod
+  ostaje zasebna serija uvoza, a sve se upisuje u jednoj transakciji: ako jedna stavka ne prođe, ništa
+  se ne upisuje.
+  - Isti fajl izabran dva puta i fajl u kojem nije prepoznata nijedna stavka prijavljuju se po imenu;
+    ostali izvodi se normalno učitavaju.
+  - **Izvod koji je već uvezen** (isti tekst izvoda) se označava i njegove stavke dolaze neoznačene za
+    uvoz, pa se isti izvod ne knjiži dva puta.
+  - Jedno SMS obavještenje se uparuje sa stavkom u najviše jednom od učitanih izvoda.
+- **Novi primitiv dizajn sistema `FilePicker`**: dugme „Izaberi PDF izvode…" i lista izabranih fajlova
+  sa mogućnošću uklanjanja, umjesto golog polja za fajl koje otvara dijalog klikom na samo polje
+  (`Plans/design-system.md` §4.4). Za sada se koristi samo u PDF uvozu.
+
+### Izmijenjeno
+
+- Tekst u tabeli pregleda izvoda (polja, napomene, predlozi uparivanja) je sada najmanje 13px.
+
 ## [2.38.0] - 2026-10-22
 
 ### Dodato

@@ -1,5 +1,6 @@
 // Payments, CSV bank import, allocation to invoices, reversals, owner balances.
 // PaymentAllocation rows are append-only (DB trigger); reversals are negative rows.
+import { createHash } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
@@ -418,6 +419,118 @@ export async function commitPdfImport(
     { timeout: 30000 }
   );
   return { batchId: batch.batchId, imported: input.rows.length, linkedToSms: batch.linked };
+}
+
+// ---- Several PDF statements at once (v2.39.0) ----
+// The single-statement functions above stay as they are; these run them for a batch of files and
+// add what only matters across files: the same file chosen twice, a statement imported before,
+// and one SMS matching rows in two different statements.
+
+export const MAX_PDF_STATEMENTS_PER_IMPORT = 31;
+
+export type PdfStatementPreview = PdfImportPreview & {
+  sha256: string;
+  /** A statement with exactly this text was imported before (ISO time) — its rows arrive un-ticked. */
+  alreadyImportedAt: string | null;
+};
+
+export async function importPdfPreviews(
+  actor: Actor,
+  input: { accountId: string; files: { filename: string; buffer: Buffer }[] }
+): Promise<{ previews: PdfStatementPreview[]; failures: { filename: string; error: string }[] }> {
+  requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  if (input.files.length === 0) throw new Error("Odaberite bar jedan PDF izvod.");
+  if (input.files.length > MAX_PDF_STATEMENTS_PER_IMPORT) {
+    throw new Error(`Najviše ${MAX_PDF_STATEMENTS_PER_IMPORT} izvoda odjednom.`);
+  }
+
+  const previews: PdfStatementPreview[] = [];
+  const failures: { filename: string; error: string }[] = [];
+  const seenSha = new Set<string>();
+  for (const f of input.files) {
+    const sha256 = createHash("sha256").update(f.buffer).digest("hex");
+    if (seenSha.has(sha256)) {
+      failures.push({ filename: f.filename, error: "Isti fajl je izabran više puta." });
+      continue;
+    }
+    seenSha.add(sha256);
+    try {
+      const p = await importPdfPreview(actor, { accountId: input.accountId, filename: f.filename, buffer: f.buffer });
+      if (p.rows.length === 0) {
+        failures.push({ filename: f.filename, error: "Nije prepoznata nijedna stavka (provjerite da li je ovo izvod banke)." });
+        continue;
+      }
+      const earlier = await prisma.bankImportBatch.findFirst({
+        where: { zevId, sourceType: "PDF", rawText: p.rawText },
+        orderBy: { importedAt: "desc" },
+        select: { importedAt: true },
+      });
+      if (earlier) for (const r of p.rows) r.include = false;
+      previews.push({ ...p, sha256, alreadyImportedAt: earlier ? earlier.importedAt.toISOString() : null });
+    } catch (e) {
+      failures.push({ filename: f.filename, error: e instanceof Error ? e.message : "Greška pri čitanju PDF-a." });
+    }
+  }
+
+  previews.sort((a, b) => (a.statementDateIso ?? "").localeCompare(b.statementDateIso ?? ""));
+  // One SMS accounts for at most one statement row across ALL the statements (each preview only
+  // de-duplicated within itself). A later match is not that SMS after all: tick it back.
+  const usedSms = new Set<string>();
+  for (const p of previews) {
+    for (const r of p.rows) {
+      if (!r.duplicateOf) continue;
+      if (usedSms.has(r.duplicateOf.smsId)) {
+        r.duplicateOf = null;
+        r.include = !p.alreadyImportedAt;
+      } else {
+        usedSms.add(r.duplicateOf.smsId);
+      }
+    }
+  }
+  return { previews, failures };
+}
+
+/** Writes several reviewed statements at once — each as its own BankImportBatch, exactly as
+ *  commitPdfImport would — inside ONE transaction, so a failing statement books nothing. */
+export async function commitPdfImports(
+  actor: Actor,
+  input: {
+    accountId: string;
+    statements: { filename: string; rawText: string; rows: StatementRowInput[]; skippedSmsIds?: string[] }[];
+  }
+) {
+  requireRole(actor, "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const statements = input.statements.filter((st) => st.rows.length > 0 || (st.skippedSmsIds ?? []).length > 0);
+  if (statements.length === 0) throw new Error("Nema stavki za uvoz.");
+  await prisma.moneyAccount.findUniqueOrThrow({ where: { id: input.accountId, zevId } });
+  await assertStatementRowsCommittable(zevId, statements.flatMap((st) => st.rows));
+
+  const result = await prisma.$transaction(
+    async (tx) => {
+      let imported = 0;
+      let linkedToSms = 0;
+      for (const st of statements) {
+        const res = await commitStatementRowsInTx(tx, actor, zevId, {
+          source: "PDF",
+          accountId: input.accountId,
+          filename: st.filename,
+          rawText: st.rawText,
+          rows: st.rows,
+        });
+        linkedToSms += await recordStatementSkipsInTx(tx, actor, zevId, {
+          accountId: input.accountId,
+          batchId: res.batchId,
+          smsIds: st.skippedSmsIds ?? [],
+        });
+        imported += st.rows.length;
+      }
+      return { imported, linkedToSms };
+    },
+    { timeout: 60000 }
+  );
+  return { ...result, statements: statements.length };
 }
 
 /** Links PDF-statement rows the reviewer left un-ticked as "already booked from SMS" to that SMS
