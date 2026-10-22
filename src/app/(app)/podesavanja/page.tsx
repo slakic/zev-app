@@ -8,6 +8,8 @@ import { getParty, updateParty, requireOwnerParty } from "@/server/services/owne
 import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { getSettings, setSetting } from "@/server/services/settings";
 import { getBankSmsStatus } from "@/server/services/bankSms";
+import { getTestEmailStatus } from "@/server/services/emailTest";
+import { TestEmailCard } from "@/components/test-email-card";
 import { BankSmsTokenCard } from "@/components/bank-sms-token-card";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
@@ -125,11 +127,12 @@ export default async function SettingsPage({
   const showZev = isManagement && activeTab === "zev";
   const showParametri = isManagement && activeTab === "parametri";
 
-  const [zev, accounts, bankSmsStatus, settings, myParty, myConsent] = await Promise.all([
+  const [zev, accounts, bankSmsStatus, settings, testEmailStatus, myParty, myConsent] = await Promise.all([
     showZev ? getZev(actor) : null,
     showZev ? listAccounts(actor) : Promise.resolve([]),
     showZev ? getBankSmsStatus(actor) : null,
     showParametri ? getSettings(actor) : null,
+    showParametri ? getTestEmailStatus(actor) : null,
     actor.partyId && showMoji ? getParty(actor, actor.partyId) : null,
     actor.partyId && showMoji ? getEVoteConsentHistory(actor, actor.partyId) : null,
   ]);
@@ -318,18 +321,15 @@ export default async function SettingsPage({
           </Card>
         )}
 
+        {showParametri && testEmailStatus && <TestEmailCard status={testEmailStatus} scope="zev" />}
+
         {showParametri && (
           <Card title="Napomena o integracijama">
             <p className="text-sm text-slate-600">
-              {process.env.EMAIL_PROVIDER === "mailjet" ? (
-                <>E-mail se šalje preko <b>Mailjet</b>-a; Viber trenutno radi preko <b>mock</b> provajdera.</>
-              ) : (
-                <>E-mail i Viber trenutno rade preko <b>mock</b> provajdera.</>
-              )}{" "}
-              Poruke se evidentiraju u „Poslate poruke” sa (simuliranim, za mock provajder)
-              statusima isporuke. Stvarne provajdere podešava osoba koja je postavila sistem.
-              Viber bot može slati poruke korisnicima koji su se pretplatili na bota —
-              automatsko objavljivanje u proizvoljne privatne grupe nije podržano zvaničnim API-jem.
+              Sve poruke se evidentiraju u „Poslate poruke”. Način slanja e-pošte i ime pošiljaoca podešava
+              administrator platforme. Viber trenutno radi kao simulacija; Viber bot može slati poruke
+              korisnicima koji su se pretplatili na bota — automatsko objavljivanje u proizvoljne privatne grupe
+              nije podržano zvaničnim API-jem.
             </p>
           </Card>
         )}

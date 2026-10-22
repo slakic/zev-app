@@ -12,6 +12,15 @@ import type { EmailProvider, SendResult } from "./providers";
 
 const MAILJET_SEND_URL = "https://api.mailjet.com/v3.1/send";
 
+/** Sender display name when neither the platform settings nor MAILJET_FROM_NAME set one. */
+export const DEFAULT_FROM_NAME = "ZEV upravnik";
+
+/** A display name safe for a mail header: no line breaks, quotes or angle brackets (header
+ *  injection / address spoofing), single spaces, at most 70 characters. */
+export function sanitizeFromName(name: string): string {
+  return name.replace(/[\r\n"<>]/g, " ").replace(/\s+/g, " ").trim().slice(0, 70).trim();
+}
+
 type MailjetMessageResult = {
   Status: "success" | "error";
   To?: { Email: string; MessageID?: number; MessageUUID?: string }[];
@@ -20,12 +29,15 @@ type MailjetMessageResult = {
 
 type MailjetSendResponse = {
   Messages?: MailjetMessageResult[];
+  /** Request-level failures (e.g. 401 wrong API key) come back at the top of the body. */
+  ErrorMessage?: string;
+  ErrorIdentifier?: string;
 };
 
 export class MailjetEmailProvider implements EmailProvider {
   name = "mailjet";
 
-  async send(msg: { to: string; subject: string; body: string }): Promise<SendResult> {
+  async send(msg: { to: string; subject: string; body: string; fromName?: string }): Promise<SendResult> {
     const apiKey = process.env.MAILJET_API_KEY;
     const apiSecret = process.env.MAILJET_API_SECRET;
     const fromEmail = process.env.MAILJET_FROM_EMAIL;
@@ -47,7 +59,10 @@ export class MailjetEmailProvider implements EmailProvider {
         body: JSON.stringify({
           Messages: [
             {
-              From: { Email: fromEmail },
+              From: {
+                Email: fromEmail,
+                Name: sanitizeFromName(msg.fromName || process.env.MAILJET_FROM_NAME || DEFAULT_FROM_NAME) || DEFAULT_FROM_NAME,
+              },
               To: [{ Email: msg.to }],
               Subject: msg.subject,
               TextPart: msg.body,
@@ -77,8 +92,14 @@ export class MailjetEmailProvider implements EmailProvider {
       return { ok: true, providerMessageId: messageId, events: [{ at: now, type: "sent", detail: "mailjet" }] };
     }
 
+    // Per-message errors first (e.g. sender not validated), then a request-level error at the top
+    // of the body (e.g. wrong API key), and only then the bare HTTP status.
     const errorDetail =
-      result?.Errors?.map((e) => e.ErrorMessage).filter(Boolean).join("; ") || `Mailjet HTTP ${res.status}`;
+      result?.Errors?.map((e) => e.ErrorMessage).filter(Boolean).join("; ") ||
+      (payload?.ErrorMessage
+        ? `${payload.ErrorMessage}${payload.ErrorIdentifier ? ` (${payload.ErrorIdentifier})` : ""}`
+        : "") ||
+      `Mailjet HTTP ${res.status}`;
     return { ok: false, error: errorDetail, events: [{ at: now, type: "failed", detail: errorDetail }] };
   }
 }

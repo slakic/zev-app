@@ -7,7 +7,7 @@
 // Select a provider via EMAIL_PROVIDER / VIBER_PROVIDER in .env (see .env.example).
 // A real Viber provider isn't implemented yet (Plans/deployment-portability-plan.md §11 P4).
 
-import { MailjetEmailProvider } from "./mailjetEmail";
+import { MailjetEmailProvider, DEFAULT_FROM_NAME } from "./mailjetEmail";
 
 export type DeliveryEvent = {
   at: string;
@@ -24,7 +24,10 @@ export type SendResult = {
 
 export interface EmailProvider {
   name: string;
-  send(msg: { to: string; subject: string; body: string }): Promise<SendResult>;
+  /** `fromName` is the display name next to the sender address (Mailjet `From.Name`); the
+   *  notification service builds it from the platform e-mail settings. Providers that have no
+   *  sender (the mock) ignore it. */
+  send(msg: { to: string; subject: string; body: string; fromName?: string }): Promise<SendResult>;
 }
 
 export interface ViberProvider {
@@ -37,7 +40,7 @@ export interface ViberProvider {
 
 class MockEmailProvider implements EmailProvider {
   name = "mock-email";
-  async send(msg: { to: string; subject: string; body: string }): Promise<SendResult> {
+  async send(msg: { to: string; subject: string; body: string; fromName?: string }): Promise<SendResult> {
     const now = new Date().toISOString();
     void msg;
     return {
@@ -69,6 +72,33 @@ class MockViberProvider implements ViberProvider {
   async broadcast(msg: { subscriberIds: string[]; text: string }): Promise<SendResult[]> {
     return Promise.all(msg.subscriberIds.map((subscriberId) => this.sendDirect({ subscriberId, text: msg.text })));
   }
+}
+
+export type EmailProviderKind = "mock" | "mailjet" | "unknown";
+
+export function currentEmailProviderKind(): EmailProviderKind {
+  const kind = process.env.EMAIL_PROVIDER ?? "mock";
+  return kind === "mock" || kind === "mailjet" ? kind : "unknown";
+}
+
+/** What the UI may show about the active e-mail provider. NEVER includes the API key or secret
+ *  (or any part of them) — only whether they are set. The sender address is not a secret. */
+export type EmailProviderInfo = {
+  kind: EmailProviderKind;
+  /** mock: always true; mailjet: key, secret and sender address are all set. */
+  configured: boolean;
+  fromEmail: string | null;
+  /** Fallback display name when the platform settings have none (MAILJET_FROM_NAME or the default). */
+  defaultFromName: string;
+};
+
+export function describeEmailProvider(): EmailProviderInfo {
+  const kind = currentEmailProviderKind();
+  const defaultFromName = process.env.MAILJET_FROM_NAME?.trim() || DEFAULT_FROM_NAME;
+  if (kind !== "mailjet") return { kind, configured: kind === "mock", fromEmail: null, defaultFromName };
+  const fromEmail = process.env.MAILJET_FROM_EMAIL?.trim() || null;
+  const configured = Boolean(process.env.MAILJET_API_KEY && process.env.MAILJET_API_SECRET && fromEmail);
+  return { kind, configured, fromEmail, defaultFromName };
 }
 
 export function getEmailProvider(): EmailProvider {

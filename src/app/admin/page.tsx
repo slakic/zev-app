@@ -5,6 +5,10 @@ import { listTenants, createTenant } from "@/server/services/admin";
 import { switchActiveZev } from "@/server/services/memberships";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowAction, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import { PasswordField } from "@/components/password-field";
+import { EmailSettingsCard } from "@/components/email-settings-card";
+import { TestEmailCard } from "@/components/test-email-card";
+import { adminGetEmailSettings } from "@/server/services/platformSettings";
+import { adminGetTestEmailStatus } from "@/server/services/emailTest";
 import { t } from "@/lib/i18n";
 
 const tenantHeaders: ColumnSpec[] = [
@@ -63,7 +67,11 @@ async function enterZevAction(formData: FormData) {
 export default async function AdminHomePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const actor = await requireSuperAdminActor();
   const { err } = await searchParams;
-  const tenants = await listTenants(actor);
+  const [tenants, emailSettings, testEmailStatus] = await Promise.all([
+    listTenants(actor),
+    adminGetEmailSettings(actor),
+    adminGetTestEmailStatus(actor),
+  ]);
   return (
     <div>
       <PageHeader title="ZEV nalozi" subtitle={`Prijavljeni kao ${actor.email}`} />
@@ -166,6 +174,11 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
             <SubmitBtn>Kreiraj ZEV nalog</SubmitBtn>
           </form>
         </Card>
+
+        <div className="grid grid-cols-1 gap-4 lg:col-span-3 lg:grid-cols-2">
+          <EmailSettingsCard settings={emailSettings} />
+          <TestEmailCard status={testEmailStatus} scope="admin" />
+        </div>
       </div>
     </div>
   );

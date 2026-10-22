@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.38.0] - 2026-10-22
+
+### Dodato
+
+- **Probna e-mail poruka** (`Plans/email-sender-name-and-test-email-plan.md`). Nova kartica u
+  Podešavanja → Parametri (predsjednik i računovođa) i u `/admin` (super admin): „Pošalji na moju
+  adresu" (adresa za prijavu) ili na upisanu adresu. Tekst je unaprijed zadat (ZEV, ko je poslao,
+  vrijeme, adresa aplikacije, „ne odgovarajte"). Kartica pokazuje da li je slanje stvarno (Mailjet) ili
+  simulirano i vraća tačnu grešku provajdera. Poruka ide kroz „Poslate poruke"; najviše 5 na sat po
+  korisniku i 20 dnevno po ZEV-u (broji se u bazi); svako slanje i odbijanje bilježi se u audit.
+- **E-mail podešavanja platforme u `/admin`** (samo super admin): ime pošiljaoca (npr. „ZEV upravnik"),
+  prekidač da poruke jednog ZEV-a nose i njegov naziv („ZEV upravnik – Kneza Miloša 12") i **probni
+  period**: lista adresa/@domena kojima jedino ide stvarna e-pošta dok se Mailjet tek uključuje. Nova
+  tabela `PlatformSetting` (migracija `20261022100000_add_platform_setting`) — **na produkciji je
+  pokrenuti prije deploy-a.**
+
+### Ispravljeno
+
+- Kad Mailjet odbije poruku (npr. neovjeren pošiljalac), greška se sada upisuje u poruku i prikazuje u
+  „Poslate poruke"; ranije se gubila. Greška pogrešnog API ključa se prikazuje tekstom Mailjet-a, a ne
+  samo kao „HTTP 401".
+- Podnaslov „Poslate poruke" i napomena u Parametrima više ne tvrde da je slanje uvijek simulirano.
+
 ## [2.37.0] - 2026-10-19
 
 ### Dodato

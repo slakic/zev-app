@@ -3,7 +3,11 @@
 // PRIVACY: notification bodies must never contain balances, debts or other
 // sensitive personal data — they link to an authenticated page instead.
 import { prisma } from "@/lib/prisma";
-import { getEmailProvider, getViberProvider, type DeliveryEvent } from "./providers";
+import { currentEmailProviderKind, describeEmailProvider, getEmailProvider, getViberProvider, type DeliveryEvent } from "./providers";
+import { buildFromName, isRecipientAllowed, loadEmailPlatformSettings } from "@/server/services/platformSettings";
+
+/** Stored as lastError when the go-live allowlist (platform e-mail settings) blocks a recipient. */
+export const ALLOWLIST_BLOCKED_ERROR = "Slanje na ovu adresu je privremeno isključeno (probni period pokretanja e-pošte).";
 import type { NotifChannel, Prisma } from "@/generated/prisma/client";
 
 export async function queueNotification(input: {
@@ -53,14 +57,36 @@ export async function dispatchNotification(id: string) {
   try {
     let events: DeliveryEvent[];
     let ok: boolean;
+    let error: string | undefined;
     if (msg.channel === "EMAIL") {
+      const settings = await loadEmailPlatformSettings();
+      // Go-live safety (Plans/email-sender-name-and-test-email-plan.md, P3): while the super
+      // admin's allowlist is non-empty, real e-mail reaches only those addresses. The mock
+      // provider sends nothing anyway, so it is not restricted.
+      if (currentEmailProviderKind() === "mailjet" && !isRecipientAllowed(msg.toAddress, settings.recipientAllowlist)) {
+        return prisma.notificationMessage.update({
+          where: { id },
+          data: {
+            status: "FAILED",
+            attempts: { increment: 1 },
+            lastError: ALLOWLIST_BLOCKED_ERROR,
+            events: [...prior, { at: new Date().toISOString(), type: "failed", detail: "allowlist" }] as unknown as Prisma.InputJsonValue,
+          },
+        });
+      }
+      const base = settings.fromName ?? describeEmailProvider().defaultFromName;
+      const zev = settings.appendZevName && msg.zevId
+        ? await prisma.zev.findUnique({ where: { id: msg.zevId }, select: { shortName: true, legalName: true } })
+        : null;
       const res = await getEmailProvider().send({
         to: msg.toAddress,
         subject: msg.subject ?? "",
         body: msg.body,
+        fromName: buildFromName(base, zev),
       });
       events = res.events;
       ok = res.ok;
+      error = res.error;
     } else {
       const res = await getViberProvider().sendDirect({
         subscriberId: msg.toAddress,
@@ -68,6 +94,7 @@ export async function dispatchNotification(id: string) {
       });
       events = res.events;
       ok = res.ok;
+      error = res.error;
     }
     const all = [...prior, ...events];
     const seen = all.some((e) => e.type === "seen");
@@ -78,6 +105,9 @@ export async function dispatchNotification(id: string) {
         status: ok ? (seen ? "SEEN" : delivered ? "DELIVERED" : "SENT") : "FAILED",
         attempts: { increment: 1 },
         sentAt: ok ? new Date() : undefined,
+        // A provider that reports failure (rather than throwing) used to leave lastError empty,
+        // so e.g. Mailjet's "sender not validated" was lost.
+        lastError: ok ? null : (error ?? "Nepoznata greška provajdera."),
         events: all as unknown as Prisma.InputJsonValue,
       },
     });

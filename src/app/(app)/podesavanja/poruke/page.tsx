@@ -3,6 +3,7 @@ import { requireZev } from "@/server/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, type ColumnSpec } from "@/components/ui";
+import { describeEmailProvider } from "@/server/notifications/providers";
 
 const messageHeaders: ColumnSpec[] = [
   { label: "Vrijeme", nowrap: true },
@@ -28,7 +29,14 @@ export default async function MessagesPage() {
   });
   return (
     <div>
-      <PageHeader title="Poslate poruke" subtitle="Outbox e-mail i Viber poruka (mock provajderi — simulirani statusi isporuke)" />
+      <PageHeader
+        title="Poslate poruke"
+        subtitle={
+          describeEmailProvider().kind === "mailjet"
+            ? "E-mail i Viber poruke. E-mail se stvarno šalje (Mailjet); Viber je simulacija."
+            : "E-mail i Viber poruke. Slanje je simulirano — poruke ne izlaze iz aplikacije."
+        }
+      />
       <Card>
         <Table
           id="messages-table"
@@ -44,7 +52,10 @@ export default async function MessagesPage() {
               <Td>{m.channel === "EMAIL" ? "E-mail" : "Viber"}</Td>
               <Td className="text-xs">{m.toAddress}</Td>
               <Td className="text-xs">{m.subject ?? m.template ?? "—"}</Td>
-              <Td><StatusBadge status={m.status} label={m.status === "QUEUED" ? "U redu čekanja" : m.status === "SENT" ? "Poslato" : m.status === "DELIVERED" ? "Isporučeno" : m.status === "SEEN" ? "Pročitano" : "Neuspješno"} /></Td>
+              <Td>
+                <StatusBadge status={m.status} label={m.status === "QUEUED" ? "U redu čekanja" : m.status === "SENT" ? "Poslato" : m.status === "DELIVERED" ? "Isporučeno" : m.status === "SEEN" ? "Pročitano" : "Neuspješno"} />
+                {m.status === "FAILED" && m.lastError && <p className="mt-1 max-w-72 text-[13px] text-slate-600">{m.lastError}</p>}
+              </Td>
               <Td>{m.attempts}</Td>
             </tr>
           ))}

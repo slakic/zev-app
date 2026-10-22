@@ -324,3 +324,11 @@ export type AuditEvent = Prisma.AuditEventModel
  * 
  */
 export type Setting = Prisma.SettingModel
+/**
+ * Model PlatformSetting
+ * Platform-wide configuration (not tenant-scoped — `Setting` above always belongs to one ZEV).
+ * Edited only by a super admin in /admin; today it holds the e-mail settings
+ * (Plans/email-sender-name-and-test-email-plan.md): `email.fromName`, `email.appendZevName`,
+ * `email.recipientAllowlist`. Every change is audited (`platform.email_settings.update`).
+ */
+export type PlatformSetting = Prisma.PlatformSettingModel

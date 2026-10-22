@@ -130,6 +130,7 @@ Pun spisak sa objašnjenjima je u `.env.example`; sljedeće su posebno bitne van
 | `APP_URL` | **da, u produkciji** | Javan URL aplikacije (linkovi, QR kodovi, e-mailovi) — startup sada puca sa jasnom greškom ako nedostaje, umjesto da tiho generiše neispravne linkove |
 | `EMAIL_PROVIDER` | ne (podrazumijevano `mock`) | `mailjet` za pravi e-mail — vidi §„Šta je mock" niže |
 | `MAILJET_API_KEY` / `MAILJET_API_SECRET` / `MAILJET_FROM_EMAIL` | samo uz `EMAIL_PROVIDER=mailjet` | vidi §„Šta je mock" niže |
+| `MAILJET_FROM_NAME` | ne | rezervno ime pošiljaoca (podrazumijevano „ZEV upravnik"); pravo ime podešava super admin u `/admin` |
 | `MAX_UPLOAD_MB` | ne (podrazumijevano `4`) | Ostaviti na `4` na Vercel-u — serverless Function-e odbijaju tijelo zahtjeva preko 4.5 MB bez obzira na ovu vrijednost |
 | `FONT_DIR` | ne | Override lokacije PDF fontova ako platforma ne poštuje `outputFileTracingIncludes` iz `next.config.ts` |
 | `STORAGE_DIR` | ne | Samo za nazad-kompatibilno čitanje dokumenata generisanih prije prelaska skladišta u Postgres — nebitno za nov deployment |
@@ -211,6 +212,17 @@ komentar u `.env.example` i `src/server/notifications/testOutbox.ts`).
        provajdera koji simulira i `delivered`/`seen`.
     5. Neuspjeli pokušaji **ne** dobijaju automatski retry (`retryFailed()` postoji, ali
        nema pozivaoca — zakazivanje je van obima dok se ne uvede platformski scheduler).
+    6. **Ime pošiljaoca i probni period** podešava super admin u `/admin` → „E-mail podešavanja
+       platforme": ime (npr. „ZEV upravnik"), da li poruke jednog ZEV-a nose i njegov naziv, i
+       listu dozvoljenih primalaca. Dok lista nije prazna, stvarna e-pošta ide **samo** tim
+       adresama/@domenima (ostale poruke dobijaju `FAILED` i ne šalju se ni kasnije).
+    7. **Probna poruka**: kartica „Probna e-mail poruka" (Podešavanja → Parametri za predsjednika
+       i računovođu, `/admin` za super admina) šalje fiksnu poruku na vlastitu ili upisanu adresu
+       (najviše 5 na sat po korisniku, 20 dnevno po ZEV-u) i prikazuje tačnu grešku provajdera.
+    8. Preporučeni redoslijed uključivanja: u `/admin` upisati svoju adresu u probnu listu →
+       u Vercel-u postaviti Mailjet varijable i `EMAIL_PROVIDER=mailjet` → redeploy → probna
+       poruka na svoju adresu → isprazniti listu. Mailjet besplatni plan: 200 poruka dnevno,
+       6.000 mjesečno. Detalji: `Plans/email-sender-name-and-test-email-plan.md`.
 * Elektronsko odobravanje je **evidentirano elektronsko izjašnjavanje sa dokazima**, ne
   kvalifikovani elektronski potpis (tako je i označeno korisnicima).
 * Nema obračuna zatezne kamate (parametar postoji, isključen — čeka pravnu potvrdu).
