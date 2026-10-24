@@ -41,6 +41,8 @@ export type PartyMinAggregateOutputType = {
   eVoteConsentStatus: string | null
   eVoteConsentEmail: string | null
   eVoteConsentDocumentId: string | null
+  invoiceEmailDelivery: boolean | null
+  invoiceEmailDeliveryAt: Date | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +65,8 @@ export type PartyMaxAggregateOutputType = {
   eVoteConsentStatus: string | null
   eVoteConsentEmail: string | null
   eVoteConsentDocumentId: string | null
+  invoiceEmailDelivery: boolean | null
+  invoiceEmailDeliveryAt: Date | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -85,6 +89,8 @@ export type PartyCountAggregateOutputType = {
   eVoteConsentStatus: number
   eVoteConsentEmail: number
   eVoteConsentDocumentId: number
+  invoiceEmailDelivery: number
+  invoiceEmailDeliveryAt: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -109,6 +115,8 @@ export type PartyMinAggregateInputType = {
   eVoteConsentStatus?: true
   eVoteConsentEmail?: true
   eVoteConsentDocumentId?: true
+  invoiceEmailDelivery?: true
+  invoiceEmailDeliveryAt?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -131,6 +139,8 @@ export type PartyMaxAggregateInputType = {
   eVoteConsentStatus?: true
   eVoteConsentEmail?: true
   eVoteConsentDocumentId?: true
+  invoiceEmailDelivery?: true
+  invoiceEmailDeliveryAt?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -153,6 +163,8 @@ export type PartyCountAggregateInputType = {
   eVoteConsentStatus?: true
   eVoteConsentEmail?: true
   eVoteConsentDocumentId?: true
+  invoiceEmailDelivery?: true
+  invoiceEmailDeliveryAt?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -248,6 +260,8 @@ export type PartyGroupByOutputType = {
   eVoteConsentStatus: string
   eVoteConsentEmail: string | null
   eVoteConsentDocumentId: string | null
+  invoiceEmailDelivery: boolean
+  invoiceEmailDeliveryAt: Date | null
   userId: string | null
   createdAt: Date
   updatedAt: Date
@@ -291,6 +305,8 @@ export type PartyWhereInput = {
   eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
+  invoiceEmailDelivery?: Prisma.BoolFilter<"Party"> | boolean
+  invoiceEmailDeliveryAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   userId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
@@ -335,6 +351,8 @@ export type PartyOrderByWithRelationInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  invoiceEmailDelivery?: Prisma.SortOrder
+  invoiceEmailDeliveryAt?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -383,6 +401,8 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
+  invoiceEmailDelivery?: Prisma.BoolFilter<"Party"> | boolean
+  invoiceEmailDeliveryAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   userId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
@@ -427,6 +447,8 @@ export type PartyOrderByWithAggregationInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  invoiceEmailDelivery?: Prisma.SortOrder
+  invoiceEmailDeliveryAt?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -455,6 +477,8 @@ export type PartyScalarWhereWithAggregatesInput = {
   eVoteConsentStatus?: Prisma.StringWithAggregatesFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
+  invoiceEmailDelivery?: Prisma.BoolWithAggregatesFilter<"Party"> | boolean
+  invoiceEmailDeliveryAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Party"> | Date | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
@@ -476,6 +500,8 @@ export type PartyCreateInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -519,6 +545,8 @@ export type PartyUncheckedCreateInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -560,6 +588,8 @@ export type PartyUpdateInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -603,6 +633,8 @@ export type PartyUncheckedUpdateInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -645,6 +677,8 @@ export type PartyCreateManyInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -666,6 +700,8 @@ export type PartyUpdateManyMutationInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -687,6 +723,8 @@ export type PartyUncheckedUpdateManyInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -729,6 +767,8 @@ export type PartyCountOrderByAggregateInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrder
+  invoiceEmailDelivery?: Prisma.SortOrder
+  invoiceEmailDeliveryAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -751,6 +791,8 @@ export type PartyMaxOrderByAggregateInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrder
+  invoiceEmailDelivery?: Prisma.SortOrder
+  invoiceEmailDeliveryAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -773,6 +815,8 @@ export type PartyMinOrderByAggregateInput = {
   eVoteConsentStatus?: Prisma.SortOrder
   eVoteConsentEmail?: Prisma.SortOrder
   eVoteConsentDocumentId?: Prisma.SortOrder
+  invoiceEmailDelivery?: Prisma.SortOrder
+  invoiceEmailDeliveryAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1183,6 +1227,8 @@ export type PartyCreateWithoutLegacyUserInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -1225,6 +1271,8 @@ export type PartyUncheckedCreateWithoutLegacyUserInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1270,6 +1318,8 @@ export type PartyCreateWithoutUserInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -1312,6 +1362,8 @@ export type PartyUncheckedCreateWithoutUserInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
@@ -1373,6 +1425,8 @@ export type PartyUpdateWithoutLegacyUserInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -1415,6 +1469,8 @@ export type PartyUncheckedUpdateWithoutLegacyUserInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1475,6 +1531,8 @@ export type PartyScalarWhereInput = {
   eVoteConsentStatus?: Prisma.StringFilter<"Party"> | string
   eVoteConsentEmail?: Prisma.StringNullableFilter<"Party"> | string | null
   eVoteConsentDocumentId?: Prisma.StringNullableFilter<"Party"> | string | null
+  invoiceEmailDelivery?: Prisma.BoolFilter<"Party"> | boolean
+  invoiceEmailDeliveryAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   userId?: Prisma.StringNullableFilter<"Party"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Party"> | Date | string
@@ -1496,6 +1554,8 @@ export type PartyCreateWithoutZevInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPartiesInput
@@ -1537,6 +1597,8 @@ export type PartyUncheckedCreateWithoutZevInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1604,6 +1666,8 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -1646,6 +1710,8 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1691,6 +1757,8 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -1733,6 +1801,8 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1789,6 +1859,8 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -1831,6 +1903,8 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1882,6 +1956,8 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -1924,6 +2000,8 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1964,6 +2042,8 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -2006,6 +2086,8 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2062,6 +2144,8 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -2104,6 +2188,8 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2144,6 +2230,8 @@ export type PartyCreateWithoutOccupanciesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -2186,6 +2274,8 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2242,6 +2332,8 @@ export type PartyUpdateWithoutOccupanciesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -2284,6 +2376,8 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2324,6 +2418,8 @@ export type PartyCreateWithoutProxiesGivenInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -2366,6 +2462,8 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2411,6 +2509,8 @@ export type PartyCreateWithoutProxiesHeldInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -2453,6 +2553,8 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2509,6 +2611,8 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -2551,6 +2655,8 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2602,6 +2708,8 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -2644,6 +2752,8 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2684,6 +2794,8 @@ export type PartyCreateWithoutOfficeTermsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -2726,6 +2838,8 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2782,6 +2896,8 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -2824,6 +2940,8 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2864,6 +2982,8 @@ export type PartyCreateWithoutAttendancesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -2906,6 +3026,8 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2962,6 +3084,8 @@ export type PartyUpdateWithoutAttendancesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -3004,6 +3128,8 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3044,6 +3170,8 @@ export type PartyCreateWithoutEligibleVotersInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -3086,6 +3214,8 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3131,6 +3261,8 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -3173,6 +3305,8 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3229,6 +3363,8 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -3271,6 +3407,8 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3322,6 +3460,8 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -3364,6 +3504,8 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3404,6 +3546,8 @@ export type PartyCreateWithoutVotesCastInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -3446,6 +3590,8 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3491,6 +3637,8 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -3533,6 +3681,8 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3589,6 +3739,8 @@ export type PartyUpdateWithoutVotesCastInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -3631,6 +3783,8 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3682,6 +3836,8 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -3724,6 +3880,8 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3764,6 +3922,8 @@ export type PartyCreateWithoutInvoicesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -3806,6 +3966,8 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3862,6 +4024,8 @@ export type PartyUpdateWithoutInvoicesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -3904,6 +4068,8 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3944,6 +4110,8 @@ export type PartyCreateWithoutPaymentsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -3986,6 +4154,8 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4042,6 +4212,8 @@ export type PartyUpdateWithoutPaymentsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -4084,6 +4256,8 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4124,6 +4298,8 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -4166,6 +4342,8 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4222,6 +4400,8 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -4264,6 +4444,8 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4304,6 +4486,8 @@ export type PartyCreateWithoutReportedIssuesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -4346,6 +4530,8 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4391,6 +4577,8 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -4433,6 +4621,8 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4489,6 +4679,8 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -4531,6 +4723,8 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4582,6 +4776,8 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -4624,6 +4820,8 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4664,6 +4862,8 @@ export type PartyCreateWithoutNotificationsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -4706,6 +4906,8 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4762,6 +4964,8 @@ export type PartyUpdateWithoutNotificationsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -4804,6 +5008,8 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4844,6 +5050,8 @@ export type PartyCreateWithoutViberSubscriberInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
@@ -4886,6 +5094,8 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4942,6 +5152,8 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -4984,6 +5196,8 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5025,6 +5239,8 @@ export type PartyCreateManyUserInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -5045,6 +5261,8 @@ export type PartyUpdateWithoutUserInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
@@ -5087,6 +5305,8 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
@@ -5128,6 +5348,8 @@ export type PartyUncheckedUpdateManyWithoutUserInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -5148,6 +5370,8 @@ export type PartyCreateManyZevInput = {
   eVoteConsentStatus?: string
   eVoteConsentEmail?: string | null
   eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
   userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5169,6 +5393,8 @@ export type PartyUpdateWithoutZevInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
@@ -5210,6 +5436,8 @@ export type PartyUncheckedUpdateWithoutZevInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5251,6 +5479,8 @@ export type PartyUncheckedUpdateManyWithoutZevInput = {
   eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
   eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5457,6 +5687,8 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5502,6 +5734,8 @@ export type PartySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5526,6 +5760,8 @@ export type PartySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5550,12 +5786,14 @@ export type PartySelectScalar = {
   eVoteConsentStatus?: boolean
   eVoteConsentEmail?: boolean
   eVoteConsentDocumentId?: boolean
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "kind" | "firstName" | "lastName" | "orgName" | "orgIdNumber" | "email" | "phone" | "address" | "correspondenceAddress" | "note" | "active" | "eVoteConsentStatus" | "eVoteConsentEmail" | "eVoteConsentDocumentId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["party"]>
+export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "kind" | "firstName" | "lastName" | "orgName" | "orgIdNumber" | "email" | "phone" | "address" | "correspondenceAddress" | "note" | "active" | "eVoteConsentStatus" | "eVoteConsentEmail" | "eVoteConsentDocumentId" | "invoiceEmailDelivery" | "invoiceEmailDeliveryAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["party"]>
 export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Party$userArgs<ExtArgs>
@@ -5649,6 +5887,13 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     eVoteConsentStatus: string
     eVoteConsentEmail: string | null
     eVoteConsentDocumentId: string | null
+    /**
+     * Vlasnik je izabrao da mu se svaka faktura izdata na njegovo ime dostavlja e-poštom (PDF u prilogu)
+     * na Party.email (Plans/invoice-email-delivery-plan.md). Istorija uključenja/isključenja se izvodi
+     * iz audit traga (party.invoice_email.enable/disable), isto kao kod e-glasanja.
+     */
+    invoiceEmailDelivery: boolean
+    invoiceEmailDeliveryAt: Date | null
     userId: string | null
     createdAt: Date
     updatedAt: Date
@@ -6113,6 +6358,8 @@ export interface PartyFieldRefs {
   readonly eVoteConsentStatus: Prisma.FieldRef<"Party", 'String'>
   readonly eVoteConsentEmail: Prisma.FieldRef<"Party", 'String'>
   readonly eVoteConsentDocumentId: Prisma.FieldRef<"Party", 'String'>
+  readonly invoiceEmailDelivery: Prisma.FieldRef<"Party", 'Boolean'>
+  readonly invoiceEmailDeliveryAt: Prisma.FieldRef<"Party", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Party", 'String'>
   readonly createdAt: Prisma.FieldRef<"Party", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Party", 'DateTime'>

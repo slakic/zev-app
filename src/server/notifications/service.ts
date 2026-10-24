@@ -1,16 +1,23 @@
 // Outbox-based notification service. Messages are stored first (QUEUED), then
 // handed to the provider; provider events are appended to the message record.
-// PRIVACY: notification bodies must never contain balances, debts or other
-// sensitive personal data — they link to an authenticated page instead.
+// PRIVACY: notification bodies must never contain balances, debts or other sensitive personal
+// data — they link to an authenticated page instead. ONE deliberate exception
+// (Plans/invoice-email-delivery-plan.md): "invoice-delivery*" messages attach the invoice PDF
+// (attachmentDocumentId), and only for a Party that opted in (Party.invoiceEmailDelivery), sent
+// to that Party's own Party.email, for an invoice where it is the debtor. Their body still
+// carries no amounts or balances.
 import { prisma } from "@/lib/prisma";
-import { currentEmailProviderKind, describeEmailProvider, getEmailProvider, getViberProvider, type DeliveryEvent } from "./providers";
+import { currentEmailProviderKind, describeEmailProvider, getEmailProvider, getViberProvider, type DeliveryEvent, type EmailAttachment } from "./providers";
 import { buildFromName, isRecipientAllowed, loadEmailPlatformSettings } from "@/server/services/platformSettings";
 
 /** Stored as lastError when the go-live allowlist (platform e-mail settings) blocks a recipient. */
 export const ALLOWLIST_BLOCKED_ERROR = "Slanje na ovu adresu je privremeno isključeno (probni period pokretanja e-pošte).";
 import type { NotifChannel, Prisma } from "@/generated/prisma/client";
 
-export async function queueNotification(input: {
+/** Mailjet accepts up to 15 MB per message; an invoice PDF is tens of KB, so this is only a sanity cap. */
+export const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+
+export type EnqueueInput = {
   channel: NotifChannel;
   /**
    * The tenant this notification belongs to. Pass it whenever the caller has one
@@ -29,8 +36,13 @@ export async function queueNotification(input: {
   body: string;
   relatedType?: string | null;
   relatedId?: string | null;
-}) {
-  const msg = await prisma.notificationMessage.create({
+  /** Document.id whose PDF is attached at send time (EMAIL only). See the PRIVACY note above. */
+  attachmentDocumentId?: string | null;
+};
+
+/** Stores the message in the outbox (QUEUED) WITHOUT sending it — the caller dispatches later. */
+export async function enqueueNotification(input: EnqueueInput) {
+  return prisma.notificationMessage.create({
     data: {
       zevId: input.zevId ?? null,
       channel: input.channel,
@@ -41,18 +53,41 @@ export async function queueNotification(input: {
       body: input.body,
       relatedType: input.relatedType ?? null,
       relatedId: input.relatedId ?? null,
+      attachmentDocumentId: input.attachmentDocumentId ?? null,
       events: [{ at: new Date().toISOString(), type: "queued" }] as unknown as Prisma.InputJsonValue,
     },
   });
+}
+
+export async function queueNotification(input: EnqueueInput) {
+  const msg = await enqueueNotification(input);
   // MVP: dispatch immediately (mock providers). A real deployment would use a
   // worker with retry/backoff — retry handling is modelled via attempts/events.
   await dispatchNotification(msg.id);
   return prisma.notificationMessage.findUniqueOrThrow({ where: { id: msg.id } });
 }
 
+/** How long a dispatch may hold a message before another call may take it over (a crashed send). */
+const DISPATCH_LEASE_MS = 2 * 60 * 1000;
+
 export async function dispatchNotification(id: string) {
   const msg = await prisma.notificationMessage.findUniqueOrThrow({ where: { id } });
   if (msg.status !== "QUEUED" && msg.status !== "FAILED") return msg;
+  // Atomic claim with a lease: only the call that takes `dispatchingAt` (free, or a lease older
+  // than DISPATCH_LEASE_MS left by a crashed send) proceeds. Checking `attempts` alone was not
+  // enough: a second call arriving after the first had claimed but before it finished still saw
+  // QUEUED and sent the same message again (e.g. a double click on "Pošalji neposlate").
+  // One attempt = +1, counted here instead of in the outcome updates below, which release the lease.
+  const now = new Date();
+  const claim = await prisma.notificationMessage.updateMany({
+    where: {
+      id,
+      status: { in: ["QUEUED", "FAILED"] },
+      OR: [{ dispatchingAt: null }, { dispatchingAt: { lt: new Date(now.getTime() - DISPATCH_LEASE_MS) } }],
+    },
+    data: { attempts: { increment: 1 }, dispatchingAt: now },
+  });
+  if (claim.count === 0) return prisma.notificationMessage.findUniqueOrThrow({ where: { id } });
   const prior = (msg.events as unknown as DeliveryEvent[] | null) ?? [];
   try {
     let events: DeliveryEvent[];
@@ -68,7 +103,7 @@ export async function dispatchNotification(id: string) {
           where: { id },
           data: {
             status: "FAILED",
-            attempts: { increment: 1 },
+            dispatchingAt: null,
             lastError: ALLOWLIST_BLOCKED_ERROR,
             events: [...prior, { at: new Date().toISOString(), type: "failed", detail: "allowlist" }] as unknown as Prisma.InputJsonValue,
           },
@@ -78,11 +113,22 @@ export async function dispatchNotification(id: string) {
       const zev = settings.appendZevName && msg.zevId
         ? await prisma.zev.findUnique({ where: { id: msg.zevId }, select: { shortName: true, legalName: true } })
         : null;
+      let attachments: EmailAttachment[] | undefined;
+      if (msg.attachmentDocumentId) {
+        // The attachment must belong to the same tenant as the message (never trust the id alone).
+        const doc = await prisma.document.findUnique({ where: { id: msg.attachmentDocumentId }, select: { zevId: true, number: true } });
+        if (!doc || doc.zevId !== msg.zevId) throw new Error("Prilog poruke nije pronađen.");
+        const blob = await prisma.documentBlob.findUnique({ where: { documentId: msg.attachmentDocumentId } });
+        if (!blob) throw new Error("PDF fakture nije pronađen.");
+        if (blob.data.length > MAX_ATTACHMENT_BYTES) throw new Error("Prilog je prevelik za slanje e-poštom.");
+        attachments = [{ filename: `${doc.number}.pdf`, contentType: "application/pdf", content: Buffer.from(blob.data) }];
+      }
       const res = await getEmailProvider().send({
         to: msg.toAddress,
         subject: msg.subject ?? "",
         body: msg.body,
         fromName: buildFromName(base, zev),
+        attachments,
       });
       events = res.events;
       ok = res.ok;
@@ -103,7 +149,7 @@ export async function dispatchNotification(id: string) {
       where: { id },
       data: {
         status: ok ? (seen ? "SEEN" : delivered ? "DELIVERED" : "SENT") : "FAILED",
-        attempts: { increment: 1 },
+        dispatchingAt: null,
         sentAt: ok ? new Date() : undefined,
         // A provider that reports failure (rather than throwing) used to leave lastError empty,
         // so e.g. Mailjet's "sender not validated" was lost.
@@ -116,7 +162,7 @@ export async function dispatchNotification(id: string) {
       where: { id },
       data: {
         status: "FAILED",
-        attempts: { increment: 1 },
+        dispatchingAt: null,
         lastError: e instanceof Error ? e.message : String(e),
         events: [...prior, { at: new Date().toISOString(), type: "failed", detail: String(e) }] as unknown as Prisma.InputJsonValue,
       },

@@ -51,7 +51,10 @@ export default async function MessagesPage() {
               <Td className="text-xs">{formatDateTime(m.createdAt)}</Td>
               <Td>{m.channel === "EMAIL" ? "E-mail" : "Viber"}</Td>
               <Td className="text-xs">{m.toAddress}</Td>
-              <Td className="text-xs">{m.subject ?? m.template ?? "—"}</Td>
+              <Td className="text-xs">
+                {m.subject ?? m.template ?? "—"}
+                {m.attachmentDocumentId && <span className="text-[13px] text-slate-600"> (PDF u prilogu)</span>}
+              </Td>
               <Td>
                 <StatusBadge status={m.status} label={m.status === "QUEUED" ? "U redu čekanja" : m.status === "SENT" ? "Poslato" : m.status === "DELIVERED" ? "Isporučeno" : m.status === "SEEN" ? "Pročitano" : "Neuspješno"} />
                 {m.status === "FAILED" && m.lastError && <p className="mt-1 max-w-72 text-[13px] text-slate-600">{m.lastError}</p>}
@@ -60,8 +63,8 @@ export default async function MessagesPage() {
             </tr>
           ))}
         </Table>
-        <p className="mt-2 text-xs text-slate-500">
-          Sadržaj poruka ne uključuje salda ni lične finansijske podatke — poruke vode na prijavu u aplikaciju.
+        <p className="mt-2 text-[13px] text-slate-500">
+          Sadržaj poruka ne uključuje salda ni lične finansijske podatke. Izuzetak je faktura u PDF prilogu, koju dobijaju samo vlasnici koji su izabrali dostavu računa e-poštom.
         </p>
       </Card>
     </div>

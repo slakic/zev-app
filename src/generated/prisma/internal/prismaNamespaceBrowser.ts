@@ -179,6 +179,8 @@ export const PartyScalarFieldEnum = {
   eVoteConsentStatus: 'eVoteConsentStatus',
   eVoteConsentEmail: 'eVoteConsentEmail',
   eVoteConsentDocumentId: 'eVoteConsentDocumentId',
+  invoiceEmailDelivery: 'invoiceEmailDelivery',
+  invoiceEmailDeliveryAt: 'invoiceEmailDeliveryAt',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1097,6 +1099,8 @@ export const NotificationMessageScalarFieldEnum = {
   events: 'events',
   relatedType: 'relatedType',
   relatedId: 'relatedId',
+  attachmentDocumentId: 'attachmentDocumentId',
+  dispatchingAt: 'dispatchingAt',
   sentAt: 'sentAt',
   createdAt: 'createdAt'
 } as const

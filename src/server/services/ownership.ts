@@ -3,6 +3,7 @@
 // (validTo) and opens a new one (validFrom).
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
+import { emailAddressSchema } from "@/lib/emailAddress";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, type Decimal } from "@/lib/money";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
@@ -77,6 +78,14 @@ export async function updateParty(actor: Actor, id: string, data: Prisma.PartyUp
     for (const k of Object.keys(data)) {
       if (!allowed.has(k)) throw new ForbiddenError("Možete mijenjati samo svoje kontakt podatke.");
     }
+  }
+  // While invoice e-mail delivery is on, Party.email is where the invoice PDFs go, so it may not be
+  // blanked or broken (Plans/invoice-email-delivery-plan.md R1). Changing it to another valid
+  // address is fine and keeps the option on; the change is in the party.update audit below.
+  if (before.invoiceEmailDelivery && data.email !== undefined && data.email !== before.email) {
+    const next = typeof data.email === "string" ? data.email.trim() : "";
+    if (!next) throw new Error("Dok je uključena dostava računa e-poštom, e-mail adresa ne može biti prazna. Prvo isključite dostavu računa.");
+    if (!emailAddressSchema.safeParse(next).success) throw new Error("Unesite ispravnu e-mail adresu.");
   }
   const p = await prisma.party.update({ where: { id, zevId }, data });
   await audit(actor, {

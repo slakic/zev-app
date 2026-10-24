@@ -4,6 +4,7 @@ import { getParty, partyDisplayName, updateParty } from "@/server/services/owner
 import { updateUserRoles, activateUser, deactivateUser } from "@/server/services/users";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
+import { setInvoiceEmailDelivery } from "@/server/services/invoiceEmail";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
@@ -117,6 +118,20 @@ async function revokeConsentAction(formData: FormData) {
   const reason = (formData.get("reason") as string) || null;
   try {
     await revokeEVoteConsent(actor, id, reason);
+  } catch (e) {
+    redirect(`/vlasnici/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect(`/vlasnici/${id}?msg=saved`);
+}
+
+async function setInvoiceEmailAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor();
+  const id = String(formData.get("id"));
+  try {
+    await setInvoiceEmailDelivery(actor, id, formData.get("invoiceEmail") === "on", {
+      reason: (formData.get("reason") as string) || null,
+    });
   } catch (e) {
     redirect(`/vlasnici/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -263,6 +278,32 @@ export default async function PartyDetailPage({
               ))}
             </ul>
           </div>
+        </Card>
+        <Card title="Dostava računa e-poštom">
+          <form action={setInvoiceEmailAction} className="space-y-3 text-sm">
+            <input type="hidden" name="id" value={party.id} />
+            <p className="text-slate-600">
+              {party.invoiceEmailDelivery
+                ? `Uključena${party.invoiceEmailDeliveryAt ? ` od ${formatDate(party.invoiceEmailDeliveryAt)}` : ""} — računi idu na ${party.email ?? "—"}.`
+                : "Isključena."}
+            </p>
+            <label className="flex items-start gap-2">
+              <input type="checkbox" name="invoiceEmail" defaultChecked={party.invoiceEmailDelivery} disabled={!party.email && !party.invoiceEmailDelivery} className="mt-1" />
+              <span>{isSelf ? "Dostavi mi račun putem e-maila" : "Dostavljaj račune ovom vlasniku putem e-maila"}</span>
+            </label>
+            {!party.email && !party.invoiceEmailDelivery && (
+              <p className="text-slate-600">Prvo upišite e-mail adresu u kartici „Kontakt”.</p>
+            )}
+            {!isSelf && (
+              <Field label="Napomena (npr. pisani zahtjev vlasnika)">
+                <input name="reason" className={inputCls} />
+              </Field>
+            )}
+            <p className="text-[13px] text-slate-500">
+              {isSelf ? "Promjena se bilježi u revizorski trag." : "Uključite samo na zahtjev vlasnika. Promjena se bilježi u revizorski trag."}
+            </p>
+            <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>
+          </form>
         </Card>
         <Card title="Saglasnost za elektronsko glasanje">
           <div className="space-y-3 text-sm">

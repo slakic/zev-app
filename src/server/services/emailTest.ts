@@ -5,11 +5,11 @@
 // the go-live allowlist, and its provider error is returned to the UI verbatim.
 // Abuse protection for the free-text address: the text cannot be changed, one recipient only,
 // and a limit counted FROM THE DATABASE (in-memory limiters do not survive Vercel instances).
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireSuperAdmin, requireZev, type Actor } from "@/server/auth/guards";
 import { getEnv } from "@/lib/env";
+import { emailAddressSchema } from "@/lib/emailAddress";
 import { formatDateTime, tEnum } from "@/lib/i18n";
 import { queueNotification } from "@/server/notifications/service";
 import { describeEmailProvider, type EmailProviderInfo, type EmailProviderKind } from "@/server/notifications/providers";
@@ -83,22 +83,13 @@ function countSince(where: { relatedId?: string; zevId?: string }, ms: number) {
   });
 }
 
-const addressSchema = z
-  .string()
-  .trim()
-  .toLowerCase()
-  .min(1, "Unesite e-mail adresu.")
-  .max(254, "E-mail adresa je predugačka.")
-  .refine((a) => !/[,;\s<>"]/.test(a), "Unesite tačno jednu e-mail adresu.")
-  .pipe(z.email("Unesite ispravnu e-mail adresu."));
-
 async function sendCore(actor: Actor, zevId: string | null, input: TestEmailInput): Promise<TestEmailResult> {
   const user = await prisma.user.findUniqueOrThrow({ where: { id: actor.userId }, select: { email: true } });
   let toAddress: string;
   if (input.target === "self") {
     toAddress = user.email; // from the database, never from the client (odluka P5)
   } else {
-    const parsed = addressSchema.safeParse(input.address ?? "");
+    const parsed = emailAddressSchema.safeParse(input.address ?? "");
     if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Unesite ispravnu e-mail adresu.");
     toAddress = parsed.data;
   }

@@ -5,6 +5,7 @@ import { getZev, upsertZev } from "@/server/services/property";
 import { listAccounts, createAccount, updateAccount } from "@/server/services/finance";
 import { AccountRow } from "@/components/account-row";
 import { getParty, updateParty, requireOwnerParty } from "@/server/services/ownership";
+import { setInvoiceEmailDelivery } from "@/server/services/invoiceEmail";
 import { revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { getSettings, setSetting } from "@/server/services/settings";
 import { getBankSmsStatus } from "@/server/services/bankSms";
@@ -13,7 +14,7 @@ import { TestEmailCard } from "@/components/test-email-card";
 import { BankSmsTokenCard } from "@/components/bank-sms-token-card";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDateTime, t, tEnum } from "@/lib/i18n";
+import { formatDate, formatDateTime, t, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Field, inputCls, SubmitBtn, BtnLink, StatusBadge, ConfirmAction, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
 
 const accountHeaders: ColumnSpec[] = [
@@ -92,6 +93,19 @@ async function updateMyContactAction(formData: FormData) {
       phone: (formData.get("phone") as string) || null,
       correspondenceAddress: (formData.get("correspondenceAddress") as string) || null,
     });
+  } catch (e) {
+    redirect(`/podesavanja?tab=moji&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath("/podesavanja");
+  redirect("/podesavanja?tab=moji&msg=saved");
+}
+
+async function setMyInvoiceEmailAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor();
+  try {
+    const partyId = await requireOwnerParty(actor);
+    await setInvoiceEmailDelivery(actor, partyId, formData.get("invoiceEmail") === "on");
   } catch (e) {
     redirect(`/podesavanja?tab=moji&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -183,6 +197,28 @@ export default async function SettingsPage({
                 Ime, prezime i adresu nekretnine mijenja predsjednik — vidi vaš profil u „Vlasnici i korisnici”.
               </p>
               <SubmitBtn>Sačuvaj</SubmitBtn>
+            </form>
+          </Card>
+        )}
+
+        {myParty && showMoji && (
+          <Card title="Dostava računa">
+            <form action={setMyInvoiceEmailAction} className="space-y-3 text-sm">
+              <label className="flex items-start gap-2">
+                <input type="checkbox" name="invoiceEmail" defaultChecked={myParty.invoiceEmailDelivery} disabled={!myParty.email} className="mt-1" />
+                <span>Dostavi mi račun putem e-maila</span>
+              </label>
+              {myParty.email ? (
+                <p className="text-slate-600">
+                  Svaka faktura izdata na vaše ime biće poslata kao PDF prilog na adresu <strong>{myParty.email}</strong>. Fakture ostaju dostupne i u aplikaciji. Adresu mijenjate u kartici „Moji podaci”.
+                </p>
+              ) : (
+                <p className="text-slate-600">Za ovu opciju potrebna je e-mail adresa. Upišite je u kartici „Moji podaci” i sačuvajte.</p>
+              )}
+              {myParty.invoiceEmailDelivery && myParty.invoiceEmailDeliveryAt && (
+                <p className="text-[13px] text-slate-500">Uključeno od {formatDate(myParty.invoiceEmailDeliveryAt)}</p>
+              )}
+              {myParty.email && <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>}
             </form>
           </Card>
         )}

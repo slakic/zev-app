@@ -119,6 +119,11 @@ model Party {
   eVoteConsentStatus     String     @default("NONE")
   eVoteConsentEmail      String?    // email named on the signed consent form
   eVoteConsentDocumentId String?    // Attachment.id of the scanned signed copy (category CONSENT)
+  /// Vlasnik je izabrao da mu se svaka faktura izdata na njegovo ime dostavlja e-poštom (PDF u prilogu)
+  /// na Party.email (Plans/invoice-email-delivery-plan.md). Istorija uključenja/isključenja se izvodi
+  /// iz audit traga (party.invoice_email.enable/disable), isto kao kod e-glasanja.
+  invoiceEmailDelivery   Boolean   @default(false)
+  invoiceEmailDeliveryAt DateTime? // kada je zadnji put uključeno; null dok je isključeno
   /// Portal account for this Party, if it has one — most Party rows never will (an owner
   /// with no e-mail, a tenant, a proxy-only contact). At most one Party per (userId, zevId)
   /// pair (see @@unique below): a login can hold this relation to a different Party in each
@@ -1618,6 +1623,13 @@ model NotificationMessage {
   events       Json?        // delivery/seen/failure callback log
   relatedType  String?
   relatedId    String?
+  /// Document.id čiji se PDF (DocumentBlob) šalje kao prilog. Bajtovi se čitaju pri svakom slanju,
+  /// pa ponovno slanje (retry) šalje isti, nepromijenjeni PDF.
+  attachmentDocumentId String?
+  /// Lease while one dispatch is sending this message: only the call that sets it from null (or
+  /// from a lease older than DISPATCH_LEASE_MS, i.e. a crashed send) may send. Cleared when the
+  /// attempt ends. Stops a double click from e-mailing the same invoice twice.
+  dispatchingAt        DateTime?
   sentAt       DateTime?
   createdAt    DateTime     @default(now())
 

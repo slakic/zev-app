@@ -218,7 +218,12 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
   const zevId = requireZev(actor);
   const inv = await prisma.invoice.findUniqueOrThrow({
     where: { id: invoiceId, zevId },
-    include: { unit: { include: { building: true } }, debtor: true, lines: { orderBy: { order: "asc" } } },
+    include: {
+      unit: { include: { building: true } },
+      debtor: true,
+      lines: { orderBy: { order: "asc" } },
+      correctionOf: { select: { number: true } },
+    },
   });
   requireSelfOrRole(actor, inv.debtorId, "PRESIDENT", "ACCOUNTANT");
   const zev = await prisma.zev.findUnique({ where: { id: zevId }, include: { accounts: { where: { type: "BANK", active: true } } } });
@@ -233,6 +238,8 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
       .moveDown(0.5)
       .text(`Jedinica: ${inv.unit.building.name}, ${inv.unit.label}`)
       .text(`Period: ${inv.periodLabel ?? "—"}    Rok plaćanja: ${formatDate(inv.dueDate)}`);
+    // The PDF of a corrective invoice must say which invoice it replaces (invoice-email-delivery-plan.md R2).
+    if (inv.correctionOf) doc.font("bold").text(`Korektivna faktura — zamjenjuje fakturu ${inv.correctionOf.number}`).font("reg");
     doc.moveDown();
 
     // table
@@ -284,6 +291,21 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
   });
   await prisma.invoice.update({ where: { id: inv.id, zevId }, data: { documentId: row.id } });
   return row;
+}
+
+/** Najnovija sačuvana verzija PDF-a fakture; generiše je samo ako ne postoji. */
+export async function ensureInvoiceDocument(actor: Actor, invoiceId: string): Promise<{ id: string; number: string }> {
+  const zevId = requireZev(actor);
+  const invoice = await prisma.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, select: { debtorId: true } });
+  requireSelfOrRole(actor, invoice.debtorId, "PRESIDENT", "ACCOUNTANT");
+  const existing = await prisma.document.findFirst({
+    where: { zevId, type: "INVOICE", sourceType: "Invoice", sourceId: invoiceId },
+    orderBy: { version: "desc" },
+    select: { id: true, number: true },
+  });
+  if (existing) return existing;
+  const row = await generateInvoicePdf(actor, invoiceId);
+  return { id: row.id, number: row.number };
 }
 
 /** Returns { row, buffer } — caller (kartica route) streams `buffer` directly instead of re-reading. */

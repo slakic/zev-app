@@ -32,6 +32,8 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   // ---- OWNER — ordinary owner activity (the actual point of this feature) ----
   "issue.report": "OWNER",
   "party.evote_consent.revoke": "OWNER",
+  "party.invoice_email.disable": "OWNER",
+  "party.invoice_email.enable": "OWNER",
   "party.update": "OWNER",
   "proxy.grant": "OWNER",
   "proxy.revoke": "OWNER",
@@ -103,6 +105,8 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "invoice.issue": "FINANCE",
   "invoice_batch.create_draft": "FINANCE",
   "invoice_batch.issue": "FINANCE",
+  "invoice_email.dispatch": "FINANCE",
+  "invoice_email.retry": "FINANCE",
   "meter_reading.enter": "FINANCE",
   "payment.allocate": "FINANCE",
   "payment.allocation.reverse": "FINANCE",

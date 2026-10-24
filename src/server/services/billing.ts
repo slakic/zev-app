@@ -8,6 +8,7 @@ import { calculateCharge, type BillingUnitInput, type ChargeDefinitionInput } fr
 import { dec, ZERO, sumDecimals, type Decimal } from "@/lib/money";
 import { unitsInScope } from "./property";
 import { currentStakesForUnit, partyDisplayName } from "./ownership";
+import { queueInvoiceEmails } from "./invoiceEmail";
 import type { ChargeMethod, BillingFrequency, RoundingMethod, ScopeType, Prisma } from "@/generated/prisma/client";
 
 // ---- Charge items ----
@@ -288,7 +289,7 @@ async function nextInvoiceNumber(tx: Prisma.TransactionClient, zevId: string, ye
 export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate?: Date }) {
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
-  return prisma.$transaction(async (tx) => {
+  const issued = await prisma.$transaction(async (tx) => {
     const batch = await tx.invoiceBatch.findUniqueOrThrow({ where: { id: batchId, zevId } });
     if (batch.status !== "DRAFT") throw new Error("Samo nacrt serije može biti izdat.");
     const already = await tx.invoiceBatch.findFirst({
@@ -344,6 +345,9 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
     await audit(actor, { action: "invoice_batch.issue", targetType: "InvoiceBatch", targetId: batchId, after: { count: invoices.length, period: batch.period } }, tx);
     return invoices;
   }, { timeout: 30000 });
+  // After commit, never inside it: only writes outbox rows for debtors who opted in (R3); sending is separate.
+  await queueInvoiceEmails(actor, issued.map((i) => i.id), "ISSUED");
+  return issued;
 }
 
 /** One-time single invoice (e.g. special charge). */
@@ -355,7 +359,7 @@ export async function issueSingleInvoice(
   const zevId = requireZev(actor);
   await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
   await prisma.party.findUniqueOrThrow({ where: { id: data.debtorId, zevId } });
-  return prisma.$transaction(async (tx) => {
+  const issued = await prisma.$transaction(async (tx) => {
     const number = await nextInvoiceNumber(tx, zevId, new Date().getFullYear());
     const inv = await tx.invoice.create({
       data: {
@@ -380,6 +384,8 @@ export async function issueSingleInvoice(
     await audit(actor, { action: "invoice.issue", targetType: "Invoice", targetId: inv.id, after: { number: inv.number, total: data.amount, oneTime: true } }, tx);
     return inv;
   });
+  await queueInvoiceEmails(actor, [issued.id], "ISSUED");
+  return issued;
 }
 
 // ---- Invoice queries with owner isolation ----
@@ -465,12 +471,12 @@ export async function cancelInvoice(actor: Actor, invoiceId: string, reason: str
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje zahtijeva razlog.");
-  return prisma.$transaction(async (tx) => {
+  const updated = await prisma.$transaction(async (tx) => {
     const inv = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { allocations: true } });
     if (inv.status === "CANCELLED") throw new Error("Faktura je već stornirana.");
     const paid = invoicePaidAmount(inv);
     if (!paid.isZero()) throw new Error("Faktura sa raspoređenim uplatama ne može se stornirati — prvo stornirajte alokacije.");
-    const updated = await tx.invoice.update({
+    const result = await tx.invoice.update({
       where: { id: invoiceId, zevId },
       data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: reason },
     });
@@ -478,8 +484,10 @@ export async function cancelInvoice(actor: Actor, invoiceId: string, reason: str
       action: "invoice.cancel", targetType: "Invoice", targetId: invoiceId,
       before: { status: inv.status }, after: { status: "CANCELLED" }, reason,
     }, tx);
-    return updated;
+    return result;
   });
+  await queueInvoiceEmails(actor, [invoiceId], "CANCELLED");
+  return updated;
 }
 
 /**
@@ -494,12 +502,12 @@ export async function correctInvoice(
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (!data.reason.trim()) throw new Error("Korekcija zahtijeva razlog.");
-  return prisma.$transaction(async (tx) => {
+  const corrective = await prisma.$transaction(async (tx) => {
     const original = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { correctedBy: true } });
     if (original.status !== "ISSUED") throw new Error("Samo izdata faktura može biti korigovana.");
     if (original.correctedBy) throw new Error("Faktura je već korigovana.");
     const number = await nextInvoiceNumber(tx, zevId, new Date().getFullYear());
-    const corrective = await tx.invoice.create({
+    const created = await tx.invoice.create({
       data: {
         zevId,
         number,
@@ -528,11 +536,13 @@ export async function correctInvoice(
     await audit(actor, {
       action: "invoice.correct",
       targetType: "Invoice",
-      targetId: corrective.id,
+      targetId: created.id,
       before: { originalId: original.id, originalNumber: original.number, originalTotal: original.total.toString() },
-      after: { number: corrective.number, total: data.newTotal },
+      after: { number: created.number, total: data.newTotal },
       reason: data.reason,
     }, tx);
-    return corrective;
+    return created;
   });
+  await queueInvoiceEmails(actor, [corrective.id], "CORRECTED");
+  return corrective;
 }

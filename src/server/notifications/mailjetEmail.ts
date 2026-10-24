@@ -8,7 +8,7 @@
 // its Event API (out of scope here, Plans/deployment-portability-plan.md §7.1)
 // — unlike MockEmailProvider, a successful send only ever produces a "sent"
 // event, never "delivered"/"seen".
-import type { EmailProvider, SendResult } from "./providers";
+import type { EmailProvider, EmailSendInput, SendResult } from "./providers";
 
 const MAILJET_SEND_URL = "https://api.mailjet.com/v3.1/send";
 
@@ -19,6 +19,11 @@ export const DEFAULT_FROM_NAME = "ZEV upravnik";
  *  injection / address spoofing), single spaces, at most 70 characters. */
 export function sanitizeFromName(name: string): string {
   return name.replace(/[\r\n"<>]/g, " ").replace(/\s+/g, " ").trim().slice(0, 70).trim();
+}
+
+/** A file name safe for a MIME header: only [A-Za-z0-9._-], everything else becomes "_", at most 100 characters. */
+export function sanitizeAttachmentName(name: string): string {
+  return name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 100) || "prilog";
 }
 
 type MailjetMessageResult = {
@@ -37,7 +42,7 @@ type MailjetSendResponse = {
 export class MailjetEmailProvider implements EmailProvider {
   name = "mailjet";
 
-  async send(msg: { to: string; subject: string; body: string; fromName?: string }): Promise<SendResult> {
+  async send(msg: EmailSendInput): Promise<SendResult> {
     const apiKey = process.env.MAILJET_API_KEY;
     const apiSecret = process.env.MAILJET_API_SECRET;
     const fromEmail = process.env.MAILJET_FROM_EMAIL;
@@ -66,6 +71,15 @@ export class MailjetEmailProvider implements EmailProvider {
               To: [{ Email: msg.to }],
               Subject: msg.subject,
               TextPart: msg.body,
+              ...(msg.attachments?.length
+                ? {
+                    Attachments: msg.attachments.map((a) => ({
+                      ContentType: a.contentType,
+                      Filename: sanitizeAttachmentName(a.filename),
+                      Base64Content: a.content.toString("base64"),
+                    })),
+                  }
+                : {}),
             },
           ],
         }),

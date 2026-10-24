@@ -131,6 +131,7 @@ Pun spisak sa objašnjenjima je u `.env.example`; sljedeće su posebno bitne van
 | `EMAIL_PROVIDER` | ne (podrazumijevano `mock`) | `mailjet` za pravi e-mail — vidi §„Šta je mock" niže |
 | `MAILJET_API_KEY` / `MAILJET_API_SECRET` / `MAILJET_FROM_EMAIL` | samo uz `EMAIL_PROVIDER=mailjet` | vidi §„Šta je mock" niže |
 | `MAILJET_FROM_NAME` | ne | rezervno ime pošiljaoca (podrazumijevano „ZEV upravnik"); pravo ime podešava super admin u `/admin` |
+| `EMAIL_DAILY_SOFT_LIMIT` | ne (podrazumijevano `180`) | Meki dnevni limit e-mailova sa fakturama na nivou cijele platforme (Mailjet besplatni plan = 200/dan); važi samo uz `EMAIL_PROVIDER=mailjet`. Kad se dostigne, poruke ostaju u redu i šalju se sutra. |
 | `MAX_UPLOAD_MB` | ne (podrazumijevano `4`) | Ostaviti na `4` na Vercel-u — serverless Function-e odbijaju tijelo zahtjeva preko 4.5 MB bez obzira na ovu vrijednost |
 | `FONT_DIR` | ne | Override lokacije PDF fontova ako platforma ne poštuje `outputFileTracingIncludes` iz `next.config.ts` |
 | `STORAGE_DIR` | ne | Samo za nazad-kompatibilno čitanje dokumenata generisanih prije prelaska skladišta u Postgres — nebitno za nov deployment |
@@ -223,6 +224,14 @@ komentar u `.env.example` i `src/server/notifications/testOutbox.ts`).
        u Vercel-u postaviti Mailjet varijable i `EMAIL_PROVIDER=mailjet` → redeploy → probna
        poruka na svoju adresu → isprazniti listu. Mailjet besplatni plan: 200 poruka dnevno,
        6.000 mjesečno. Detalji: `Plans/email-sender-name-and-test-email-plan.md`.
+    9. **Dostava računa e-poštom** (`Plans/invoice-email-delivery-plan.md`): vlasnik u Podešavanja →
+       Moji podaci bira „Dostavi mi račun putem e-maila" (predsjednik i računovođa mogu umjesto
+       vlasnika, uz napomenu i revizorski trag). Poslije toga se svaka faktura izdata na njegovo ime
+       (nova, korektivna) šalje kao PDF prilog na kontakt e-mail, a storno kao kratko obavještenje.
+       Izdavanje samo upisuje poruke u red; šalje se najviše 25 po pozivu, ostatak dugmetom „Pošalji
+       neposlate" na stranici serije. Ovo je jedini izuzetak od pravila „bez finansijskih podataka u
+       porukama": PDF dobija samo dužnik koji je dostavu izabrao, a tijelo poruke nema iznose.
+       Migracija `20261023100000_add_invoice_email_delivery` se na produkciji pokreće ručno prije deploy-a.
 * Elektronsko odobravanje je **evidentirano elektronsko izjašnjavanje sa dokazima**, ne
   kvalifikovani elektronski potpis (tako je i označeno korisnicima).
 * Nema obračuna zatezne kamate (parametar postoji, isključen — čeka pravnu potvrdu).

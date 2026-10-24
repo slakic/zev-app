@@ -43,6 +43,47 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.40.0] - 2026-10-24
+
+**Prije deploy-a na produkciju ručno pokrenuti migraciju `20261023100000_add_invoice_email_delivery`**
+(`node scripts/migrate.mjs apply` na produkcijskoj bazi). Dodaje dvije kolone na `Party` i dvije na
+`NotificationMessage`; sve su nullable ili imaju podrazumijevanu vrijednost, pa stari kod radi i sa novom šemom.
+
+### Dodato
+
+- **Dostava računa e-poštom, po izboru vlasnika** (`Plans/invoice-email-delivery-plan.md`). U Podešavanja →
+  Moji podaci nova kartica „Dostava računa" sa opcijom „Dostavi mi račun putem e-maila". Računi idu na
+  kontakt e-mail iz „Moji podaci"; opcija se ne može uključiti bez ispravne adrese, a dok je uključena,
+  adresa se ne može obrisati ni pokvariti. Predsjednik i računovođa mogu je uključiti umjesto vlasnika
+  (vlasnik bez naloga, zahtjev na papiru) na stranici vlasnika, uz napomenu; svaka promjena ide u revizorski trag.
+- **Šta se šalje.** Nova faktura i korektivna faktura idu kao PDF u prilogu, uz kratak tekst bez iznosa i
+  salda (broj fakture, period, rok, poziv na broj). Vlasnik koji ima aktivan nalog dobija i link na fakturu
+  u aplikaciji. Storno ide kao kratko obavještenje bez priloga. Svaka poruka kaže kako se dostava isključuje.
+  PDF korektivne fakture sada navodi koju fakturu zamjenjuje.
+- **Izdavanje i slanje su razdvojeni.** Izdavanje samo upisuje poruke u red; slanje je ograničeno (najviše
+  25 poruka ili oko 25 s po pozivu), a ostatak se šalje dugmetom „Pošalji neposlate" na stranici serije.
+  Meki dnevni limit od 180 e-mailova na nivou platforme (podesivo kroz `EMAIL_DAILY_SOFT_LIMIT`) čuva
+  rezervu Mailjet kvote za reset lozinke i glasanje.
+- **Uprava vidi status dostave:** kartica „Dostava e-poštom" na stranici serije (nacrt: „Račun e-poštom dobiće X
+  od N dužnika"), red „Dostava e-poštom" i dugmad „Pošalji ponovo" / „Pošalji e-poštom" na detalju fakture,
+  kolona „Račun e-poštom" u listi vlasnika i oznaka „(PDF u prilogu)" u poslatim porukama.
+- Provajder e-pošte podržava priloge (Mailjet `Attachments`); mock provajder u događaj upisuje naziv i veličinu priloga.
+
+### Izmijenjeno
+
+- **Uklonjeno staro obavještenje „Nova faktura" koje je izdavanje serije slalo svim vlasnicima sa e-mail
+  adresom, bez pitanja.** Nije nosilo PDF, a tvrdilo je da ga nosi. Od sada e-mail o fakturi dobijaju samo
+  vlasnici koji su sami izabrali dostavu računa.
+- Fakturu dobija **samo dužnik** (lice na koje faktura glasi); ostali suvlasnici jedinice je ne dobijaju.
+  Vlasnik sa dvije jedinice (stan i garaža) dobija po jedan e-mail za svaku fakturu.
+- **Dokumentovan izuzetak od pravila „bez finansijskih podataka u porukama":** PDF fakture u prilogu
+  dobija isključivo dužnik koji je dostavu izabrao, na svoju adresu, i samo za svoju fakturu. Tijelo poruke
+  i dalje nema iznose ni salda. Napomena je dodata u kod i u podnožje stranice „Poslate poruke".
+- Slanje poruke iz outbox-a sada atomski „preuzima" poruku uz zakup (`NotificationMessage.dispatchingAt`,
+  ističe za 2 minute ako slanje pukne), pa ni dupli klik ni poziv koji stigne dok prvi još šalje ne mogu
+  poslati istu poruku dvaput.
+- Stranica serije više ne upisuje `Invoice.deliveryStatus`; status dostave se čita iz outbox-a.
+
 ## [2.39.0] - 2026-10-22
 
 ### Dodato

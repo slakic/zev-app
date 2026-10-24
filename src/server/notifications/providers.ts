@@ -22,12 +22,17 @@ export type SendResult = {
   events: DeliveryEvent[];
 };
 
+/** A file sent along with an e-mail (only the invoice PDF today — Plans/invoice-email-delivery-plan.md R2). */
+export type EmailAttachment = { filename: string; contentType: string; content: Buffer };
+
+export type EmailSendInput = { to: string; subject: string; body: string; fromName?: string; attachments?: EmailAttachment[] };
+
 export interface EmailProvider {
   name: string;
   /** `fromName` is the display name next to the sender address (Mailjet `From.Name`); the
    *  notification service builds it from the platform e-mail settings. Providers that have no
    *  sender (the mock) ignore it. */
-  send(msg: { to: string; subject: string; body: string; fromName?: string }): Promise<SendResult>;
+  send(msg: EmailSendInput): Promise<SendResult>;
 }
 
 export interface ViberProvider {
@@ -40,14 +45,17 @@ export interface ViberProvider {
 
 class MockEmailProvider implements EmailProvider {
   name = "mock-email";
-  async send(msg: { to: string; subject: string; body: string; fromName?: string }): Promise<SendResult> {
+  async send(msg: EmailSendInput): Promise<SendResult> {
     const now = new Date().toISOString();
-    void msg;
+    // Attachment bytes are never kept — only a note of what would have been sent.
+    const files = msg.attachments?.length
+      ? `; prilozi: ${msg.attachments.map((a) => `${a.filename} (${Math.max(1, Math.round(a.content.length / 1024))} KB)`).join(", ")}`
+      : "";
     return {
       ok: true,
       providerMessageId: `mock-${Math.random().toString(36).slice(2)}`,
       events: [
-        { at: now, type: "sent", detail: "mock provider" },
+        { at: now, type: "sent", detail: `mock provider${files}` },
         { at: now, type: "delivered", detail: "simulated delivery callback" },
       ],
     };

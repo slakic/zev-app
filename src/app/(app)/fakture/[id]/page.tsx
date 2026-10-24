@@ -3,10 +3,19 @@ import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { getInvoice, cancelInvoice, correctInvoice, invoicePaidAmount } from "@/server/services/billing";
 import { generateInvoicePdf } from "@/server/services/documents";
+import {
+  dispatchInvoiceEmails,
+  getInvoiceEmailStatus,
+  retryInvoiceEmails,
+  sendInvoiceEmailNow,
+} from "@/server/services/invoiceEmail";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+
+// Slanje e-pošte može potrajati (PDF + Mailjet), pa isti budžet kao na stranici serije.
+export const maxDuration = 60;
 
 const invoiceLineHeaders: ColumnSpec[] = [
   { label: "Stavka" },
@@ -36,6 +45,8 @@ async function cancelAction(formData: FormData) {
   const id = String(formData.get("invoiceId"));
   try {
     await cancelInvoice(actor, id, String(formData.get("reason") ?? ""));
+    // Kratko obavještenje dužniku koji je izabrao dostavu računa (bez priloga).
+    await dispatchInvoiceEmails(actor, { invoiceIds: [id] });
   } catch (e) {
     redirect(`/fakture/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -52,11 +63,49 @@ async function correctAction(formData: FormData) {
       description: String(formData.get("description")),
       reason: String(formData.get("reason")),
     });
+    await dispatchInvoiceEmails(actor, { invoiceIds: [corrective.id] });
     redirect(`/fakture/${corrective.id}?msg=${encodeURIComponent("Korektivna faktura kreirana; original ostaje vidljiv.")}`);
   } catch (e) {
     if (e && typeof e === "object" && "digest" in e) throw e;
     redirect(`/fakture/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
+}
+
+async function retryInvoiceEmailAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("ACCOUNTANT");
+  const id = String(formData.get("invoiceId"));
+  let msg: string;
+  try {
+    const r = await retryInvoiceEmails(actor, { invoiceIds: [id] });
+    msg = emailResultMessage(r);
+  } catch (e) {
+    redirect(`/fakture/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath(`/fakture/${id}`);
+  redirect(`/fakture/${id}?msg=${encodeURIComponent(msg)}`);
+}
+
+async function sendInvoiceEmailNowAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("ACCOUNTANT");
+  const id = String(formData.get("invoiceId"));
+  let msg: string;
+  try {
+    const r = await sendInvoiceEmailNow(actor, id);
+    msg = emailResultMessage(r);
+  } catch (e) {
+    redirect(`/fakture/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath(`/fakture/${id}`);
+  redirect(`/fakture/${id}?msg=${encodeURIComponent(msg)}`);
+}
+
+function emailResultMessage(r: { sent: number; failed: number; pending: number; dailyLimitReached: boolean }): string {
+  if (r.dailyLimitReached) return "Dnevni limit slanja e-pošte je dostignut. Poruka čeka i može se poslati sutra.";
+  if (r.sent > 0) return "Faktura je poslata e-poštom.";
+  if (r.failed > 0) return "Slanje nije uspjelo. Razlog je naveden u redu „Dostava e-poštom”.";
+  return "Nema poruke za slanje.";
 }
 
 export default async function InvoicePage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string }> }) {
@@ -67,6 +116,8 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const management = isManagement(actor);
   const paid = invoicePaidAmount(inv);
   const open = dec(inv.total.toString()).minus(paid);
+  const emailStatus = await getInvoiceEmailStatus(actor, id);
+  const isAccountant = actor.roles.includes("ACCOUNTANT");
 
   return (
     <div>
@@ -98,7 +149,34 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             <div className="flex justify-between"><dt>Izdata:</dt><dd>{formatDate(inv.issueDate)}</dd></div>
             <div className="flex justify-between"><dt>Dospijeće:</dt><dd>{formatDate(inv.dueDate)}</dd></div>
             <div className="flex justify-between"><dt>Poziv na broj:</dt><dd className="font-mono text-xs">{inv.paymentReference ?? "—"}</dd></div>
+            <div className="flex justify-between gap-3">
+              <dt>Dostava e-poštom:</dt>
+              <dd className="text-right">
+                {!emailStatus && "—"}
+                {emailStatus && ["SENT", "DELIVERED", "SEEN"].includes(emailStatus.status) &&
+                  `Poslato ${formatDateTime(emailStatus.sentAt)} na ${emailStatus.toAddress}`}
+                {emailStatus?.status === "QUEUED" && "Čeka slanje"}
+                {emailStatus?.status === "FAILED" && (
+                  <>
+                    Neuspješno
+                    {emailStatus.lastError && <span className="block text-[13px] text-slate-500">{emailStatus.lastError}</span>}
+                  </>
+                )}
+              </dd>
+            </div>
           </dl>
+          {isAccountant && emailStatus && (emailStatus.status === "FAILED" || emailStatus.status === "QUEUED") && (
+            <form action={retryInvoiceEmailAction} className="mt-3">
+              <input type="hidden" name="invoiceId" value={inv.id} />
+              <SubmitBtn variant="secondary">Pošalji ponovo</SubmitBtn>
+            </form>
+          )}
+          {isAccountant && !emailStatus && inv.status === "ISSUED" && inv.debtor.invoiceEmailDelivery && (
+            <form action={sendInvoiceEmailNowAction} className="mt-3">
+              <input type="hidden" name="invoiceId" value={inv.id} />
+              <SubmitBtn variant="secondary">Pošalji e-poštom</SubmitBtn>
+            </form>
+          )}
         </Card>
         <div className="lg:col-span-2">
           <Card title="Stavke sa obračunom">

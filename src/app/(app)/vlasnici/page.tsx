@@ -23,6 +23,7 @@ const partyHeaders: ColumnSpec[] = [
   { label: "Ime / naziv", priority: "primary", sortKey: "name" },
   { label: "Vrsta", priority: "detail" },
   { label: "E-mail" },
+  { label: "Račun e-poštom", priority: "detail" },
   { label: "Telefon", priority: "detail" },
   { label: "Vlasništvo (aktivno)" },
   { label: "Nalog", priority: "detail" },
@@ -201,6 +202,7 @@ export default async function OwnersPage({
               <Td><RowLink href={`/vlasnici/${p.id}`}>{partyDisplayName(p)}</RowLink></Td>
               <Td>{p.kind === "PERSON" ? "Fizičko lice" : "Pravno lice"}</Td>
               <Td>{p.email ?? "—"}</Td>
+              <Td>{p.invoiceEmailDelivery ? "Da" : "—"}</Td>
               <Td>{p.phone ?? "—"}</Td>
               <Td>{p.ownershipStakes.map((s) => `${s.unit.label} (${s.sharePercent}%)`).join(", ") || "—"}</Td>
               <Td>{p.user ? (p.user.active ? p.user.email : "deaktiviran") : "—"}</Td>

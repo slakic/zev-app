@@ -48,6 +48,8 @@ export type NotificationMessageMinAggregateOutputType = {
   lastError: string | null
   relatedType: string | null
   relatedId: string | null
+  attachmentDocumentId: string | null
+  dispatchingAt: Date | null
   sentAt: Date | null
   createdAt: Date | null
 }
@@ -66,6 +68,8 @@ export type NotificationMessageMaxAggregateOutputType = {
   lastError: string | null
   relatedType: string | null
   relatedId: string | null
+  attachmentDocumentId: string | null
+  dispatchingAt: Date | null
   sentAt: Date | null
   createdAt: Date | null
 }
@@ -85,6 +89,8 @@ export type NotificationMessageCountAggregateOutputType = {
   events: number
   relatedType: number
   relatedId: number
+  attachmentDocumentId: number
+  dispatchingAt: number
   sentAt: number
   createdAt: number
   _all: number
@@ -113,6 +119,8 @@ export type NotificationMessageMinAggregateInputType = {
   lastError?: true
   relatedType?: true
   relatedId?: true
+  attachmentDocumentId?: true
+  dispatchingAt?: true
   sentAt?: true
   createdAt?: true
 }
@@ -131,6 +139,8 @@ export type NotificationMessageMaxAggregateInputType = {
   lastError?: true
   relatedType?: true
   relatedId?: true
+  attachmentDocumentId?: true
+  dispatchingAt?: true
   sentAt?: true
   createdAt?: true
 }
@@ -150,6 +160,8 @@ export type NotificationMessageCountAggregateInputType = {
   events?: true
   relatedType?: true
   relatedId?: true
+  attachmentDocumentId?: true
+  dispatchingAt?: true
   sentAt?: true
   createdAt?: true
   _all?: true
@@ -256,6 +268,8 @@ export type NotificationMessageGroupByOutputType = {
   events: runtime.JsonValue | null
   relatedType: string | null
   relatedId: string | null
+  attachmentDocumentId: string | null
+  dispatchingAt: Date | null
   sentAt: Date | null
   createdAt: Date
   _count: NotificationMessageCountAggregateOutputType | null
@@ -298,6 +312,8 @@ export type NotificationMessageWhereInput = {
   events?: Prisma.JsonNullableFilter<"NotificationMessage">
   relatedType?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   relatedId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
+  attachmentDocumentId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
+  dispatchingAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NotificationMessage"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
@@ -319,6 +335,8 @@ export type NotificationMessageOrderByWithRelationInput = {
   events?: Prisma.SortOrderInput | Prisma.SortOrder
   relatedType?: Prisma.SortOrderInput | Prisma.SortOrder
   relatedId?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachmentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dispatchingAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
@@ -343,6 +361,8 @@ export type NotificationMessageWhereUniqueInput = Prisma.AtLeast<{
   events?: Prisma.JsonNullableFilter<"NotificationMessage">
   relatedType?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   relatedId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
+  attachmentDocumentId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
+  dispatchingAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NotificationMessage"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevNullableScalarRelationFilter, Prisma.ZevWhereInput> | null
@@ -364,6 +384,8 @@ export type NotificationMessageOrderByWithAggregationInput = {
   events?: Prisma.SortOrderInput | Prisma.SortOrder
   relatedType?: Prisma.SortOrderInput | Prisma.SortOrder
   relatedId?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachmentDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dispatchingAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.NotificationMessageCountOrderByAggregateInput
@@ -391,6 +413,8 @@ export type NotificationMessageScalarWhereWithAggregatesInput = {
   events?: Prisma.JsonNullableWithAggregatesFilter<"NotificationMessage">
   relatedType?: Prisma.StringNullableWithAggregatesFilter<"NotificationMessage"> | string | null
   relatedId?: Prisma.StringNullableWithAggregatesFilter<"NotificationMessage"> | string | null
+  attachmentDocumentId?: Prisma.StringNullableWithAggregatesFilter<"NotificationMessage"> | string | null
+  dispatchingAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NotificationMessage"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NotificationMessage"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"NotificationMessage"> | Date | string
 }
@@ -408,6 +432,8 @@ export type NotificationMessageCreateInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
   zev?: Prisma.ZevCreateNestedOneWithoutNotificationMessagesInput
@@ -429,6 +455,8 @@ export type NotificationMessageUncheckedCreateInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -446,6 +474,8 @@ export type NotificationMessageUpdateInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneWithoutNotificationMessagesNestedInput
@@ -467,6 +497,8 @@ export type NotificationMessageUncheckedUpdateInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -486,6 +518,8 @@ export type NotificationMessageCreateManyInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -503,6 +537,8 @@ export type NotificationMessageUpdateManyMutationInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -522,6 +558,8 @@ export type NotificationMessageUncheckedUpdateManyInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -551,6 +589,8 @@ export type NotificationMessageCountOrderByAggregateInput = {
   events?: Prisma.SortOrder
   relatedType?: Prisma.SortOrder
   relatedId?: Prisma.SortOrder
+  attachmentDocumentId?: Prisma.SortOrder
+  dispatchingAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -573,6 +613,8 @@ export type NotificationMessageMaxOrderByAggregateInput = {
   lastError?: Prisma.SortOrder
   relatedType?: Prisma.SortOrder
   relatedId?: Prisma.SortOrder
+  attachmentDocumentId?: Prisma.SortOrder
+  dispatchingAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -591,6 +633,8 @@ export type NotificationMessageMinOrderByAggregateInput = {
   lastError?: Prisma.SortOrder
   relatedType?: Prisma.SortOrder
   relatedId?: Prisma.SortOrder
+  attachmentDocumentId?: Prisma.SortOrder
+  dispatchingAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -704,6 +748,8 @@ export type NotificationMessageCreateWithoutRecipientInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
   zev?: Prisma.ZevCreateNestedOneWithoutNotificationMessagesInput
@@ -723,6 +769,8 @@ export type NotificationMessageUncheckedCreateWithoutRecipientInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -771,6 +819,8 @@ export type NotificationMessageScalarWhereInput = {
   events?: Prisma.JsonNullableFilter<"NotificationMessage">
   relatedType?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
   relatedId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
+  attachmentDocumentId?: Prisma.StringNullableFilter<"NotificationMessage"> | string | null
+  dispatchingAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"NotificationMessage"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NotificationMessage"> | Date | string
 }
@@ -788,6 +838,8 @@ export type NotificationMessageCreateWithoutZevInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
   recipient?: Prisma.PartyCreateNestedOneWithoutNotificationsInput
@@ -807,6 +859,8 @@ export type NotificationMessageUncheckedCreateWithoutZevInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -851,6 +905,8 @@ export type NotificationMessageCreateManyRecipientInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -868,6 +924,8 @@ export type NotificationMessageUpdateWithoutRecipientInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneWithoutNotificationMessagesNestedInput
@@ -887,6 +945,8 @@ export type NotificationMessageUncheckedUpdateWithoutRecipientInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -905,6 +965,8 @@ export type NotificationMessageUncheckedUpdateManyWithoutRecipientInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -923,6 +985,8 @@ export type NotificationMessageCreateManyZevInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: string | null
   relatedId?: string | null
+  attachmentDocumentId?: string | null
+  dispatchingAt?: Date | string | null
   sentAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -940,6 +1004,8 @@ export type NotificationMessageUpdateWithoutZevInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipient?: Prisma.PartyUpdateOneWithoutNotificationsNestedInput
@@ -959,6 +1025,8 @@ export type NotificationMessageUncheckedUpdateWithoutZevInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -977,6 +1045,8 @@ export type NotificationMessageUncheckedUpdateManyWithoutZevInput = {
   events?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   relatedType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispatchingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -998,6 +1068,8 @@ export type NotificationMessageSelect<ExtArgs extends runtime.Types.Extensions.I
   events?: boolean
   relatedType?: boolean
   relatedId?: boolean
+  attachmentDocumentId?: boolean
+  dispatchingAt?: boolean
   sentAt?: boolean
   createdAt?: boolean
   zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
@@ -1019,6 +1091,8 @@ export type NotificationMessageSelectCreateManyAndReturn<ExtArgs extends runtime
   events?: boolean
   relatedType?: boolean
   relatedId?: boolean
+  attachmentDocumentId?: boolean
+  dispatchingAt?: boolean
   sentAt?: boolean
   createdAt?: boolean
   zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
@@ -1040,6 +1114,8 @@ export type NotificationMessageSelectUpdateManyAndReturn<ExtArgs extends runtime
   events?: boolean
   relatedType?: boolean
   relatedId?: boolean
+  attachmentDocumentId?: boolean
+  dispatchingAt?: boolean
   sentAt?: boolean
   createdAt?: boolean
   zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
@@ -1061,11 +1137,13 @@ export type NotificationMessageSelectScalar = {
   events?: boolean
   relatedType?: boolean
   relatedId?: boolean
+  attachmentDocumentId?: boolean
+  dispatchingAt?: boolean
   sentAt?: boolean
   createdAt?: boolean
 }
 
-export type NotificationMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "channel" | "recipientId" | "toAddress" | "template" | "subject" | "body" | "status" | "attempts" | "lastError" | "events" | "relatedType" | "relatedId" | "sentAt" | "createdAt", ExtArgs["result"]["notificationMessage"]>
+export type NotificationMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "channel" | "recipientId" | "toAddress" | "template" | "subject" | "body" | "status" | "attempts" | "lastError" | "events" | "relatedType" | "relatedId" | "attachmentDocumentId" | "dispatchingAt" | "sentAt" | "createdAt", ExtArgs["result"]["notificationMessage"]>
 export type NotificationMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.NotificationMessage$zevArgs<ExtArgs>
   recipient?: boolean | Prisma.NotificationMessage$recipientArgs<ExtArgs>
@@ -1100,6 +1178,17 @@ export type $NotificationMessagePayload<ExtArgs extends runtime.Types.Extensions
     events: runtime.JsonValue | null
     relatedType: string | null
     relatedId: string | null
+    /**
+     * Document.id čiji se PDF (DocumentBlob) šalje kao prilog. Bajtovi se čitaju pri svakom slanju,
+     * pa ponovno slanje (retry) šalje isti, nepromijenjeni PDF.
+     */
+    attachmentDocumentId: string | null
+    /**
+     * Lease while one dispatch is sending this message: only the call that sets it from null (or
+     * from a lease older than DISPATCH_LEASE_MS, i.e. a crashed send) may send. Cleared when the
+     * attempt ends. Stops a double click from e-mailing the same invoice twice.
+     */
+    dispatchingAt: Date | null
     sentAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["notificationMessage"]>
@@ -1541,6 +1630,8 @@ export interface NotificationMessageFieldRefs {
   readonly events: Prisma.FieldRef<"NotificationMessage", 'Json'>
   readonly relatedType: Prisma.FieldRef<"NotificationMessage", 'String'>
   readonly relatedId: Prisma.FieldRef<"NotificationMessage", 'String'>
+  readonly attachmentDocumentId: Prisma.FieldRef<"NotificationMessage", 'String'>
+  readonly dispatchingAt: Prisma.FieldRef<"NotificationMessage", 'DateTime'>
   readonly sentAt: Prisma.FieldRef<"NotificationMessage", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"NotificationMessage", 'DateTime'>
 }

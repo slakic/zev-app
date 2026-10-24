@@ -394,6 +394,10 @@ const srLatn = {
     party: {
       update: "Ažurirao/la kontakt podatke",
       create: "Kreirano lice",
+      invoice_email: {
+        enable: "Uključena dostava računa e-poštom",
+        disable: "Isključena dostava računa e-poštom",
+      },
       evote_consent: {
         sign: "Potpisana saglasnost za e-glasanje",
         revoke: "Povukao/la saglasnost za e-glasanje",
