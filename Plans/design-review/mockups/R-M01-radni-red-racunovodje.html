@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R-M01 — Radni red računovođe</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+  .dsadd{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .dsadd-label{position:absolute;top:-14px;right:8px;background:#ea580c;color:#fff;font-size:12px;font-weight:700;padding:1px 8px;border-radius:9999px;white-space:nowrap}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+
+<!-- Traka mockupa -->
+<header class="border-b border-slate-300 bg-white px-6 py-4">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">R-M01</span>
+    <h1 class="text-lg font-semibold">Početna računovođe — radni red „Čeka na vas”</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: R-R01, R-R02, R-R09 (brojač) · nalazi R-N01, R-N02, R-N03, R-N17, R-N24</span>
+  </div>
+  <ol class="mt-3 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2">
+    <li class="flex gap-2"><span class="ann">1</span>Kartica „Čeka na vas” ide prije KPI-ja: svaki red = broj + šta je + glagol koji vodi na tačno filtriranu listu.</li>
+    <li class="flex gap-2"><span class="ann">2</span>Redoslijed prati mjesečni ritam: serija → izvodi/SMS → uparivanje → usklađivanje → troškovi → e-pošta.</li>
+    <li class="flex gap-2"><span class="ann">3</span>Avans je izdvojen i ne broji se kao posao (zavisi od odluke R-Q4).</li>
+    <li class="flex gap-2"><span class="ann">4</span>Redovi sa nulom se sažimaju u jednu liniju — prazno stanje kaže da je sve završeno, ne ćuti.</li>
+    <li class="flex gap-2"><span class="ann">5</span>Sidebar: „Fakture i uplate” ostaje aktivna i na podstranicama (poređenje po prefiksu, `nav-shell.tsx:210`).</li>
+    <li class="flex gap-2"><span class="ann">6</span>KPI ostaju nepromijenjeni (`Stat`) — stanje, ne posao.</li>
+  </ol>
+  <p class="mt-3 inline-flex items-center gap-2 rounded border-2 border-dashed border-orange-600 px-2 py-1 text-[13px] font-semibold text-orange-700">DOPUNA DS-a — traži odluku: obrazac „lista zadataka sa brojačem” (R-R01, opcija A: samo `Card` + `StatusBadge` + `RowActionLink`, bez novog primitiva)</p>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz; brojevi su ilustrativni na osnovu seed podataka, ne tvrdi da backend radi.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ================= DESKTOP ================= -->
+<section>
+  <h2 class="mb-3 text-[15px] font-semibold text-slate-700">Desktop 1440</h2>
+  <div class="overflow-hidden rounded-lg border border-slate-300 bg-white shadow" style="width:1440px;max-width:100%">
+    <div class="min-h-screen md:flex" style="min-height:0">
+      <!-- Sidebar (nav-shell) -->
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="flex items-center gap-2 p-4">
+          <div class="h-8 w-6 rounded bg-blue-600/80"></div>
+          <div class="text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div>
+        </div>
+        <nav class="space-y-0.5 px-2 text-sm">
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 bg-blue-50 text-blue-700 font-medium"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3 9l7-6 7 6v8H3z"/></svg>Početna</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Zgrade i jedinice</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Vlasnici i korisnici</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Organi ZEV</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Skupština i odluke</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Fakture i uplate</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Troškovi</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Planovi</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Održavanje</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Dokumenti</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Izvještaji</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Podešavanja</a>
+        </nav>
+        <p class="mx-4 mt-4 flex gap-2 text-[13px] text-slate-600"><span class="ann">5</span>Na `/fakture/uplate/…` aktivna bi bila „Fakture i uplate” (vidi mobilni prikaz).</p>
+      </aside>
+
+      <div class="min-w-0 flex-1">
+        <header class="sticky top-0 z-20 flex items-center justify-end gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">JK</span>
+        </header>
+        <div class="p-8">
+          <div class="mx-auto w-full max-w-[1440px] space-y-6">
+            <!-- PageHeader -->
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Pregled — računovođa</h1>
+                <p class="mt-1 text-[15px] text-slate-500">Stanje na dan 24.10.2026.</p>
+              </div>
+            </div>
+
+            <!-- Čeka na vas -->
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <section class="dsadd rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm lg:col-span-2">
+                <span class="dsadd-label">DOPUNA DS-a — traži odluku</span>
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 class="text-sm font-semibold text-slate-700">Čeka na vas</h2>
+                    <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Mjesečni redoslijed: serija → izvodi → uparivanje → usklađivanje → troškovi.</p>
+                  </div>
+                  <span class="ann">1</span>
+                </div>
+                <ul class="divide-y divide-slate-100 text-sm">
+                  <li class="flex items-center gap-3 py-2.5">
+                    <span class="w-10 text-right text-[15px] font-semibold tabular-nums text-slate-900">1</span>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-slate-800">Serija za oktobar 2026. još nije kreirana</div>
+                      <div class="text-[13px] text-slate-500">Posljednja izdata serija: 2026-09 (8 faktura, 24.10.2026.)</div>
+                    </div>
+                    <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-slate-100 text-slate-700 ring-slate-500/20">Nacrt nije kreiran</span>
+                    <a class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Kreiraj nacrt 2026-10</a>
+                  </li>
+                  <li class="flex items-center gap-3 py-2.5">
+                    <span class="w-10 text-right text-[15px] font-semibold tabular-nums text-slate-900">0</span>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-slate-800">SMS obavještenja na čekanju</div>
+                      <div class="text-[13px] text-slate-500">Automatski prijem nije uključen — <a class="font-medium text-blue-700 underline underline-offset-2">uključite u Podešavanjima</a></div>
+                    </div>
+                    <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-slate-100 text-slate-700 ring-slate-500/20">Isključeno</span>
+                    <span class="w-[118px]"></span>
+                  </li>
+                  <li class="flex items-center gap-3 py-2.5">
+                    <span class="w-10 text-right text-[15px] font-semibold tabular-nums text-slate-900">3</span>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-slate-800">Uplate za uparivanje</div>
+                      <div class="text-[13px] text-slate-500">Ukupno 412,60 KM · najstarija od 21.10.2026.</div>
+                    </div>
+                    <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Neraspoređeno</span>
+                    <a class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Upari</a>
+                  </li>
+                  <li class="flex items-center gap-3 py-2.5">
+                    <span class="w-10 text-right text-[15px] font-semibold tabular-nums text-slate-900">2</span>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-slate-800">Mogući duplikati SMS ↔ izvod</div>
+                      <div class="text-[13px] text-slate-500">Ista transakcija evidentirana dva puta</div>
+                    </div>
+                    <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Provjeriti</span>
+                    <a class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Pregledaj</a>
+                  </li>
+                  <li class="flex items-center gap-3 py-2.5">
+                    <span class="w-10 text-right text-[15px] font-semibold tabular-nums text-slate-900">1</span>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-slate-800">Trošak dospijeva u narednih 7 dana</div>
+                      <div class="text-[13px] text-slate-500">Čistoća plus s.p. · CP-2026-330 · 160,00 KM · rok 03.11.2026.</div>
+                    </div>
+                    <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Neplaćen</span>
+                    <a class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Otvori trošak</a>
+                  </li>
+                </ul>
+                <div class="mt-3 flex items-start gap-2 border-t border-slate-100 pt-3 text-[13px] text-slate-600">
+                  <span class="ann">4</span>
+                  <p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="mr-1 inline h-4 w-4 text-emerald-700"><path d="M5 10.5l3 3 7-7"/></svg>Završeno: neprepoznati SMS (0), SMS bez potvrde izvodom (0), neuspjela e-pošta faktura (0).</p>
+                </div>
+                <div class="mt-2 flex items-start gap-2 text-[13px] text-slate-600">
+                  <span class="ann">3</span>
+                  <p>Avansi vlasnika (nije posao): 1 uplata, 10,00 KM — Marko Jovanović. <a class="font-medium text-blue-700 underline underline-offset-2">Pogledaj</a></p>
+                </div>
+                <div class="absolute -left-3 top-1/3"><span class="ann">2</span></div>
+              </section>
+
+              <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <h2 class="mb-3 text-sm font-semibold text-slate-700">Predstojeće sjednice</h2>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-center justify-between gap-2"><a class="text-blue-700 hover:underline">Sjednica upravnog odbora br. 1</a><span class="text-[13px] text-slate-500">27.10.2026.</span></li>
+                  <li class="flex items-center justify-between gap-2"><a class="text-blue-700 hover:underline">Redovna godišnja sjednica skupštine 2026.</a><span class="text-[13px] text-slate-500">31.10.2026.</span></li>
+                </ul>
+              </section>
+            </div>
+
+            <!-- KPI -->
+            <div>
+              <div class="mb-2 flex items-center gap-2"><span class="ann">6</span><span class="text-[13px] text-slate-600">Stanje (nepromijenjeni `Stat`)</span></div>
+              <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Stanje računa i blagajne</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums text-emerald-700">2.534,48 KM</div></div>
+                <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Potraživanja od vlasnika</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums text-slate-900">210,08 KM</div></div>
+                <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-red-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Dospjelo (kasni)</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums text-red-700">210,08 KM</div></div>
+                <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Neplaćeno dobavljačima</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums text-amber-700">4.810,00 KM</div></div>
+              </div>
+            </div>
+
+            <!-- Tabs count fix -->
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="text-sm font-semibold text-slate-700">Uz R-R09: brojač na tabu (ispravka primitiva `Tabs`, bez nove vrijednosti)</h2>
+              <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Lijevo danas (`text-xs text-slate-400`, `ui.tsx:685`) · desno predlog (`text-[13px] text-slate-500`, brojač na svim tabovima niza).</p>
+              <div class="grid gap-6 md:grid-cols-2">
+                <nav class="flex gap-1 overflow-x-auto border-b border-slate-200">
+                  <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium border-blue-600 text-blue-700">Na čekanju<span class="ml-1.5 text-xs text-slate-400">· 0</span></a>
+                  <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium border-transparent text-slate-500">Potvrđene</a>
+                  <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium border-transparent text-slate-500">Neprepoznate<span class="ml-1.5 text-xs text-slate-400">· 0</span></a>
+                </nav>
+                <nav class="flex gap-1 overflow-x-auto border-b border-slate-200">
+                  <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium border-blue-600 text-blue-700">Na čekanju<span class="ml-1.5 text-[13px] text-slate-500">· 4</span></a>
+                  <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium border-transparent text-slate-500">Potvrđene<span class="ml-1.5 text-[13px] text-slate-500">· 37</span></a>
+                  <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium border-transparent text-slate-500">Neprepoznate<span class="ml-1.5 text-[13px] text-slate-500">· 1</span></a>
+                </nav>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MOBILNI ================= -->
+<section>
+  <h2 class="mb-3 text-[15px] font-semibold text-slate-700">Mobilni 375 — stanje „ima posla” i stanje „sve završeno”, plus drawer na podstranici</h2>
+  <div class="flex flex-wrap items-start gap-8">
+
+    <!-- Phone 1 -->
+    <div class="overflow-hidden rounded-[24px] border border-slate-300 bg-slate-50 shadow" style="width:375px">
+      <header class="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <span class="rounded-full p-1.5 text-slate-500">☰</span>
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">JK</span>
+      </header>
+      <div class="space-y-6 p-4">
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Pregled — računovođa</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Stanje na dan 24.10.2026.</p>
+        </div>
+        <section class="dsadd rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <span class="dsadd-label">DOPUNA DS-a</span>
+          <h2 class="text-sm font-semibold text-slate-700">Čeka na vas</h2>
+          <p class="mb-3 mt-0.5 text-[13px] text-slate-500">3 zadatka · redoslijed mjesečnog posla</p>
+          <ul class="divide-y divide-slate-100 text-sm">
+            <li class="py-3">
+              <div class="flex items-baseline gap-2"><span class="text-[15px] font-semibold tabular-nums">1</span><span class="font-medium text-slate-800">Serija za 2026-10 nije kreirana</span></div>
+              <a class="mt-2 flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[44px] border border-slate-300 bg-white text-slate-700">Kreiraj nacrt 2026-10</a>
+            </li>
+            <li class="py-3">
+              <div class="flex items-baseline gap-2"><span class="text-[15px] font-semibold tabular-nums">3</span><span class="font-medium text-slate-800">Uplate za uparivanje</span></div>
+              <div class="text-[13px] text-slate-500">412,60 KM · najstarija 21.10.2026.</div>
+              <a class="mt-2 flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[44px] border border-slate-300 bg-white text-slate-700">Upari</a>
+            </li>
+            <li class="py-3">
+              <div class="flex items-baseline gap-2"><span class="text-[15px] font-semibold tabular-nums">2</span><span class="font-medium text-slate-800">Mogući duplikati SMS ↔ izvod</span></div>
+              <a class="mt-2 flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[44px] border border-slate-300 bg-white text-slate-700">Pregledaj</a>
+            </li>
+          </ul>
+          <p class="mt-2 border-t border-slate-100 pt-3 text-[13px] text-slate-600">Završeno: SMS na čekanju, neprepoznati SMS, e-pošta faktura.</p>
+        </section>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Stanje računa</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums text-emerald-700">2.534,48 KM</div></div>
+          <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-red-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Dospjelo</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums text-red-700">210,08 KM</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 2: empty -->
+    <div class="overflow-hidden rounded-[24px] border border-slate-300 bg-slate-50 shadow" style="width:375px">
+      <header class="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <span class="rounded-full p-1.5 text-slate-500">☰</span>
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">JK</span>
+      </header>
+      <div class="space-y-6 p-4">
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Pregled — računovođa</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Stanje na dan 05.11.2026.</p>
+        </div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">Čeka na vas</h2>
+          <div class="flex flex-col items-center gap-2 py-6 text-center">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-emerald-600"><path d="M5 10.5l3 3 7-7"/></svg>
+            <div class="text-[15px] font-medium text-slate-700">Sve je završeno za oktobar.</div>
+            <div class="max-w-sm text-[13px] text-slate-500">Serija 2026-10 je izdata, sve uplate su raspoređene i nema poruka na čekanju. Sljedeća serija: novembar 2026.</div>
+          </div>
+        </section>
+        <p class="flex gap-2 text-[13px] text-slate-600"><span class="ann">4</span>Prazno stanje kaže šta je urađeno i šta slijedi, umjesto da kartica nestane.</p>
+      </div>
+    </div>
+
+    <!-- Phone 3: drawer on subpage -->
+    <div class="relative overflow-hidden rounded-[24px] border border-slate-300 bg-slate-50 shadow" style="width:375px;height:640px">
+      <div class="absolute inset-0 bg-slate-900/40"></div>
+      <aside class="absolute inset-y-0 left-0 w-60 overflow-y-auto bg-white shadow-xl ring-1 ring-slate-900/5">
+        <div class="flex items-center gap-2 p-4"><div class="h-8 w-6 rounded bg-blue-600/80"></div><div class="text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div></div>
+        <nav class="space-y-0.5 px-2 text-sm">
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Početna</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Zgrade i jedinice</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Vlasnici i korisnici</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 bg-blue-50 text-blue-700 font-medium">▣ Fakture i uplate</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Troškovi</a>
+          <a class="flex items-center gap-3 rounded-full px-3 py-2 text-slate-700 font-medium">▢ Izvještaji</a>
+        </nav>
+        <p class="m-4 flex gap-2 text-[13px] text-slate-600"><span class="ann">5</span>Otvoreno na `/fakture/uplate/sms` — roditeljska stavka ostaje istaknuta.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+</main>
+</body>
+</html>

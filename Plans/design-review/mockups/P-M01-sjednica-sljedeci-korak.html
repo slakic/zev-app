@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P-M01 Sjednica — sljedeći korak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  // Isti tokeni kao src/app/globals.css @theme — da bi klase iz ui.tsx (bg-primary, text-primary-ink…) radile doslovno.
+  tailwind.config = { theme: { extend: { colors: {
+    primary: '#2563eb', 'primary-ink': '#1d4ed8', 'primary-soft': '#eff6ff',
+    canvas: '#f8fafc', ink: '#0f172a', 'ink-muted': '#64748b'
+  } } } };
+</script>
+<style>
+  body{font-family:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .ann{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:22px;padding:0 6px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
+  .dopuna{outline:2px dashed #f97316;outline-offset:6px;position:relative}
+  .dopuna-tag{position:absolute;top:-30px;right:0;background:#fff7ed;color:#9a3412;border:1px dashed #f97316;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;white-space:nowrap}
+  details>summary::-webkit-details-marker{display:none}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<!-- ===== Traka mockupa ===== -->
+<div class="border-b border-slate-300 bg-white px-6 py-3 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">P-M01</span>
+    <h1 class="text-lg font-semibold">Detalj sjednice skupštine sa panelom „Sljedeći korak”</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: P-R01 · P-R02 · P-R03 · P-R05 — nalazi P-N01–N05, N07, N15</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2">
+    <li><span class="ann">1</span> Panel „Sljedeći korak” je prvi ispod zaglavlja: gdje smo, jedan korak, preduslovi ✓/⚠. <b class="text-orange-700">DOPUNA DS-a (opcija A: samo kompozicija Card + StatusTimeline + postojeća dugmad).</b></li>
+    <li><span class="ann">2</span> Jedno dugme po regiji. Korak sa posljedicom = <code>caution</code> + <code>ConfirmAction</code>, čije tijelo kaže koga se tiče (P2, P-R02).</li>
+    <li><span class="ann">3</span> Dugme statusa je izašlo iz zaglavlja; zaglavlje zadržava samo „Vodi sjednicu uživo” (<code>secondary</code>).</li>
+    <li><span class="ann">4</span> Dnevni red pokazuje prijedlog uz svaku tačku; tačka bez prijedloga ima <code>RowAction</code> „Dodaj prijedlog” (P-R03).</li>
+    <li><span class="ann">5</span> Tabela prijedloga dobija „Rok” i „Glasalo”; rezultat je „trenutno”, ne konačan (P-R05).</li>
+    <li><span class="ann">6</span> Kartica prisustva postaje sažetak + link na režim uživo (zavisi od P-Q3 / odluke P10).</li>
+  </ol>
+  <p class="mt-1 text-[13px] text-slate-500">Statičan prikaz. Podaci izvedeni iz seed-a (Vojvode Mišića 10 i 12); treći prijedlog i tačka „Razno” su ilustrativni, da bi se prikazalo stanje upozorenja. Klase su razriješene za datu širinu (bez <code>md:</code>/<code>lg:</code> prefiksa) da bi okvir 375 bio vjeran.</p>
+</div>
+
+<!-- ===================== DESKTOP 1440 ===================== -->
+<div class="px-6 pt-8">
+  <h2 class="mb-3 text-[15px] font-semibold text-slate-700">Desktop 1440 — stanje „Glasanje otvoreno”, potvrda zatvaranja otvorena</h2>
+  <div class="overflow-x-auto">
+  <div class="mx-auto flex min-h-[900px] w-[1440px] bg-canvas shadow-xl ring-1 ring-slate-900/5">
+    <!-- sidebar (nav-shell.tsx) -->
+    <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+      <div class="flex items-center justify-between p-4">
+        <div class="flex items-center gap-2"><div class="h-8 w-8 rounded-lg bg-blue-600"></div><div class="text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div></div>
+      </div>
+      <nav class="space-y-0.5 px-2 pb-4">
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3 9.5 10 3l7 6.5"/><path d="M5 8v8.5h10V8"/><path d="M8 16.5v-4.5h4v4.5"/></svg>Početna</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><rect x="4" y="3" width="12" height="14" rx="1"/><path d="M7 6.5h1.4M11.6 6.5H13M7 9.5h1.4M11.6 9.5H13M7 12.5h1.4M11.6 12.5H13"/></svg>Zgrade i jedinice</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><circle cx="7.2" cy="7" r="2.4"/><path d="M2.8 16.2c0-2.4 2-4 4.4-4s4.4 1.6 4.4 4"/><circle cx="14.2" cy="7.6" r="2"/></svg>Vlasnici i korisnici</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><path d="M3 7.5 10 3l7 4.5"/><path d="M4 8.5h12"/><path d="M5.5 8.5V15M9 8.5V15M11 8.5V15M14.5 8.5V15"/><path d="M3 17h14"/></svg>Organi ZEV</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium bg-blue-50 text-blue-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><rect x="3.5" y="3.5" width="13" height="13" rx="2"/><path d="m7 10 2 2 4-4"/></svg>Skupština i odluke</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><rect x="4" y="3" width="12" height="14" rx="1"/><path d="M7 7h6M7 10h6M7 13h4"/></svg>Fakture i uplate</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><rect x="3" y="5" width="14" height="10" rx="1.5"/><path d="M3 8.5h14"/></svg>Troškovi</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><rect x="3.5" y="4.5" width="13" height="12" rx="1.5"/><path d="M3.5 8h13M7 3v3M13 3v3"/></svg>Planovi</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><path d="M12.5 3.5a3.5 3.5 0 0 0-3.3 4.6L3.5 13.8l2.7 2.7 5.7-5.7a3.5 3.5 0 0 0 4.6-3.3"/></svg>Održavanje</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><path d="M5 3h7l3 3v11H5z"/><path d="M8 10h4M8 13h4"/></svg>Dokumenti</a>
+        <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5"><path d="M3 16.5h14M6 13V9M10 13V5M14 13v-6"/></svg>Izvještaji</a>
+      </nav>
+    </aside>
+
+    <div class="flex min-w-0 flex-1 flex-col">
+      <header class="sticky top-0 z-20 flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <div class="flex-1"></div>
+        <span class="inline-flex max-w-[16rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-200">ZEV Vojvode Mišića 10 i 12</span>
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">MP</div>
+      </header>
+
+      <main class="min-w-0 flex-1 p-8">
+        <div class="mx-auto w-full max-w-[1440px] space-y-6">
+
+          <!-- PageHeader -->
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <a class="mb-2 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-sm font-medium text-blue-700 hover:bg-blue-50">‹ Skupština i odluke</a>
+              <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Redovna godišnja sjednica skupštine 2026.</h1>
+              <p class="mt-1 text-[15px] text-slate-500">Skupština · Redovna · 31.10.2026. u 07:53 · Kancelarija upravnika, Vojvode Mišića 10</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="ann">3</span>
+              <a class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Vodi sjednicu uživo</a>
+            </div>
+          </div>
+
+          <!-- ① Panel Sljedeći korak -->
+          <section class="dopuna rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="dopuna-tag">DOPUNA DS-a — traži odluku (P-Q1, opcija A)</span>
+            <div class="flex items-start justify-between gap-6">
+              <div class="min-w-0 flex-1">
+                <h2 class="text-sm font-semibold text-slate-700"><span class="ann mr-2">1</span>Sljedeći korak</h2>
+                <p class="mb-4 mt-0.5 text-[13px] text-slate-500">Korak 5 od 10 — sjednica je u fazi glasanja.</p>
+
+                <!-- StatusTimeline (ui.tsx:109) — budući koraci text-slate-500 umjesto slate-400 -->
+                <ol class="mb-4 flex flex-wrap items-start gap-x-1 gap-y-3" aria-label="Tok procesa">
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-[11px] leading-tight text-slate-500">Nacrt</span></div><span class="mx-1 mb-4 h-px w-6 bg-primary"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-[11px] leading-tight text-slate-500">Zakazana</span></div><span class="mx-1 mb-4 h-px w-6 bg-primary"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-[11px] leading-tight text-slate-500">Pozivi pripremljeni</span></div><span class="mx-1 mb-4 h-px w-6 bg-primary"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-[11px] leading-tight text-slate-500">Pozivi poslati</span></div><span class="mx-1 mb-4 h-px w-6 bg-primary"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span aria-current="step" class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-primary text-[11px] font-semibold text-primary-ink">5</span><span class="text-[11px] font-semibold leading-tight text-slate-700">Glasanje otvoreno</span></div><span class="mx-1 mb-4 h-px w-6 bg-slate-200"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 text-[11px] font-semibold text-slate-500">6</span><span class="text-[11px] leading-tight text-slate-500">Glasanje zatvoreno</span></div><span class="mx-1 mb-4 h-px w-6 bg-slate-200"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 text-[11px] font-semibold text-slate-500">7</span><span class="text-[11px] leading-tight text-slate-500">Provjera rezultata</span></div><span class="mx-1 mb-4 h-px w-6 bg-slate-200"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 text-[11px] font-semibold text-slate-500">8</span><span class="text-[11px] leading-tight text-slate-500">Odluka evidentirana</span></div><span class="mx-1 mb-4 h-px w-6 bg-slate-200"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 text-[11px] font-semibold text-slate-500">9</span><span class="text-[11px] leading-tight text-slate-500">Zapisnik finalizovan</span></div><span class="mx-1 mb-4 h-px w-6 bg-slate-200"></span></li>
+                  <li class="flex items-center"><div class="flex w-16 flex-col items-center gap-1 text-center"><span class="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 text-[11px] font-semibold text-slate-500">10</span><span class="text-[11px] leading-tight text-slate-500">Arhivirana</span></div></li>
+                </ol>
+
+                <p class="max-w-[68ch] text-[15px] font-medium text-slate-900">Zatvorite glasanje na sjednici kada prođe rok ili kada se svi izjasne.</p>
+                <p class="mt-1 max-w-[68ch] text-[13px] text-slate-500">Zatvaranjem se utvrđuje konačan rezultat svakog prijedloga i lični linkovi za e-glasanje prestaju da važe. Poslije toga slijedi provjera rezultata i evidentiranje odluka.</p>
+
+                <ul class="mt-4 space-y-2 text-sm">
+                  <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-slate-700">Pozivi poslati 23.10.2026. — 6 vlasnika e-poštom.</span></li>
+                  <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-slate-700">P-2026-01 — glasanje zatvoreno, usvojeno.</span></li>
+                  <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20 text-[13px] font-semibold">!</span><span class="text-slate-700">P-2026-02 — glasalo 0 od 3 vlasnika (0 % udjela, potrebno 50 %). Rok glasanja: 07.11.2026. <a class="font-medium text-primary-ink underline-offset-2 hover:underline">Otvori prijedlog</a></span></li>
+                  <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20 text-[13px] font-semibold">!</span><span class="text-slate-700">Tačka 3 „Razno” nema prijedlog — na sjednici se vodi samo kao diskusija.</span></li>
+                </ul>
+              </div>
+
+              <!-- ② Jedino dugme regije: caution + ConfirmAction (otvoreno) -->
+              <div class="w-[380px] shrink-0">
+                <span class="ann mb-2">2</span>
+                <details class="group" open>
+                  <summary class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-amber-600/40 bg-amber-50 text-amber-900 hover:bg-amber-100 cursor-pointer select-none list-none">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5 shrink-0 rotate-90"><path d="M7 5l6 5-6 5"/></svg>
+                    Zatvori glasanje na sjednici
+                  </summary>
+                  <form class="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+                    <p class="text-sm font-semibold text-amber-900">Zatvaranje glasanja na sjednici je nepovratno</p>
+                    <div class="space-y-1 text-sm text-amber-950">
+                      <p>Biće zatvoren 1 prijedlog koji je još otvoren:</p>
+                      <ul class="list-disc pl-5"><li>P-2026-02 — Sanacija krova Zgrade B do 4.800 KM</li></ul>
+                      <p>Ishod ako se sada zatvori: <b>nije usvojeno</b> — kvorum nije postignut (0 od 36,9 % udjela).</p>
+                      <p>3 neiskorištena lična linka prestaju da važe. Rok glasanja (07.11.2026.) još nije prošao.</p>
+                    </div>
+                    <button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-amber-600/40 bg-amber-50 text-amber-900 hover:bg-amber-100">Da, zatvori glasanje na sjednici</button>
+                  </form>
+                </details>
+              </div>
+            </div>
+          </section>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- ④ Dnevni red -->
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="mb-3 text-sm font-semibold text-slate-700"><span class="ann mr-2">4</span>Dnevni red</h2>
+              <ol class="divide-y divide-slate-100 text-sm">
+                <li class="flex items-start justify-between gap-3 py-2.5">
+                  <div><p class="text-slate-900">1. Usvajanje godišnjeg plana održavanja za 2026.</p><p class="mt-0.5 text-[13px] text-slate-500"><a class="font-medium text-primary-ink underline-offset-2 hover:underline">P-2026-01</a> · glasanje zatvoreno</p></div>
+                  <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">Usvojen</span>
+                </li>
+                <li class="flex items-start justify-between gap-3 py-2.5">
+                  <div><p class="text-slate-900">2. Sanacija krova Zgrade B</p><p class="mt-0.5 text-[13px] text-slate-500"><a class="font-medium text-primary-ink underline-offset-2 hover:underline">P-2026-02</a> · glasalo 0 od 3 · do 07.11.2026.</p></div>
+                  <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-blue-50 text-blue-800 ring-blue-600/20">Glasanje otvoreno</span>
+                </li>
+                <li class="flex items-start justify-between gap-3 py-2.5">
+                  <div><p class="text-slate-900">3. Razno</p><p class="mt-0.5 text-[13px] text-slate-500">Diskusija — bez glasanja</p></div>
+                  <button class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Dodaj prijedlog</button>
+                </li>
+              </ol>
+              <details class="group mt-3">
+                <summary class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 cursor-pointer select-none list-none"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5"><path d="M7 5l6 5-6 5"/></svg>Dodaj tačku</summary>
+              </details>
+            </section>
+
+            <!-- ⑤ Prijedlozi -->
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="mb-3 text-sm font-semibold text-slate-700"><span class="ann mr-2">5</span>Prijedlozi</h2>
+              <div class="overflow-x-auto rounded-lg">
+                <table class="w-full text-sm">
+                  <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Šifra</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Naziv</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Rok</th>
+                    <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Glasalo</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                  </tr></thead>
+                  <tbody class="divide-y divide-slate-100">
+                    <tr><td class="px-3 py-1.5 whitespace-nowrap"><a class="font-medium text-primary-ink underline-offset-2 hover:underline">P-2026-01</a></td><td class="px-3 py-1.5">Godišnji plan održavanja 2026.</td><td class="px-3 py-1.5 whitespace-nowrap">—</td><td class="px-3 py-1.5 text-right tabular-nums">3 / 3</td><td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">Usvojen</span></td></tr>
+                    <tr><td class="px-3 py-1.5 whitespace-nowrap"><a class="font-medium text-primary-ink underline-offset-2 hover:underline">P-2026-02</a></td><td class="px-3 py-1.5">Sanacija krova Zgrade B do 4.800 KM</td><td class="px-3 py-1.5 whitespace-nowrap">07.11.2026.</td><td class="px-3 py-1.5 text-right tabular-nums">0 / 3</td><td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-blue-50 text-blue-800 ring-blue-600/20">Glasanje otvoreno</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <details class="group mt-4"><summary class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 cursor-pointer list-none"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5"><path d="M7 5l6 5-6 5"/></svg>Novi prijedlog</summary></details>
+            </section>
+
+            <!-- ⑥ Prisustvo kao sažetak -->
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="text-sm font-semibold text-slate-700"><span class="ann mr-2">6</span>Prisustvo</h2>
+              <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Prisustvo se vodi u režimu uživo, na dan sjednice.</p>
+              <p class="text-sm text-slate-700">Još nije evidentirano. Sjednica je 31.10.2026. u 07:53.</p>
+              <div class="mt-3"><a class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100">Otvori režim uživo</a></div>
+            </section>
+
+            <!-- Dokumenti sjednice -->
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="mb-3 text-sm font-semibold text-slate-700">Dokumenti sjednice</h2>
+              <ul class="divide-y divide-slate-100 text-sm">
+                <li class="flex items-center justify-between gap-3 py-2"><span><a class="font-medium text-primary-ink underline-offset-2 hover:underline">Poziv POZ-2026-0001</a></span><span class="text-[13px] text-slate-500">Objavljen vlasnicima</span></li>
+                <li class="flex items-center justify-between gap-3 py-2"><span><a class="font-medium text-primary-ink underline-offset-2 hover:underline">Odluka OD-2026-01</a></span><span class="text-[13px] text-slate-500">Objavljena vlasnicima</span></li>
+                <li class="flex items-center justify-between gap-3 py-2"><span><a class="font-medium text-primary-ink underline-offset-2 hover:underline">Zapisnik ZAP-2026-0001</a></span><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-slate-100 text-slate-700 ring-slate-500/20">Nacrt — ne objavljuje se</span></li>
+              </ul>
+              <div class="mt-3"><button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700">Generiši nacrt zapisnika (PDF)</button></div>
+              <p class="mt-2 text-[13px] text-slate-500">Konačan zapisnik nastaje u koraku 9 i poslije se ne mijenja — ispravka je nova verzija.</p>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ===================== MOBILNI 375 ===================== -->
+<div class="px-6 pb-16 pt-12">
+  <h2 class="mb-3 text-[15px] font-semibold text-slate-700">Mobilni 375 — lijevo: isto stanje; desno: stanje „Pozivi pripremljeni” (potvrda slanja otvorena)</h2>
+  <div class="flex flex-wrap items-start gap-10">
+
+    <!-- 375 A -->
+    <div class="w-[375px] shrink-0 bg-canvas shadow-xl ring-1 ring-slate-900/5">
+      <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"><span class="text-slate-500">☰</span><div class="flex-1"></div><div class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">MP</div></header>
+      <main class="p-4 space-y-6">
+        <div>
+          <a class="mb-2 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-sm font-medium text-blue-700">‹ Skupština i odluke</a>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Redovna godišnja sjednica skupštine 2026.</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Skupština · 31.10.2026. u 07:53</p>
+          <div class="mt-3"><a class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700">Vodi sjednicu uživo</a></div>
+        </div>
+
+        <section class="dopuna rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <span class="dopuna-tag">DOPUNA DS-a</span>
+          <h2 class="text-sm font-semibold text-slate-700"><span class="ann mr-2">1</span>Sljedeći korak</h2>
+          <!-- Na telefonu: StatusTimeline u kompaktnom obliku — tekst + traka napretka umjesto 3 reda krugova (dio DOPUNE, P-Q1) -->
+          <p class="mt-0.5 text-[13px] text-slate-500">Korak 5 od 10 — Glasanje otvoreno</p>
+          <div class="mt-2 flex gap-1" aria-hidden="true">
+            <span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span>
+          </div>
+          <p class="mt-4 text-[15px] font-medium text-slate-900">Zatvorite glasanje kada prođe rok ili kada se svi izjasne.</p>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-slate-700">Pozivi poslati 23.10.2026.</span></li>
+            <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20 text-[13px] font-semibold">!</span><span class="text-slate-700">P-2026-02: glasalo 0 od 3, rok 07.11.2026.</span></li>
+            <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20 text-[13px] font-semibold">!</span><span class="text-slate-700">Tačka 3 „Razno” nema prijedlog.</span></li>
+          </ul>
+          <div class="mt-4"><span class="ann mr-2">2</span>
+            <span class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-amber-600/40 bg-amber-50 text-amber-900"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5"><path d="M7 5l6 5-6 5"/></svg>Zatvori glasanje na sjednici</span>
+          </div>
+        </section>
+
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700"><span class="ann mr-2">4</span>Dnevni red</h2>
+          <ol class="divide-y divide-slate-100 text-sm">
+            <li class="py-2.5"><p class="text-slate-900">1. Usvajanje godišnjeg plana održavanja za 2026.</p><p class="mt-1 flex items-center gap-2 text-[13px] text-slate-500"><a class="font-medium text-primary-ink">P-2026-01</a><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">Usvojen</span></p></li>
+            <li class="py-2.5"><p class="text-slate-900">2. Sanacija krova Zgrade B</p><p class="mt-1 flex flex-wrap items-center gap-2 text-[13px] text-slate-500"><a class="font-medium text-primary-ink">P-2026-02</a><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-blue-50 text-blue-800 ring-blue-600/20">Glasanje otvoreno</span><span>0 od 3 · do 07.11.</span></p></li>
+            <li class="py-2.5"><p class="text-slate-900">3. Razno</p><p class="mt-0.5 text-[13px] text-slate-500">Diskusija — bez glasanja</p><button class="mt-2 inline-flex min-h-[44px] items-center justify-center rounded-full px-2.5 py-1 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Dodaj prijedlog</button></li>
+          </ol>
+        </section>
+        <p class="text-center text-[13px] text-slate-500">… Prijedlozi, Prisustvo (sažetak), Dokumenti sjednice — kao na desktopu, jedna kolona.</p>
+      </main>
+    </div>
+
+    <!-- 375 B: stanje Pozivi pripremljeni -->
+    <div class="w-[375px] shrink-0 bg-canvas shadow-xl ring-1 ring-slate-900/5">
+      <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"><span class="text-slate-500">☰</span><div class="flex-1"></div><div class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">MP</div></header>
+      <main class="p-4 space-y-6">
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Redovna godišnja sjednica skupštine 2026.</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Skupština · 31.10.2026. u 07:53</p>
+        </div>
+        <section class="dopuna rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <span class="dopuna-tag">DOPUNA DS-a</span>
+          <h2 class="text-sm font-semibold text-slate-700">Sljedeći korak</h2>
+          <p class="mt-0.5 text-[13px] text-slate-500">Korak 3 od 10 — Pozivi pripremljeni</p>
+          <div class="mt-2 flex gap-1" aria-hidden="true"><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-primary"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span><span class="h-1 flex-1 rounded-full bg-slate-200"></span></div>
+          <p class="mt-4 text-[15px] font-medium text-slate-900">Pošaljite pozive vlasnicima.</p>
+          <p class="mt-1 text-[13px] text-slate-500">Poziv PDF je pripremljen. Pregledajte ga prije slanja — poslije slanja dnevni red više ne bi trebalo mijenjati.</p>
+          <div class="mt-3"><a class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700">Pregledaj poziv (PDF)</a></div>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="h-3 w-3"><path d="M5 10.5l3 3 7-7"/></svg></span><span class="text-slate-700">Dnevni red: 3 tačke, 2 prijedloga</span></li>
+            <li class="flex items-start gap-2"><span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20 text-[13px] font-semibold">!</span><span class="text-slate-700">Nijedan vlasnik nema potpisanu saglasnost za e-glasanje — glasaće se lično ili papirom.</span></li>
+          </ul>
+          <details class="group mt-4" open>
+            <summary class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-amber-600/40 bg-amber-50 text-amber-900 cursor-pointer list-none"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5 rotate-90"><path d="M7 5l6 5-6 5"/></svg>Pošalji pozive (e-mail)</summary>
+            <form class="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+              <p class="text-sm font-semibold text-amber-900">Slanje poziva se ne može povući</p>
+              <p class="text-sm text-amber-950">Poziv dobija <b>svih 6 vlasnika</b> e-poštom (svi imaju adresu). Status sjednice prelazi u „Pozivi poslati”.</p>
+              <button class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-amber-600/40 bg-amber-50 text-amber-900">Da, pošalji 6 poziva</button>
+            </form>
+          </details>
+        </section>
+        <!-- Uspjeh poslije slanja -->
+        <div role="status" class="flex items-start gap-2 rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm border-l-emerald-500 bg-emerald-50 text-emerald-800">
+          <svg viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+          <span>(Poslije potvrde) Poslato 6 poziva. Sljedeći korak: otvorite glasanje za prijedloge.</span>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</body>
+</html>

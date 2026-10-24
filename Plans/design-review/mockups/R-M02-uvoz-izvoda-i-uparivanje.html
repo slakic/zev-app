@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R-M02 — Uvoz izvoda i uparivanje</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+  .dsadd{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .dsadd-label{position:absolute;top:-14px;right:8px;background:#ea580c;color:#fff;font-size:12px;font-weight:700;padding:1px 8px;border-radius:9999px;white-space:nowrap;z-index:1}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">R-M02</span>
+    <h1 class="text-lg font-semibold">Uplate: prvo posao, pa unos · pregled izvoda · bezbjedno raspoređivanje</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: R-R04, R-R05, R-R07 · nalazi R-N08–R-N11, R-N14, R-N15, R-N21, R-N22, R-N24</span>
+  </div>
+  <ol class="mt-3 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2">
+    <li class="flex gap-2"><span class="ann">1</span>Traka posla na vrhu: šta čeka, sa linkovima — prije bilo koje forme.</li>
+    <li class="flex gap-2"><span class="ann">2</span>Uvoz PDF izvoda je jedina `primary` radnja stranice; ručni unos i CSV su iza `ToggleBtn`.</li>
+    <li class="flex gap-2"><span class="ann">3</span>Pregled stavki: jedan zajednički obrazac za PDF i SMS — `Table` zaglavlje, `inputCls` polja, bez sopstvene sjenke, zbir po izvodu.</li>
+    <li class="flex gap-2"><span class="ann">4</span>Na 375 px svaka stavka postaje kartica (bez horizontalnog skrola od ~1000 px).</li>
+    <li class="flex gap-2"><span class="ann">5</span>Poslije uvoza: broj preostalih i „Upari sada” na filtriranu listu.</li>
+    <li class="flex gap-2"><span class="ann">6</span>Raspoređivanje: nema podrazumijevane fakture; fakture platioca su prve; avans je objašnjen.</li>
+  </ol>
+  <p class="mt-3 inline-flex items-center gap-2 rounded border-2 border-dashed border-orange-600 px-2 py-1 text-[13px] font-semibold text-orange-700">DOPUNA DS-a — traži odluku: `ReviewTable` (editabilna tabela „pregledaj → potvrdi”, R-R07 opcija B)</p>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz sa seed imenima; ne tvrdi da backend radi.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ================= DESKTOP ================= -->
+<section>
+  <h2 class="mb-3 text-[15px] font-semibold text-slate-700">Desktop 1440 — `/fakture/uplate` (stanje: pregled učitanih izvoda)</h2>
+  <div class="overflow-hidden rounded-lg border border-slate-300 bg-slate-50 shadow" style="width:1440px;max-width:100%">
+    <header class="flex items-center justify-end gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">JK</span>
+    </header>
+    <div class="p-8">
+      <div class="mx-auto w-full max-w-[1180px] space-y-6">
+
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Uplate i uparivanje</h1>
+            <p class="mt-1 text-[15px] text-slate-500">Uvoz izvoda, SMS potvrde i raspoređivanje na fakture</p>
+          </div>
+        </div>
+
+        <!-- 1 work strip -->
+        <div class="relative">
+          <span class="ann absolute -left-8 top-3">1</span>
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+              <div><span class="text-[15px] font-semibold tabular-nums text-slate-900">3</span> <span class="text-slate-700">uplate za uparivanje</span> <a class="ml-1 font-medium text-blue-700 underline underline-offset-2">prikaži</a></div>
+              <div><span class="text-[15px] font-semibold tabular-nums text-slate-900">0</span> <span class="text-slate-700">SMS na čekanju</span> <span class="text-[13px] text-slate-500">(prijem isključen)</span></div>
+              <div><span class="text-[15px] font-semibold tabular-nums text-slate-900">2</span> <span class="text-slate-700">mogući duplikati</span> <a class="ml-1 font-medium text-blue-700 underline underline-offset-2">usklađivanje</a></div>
+              <div><span class="text-[15px] font-semibold tabular-nums text-slate-900">1</span> <span class="text-slate-700">avans</span> <span class="text-[13px] text-slate-500">(nije posao)</span></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- 2 import card with review -->
+        <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <span class="ann absolute -left-8 top-3">2</span>
+          <h2 class="text-sm font-semibold text-slate-700">Uvoz bankovnog izvoda (PDF)</h2>
+          <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Provjerite stavke — ništa još nije sačuvano.</p>
+
+          <div class="mb-3 flex items-start gap-2 rounded-xl border-l-4 border-l-red-500 bg-red-50 px-3 py-2.5 text-sm text-red-800">
+            <span>⚠</span><span>Nije učitan (1): <b>izvod_0412.pdf</b> — fajl nema tekstualni sloj (skeniran dokument).</span>
+          </div>
+
+          <div class="dsadd mt-6">
+            <span class="dsadd-label">DOPUNA DS-a — ReviewTable</span>
+            <span class="ann absolute -left-8 top-2">3</span>
+            <div class="overflow-x-auto rounded-lg">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Uvezi</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Smjer</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Datum</th>
+                    <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Iznos</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Platilac / primalac</th>
+                    <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Faktura / trošak</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr class="bg-slate-50/80"><td colspan="6" class="px-3 py-2">
+                    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span class="font-medium text-slate-900">izvod_0411.pdf</span>
+                      <span class="text-[13px] text-slate-600">izvod od 23.10.2026.</span>
+                      <span class="text-[13px] text-slate-600">4 stavke · za uvoz: uplate <b class="tabular-nums">163,72 KM</b> (3) · isplate <b class="tabular-nums">120,00 KM</b> (1)</span>
+                    </div>
+                  </td></tr>
+                  <tr>
+                    <td class="px-3 py-1.5"><input type="checkbox" checked aria-label="Uvezi stavku 1"></td>
+                    <td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">uplata</span></td>
+                    <td class="px-3 py-1.5"><input aria-label="Datum, stavka 1" class="w-36 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" value="21.10.2026."></td>
+                    <td class="px-3 py-1.5 text-right"><input aria-label="Iznos, stavka 1" class="w-28 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-right text-sm tabular-nums shadow-sm" value="84,67"></td>
+                    <td class="px-3 py-1.5"><input aria-label="Platilac, stavka 1" class="w-48 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" value="ILIC NIKOLA"><div class="mt-1 text-[13px] text-slate-500">Svrha: naknada ZEV 09/2026</div></td>
+                    <td class="px-3 py-1.5"><select aria-label="Faktura, stavka 1" class="w-72 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"><option>FAK-2026-000004 — Nikola Ilić (Stan 3) — otvoreno 84,67 KM</option></select>
+                      <p class="mt-1 text-[13px] text-slate-500">Prijedlog: isto ime i tačan iznos</p></td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-1.5"><input type="checkbox" checked aria-label="Uvezi stavku 2"></td>
+                    <td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">uplata</span></td>
+                    <td class="px-3 py-1.5"><input class="w-36 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" value="22.10.2026."></td>
+                    <td class="px-3 py-1.5 text-right"><input class="w-28 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-right text-sm tabular-nums shadow-sm" value="40,00"></td>
+                    <td class="px-3 py-1.5"><input class="w-48 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" value="PETROVIC MILAN"></td>
+                    <td class="px-3 py-1.5"><select class="w-72 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-500 shadow-sm"><option>— ne uparuj sada —</option></select>
+                      <p class="mt-1 text-[13px] text-amber-800">Iznos ne odgovara nijednoj fakturi platioca — uparite poslije uvoza.</p></td>
+                  </tr>
+                  <tr class="bg-slate-50/60">
+                    <td class="px-3 py-1.5"><input type="checkbox" aria-label="Uvezi stavku 3"></td>
+                    <td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">uplata</span></td>
+                    <td class="px-3 py-1.5 text-slate-500">22.10.2026.</td>
+                    <td class="px-3 py-1.5 text-right tabular-nums text-slate-500">39,05</td>
+                    <td class="px-3 py-1.5 text-slate-500">SAVIC ANA</td>
+                    <td class="px-3 py-1.5"><p class="max-w-72 text-[13px] text-amber-800">Već evidentirano preko SMS-a — izvod će potvrditi SMS. <a class="font-medium underline underline-offset-2">Pogledaj uplatu</a></p></td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-1.5"><input type="checkbox" checked></td>
+                    <td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">isplata</span></td>
+                    <td class="px-3 py-1.5"><input class="w-36 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" value="23.10.2026."></td>
+                    <td class="px-3 py-1.5 text-right"><input class="w-28 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-right text-sm tabular-nums shadow-sm" value="120,00"></td>
+                    <td class="px-3 py-1.5"><input class="w-48 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" value="LIFT SERVIS DOO"></td>
+                    <td class="px-3 py-1.5"><select class="w-72 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"><option>LS-2026-081 — Lift Servis d.o.o. — 120,00 KM</option></select></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-blue-600 text-white shadow-sm hover:bg-blue-700">Uvezi 3 stavke i potvrdi 1 SMS</button>
+            <button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Odustani</button>
+          </div>
+
+          <div class="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+            <details class="group"><summary class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 cursor-pointer select-none list-none"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5"><path d="M8 5l5 5-5 5"/></svg>Ručni unos uplate</summary></details>
+            <details class="group"><summary class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 cursor-pointer select-none list-none"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5"><path d="M8 5l5 5-5 5"/></svg>Uvoz CSV izvoda (format: NLB, sačuvan)</summary></details>
+          </div>
+        </section>
+
+        <!-- 5 success state -->
+        <div class="relative">
+          <span class="ann absolute -left-8 top-2">5</span>
+          <p class="mb-2 text-[13px] font-medium text-slate-600">Stanje poslije potvrde (umjesto pregleda):</p>
+          <div role="status" class="flex flex-wrap items-center gap-3 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800 shadow-sm">
+            <span>✓</span>
+            <span class="flex-1">Uvezeno 3 stavke iz 1 izvoda (uplate 124,67 KM, isplate 120,00 KM); izvod je potvrdio 1 SMS. <b>1 uplata (40,00 KM) čeka uparivanje.</b></span>
+            <a class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100">Upari sada</a>
+          </div>
+        </div>
+
+        <!-- List -->
+        <form class="flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
+          <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Status</span>
+            <select class="w-56 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"><option>Za uparivanje (3)</option></select></label>
+          <button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-blue-50 text-blue-700">Primijeni</button>
+        </form>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">Uplate za uparivanje</h2>
+          <table class="w-full text-sm">
+            <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+              <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Datum</th>
+              <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Platilac</th>
+              <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Poziv na broj</th>
+              <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Iznos</th>
+              <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Slobodno</th>
+              <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
+              <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+            </tr></thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="px-3 py-1.5">22.10.2026.</td><td class="px-3 py-1.5">Milan Petrović</td><td class="px-3 py-1.5 font-mono text-[13px]">—</td><td class="px-3 py-1.5 text-right tabular-nums">40,00 KM</td><td class="px-3 py-1.5 text-right tabular-nums">40,00 KM</td><td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Neraspoređena</span></td><td class="px-3 py-1.5"><a class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700">Upari</a></td></tr>
+              <tr><td class="px-3 py-1.5">21.10.2026.</td><td class="px-3 py-1.5">Apoteka Zdravlje d.o.o.</td><td class="px-3 py-1.5 font-mono text-[13px]">202609-QW81LM</td><td class="px-3 py-1.5 text-right tabular-nums">33,39 KM</td><td class="px-3 py-1.5 text-right tabular-nums">33,39 KM</td><td class="px-3 py-1.5"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Neraspoređena</span></td><td class="px-3 py-1.5"><a class="inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[28px] border border-slate-300 bg-white text-slate-700">Upari</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 6 allocation detail -->
+        <div class="relative">
+          <span class="ann absolute -left-8 top-2">6</span>
+          <p class="mb-2 text-[13px] font-medium text-slate-600">Detalj uplate `/fakture/uplate/[id]` — kartica raspoređivanja (Marko Jovanović, 120,23 KM, slobodno 10,00 KM):</p>
+          <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="mb-3 text-sm font-semibold text-slate-700">Rasporedi na fakturu</h2>
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <label class="block text-sm sm:col-span-2"><span class="mb-1 block font-medium text-slate-700">Faktura</span>
+                  <select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" required>
+                    <option>— izaberite fakturu —</option>
+                    <optgroup label="Fakture: Marko Jovanović (platilac)"><option>nema otvorenih faktura</option></optgroup>
+                    <optgroup label="Ostali dužnici"><option>FAK-2026-000001 — Ana Savić (Garaža 1) — otvoreno 7,22 KM</option></optgroup>
+                  </select>
+                  <span class="mt-1 block text-[13px] text-slate-500">Marko Jovanović nema otvorenih faktura. Raspoređivanje na tuđu fakturu radite samo ako je platilac tako naveo u svrsi uplate.</span></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Iznos (KM)</span><input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm" placeholder="popunjava se po izboru fakture" disabled></label>
+                <div class="flex items-end"><button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-blue-600 text-white shadow-sm opacity-50" disabled>Rasporedi</button></div>
+              </div>
+              <div class="mt-4 border-t border-slate-100 pt-3 text-sm text-slate-700">
+                <p>Ako ništa ne rasporedite, <b class="tabular-nums">10,00 KM</b> ostaje kao <b>avans</b> vlasnika Marko Jovanović i umanjuje njegovu sljedeću fakturu.</p>
+                <button class="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700">Ostavi kao avans</button>
+                <span class="ml-2 text-[13px] text-slate-500">(zavisi od odluke R-Q4)</span>
+              </div>
+            </section>
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="text-sm font-semibold text-slate-700">Poništavanje</h2>
+              <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Odvojeno od raspoređivanja; storno je novi zapis, ništa se ne briše.</p>
+              <details class="group" open>
+                <summary class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-amber-600/40 bg-amber-50 text-amber-900 cursor-pointer list-none"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="h-3.5 w-3.5 rotate-90"><path d="M8 5l5 5-5 5"/></svg>Storniraj uplatu</summary>
+                <form class="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+                  <p class="text-sm font-semibold text-amber-900">Storniranje uplate je nepovratno</p>
+                  <p class="text-sm text-amber-900">Poništava se uplata <b>120,23 KM</b> (Marko Jovanović, 24.10.2026.). Fakture <b>FAK-2026-000003</b> (66,36 KM) i <b>FAK-2026-000008</b> (43,87 KM) ponovo postaju otvorene.</p>
+                  <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Razlog storniranja</span><input required class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+                  <button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-red-600 text-white shadow-sm">Da, storniraj uplatu</button>
+                </form>
+              </details>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MOBILNI ================= -->
+<section>
+  <h2 class="mb-3 text-[15px] font-semibold text-slate-700">Mobilni 375 — pregled izvoda kao kartice, i stanje greške</h2>
+  <div class="flex flex-wrap items-start gap-8">
+    <div class="overflow-hidden rounded-[24px] border border-slate-300 bg-slate-50 shadow" style="width:375px">
+      <header class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shadow-sm"><span class="p-1.5 text-slate-500">☰</span><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">JK</span></header>
+      <div class="space-y-6 p-4">
+        <div>
+          <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ Fakture i uplate</a>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Uplate i uparivanje</h1>
+        </div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm text-sm">
+          <ul class="space-y-1.5">
+            <li><b class="tabular-nums">3</b> uplate za uparivanje · <a class="font-medium text-blue-700 underline">prikaži</a></li>
+            <li><b class="tabular-nums">2</b> mogući duplikati · <a class="font-medium text-blue-700 underline">usklađivanje</a></li>
+          </ul>
+        </section>
+        <section class="dsadd rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <span class="dsadd-label">DOPUNA DS-a</span>
+          <h2 class="text-sm font-semibold text-slate-700">Uvoz izvoda (PDF)</h2>
+          <p class="mb-3 mt-0.5 text-[13px] text-slate-500">izvod_0411.pdf · 4 stavke · uplate 163,72 KM · isplate 120,00 KM</p>
+          <span class="ann">4</span>
+          <div class="mt-2 space-y-3">
+            <div class="rounded-lg border border-slate-200 p-3">
+              <label class="flex items-center gap-2 text-sm font-medium text-slate-900"><input type="checkbox" checked> 84,67 KM · ILIC NIKOLA</label>
+              <div class="mt-1 flex items-center gap-2 text-[13px] text-slate-600"><span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">uplata</span>21.10.2026.</div>
+              <label class="mt-2 block text-sm"><span class="mb-1 block font-medium text-slate-700">Faktura</span><select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"><option>FAK-2026-000004 — Nikola Ilić — 84,67</option></select><span class="mt-1 block text-[13px] text-slate-500">Prijedlog: isto ime i tačan iznos</span></label>
+              <details class="mt-2"><summary class="cursor-pointer text-[13px] font-medium text-blue-700">Ispravi datum, iznos ili ime</summary></details>
+            </div>
+            <div class="rounded-lg border border-slate-200 p-3">
+              <label class="flex items-center gap-2 text-sm font-medium text-slate-900"><input type="checkbox" checked> 40,00 KM · PETROVIC MILAN</label>
+              <label class="mt-2 block text-sm"><span class="mb-1 block font-medium text-slate-700">Faktura</span><select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-500 shadow-sm"><option>— ne uparuj sada —</option></select></label>
+              <p class="mt-1 text-[13px] text-amber-800">Iznos ne odgovara nijednoj fakturi platioca.</p>
+            </div>
+            <div class="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
+              <label class="flex items-center gap-2 text-sm font-medium text-slate-500"><input type="checkbox"> 39,05 KM · SAVIC ANA</label>
+              <p class="mt-1 text-[13px] text-amber-800">Već evidentirano preko SMS-a — izvod će ga potvrditi.</p>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-col gap-2">
+            <button class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium bg-blue-600 text-white shadow-sm">Uvezi 3 i potvrdi 1 SMS</button>
+            <button class="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700">Odustani</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-[24px] border border-slate-300 bg-slate-50 shadow" style="width:375px">
+      <header class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shadow-sm"><span class="p-1.5 text-slate-500">☰</span><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">JK</span></header>
+      <div class="space-y-4 p-4">
+        <p class="text-[13px] font-medium text-slate-600">Stanje upozorenja — izvod već uvezen / pogrešan račun:</p>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-2 text-sm font-semibold text-slate-700">izvod_0410.pdf</h2>
+          <p class="text-[13px] text-amber-800">Ovaj izvod je već uvezen 22.10.2026. 09:14 — stavke nisu označene za uvoz.</p>
+          <p class="mt-2 text-[13px] text-amber-800">Broj računa u izvodu (555-111-00009988-77) ne izgleda kao odabrani račun „Glavni račun — NLB banka”. Provjerite izbor računa.</p>
+        </section>
+        <p class="text-[13px] font-medium text-slate-600">Detalj uplate na 375: alokacije kao kartice (storno vidljiv):</p>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">Alokacije</h2>
+          <div class="space-y-3 text-sm">
+            <div class="rounded-lg border border-slate-200 p-3">
+              <a class="font-medium text-blue-700 underline-offset-2 hover:underline">FAK-2026-000003</a>
+              <div class="mt-1 grid grid-cols-[110px_1fr] gap-y-1 text-[13px]"><span class="text-slate-500">Iznos</span><span class="tabular-nums text-slate-900">66,36 KM</span><span class="text-slate-500">Vrijeme</span><span>24.10.2026. 08:53</span></div>
+              <button class="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium min-h-[44px] border border-amber-600/40 bg-amber-50 text-amber-900">› Storniraj alokaciju 66,36 KM</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+</body>
+</html>

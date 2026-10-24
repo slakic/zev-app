@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V-M03 — E-glasački listić</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .ann{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:22px;padding:0 6px;border-radius:9999px;background:#a21caf;color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
+  .ds-add{outline:2px dashed #f97316;outline-offset:3px}
+  .ds-add-label{display:inline-block;background:#fff7ed;color:#c2410c;border:1px dashed #f97316;border-radius:6px;font-size:12px;font-weight:600;padding:1px 6px}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+
+<div class="border-b-4 border-fuchsia-700 bg-white px-6 py-5">
+  <div class="text-xs font-bold uppercase tracking-wider text-fuchsia-700">Mockup V-M03 · statičan prikaz, nema backend-a</div>
+  <h1 class="mt-1 text-2xl font-semibold">E-glasački listić (<code>/glasanje/[token]</code>) — potpun, jedno <code>primary</code>, greška čuva izbor</h1>
+  <p class="mt-1 text-sm text-slate-600">Pokriva <b>V-R03</b> (i tekst iz <b>V-R09</b>). Nalazi: V-N05, V-N06, V-N07, V-N08, V-N09, V-N10, V-N27. Podaci: seed — Nikola Ilić, UO-2026-01 „Izbor izvođača za sanaciju krova Zgrade B”, glasanje do 03.11.2026. 07:53. <b>Seed nema priloga uz prijedlog — prilozi ispod su ilustracija mjesta i oblika, nazivi su primjer.</b></p>
+  <ol class="mt-3 grid gap-1 text-sm text-slate-700 md:grid-cols-2">
+    <li><span class="ann">1</span> Težina glasa objašnjena ili skrivena kad je 1; „verzija” samo kad ih ima više.</li>
+    <li><span class="ann">2</span> Prilozi prijedloga — prije izjave „pročitao/la u cijelosti”.</li>
+    <li><span class="ann">3</span> Otisak SHA-256 u „Tehnički detalji” (<code>&lt;details&gt;</code>), 13px, bez <code>slate-400</code>.</li>
+    <li><span class="ann">4</span> Izjava: cijela labela klikabilna, min. 44px, 15px tekst.</li>
+    <li><span class="ann">5</span> Okidač panela je <code>secondary</code> „Pregledaj i potvrdi”; jedino <code>primary</code> je „Da, pošalji izjašnjenje”.</li>
+    <li><span class="ann">6</span> <span class="ds-add-label">DOPUNA DS-a — traži odluku</span> <code>ConfirmAction</code> bez sopstvene forme + izuzetak: potvrda glasa je <code>primary</code>, ne <code>caution</code>.</li>
+    <li><span class="ann">7</span> Greška (pogrešan kod): <code>Flash</code> sa <code>role="alert"</code> uz polje; izbor i izjava ostaju označeni.</li>
+    <li><span class="ann">8</span> Potvrda: prijedlog, vrijeme, broj potvrde, „Odštampaj” — čitljiv dokaz.</li>
+  </ol>
+</div>
+
+<div class="px-6 pt-8 text-sm font-semibold uppercase tracking-wider text-slate-500">Mobilni 375 — A: listić (panel potvrde otvoren) · B: greška „pogrešan kod” · C: potvrda</div>
+<div class="flex flex-wrap items-start gap-10 px-6 pb-12 pt-3">
+
+  <!-- ===== A: listić ===== -->
+  <div class="w-[375px] shrink-0 overflow-hidden rounded-[28px] border-8 border-slate-800 bg-slate-50 shadow-lg">
+    <main class="mx-auto min-h-screen max-w-2xl p-4">
+      <div class="mb-6 flex flex-col items-center">
+        <img src="../../../public/logo-mark.png" alt="" class="h-10 w-auto">
+        <div class="mt-1 text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div>
+        <div class="text-sm text-slate-500">Upravljanje zajednicom etažnih vlasnika</div>
+      </div>
+      <div class="space-y-4">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">1. Ko ste vi</h2>
+          <p class="text-[15px] text-slate-900"><b>Nikola Ilić</b></p>
+          <p class="mt-1 text-sm text-slate-600">Glasate kao član upravnog odbora ZEV VM 10-12. Svaki član ima jedan glas. <span class="ann">1</span></p>
+        </section>
+
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">2. O čemu se izjašnjavate</h2>
+          <div class="text-[13px] font-medium text-slate-600">Sjednica upravnog odbora br. 1</div>
+          <h3 class="mt-1 text-[17px] font-semibold leading-snug text-slate-900">UO-2026-01 — Izbor izvođača za sanaciju krova Zgrade B</h3>
+          <p class="mt-3 whitespace-pre-wrap text-[16px] leading-relaxed text-slate-900">Upravni odbor bira ponudu firme 'Krovoterm' d.o.o. kao najpovoljniju za sanaciju krova Zgrade B, u skladu sa odlukom skupštine P-2026-02.</p>
+          <p class="mt-3 text-sm font-medium text-slate-900">Glasanje traje do 03.11.2026. u 07:53</p>
+
+          <div class="mt-4 border-t border-slate-100 pt-3">
+            <div class="text-sm font-semibold text-slate-700">Prilozi uz prijedlog (2) <span class="ann">2</span></div>
+            <ul class="mt-2 divide-y divide-slate-100">
+              <li class="flex items-center justify-between gap-3 py-2"><span class="text-sm text-slate-900">Ponuda Krovoterm d.o.o. <span class="block text-[13px] text-slate-500">PDF · primjer</span></span><a class="inline-flex min-h-[44px] items-center justify-center rounded-full px-3 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Otvori</a></li>
+              <li class="flex items-center justify-between gap-3 py-2"><span class="text-sm text-slate-900">Uporedni pregled ponuda <span class="block text-[13px] text-slate-500">PDF · primjer</span></span><a class="inline-flex min-h-[44px] items-center justify-center rounded-full px-3 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Otvori</a></li>
+            </ul>
+          </div>
+          <details class="mt-3">
+            <summary class="cursor-pointer text-[13px] font-medium text-slate-600">Tehnički detalji <span class="ann">3</span></summary>
+            <p class="mt-2 text-[13px] text-slate-600">Otisak teksta i priloga (SHA-256): 96b317d16484f065964d… — potvrđuje da prijedlog nije mijenjan nakon slanja. Verzija prijedloga: 1.</p>
+          </details>
+        </section>
+
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">3. Vaše izjašnjenje</h2>
+          <fieldset>
+            <legend class="mb-2 text-sm font-medium text-slate-700">Vaš izbor</legend>
+            <div class="space-y-2">
+              <label class="flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-blue-600 bg-blue-50 px-4 py-3 ring-1 ring-blue-600"><input type="radio" name="a" checked class="h-5 w-5 shrink-0 accent-blue-600"><span class="text-base font-medium text-slate-900">Za (odobravam)</span></label>
+              <label class="flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="a" class="h-5 w-5 shrink-0 accent-blue-600"><span class="text-base font-medium text-slate-900">Protiv (odbijam)</span></label>
+              <label class="flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="a" class="h-5 w-5 shrink-0 accent-blue-600"><span class="text-base font-medium text-slate-900">Uzdržan/a</span></label>
+            </div>
+            <div class="mt-5">
+              <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Verifikacioni kod iz poruke</span>
+                <input value="482913" inputmode="numeric" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm">
+                <span class="mt-1 block text-[13px] text-slate-500">Šestocifreni kod iz e-poruke u kojoj ste dobili ovaj link.</span>
+              </label>
+            </div>
+            <label class="mt-4 flex min-h-[44px] cursor-pointer items-start gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-[15px] text-slate-700">
+              <input type="checkbox" checked class="mt-1 h-5 w-5 shrink-0 accent-blue-600">
+              <span>Potvrđujem da sam lično izvršio/la ovo izjašnjavanje kao vlasnik ili ovlašćeni punomoćnik, da sam pročitao/la prijedlog i priloge u cijelosti i da je moj izbor konačan. <span class="ann">4</span></span>
+            </label>
+
+            <details open class="ds-add mt-5 rounded-lg">
+              <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium max-md:min-h-[44px] border border-slate-300 bg-white text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 shrink-0 rotate-90"><path d="M7 5l6 5-6 5"/></svg>Pregledaj i potvrdi</summary> <span class="ann">5</span>
+              <div class="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+                <p class="text-sm font-semibold text-amber-900">Slanje izjašnjenja je konačno</p>
+                <p class="text-sm text-amber-900">Izjašnjavate se <b>ZA</b> prijedlog UO-2026-01 „Izbor izvođača za sanaciju krova Zgrade B”. Nakon slanja izbor se ne može promijeniti.</p>
+                <button class="inline-flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium max-md:min-h-[44px] bg-blue-600 text-white shadow-sm">Da, pošalji izjašnjenje</button>
+                <span class="ann">6</span>
+              </div>
+            </details>
+          </fieldset>
+        </section>
+      </div>
+      <div class="mt-6 space-y-2 text-center text-[13px] text-slate-600">
+        <p>Ovaj postupak predstavlja evidentirano elektronsko odobravanje, a ne kvalifikovani elektronski potpis.</p>
+        <p>Ovo izjašnjavanje je za ZEV VM 10-12. Ako kod ne radi ili je link istekao, obratite se predsjedniku ZEV-a.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== B: greška ===== -->
+  <div class="w-[375px] shrink-0 overflow-hidden rounded-[28px] border-8 border-slate-800 bg-slate-50 shadow-lg">
+    <main class="p-4">
+      <p class="mb-3 text-[13px] text-slate-500">(koraci 1 i 2 iznad — nepromijenjeni)</p>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="mb-3 text-sm font-semibold text-slate-700">3. Vaše izjašnjenje</h2>
+        <div class="space-y-2">
+          <label class="flex min-h-14 items-center gap-3 rounded-xl border border-blue-600 bg-blue-50 px-4 py-3 ring-1 ring-blue-600"><input type="radio" name="b" checked class="h-5 w-5 accent-blue-600"><span class="text-base font-medium text-slate-900">Za (odobravam)</span></label>
+          <label class="flex min-h-14 items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="b" class="h-5 w-5 accent-blue-600"><span class="text-base font-medium text-slate-900">Protiv (odbijam)</span></label>
+          <label class="flex min-h-14 items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="b" class="h-5 w-5 accent-blue-600"><span class="text-base font-medium text-slate-900">Uzdržan/a</span></label>
+        </div>
+        <p class="mt-2 text-[13px] text-slate-600">Vaš izbor je sačuvan — samo ispravite kod. <span class="ann">7</span></p>
+        <div class="mt-5">
+          <div role="alert" class="mb-2 flex items-start gap-2 rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm border-l-red-500 bg-red-50 text-red-800">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.169 2.63-1.516 2.63H3.72c-1.347 0-2.189-1.463-1.515-2.63L8.485 2.495ZM10 6a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 6Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>
+            <span>Verifikacioni kod nije ispravan. Provjerite kod u e-poruci i upišite ga ponovo. Preostalo pokušaja: 4.</span>
+          </div>
+          <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Verifikacioni kod iz poruke</span>
+            <input class="w-full rounded-lg border border-red-500 bg-white px-3 py-1.5 text-sm shadow-sm ring-2 ring-red-500/20" aria-invalid="true">
+          </label>
+        </div>
+        <label class="mt-4 flex min-h-[44px] items-start gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-[15px] text-slate-700"><input type="checkbox" checked class="mt-1 h-5 w-5 accent-blue-600"><span>Potvrđujem da sam lično izvršio/la ovo izjašnjavanje … (izjava ostaje označena)</span></label>
+        <div class="mt-5"><span class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium max-md:min-h-[44px] border border-slate-300 bg-white text-slate-700">› Pregledaj i potvrdi</span></div>
+      </section>
+      <p class="mt-3 text-[13px] text-slate-600"><b>Napomena za pregled:</b> broj preostalih pokušaja je prijedlog teksta — servis danas ima ograničenje („Previše pokušaja… 15 minuta”), ali ga ne izlaže kao broj; prikazati ga samo ako servis to može tačno reći.</p>
+    </main>
+  </div>
+
+  <!-- ===== C: potvrda ===== -->
+  <div class="w-[375px] shrink-0 overflow-hidden rounded-[28px] border-8 border-slate-800 bg-slate-50 shadow-lg">
+    <main class="p-4">
+      <div class="mb-6 flex flex-col items-center">
+        <img src="../../../public/logo-mark.png" alt="" class="h-10 w-auto">
+        <div class="mt-1 text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div>
+      </div>
+      <div role="status" class="mb-4 flex items-start gap-2 rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm border-l-emerald-500 bg-emerald-50 text-emerald-800">
+        <svg viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+        <span>Vaše izjašnjenje je evidentirano.</span>
+      </div>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="mb-3 text-sm font-semibold text-slate-700">Potvrda izjašnjavanja <span class="ann">8</span></h2>
+        <dl class="divide-y divide-slate-100 text-sm">
+          <div class="py-2.5"><dt class="text-[13px] text-slate-500">Prijedlog</dt><dd class="text-[15px] text-slate-900">UO-2026-01 — Izbor izvođača za sanaciju krova Zgrade B</dd></div>
+          <div class="py-2.5"><dt class="text-[13px] text-slate-500">Glasao/la</dt><dd class="text-[15px] text-slate-900">Nikola Ilić</dd></div>
+          <div class="py-2.5"><dt class="text-[13px] text-slate-500">Vrijeme</dt><dd class="text-[15px] tabular-nums text-slate-900">24.10.2026. u 09:12</dd></div>
+          <div class="ds-add rounded py-2.5"><dt class="text-[13px] text-slate-500">Vaš izbor (samo na ovom ekranu — V-Q3)</dt><dd class="text-[15px] font-semibold text-slate-900">ZA</dd></div>
+          <div class="py-2.5"><dt class="text-[13px] text-slate-500">Broj potvrde</dt><dd class="text-[15px] tabular-nums text-slate-900">cm2x8…k41q</dd></div>
+        </dl>
+        <p class="mt-3 text-sm text-slate-700">Glas je zabilježen kao nepromjenjiv zapis i ne može se promijeniti. Rezultat će biti objavljen nakon zatvaranja glasanja 03.11.2026.</p>
+        <button class="mt-4 flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium max-md:min-h-[44px] border border-slate-300 bg-white text-slate-700">Odštampaj potvrdu</button>
+      </section>
+      <p class="mt-3 text-[13px] text-slate-600"><b>Napomena:</b> vrijeme glasa i broj potvrde su ilustracija; prikaz izbora čeka odluku V-Q3 (narandžasto).</p>
+    </main>
+  </div>
+</div>
+
+<!-- ===== Desktop ===== -->
+<div class="px-6 pt-2 text-sm font-semibold uppercase tracking-wider text-slate-500">Desktop 1440 — ista stranica, kolona <code>max-w-2xl</code> (kao danas), korak 3 sa zatvorenim panelom potvrde</div>
+<div class="overflow-x-auto px-6 pb-16 pt-3">
+  <div class="mx-auto w-[1440px] rounded-lg border border-slate-300 bg-slate-50 py-10 shadow">
+    <main class="mx-auto max-w-2xl">
+      <div class="mb-6 flex items-center gap-3">
+        <img src="../../../public/logo-mark.png" alt="" class="h-10 w-auto">
+        <div><div class="text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div><div class="text-sm text-slate-500">Upravljanje zajednicom etažnih vlasnika</div></div>
+      </div>
+      <div class="space-y-4">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">1. Ko ste vi</h2>
+          <p class="text-[15px] text-slate-900"><b>Nikola Ilić</b> <span class="text-sm text-slate-600">— član upravnog odbora, jedan glas</span></p>
+        </section>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">2. O čemu se izjašnjavate</h2>
+          <div class="text-[13px] font-medium text-slate-600">Sjednica upravnog odbora br. 1</div>
+          <h3 class="mt-1 max-w-[68ch] text-[17px] font-semibold text-slate-900">UO-2026-01 — Izbor izvođača za sanaciju krova Zgrade B</h3>
+          <p class="mt-3 max-w-[68ch] text-[16px] leading-relaxed text-slate-900">Upravni odbor bira ponudu firme 'Krovoterm' d.o.o. kao najpovoljniju za sanaciju krova Zgrade B, u skladu sa odlukom skupštine P-2026-02.</p>
+          <p class="mt-3 text-sm font-medium text-slate-900">Glasanje traje do 03.11.2026. u 07:53</p>
+          <div class="mt-4 border-t border-slate-100 pt-3">
+            <div class="text-sm font-semibold text-slate-700">Prilozi uz prijedlog (2)</div>
+            <ul class="mt-2 divide-y divide-slate-100">
+              <li class="flex items-center justify-between gap-3 py-2"><span class="text-sm">Ponuda Krovoterm d.o.o. <span class="text-[13px] text-slate-500">· PDF · primjer</span></span><a class="inline-flex min-h-[28px] items-center rounded-full px-3 py-1 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Otvori</a></li>
+              <li class="flex items-center justify-between gap-3 py-2"><span class="text-sm">Uporedni pregled ponuda <span class="text-[13px] text-slate-500">· PDF · primjer</span></span><a class="inline-flex min-h-[28px] items-center rounded-full px-3 py-1 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Otvori</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">3. Vaše izjašnjenje</h2>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex min-h-14 items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="d" class="h-5 w-5 accent-blue-600"><span class="text-base font-medium">Za (odobravam)</span></label>
+            <label class="flex min-h-14 items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="d" class="h-5 w-5 accent-blue-600"><span class="text-base font-medium">Protiv (odbijam)</span></label>
+            <label class="flex min-h-14 items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3"><input type="radio" name="d" class="h-5 w-5 accent-blue-600"><span class="text-base font-medium">Uzdržan/a</span></label>
+          </div>
+          <p class="mt-2 text-[13px] text-slate-600">Napomena: na desktopu opcije mogu ostati jedna ispod druge (kao danas) — tri u redu je samo opcija; ne mijenja tap mete.</p>
+          <div class="mt-5 max-w-sm">
+            <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Verifikacioni kod iz poruke</span><input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+          </div>
+          <label class="mt-4 flex min-h-[44px] items-start gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-[15px] text-slate-700"><input type="checkbox" class="mt-1 h-5 w-5 accent-blue-600"><span>Potvrđujem da sam lično izvršio/la ovo izjašnjavanje … i da sam pročitao/la prijedlog i priloge u cijelosti.</span></label>
+          <div class="mt-5"><span class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700">› Pregledaj i potvrdi</span> <span class="text-[13px] text-slate-600">— na stranici nema <code>primary</code> dugmeta dok se panel potvrde ne otvori.</span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

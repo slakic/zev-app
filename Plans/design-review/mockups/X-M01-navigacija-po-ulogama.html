@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-M01 Navigacija po ulogama</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:3px;position:relative}
+  .ds-add-tag{position:absolute;top:-11px;right:4px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<!-- Traka mockupa -->
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">X-M01</span>
+    <h1 class="text-lg font-semibold">Navigacija po ulogama — sidebar, mobilni drawer, identitet ZEV-a, aktivno stanje na podstranici</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: X-R01, X-R02, X-R03, X-R04, X-R05 · nalazi X-N01–X-N06</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Naziv aktivnog ZEV-a uvijek ispod naziva aplikacije (13px, tihi tekst) — i za korisnika sa jednim ZEV-om (X-R02, X-Q1).</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Grupe po ulozi: „Moje" / „Zajednica" (vlasnik), „Svakodnevno" / „Zajednica" / „Uprava" (predsjednik). <b class="text-orange-700">DOPUNA DS-a — traži odluku (X-Q2)</b>.</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Na <code>/fakture/[id]</code> stavka „Fakture i uplate" ostaje aktivna (prefiks) + <code>aria-current="page"</code> (X-R01).</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span>„‹ Fakture i uplate" kroz postojeći <code>PageHeader backHref</code> (X-R01).</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>Mobilno: ručno crtane ikone Meni/Zatvori, 44×44px, vidljiva riječ „Meni" (X-R04).</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>Meni naloga: uloga na 13px, bez <code>role="menu"</code>; „Moji podaci" premješteni iz glavnog menija vlasnika (X-R05, X-Q6).</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz. Grupe i redoslijed su hipoteza bez podataka o korištenju — predlog za provjeru u P8 sesiji. Sve boje, veličine i težine dugmadi su postojeći tokeni iz <code>ui.tsx</code>/<code>nav-shell.tsx</code>.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ===================== DESKTOP 1440: VLASNIK ===================== -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — vlasnik (Ana Savić) na detalju fakture</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex min-h-[760px]">
+      <!-- Sidebar -->
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-6 items-center justify-center rounded bg-slate-800 text-[10px] font-bold text-white" aria-hidden="true">Z</div>
+            <div>
+              <div class="text-lg font-bold leading-tight tracking-tight text-blue-700">ZEV upravnik</div>
+              <div class="relative flex items-center gap-1 text-[13px] leading-tight text-slate-500" title="Zajednica etažnih vlasnika &quot;Vojvode Mišića 10 i 12&quot;, Banja Luka">
+                ZEV VM 10-12 <span class="ann absolute -right-7 -top-1">1</span>
+              </div>
+            </div>
+          </div>
+          <button type="button" aria-label="Suzi meni" class="rounded-full p-1.5 text-slate-500 hover:bg-slate-100"><i data-icon="chevL" class="h-4 w-4"></i></button>
+        </div>
+        <nav class="px-2 pb-4" aria-label="Glavna navigacija">
+          <div class="ds-add mt-1 rounded-lg pb-1"><span class="ds-add-tag">DOPUNA DS-a — traži odluku</span>
+            <div class="flex items-center gap-2 px-3.5 pb-1 pt-3 text-[13px] font-medium text-slate-500">Moje <span class="ann">2</span></div>
+            <div class="space-y-0.5">
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"><i data-icon="home" class="h-5 w-5 shrink-0"></i>Početna</a>
+              <a href="#" aria-current="page" class="relative flex items-center gap-3 rounded-full bg-blue-50 px-3.5 py-2 text-sm font-medium text-blue-700"><i data-icon="receipt" class="h-5 w-5 shrink-0"></i>Fakture i uplate<span class="ann absolute -right-2 top-1.5">3</span></a>
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><i data-icon="ballot" class="h-5 w-5 shrink-0"></i>Skupština i glasanje</a>
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><i data-icon="wrench" class="h-5 w-5 shrink-0"></i>Održavanje</a>
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><i data-icon="doc" class="h-5 w-5 shrink-0"></i>Dokumenti</a>
+            </div>
+            <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Zajednica</div>
+            <div class="space-y-0.5">
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><i data-icon="building" class="h-5 w-5 shrink-0"></i>Zgrade i jedinice</a>
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><i data-icon="landmark" class="h-5 w-5 shrink-0"></i>Organi ZEV</a>
+              <a href="#" class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"><i data-icon="calendar" class="h-5 w-5 shrink-0"></i>Planovi</a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Glavni dio -->
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="sticky top-0 z-20 flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <div class="flex-1"></div>
+          <div class="relative">
+            <button type="button" aria-expanded="true" aria-label="Nalog: Ana Savić" class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">AS</button>
+            <!-- Meni naloga (otvoren) -->
+            <div class="absolute right-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200/80 bg-white py-1.5 shadow-xl ring-1 ring-slate-900/5">
+              <div class="flex items-center gap-3 border-b border-slate-100 px-3.5 py-3">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">AS</div>
+                <div class="min-w-0">
+                  <div class="truncate text-sm font-medium text-slate-800">Ana Savić</div>
+                  <div class="truncate text-[13px] text-slate-500">Vlasnik · ZEV VM 10-12</div>
+                </div>
+                <span class="ann">6</span>
+              </div>
+              <ul class="py-1">
+                <li><a href="#" class="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700"><i data-icon="users" class="h-4 w-4 shrink-0 text-slate-500"></i>Moji podaci</a></li>
+                <li><a href="#" class="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700"><i data-icon="help" class="h-4 w-4 shrink-0 text-slate-500"></i>Korisničko uputstvo</a></li>
+                <li><button type="button" class="flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"><i data-icon="logout" class="h-4 w-4 shrink-0 text-slate-500"></i>Odjava</button></li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <main class="min-w-0 flex-1 p-8">
+          <div class="mx-auto w-full max-w-[1440px] space-y-6">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <a href="#" class="relative mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-50">‹ Fakture i uplate <span class="ann absolute -right-8 top-0.5">4</span></a>
+                <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Faktura FAK-2026-000001</h1>
+                <p class="mt-1 text-[15px] text-slate-500">Zgrada A (Vojvode Mišića 10) / Garaža 1 · Ana Savić</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <a href="#" class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Preuzmi PDF</a>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <span class="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-[13px] font-medium text-blue-800 ring-1 ring-inset ring-blue-600/20">Izdata</span>
+              <span class="inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[13px] font-medium text-amber-800 ring-1 ring-inset ring-amber-600/20">Dospjela (neplaćena)</span>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+              <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <h2 class="mb-3 text-sm font-semibold text-slate-700">Iznosi</h2>
+                <dl class="space-y-1.5 text-sm">
+                  <div class="flex justify-between"><dt>Ukupno</dt><dd class="font-semibold tabular-nums">7,22 KM</dd></div>
+                  <div class="flex justify-between"><dt>Plaćeno</dt><dd class="tabular-nums">0,00 KM</dd></div>
+                  <div class="flex justify-between"><dt>Otvoreno</dt><dd class="font-semibold tabular-nums">7,22 KM</dd></div>
+                  <div class="flex justify-between"><dt>Dospijeće</dt><dd class="tabular-nums">15.09.2026.</dd></div>
+                </dl>
+              </section>
+              <section class="col-span-2 rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <h2 class="mb-3 text-sm font-semibold text-slate-700">Stavke sa obračunom</h2>
+                <table class="w-full text-sm">
+                  <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left"><th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Stavka</th><th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Formula</th><th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Iznos</th></tr></thead>
+                  <tbody class="divide-y divide-slate-100">
+                    <tr><td class="px-3 py-1.5">Redovno održavanje</td><td class="px-3 py-1.5 text-[13px] text-slate-600">cijena po m² × korisna površina</td><td class="px-3 py-1.5 text-right tabular-nums">4,50</td></tr>
+                    <tr><td class="px-3 py-1.5">Fond održavanja (rezerva)</td><td class="px-3 py-1.5 text-[13px] text-slate-600">stopa × vlasnički udio</td><td class="px-3 py-1.5 text-right tabular-nums">2,72</td></tr>
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ===================== POREĐENJE SIDEBAR-a PO ULOGAMA ===================== -->
+<section>
+  <h2 class="mb-1 text-base font-semibold text-slate-800">Desktop 1440 — sidebar po ulogama (samo navigacija)</h2>
+  <p class="mb-3 text-[13px] text-slate-600">Danas: vlasnik 9 ravnih stavki, predsjednik i računovođa identičnih 12 (<code>(app)/layout.tsx:26-39</code>). Predlog: isti skup ruta, drugačiji redoslijed i grupe po ulozi; dnevnici dobijaju stavku „Evidencije" (X-R13, X-Q5).</p>
+  <div class="flex flex-wrap items-start gap-6">
+
+    <!-- Danas -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Danas — predsjednik/računovođa</div>
+      <aside class="frame w-60 bg-white">
+        <div class="p-4 text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div>
+        <nav class="space-y-0.5 px-2 pb-4 text-sm font-medium text-slate-700">
+          <div class="flex items-center gap-3 rounded-full bg-blue-50 px-3.5 py-2 text-blue-700"><i data-icon="home" class="h-5 w-5"></i>Početna</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="building" class="h-5 w-5"></i>Zgrade i jedinice</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="users" class="h-5 w-5"></i>Vlasnici i korisnici</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="landmark" class="h-5 w-5"></i>Organi ZEV</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="ballot" class="h-5 w-5"></i>Skupština i odluke</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="receipt" class="h-5 w-5"></i>Fakture i uplate</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="wallet" class="h-5 w-5"></i>Troškovi</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="calendar" class="h-5 w-5"></i>Planovi</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="wrench" class="h-5 w-5"></i>Održavanje</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="doc" class="h-5 w-5"></i>Dokumenti</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="chart" class="h-5 w-5"></i>Izvještaji</div>
+          <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja</div>
+        </nav>
+      </aside>
+    </div>
+
+    <!-- Predsjednik -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Predlog — predsjednik (Milan Petrović)</div>
+      <aside class="frame ds-add w-60 bg-white"><span class="ds-add-tag">DOPUNA DS-a — naslov grupe</span>
+        <div class="p-4">
+          <div class="text-lg font-bold leading-tight tracking-tight text-blue-700">ZEV upravnik</div>
+          <div class="text-[13px] leading-tight text-slate-500">ZEV VM 10-12</div>
+        </div>
+        <nav class="px-2 pb-4 text-sm font-medium text-slate-700">
+          <div class="px-3.5 pb-1 text-[13px] font-medium text-slate-500">Svakodnevno</div>
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3 rounded-full bg-blue-50 px-3.5 py-2 text-blue-700"><i data-icon="home" class="h-5 w-5"></i>Početna</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="receipt" class="h-5 w-5"></i>Fakture i uplate</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="wallet" class="h-5 w-5"></i>Troškovi</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="ballot" class="h-5 w-5"></i>Skupština i odluke</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="wrench" class="h-5 w-5"></i>Održavanje</div>
+          </div>
+          <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Zajednica</div>
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="users" class="h-5 w-5"></i>Vlasnici i korisnici</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="building" class="h-5 w-5"></i>Zgrade i jedinice</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="landmark" class="h-5 w-5"></i>Organi ZEV</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="calendar" class="h-5 w-5"></i>Planovi</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="doc" class="h-5 w-5"></i>Dokumenti</div>
+          </div>
+          <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Uprava</div>
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="chart" class="h-5 w-5"></i>Izvještaji</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="activity" class="h-5 w-5"></i>Evidencije</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja ZEV-a</div>
+          </div>
+        </nav>
+      </aside>
+    </div>
+
+    <!-- Računovođa -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Predlog — računovođa (Jelena Kovačević)</div>
+      <aside class="frame w-60 bg-white">
+        <div class="p-4">
+          <div class="text-lg font-bold leading-tight tracking-tight text-blue-700">ZEV upravnik</div>
+          <div class="text-[13px] leading-tight text-slate-500">ZEV VM 10-12</div>
+        </div>
+        <nav class="px-2 pb-4 text-sm font-medium text-slate-700">
+          <div class="px-3.5 pb-1 text-[13px] font-medium text-slate-500">Finansije</div>
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3 rounded-full bg-blue-50 px-3.5 py-2 text-blue-700"><i data-icon="home" class="h-5 w-5"></i>Početna</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="receipt" class="h-5 w-5"></i>Fakture i uplate</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="wallet" class="h-5 w-5"></i>Troškovi</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="chart" class="h-5 w-5"></i>Izvještaji</div>
+          </div>
+          <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Zajednica</div>
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="users" class="h-5 w-5"></i>Vlasnici i korisnici</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="building" class="h-5 w-5"></i>Zgrade i jedinice</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="calendar" class="h-5 w-5"></i>Planovi</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="wrench" class="h-5 w-5"></i>Održavanje</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="ballot" class="h-5 w-5"></i>Skupština i odluke</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="landmark" class="h-5 w-5"></i>Organi ZEV</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="doc" class="h-5 w-5"></i>Dokumenti</div>
+          </div>
+          <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Uprava</div>
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="activity" class="h-5 w-5"></i>Evidencije</div>
+            <div class="flex items-center gap-3 px-3.5 py-2"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja ZEV-a</div>
+          </div>
+        </nav>
+      </aside>
+    </div>
+
+    <!-- Suženi rail -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Suženi icon-rail (76px)</div>
+      <aside class="frame bg-white" style="width:76px">
+        <div class="flex justify-center p-4"><div class="flex h-9 w-7 items-center justify-center rounded bg-slate-800 text-[10px] font-bold text-white">Z</div></div>
+        <nav class="space-y-0.5 px-2 pb-4 text-slate-700">
+          <div class="mx-auto flex w-11 justify-center rounded-xl bg-blue-50 py-2 text-blue-700"><i data-icon="home" class="h-5 w-5"></i></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="receipt" class="h-5 w-5"></i></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="wallet" class="h-5 w-5"></i></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="ballot" class="h-5 w-5"></i></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="wrench" class="h-5 w-5"></i></div>
+          <div class="mx-3 my-2 border-t border-slate-200"></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="users" class="h-5 w-5"></i></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="building" class="h-5 w-5"></i></div>
+          <div class="mx-auto flex w-11 justify-center py-2"><i data-icon="landmark" class="h-5 w-5"></i></div>
+        </nav>
+      </aside>
+      <p class="mt-2 w-40 text-[13px] text-slate-600">Naslov grupe se u railu zamjenjuje tankom linijom <code>border-slate-200</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MOBILNI 375 ===================== -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — top bar (zatvoreno) i otvoren drawer (vlasnik)</h2>
+  <div class="flex flex-wrap items-start gap-8">
+
+    <!-- Zatvoreno -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Zatvoren meni, detalj fakture</div>
+      <div class="frame relative" style="width:375px;height:700px">
+        <header class="sticky top-0 z-20 flex items-center gap-2 border-b border-slate-200 bg-white px-2 py-1.5 shadow-sm">
+          <button type="button" aria-label="Otvori meni" class="relative inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-slate-700 hover:bg-slate-100">
+            <i data-icon="menu" class="h-5 w-5"></i>Meni<span class="ann absolute -right-3 -top-1">5</span>
+          </button>
+          <div class="min-w-0 flex-1 truncate text-[13px] text-slate-500">ZEV VM 10-12</div>
+          <button type="button" aria-label="Nalog: Ana Savić" class="flex h-11 w-11 items-center justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">AS</span></button>
+        </header>
+        <div class="space-y-6 p-4">
+          <div>
+            <a href="#" class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ Fakture i uplate</a>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Faktura FAK-2026-000001</h1>
+            <p class="mt-1 text-[15px] text-slate-500">Zgrada A / Garaža 1 · Ana Savić</p>
+          </div>
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="mb-3 text-sm font-semibold text-slate-700">Iznosi</h2>
+            <dl class="space-y-1.5 text-sm">
+              <div class="flex justify-between"><dt>Ukupno</dt><dd class="font-semibold tabular-nums">7,22 KM</dd></div>
+              <div class="flex justify-between"><dt>Otvoreno</dt><dd class="font-semibold tabular-nums">7,22 KM</dd></div>
+              <div class="flex justify-between"><dt>Dospijeće</dt><dd class="tabular-nums">15.09.2026.</dd></div>
+            </dl>
+          </section>
+        </div>
+      </div>
+      <p class="mt-2 w-[375px] text-[13px] text-slate-600">Naziv ZEV-a je u top baru i na telefonu (danas: <code>sm:inline-flex</code> ga krije, i samo za višečlane).</p>
+    </div>
+
+    <!-- Otvoreno -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Otvoren drawer (<code>role="dialog"</code>, fokus-zamka ostaje)</div>
+      <div class="frame relative" style="width:375px;height:700px">
+        <div class="absolute inset-0 bg-slate-900/40"></div>
+        <aside role="dialog" aria-modal="true" aria-label="Meni navigacije" class="absolute inset-y-0 left-0 z-40 w-60 overflow-y-auto bg-white shadow-xl">
+          <div class="flex items-start justify-between p-4">
+            <div>
+              <div class="text-lg font-bold leading-tight tracking-tight text-blue-700">ZEV upravnik</div>
+              <div class="text-[13px] leading-tight text-slate-500">ZEV VM 10-12</div>
+            </div>
+            <button type="button" aria-label="Zatvori meni" class="-mr-2 -mt-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100"><i data-icon="close" class="h-5 w-5"></i></button>
+          </div>
+          <nav class="px-2 pb-4 text-sm font-medium text-slate-700">
+            <div class="px-3.5 pb-1 text-[13px] font-medium text-slate-500">Moje</div>
+            <div class="space-y-0.5">
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="home" class="h-5 w-5"></i>Početna</a>
+              <a href="#" aria-current="page" class="flex min-h-[44px] items-center gap-3 rounded-full bg-blue-50 px-3.5 py-2 text-blue-700"><i data-icon="receipt" class="h-5 w-5"></i>Fakture i uplate</a>
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="ballot" class="h-5 w-5"></i>Skupština i glasanje</a>
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="wrench" class="h-5 w-5"></i>Održavanje</a>
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="doc" class="h-5 w-5"></i>Dokumenti</a>
+            </div>
+            <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Zajednica</div>
+            <div class="space-y-0.5">
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="building" class="h-5 w-5"></i>Zgrade i jedinice</a>
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="landmark" class="h-5 w-5"></i>Organi ZEV</a>
+              <a href="#" class="flex min-h-[44px] items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="calendar" class="h-5 w-5"></i>Planovi</a>
+            </div>
+          </nav>
+        </aside>
+      </div>
+      <p class="mt-2 w-[375px] text-[13px] text-slate-600">Stavke drawera <code>min-h-[44px]</code> na dodirnim ekranima (danas ≈36px). Drawer ostaje w-60 (240px); ostatak je zatamnjen i zatvara meni na dodir.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+// Ikone: kopija putanja iz src/components/nav-icons.tsx (IconBase: 20×20, stroke 1.6, currentColor).
+// IconMenu i IconClose su NOVE ikone u istom stilu (P6) — predlog za nav-icons.tsx.
+const P={
+ home:'<path d="M3 9.5 10 3l7 6.5"/><path d="M5 8v8.5h10V8"/><path d="M8 16.5v-4.5h4v4.5"/>',
+ building:'<rect x="4" y="3" width="12" height="14" rx="1"/><path d="M7 6.5h1.4M11.6 6.5H13M7 9.5h1.4M11.6 9.5H13M7 12.5h1.4M11.6 12.5H13"/>',
+ users:'<circle cx="7.2" cy="7" r="2.4"/><path d="M2.8 16.2c0-2.4 2-4 4.4-4s4.4 1.6 4.4 4"/><circle cx="14.2" cy="7.6" r="2"/><path d="M12.7 12.4c1.9.3 3.3 1.7 3.5 3.8"/>',
+ landmark:'<path d="M3 7.5 10 3l7 4.5"/><path d="M4 8.5h12"/><path d="M5.5 8.5V15M9 8.5V15M11 8.5V15M14.5 8.5V15"/><path d="M3 17h14"/>',
+ ballot:'<rect x="3.5" y="4" width="13" height="12" rx="1.5"/><path d="M6.8 10.2 8.6 12 13 7.6"/>',
+ receipt:'<path d="M5 3.5h10v12.7l-1.4-.9-1.4.9-1.4-.9-1.4.9-1.4-.9-1.4.9-1.4-.9-1.4.9V3.5Z"/><path d="M7 7.3h6M7 10.3h6"/>',
+ wallet:'<rect x="3" y="6" width="14" height="9.5" rx="2"/><path d="M3 9.2h14"/><circle cx="13.8" cy="12.3" r="0.9" fill="currentColor" stroke="none"/>',
+ calendar:'<rect x="3.5" y="4.5" width="13" height="12" rx="1.5"/><path d="M3.5 8h13"/><path d="M7 3v3M13 3v3"/><path d="M6.5 11h1.4M9.3 11h1.4M12.1 11h1.4M6.5 13.6h1.4M9.3 13.6h1.4"/>',
+ wrench:'<path d="M13.2 3.8a3.2 3.2 0 0 0-4.3 3.9L4 12.6a1.7 1.7 0 0 0 2.4 2.4l4.9-4.9a3.2 3.2 0 0 0 3.9-4.3l-2 2-1.6-.4-.4-1.6 2-2Z"/>',
+ doc:'<path d="M6 3h6l3 3v11H6V3Z"/><path d="M12 3v3h3"/><path d="M8 10h6M8 12.6h6M8 15.2h4"/>',
+ chart:'<path d="M4 16.5V11M9 16.5V6.5M14 16.5V9"/><path d="M3 16.5h14"/>',
+ sliders:'<path d="M4 6h7M4 10h4M4 14h9"/><circle cx="13" cy="6" r="1.4"/><circle cx="8" cy="10" r="1.4"/><circle cx="15" cy="14" r="1.4"/>',
+ shield:'<path d="M10 3.2 15.5 5.3v4.4c0 4-2.4 6.6-5.5 7.9-3.1-1.3-5.5-3.9-5.5-7.9V5.3L10 3.2Z"/><path d="M7.4 10 9.2 11.8 13 7.8"/>',
+ activity:'<path d="M3 12h3l2-6 4 12 2-8 1.5 2H17"/>',
+ chevL:'<path d="M12.5 5 7 10l5.5 5"/>',
+ logout:'<path d="M8.6 4H5.5A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16h3.1"/><path d="M9.3 10h6.7M13.2 7l3 3-3 3"/>',
+ help:'<circle cx="10" cy="10" r="6.8"/><path d="M7.8 8.1a2.2 2.2 0 1 1 3.1 2c-.7.4-1.1.8-1.1 1.7"/><circle cx="9.9" cy="13.6" r="0.5" fill="currentColor" stroke="none"/>',
+ menu:'<path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"/>',
+ close:'<path d="M5 5l10 10M15 5 5 15"/>'
+};
+document.querySelectorAll('i[data-icon]').forEach(el=>{
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 20 20');s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');
+  s.setAttribute('stroke-width','1.6');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');
+  s.setAttribute('aria-hidden','true');s.setAttribute('class',el.getAttribute('class')||'h-5 w-5');
+  s.innerHTML=P[el.dataset.icon]||'';el.replaceWith(s);
+});
+</script>
+</body>
+</html>

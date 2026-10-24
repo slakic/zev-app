@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-M02 Podešavanja i evidencije</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  /* Kartični prelom kako bi izgledao za opt-in tabelu (X-R14), uz ispravku X-N19: sadržaj ćelije je jedan omotač, labela uvijek Roboto. */
+  .cards tbody tr{display:block;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;background:#fff}
+  .cards thead{display:none}
+  .cards tbody td{display:grid;grid-template-columns:40% 1fr;gap:.5rem;align-items:baseline;padding:.375rem 0}
+  .cards tbody td::before{content:attr(data-label);font-family:Roboto,system-ui,sans-serif;font-weight:500;font-size:.8125rem;color:#64748b}
+  .cards tbody td.primary{display:block;font-weight:600;font-size:.9375rem;color:#0f172a}
+  .cards tbody td.primary::before{content:none}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">X-M02</span>
+    <h1 class="text-lg font-semibold">Podešavanja ZEV-a i Evidencije — tipizirani parametri, prikaz samo za čitanje, dnevnici na jednom mjestu, mobilne kartice</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: X-R08, X-R09, X-R10, X-R11, X-R12, X-R13, X-R14 · nalazi X-N10–X-N19</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Poruka o uspjehu imenuje šta se promijenilo (postojeći <code>Flash</code>) — danas nema nikakve potvrde (X-R10, X-R11).</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Bulov parametar kao izbor „Uključeno / Isključeno", ne tekst <code>false</code> (X-R10).</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Jedinica u labeli, posljedica u hintu (<code>Field hint</code>, 13px).</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span>Jedna forma, jedno <code>tonal</code> „Sačuvaj parametre" umjesto 8 dugmadi.</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>Računovođa: <code>&lt;dl&gt;</code> samo za čitanje + razlog, umjesto onemogućenih polja koja izgledaju aktivno (X-R09).</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>„Evidencije" — stavka menija sa <code>Tabs</code>; zaglavlje Podešavanja gubi 3 dugmeta (X-R13, X-Q5).</span></li>
+    <li class="flex gap-2"><span class="ann">7</span><span>Revizorski trag: prevedena radnja + kod sitnije, detalji sklopljeni, <code>Pagination</code> (X-R13).</span></li>
+    <li class="flex gap-2"><span class="ann">8</span><span>375px: tabele ≤5 kolona kao kartice (opt-in). <b class="text-orange-700">DOPUNA DS-a — traži odluku (X-Q3, proširenje P5)</b>.</span></li>
+    <li class="flex gap-2"><span class="ann">9</span><span>Vlasnik: napomena bez reference na meni koji ne vidi (X-R08).</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz; ne tvrdi da backend već podržava tipove parametara (danas <code>SettingDefinition</code> nema tip). Podaci iz seed-a (ZEV VM 10-12).</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ============ DESKTOP 1440: PARAMETRI predsjednik + računovođa ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — Podešavanja ZEV-a › Parametri: predsjednik (lijevo) i računovođa (desno)</h2>
+  <div class="overflow-x-auto">
+  <div class="frame p-8" style="width:1440px">
+    <div class="space-y-6">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Podešavanja ZEV-a</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Matični podaci, računi i pravni parametri</p>
+        </div>
+        <span class="text-[13px] text-slate-500">(bez dugmadi za dnevnike — sada u „Evidencije") <span class="ann">6</span></span>
+      </div>
+
+      <nav aria-label="Sekcije" class="flex gap-1 overflow-x-auto border-b border-slate-200">
+        <a href="#" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700">Moji podaci</a>
+        <a href="#" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700">ZEV</a>
+        <a href="#" aria-current="page" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-blue-600 px-3 py-2.5 text-sm font-medium text-blue-700">Parametri</a>
+      </nav>
+
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Predsjednik -->
+        <div class="space-y-3">
+          <div class="text-[13px] font-semibold text-slate-700">Predsjednik — nakon snimanja</div>
+          <div role="status" class="relative flex items-start gap-2 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800 shadow-sm">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            <span>Sačuvano: Prag za hitne radove 500 → 600 KM.</span><span class="ann absolute -right-3 -top-3">1</span>
+          </div>
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-slate-700">Pravni i finansijski parametri</h2>
+            <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Ove vrijednosti utiču na obračun i na pravila glasanja. Prije izmjene se posavjetujte sa računovođom.</p>
+            <form class="space-y-4">
+              <div class="grid grid-cols-2 gap-3">
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Čuvanje finansijskih dokumenata (godina)</span>
+                  <input type="number" value="11" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                  <span class="mt-1 block text-[13px] text-slate-500">Zakonski minimum je 11 godina.</span></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Čuvanje IP podataka glasanja (dana)</span>
+                  <input type="number" value="30" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                  <span class="mt-1 block text-[13px] text-slate-500">Nakon toga se IP adrese brišu iz evidencije glasova.</span></label>
+                <label class="relative block text-sm"><span class="mb-1 block font-medium text-slate-700">Prag za hitne radove bez skupštine (KM) <span class="ann">3</span></span>
+                  <input type="number" value="600" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                  <span class="mt-1 block text-[13px] text-slate-500">Hitni radovi iznad ovog iznosa traže odluku skupštine.</span></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Zatezna kamata <span class="ann">2</span></span>
+                  <select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"><option>Isključeno</option><option>Uključeno</option></select>
+                  <span class="mt-1 block text-[13px] text-slate-500">Ostaje isključeno dok pravnik ne potvrdi obračun.</span></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Dan dospijeća fakture (u mjesecu)</span>
+                  <input type="number" value="15" min="1" max="28" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Broj članova upravnog odbora</span>
+                  <input type="number" value="3" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                  <span class="mt-1 block text-[13px] text-slate-500">Uključujući predsjednika.</span></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Trajanje mandata organa (godina)</span>
+                  <input type="number" value="4" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"></label>
+                <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Predsjednik ZEV-a vodi i upravni odbor</span>
+                  <select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"><option>Da</option><option>Ne</option></select>
+                  <span class="mt-1 block text-[13px] text-slate-500">Pretpostavka — pravna provjera u toku.</span></label>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-100">Sačuvaj parametre</button><span class="ann">4</span>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <!-- Računovođa -->
+        <div class="space-y-3">
+          <div class="text-[13px] font-semibold text-slate-700">Računovođa — samo za čitanje</div>
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -right-2 -top-2">5</span>
+            <h2 class="text-sm font-semibold text-slate-700">Pravni i finansijski parametri</h2>
+            <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Ove vrijednosti mijenja predsjednik ZEV-a. Ako nešto nije tačno, javite mu se.</p>
+            <dl class="space-y-2 text-sm">
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Čuvanje finansijskih dokumenata</dt><dd class="tabular-nums">11 godina</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Čuvanje IP podataka glasanja</dt><dd class="tabular-nums">30 dana</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Prag za hitne radove bez skupštine</dt><dd class="tabular-nums">600,00 KM</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Zatezna kamata</dt><dd>Isključeno</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Dan dospijeća fakture</dt><dd class="tabular-nums">15.</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Broj članova upravnog odbora</dt><dd class="tabular-nums">3</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Trajanje mandata organa</dt><dd class="tabular-nums">4 godine</dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-slate-500">Predsjednik ZEV-a vodi i upravni odbor</dt><dd>Da</dd></div>
+            </dl>
+          </section>
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-slate-700">Slanje poruka</h2>
+            <p class="mt-0.5 text-[13px] text-slate-500">Sve poslate poruke vidite u „Evidencije › Poslate poruke". E-poštu podešava administrator platforme.</p>
+          </section>
+          <p class="text-[13px] text-slate-600">„Napomena o integracijama" svedena na jednu rečenicu bez „API", „bot", „Vercel" (X-R12).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ DESKTOP 1440: EVIDENCIJE › REVIZORSKI TRAG ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — Evidencije › Revizorski trag (predsjednik)</h2>
+  <div class="overflow-x-auto">
+  <div class="frame p-8" style="width:1440px">
+    <div class="space-y-6">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Evidencije</h1>
+        <p class="mt-1 text-[15px] text-slate-500">Ko je šta uradio i koje su poruke poslate</p>
+      </div>
+      <nav aria-label="Sekcije" class="relative flex gap-1 overflow-x-auto border-b border-slate-200">
+        <a href="#" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-slate-500">Aktivnosti</a>
+        <a href="#" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-slate-500">Poslate poruke</a>
+        <a href="#" aria-current="page" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-blue-600 px-3 py-2.5 text-sm font-medium text-blue-700">Revizorski trag</a>
+        <span class="ann ml-2 self-center">6</span>
+      </nav>
+      <p class="max-w-[68ch] text-[13px] text-slate-500">Nepromjenljiv zapis svih radnji u ZEV-u. Unosi se ne mogu mijenjati ni brisati.</p>
+      <form class="flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-3">
+        <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Od</span><input type="date" value="2026-09-24" class="w-40 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+        <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Do</span><input type="date" value="2026-10-24" class="w-40 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+        <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Ko</span><select class="w-56 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"><option>Svi</option><option>Milan Petrović</option><option>Jelena Kovačević</option></select></label>
+        <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Pretraga</span><input placeholder="npr. faktura, glasanje, plan" class="w-64 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+        <button class="inline-flex items-center justify-center rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700">Primijeni</button>
+      </form>
+      <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <span class="ann absolute -right-2 -top-2">7</span>
+        <table class="w-full text-sm">
+          <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+            <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Vrijeme</th>
+            <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Ko</th>
+            <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnja</th>
+            <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Razlog</th>
+            <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Detalji</th>
+          </tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="whitespace-nowrap px-3 py-1.5 tabular-nums">24.10.2026. 08:53</td><td class="px-3 py-1.5">Milan Petrović</td>
+              <td class="px-3 py-1.5">Promijenjen status prijave kvara <span class="text-slate-500">— Trijaža obavljena → Čeka odobrenje</span><div class="text-[13px] text-slate-500"><code>issue.transition</code></div></td>
+              <td class="px-3 py-1.5">Iznos zahtijeva odluku skupštine</td>
+              <td class="px-3 py-1.5"><details><summary class="inline-flex min-h-[28px] cursor-pointer list-none items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Prikaži</summary></details></td></tr>
+            <tr><td class="whitespace-nowrap px-3 py-1.5 tabular-nums">24.10.2026. 08:53</td><td class="px-3 py-1.5">Milan Petrović</td>
+              <td class="px-3 py-1.5">Dodata stavka plana <span class="text-slate-500">— Servis lifta, Zgrada A · 1.440,00 KM</span><div class="text-[13px] text-slate-500"><code>plan.item.add</code></div></td>
+              <td class="px-3 py-1.5">—</td>
+              <td class="px-3 py-1.5"><details open><summary class="inline-flex min-h-[28px] cursor-pointer list-none items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Sakrij</summary><pre class="mt-1 max-w-md whitespace-pre-wrap break-all text-[13px] text-slate-600">{"name":"Servis lifta — Zgrada A","plannedAmount":"1440"}</pre></details></td></tr>
+            <tr><td class="whitespace-nowrap px-3 py-1.5 tabular-nums">24.10.2026. 08:53</td><td class="px-3 py-1.5">Jelena Kovačević</td>
+              <td class="px-3 py-1.5">Evidentirano plaćanje troška <span class="text-slate-500">— 120,00 KM</span><div class="text-[13px] text-slate-500"><code>expense.pay</code></div></td>
+              <td class="px-3 py-1.5">—</td>
+              <td class="px-3 py-1.5"><details><summary class="inline-flex min-h-[28px] cursor-pointer list-none items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Prikaži</summary></details></td></tr>
+          </tbody>
+        </table>
+        <nav aria-label="Stranice" class="mt-3 flex items-center justify-center gap-3 text-sm">
+          <a class="pointer-events-none inline-flex items-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 opacity-50">‹ Prethodna</a>
+          <span class="text-slate-500">Stranica 1 od 4</span>
+          <a href="#" class="inline-flex items-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Sljedeća ›</a>
+        </nav>
+      </section>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ MOBILNI 375 ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — Aktivnosti kao kartice, Računi sa vidljivim „Uredi", Moji podaci vlasnika</h2>
+  <div class="flex flex-wrap items-start gap-8">
+
+    <!-- Aktivnosti -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Evidencije › Aktivnosti (danas: kolona „Aktivnost" van ekrana)</div>
+      <div class="frame" style="width:375px">
+        <div class="space-y-6 p-4">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Evidencije</h1>
+          </div>
+          <nav class="-mb-2 flex gap-1 overflow-x-auto border-b border-slate-200">
+            <a aria-current="page" class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-blue-600 px-3 py-2.5 text-sm font-medium text-blue-700">Aktivnosti</a>
+            <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-slate-500">Poslate poruke</a>
+            <a class="flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2.5 text-sm font-medium text-slate-500">Revizorski trag</a>
+          </nav>
+          <section class="ds-add rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm"><span class="ds-add-tag">DOPUNA DS-a — traži odluku (X-Q3) <span class="ann">8</span></span>
+            <table class="cards w-full text-sm">
+              <thead><tr><th>Aktivnost</th><th>Vrijeme</th><th>Ko</th><th>Kategorija</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">Promijenjen status prijave kvara<div class="text-sm font-normal text-slate-500">Plaćeno → Zatvoreno</div></td><td data-label="Vrijeme"><span>24.10.2026. 08:53</span></td><td data-label="Ko"><span>Milan Petrović</span></td><td data-label="Kategorija"><span>Upravljanje i skupština</span></td></tr>
+                <tr><td class="primary">Prijavio/la kvar<div class="text-sm font-normal text-slate-500">Pucanje cijevi u podrumu — Zgrada A</div></td><td data-label="Vrijeme"><span>24.10.2026. 08:53</span></td><td data-label="Ko"><span>Ana Savić</span></td><td data-label="Kategorija"><span>Aktivnost vlasnika</span></td></tr>
+                <tr><td class="primary">Glasao/la elektronski</td><td data-label="Vrijeme"><span>24.10.2026. 08:53</span></td><td data-label="Ko"><span>sistem</span></td><td data-label="Kategorija"><span>Aktivnost vlasnika</span></td></tr>
+              </tbody>
+            </table>
+            <nav aria-label="Stranice" class="mt-3 flex items-center justify-center gap-2 text-sm">
+              <a class="pointer-events-none inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 opacity-50">‹ Prethodna</a>
+              <span class="whitespace-nowrap text-slate-500">1 od 2</span>
+              <a class="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700">Sljedeća ›</a>
+            </nav>
+          </section>
+        </div>
+      </div>
+      <p class="mt-2 w-[375px] text-[13px] text-slate-600">Glavna kolona („Aktivnost") ide na vrh kartice, bez labele; ćelija sa više djece ostaje u desnoj koloni (ispravka X-N19). Paginacija ne prelama „‹ Prethodna" (danas se lomi u dva reda).</p>
+    </div>
+
+    <!-- Računi -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Podešavanja ZEV-a › Računi (danas: „Uredi" van ekrana)</div>
+      <div class="frame" style="width:375px">
+        <div class="space-y-6 p-4">
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="mb-3 text-sm font-semibold text-slate-700">Računi (banka i blagajna)</h2>
+            <table class="cards w-full text-sm">
+              <thead><tr><th>Naziv</th><th>Vrsta</th><th>Broj računa</th><th>Početno stanje</th><th>Radnje</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">Blagajna</td><td data-label="Vrsta"><span>Blagajna</span></td><td data-label="Broj računa"><span>—</span></td><td data-label="Početno stanje"><span class="tabular-nums">150,00 KM</span></td><td data-label="Radnje"><span><button class="inline-flex min-h-[44px] items-center justify-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi</button></span></td></tr>
+                <tr><td class="primary">Glavni račun — NLB banka<div class="text-[13px] font-normal text-slate-500">NLB Banka a.d. Banja Luka</div></td><td data-label="Vrsta"><span>Banka</span></td><td data-label="Broj računa"><span class="font-mono text-[13px]">5620990000123456</span></td><td data-label="Početno stanje"><span class="tabular-nums">2.450,00 KM</span></td><td data-label="Radnje"><span><button class="inline-flex min-h-[44px] items-center justify-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi</button></span></td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Moji podaci vlasnik -->
+    <div>
+      <div class="mb-2 text-[13px] font-semibold text-slate-700">Moji podaci — vlasnik (Ana Savić)</div>
+      <div class="frame" style="width:375px">
+        <div class="space-y-6 p-4">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Moji podaci</h1>
+            <p class="mt-1 text-[15px] text-slate-500">Kontakt, dostava računa i elektronsko glasanje</p>
+          </div>
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="mb-3 text-sm font-semibold text-slate-700">Kontakt</h2>
+            <form class="space-y-3">
+              <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">E-mail</span><input value="ana.savic@example.com" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+              <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Telefon</span><input value="+38765000000" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+              <label class="block text-sm"><span class="mb-1 block font-medium text-slate-700">Adresa za prepisku (ako je različita)</span><input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm">
+                <span class="mt-1 flex gap-2 text-[13px] text-slate-500"><span>Ime, prezime i adresu nekretnine mijenja predsjednik ZEV-a. Ako nešto nije tačno, javite mu se.</span><span class="ann">9</span></span></label>
+              <button class="inline-flex min-h-[44px] items-center justify-center rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm">Sačuvaj</button>
+            </form>
+          </section>
+        </div>
+      </div>
+      <p class="mt-2 w-[375px] text-[13px] text-slate-600">Ulaz preko menija naloga („Moji podaci"), ako se usvoji X-Q6; danas vlasnika upućuje na „Vlasnici i korisnici", koje nema u meniju.</p>
+    </div>
+  </div>
+</section>
+</main>
+</body>
+</html>

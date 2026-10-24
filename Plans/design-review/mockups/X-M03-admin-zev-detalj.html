@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-M03 Admin ZEV nalozi</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  .cards tbody tr{display:block;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;background:#fff}
+  .cards thead{display:none}
+  .cards tbody td{display:grid;grid-template-columns:40% 1fr;gap:.5rem;align-items:baseline;padding:.375rem 0}
+  .cards tbody td::before{content:attr(data-label);font-weight:500;font-size:.8125rem;color:#64748b}
+  .cards tbody td.primary{display:block;font-weight:600;font-size:.9375rem;color:#0f172a}
+  .cards tbody td.primary::before,.cards tbody td[colspan]::before{content:none}
+  .cards tbody td[colspan]{display:block}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">X-M03</span>
+    <h1 class="text-lg font-semibold">Platformski admin — lista ZEV naloga i detalj ZEV-a sa bezbjednim radnjama nad nalozima</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: X-R15, X-R16, X-R12 · nalazi X-N20, X-N21, X-N22</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Nova stavka „Podešavanja platforme" (postojeća <code>IconSliders</code>) — e-mail podešavanja i probna poruka sele sa liste (X-R16).</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Lista u punoj širini; „Novi ZEV nalog" kao jedino <code>primary</code> u zaglavlju, forma na svojoj stranici (X-R16).</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Aktivna stavka „ZEV nalozi" i na detalju (prefiks) — danas nijedna (X-R01).</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span>Upozorenje kao <code>Flash</code> varijanta „upozorenje", bez sjenke unutar kartice. <b class="text-orange-700">DOPUNA DS-a — traži odluku (X-Q4)</b>.</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span><code>ConfirmAction</code> panel se otvara u punoj širini ispod reda (red sa <code>colSpan</code>, obrazac iz <code>building-row.tsx</code>) — kolona „Radnje" više nije odsječena.</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>„Ukloni moj pristup" iza <code>ConfirmAction</code>, razlog sa pravom labelom (danas direktan submit, placeholder kao labela).</span></li>
+    <li class="flex gap-2"><span class="ann">7</span><span>Copy na „Vi", bez „tenant" (X-R12).</span></li>
+    <li class="flex gap-2"><span class="ann">8</span><span>375px: nalozi kao kartice, radnja vidljiva bez skrola. <b class="text-orange-700">DOPUNA DS-a — traži odluku (X-Q3)</b>.</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz. Super admin = Marko Jovanović (marko@zev.ba), koji je i vlasnik u ZEV VM 10-12 (seed).</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ============ DESKTOP: LISTA ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /admin „ZEV nalozi"</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4 text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</div>
+        <nav class="space-y-0.5 px-2 pb-4">
+          <a aria-current="page" class="flex items-center gap-3 rounded-full bg-slate-800 px-3.5 py-2 text-sm font-medium text-white"><i data-icon="shield" class="h-5 w-5"></i>ZEV nalozi</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="activity" class="h-5 w-5"></i>Aktivnosti</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="monitor" class="h-5 w-5"></i>Sesije</a>
+          <a class="relative flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja platforme<span class="ann absolute -right-2 top-1.5">1</span></a>
+          <div class="mx-3 my-2 border-t border-slate-200"></div>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="home" class="h-5 w-5"></i>Moj ZEV</a>
+        </nav>
+      </aside>
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <div class="flex-1"></div>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white ring-1 ring-inset ring-slate-900/10"><i data-icon="shield" class="h-3.5 w-3.5"></i>Super admin</span>
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold text-white">MJ</span>
+        </header>
+        <main class="p-8">
+          <div class="space-y-6">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h1 class="text-2xl font-semibold tracking-tight text-slate-900">ZEV nalozi</h1>
+                <p class="mt-1 text-[15px] text-slate-500">1 ZEV nalog · 1 aktivan</p>
+              </div>
+              <div class="flex items-center gap-2"><span class="ann">2</span><a class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm">Novi ZEV nalog</a></div>
+            </div>
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <table class="w-full text-sm">
+                <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Naziv</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Paket</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Predsjednik</th>
+                  <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Zgrade</th>
+                  <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Vlasnici</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+                </tr></thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr>
+                    <td class="px-3 py-1.5"><a class="font-medium text-blue-700 underline-offset-2 hover:underline">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</a><div class="text-[13px] text-slate-500">ZEV VM 10-12</div></td>
+                    <td class="px-3 py-1.5">Full (+ e-glasanje)</td>
+                    <td class="px-3 py-1.5">Milan Petrović<div class="text-[13px] text-slate-500">predsjednik@zev.ba</div></td>
+                    <td class="px-3 py-1.5 text-right tabular-nums">2</td>
+                    <td class="px-3 py-1.5 text-right tabular-nums">9</td>
+                    <td class="px-3 py-1.5"><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span></td>
+                    <td class="px-3 py-1.5"><div class="flex gap-1.5"><a class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Detalji</a><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uđi</button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ DESKTOP: DETALJ ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /admin/[zevId], otvorena potvrda „Ukloni pristup" za računovođu</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4 text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</div>
+        <nav class="space-y-0.5 px-2 pb-4">
+          <a aria-current="page" class="relative flex items-center gap-3 rounded-full bg-slate-800 px-3.5 py-2 text-sm font-medium text-white"><i data-icon="shield" class="h-5 w-5"></i>ZEV nalozi<span class="ann absolute -right-2 top-1.5">3</span></a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="activity" class="h-5 w-5"></i>Aktivnosti</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="monitor" class="h-5 w-5"></i>Sesije</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja platforme</a>
+          <div class="mx-3 my-2 border-t border-slate-200"></div>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="home" class="h-5 w-5"></i>Moj ZEV</a>
+        </nav>
+      </aside>
+      <main class="min-w-0 flex-1 p-8">
+        <div class="space-y-6">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ ZEV nalozi</a>
+              <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</h1>
+              <p class="mt-1 text-[15px] text-slate-500">ZEV VM 10-12 · Full (+ e-glasanje) · 2 zgrade · 8 jedinica · 9 vlasnika</p>
+            </div>
+            <span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span>
+          </div>
+
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="mb-3 text-sm font-semibold text-slate-700">Nalozi u ovom ZEV-u</h2>
+            <div class="ds-add mb-3"><span class="ds-add-tag">DOPUNA DS-a — Flash „upozorenje" + inset <span class="ann">4</span></span>
+              <div role="status" class="flex items-start gap-2 rounded-xl border-l-4 border-l-amber-500 bg-amber-50 px-3 py-2.5 text-sm text-amber-800">
+                <svg viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.169 2.63-1.516 2.63H3.72c-1.347 0-2.189-1.463-1.515-2.63L8.485 2.495ZM10 6a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 6Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>
+                <span>Ako uklonite pristup jedinom predsjedniku, ZEV ostaje bez predsjednika. Prvo dodajte novog.</span>
+              </div>
+            </div>
+            <table class="w-full text-sm">
+              <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Korisnik</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Uloga</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Nalog</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Član od</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+              </tr></thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="px-3 py-1.5">predsjednik@zev.ba</td><td class="px-3 py-1.5">Predsjednik</td><td class="px-3 py-1.5"><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span></td><td class="px-3 py-1.5 tabular-nums">24.10.2026.</td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Ukloni pristup</button></td></tr>
+                <tr class="bg-slate-50/70"><td class="px-3 py-1.5">racunovodja@zev.ba</td><td class="px-3 py-1.5">Računovođa</td><td class="px-3 py-1.5"><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span></td><td class="px-3 py-1.5 tabular-nums">24.10.2026.</td><td class="px-3 py-1.5"><button aria-expanded="true" class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-100 px-2.5 py-1 text-[13px] font-medium text-amber-900">Ukloni pristup</button></td></tr>
+                <tr><td colspan="5" class="px-3 pb-3">
+                  <form class="relative space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+                    <span class="ann absolute -right-2 -top-2">5</span>
+                    <p class="text-sm font-semibold text-amber-900">Ukloniti pristup za racunovodja@zev.ba (Računovođa)?</p>
+                    <p class="text-sm text-amber-900">Korisnik se odmah odjavljuje iz ovog ZEV-a. Nalog i podaci ostaju; pristup možete ponovo dodijeliti kroz „Dodaj postojeći nalog".</p>
+                    <label class="block max-w-md text-sm"><span class="mb-1 block font-medium text-slate-700">Razlog</span><input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"></label>
+                    <button class="inline-flex items-center justify-center rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900">Da, ukloni pristup</button>
+                  </form>
+                </td></tr>
+                <tr><td class="px-3 py-1.5">marko@zev.ba <span class="ml-2 inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-[13px] font-medium text-slate-700 ring-1 ring-inset ring-slate-500/20">Platformski admin</span></td><td class="px-3 py-1.5">Vlasnik</td><td class="px-3 py-1.5"><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span></td><td class="px-3 py-1.5 tabular-nums">24.10.2026.</td><td class="px-3 py-1.5"><div class="flex gap-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uđi u ovaj ZEV</button><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Ukloni moj pristup</button><span class="ann">6</span></div></td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-slate-700">Suspenzija <span class="ann">7</span></h2>
+            <p class="mb-3 mt-0.5 max-w-[68ch] text-[13px] text-slate-500">Suspenzija odmah blokira prijavu svih naloga u ovom ZEV-u. Nijedan podatak se ne briše i ZEV možete ponovo aktivirati u bilo kom trenutku. Koristite je, na primjer, da arhivirate probni ZEV prije nego otvorite novi za stvarne podatke.</p>
+            <button class="inline-flex items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900">› Suspenduj ZEV</button>
+          </section>
+          <p class="text-[13px] text-slate-600">Kartice „Dodaj novi nalog" / „Dodaj postojeći nalog" ostaju kao danas, ali iza <code>ToggleBtn</code> — ne zauzimaju prostor dok nisu potrebne.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ MOBILNI ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — /admin/[zevId], nalozi kao kartice (danas: kolona „Radnje" van ekrana)</h2>
+  <div class="flex flex-wrap items-start gap-8">
+    <div class="frame" style="width:375px">
+      <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-2 py-1.5 shadow-sm">
+        <button class="inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-slate-700"><i data-icon="menu" class="h-5 w-5"></i>Meni</button>
+        <div class="flex-1"></div>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white"><i data-icon="shield" class="h-3.5 w-3.5"></i>Super admin</span>
+        <span class="flex h-11 w-11 items-center justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold text-white">MJ</span></span>
+      </header>
+      <div class="space-y-6 p-4">
+        <div>
+          <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ ZEV nalozi</a>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">ZEV VM 10-12</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</p>
+        </div>
+        <section class="ds-add rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm"><span class="ds-add-tag">DOPUNA DS-a (X-Q3) <span class="ann">8</span></span>
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">Nalozi u ovom ZEV-u</h2>
+          <table class="cards w-full text-sm">
+            <thead><tr><th>Korisnik</th><th>Uloga</th><th>Nalog</th><th>Član od</th><th>Radnje</th></tr></thead>
+            <tbody>
+              <tr><td class="primary">predsjednik@zev.ba</td><td data-label="Uloga"><span>Predsjednik</span></td><td data-label="Nalog"><span><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span></span></td><td data-label="Član od"><span>24.10.2026.</span></td><td data-label="Radnje"><span><button class="inline-flex min-h-[44px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Ukloni pristup</button></span></td></tr>
+              <tr><td class="primary">marko@zev.ba<div class="mt-1"><span class="inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-[13px] font-medium text-slate-700 ring-1 ring-inset ring-slate-500/20">Platformski admin</span></div></td><td data-label="Uloga"><span>Vlasnik</span></td><td data-label="Nalog"><span><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Aktivan</span></span></td><td data-label="Član od"><span>24.10.2026.</span></td><td data-label="Radnje"><span class="flex flex-wrap gap-1.5"><button class="inline-flex min-h-[44px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uđi u ovaj ZEV</button><button class="inline-flex min-h-[44px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Ukloni moj pristup</button></span></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+    <p class="w-72 text-[13px] text-slate-600">Upozoravajući ton ostaje amber (<code>caution</code>), nikad crven, jer uklanjanje pristupa ne briše podatke. Puna crvena (<code>danger</code>) ostaje samo na „Suspenduj ZEV" iza <code>ConfirmAction</code>, kao danas (P2).</p>
+  </div>
+</section>
+</main>
+
+<script>
+const P={
+ home:'<path d="M3 9.5 10 3l7 6.5"/><path d="M5 8v8.5h10V8"/><path d="M8 16.5v-4.5h4v4.5"/>',
+ shield:'<path d="M10 3.2 15.5 5.3v4.4c0 4-2.4 6.6-5.5 7.9-3.1-1.3-5.5-3.9-5.5-7.9V5.3L10 3.2Z"/><path d="M7.4 10 9.2 11.8 13 7.8"/>',
+ activity:'<path d="M3 12h3l2-6 4 12 2-8 1.5 2H17"/>',
+ monitor:'<rect x="3" y="4" width="14" height="9.5" rx="1"/><path d="M7.5 17h5M10 13.5V17"/>',
+ sliders:'<path d="M4 6h7M4 10h4M4 14h9"/><circle cx="13" cy="6" r="1.4"/><circle cx="8" cy="10" r="1.4"/><circle cx="15" cy="14" r="1.4"/>',
+ menu:'<path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"/>'
+};
+document.querySelectorAll('i[data-icon]').forEach(el=>{
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 20 20');s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');
+  s.setAttribute('stroke-width','1.6');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');
+  s.setAttribute('aria-hidden','true');s.setAttribute('class',el.getAttribute('class')||'h-5 w-5');
+  s.innerHTML=P[el.dataset.icon]||'';el.replaceWith(s);
+});
+</script>
+</body>
+</html>

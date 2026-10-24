@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-M04 Registar posebnih dijelova</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  .phone{width:375px;border:8px solid #1e293b;border-radius:28px;overflow:hidden;background:#f8fafc}
+  /* card-transform (ui.tsx:189-227), sa ispravkom X-N19: sadržaj ćelije u jednoj koloni */
+  .cards tbody tr{display:block;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;background:#fff}
+  .cards thead{display:none}
+  .cards tbody td{text-align:left;display:grid;grid-template-columns:40% 1fr;gap:.5rem;align-items:baseline;padding:.375rem 0}
+  .cards tbody td::before{content:attr(data-label);font-weight:500;font-size:.8125rem;color:#64748b;font-family:Roboto,system-ui,sans-serif}
+  .cards tbody td>*{grid-column:2;justify-self:start}
+  .cards tbody td.primary{display:block;font-weight:600;font-size:.9375rem;color:#0f172a}
+  .cards tbody td.primary::before{content:none}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">X-M04</span>
+    <h1 class="text-lg font-semibold">Registar posebnih dijelova — nacrt, utvrđivanje, izmjena registra</h1>
+    <span class="text-[13px] text-slate-600">Pokriva: odluke K-02 i K-03, faza FR (FR-Q3, FR-Q4, K-03a), K-01 / K-01a / K-01b u utvrđenom registru. Ažurirano po K-03 i K-03a: svaki vlasnik posebnog dijela (i garaže) je etažni vlasnik; jedan vlasnik — jedan glas; suvlasnici istog dijela zajedno jedan glas, preko predstavnika.</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Stanje registra kao <code>StatusBadge</code>: „Nacrt” (slate), „Utvrđen” (green), „Za provjeru” (amber, postojeći ZEV-ovi, FR-Q4). Novi ključevi u <code>statusTone</code>, bez novog tona.</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Sažetak kao red postojećih <code>Stat</code>-ova: broj posebnih dijelova, broj glasova (samostalni vlasnici + suvlasničke zajednice), posebni dijelovi bez upisanog vlasnika, zbir udjela u troškovima. Brojevi sa decimalnim zarezom (P-R05).</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Nema kolone „Pravo glasa” (K-03): garaže i garažna mjesta su posebni dijelovi kao i stanovi. Udio se zove „Udio u troškovima” — služi za raspodjelu troškova, ne za glasanje.</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span>Preduslovi utvrđivanja kao ✓/⚠ i jedno dugme za sljedeći korak — obrazac „Sljedeći korak”. <b class="text-orange-700">DOPUNA DS-a D2 — traži odluku (opcija A, kompozicija postojećeg).</b></span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>„Utvrdi registar…” je <code>caution</code> iza <code>ConfirmAction</code>; tijelo ponavlja sažetak i posljedicu. Nije <code>danger</code>: ništa se ne briše.</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>Vlasništvo je zaključano dok registar nije utvrđen (K-02): prazno stanje koje vodi, ne skrivena stranica.</span></li>
+    <li class="flex gap-2"><span class="ann">7</span><span>Utvrđen registar je samo za čitanje; radnja „Izmjena registra” umjesto „Uredi” po redu. Zbir udjela <b>vlasnika</b> po jedinici je upozorenje, nikad blokada (K-01, K-01a).</span></li>
+    <li class="flex gap-2"><span class="ann">8</span><span>Izmjena registra: vrsta izmjene, pregled „prije → poslije” sa zbirom koji mora ostati 100,00 %, obavezan razlog i dokument (<code>FilePicker</code>), potvrda (FR-Q3).</span></li>
+    <li class="flex gap-2"><span class="ann">9</span><span>Izmjena je onemogućena dok traje glasanje — osnova je zamrznuta. Upozorenje kao amber tekst u kartici; uz odobren D4 postaje <code>Flash</code> „upozorenje”.</span></li>
+    <li class="flex gap-2"><span class="ann">10</span><span>Glasanje navodi verziju registra i broj glasova; kvorum i rezultat su brojevi glasova, ne procenti (K-03, K-03a).</span></li>
+    <li class="flex gap-2"><span class="ann">12</span><span>Spisak glasova: svaki samostalni vlasnik jednom (sa svim svojim posebnim dijelovima) i svaka suvlasnička zajednica jednom, sa zajedničkim predstavnikom (K-03a). Predstavnik se mijenja na tabu „Vlasništvo”, uz audit.</span></li>
+    <li class="flex gap-2"><span class="ann">11</span><span>375px: jedinice kao kartice (D3), sažetak u dva reda, potvrda i forma izmjene u punoj širini.</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz, bez backend-a. Podaci: seed ZEV „Vojvode Mišića 10 i 12” — 8 posebnih dijelova, 429,80 m², zbir udjela 100,00 %. Datum: 24.10.2026.</p>
+</header>
+
+<main class="space-y-12 p-6">
+
+<!-- ================= 1. DESKTOP: NACRT ================= -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">① Desktop 1440 — Zgrade i jedinice › Posebni dijelovi, registar u nacrtu, otvorena potvrda utvrđivanja</h2>
+  <div class="overflow-x-auto"><div class="frame" style="width:1440px"><div class="flex">
+    <div data-sidebar="zgrade"></div>
+    <main class="min-w-0 flex-1 p-8"><div class="space-y-6">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Zgrade i jedinice</h1>
+        <p class="mt-1 text-[15px] text-slate-500">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</p>
+      </div>
+      <div data-tabs="posebni"></div>
+
+      <!-- Sljedeći korak (D2) -->
+      <section class="ds-add rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <span class="ds-add-tag">DOPUNA DS-a D2 — „Sljedeći korak”</span>
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Sljedeći korak: utvrdite registar posebnih dijelova <span class="ann">4</span></h2>
+            <p class="mt-0.5 text-[13px] text-slate-500">Vlasnici se mogu dodati tek kad je registar utvrđen. Svaki vlasnik posebnog dijela — i garaže — je etažni vlasnik sa jednim glasom.</p>
+          </div>
+          <span class="inline-flex items-center gap-2"><span class="ann">1</span><span class="inline-block rounded-full bg-slate-50 px-2.5 py-0.5 text-[13px] font-medium text-slate-700 ring-1 ring-inset ring-slate-500/20">Registar: nacrt</span></span>
+        </div>
+        <ul class="mt-3 space-y-1.5 text-sm">
+          <li class="flex items-start gap-2"><span data-ok></span><span class="text-slate-700">Zbir udjela u troškovima je 100,00 % (osnova za raspodjelu troškova).</span></li>
+          <li class="flex items-start gap-2"><span data-ok></span><span class="text-slate-700">Svaki posebni dio ima oznaku, vrstu i površinu.</span></li>
+          <li class="flex items-start gap-2"><span data-warn></span><span class="text-slate-700">Provjerite da su upisane sve garaže i garažna mjesta — i njihovi vlasnici su etažni vlasnici.</span></li>
+        </ul>
+        <details open class="group mt-4">
+          <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900 hover:bg-amber-100"><span class="transition-transform group-open:rotate-90">›</span> Utvrdi registar…</summary>
+          <div class="mt-2 max-w-[68ch] space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+            <p class="flex items-center gap-2 text-sm font-semibold text-amber-900">Utvrditi registar posebnih dijelova? <span class="ann">5</span></p>
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-amber-900">
+              <dt>Posebnih dijelova</dt><dd class="text-right tabular-nums font-medium">8</dd>
+              <dt>od toga</dt><dd class="text-right tabular-nums font-medium">5 stanova · 1 poslovni · 2 garaže</dd>
+              <dt>Zbir udjela u troškovima</dt><dd class="text-right tabular-nums font-medium">100,00 %</dd>
+            </dl>
+            <p class="text-[13px] text-amber-900">Nakon utvrđivanja, broj posebnih dijelova, njihova površina i udjeli u troškovima mijenjaju se samo kao evidentirana izmjena registra, sa razlogom i dokumentom. Tada možete dodavati vlasnike.</p>
+            <button class="inline-flex items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900 hover:bg-amber-100">Da, utvrdi registar</button>
+          </div>
+        </details>
+      </section>
+
+      <div data-stats="draft"></div>
+
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="text-sm font-semibold text-slate-700">Posebni dijelovi</h2>
+        <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Registar je u nacrtu — sve vrijednosti se mogu mijenjati. Upišite sve posebne dijelove, uključujući garaže i garažna mjesta.</p>
+        <div data-table="draft"></div>
+        <details class="group mt-4"><summary class="inline-flex cursor-pointer list-none items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700"><span class="transition-transform group-open:rotate-90">›</span> Dodaj posebni dio</summary></details>
+      </section>
+    </div></main>
+  </div></div></div>
+</section>
+
+<!-- ================= 2. DESKTOP: VLASNIŠTVO ZAKLJUČANO + ZA PROVJERU ================= -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">② Desktop 1440 — Vlasnici › Vlasništvo dok registar nije utvrđen (novi ZEV) i „Za provjeru” (postojeći ZEV)</h2>
+  <div class="grid gap-6" style="grid-template-columns:repeat(2,minmax(0,700px))">
+    <div class="frame p-6">
+      <p class="mb-3 text-[13px] font-semibold text-slate-600">Novi ZEV — registar u nacrtu</p>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Vlasnički udjeli <span class="ann">6</span></h2>
+        <div class="flex flex-col items-center px-6 py-10 text-center">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="mb-2 h-8 w-8 text-slate-400" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg>
+          <p class="text-[15px] font-medium text-slate-700">Prvo utvrdite registar posebnih dijelova</p>
+          <p class="mt-1 max-w-[52ch] text-[13px] text-slate-500">Vlasnici se upisuju na utvrđene posebne dijelove, da bi udio i pravo glasa svakog vlasnika bili poznati od početka.</p>
+          <a class="mt-4 inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-100">Otvori registar posebnih dijelova</a>
+        </div>
+      </section>
+    </div>
+    <div class="frame p-6">
+      <p class="mb-3 text-[13px] font-semibold text-slate-600">Postojeći ZEV (podaci prije FR) — prelazni režim, FR-Q4</p>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <div class="flex items-start justify-between gap-3">
+          <h2 class="text-sm font-semibold text-slate-700">Registar posebnih dijelova</h2>
+          <span class="inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[13px] font-medium text-amber-800 ring-1 ring-inset ring-amber-600/20">Za provjeru</span>
+        </div>
+        <p class="mt-2 text-sm text-slate-700">Registar je preuzet iz postojećih podataka: 8 posebnih dijelova, 5 glasova (6 lica). Pravila glasanja su prevedena na „jedan etažni vlasnik — jedan glas”. Predstavnik zajednice Stan 3 (Nikola Ilić) je postavljen po najvećem udjelu — potvrdite ga.</p>
+        <ul class="mt-3 space-y-1.5 text-sm">
+          <li class="flex items-start gap-2"><span data-ok></span><span class="text-slate-700">Dodavanje vlasnika i dalje radi.</span></li>
+          <li class="flex items-start gap-2"><span data-warn></span><span class="text-slate-700">Novo glasanje se može otvoriti tek kad utvrdite registar.</span></li>
+        </ul>
+        <a class="mt-4 inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Provjeri i utvrdi registar</a>
+      </section>
+      <p class="mt-3 text-[13px] text-slate-600">Ista stavka se pojavljuje u „Za Vas sada” predsjednika (D1): „Provjerite i utvrdite registar posebnih dijelova — potrebno prije sljedećeg glasanja.”</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. DESKTOP: UTVRĐEN ================= -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">③ Desktop 1440 — registar utvrđen, sa vlasnicima i upozorenjem o zbiru udjela vlasnika</h2>
+  <div class="overflow-x-auto"><div class="frame" style="width:1440px"><div class="flex">
+    <div data-sidebar="zgrade"></div>
+    <main class="min-w-0 flex-1 p-8"><div class="space-y-6">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Zgrade i jedinice</h1>
+        <p class="mt-1 text-[15px] text-slate-500">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</p>
+      </div>
+      <div data-tabs="posebni"></div>
+      <div data-stats="est"></div>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Posebni dijelovi <span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Utvrđen · verzija 2</span> <span class="ann">7</span></h2>
+            <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Utvrđen 24.10.2026. (Milan Petrović). Površina i udio u troškovima mijenjaju se kroz izmjenu registra.</p>
+          </div>
+          <a class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Izmjena registra</a>
+        </div>
+        <div data-table="est"></div>
+      </section>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Etažni vlasnici · 5 glasova · 7 lica <span class="ann">12</span></h2>
+        <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Samostalni vlasnik ima jedan glas bez obzira na broj posebnih dijelova; suvlasnici istog posebnog dijela zajedno imaju jedan glas, koji daje zajednički predstavnik. Broj glasova je osnova kvoruma i većine.</p>
+        <div data-owners></div>
+        <ul class="mt-3 space-y-1.5 text-sm">
+          <li class="flex items-start gap-2"><span data-warn></span><span class="text-slate-700">Stan 3 ima zbir vlasničkih udjela 150 % — vjerovatno nije zatvoren udio prethodnog vlasnika. <b>Novo glasanje se ne otvara</b> dok se to ne razriješi, jer bi prethodni vlasnik dobio glas (K-01b).</span></li>
+          <li class="flex items-start gap-2"><span data-warn></span><span class="text-slate-700">Stan 4 ima upisano 60 % — možda nedostaje suvlasnik, a time i jedan etažni vlasnik. Ne blokira glasanje.</span></li>
+        </ul>
+      </section>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="mb-3 text-sm font-semibold text-slate-700">Istorija registra</h2>
+        <ol class="divide-y divide-slate-100 text-sm">
+          <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2"><span class="w-24 font-medium text-slate-900">Verzija 2</span><span class="tabular-nums text-slate-500">24.10.2026. 11:40</span><span class="text-slate-700">Oznaka: „Garaža B-1” → „Garaža 2” — usklađeno sa rješenjem katastra.</span><a class="font-medium text-blue-700 underline-offset-2 hover:underline">Rješenje-katastar-G2.pdf</a></li>
+          <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2"><span class="w-24 font-medium text-slate-900">Verzija 1</span><span class="tabular-nums text-slate-500">24.10.2026. 09:12</span><span class="text-slate-700">Registar utvrđen: 8 posebnih dijelova (5 stanova, 1 poslovni prostor, 2 garaže), zbir udjela u troškovima 100,00 %.</span></li>
+        </ol>
+      </section>
+    </div></main>
+  </div></div></div>
+</section>
+
+<!-- ================= 4. DESKTOP: IZMJENA REGISTRA ================= -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">④ Desktop 1440 — Izmjena registra (promjena udjela dva posebna dijela) i stanje dok traje glasanje</h2>
+  <div class="grid gap-6" style="grid-template-columns:minmax(0,860px) minmax(0,520px)">
+    <div class="frame p-6">
+      <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ Posebni dijelovi</a>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Izmjena registra</h1>
+      <p class="mb-6 mt-1 text-[15px] text-slate-500">Postaje verzija 3 registra. Prethodne verzije ostaju sačuvane.</p>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Šta se mijenja <span class="ann">8</span></h2>
+        <div class="mt-3 grid gap-4 sm:grid-cols-2">
+          <label class="block"><span class="text-sm font-medium text-slate-700">Vrsta izmjene</span>
+            <select class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"><option>Promjena udjela u troškovima</option><option>Promjena površine</option><option>Novi posebni dio</option><option>Ukidanje posebnog dijela</option><option>Spajanje ili dioba</option></select></label>
+          <label class="block"><span class="text-sm font-medium text-slate-700">Datum od kojeg važi</span>
+            <input value="24.10.2026." class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"></label>
+        </div>
+        <table class="mt-4 w-full text-sm">
+          <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+            <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Posebni dio</th>
+            <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Udio u troškovima prije</th>
+            <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Udio poslije</th>
+            <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Razlika</th>
+          </tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="px-3 py-1.5">Stan 3 · Zgrada A, Ulaz A2</td><td class="px-3 py-1.5 text-right tabular-nums">17,60 %</td><td class="px-3 py-1.5 text-right"><input value="18,10" class="w-24 rounded-lg border border-slate-300 px-2 py-1 text-right text-sm tabular-nums"> %</td><td class="px-3 py-1.5 text-right tabular-nums">+0,50</td></tr>
+            <tr><td class="px-3 py-1.5">Stan 5 · Zgrada A, Ulaz A1</td><td class="px-3 py-1.5 text-right tabular-nums">16,40 %</td><td class="px-3 py-1.5 text-right"><input value="15,90" class="w-24 rounded-lg border border-slate-300 px-2 py-1 text-right text-sm tabular-nums"> %</td><td class="px-3 py-1.5 text-right tabular-nums">−0,50</td></tr>
+            <tr class="bg-slate-50/80 font-medium"><td class="px-3 py-1.5">Zbir svih posebnih dijelova</td><td class="px-3 py-1.5 text-right tabular-nums">100,00 %</td><td class="px-3 py-1.5 text-right tabular-nums">100,00 %</td><td class="px-3 py-1.5 text-right"><span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">U redu</span></td></tr>
+          </tbody>
+        </table>
+        <p class="mt-2 text-[13px] text-slate-500">Dodajte posebni dio u izmjenu ako se udio prenosi na njega. Izmjena se ne može evidentirati dok zbir nije 100,00 %.</p>
+        <div class="mt-4 space-y-4">
+          <label class="block"><span class="text-sm font-medium text-slate-700">Razlog izmjene</span>
+            <textarea rows="2" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">Ispravka prema elaboratu etažiranja iz 2019. (greška pri prvom unosu).</textarea></label>
+          <div>
+            <span class="text-sm font-medium text-slate-700">Dokument</span>
+            <p class="text-[13px] text-slate-500">Elaborat, rješenje katastra ili odluka skupštine. Obavezan.</p>
+            <div class="mt-2 flex flex-wrap items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-3">
+              <button class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Izaberi dokument…</button>
+              <span class="text-sm text-slate-700">Elaborat-etaziranja-2019.pdf · 2,4 MB</span>
+              <button aria-label="Ukloni Elaborat-etaziranja-2019.pdf" class="text-slate-500">×</button>
+            </div>
+          </div>
+        </div>
+        <details open class="group mt-5">
+          <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900 hover:bg-amber-100"><span class="transition-transform group-open:rotate-90">›</span> Evidentiraj izmjenu registra…</summary>
+          <div class="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+            <p class="text-sm font-semibold text-amber-900">Evidentirati izmjenu registra (verzija 3)?</p>
+            <p class="text-sm text-amber-900">Stan 3: 17,60 % → 18,10 % · Stan 5: 16,40 % → 15,90 %. Mijenja raspodjelu troškova za ove stanove od sljedeće serije faktura. <b>Ne utiče na glasanje</b> — svaki etažni vlasnik ima jedan glas.</p>
+            <button class="inline-flex items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900 hover:bg-amber-100">Da, evidentiraj izmjenu</button>
+          </div>
+        </details>
+      </section>
+    </div>
+    <div class="space-y-6">
+      <div class="frame p-6">
+        <p class="mb-3 text-[13px] font-semibold text-slate-600">Dok traje glasanje</p>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Izmjena registra <span class="ann">9</span></h2>
+            <span class="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Utvrđen · verzija 2</span>
+          </div>
+          <p class="mt-2 text-sm text-amber-800">Izmjena nije moguća dok traje glasanje o prijedlogu P-2026-02 (do 07.11.2026.). Osnova glasanja je zamrznuta na verziji 2.</p>
+          <a class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-blue-700 underline-offset-2 hover:underline">Otvori prijedlog P-2026-02</a>
+        </section>
+      </div>
+      <div class="frame p-6">
+        <p class="mb-3 text-[13px] font-semibold text-slate-600">Kako se registar vidi u glasanju (prijedlog, kartica rezultata)</p>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="flex items-center gap-2 text-sm font-semibold text-slate-700">Trenutno stanje — glasanje traje do 07.11.2026. <span class="ann">10</span></h2>
+          <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Osnova: registar verzija 2 od 24.10.2026. · 5 glasova (6 lica, 8 posebnih dijelova) · jedan etažni vlasnik — jedan glas</p>
+          <dl class="grid grid-cols-[9rem_1fr] gap-x-3 gap-y-1 text-sm">
+            <dt class="text-slate-500">Glasalo</dt><dd class="text-right tabular-nums">2 od 5 glasova</dd>
+            <dt class="text-slate-500">Kvorum (50 %)</dt><dd class="text-right tabular-nums">potrebno 3 · nedostaje 1</dd>
+            <dt class="text-slate-500">Za / Protiv</dt><dd class="text-right tabular-nums">2 / 0</dd><dt class="text-slate-500">Bez upisanog vlasnika</dt><dd class="text-right tabular-nums">0 posebnih dijelova</dd>
+          </dl>
+          <p class="mt-3 text-[13px] text-slate-500">Ana Savić ima Stan 1 i Garažu 1, ali glasa jednom; Nikola i Sara Ilić (Stan 3) glasaju jednom, preko predstavnika Nikole. Glasanje je otvoreno prije nego što je u Stan 3 upisan treći udio (zbir 150 %); sljedeće glasanje se ne otvara dok se to ne razriješi (K-01b).</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. MOBILNI 375 ================= -->
+<section>
+  <h2 class="mb-3 flex items-center gap-2 text-base font-semibold text-slate-800">⑤ Mobilni 375 — nacrt sa potvrdom, utvrđen registar, izmjena registra <span class="ann">11</span></h2>
+  <div class="flex flex-wrap items-start gap-6">
+
+    <div class="phone">
+      <div data-topbar></div>
+      <div class="space-y-4 p-4">
+        <div><h1 class="text-2xl font-semibold tracking-tight text-slate-900">Zgrade i jedinice</h1></div>
+        <div class="flex gap-4 overflow-x-auto border-b border-slate-200 text-sm"><a class="whitespace-nowrap py-3 text-slate-600">Zgrade</a><a class="whitespace-nowrap py-3 text-slate-600">Ulazi</a><a class="whitespace-nowrap border-b-2 border-blue-600 py-3 font-medium text-blue-700">Posebni dijelovi</a></div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+          <div class="flex items-start justify-between gap-2"><h2 class="text-sm font-semibold text-slate-700">Sljedeći korak: utvrdite registar</h2><span class="inline-block shrink-0 rounded-full bg-slate-50 px-2.5 py-0.5 text-[13px] font-medium text-slate-700 ring-1 ring-inset ring-slate-500/20">Nacrt</span></div>
+          <ul class="mt-2 space-y-1.5 text-sm">
+            <li class="flex items-start gap-2"><span data-ok></span><span class="text-slate-700">Udio u troškovima 100,00 %</span></li>
+            <li class="flex items-start gap-2"><span data-ok></span><span class="text-slate-700">Svi dijelovi imaju oznaku i površinu</span></li>
+            <li class="flex items-start gap-2"><span data-warn></span><span class="text-slate-700">Upisane sve garaže i garažna mjesta?</span></li>
+          </ul>
+          <details open class="group mt-3">
+            <summary class="flex min-h-[44px] w-full cursor-pointer list-none items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900"><span class="group-open:rotate-90">›</span> Utvrdi registar…</summary>
+            <div class="mt-2 space-y-2 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3 text-sm text-amber-900">
+              <p class="font-semibold">Utvrditi registar?</p>
+              <p>8 posebnih dijelova (5 stanova, 1 poslovni, 2 garaže) · udio u troškovima 100,00 %. Kasnije izmjene samo uz razlog i dokument.</p>
+              <button class="flex min-h-[44px] w-full items-center justify-center rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 font-medium">Da, utvrdi registar</button>
+            </div>
+          </details>
+        </section>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+          <h2 class="mb-3 text-sm font-semibold text-slate-700">Posebni dijelovi · 8</h2>
+          <div data-table="draft-m"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div data-topbar></div>
+      <div class="space-y-4 p-4">
+        <div><h1 class="text-2xl font-semibold tracking-tight text-slate-900">Zgrade i jedinice</h1></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Glasova</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums">5</div></div>
+          <div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">Posebnih dijelova</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums">8</div></div>
+        </div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+          <div class="flex items-start justify-between gap-2"><h2 class="text-sm font-semibold text-slate-700">Posebni dijelovi</h2><span class="inline-block shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[13px] font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">Utvrđen · v2</span></div>
+          <p class="mb-3 mt-0.5 text-[13px] text-slate-500">Izmjene kroz „Izmjena registra”.</p>
+          <a class="mb-3 flex min-h-[44px] items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Izmjena registra</a>
+          <div data-table="est-m"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div data-topbar></div>
+      <div class="space-y-4 p-4">
+        <div><a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ Posebni dijelovi</a><h1 class="text-2xl font-semibold tracking-tight text-slate-900">Izmjena registra</h1><p class="mt-1 text-[15px] text-slate-500">Postaje verzija 3</p></div>
+        <section class="space-y-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+          <label class="block"><span class="text-sm font-medium text-slate-700">Vrsta izmjene</span><select class="mt-1 block min-h-[44px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"><option>Promjena površine</option></select></label>
+          <label class="block"><span class="text-sm font-medium text-slate-700">Posebni dio</span><select class="mt-1 block min-h-[44px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"><option>Garaža 1 · Zgrada A</option></select></label>
+          <div class="rounded-lg bg-slate-50 p-3 text-sm"><p class="text-slate-500">Površina</p><p class="mt-1 font-medium text-slate-900">15,00 → 15,40 m²</p><p class="mt-1 text-[13px] text-slate-500">Utiče na troškove po m². Ne utiče na glasanje.</p></div>
+          <label class="block"><span class="text-sm font-medium text-slate-700">Razlog izmjene</span><textarea rows="3" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">Ispravka površine prema rješenju katastra.</textarea></label>
+          <div><span class="text-sm font-medium text-slate-700">Dokument</span>
+            <div class="mt-2 space-y-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-3">
+              <button class="flex min-h-[44px] w-full items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Izaberi dokument…</button>
+              <p class="text-[13px] text-slate-500">Nije izabran dokument — obavezan.</p>
+            </div>
+          </div>
+          <button disabled class="flex min-h-[44px] w-full cursor-not-allowed items-center justify-center rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900 opacity-50">Evidentiraj izmjenu registra…</button>
+          <p class="text-[13px] text-slate-600">Dugme postaje dostupno kad je izabran dokument.</p>
+        </section>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<script>
+const units=[
+ {l:"Garaža 1",b:"Zgrada A",e:"—",t:"Garaža",a:"15,00",s:"3,40",v:false,vEst:false,o:"Ana Savić (100 %)",sum:"100"},
+ {l:"Stan 1",b:"Zgrada A",e:"Ulaz A1",t:"Stan",a:"62,50",s:"14,50",v:true,vEst:true,o:"Ana Savić (100 %)",sum:"100"},
+ {l:"Stan 2",b:"Zgrada A",e:"Ulaz A1",t:"Stan",a:"48,00",s:"11,20",v:true,vEst:true,o:"Marko Jovanović (100 %)",sum:"100"},
+ {l:"Stan 3",b:"Zgrada A",e:"Ulaz A2",t:"Stan",a:"75,30",s:"17,60",v:true,vEst:true,o:"Nikola Ilić (60 %), Sara Ilić (40 %), Jelena Kovač (50 %)<div class=\"mt-1 text-[13px] text-slate-500\">Predstavnik za glasanje: Nikola Ilić <button class=\"ml-1 inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700\">Promijeni</button></div>",sum:"150"},
+ {l:"Stan 5",b:"Zgrada A",e:"Ulaz A1",t:"Stan",a:"70,00",s:"16,40",v:true,vEst:true,o:"Milan Petrović (100 %)",sum:"100"},
+ {l:"Garaža 2",b:"Zgrada B",e:"—",t:"Garaža",a:"16,00",s:"3,60",v:false,vEst:true,vChanged:true,o:"Milan Petrović (100 %)",sum:"100"},
+ {l:"Poslovni prostor 1",b:"Zgrada B",e:"Ulaz B1",t:"Poslovni prostor",a:"88,00",s:"20,50",v:true,vEst:true,o:"Apoteka Zdravlje d.o.o. (100 %)",sum:"100"},
+ {l:"Stan 4",b:"Zgrada B",e:"Ulaz B1",t:"Stan",a:"55,00",s:"12,80",v:true,vEst:true,o:"Marko Jovanović (60 %)",sum:"60"},
+];
+const th=(t,r)=>`<th class="px-3 py-2 ${r?'text-right':''} text-xs font-semibold uppercase tracking-wider text-slate-500">${t}</th>`;
+const chip=(txt,tone)=>{const m={green:"bg-emerald-50 text-emerald-800 ring-emerald-600/20",amber:"bg-amber-50 text-amber-800 ring-amber-600/20",slate:"bg-slate-50 text-slate-700 ring-slate-500/20",blue:"bg-blue-50 text-blue-800 ring-blue-600/20"};return `<span class="inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset ${m[tone]}">${txt}</span>`};
+const sumChip=(u)=>u.sum==="100"?chip("100 %","slate"):u.sum==="150"?chip("Zbir 150 %","amber"):chip("Upisano 60 %","amber");
+const sumNote=(u)=>u.sum==="150"?`<div class="mt-1 text-[13px] text-amber-800">Zatvorite udio prethodnog vlasnika (Promjena vlasništva).</div>`:u.sum==="60"?`<div class="mt-1 text-[13px] text-amber-800">Upišite preostalih 40 %.</div>`:"";
+function render(kind){
+  const draft=kind.startsWith("draft"), mobile=kind.endsWith("-m");
+  let h=`<div class="overflow-x-auto"><table class="w-full text-sm ${mobile?'cards':''}"><thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">${th("Oznaka")}${th("Zgrada / ulaz")}${th("Vrsta")}${th("Površina m²",1)}${th(`Udio u troškovima %${draft&&!mobile?' <span class="ann normal-case">3</span>':''}`,1)}${draft?'':th("Vlasnici")+th("Zbir udjela vlasnika")}${draft?th("Radnje"):''}</tr></thead><tbody class="divide-y divide-slate-100">`;
+  for(const u of (mobile?units.slice(0,3):units)){
+    h+=`<tr>
+      <td class="px-3 py-1.5 font-medium text-slate-900 ${mobile?'primary':''}" data-label="Oznaka">${u.l}</td>
+      <td class="px-3 py-1.5" data-label="Zgrada / ulaz"><span>${u.b}${u.e!=='—'?' · '+u.e:''}</span></td>
+      <td class="px-3 py-1.5" data-label="Vrsta"><span>${u.t}</span></td>
+      <td class="px-3 py-1.5 text-right tabular-nums" data-label="Površina m²"><span>${u.a}</span></td>
+      <td class="px-3 py-1.5 text-right tabular-nums" data-label="Udio u troškovima %"><span>${u.s}</span></td>
+      ${draft?'':`<td class="px-3 py-1.5" data-label="Vlasnici"><span>${u.o}</span></td><td class="px-3 py-1.5" data-label="Zbir udjela vlasnika"><div>${sumChip(u)}${sumNote(u)}</div></td>`}
+      ${draft?`<td class="px-3 py-1.5" data-label="Radnje"><button class="inline-flex min-h-[28px] max-md:min-h-[44px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi</button></td>`:''}
+    </tr>`;
+  }
+  if(draft&&!mobile) h+=`<tr class="bg-slate-50/80 font-medium"><td class="px-3 py-1.5" colspan="3">Ukupno · 8 posebnih dijelova</td><td class="px-3 py-1.5 text-right tabular-nums">429,80</td><td class="px-3 py-1.5 text-right tabular-nums">100,00</td><td></td></tr>`;
+  h+=`</tbody></table></div>`;
+  if(mobile) h+=`<p class="text-[13px] text-slate-500">+ još 5 posebnih dijelova (prikazana prva 3 radi pregleda)</p>`;
+  return h;
+}
+document.querySelectorAll('[data-table]').forEach(el=>{el.outerHTML=render(el.dataset.table)});
+const subjects=[["Ana Savić","samostalni vlasnik","Stan 1, Garaža 1",""],["Marko Jovanović","samostalni vlasnik","Stan 2, Stan 4 (60 %)",""],["Nikola Ilić, Sara Ilić, Jelena Kovač","suvlasnička zajednica","Stan 3","Predstavnik: Nikola Ilić"],["Milan Petrović","samostalni vlasnik","Stan 5, Garaža 2",""],["Apoteka Zdravlje d.o.o.","samostalni vlasnik","Poslovni prostor 1",""]];
+document.querySelectorAll('[data-owners]').forEach(el=>{el.outerHTML=`<table class="w-full text-sm"><thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left"><th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Etažni vlasnik</th><th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Posebni dijelovi</th><th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Ko glasa</th><th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Glasova</th></tr></thead><tbody class="divide-y divide-slate-100">${subjects.map(([n,k,u,r])=>`<tr><td class="px-3 py-1.5"><div class="font-medium text-slate-900">${n}</div><div class="text-[13px] text-slate-500">${k}</div></td><td class="px-3 py-1.5">${u}</td><td class="px-3 py-1.5">${r?`${r} <button class="ml-1 inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Promijeni</button>`:n}</td><td class="px-3 py-1.5 text-right tabular-nums">1</td></tr>`).join("")}<tr class="bg-slate-50/80 font-medium"><td class="px-3 py-1.5" colspan="3">Ukupno · 7 lica u 5 glasačkih subjekata</td><td class="px-3 py-1.5 text-right tabular-nums">5</td></tr></tbody></table>`});
+const stat=(label,val,tone)=>`<div class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm"><div class="flex items-start gap-1.5"><span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full ${tone==='ok'?'bg-emerald-500':tone==='warn'?'bg-amber-500':'bg-blue-500'}"></span><span class="text-xs font-medium uppercase tracking-wider text-slate-500">${label}</span></div><div class="mt-1.5 text-2xl font-semibold tabular-nums ${tone==='ok'?'text-emerald-700':tone==='warn'?'text-amber-700':'text-slate-900'}">${val}</div></div>`;
+document.querySelectorAll('[data-stats]').forEach(el=>{
+  const est=el.dataset.stats==='est';
+  el.outerHTML=`<div class="relative grid grid-cols-4 gap-4"><span class="ann absolute -left-3 -top-3">2</span>${stat("Posebnih dijelova","8")}${stat("Glasova (etažnih vlasnika)",est?"5":"—")}${stat("Bez upisanog vlasnika",est?"0":"8")}${stat("Udio u troškovima","100,00 %","ok")}</div>`;
+});
+const okIco=`<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true"><path d="M5 10.5 8.5 14 15 7"/></svg></span><span class="sr-only">U redu:</span>`;
+const warnIco=`<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-[13px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-600/20">!</span><span class="sr-only">Pažnja:</span>`;
+document.querySelectorAll('[data-ok]').forEach(el=>el.outerHTML=okIco);
+document.querySelectorAll('[data-warn]').forEach(el=>el.outerHTML=warnIco);
+const navItems=[["home","Početna"],["building","Zgrade i jedinice"],["users","Vlasnici i korisnici"],["landmark","Organi ZEV"],["ballot","Skupština i odluke"],["receipt","Fakture i uplate"]];
+document.querySelectorAll('[data-sidebar]').forEach(el=>{
+  el.outerHTML=`<aside class="w-60 shrink-0 border-r border-slate-200 bg-white"><div class="px-4 pt-4 text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div><div class="px-4 pb-3 text-[13px] text-slate-500">ZEV VM 10-12</div><nav class="space-y-0.5 px-2 pb-4">${navItems.map(([i,t])=>`<a ${t==='Zgrade i jedinice'?'aria-current="page"':''} class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium ${t==='Zgrade i jedinice'?'bg-blue-50 text-blue-700':'text-slate-700'}">${t}</a>`).join('')}<a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-400">…</a></nav></aside>`;
+});
+document.querySelectorAll('[data-tabs]').forEach(el=>{
+  el.outerHTML=`<div class="flex gap-6 border-b border-slate-200 text-sm"><a class="py-3 text-slate-600">Zgrade <span class="text-[13px] text-slate-500">· 2</span></a><a class="py-3 text-slate-600">Ulazi <span class="text-[13px] text-slate-500">· 3</span></a><a class="border-b-2 border-blue-600 py-3 font-medium text-blue-700">Posebni dijelovi <span class="text-[13px]">· 8</span></a><a class="py-3 text-slate-600">Zajednički dijelovi</a></div>`;
+});
+document.querySelectorAll('[data-topbar]').forEach(el=>{
+  el.outerHTML=`<header class="flex items-center gap-3 border-b border-slate-200 bg-white px-3 py-2 shadow-sm"><button class="flex h-11 items-center gap-2 rounded-full px-2 text-sm font-medium text-slate-700"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="h-5 w-5" aria-hidden="true"><path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"/></svg>Meni</button><div class="flex-1 text-[13px] text-slate-500">ZEV VM 10-12</div><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">MP</span></header>`;
+});
+</script>
+</body>
+</html>

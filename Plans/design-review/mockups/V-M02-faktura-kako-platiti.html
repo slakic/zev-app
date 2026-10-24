@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V-M02 — Faktura: kako da platim</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .ann{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:22px;padding:0 6px;border-radius:9999px;background:#a21caf;color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
+  .ds-add{outline:2px dashed #f97316;outline-offset:3px}
+  .ds-add-label{display:inline-block;background:#fff7ed;color:#c2410c;border:1px dashed #f97316;border-radius:6px;font-size:12px;font-weight:600;padding:1px 6px}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+
+<div class="border-b-4 border-fuchsia-700 bg-white px-6 py-5">
+  <div class="text-xs font-bold uppercase tracking-wider text-fuchsia-700">Mockup V-M02 · statičan prikaz, nema backend-a</div>
+  <h1 class="mt-1 text-2xl font-semibold">Detalj fakture sa uputstvom „Kako da platim”</h1>
+  <p class="mt-1 text-sm text-slate-600">Pokriva <b>V-R01</b> i dio <b>V-R05</b>. Nalazi: V-N01, V-N11, V-N12, V-N15, V-N26. Podaci: seed — FAK-2026-000001, Garaža 1, račun ZEV-a 5620990000123456 (NLB Banka a.d. Banja Luka). Prikaz za vlasnika; računovođa ispod vidi i svoje kontrole (korekcija, storno — nepromijenjeno, nije prikazano).</p>
+  <ol class="mt-3 grid gap-1 text-sm text-slate-700 md:grid-cols-2">
+    <li><span class="ann">1</span> „Kako da platim” je prva kartica za neplaćenu fakturu; iznos je <b>preostali</b>, ne ukupni (i PDF/QR ga koriste — V-N26).</li>
+    <li><span class="ann">2</span> Jedan status chip (kao u listi) + broj dana kašnjenja; „Izdata” se ne ponavlja.</li>
+    <li><span class="ann">3</span> Svi podaci za nalog: primalac, račun + banka, iznos, poziv na broj (15px, ne 12px mono), svrha.</li>
+    <li><span class="ann">4</span> <span class="ds-add-label">DOPUNA DS-a — traži odluku</span> dugme „Kopiraj” (opcija B iz V-R01). Opcija A = bez dugmeta, vrijednost <code>select-all</code>.</li>
+    <li><span class="ann">5</span> Stavke: „Osnov obračuna” čitljivim jezikom (kao u PDF-u), 3 kolone — na 375 bez odsijecanja.</li>
+    <li><span class="ann">6</span> „Preuzmi fakturu (PDF)” ostaje <code>secondary</code>; na ekranu nema <code>primary</code> — vlasnik plaća u svojoj banci.</li>
+  </ol>
+</div>
+
+<!-- ======================= DESKTOP ======================= -->
+<div class="px-6 pt-8 text-sm font-semibold uppercase tracking-wider text-slate-500">Desktop 1440 (prikazan sadržajni dio, bez sidebar-a — sidebar identičan V-M01)</div>
+<div class="overflow-x-auto px-6 pb-10 pt-3">
+<div class="mx-auto w-[1200px] rounded-lg border border-slate-300 bg-slate-50 p-8 shadow">
+  <!-- PageHeader with back -->
+  <div class="mb-6 flex flex-wrap items-start justify-between gap-3">
+    <div>
+      <a class="mb-2 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-sm font-medium text-blue-700 hover:bg-blue-50">‹ Fakture i uplate</a>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Faktura FAK-2026-000001</h1>
+      <p class="mt-1 text-[15px] text-slate-500">Zgrada A (Vojvode Mišića 10) / Garaža 1 · Ana Savić · period 2026-09</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <button class="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Preuzmi fakturu (PDF)</button><span class="ann">6</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-5">
+    <!-- Kako da platim -->
+    <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm lg:col-span-3">
+      <h2 class="mb-3 text-sm font-semibold text-slate-700">Kako da platim <span class="ann">1</span></h2>
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <div class="text-[13px] text-slate-500">Za uplatu</div>
+          <div class="text-2xl font-semibold tabular-nums text-slate-900">7,22 KM</div>
+        </div>
+        <div class="text-right">
+          <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Dospjela (neplaćena)</span> <span class="ann">2</span>
+          <div class="mt-1 text-sm text-slate-700">Rok je bio 15.09.2026. — prije 39 dana</div>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-slate-700">Uplatu izvršite u e-bankarstvu ili na šalteru banke, sa ovim podacima: <span class="ann">3</span></p>
+      <dl class="mt-3 divide-y divide-slate-100 text-sm">
+        <div class="grid grid-cols-[180px_1fr_auto] items-center gap-3 py-2.5">
+          <dt class="text-slate-500">Primalac</dt>
+          <dd class="text-[15px] text-slate-900">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</dd><dd></dd>
+        </div>
+        <div class="grid grid-cols-[180px_1fr_auto] items-center gap-3 py-2.5">
+          <dt class="text-slate-500">Račun primaoca</dt>
+          <dd><span class="select-all text-[15px] font-medium tabular-nums tracking-wide text-slate-900">5620990000123456</span><span class="block text-[13px] text-slate-500">NLB Banka a.d. Banja Luka</span></dd>
+          <dd class="ds-add rounded-full"><button class="inline-flex min-h-[28px] items-center justify-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Kopiraj</button></dd>
+        </div>
+        <div class="grid grid-cols-[180px_1fr_auto] items-center gap-3 py-2.5">
+          <dt class="text-slate-500">Iznos</dt>
+          <dd class="text-[15px] font-medium tabular-nums text-slate-900">7,22 KM</dd><dd></dd>
+        </div>
+        <div class="grid grid-cols-[180px_1fr_auto] items-center gap-3 py-2.5">
+          <dt class="text-slate-500">Poziv na broj</dt>
+          <dd><span class="select-all text-[15px] font-medium tabular-nums tracking-wide text-slate-900">202609-936D4T</span><span class="block text-[13px] text-slate-500">Upišite tačno ovako — po njemu se uplata automatski vezuje za fakturu.</span></dd>
+          <dd class="ds-add rounded-full"><button class="inline-flex min-h-[28px] items-center justify-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-emerald-600" aria-hidden="true"><path d="M5 10.5l3 3 7-7"/></svg>Kopirano</button> <span class="ann">4</span></dd>
+        </div>
+        <div class="grid grid-cols-[180px_1fr_auto] items-center gap-3 py-2.5">
+          <dt class="text-slate-500">Svrha uplate</dt>
+          <dd class="text-[15px] text-slate-900">ZEV 2026-09 — FAK-2026-000001</dd><dd></dd>
+        </div>
+      </dl>
+      <p class="mt-3 text-[13px] text-slate-500">Uplata se u aplikaciji pojavljuje kad računovođa uveze izvod banke. Pitanja: predsjednik ZEV-a, Milan Petrović.</p>
+    </section>
+
+    <!-- Iznosi -->
+    <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm lg:col-span-2">
+      <h2 class="mb-3 text-sm font-semibold text-slate-700">Iznosi</h2>
+      <dl class="space-y-1.5 text-sm">
+        <div class="flex justify-between"><dt>Ukupno</dt><dd class="tabular-nums font-semibold">7,22 KM</dd></div>
+        <div class="flex justify-between"><dt>Plaćeno</dt><dd class="tabular-nums">0,00 KM</dd></div>
+        <div class="flex justify-between"><dt>Preostalo</dt><dd class="tabular-nums font-semibold">7,22 KM</dd></div>
+        <div class="flex justify-between"><dt>Izdata</dt><dd>24.10.2026.</dd></div>
+        <div class="flex justify-between"><dt>Rok plaćanja</dt><dd>15.09.2026.</dd></div>
+        <div class="flex justify-between gap-3"><dt>Dostava e-poštom</dt><dd class="text-right">Niste uključili dostavu<span class="block text-[13px] text-slate-500"><a class="text-blue-700 underline">Podešavanja</a></span></dd></div>
+      </dl>
+    </section>
+  </div>
+
+  <!-- Stavke -->
+  <section class="mt-4 rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+    <h2 class="mb-3 text-sm font-semibold text-slate-700">Stavke <span class="ann">5</span></h2>
+    <div class="overflow-x-auto rounded-lg">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+          <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Stavka</th>
+          <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Osnov obračuna</th>
+          <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Iznos</th>
+        </tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="px-3 py-1.5">Redovno održavanje</td><td class="px-3 py-1.5 text-slate-700">15 m² korisne površine × 0,30 KM/m²</td><td class="px-3 py-1.5 text-right tabular-nums">4,50 KM</td></tr>
+          <tr><td class="px-3 py-1.5">Fond održavanja (rezerva)</td><td class="px-3 py-1.5 text-slate-700">Vaš udio 3,4 % × 0,80 KM</td><td class="px-3 py-1.5 text-right tabular-nums">2,72 KM</td></tr>
+          <tr><td class="px-3 py-1.5">Struja zajedničkih prostorija</td><td class="px-3 py-1.5 text-slate-700">0 korisnika × 2,50 KM po korisniku</td><td class="px-3 py-1.5 text-right tabular-nums">0,00 KM</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="mt-4 rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+    <h2 class="mb-3 text-sm font-semibold text-slate-700">Uplate po ovoj fakturi</h2>
+    <div class="flex flex-col items-center gap-2 py-6 text-center">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-slate-300"><path d="M3 11.5 5.5 4h9l2.5 7.5"/><path d="M3 11.5v3A1.5 1.5 0 0 0 4.5 16h11a1.5 1.5 0 0 0 1.5-1.5v-3"/><path d="M3 11.5h4.2c.3 1 1.2 1.7 2.3 1.7s2-.7 2.3-1.7H16"/></svg>
+      <div class="text-[15px] font-medium text-slate-700">Još nema uplata po ovoj fakturi.</div>
+    </div>
+  </section>
+</div>
+</div>
+
+<!-- ======================= MOBILNI ======================= -->
+<div class="px-6 pt-4 text-sm font-semibold uppercase tracking-wider text-slate-500">Mobilni 375 — neplaćena faktura · i stanje „plaćena” (desno)</div>
+<div class="flex flex-wrap items-start gap-10 px-6 pb-16 pt-3">
+  <div class="w-[375px] shrink-0 overflow-hidden rounded-[28px] border-8 border-slate-800 bg-slate-50 shadow-lg">
+    <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-2 shadow-sm">
+      <button aria-label="Otvori meni" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-slate-600"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"/></svg></button>
+      <div class="flex-1"></div>
+      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">AS</div>
+    </header>
+    <main class="p-4">
+      <div class="mb-6">
+        <a class="mb-2 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-sm font-medium text-blue-700">‹ Fakture i uplate</a>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Faktura FAK-2026-000001</h1>
+        <p class="mt-1 text-[15px] text-slate-500">Garaža 1 · period 2026-09</p>
+      </div>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="mb-3 text-sm font-semibold text-slate-700">Kako da platim <span class="ann">1</span></h2>
+        <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-amber-50 text-amber-800 ring-amber-600/20">Dospjela (neplaćena)</span>
+        <div class="mt-2 text-[13px] text-slate-500">Za uplatu</div>
+        <div class="text-2xl font-semibold tabular-nums text-slate-900">7,22 KM</div>
+        <p class="mt-1 text-sm text-slate-700">Rok je bio 15.09.2026. — prije 39 dana.</p>
+        <dl class="mt-4 divide-y divide-slate-100 border-t border-slate-100 text-sm">
+          <div class="py-3"><dt class="text-[13px] text-slate-500">Primalac</dt><dd class="text-[15px] text-slate-900">Zajednica etažnih vlasnika "Vojvode Mišića 10 i 12", Banja Luka</dd></div>
+          <div class="flex items-end justify-between gap-3 py-3">
+            <div><dt class="text-[13px] text-slate-500">Račun primaoca</dt><dd class="select-all text-[17px] font-medium tabular-nums tracking-wide text-slate-900">5620990000123456</dd><dd class="text-[13px] text-slate-500">NLB Banka a.d. Banja Luka</dd></div>
+            <button class="ds-add inline-flex min-h-[44px] items-center justify-center rounded-full px-3 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Kopiraj</button>
+          </div>
+          <div class="py-3"><dt class="text-[13px] text-slate-500">Iznos</dt><dd class="text-[17px] font-medium tabular-nums text-slate-900">7,22 KM</dd></div>
+          <div class="flex items-end justify-between gap-3 py-3">
+            <div><dt class="text-[13px] text-slate-500">Poziv na broj</dt><dd class="select-all text-[17px] font-medium tabular-nums tracking-wide text-slate-900">202609-936D4T</dd></div>
+            <button class="ds-add inline-flex min-h-[44px] items-center justify-center rounded-full px-3 text-[13px] font-medium border border-slate-300 bg-white text-slate-700">Kopiraj</button>
+          </div>
+          <div class="py-3"><dt class="text-[13px] text-slate-500">Svrha uplate</dt><dd class="text-[15px] text-slate-900">ZEV 2026-09 — FAK-2026-000001</dd></div>
+        </dl>
+        <button class="mt-2 flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium max-md:min-h-[44px] border border-slate-300 bg-white text-slate-700">Preuzmi fakturu (PDF)</button>
+      </section>
+      <section class="mt-4 rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="mb-3 text-sm font-semibold text-slate-700">Stavke <span class="ann">5</span></h2>
+        <ul class="divide-y divide-slate-100 text-sm">
+          <li class="py-2.5"><div class="flex justify-between gap-3"><span class="font-medium text-slate-900">Redovno održavanje</span><span class="tabular-nums">4,50 KM</span></div><div class="text-[13px] text-slate-500">15 m² × 0,30 KM/m²</div></li>
+          <li class="py-2.5"><div class="flex justify-between gap-3"><span class="font-medium text-slate-900">Fond održavanja (rezerva)</span><span class="tabular-nums">2,72 KM</span></div><div class="text-[13px] text-slate-500">Vaš udio 3,4 % × 0,80 KM</div></li>
+          <li class="py-2.5"><div class="flex justify-between gap-3"><span class="font-medium text-slate-900">Struja zajedničkih prostorija</span><span class="tabular-nums">0,00 KM</span></div><div class="text-[13px] text-slate-500">0 korisnika × 2,50 KM</div></li>
+          <li class="flex justify-between gap-3 py-2.5 font-semibold"><span>Ukupno</span><span class="tabular-nums">7,22 KM</span></li>
+        </ul>
+        <p class="mt-2 text-[13px] text-slate-500">Napomena: kartice stavki nastaju iz <code>Table</code> card-transform-a (>5 kolona ne važi ovdje — tabela od 3 kolone stane i bez transformacije; prikazana je kao lista radi poređenja).</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Plaćena -->
+  <div class="w-[375px] shrink-0 overflow-hidden rounded-[28px] border-8 border-slate-800 bg-slate-50 shadow-lg">
+    <main class="p-4">
+      <div class="mb-6">
+        <a class="mb-2 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-sm font-medium text-blue-700">‹ Fakture i uplate</a>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Faktura FAK-2026-000002</h1>
+        <p class="mt-1 text-[15px] text-slate-500">Stan 1 · period 2026-09</p>
+      </div>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="mb-3 text-sm font-semibold text-slate-700">Plaćanje</h2>
+        <span class="inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-600/20">Plaćena</span>
+        <p class="mt-2 text-sm text-slate-700">Plaćeno <b class="tabular-nums">75,85 KM</b> uplatom od 24.10.2026. Nemate ništa za uplatu po ovoj fakturi.</p>
+        <p class="mt-2 text-[13px] text-slate-500">Uplatni podaci se ne prikazuju za plaćenu fakturu — smanjuje rizik dvostruke uplate.</p>
+      </section>
+    </main>
+  </div>
+</div>
+</body>
+</html>
