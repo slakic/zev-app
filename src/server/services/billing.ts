@@ -282,6 +282,13 @@ async function nextInvoiceNumber(tx: Prisma.TransactionClient, zevId: string, ye
   return `${prefix}${String(seq).padStart(6, "0")}`;
 }
 
+/** Default payment due date of a batch: the 15th of the batch's period month (UTC midnight).
+ *  Shared by `issueBatch` and the draft batch page, so the confirmation shows the real date. */
+export function defaultBatchDueDate(period: string): Date {
+  const [y, m] = period.split("-").map(Number);
+  return new Date(Date.UTC(y || new Date().getFullYear(), (m || 1) - 1, 15));
+}
+
 /**
  * Issue a draft batch: creates numbered invoices with full calculation
  * snapshots in one transaction. Prevents duplicate issuance per period.
@@ -301,8 +308,7 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
     if (preview.length === 0) throw new Error("Serija nema obračunatih stavki.");
 
     const year = Number(batch.period.slice(0, 4)) || new Date().getFullYear();
-    const [y, m] = batch.period.split("-").map(Number);
-    const defaultDue = opts?.dueDate ?? new Date(Date.UTC(y || year, (m || 1) - 1, 15));
+    const defaultDue = opts?.dueDate ?? defaultBatchDueDate(batch.period);
     const issueDate = new Date();
 
     const invoices = [];

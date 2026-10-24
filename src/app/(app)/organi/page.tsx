@@ -6,8 +6,8 @@ import {
   listParties, partyDisplayName,
 } from "@/server/services/ownership";
 import { getSettings } from "@/server/services/settings";
-import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, type ColumnSpec } from "@/components/ui";
+import { formatDate, t, tf, toZonedDateIso } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, ConfirmAction, type ColumnSpec } from "@/components/ui";
 
 const boardHeaders: ColumnSpec[] = [
   { label: "Član" },
@@ -53,6 +53,13 @@ async function addBoardMemberAction(formData: FormData) {
     redirect(`/organi?tab=aktuelni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/organi");
+}
+
+/** "1 član", "2 člana", "5 članova" — for the sentence about the board's size after a mandate ends. */
+function memberWord(n: number): string {
+  const last = n % 10;
+  const teen = n % 100 >= 11 && n % 100 <= 14;
+  return n === 1 ? "član" : !teen && last >= 2 && last <= 4 ? "člana" : "članova";
 }
 
 async function endBoardMemberAction(formData: FormData) {
@@ -183,11 +190,29 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
               <Td className="text-xs text-slate-500">{m.decisionRef ?? "—"}</Td>
               <Td>
                 {isPresident && (
-                  <form action={endBoardMemberAction} className="flex flex-wrap items-center gap-2">
-                    <input type="hidden" name="termId" value={m.id} />
-                    <input type="date" name="validTo" className={`${inputCls} w-36 py-1 text-xs`} />
-                    <SubmitBtn variant="secondary">Okončaj mandat</SubmitBtn>
-                  </form>
+                  <ConfirmAction
+                    trigger={t("confirm.endMandate.trigger")}
+                    triggerVariant="caution"
+                    title={t("confirm.endMandate.title")}
+                    body={
+                      <p className="text-sm text-amber-950">
+                        {tf("confirm.endMandate.body", {
+                          ime: partyDisplayName(m.party),
+                          broj: holders.boardMembers.length - 1,
+                          rijec: memberWord(holders.boardMembers.length - 1),
+                        })}
+                      </p>
+                    }
+                    confirmLabel={t("confirm.endMandate.confirm")}
+                    confirmVariant="caution"
+                    action={endBoardMemberAction}
+                    hiddenFields={{ termId: m.id }}
+                  >
+                    <Field label="Mandat traje do">
+                      <input type="date" name="validTo" required defaultValue={toZonedDateIso(new Date())} className={inputCls} />
+                    </Field>
+                    <Field label="Razlog (nije obavezan)"><input name="reason" className={inputCls} /></Field>
+                  </ConfirmAction>
                 )}
               </Td>
             </tr>

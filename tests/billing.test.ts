@@ -5,8 +5,9 @@ import { calculateCharge } from "@/server/engines/billing";
 import { dec } from "@/lib/money";
 import {
   createChargeItem, createDraftBatch, issueBatch, previewBatch,
-  correctInvoice, cancelInvoice, enterMeterReading,
+  correctInvoice, cancelInvoice, enterMeterReading, defaultBatchDueDate,
 } from "@/server/services/billing";
+import { enterPayment, allocatePayment } from "@/server/services/payments";
 import { transferOwnership } from "@/server/services/ownership";
 
 const U = (id: string, over?: Partial<Parameters<typeof calculateCharge>[1][number]>) => ({
@@ -195,5 +196,36 @@ describe("invoice batches (integration)", () => {
       .previewData as unknown as { unitId: string; debtorId: string }[];
     const u1next = preview.find((c) => c.unitId === f.u1.id)!;
     expect(u1next.debtorId).toBe(f.ownerC.id);
+  });
+});
+
+describe("F1 — cancel guard and default due date", () => {
+  let f: Fixture;
+  let chargeIds: string[];
+
+  beforeAll(async () => {
+    f = await createFixture("f1bill");
+    chargeIds = await createAreaCharges(f, "1.00");
+  });
+
+  it("cancelInvoice refuses an invoice with an allocated payment", async () => {
+    const { batch } = await createDraftBatch(f.accountant, "2034-02", undefined, chargeIds);
+    const invoices = await issueBatch(f.accountant, batch.id);
+    const inv = invoices.find((i) => i.unitId === f.u4.id)!;
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: "5.00", payerId: inv.debtorId,
+    });
+    await allocatePayment(f.accountant, { paymentId: p.id, invoiceId: inv.id, amount: "5.00" });
+    await expect(cancelInvoice(f.accountant, inv.id, "pokušaj")).rejects.toThrow(/alokacije/);
+    const after = await prisma.invoice.findUniqueOrThrow({ where: { id: inv.id } });
+    expect(after.status).toBe("ISSUED");
+  });
+
+  it("defaultBatchDueDate is the 15th of the period month (UTC) and issueBatch uses it", async () => {
+    expect(defaultBatchDueDate("2026-09").toISOString()).toBe("2026-09-15T00:00:00.000Z");
+    const { batch } = await createDraftBatch(f.accountant, "2034-03", undefined, chargeIds);
+    const invoices = await issueBatch(f.accountant, batch.id);
+    expect(invoices.length).toBeGreaterThan(0);
+    for (const inv of invoices) expect(inv.dueDate.toISOString()).toBe(defaultBatchDueDate("2034-03").toISOString());
   });
 });

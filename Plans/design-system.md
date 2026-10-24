@@ -14,7 +14,7 @@ Iz toga slijedi pet pravila koja objašnjavaju svaku pojedinačnu odluku u ovom 
 
 1. **Hijerarhija kroz težinu i veličinu, ne kroz boju.** Boja nosi *značenje* (status, ozbiljnost), ne *važnost*. Naslov je naslov jer je 24px/600, a ne zato što je plav.
 2. **Suzdržanost umjesto dekoracije.** Nema gradijenata, ilustracija, fotografija, sjenki preko `shadow-sm` osim na overlay-ima, ni animacija preko postojećeg `dropdown-in` (`globals.css:52-71`).
-3. **Glasnoća je ograničen resurs.** Šest težina dugmadi postoji upravo zato da puna crvena (`danger`) bude rijetka i time ponovo nešto znači — danas tačno 3 mjesta u cijeloj aplikaciji, sva tri iza koraka potvrde (`ui-ux-redesign-plan.md:27-32`, P2).
+3. **Glasnoća je ograničen resurs.** Šest težina dugmadi postoji upravo zato da puna crvena (`danger`) bude rijetka i time ponovo nešto znači — danas tačno 4 mjesta u cijeloj aplikaciji, sva četiri iza koraka potvrde (`ui-ux-redesign-plan.md:27-32`, P2).
 4. **Ništa što korisnik mora pročitati ne ide ispod 13px.**
 5. **Statusi se nikad ne prenose samo bojom** — uvijek tekstualna labela uz ton (`ui.tsx:84-91`).
 
@@ -216,7 +216,17 @@ Ovo je lista „ponovo upotrijebi ovo, nemoj pisati novo". Svaki primitiv ima je
 | **`secondary`** | `border-slate-300 bg-white text-slate-700` | Neutralne, sporedne radnje: „Izvoz PDF", „Nazad", paginacija. **Podrazumijevano za `RowAction`/`RowActionLink`** (`:401, :413`) i za `BtnLink`/`Btn` (`:466, :490`). |
 | **`ghost`** | `text-slate-600 hover:bg-slate-100`, bez ivice | Zaista de-emfazirana radnja **izvan** tabele. **Ne koristiti u redu tabele** — bez ivice i ispune izgleda kao običan tekst, ne kao kontrola; to je pronađeno u živom pregledu („Uredi" u tabeli Ulazi bio nevidljiv osim na hover, `ui.tsx:391-396`, `:448-452`). Danas nije u upotrebi nigdje u aplikaciji. |
 | **`caution`** | `border-amber-600/40 bg-amber-50 text-amber-900` | **Ozbiljno, ali ne uništava podatke.** Zatvaranje glasanja, povlačenje saglasnosti, hitna intervencija, kreiranje nove verzije. Podrazumijevana težina za `ConfirmAction` okidač i potvrdu (`:548, :555`). |
-| **`danger`** | `bg-red-600 text-white shadow-sm` | **Samo nepovratno uništavanje ili poništavanje novca/prava, i obavezno iza `ConfirmAction`.** Danas tačno 3 mjesta: storniranje uplate, storniranje fakture, suspendovanje ZEV-a. **Četvrto mjesto se ne dodaje bez razgovora sa korisnikom.** |
+| **`danger`** | `bg-red-600 text-white shadow-sm` | **Samo nepovratno uništavanje ili poništavanje novca/prava, i obavezno iza `ConfirmAction`.** Danas tačno 4 mjesta: storniranje uplate, storniranje fakture, suspendovanje ZEV-a i brisanje nacrta prijedloga („Obriši nacrt"). **Peto mjesto se ne dodaje bez razgovora sa korisnikom.** |
+
+**Pravilo potvrde (`ConfirmAction`, uvedeno u F1, v2.42.0)** — okidač i dugme potvrde biraju se po vrsti radnje:
+
+| Vrsta radnje | Okidač | Dugme potvrde | Primjeri |
+|---|---|---|---|
+| **Očekivani sljedeći korak sa trajnom posljedicom** (šalje poruke, zaključava, izdaje) | `caution` | `primary` | Izdaj seriju, Pošalji pozive, Otvori glasanje, Plati trošak, Objavi vlasnicima |
+| **Korektivna radnja** (poništava, oduzima) | `caution` | `caution` | Storno alokacije, storno troška, opoziv linka, nova verzija prijedloga, okončanje mandata, uklanjanje pristupa |
+| **Nepovratno uništavanje novca ili prava** (4 mjesta iznad) | `caution` | `danger` | Storno uplate, storno fakture, suspenzija ZEV-a, Obriši nacrt |
+
+Tijelo potvrde (`body`) uvijek sadrži **broj ili iznos** (primaoci, fakture, KM), **ko je druga strana** (dužnik, dobavljač, vlasnik) i **šta se ne može povući**. `primary` u otvorenom panelu potvrde ne krši pravilo „jedno `primary` po regiji": otvoren panel je zasebna regija koja zamjenjuje okidač, a okidač je `caution`. Tekstovi potvrda žive u rječniku pod `confirm.*` i popunjavaju se kroz `tf()` (`{ime}` placeholderi). Radnja koja traži razlog ima `required` polje razloga u `children`, a akcija ga ne zamjenjuje podrazumijevanom vrijednošću.
 
 Nosioci:
 
@@ -228,6 +238,7 @@ Nosioci:
 | `ToggleBtn` | `:504` | `<summary>` za `<details>` sekciju „otkrij formu", sa rotirajućim chevronom. Bez JS-a. Obavezno `className="group"` na `<details>`. |
 | `RowAction` | `:397` | Radnja u koloni „Radnje" — **glagol**, ne identitet. Kompaktna geometrija, `type="submit"` ili `onClick`. |
 | `RowActionLink` | `:409` | Isto, ali navigira. |
+| `SegmentedAction` | `:513` | Red od 2-3 uzajamno isključive radnje veličine prsta (min. 44px), od kojih je najviše jedna „trenutna" (neaktivna `secondary`, aktivna `tonal`, ili `caution` po izboru — nikad `danger`). Svaka opcija je pravi `type="submit"` sa `name`/`value`, pa ga je dovoljno umotati u `<form action>`. Dodato u režimu uživo (prozivka, „Za / Protiv / Uzdržan"; odluka P11 u `Plans/live-meeting-mode-plan.md`). |
 | `RowLink` | `:423` | **Identitet reda** (broj fakture, ime osobe) — podvučeni tekst, ne pilula: mora da čita kao podatak reda, ne kao kontrola koja se takmiči sa pravim radnjama. |
 | `btnBase`, `btnVariantCls` | `:436, :453` | Izvezeni za client komponente koje moraju da sastave dugme same. Uvoziti ih, ne prepisivati klase. |
 

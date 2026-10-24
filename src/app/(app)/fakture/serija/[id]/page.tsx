@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
-import { issueBatch, type UnitCalculation } from "@/server/services/billing";
+import { issueBatch, defaultBatchDueDate, type UnitCalculation } from "@/server/services/billing";
 import { ensureInvoiceDocument } from "@/server/services/documents";
 import {
   countOptedInDebtors,
@@ -12,9 +12,9 @@ import {
   type InvoiceEmailDispatchResult,
 } from "@/server/services/invoiceEmail";
 import { prisma } from "@/lib/prisma";
-import { formatMoney } from "@/lib/money";
-import { formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, SubmitBtn, Flash, type ColumnSpec } from "@/components/ui";
+import { formatMoney, dec, sumDecimals } from "@/lib/money";
+import { formatDate, formatDateTime, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
 
 // Izdavanje generiše PDF svake fakture i šalje do 25 e-mailova; Vercel default bi to presjekao.
 export const maxDuration = 60;
@@ -91,7 +91,10 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
   const zevId = requireZev(actor);
   const batch = await prisma.invoiceBatch.findUniqueOrThrow({ where: { id, zevId }, include: { invoices: true } });
   const preview = (batch.previewData as unknown as UnitCalculation[]) ?? [];
-  const grandTotal = preview.reduce((a, c) => a + Number(c.total), 0);
+  const grandTotal = sumDecimals(preview.map((c) => dec(c.total)));
+  const dueDate = defaultBatchDueDate(batch.period);
+  // Compared as calendar days (Europe/Sarajevo): on the due day itself the term has not passed yet.
+  const dueInPast = toZonedDateIso(dueDate) < toZonedDateIso(new Date());
   const isAccountant = actor.roles.includes("ACCOUNTANT");
   // Nacrt: koliko dužnika će dobiti račun e-poštom. Izdata: status dostave po fakturi.
   const debtorIds = [...new Set(preview.map((c) => c.debtorId).filter((d): d is string => Boolean(d)))];
@@ -105,10 +108,27 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
         subtitle="Pregled obračuna za svaku jedinicu prije izdavanja"
         actions={
           batch.status === "DRAFT" && actor.roles.includes("ACCOUNTANT") ? (
-            <form action={issueBatchAction}>
-              <input type="hidden" name="batchId" value={batch.id} />
-              <SubmitBtn>Izdaj {preview.length} faktura ({formatMoney(grandTotal.toFixed(2))})</SubmitBtn>
-            </form>
+            <ConfirmAction
+              trigger={t("confirm.batchIssue.trigger")}
+              triggerVariant="caution"
+              title={t("confirm.batchIssue.title")}
+              body={
+                <div className="space-y-2 text-sm text-amber-900">
+                  <ul className="space-y-0.5">
+                    <li>{tf("confirm.batchIssue.count", { broj: preview.length })}</li>
+                    <li>{tf("confirm.batchIssue.total", { iznos: formatMoney(grandTotal.toFixed(2)) })}</li>
+                    <li>{tf("confirm.batchIssue.due", { datum: formatDate(dueDate) })}</li>
+                    <li>{tf("confirm.batchIssue.email", { broj: draftOptedIn })}</li>
+                  </ul>
+                  {dueInPast && <p className="font-medium">{tf("confirm.batchIssue.duePast", { datum: formatDate(dueDate) })}</p>}
+                  <p>{t("confirm.batchIssue.irreversible")}</p>
+                </div>
+              }
+              confirmLabel={tf("confirm.batchIssue.confirm", { broj: preview.length })}
+              confirmVariant="primary"
+              action={issueBatchAction}
+              hiddenFields={{ batchId: batch.id }}
+            />
           ) : undefined
         }
       />

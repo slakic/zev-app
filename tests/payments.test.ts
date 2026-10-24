@@ -366,3 +366,67 @@ describe("payments and owner balances", () => {
     expect(Number(balB.balance)).toBeGreaterThan(0);
   });
 });
+
+describe("allocatePayment without an explicit amount (F1.1)", () => {
+  let f: Fixture;
+  let invoices: Invoice[];
+  const invOf = (unitId: string) => invoices.find((i) => i.unitId === unitId)!;
+
+  beforeAll(async () => {
+    f = await createFixture("payauto");
+    const chargeIds = await createAreaCharges(f, "1.00");
+    const { batch } = await createDraftBatch(f.accountant, "2033-05", undefined, chargeIds);
+    invoices = await issueBatch(f.accountant, batch.id);
+  });
+
+  it("takes the open invoice amount when the payment is bigger", async () => {
+    const inv = invOf(f.u4.id); // 20.00
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: "80.00", payerId: f.ownerA.id,
+    });
+    const alloc = await allocatePayment(f.accountant, { paymentId: p.id, invoiceId: inv.id });
+    expect(alloc.amount.toString()).toBe("20");
+    const after = await prisma.invoice.findUniqueOrThrow({ where: { id: inv.id } });
+    expect(after.status).toBe("PAID");
+    const pay = await prisma.payment.findUniqueOrThrow({ where: { id: p.id } });
+    expect(pay.status).toBe("PARTIALLY_APPLIED");
+  });
+
+  it("takes the free part of the payment when the invoice is bigger", async () => {
+    const inv = invOf(f.u1.id); // 50.00
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: "30.00", payerId: f.ownerA.id,
+    });
+    const alloc = await allocatePayment(f.accountant, { paymentId: p.id, invoiceId: inv.id });
+    expect(alloc.amount.toString()).toBe("30");
+    const pay = await prisma.payment.findUniqueOrThrow({ where: { id: p.id } });
+    expect(pay.status).toBe("APPLIED");
+    const after = await prisma.invoice.findUniqueOrThrow({ where: { id: inv.id } });
+    expect(after.status).toBe("ISSUED");
+  });
+
+  it("rejects when nothing is left to allocate", async () => {
+    const inv = invOf(f.u4.id); // already PAID
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: "10.00", payerId: f.ownerA.id,
+    });
+    await expect(allocatePayment(f.accountant, { paymentId: p.id, invoiceId: inv.id })).rejects.toThrow();
+  });
+
+  it("an explicit amount behaves as before", async () => {
+    const inv = invOf(f.u1.id); // 20 open
+    const p = await enterPayment(f.accountant, {
+      accountId: f.account.id, date: new Date(), amount: "100.00", payerId: f.ownerA.id,
+    });
+    await expect(allocatePayment(f.accountant, { paymentId: p.id, invoiceId: inv.id, amount: "25.00" })).rejects.toThrow(/otvoreno/);
+    const alloc = await allocatePayment(f.accountant, { paymentId: p.id, invoiceId: inv.id, amount: "5.00" });
+    expect(alloc.amount.toString()).toBe("5");
+  });
+
+  it("reverseAllocation with an empty reason throws", async () => {
+    const alloc = await prisma.paymentAllocation.findFirstOrThrow({
+      where: { invoiceId: invOf(f.u1.id).id, amount: { gt: 0 } },
+    });
+    await expect(reverseAllocation(f.accountant, alloc.id, "   ")).rejects.toThrow(/razlog/);
+  });
+});

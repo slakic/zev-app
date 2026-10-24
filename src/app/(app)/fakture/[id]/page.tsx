@@ -11,8 +11,8 @@ import {
 } from "@/server/services/invoiceEmail";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, parseMoneyInput } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowLink, Flash, type ColumnSpec } from "@/components/ui";
 
 // Slanje e-pošte može potrajati (PDF + Mailjet), pa isti budžet kao na stranici serije.
 export const maxDuration = 60;
@@ -118,6 +118,16 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const open = dec(inv.total.toString()).minus(paid);
   const emailStatus = await getInvoiceEmailStatus(actor, id);
   const isAccountant = actor.roles.includes("ACCOUNTANT");
+  // Payments that still hold money on this invoice (net of storno rows) — the ones to reverse first.
+  const livePayments = new Map<string, { label: string; net: ReturnType<typeof dec> }>();
+  for (const a of inv.allocations) {
+    const cur = livePayments.get(a.paymentId) ?? { label: `Uplata ${formatDate(a.payment.date)} · ${formatMoney(a.payment.amount.toString())}`, net: dec(0) };
+    cur.net = cur.net.plus(dec(a.amount.toString()));
+    livePayments.set(a.paymentId, cur);
+  }
+  const holdingPayments = [...livePayments.entries()].filter(([, v]) => !v.net.isZero());
+  const debtorName = partyDisplayName(inv.debtor);
+  const emailsDebtor = inv.debtor.invoiceEmailDelivery && Boolean(inv.debtor.email?.trim());
 
   return (
     <div>
@@ -238,18 +248,43 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             </form>
           </Card>
           <Card title="Storniranje">
-            <p className="mb-2 text-xs text-slate-500">Moguće samo dok nema raspoređenih uplata. Faktura ostaje u evidenciji sa statusom „stornirana”.</p>
-            <ConfirmAction
-              trigger="Storniraj"
-              title="Storniranje fakture je nepovratno"
-              body={<p className="text-sm text-amber-900">Faktura {inv.number} ostaje vidljiva u evidenciji sa statusom „stornirana”, ali se više ne može naplatiti.</p>}
-              confirmLabel="Da, storniraj fakturu"
-              confirmVariant="danger"
-              action={cancelAction}
-              hiddenFields={{ invoiceId: inv.id }}
-            >
-              <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
-            </ConfirmAction>
+            {!paid.isZero() ? (
+              <div className="space-y-2">
+                <p className="text-[13px] text-slate-600">
+                  {tf("confirm.invoiceCancel.hasPayments", { iznos: formatMoney(paid.toFixed(2)) })}
+                </p>
+                <ul className="space-y-1 text-sm">
+                  {holdingPayments.map(([paymentId, v]) => (
+                    <li key={paymentId}>
+                      <RowLink href={`/fakture/uplate/${paymentId}`}>{v.label}</RowLink>
+                      <span className="ml-2 tabular-nums text-slate-600">{formatMoney(v.net.toFixed(2))}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <>
+                <p className="mb-2 text-[13px] text-slate-500">{t("confirm.invoiceCancel.hint")}</p>
+                <ConfirmAction
+                  trigger="Storniraj"
+                  title={t("confirm.invoiceCancel.title")}
+                  body={
+                    <div className="space-y-1 text-sm text-amber-900">
+                      <p>
+                        {tf("confirm.invoiceCancel.body", { broj: inv.number, dluznik: debtorName, iznos: formatMoney(inv.total.toString()) })}
+                      </p>
+                      {emailsDebtor && <p>{tf("confirm.invoiceCancel.emailNotice", { dluznik: debtorName })}</p>}
+                    </div>
+                  }
+                  confirmLabel={t("confirm.invoiceCancel.confirm")}
+                  confirmVariant="danger"
+                  action={cancelAction}
+                  hiddenFields={{ invoiceId: inv.id }}
+                >
+                  <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
+                </ConfirmAction>
+              </>
+            )}
           </Card>
         </div>
       )}

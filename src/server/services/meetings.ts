@@ -11,12 +11,13 @@ import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/tokens";
 import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
-import { ownersVotingBasis, boardVotingBasis, activeProxyFor, activeProxiesFor, partyDisplayName } from "./ownership";
+import { ownersVotingBasis, boardVotingBasis, activeProxyFor, activeProxiesFor, partyDisplayName, listOfficeHolders } from "./ownership";
 import { unitsInScope } from "./property";
 import { queueNotification } from "@/server/notifications/service";
 import { dec, ZERO } from "@/lib/money";
 import { getEnv } from "@/lib/env";
-import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma } from "@/generated/prisma/client";
+import { formatDateTime } from "@/lib/i18n";
+import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma, Party } from "@/generated/prisma/client";
 
 const MEETING_FLOW: MeetingStatus[] = [
   "DRAFT", "SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT",
@@ -51,6 +52,61 @@ export async function getMeeting(actor: Actor, id: string) {
       proxies: { include: { grantor: true, holder: true } },
     },
   });
+}
+
+/**
+ * Who gets the "Poziv na sjednicu" e-mail when a meeting moves to INVITATIONS_SENT (F1.5):
+ * for a BOARD meeting the president and the board members, for an ASSEMBLY meeting every
+ * active party with a current ownership stake. `withEmail` is what the sending loop iterates
+ * (each party once); `withoutEmailCount` is shown in the confirmation so the president knows
+ * who has to be handed the PDF invitation instead. The page's confirmation and the actual
+ * sending both call this, so the number shown is the number sent.
+ */
+export async function listInvitationRecipients(
+  actor: Actor,
+  meetingId: string
+): Promise<{ withEmail: Party[]; withoutEmailCount: number }> {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
+  let candidates: Party[];
+  if (meeting.body === "BOARD") {
+    const holders = await listOfficeHolders(actor);
+    candidates = holders.boardMembers.map((m) => m.party);
+    if (holders.president) candidates.push(holders.president.party);
+  } else {
+    candidates = await prisma.party.findMany({
+      where: { zevId, active: true, ownershipStakes: { some: { validTo: null } } },
+    });
+  }
+  const seen = new Set<string>();
+  const unique = candidates.filter((p) => !seen.has(p.id) && seen.add(p.id));
+  const withEmail = unique.filter((p) => p.email && p.email.trim());
+  return { withEmail, withoutEmailCount: unique.length - withEmail.length };
+}
+
+/** Queues the "Poziv na sjednicu" e-mail to every `listInvitationRecipients().withEmail` party
+ *  (called when the meeting moves to INVITATIONS_SENT). Returns how many were queued and how many
+ *  recipients had no address — the same two numbers the confirmation panel showed. */
+export async function queueMeetingInvitations(actor: Actor, meetingId: string) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
+  const { withEmail, withoutEmailCount } = await listInvitationRecipients(actor, meetingId);
+  for (const o of withEmail) {
+    await queueNotification({
+      zevId,
+      channel: "EMAIL",
+      recipientId: o.id,
+      toAddress: o.email!,
+      template: "meeting-invitation",
+      subject: `Poziv na sjednicu: ${meeting.title}`,
+      body: `Poštovani ${partyDisplayName(o)},\n\npozivamo Vas na sjednicu "${meeting.title}" (${formatDateTime(meeting.scheduledAt)}, ${meeting.location ?? "—"}).\nMaterijali i detalji dostupni su u aplikaciji nakon prijave.\n`,
+      relatedType: "Meeting",
+      relatedId: meetingId,
+    });
+  }
+  return { queued: withEmail.length, withoutEmailCount };
 }
 
 /**
@@ -172,11 +228,21 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
     }
   }
 
+  // F1.7: proposals of this session (draft or open for voting) that are not tied to any agenda
+  // item — the live screen offers to link them (linkProposalToAgendaItem) to an item that
+  // otherwise shows only "Diskusija", so the vote can be run from that item.
+  const unlinkedProposals = await prisma.proposal.findMany({
+    where: { zevId, meetingId, status: { in: ["DRAFT", "VOTING_OPEN"] }, agendaItemId: null },
+    orderBy: { code: "asc" },
+    select: { id: true, code: true, title: true, status: true },
+  });
+
   return {
     meetingId: meeting.id,
     title: meeting.title,
     status: meeting.status,
     body: meeting.body,
+    unlinkedProposals,
     agendaItems: meeting.agendaItems.map((a) => ({
       id: a.id,
       order: a.order,
@@ -498,6 +564,30 @@ export async function updateDraftProposal(
   return p;
 }
 
+/** Ties a proposal that has no agenda item to one item of its own meeting (F1, K4) — also
+ *  while VOTING_OPEN, unlike updateDraftProposal: the agenda item is meeting bookkeeping, not
+ *  part of what owners vote on (proposalContentHash covers title, text, version and
+ *  attachments only), so linking changes neither the frozen text nor any issued link. Only
+ *  an unlinked proposal can be linked — moving it between items stays a draft-only edit. */
+export async function linkProposalToAgendaItem(actor: Actor, proposalId: string, agendaItemId: string) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  const before = await prisma.proposal.findUniqueOrThrow({ where: { id: proposalId, zevId } });
+  if (before.status !== "DRAFT" && before.status !== "VOTING_OPEN") {
+    throw new Error("Za tačku dnevnog reda može se vezati samo nacrt ili prijedlog o kojem se glasa.");
+  }
+  if (before.agendaItemId) throw new Error("Prijedlog je već vezan za tačku dnevnog reda.");
+  const item = await prisma.agendaItem.findUniqueOrThrow({ where: { id: agendaItemId, meetingId: before.meetingId } });
+  const p = await prisma.proposal.update({ where: { id: proposalId, zevId }, data: { agendaItemId } });
+  await audit(actor, {
+    action: "proposal.link",
+    targetType: "Proposal",
+    targetId: proposalId,
+    after: { code: p.code, agendaItemId, agendaItemTitle: item.title, status: p.status },
+  });
+  return p;
+}
+
 /** Withdraws a DRAFT proposal (sets ProposalStatus.WITHDRAWN) — for a proposal the
  *  president no longer wants to pursue but that shouldn't vanish without a trace, e.g.
  *  because it's already visible to owners in the meeting's proposal list (getMeeting
@@ -696,6 +786,40 @@ function classifyLiveDelivery(input: {
   return { deliver: true, suppressReason: null };
 }
 
+/** The scope + eligible voting base of a proposal — the one place that decides "who is in the
+ *  base", shared by `openVoting` and both delivery previews so they can never disagree. */
+async function loadVotingBasis(
+  zevId: string,
+  p: {
+    scopeType: ScopeType; buildingId: string | null; entranceId: string | null; allocationGroupId: string | null;
+    scopeUnits: { unitId: string }[]; meeting: { body: MeetingBody };
+  }
+) {
+  // Board proposals vote by upravni odbor membership, not ownership; the
+  // proposal's scopeType is not meaningful there, so skip unit scoping.
+  const isBoard = p.meeting.body === "BOARD";
+  const scopedUnits =
+    isBoard || p.scopeType === "ZEV"
+      ? undefined
+      : (
+          await unitsInScope(zevId, {
+            scopeType: p.scopeType,
+            buildingId: p.buildingId,
+            entranceId: p.entranceId,
+            allocationGroupId: p.allocationGroupId,
+            unitIds: p.scopeUnits.map((s) => s.unitId),
+          })
+        ).map((u) => u.id);
+  const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId, scopedUnits);
+  return { isBoard, basis };
+}
+
+/** Who actually receives the personal link in "ALL" mode: the proxy's e-mail if the proxy has
+ *  one, else the owner's. Used by openVoting's queueing and by previewVotingDelivery("ALL"). */
+function approvalLinkAddress(ownerEmail: string | null, proxyEmail: string | null): string | null {
+  return proxyEmail ?? ownerEmail;
+}
+
 /**
  * Freeze the proposal and open electronic voting:
  *  1. snapshot the voting rule + eligible voting base
@@ -741,22 +865,7 @@ export async function openVoting(
     if (!closesAt) throw new Error("Vrijeme zatvaranja glasanja nije definisano.");
     const expiresAt = opts?.expiresAt ?? closesAt;
 
-    // Board proposals vote by upravni odbor membership, not ownership; the
-    // proposal's scopeType is not meaningful there, so skip unit scoping.
-    const isBoard = p.meeting.body === "BOARD";
-    const scopedUnits =
-      isBoard || p.scopeType === "ZEV"
-        ? undefined
-        : (
-            await unitsInScope(zevId, {
-              scopeType: p.scopeType,
-              buildingId: p.buildingId,
-              entranceId: p.entranceId,
-              allocationGroupId: p.allocationGroupId,
-              unitIds: p.scopeUnits.map((s) => s.unitId),
-            })
-          ).map((u) => u.id);
-    const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId, scopedUnits);
+    const { isBoard, basis } = await loadVotingBasis(zevId, p);
     if (basis.length === 0) {
       throw new Error(isBoard ? "Upravni odbor trenutno nema evidentiranih članova." : "Nema nijednog vlasnika u obuhvatu prijedloga.");
     }
@@ -901,7 +1010,7 @@ export async function openVoting(
       }, tx);
       out.push({
         ownerName: row.proxyName ?? row.ownerName,
-        email: row.proxyEmail ?? row.email,
+        email: approvalLinkAddress(row.email, row.proxyEmail),
         link: `${appUrl}/glasanje/${token}`,
         verificationCode: code,
         tokenId: t.id,
@@ -986,20 +1095,7 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
   if (p.status !== "DRAFT") throw new Error("Pregled dostave ima smisla samo dok je prijedlog u statusu Nacrt.");
   if (!p.votingRule) throw new Error("Prijedlog nema definisano pravilo glasanja.");
 
-  const isBoard = p.meeting.body === "BOARD";
-  const scopedUnits =
-    isBoard || p.scopeType === "ZEV"
-      ? undefined
-      : (
-          await unitsInScope(zevId, {
-            scopeType: p.scopeType,
-            buildingId: p.buildingId,
-            entranceId: p.entranceId,
-            allocationGroupId: p.allocationGroupId,
-            unitIds: p.scopeUnits.map((s) => s.unitId),
-          })
-        ).map((u) => u.id);
-  const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId, scopedUnits);
+  const { isBoard, basis } = await loadVotingBasis(zevId, p);
   if (basis.length === 0) {
     return { presentCount: 0, deliverCount: 0, noChannelCount: 0, totalEligibleWeight: "0", reachableWeight: "0", quorumReachable: false };
   }
@@ -1070,11 +1166,49 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
   };
 }
 
+/**
+ * Read-only preview of the delivery `openVoting(actor, proposalId, { delivery })` is about to do,
+ * for the confirmation panel (F1.6). `"LIVE"` is `previewLiveDelivery` unchanged. `"ALL"` counts
+ * from the same base (`loadVotingBasis`), the same proxy lookup and the same address rule
+ * (`approvalLinkAddress`) that `openVoting` uses, so it equals the number of `ApprovalToken`
+ * rows and `approval-link` messages the real call creates. Creates nothing.
+ */
+export async function previewVotingDelivery(actor: Actor, proposalId: string, delivery: "LIVE"): Promise<Awaited<ReturnType<typeof previewLiveDelivery>>>;
+export async function previewVotingDelivery(
+  actor: Actor,
+  proposalId: string,
+  delivery: "ALL"
+): Promise<{ voters: number; byEmail: number; viaProxy: number; withoutEmail: number }>;
+export async function previewVotingDelivery(actor: Actor, proposalId: string, delivery: "ALL" | "LIVE") {
+  if (delivery === "LIVE") return previewLiveDelivery(actor, proposalId);
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const p = await prisma.proposal.findUniqueOrThrow({
+    where: { id: proposalId, zevId },
+    include: { votingRule: true, scopeUnits: true, meeting: true },
+  });
+  if (p.status !== "DRAFT") throw new Error("Pregled dostave ima smisla samo dok je prijedlog u statusu Nacrt.");
+  if (!p.votingRule) throw new Error("Prijedlog nema definisano pravilo glasanja.");
+  const { isBoard, basis } = await loadVotingBasis(zevId, p);
+  let byEmail = 0;
+  let viaProxy = 0;
+  for (const b of basis) {
+    // Board members vote personally — no proxy lookup (same as openVoting).
+    const proxy = isBoard ? null : await activeProxyFor(zevId, b.ownerId, p.meetingId);
+    if (approvalLinkAddress(b.email, proxy?.holder.email ?? null)) {
+      byEmail++;
+      if (proxy) viaProxy++;
+    }
+  }
+  return { voters: basis.length, byEmail, viaProxy, withoutEmail: basis.length - byEmail };
+}
+
 // ---- Token lifecycle ----
 
 export async function revokeToken(actor: Actor, tokenId: string, reason: string) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
+  if (!reason.trim()) throw new Error("Opoziv linka zahtijeva razlog.");
   // ApprovalToken has no zevId column of its own — tenant checked indirectly
   // through its eligible voter's proposal.
   const t = await prisma.approvalToken.findUniqueOrThrow({
@@ -1095,6 +1229,7 @@ export async function revokeToken(actor: Actor, tokenId: string, reason: string)
 export async function reissueToken(actor: Actor, tokenId: string, reason: string) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
+  if (!reason.trim()) throw new Error("Ponovno izdavanje linka zahtijeva razlog.");
   const appUrl = getEnv().APP_URL;
   const result = await prisma.$transaction(async (tx) => {
     const old = await tx.approvalToken.findUniqueOrThrow({

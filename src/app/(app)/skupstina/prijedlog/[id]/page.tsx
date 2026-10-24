@@ -5,14 +5,14 @@ import {
   getProposal, openVoting, closeVoting, recordManualVote, correctVote, recordDecision,
   reissueToken, revokeToken, computeProposalResult, createProposalRevision,
   updateDraftProposal, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
-  listVotingRules, getMeeting,
+  listVotingRules, getMeeting, previewVotingDelivery,
 } from "@/server/services/meetings";
 import { generateDecisionPdf, generateVotingListPdf } from "@/server/services/documents";
 import { serializeResult } from "@/server/engines/voting";
 import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { formatWeight, parseMoneyInput } from "@/lib/money";
-import { formatDateTime, formatDateTimeLocalInput, parseZonedDateTime, tEnum, t } from "@/lib/i18n";
+import { formatDateTime, formatDateTimeLocalInput, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
 const voterHeaders: ColumnSpec[] = [
@@ -108,8 +108,8 @@ async function tokenAction(formData: FormData) {
   const id = String(formData.get("proposalId"));
   const op = String(formData.get("op"));
   try {
-    if (op === "reissue") await reissueToken(actor, String(formData.get("tokenId")), String(formData.get("reason") || "Ponovno izdavanje"));
-    else await revokeToken(actor, String(formData.get("tokenId")), String(formData.get("reason") || "Opoziv"));
+    if (op === "reissue") await reissueToken(actor, String(formData.get("tokenId")), String(formData.get("reason") ?? ""));
+    else await revokeToken(actor, String(formData.get("tokenId")), String(formData.get("reason") ?? ""));
   } catch (e) {
     redirect(`/skupstina/prijedlog/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -135,6 +135,9 @@ async function updateDraftAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
   const id = String(formData.get("proposalId"));
+  if (!String(formData.get("agendaItemId") ?? "")) {
+    redirect(`/skupstina/prijedlog/${id}?err=${encodeURIComponent(t("confirm.proposalAgenda.required"))}`);
+  }
   try {
     await updateDraftProposal(actor, id, {
       code: String(formData.get("code")),
@@ -142,7 +145,8 @@ async function updateDraftAction(formData: FormData) {
       text: String(formData.get("text")),
       rationale: (formData.get("rationale") as string) || null,
       financialImpact: parseMoneyInput(formData.get("financialImpact") as string | null),
-      agendaItemId: (formData.get("agendaItemId") as string) || null,
+      // Required choice in the form: an item, or "none" for a deliberately unattached proposal.
+      agendaItemId: ["", "none"].includes(String(formData.get("agendaItemId") ?? "")) ? null : String(formData.get("agendaItemId")),
       scopeType: (formData.get("scopeType") as never) ?? "ZEV",
       buildingId: (formData.get("buildingId") as string) || null,
       votingRuleId: String(formData.get("votingRuleId")),
@@ -218,6 +222,21 @@ export default async function ProposalPage({ params, searchParams }: { params: P
   const agendaItems = meetingWithAgenda?.agendaItems ?? [];
   const canDelete = canDeleteDraftProposal(p.meeting.status);
 
+  // F1.6: what the confirmation panels must name before an irreversible step.
+  const openPreview =
+    isPresident && p.status === "DRAFT"
+      ? await previewVotingDelivery(actor, p.id, "ALL").catch(() => null)
+      : null;
+  const closesAt = p.votingClosesAt ?? p.meeting.eVoteClosesAt;
+  const votingOpen = p.status === "VOTING_OPEN";
+  const activeLinks = p.eligibleVoters.filter((ev) => ev.tokens.some((tk) => tk.status === "ACTIVE")).length;
+  const castVotes = p.eligibleVoters.filter((ev) => ev.votes.some((v) => !v.invalid)).length;
+  const quorumText = (r: { quorumReached: boolean }) =>
+    votingOpen
+      ? t(r.quorumReached ? "confirm.result.quorumSoFarReached" : "confirm.result.quorumSoFarNotReached")
+      : t(r.quorumReached ? "confirm.result.quorumReached" : "confirm.result.quorumNotReached");
+  const outcomeText = (r: { accepted: boolean }) => t(r.accepted ? "confirm.result.accepted" : "confirm.result.notAccepted");
+
   return (
     <div>
       <PageHeader
@@ -226,10 +245,33 @@ export default async function ProposalPage({ params, searchParams }: { params: P
         actions={
           isPresident ? (
             p.status === "DRAFT" ? (
-              <form action={openVotingAction}>
-                <input type="hidden" name="proposalId" value={p.id} />
-                <SubmitBtn>Otvori glasanje i pošalji linkove</SubmitBtn>
-              </form>
+              <ConfirmAction
+                trigger={t("confirm.openVoting.trigger")}
+                triggerVariant="caution"
+                title={t("confirm.openVoting.title")}
+                body={
+                  <div className="space-y-1 text-sm text-amber-950">
+                    {openPreview && (
+                      <p>
+                        {tf("confirm.openVoting.base", {
+                          voters: openPreview.voters, byEmail: openPreview.byEmail,
+                          viaProxy: openPreview.viaProxy, withoutEmail: openPreview.withoutEmail,
+                        })}
+                      </p>
+                    )}
+                    <p>{tf("confirm.openVoting.lock", { verzija: p.version })}</p>
+                    <p>
+                      {closesAt
+                        ? tf("confirm.openVoting.until", { datum: formatDateTime(closesAt) })
+                        : t("confirm.openVoting.noDeadline")}
+                    </p>
+                  </div>
+                }
+                confirmLabel={t("confirm.openVoting.confirm")}
+                confirmVariant="primary"
+                action={openVotingAction}
+                hiddenFields={{ proposalId: p.id }}
+              />
             ) : p.status === "VOTING_OPEN" ? (
               <ConfirmAction
                 trigger="Zatvori glasanje i utvrdi rezultat"
@@ -237,9 +279,9 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 body={
                   result ? (
                     <div className="rounded-md bg-white/70 p-2 text-sm text-amber-950">
-                      <p><b>Kvorum:</b> {result.quorumReached ? "postignut" : "NIJE postignut"} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
+                      <p>{quorumText(result)} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
                       <p><b>Za:</b> {formatWeight(result.approveWeight)} · <b>Protiv:</b> {formatWeight(result.rejectWeight)} · <b>Uzdržani:</b> {formatWeight(result.abstainWeight)}</p>
-                      <p><b>Ishod ako se sada zatvori:</b> {result.accepted ? "USVOJENO" : "NIJE USVOJENO"}</p>
+                      <p>{t("live.resultOutcomeIfClosedNow")}: {outcomeText(result)}</p>
                     </div>
                   ) : (
                     <p className="text-sm text-amber-900">Rezultat još nije dostupan.</p>
@@ -283,9 +325,18 @@ export default async function ProposalPage({ params, searchParams }: { params: P
           )}
           {result && (
             <div className="mt-3 rounded-md bg-slate-50 p-3 text-sm">
-              <p><b>Kvorum:</b> {result.quorumReached ? "postignut" : "NIJE postignut"} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
+              <p className="mb-1 font-semibold text-slate-700">
+                {votingOpen
+                  ? tf("confirm.result.openTitle", { datum: closesAt ? formatDateTime(closesAt) : "—" })
+                  : t("confirm.result.finalTitle")}
+              </p>
+              <p>{quorumText(result)} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
               <p><b>Za:</b> {formatWeight(result.approveWeight)} · <b>Protiv:</b> {formatWeight(result.rejectWeight)} · <b>Uzdržani:</b> {formatWeight(result.abstainWeight)}</p>
-              <p><b>Prag većine:</b> {formatWeight(result.majorityThreshold)} · <b>Ishod:</b> {result.accepted ? "USVOJENO" : "NIJE USVOJENO"}</p>
+              <p>
+                <b>Prag većine:</b> {formatWeight(result.majorityThreshold)} ·{" "}
+                {votingOpen ? `${t("live.resultOutcomeIfClosedNow")}: ` : `${t("confirm.result.outcome")}: `}
+                {outcomeText(result)}
+              </p>
               <p className="text-xs text-slate-500">Nevažećih: {result.invalidCount} · Glasalo: {result.votesCast}/{result.totalEligibleOwners} vlasnika</p>
             </div>
           )}
@@ -317,18 +368,41 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                     <Td>
                       {isPresident && lastToken && lastToken.status === "ACTIVE" && (
                         <div className="flex flex-wrap gap-1.5">
-                          <form action={tokenAction}>
-                            <input type="hidden" name="proposalId" value={p.id} />
-                            <input type="hidden" name="tokenId" value={lastToken.id} />
-                            <input type="hidden" name="op" value="reissue" />
-                            <SubmitBtn variant="secondary">ponovo izdaj</SubmitBtn>
-                          </form>
-                          <form action={tokenAction}>
-                            <input type="hidden" name="proposalId" value={p.id} />
-                            <input type="hidden" name="tokenId" value={lastToken.id} />
-                            <input type="hidden" name="op" value="revoke" />
-                            <SubmitBtn variant="secondary">opozovi</SubmitBtn>
-                          </form>
+                          <div className="min-w-0 max-w-full">
+                          <ConfirmAction
+                            trigger="Ponovo izdaj"
+                            triggerVariant="caution"
+                            title={t("confirm.token.reissueTitle")}
+                            body={
+                              <p className="text-sm text-amber-950">
+                                {tf("confirm.token.reissueBody", {
+                                  ime: partyDisplayName(ev.owner),
+                                  adresa: (ev.proxy ?? ev.owner).email ?? t("confirm.token.noAddress"),
+                                })}
+                              </p>
+                            }
+                            confirmLabel={t("confirm.token.reissueConfirm")}
+                            confirmVariant="caution"
+                            action={tokenAction}
+                            hiddenFields={{ proposalId: p.id, tokenId: lastToken.id, op: "reissue" }}
+                          >
+                            <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
+                          </ConfirmAction>
+                          </div>
+                          <div className="min-w-0 max-w-full">
+                          <ConfirmAction
+                            trigger="Opozovi"
+                            triggerVariant="caution"
+                            title={t("confirm.token.revokeTitle")}
+                            body={<p className="text-sm text-amber-950">{tf("confirm.token.revokeBody", { ime: partyDisplayName(ev.owner) })}</p>}
+                            confirmLabel={t("confirm.token.revokeConfirm")}
+                            confirmVariant="caution"
+                            action={tokenAction}
+                            hiddenFields={{ proposalId: p.id, tokenId: lastToken.id, op: "revoke" }}
+                          >
+                            <Field label="Razlog"><input name="reason" required className={inputCls} /></Field>
+                          </ConfirmAction>
+                          </div>
                         </div>
                       )}
                     </Td>
@@ -365,9 +439,10 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                   <input name="financialImpact" defaultValue={p.financialImpact?.toString() ?? ""} className={inputCls} placeholder="0.00" />
                 </Field>
                 <Field label="Tačka dnevnog reda">
-                  <select name="agendaItemId" defaultValue={p.agendaItemId ?? ""} className={inputCls}>
-                    <option value="">—</option>
+                  <select name="agendaItemId" required defaultValue={p.agendaItemId ?? ""} className={inputCls}>
+                    <option value="">{t("confirm.proposalAgenda.choose")}</option>
                     {agendaItems.map((a) => <option key={a.id} value={a.id}>{a.order}. {a.title}</option>)}
+                    <option value="none">{t("confirm.proposalAgenda.none")}</option>
                   </select>
                 </Field>
                 <Field label="Obuhvat">
@@ -466,15 +541,26 @@ export default async function ProposalPage({ params, searchParams }: { params: P
             </form>
           </Card>
           <Card title="Izmjena prijedloga (materijalna promjena)">
-            <p className="mb-2 text-xs text-slate-500">
+            <p className="mb-2 text-[13px] text-slate-500">
               Kreira NOVU verziju prijedloga i poništava sve izdate linkove. Postojeći glasovi ostaju evidentirani uz staru verziju.
             </p>
-            <form action={reviseAction} className="space-y-3">
-              <input type="hidden" name="proposalId" value={p.id} />
+            <ConfirmAction
+              trigger={t("confirm.revision.trigger")}
+              triggerVariant="caution"
+              title={t("confirm.revision.title")}
+              body={
+                <p className="text-sm text-amber-950">
+                  {tf("confirm.revision.body", { aktivnih: activeLinks, glasova: castVotes, verzija: p.version })}
+                </p>
+              }
+              confirmLabel={t("confirm.revision.confirm")}
+              confirmVariant="caution"
+              action={reviseAction}
+              hiddenFields={{ proposalId: p.id }}
+            >
               <Field label="Novi tekst prijedloga"><textarea name="text" rows={3} defaultValue={p.text} className={inputCls} /></Field>
               <Field label="Razlog izmjene"><input name="reason" required className={inputCls} /></Field>
-              <SubmitBtn variant="caution">Kreiraj novu verziju</SubmitBtn>
-            </form>
+            </ConfirmAction>
           </Card>
         </div>
       )}

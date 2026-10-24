@@ -3,9 +3,9 @@
 // that finish voting simply drop out of "Unos iz sale" on the next server-action-triggered
 // refresh, which is exactly what a plain <form action={...}> without JS already does.
 import Link from "next/link";
-import { Card, ConfirmAction, ToggleBtn, SegmentedAction, StatusBadge } from "@/components/ui";
+import { Card, ConfirmAction, ToggleBtn, SegmentedAction, StatusBadge, RowAction } from "@/components/ui";
 import { formatWeight } from "@/lib/money";
-import { tEnum, t } from "@/lib/i18n";
+import { tEnum, t, tf } from "@/lib/i18n";
 
 export type AgendaItemData = {
   id: string;
@@ -14,6 +14,8 @@ export type AgendaItemData = {
   note: string | null;
   proposals: { id: string; code: string; title: string; status: string; text: string }[];
 };
+
+export type UnlinkedProposal = { id: string; code: string; title: string; status: string };
 
 export type LivePreview = {
   presentCount: number;
@@ -109,6 +111,7 @@ function ResultSummary({ result }: { result: LiveResult }) {
 export function AgendaItemPanel({
   meetingId, item, proposal, preview, activeResult, activeVoters,
   openVotingAction, closeVotingAction, manualVoteAction, bulkApproveAction,
+  unlinkedProposals, canLink, linkProposalAction,
 }: {
   meetingId: string;
   item: AgendaItemData;
@@ -120,6 +123,11 @@ export function AgendaItemPanel({
   closeVotingAction: (formData: FormData) => void | Promise<void>;
   manualVoteAction: (formData: FormData) => void | Promise<void>;
   bulkApproveAction: (formData: FormData) => void | Promise<void>;
+  /** F1.7: proposals of this session (draft or open for voting) not tied to any agenda item. */
+  unlinkedProposals: UnlinkedProposal[];
+  /** Only the president may link (updateDraftProposal is PRESIDENT-only). */
+  canLink: boolean;
+  linkProposalAction: (formData: FormData) => void | Promise<void>;
 }) {
   if (!proposal) {
     return (
@@ -127,6 +135,28 @@ export function AgendaItemPanel({
         <p className="text-[15px] font-medium text-slate-900">{item.title}</p>
         {item.note && <p className="mt-1 text-[13px] text-slate-500">{item.note}</p>}
         <p className="mt-3 text-[13px] text-slate-500">{t("live.discussionOnly")}</p>
+        {unlinkedProposals.length > 0 ? (
+          <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+            <p className="text-[13px] text-slate-600">{t("confirm.liveLink.unlinkedExists")}</p>
+            {canLink ? (
+              unlinkedProposals.map((d) => (
+                <form key={d.id} action={linkProposalAction} className="flex flex-wrap items-center gap-2">
+                  <input type="hidden" name="proposalId" value={d.id} />
+                  <input type="hidden" name="agendaItemId" value={item.id} />
+                  <input type="hidden" name="meetingId" value={meetingId} />
+                  <RowAction variant="tonal">{tf("confirm.liveLink.link", { kod: d.code })}</RowAction>
+                  <span className="text-[13px] text-slate-500">
+                    {d.title} · {tEnum("proposalStatus", d.status)}
+                  </span>
+                </form>
+              ))
+            ) : (
+              <p className="text-[13px] text-slate-600">{t("confirm.liveLink.presidentOnly")}</p>
+            )}
+          </div>
+        ) : (
+          <p className="mt-2 text-[13px] text-slate-500">{t("confirm.liveLink.nothingToDo")}</p>
+        )}
       </Card>
     );
   }
@@ -148,7 +178,7 @@ export function AgendaItemPanel({
           <div className="mt-4">
             <ConfirmAction
               trigger={t("live.openVotingTrigger")}
-              triggerVariant="primary"
+              triggerVariant="caution"
               title={t("live.openVotingTitle")}
               body={
                 <div className="space-y-1 text-sm text-amber-950">
@@ -163,6 +193,7 @@ export function AgendaItemPanel({
                 </div>
               }
               confirmLabel={t("live.openVotingConfirm")}
+              confirmVariant="primary"
               action={openVotingAction}
               hiddenFields={{ proposalId: proposal.id, meetingId, agendaItemId: item.id }}
             />

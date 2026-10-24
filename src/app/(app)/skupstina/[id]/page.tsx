@@ -1,16 +1,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
-import { requireZev } from "@/server/auth/guards";
-import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, recordAttendance } from "@/server/services/meetings";
+import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, recordAttendance, listInvitationRecipients, queueMeetingInvitations, linkProposalToAgendaItem } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
-import { listParties, partyDisplayName, listOfficeHolders } from "@/server/services/ownership";
+import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
-import { queueNotification } from "@/server/notifications/service";
-import { prisma } from "@/lib/prisma";
 import { parseMoneyInput } from "@/lib/money";
-import { formatDateTime, parseZonedDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import { formatDateTime, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 const MEETING_STATUS_ORDER: MeetingStatus[] = [
@@ -37,6 +34,19 @@ const attendanceHeaders: ColumnSpec[] = [
   { label: "Putem punomoćnika" },
 ];
 
+/** Ties an unlinked proposal (draft or open for voting) to an agenda item of this meeting (K4). */
+async function linkProposalAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const meetingId = String(formData.get("meetingId"));
+  try {
+    await linkProposalToAgendaItem(actor, String(formData.get("proposalId")), String(formData.get("agendaItemId")));
+  } catch (e) {
+    redirect(`/skupstina/${meetingId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath(`/skupstina/${meetingId}`);
+}
+
 async function addAgendaAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
@@ -49,10 +59,16 @@ async function addProposalAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
   const meetingId = String(formData.get("meetingId"));
+  // The agenda item is a required choice: a concrete item, or "none" for a deliberately
+  // unattached proposal (createProposal itself still allows null).
+  const agendaChoice = String(formData.get("agendaItemId") ?? "");
+  if (!agendaChoice) {
+    redirect(`/skupstina/${meetingId}?err=${encodeURIComponent(t("confirm.proposalAgenda.required"))}`);
+  }
   try {
     await createProposal(actor, {
       meetingId,
-      agendaItemId: (formData.get("agendaItemId") as string) || null,
+      agendaItemId: agendaChoice === "none" ? null : agendaChoice,
       code: String(formData.get("code")),
       title: String(formData.get("title")),
       text: String(formData.get("text")),
@@ -72,7 +88,6 @@ async function addProposalAction(formData: FormData) {
 async function statusAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
-  const zevId = requireZev(actor);
   const meetingId = String(formData.get("meetingId"));
   const to = String(formData.get("to")) as MeetingStatus;
   try {
@@ -81,35 +96,8 @@ async function statusAction(formData: FormData) {
       await generateMeetingInvitationPdf(actor, meetingId);
     }
     if (to === "INVITATIONS_SENT") {
-      // Was previously an unscoped lookup/findMany here — a real cross-tenant leak
-      // (would have emailed meeting invitations to owners of every ZEV, not just this
-      // one). Fixed while touching this call site for the queueNotification zevId change.
-      const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
-      let owners;
-      if (meeting.body === "BOARD") {
-        const holders = await listOfficeHolders(actor);
-        const boardParties = holders.boardMembers.map((m) => m.party);
-        if (holders.president) boardParties.push(holders.president.party);
-        const seen = new Set<string>();
-        owners = boardParties.filter((p) => p.email && !seen.has(p.id) && seen.add(p.id));
-      } else {
-        owners = await prisma.party.findMany({
-          where: { zevId, active: true, email: { not: null }, ownershipStakes: { some: { validTo: null } } },
-        });
-      }
-      for (const o of owners) {
-        await queueNotification({
-          zevId,
-          channel: "EMAIL",
-          recipientId: o.id,
-          toAddress: o.email!,
-          template: "meeting-invitation",
-          subject: `Poziv na sjednicu: ${meeting.title}`,
-          body: `Poštovani ${partyDisplayName(o)},\n\npozivamo Vas na sjednicu "${meeting.title}" (${formatDateTime(meeting.scheduledAt)}, ${meeting.location ?? "—"}).\nMaterijali i detalji dostupni su u aplikaciji nakon prijave.\n`,
-          relatedType: "Meeting",
-          relatedId: meetingId,
-        });
-      }
+      // Recipients come from the service (F1.5), the same list the confirmation panel counted.
+      await queueMeetingInvitations(actor, meetingId);
     }
     if (to === "MINUTES_FINALIZED") {
       await generateMinutesPdf(actor, meetingId, { finalize: true });
@@ -152,9 +140,9 @@ const NEXT_STATUS: Partial<Record<MeetingStatus, { to: MeetingStatus; label: str
   MINUTES_FINALIZED: { to: "ARCHIVED", label: "Arhiviraj" },
 };
 
-export default async function MeetingPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string }> }) {
+export default async function MeetingPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string; tacka?: string }> }) {
   const { id } = await params;
-  const { err, msg } = await searchParams;
+  const { err, msg, tacka } = await searchParams;
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
   const canRunLive = isManagement(actor);
@@ -167,6 +155,10 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
   // §1.1/§2.6 gap fix) — that's a real, irreversible consequence the plain one-tap status button
   // doesn't carry for any other step, so this one transition alone gets a confirmation that names
   // exactly what will be closed, same as openVoting/closeVoting elsewhere in this feature.
+  const invitationRecipients = isPresident && next?.to === "INVITATIONS_SENT" ? await listInvitationRecipients(actor, id) : null;
+  // Proposals without an agenda item that can still be tied to one (linkProposalToAgendaItem).
+  const unlinkedProposals = meeting.proposals.filter((p) => !p.agendaItemId && (p.status === "DRAFT" || p.status === "VOTING_OPEN"));
+  const preselectedAgendaItem = meeting.agendaItems.some((a) => a.id === tacka) ? tacka : undefined;
   const proposalsToAutoClose = next?.to === "VOTING_CLOSED" ? meeting.proposals.filter((p) => p.status === "VOTING_OPEN") : [];
   return (
     <div>
@@ -184,7 +176,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               next.to === "VOTING_CLOSED" ? (
                 <ConfirmAction
                   trigger={next.label}
-                  triggerVariant="primary"
+                  triggerVariant="caution"
                   title="Zatvaranje glasanja na sjednici je nepovratno"
                   body={
                     proposalsToAutoClose.length > 0 ? (
@@ -203,6 +195,33 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                     )
                   }
                   confirmLabel="Da, zatvori glasanje na sjednici"
+                  action={statusAction}
+                  hiddenFields={{ meetingId: meeting.id, to: next.to }}
+                />
+              ) : invitationRecipients ? (
+                <ConfirmAction
+                  trigger={t("confirm.invitations.trigger")}
+                  triggerVariant="caution"
+                  title={t("confirm.invitations.title")}
+                  body={
+                    <div className="space-y-1 text-sm text-amber-950">
+                      <p>
+                        {tf("confirm.invitations.body", {
+                          naslov: meeting.title,
+                          datum: formatDateTime(meeting.scheduledAt),
+                          mjesto: meeting.location ?? "—",
+                          broj: invitationRecipients.withEmail.length,
+                          primaoci: meeting.body === "BOARD" ? t("confirm.invitations.board") : t("confirm.invitations.owners"),
+                        })}
+                      </p>
+                      {invitationRecipients.withoutEmailCount > 0 && (
+                        <p>{tf("confirm.invitations.noEmail", { broj: invitationRecipients.withoutEmailCount })}</p>
+                      )}
+                      <p>{t("confirm.invitations.irreversible")}</p>
+                    </div>
+                  }
+                  confirmLabel={tf("confirm.invitations.confirm", { broj: invitationRecipients.withEmail.length })}
+                  confirmVariant="primary"
                   action={statusAction}
                   hiddenFields={{ meetingId: meeting.id, to: next.to }}
                 />
@@ -229,9 +248,35 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             {meeting.agendaItems.map((a) => (
               <li key={a.id}>
                 {a.title}
-                {a.proposals.length > 0 && (
-                  <span className="text-xs text-slate-500"> ({a.proposals.map((p) => p.code).join(", ")})</span>
-                )}
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 pl-5 text-[13px] text-slate-600">
+                  {a.proposals.length > 0 ? (
+                    <>
+                      <span>{t("confirm.agenda.proposal")}</span>
+                      {a.proposals.map((p) => (
+                        <RowLink key={p.id} href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <span>{t("confirm.agenda.discussion")}</span>
+                      {isPresident && !["MINUTES_FINALIZED", "ARCHIVED"].includes(meeting.status) && (
+                        <>
+                          {unlinkedProposals.map((p) => (
+                            <form key={p.id} action={linkProposalAction}>
+                              <input type="hidden" name="meetingId" value={meeting.id} />
+                              <input type="hidden" name="agendaItemId" value={a.id} />
+                              <input type="hidden" name="proposalId" value={p.id} />
+                              <RowAction variant="tonal">{tf("confirm.liveLink.link", { kod: p.code })}</RowAction>
+                            </form>
+                          ))}
+                          <RowActionLink href={`/skupstina/${meeting.id}?tacka=${a.id}#novi-prijedlog`} variant="secondary">
+                            {t("confirm.agenda.addProposal")}
+                          </RowActionLink>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
               </li>
             ))}
             {meeting.agendaItems.length === 0 && <p className="text-sm text-slate-500">Dnevni red je prazan.</p>}
@@ -264,7 +309,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             ))}
           </Table>
           {isPresident && (
-            <details className="group mt-4">
+            <details id="novi-prijedlog" open={Boolean(preselectedAgendaItem)} className="group mt-4">
               <ToggleBtn>Novi prijedlog</ToggleBtn>
               <form action={addProposalAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input type="hidden" name="meetingId" value={meeting.id} />
@@ -278,9 +323,10 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                 </div>
                 <Field label="Procjena finansijskog uticaja (KM)"><input name="financialImpact" className={inputCls} placeholder="0.00" /></Field>
                 <Field label="Tačka dnevnog reda">
-                  <select name="agendaItemId" className={inputCls}>
-                    <option value="">—</option>
+                  <select name="agendaItemId" required defaultValue={preselectedAgendaItem ?? ""} className={inputCls}>
+                    <option value="">{t("confirm.proposalAgenda.choose")}</option>
                     {meeting.agendaItems.map((a) => <option key={a.id} value={a.id}>{a.order}. {a.title}</option>)}
+                    <option value="none">{t("confirm.proposalAgenda.none")}</option>
                   </select>
                 </Field>
                 <Field label="Obuhvat">

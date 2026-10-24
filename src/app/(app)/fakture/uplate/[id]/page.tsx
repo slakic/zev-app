@@ -8,8 +8,8 @@ import Link from "next/link";
 import { getPaymentChannelInfo } from "@/server/services/paymentMatching";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash, type ColumnSpec } from "@/components/ui";
+import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, RowLink, Flash, type ColumnSpec } from "@/components/ui";
 
 const suggestionHeaders: ColumnSpec[] = [
   { label: "Faktura" },
@@ -35,7 +35,8 @@ async function allocateAction(formData: FormData) {
     await allocatePayment(actor, {
       paymentId,
       invoiceId: String(formData.get("invoiceId")),
-      amount: parseMoneyInput(formData.get("amount") as string | null) ?? "",
+      // Empty amount = "as much as possible" (the service resolves min(free, open)).
+      amount: parseMoneyInput(formData.get("amount") as string | null) ?? undefined,
     });
   } catch (e) {
     redirect(`/fakture/uplate/${paymentId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
@@ -48,7 +49,7 @@ async function reverseAllocAction(formData: FormData) {
   const actor = await requireActor("ACCOUNTANT");
   const paymentId = String(formData.get("paymentId"));
   try {
-    await reverseAllocation(actor, String(formData.get("allocationId")), String(formData.get("reason") || "Storno"));
+    await reverseAllocation(actor, String(formData.get("allocationId")), String(formData.get("reason") ?? ""));
   } catch (e) {
     redirect(`/fakture/uplate/${paymentId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -74,17 +75,33 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
   const zevId = requireZev(actor);
   const payment = await prisma.payment.findUniqueOrThrow({
     where: { id, zevId },
-    include: { payer: true, account: true, allocations: { include: { invoice: true }, orderBy: { createdAt: "asc" } } },
+    include: { payer: true, account: true, allocations: { include: { invoice: { include: { debtor: true } } }, orderBy: { createdAt: "asc" } } },
   });
   const allocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
   const free = dec(payment.amount.toString()).minus(allocated);
   const channel = await getPaymentChannelInfo(actor, id);
   const suggestions = payment.status !== "REVERSED" && free.greaterThan(0) ? await suggestMatches(actor, id) : [];
-  const openInvoices = await prisma.invoice.findMany({
-    where: { zevId, status: "ISSUED" },
-    include: { allocations: true, debtor: true, unit: true },
-    orderBy: { number: "asc" },
-  });
+  const isAccountant = actor.roles.includes("ACCOUNTANT");
+  // An allocation that already has a storno row cannot be reversed again (reverseAllocation refuses it).
+  const reversedAllocationIds = new Set(payment.allocations.map((a) => a.reversalOfId).filter((x): x is string => Boolean(x)));
+  const openInvoices = (
+    await prisma.invoice.findMany({
+      where: { zevId, status: "ISSUED" },
+      include: { allocations: true, debtor: true, unit: true },
+      orderBy: { number: "asc" },
+    })
+  )
+    .map((inv) => ({ inv, open: dec(inv.total.toString()).minus(sumDecimals(inv.allocations.map((a) => dec(a.amount.toString())))) }))
+    .filter((x) => x.open.greaterThan(0));
+  const payerInvoices = openInvoices.filter((x) => payment.payerId && x.inv.debtorId === payment.payerId);
+  const otherInvoices = openInvoices.filter((x) => !(payment.payerId && x.inv.debtorId === payment.payerId));
+  const invoiceOption = ({ inv, open }: (typeof openInvoices)[number]) => (
+    <option key={inv.id} value={inv.id}>
+      {inv.number} — {partyDisplayName(inv.debtor)} ({inv.unit.label}) — otvoreno {formatMoney(open.toFixed(2))}
+    </option>
+  );
+  const visibleSuggestionHeaders = isAccountant ? suggestionHeaders : suggestionHeaders.filter((h) => h.label !== "Radnje");
+  const visibleAllocationHeaders = isAccountant ? allocationHeaders : allocationHeaders.filter((h) => h.label !== "Radnje");
 
   return (
     <div>
@@ -98,6 +115,9 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
       <div className="mb-4 flex items-center gap-3">
         <StatusBadge status={payment.status} label={tEnum("paymentStatus", payment.status)} />
         <span className="text-sm text-slate-600">Raspoređeno: {formatMoney(allocated.toFixed(2))} · Slobodno (avans): {formatMoney(free.toFixed(2))}</span>
+        {payment.status === "REVERSED" && (
+          <span className="text-sm text-red-700">Uplata je stornirana ({payment.reversalReason}).</span>
+        )}
         {payment.reference && <span className="font-mono text-xs text-slate-500">poziv: {payment.reference}</span>}
         {channel.fromSms && (
           <StatusBadge
@@ -115,12 +135,18 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
         )}
       </div>
 
+      {free.greaterThan(0) && payment.status !== "REVERSED" && (
+        <p className="-mt-2 mb-4 text-[13px] text-slate-600">
+          {tf("confirm.allocation.advance", { iznos: formatMoney(free.toFixed(2)) })}
+        </p>
+      )}
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Prijedlozi uparivanja">
           <Table
             id="suggestions-table"
             caption="Prijedlozi uparivanja"
-            headers={suggestionHeaders}
+            headers={visibleSuggestionHeaders}
             empty={suggestions.length === 0}
             emptyTitle={t("empty.suggestions.title")}
           >
@@ -130,69 +156,61 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
                 <Td>{s.unitLabel}</Td>
                 <Td>{formatMoney(s.open)}</Td>
                 <Td className="text-xs">{s.reasons.join(", ")}</Td>
-                <Td>
-                  <form action={allocateAction}>
-                    <input type="hidden" name="paymentId" value={payment.id} />
-                    <input type="hidden" name="invoiceId" value={s.invoiceId} />
-                    <input type="hidden" name="amount" value={dec(s.open).lessThan(free) ? s.open : free.toFixed(2)} />
-                    <RowAction variant="tonal">upari</RowAction>
-                  </form>
-                </Td>
+                {isAccountant && (
+                  <Td>
+                    <form action={allocateAction}>
+                      <input type="hidden" name="paymentId" value={payment.id} />
+                      <input type="hidden" name="invoiceId" value={s.invoiceId} />
+                      <input type="hidden" name="amount" value={dec(s.open).lessThan(free) ? s.open : free.toFixed(2)} />
+                      <RowAction variant="tonal">upari</RowAction>
+                    </form>
+                  </Td>
+                )}
               </tr>
             ))}
           </Table>
         </Card>
 
-        <Card title="Ručno raspoređivanje">
-          {payment.status === "REVERSED" ? (
-            <p className="text-sm text-red-700">Uplata je stornirana ({payment.reversalReason}).</p>
-          ) : (
+        {isAccountant && payment.status !== "REVERSED" && (
+          <Card title="Ručno raspoređivanje">
             <form action={allocateAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="hidden" name="paymentId" value={payment.id} />
               <div className="sm:col-span-2">
                 <Field label="Faktura">
-                  <select name="invoiceId" className={inputCls}>
-                    {openInvoices.map((inv) => {
-                      const paid = inv.allocations.reduce((a, x) => a + Number(x.amount), 0);
-                      const open = Number(inv.total) - paid;
-                      if (open <= 0) return null;
-                      return (
-                        <option key={inv.id} value={inv.id}>
-                          {inv.number} — {partyDisplayName(inv.debtor)} ({inv.unit.label}) — otvoreno {open.toFixed(2)} KM
-                        </option>
-                      );
-                    })}
+                  <select name="invoiceId" required defaultValue="" className={inputCls}>
+                    <option value="">{t("confirm.allocation.chooseInvoice")}</option>
+                    {payment.payer ? (
+                      <>
+                        {payerInvoices.length > 0 && (
+                          <optgroup label={tf("confirm.allocation.payerGroup", { ime: partyDisplayName(payment.payer) })}>
+                            {payerInvoices.map(invoiceOption)}
+                          </optgroup>
+                        )}
+                        {otherInvoices.length > 0 && (
+                          <optgroup label={t("confirm.allocation.otherGroup")}>{otherInvoices.map(invoiceOption)}</optgroup>
+                        )}
+                      </>
+                    ) : (
+                      <optgroup label={t("confirm.allocation.openGroup")}>{openInvoices.map(invoiceOption)}</optgroup>
+                    )}
                   </select>
                 </Field>
               </div>
-              <Field label="Iznos (KM)"><input name="amount" required defaultValue={free.toFixed(2)} className={inputCls} /></Field>
+              <Field label="Iznos (KM)" hint={tf("confirm.allocation.amountHint", { slobodno: formatMoney(free.toFixed(2)) })}>
+                <input name="amount" inputMode="decimal" className={inputCls} />
+              </Field>
               <div className="flex items-end"><SubmitBtn>Rasporedi</SubmitBtn></div>
             </form>
-          )}
-          {payment.status !== "REVERSED" && (
-            <div className="mt-4 border-t border-slate-100 pt-3">
-              <ConfirmAction
-                trigger="Storniraj uplatu"
-                title="Storniranje uplate je nepovratno"
-                body={<p className="text-sm text-amber-900">Poništava se cijela uplata od {formatMoney(payment.amount.toString())}, uključujući sve raspoređene alokacije. Storno je novi zapis — ništa se ne briše.</p>}
-                confirmLabel="Da, storniraj uplatu"
-                confirmVariant="danger"
-                action={reversePaymentAction}
-                hiddenFields={{ paymentId: payment.id }}
-              >
-                <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
-              </ConfirmAction>
-            </div>
-          )}
-        </Card>
+          </Card>
+        )}
       </div>
 
       <div className="mt-4">
-        <Card title="Alokacije" hint="Zapisi se ne brišu — storno je novi zapis.">
+        <Card title="Alokacije" hint={isAccountant ? "Zapisi se ne brišu — storno je novi zapis." : t("confirm.allocation.accountantOnly")}>
           <Table
             id="allocations-table"
             caption="Alokacije"
-            headers={allocationHeaders}
+            headers={visibleAllocationHeaders}
             empty={payment.allocations.length === 0}
             emptyTitle={t("empty.allocations.title")}
             emptyHint={t("empty.allocations.hint")}
@@ -200,29 +218,58 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
             {payment.allocations.map((a) => (
               <tr key={a.id} className={Number(a.amount) < 0 ? "text-red-700" : ""}>
                 <Td>{formatDateTime(a.createdAt)}</Td>
-                <Td>{a.invoice.number}</Td>
+                <Td><RowLink href={`/fakture/${a.invoiceId}`}>{a.invoice.number}</RowLink></Td>
                 <Td>{formatMoney(a.amount.toString())}</Td>
                 <Td>{a.reason ?? "—"}</Td>
-                <Td>
-                  {Number(a.amount) > 0 && !a.reversalOfId && payment.status !== "REVERSED" && (
-                    <ConfirmAction
-                      trigger="storno"
-                      triggerVariant="caution"
-                      title="Storniranje alokacije je nepovratno"
-                      confirmLabel="Da, storniraj alokaciju"
-                      confirmVariant="caution"
-                      action={reverseAllocAction}
-                      hiddenFields={{ paymentId: payment.id, allocationId: a.id }}
-                    >
-                      <Field label="Razlog storniranja"><input name="reason" className={inputCls} /></Field>
-                    </ConfirmAction>
-                  )}
-                </Td>
+                {isAccountant && (
+                  <Td>
+                    {Number(a.amount) > 0 && !a.reversalOfId && !reversedAllocationIds.has(a.id) && payment.status !== "REVERSED" && (
+                      <ConfirmAction
+                        trigger="Storniraj"
+                        triggerVariant="caution"
+                        title={t("confirm.allocation.reverseTitle")}
+                        body={
+                          <p className="text-sm text-amber-900">
+                            {tf("confirm.allocation.reverseBody", {
+                              iznos: formatMoney(a.amount.toString()),
+                              broj: a.invoice.number,
+                              dluznik: partyDisplayName(a.invoice.debtor),
+                            })}
+                          </p>
+                        }
+                        confirmLabel={t("confirm.allocation.reverseConfirm")}
+                        confirmVariant="caution"
+                        action={reverseAllocAction}
+                        hiddenFields={{ paymentId: payment.id, allocationId: a.id }}
+                      >
+                        <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
+                      </ConfirmAction>
+                    )}
+                  </Td>
+                )}
               </tr>
             ))}
           </Table>
         </Card>
       </div>
+
+      {isAccountant && payment.status !== "REVERSED" && (
+        <div className="mt-4">
+          <Card title="Poništavanje">
+            <ConfirmAction
+              trigger="Storniraj uplatu"
+              title={t("confirm.paymentReverse.title")}
+              body={<p className="text-sm text-amber-900">{tf("confirm.paymentReverse.body", { iznos: formatMoney(payment.amount.toString()) })}</p>}
+              confirmLabel={t("confirm.paymentReverse.confirm")}
+              confirmVariant="danger"
+              action={reversePaymentAction}
+              hiddenFields={{ paymentId: payment.id }}
+            >
+              <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
+            </ConfirmAction>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

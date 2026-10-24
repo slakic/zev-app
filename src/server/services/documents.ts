@@ -198,6 +198,9 @@ export async function readDocumentFile(actor: Actor, documentId: string): Promis
 export async function publishDocument(actor: Actor, documentId: string) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
+  const current = await prisma.document.findUniqueOrThrow({ where: { id: documentId, zevId }, select: { status: true } });
+  // A DRAFT can still be superseded by a new version — owners only ever see a finalized document.
+  if (current.status !== "FINAL") throw new Error("Objaviti se može samo finalizovan dokument.");
   const d = await prisma.document.update({ where: { id: documentId, zevId }, data: { publishedToOwners: true } });
   // after populated for the curated activity feed (Plans/user-activity-log-plan.md §7.3) —
   // this event previously had no payload at all, so a summarized view had nothing to show.

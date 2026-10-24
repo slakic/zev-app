@@ -49,6 +49,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "proposal.create": "GOVERNANCE",
   "proposal.revise": "GOVERNANCE",
   "proposal.update": "GOVERNANCE",
+  "proposal.link": "GOVERNANCE",
   "proposal.withdraw": "GOVERNANCE",
   "proposal.delete": "GOVERNANCE",
   "proposal.voting.open": "GOVERNANCE",

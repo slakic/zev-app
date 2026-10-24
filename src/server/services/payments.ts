@@ -909,12 +909,14 @@ export async function refreshInvoiceStatus(tx: Prisma.TransactionClient, zevId: 
  */
 export async function allocatePayment(
   actor: Actor,
-  data: { paymentId: string; invoiceId: string; amount: string; reason?: string }
+  data: { paymentId: string; invoiceId: string; amount?: string; reason?: string }
 ) {
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
-  const amount = dec(data.amount);
-  if (amount.lessThanOrEqualTo(0)) throw new Error("Iznos alokacije mora biti pozitivan.");
+  // `amount` omitted = "as much as possible": min(free part of the payment, open part of the
+  // invoice), resolved inside the transaction against the same rows the checks below use.
+  const requested = data.amount === undefined || data.amount.trim() === "" ? null : dec(data.amount);
+  if (requested && requested.lessThanOrEqualTo(0)) throw new Error("Iznos alokacije mora biti pozitivan.");
   return prisma.$transaction(async (tx) => {
     const payment = await tx.payment.findUniqueOrThrow({ where: { id: data.paymentId, zevId }, include: { allocations: true } });
     if (payment.reversedAt) throw new Error("Stornirana uplata se ne može raspoređivati.");
@@ -923,11 +925,13 @@ export async function allocatePayment(
 
     const paymentAllocated = sumDecimals(payment.allocations.map((a) => dec(a.amount.toString())));
     const paymentFree = dec(payment.amount.toString()).minus(paymentAllocated);
+    const invoicePaid = sumDecimals(invoice.allocations.map((a) => dec(a.amount.toString())));
+    const invoiceOpen = dec(invoice.total.toString()).minus(invoicePaid);
+    const amount = requested ?? (paymentFree.lessThan(invoiceOpen) ? paymentFree : invoiceOpen);
+    if (amount.lessThanOrEqualTo(0)) throw new Error("Iznos alokacije mora biti pozitivan.");
     if (amount.greaterThan(paymentFree)) {
       throw new Error(`Uplata ima raspoloživo ${paymentFree.toFixed(2)} KM.`);
     }
-    const invoicePaid = sumDecimals(invoice.allocations.map((a) => dec(a.amount.toString())));
-    const invoiceOpen = dec(invoice.total.toString()).minus(invoicePaid);
     if (amount.greaterThan(invoiceOpen)) {
       throw new Error(`Faktura ima otvoreno ${invoiceOpen.toFixed(2)} KM — višak ostaje kao avans (nealocirano).`);
     }

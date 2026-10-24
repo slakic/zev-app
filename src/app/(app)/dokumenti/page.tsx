@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
 import { listDocuments, publishDocument } from "@/server/services/documents";
 import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/server/services/attachments";
-import { formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, RowAction, RowActionLink, type ColumnSpec } from "@/components/ui";
+import { formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, RowActionLink, type ColumnSpec } from "@/components/ui";
 
 const attachmentHeaders: ColumnSpec[] = [
   { label: "Kategorija" },
@@ -93,10 +93,20 @@ export default async function DocumentsPage({
                 <div className="flex items-center gap-1.5">
                   <RowActionLink href={`/api/dokumenti/${d.id}`}>PDF</RowActionLink>
                   {management && !d.publishedToOwners && actor.roles.includes("PRESIDENT") && (
-                    <form action={publishAction}>
-                      <input type="hidden" name="documentId" value={d.id} />
-                      <RowAction variant="tonal">objavi vlasnicima</RowAction>
-                    </form>
+                    d.status === "FINAL" ? (
+                      <ConfirmAction
+                        trigger={t("confirm.publishDoc.trigger")}
+                        triggerVariant="caution"
+                        title={t("confirm.publishDoc.title")}
+                        body={<p className="text-sm text-amber-950">{tf("confirm.publishDoc.body", { naslov: d.title, broj: d.number })}</p>}
+                        confirmLabel={t("confirm.publishDoc.confirm")}
+                        confirmVariant="primary"
+                        action={publishAction}
+                        hiddenFields={{ documentId: d.id }}
+                      />
+                    ) : (
+                      <span className="text-[13px] text-slate-500">{t("confirm.publishDoc.draftNote")}</span>
+                    )
                   )}
                 </div>
               </Td>

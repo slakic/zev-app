@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import {
   getLiveMeetingState, recordAttendance, recordAttendanceBulk, openVoting, closeVoting,
-  recordManualVote, recordManualVoteBulk, previewLiveDelivery, advanceMeetingStatus,
+  recordManualVote, recordManualVoteBulk, previewLiveDelivery, advanceMeetingStatus, linkProposalToAgendaItem,
 } from "@/server/services/meetings";
 import { LiveShell } from "@/components/live-shell";
 import { LiveRefresh } from "@/components/live-refresh";
@@ -130,6 +130,22 @@ async function advanceMeetingAction(formData: FormData) {
   revalidatePath(`/uzivo/${meetingId}`);
 }
 
+/** F1.7: ties an unlinked proposal (draft or already open for voting) to the agenda item the
+ *  president is looking at, then returns to that item. PRESIDENT-only, like the service. */
+async function linkProposalAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const meetingId = String(formData.get("meetingId"));
+  const agendaItemId = String(formData.get("agendaItemId"));
+  try {
+    await linkProposalToAgendaItem(actor, String(formData.get("proposalId")), agendaItemId);
+  } catch (e) {
+    errRedirect(meetingId, agendaItemId, e);
+  }
+  revalidatePath(`/uzivo/${meetingId}`);
+  redirect(`/uzivo/${meetingId}?tab=dnevni-red&t=${agendaItemId}`);
+}
+
 const PRE_VOTING_STATUSES: MeetingStatus[] = ["SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT"];
 
 export default async function LiveMeetingPage({
@@ -209,6 +225,9 @@ export default async function LiveMeetingPage({
               closeVotingAction={closeVotingAction}
               manualVoteAction={manualVoteAction}
               bulkApproveAction={bulkApproveAction}
+              unlinkedProposals={base.unlinkedProposals}
+              canLink={actor.roles.includes("PRESIDENT")}
+              linkProposalAction={linkProposalAction}
             />
           ) : (
             <p className="py-8 text-center text-[15px] text-slate-500">

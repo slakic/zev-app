@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, openVotingWithLinks, createAreaCharges, type Fixture } from "./helpers";
 import { createDraftBatch, issueBatch } from "@/server/services/billing";
-import { generateInvoicePdf, generateOwnerStatementPdf, readDocumentFile, generateDecisionPdf } from "@/server/services/documents";
+import { generateInvoicePdf, generateOwnerStatementPdf, readDocumentFile, generateDecisionPdf, publishDocument } from "@/server/services/documents";
 import { submitVote, closeVoting, recordDecision, recordManualVote } from "@/server/services/meetings";
 import { ForbiddenError } from "@/server/auth/guards";
 import type { Invoice } from "@/generated/prisma/client";
@@ -69,6 +69,22 @@ describe("documents and audit trail", () => {
     expect(doc.sourceId).toBe(proposal.id);
     expect(doc.number).toBe(`OD-${f.t}`);
     expect(doc.publishedToOwners).toBe(true);
+  });
+
+  it("publishDocument refuses a DRAFT document and publishes (and audits) a FINAL one", async () => {
+    const mk = (status: "DRAFT" | "FINAL", n: string) =>
+      prisma.document.create({
+        data: { zevId: f.zev.id, type: "OTHER", number: `PUB-${f.t}-${n}`, title: `Dok ${n}`, status, sha256: "0".repeat(64) },
+      });
+    const draft = await mk("DRAFT", "d");
+    await expect(publishDocument(f.president, draft.id)).rejects.toThrow(/finalizovan/);
+    expect((await prisma.document.findUniqueOrThrow({ where: { id: draft.id } })).publishedToOwners).toBe(false);
+
+    const fin = await mk("FINAL", "f");
+    const published = await publishDocument(f.president, fin.id);
+    expect(published.publishedToOwners).toBe(true);
+    const audits = await prisma.auditEvent.findMany({ where: { action: "document.publish", targetId: fin.id } });
+    expect(audits).toHaveLength(1);
   });
 
   it("audit events are append-only at the database level", async () => {

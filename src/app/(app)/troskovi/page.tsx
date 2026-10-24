@@ -7,9 +7,9 @@ import { listAccounts, ensureCategory } from "@/server/services/finance";
 import { listBuildings } from "@/server/services/property";
 import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
-import { formatMoney, parseMoneyInput } from "@/lib/money";
-import { formatDate, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, ConfirmAction, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
+import { formatMoney, parseMoneyInput, dec } from "@/lib/money";
+import { formatDate, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, ConfirmAction, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const supplierHeaders: ColumnSpec[] = [
   { label: "Naziv" },
@@ -82,8 +82,9 @@ async function payExpenseAction(formData: FormData) {
   try {
     await payExpense(actor, {
       expenseId: String(formData.get("expenseId")),
-      accountId: String(formData.get("accountId")),
-      date: new Date(),
+      accountId: String(formData.get("accountId") ?? ""),
+      date: formData.get("date") ? new Date(String(formData.get("date"))) : new Date(),
+      amount: parseMoneyInput(formData.get("amount") as string | null) ?? undefined,
     });
   } catch (e) {
     redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
@@ -95,7 +96,7 @@ async function cancelExpenseAction(formData: FormData) {
   "use server";
   const actor = await requireActor("ACCOUNTANT");
   try {
-    await cancelExpense(actor, String(formData.get("expenseId")), String(formData.get("reason") || "Storno"));
+    await cancelExpense(actor, String(formData.get("expenseId")), String(formData.get("reason") ?? ""));
   } catch (e) {
     redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
@@ -237,28 +238,64 @@ export default async function ExpensesPage({
                 <Td>{formatDate(e.dueDate)}</Td>
                 <Td><StatusBadge status={e.status} label={tEnum("expenseStatus", e.status)} /></Td>
                 <Td>
-                  {(e.status === "UNPAID" || e.status === "PARTIALLY_PAID") && actor.roles.includes("ACCOUNTANT") && (
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <form action={payExpenseAction} className="flex items-center gap-1.5">
-                        <input type="hidden" name="expenseId" value={e.id} />
-                        <select name="accountId" className={`${inputCls} w-32 py-1 text-[13px]`}>
-                          {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                        </select>
-                        <RowAction variant="tonal">plati</RowAction>
-                      </form>
-                      <ConfirmAction
-                        trigger="storno"
-                        triggerVariant="caution"
-                        title="Storniranje troška je nepovratno"
-                        confirmLabel="Da, storniraj trošak"
-                        confirmVariant="caution"
-                        action={cancelExpenseAction}
-                        hiddenFields={{ expenseId: e.id }}
-                      >
-                        <Field label="Razlog storniranja"><input name="reason" className={inputCls} /></Field>
-                      </ConfirmAction>
-                    </div>
-                  )}
+                  {(e.status === "UNPAID" || e.status === "PARTIALLY_PAID") && actor.roles.includes("ACCOUNTANT") && (() => {
+                    const remaining = dec(e.amount.toString()).minus(dec(e.paidAmount.toString()));
+                    const who = e.supplier?.name ?? "—";
+                    const docNo = e.invoiceNumber ?? "—";
+                    return (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <div className="min-w-0 max-w-full">
+                        <ConfirmAction
+                          trigger="Plati…"
+                          triggerVariant="caution"
+                          title={t("confirm.expensePay.title")}
+                          body={
+                            <p className="text-sm text-amber-900">
+                              {tf("confirm.expensePay.body", { dobavljac: who, broj: docNo, preostalo: formatMoney(remaining.toFixed(2)) })}
+                            </p>
+                          }
+                          confirmLabel={t("confirm.expensePay.confirm")}
+                          confirmVariant="primary"
+                          action={payExpenseAction}
+                          hiddenFields={{ expenseId: e.id }}
+                        >
+                          <Field label="Račun">
+                            <select name="accountId" required defaultValue="" className={inputCls}>
+                              <option value="">{t("confirm.expensePay.chooseAccount")}</option>
+                              {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                            </select>
+                          </Field>
+                          <Field label="Datum plaćanja">
+                            <input name="date" type="date" required defaultValue={toZonedDateIso(new Date())} className={inputCls} />
+                          </Field>
+                          <Field label="Iznos (KM)" hint={t("confirm.expensePay.amountHint")}>
+                            <input name="amount" required inputMode="decimal" defaultValue={remaining.toFixed(2)} className={inputCls} />
+                          </Field>
+                        </ConfirmAction>
+                        </div>
+                        {dec(e.paidAmount.toString()).isZero() && (
+                          <div className="min-w-0 max-w-full">
+                          <ConfirmAction
+                            trigger="Storniraj"
+                            triggerVariant="caution"
+                            title={t("confirm.expenseCancel.title")}
+                            body={
+                              <p className="text-sm text-amber-900">
+                                {tf("confirm.expenseCancel.body", { dobavljac: who, broj: docNo, iznos: formatMoney(e.amount.toString()) })}
+                              </p>
+                            }
+                            confirmLabel={t("confirm.expenseCancel.confirm")}
+                            confirmVariant="caution"
+                            action={cancelExpenseAction}
+                            hiddenFields={{ expenseId: e.id }}
+                          >
+                            <Field label="Razlog storniranja"><input name="reason" required className={inputCls} /></Field>
+                          </ConfirmAction>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </Td>
               </tr>
             ))}

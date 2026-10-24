@@ -34,6 +34,12 @@ export function t(key: string, locale: Locale = DEFAULT_LOCALE): string {
   );
 }
 
+/** `t()` plus `{name}` placeholder substitution — for sentences that carry a number, name or
+ *  date (the `confirm.*` group). A placeholder with no matching param is left as-is. */
+export function tf(key: string, params: Record<string, string | number>, locale: Locale = DEFAULT_LOCALE): string {
+  return t(key, locale).replace(/\{(\w+)\}/g, (m, name: string) => (name in params ? String(params[name]) : m));
+}
+
 /** Translate an enum value using its dictionary group, e.g. tEnum("invoiceStatus", status). */
 export function tEnum(group: string, value: string | null | undefined, locale: Locale = DEFAULT_LOCALE): string {
   if (!value) return "";

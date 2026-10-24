@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { requireSuperAdminActor } from "@/server/actor";
 import { getTenant, setTenantActive, createTenantAccount, grantMembership, revokeMembership } from "@/server/services/admin";
 import { switchActiveZev } from "@/server/services/memberships";
-import { formatDate, t } from "@/lib/i18n";
+import { formatDate, t, tf } from "@/lib/i18n";
 import { PasswordField } from "@/components/password-field";
 import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash, type ColumnSpec } from "@/components/ui";
 import type { Role } from "@/generated/prisma/client";
@@ -305,18 +305,25 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
               </form>
               <div className="space-y-2">
                 {myMemberships.map((m) => (
-                  <form key={m.id} action={revokeAction} className="flex items-center gap-1.5">
-                    <input type="hidden" name="zevId" value={zev.id} />
-                    <input type="hidden" name="userId" value={m.userId} />
-                    <input type="hidden" name="role" value={m.role} />
-                    <input
-                      name="reason"
-                      required
-                      placeholder={t("tenant.revokeReasonPlaceholder")}
-                      className={`${inputCls} py-1 text-xs`}
-                    />
-                    <SubmitBtn variant="caution">{t("tenant.removeMyAccess")} ({ROLE_LABELS[m.role]})</SubmitBtn>
-                  </form>
+                  <ConfirmAction
+                    key={m.id}
+                    trigger={`${t("tenant.removeMyAccess")} (${ROLE_LABELS[m.role]})`}
+                    triggerVariant="caution"
+                    title={t("confirm.removeAccess.title")}
+                    body={
+                      <p className="text-sm text-amber-950">
+                        {tf("confirm.removeAccess.body", { naziv: zev.shortName ?? zev.legalName, uloga: ROLE_LABELS[m.role] })}
+                      </p>
+                    }
+                    confirmLabel={t("confirm.removeAccess.confirm")}
+                    confirmVariant="caution"
+                    action={revokeAction}
+                    hiddenFields={{ zevId: zev.id, userId: m.userId, role: m.role }}
+                  >
+                    <Field label={t("confirm.removeAccess.reasonLabel")}>
+                      <input name="reason" required className={inputCls} />
+                    </Field>
+                  </ConfirmAction>
                 ))}
               </div>
             </>

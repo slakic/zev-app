@@ -43,6 +43,49 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.42.0] - 2026-10-24
+
+Faza F1 dizajn pregleda (`Plans/f1-sigurnost-novca-i-pravnih-koraka-plan.md`): nijedna radnja koja knjiži ili
+stornira novac, šalje poruke trećim licima, zaključava tekst prijedloga ili oduzima pravo više nije jedan klik.
+Potvrda kaže koliko, kome i šta se ne može povući. Rutinski koraci (izdavanje serije, slanje poziva, otvaranje
+glasanja, plaćanje troška) sada traže jedan klik više — to je namjerno. Bez migracije baze.
+
+### Izmijenjeno
+
+- **Raspoređivanje uplate** (`/fakture/uplate/[id]`): nijedna faktura nije unaprijed izabrana, a iznos je prazan.
+  Fakture platioca idu prve, u svojoj grupi. Prazan iznos znači „najviše moguće" (manje od slobodnog dijela uplate
+  i otvorenog duga fakture). Neraspoređeni ostatak je opisan kao avans platioca. Predsjednik više ne vidi
+  kontrole za raspoređivanje i storno koje server ionako odbija. Storno alokacije traži razlog i pokazuje iznos,
+  fakturu i dužnika; storno uplate je u zasebnoj kartici „Poništavanje".
+- **Storno fakture** se nudi samo kad je moguć. Ako faktura ima raspoređene uplate, umjesto dugmeta stoji
+  objašnjenje i linkovi na uplate čije alokacije treba prvo stornirati. Potvrda navodi iznos i dužnika, i kaže da
+  dužnik koji je izabrao dostavu dobija obavještenje e-poštom.
+- **Troškovi:** „Plati…" traži račun (bez podrazumijevanog), datum i iznos; manji iznos daje djelimično plaćanje.
+  Storno troška traži razlog i nudi se samo za neplaćene troškove.
+- **Izdavanje serije faktura** ide iza potvrde sa brojem faktura, ukupnim iznosom, rokom plaćanja i brojem
+  dužnika kojima račun odmah ide e-poštom; upozorava ako je rok već prošao.
+- **Sjednica:** „Pošalji pozive" pokazuje koliko primalaca dobija e-poruku i koliko ih nema e-adresu. Zatvaranje
+  glasanja na sjednici više nije `primary`. Svaka tačka dnevnog reda pokazuje svoj prijedlog ili „Diskusija —
+  bez glasanja", a tačka bez prijedloga ima „Dodaj prijedlog" koji otvara formu sa izabranom tačkom. Tačka
+  dnevnog reda u novom prijedlogu je obavezan izbor (uz „Bez tačke dnevnog reda").
+- **Prijedlog:** „Otvori glasanje…" pokazuje glasačku bazu, koliko ličnih linkova ide e-poštom (i preko
+  punomoćnika), koliko glasača nema e-adresu, i da se tekst zaključava. „Opozovi", „Ponovo izdaj" i „Kreiraj novu
+  verziju…" traže potvrdu i razlog; nova verzija kaže koliko aktivnih linkova poništava. Rezultat otvorenog
+  glasanja piše „Trenutno stanje" i „Ishod ako se sada zatvori", a ne konačan ishod.
+- **Vezivanje prijedloga za tačku dnevnog reda:** prijedlog koji nije vezan ni za jednu tačku (nacrt ili prijedlog
+  o kojem se već glasa) predsjednik veže dugmetom „Veži {kod} za ovu tačku", i na detalju sjednice i u režimu
+  uživo. Vezivanje ne mijenja zaključan tekst ni izdate lične linkove (tačka nije dio otiska sadržaja), a
+  evidentira se u revizorskom tragu. Prijedlog vezan za tačku se više ne prevezuje van nacrta.
+- **Sjednica uživo:** otvaranje glasanja je `caution` okidač sa `primary` potvrdom.
+- **Organi, Dokumenti, Admin:** „Okončaj mandat…", „Objavi vlasnicima…" i „Ukloni moj pristup" idu iza potvrde.
+  Objava dokumenta nudi se samo za finalizovane dokumente.
+
+### Ispravljeno
+
+- Server više ne dozvoljava objavu nacrta dokumenta vlasnicima (`publishDocument`).
+- Opoziv i ponovno izdavanje ličnog linka na serveru traže razlog (ranije ga je stranica tiho zamjenjivala
+  riječima „Opoziv" / „Ponovno izdavanje"). Isto važi za storno alokacije i storno troška.
+
 ## [2.41.0] - 2026-10-24
 
 ### Ispravljeno

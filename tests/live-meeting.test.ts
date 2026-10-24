@@ -8,6 +8,7 @@ import { createFixture, createProposalFixture, type Fixture } from "./helpers";
 import {
   openVoting, recordAttendance, recordAttendanceBulk, recordManualVote, recordManualVoteBulk, submitVote,
   advanceMeetingStatus, closeVoting, getLiveMeetingState, previewLiveDelivery, createVotingRule,
+  addAgendaItem, linkProposalToAgendaItem,
 } from "@/server/services/meetings";
 import { grantProxy } from "@/server/services/ownership";
 import { ForbiddenError } from "@/server/auth/guards";
@@ -215,6 +216,63 @@ describe("live meeting — getLiveMeetingState", () => {
     const avC = state.activeVoters.find((v) => v.ownerId === f.ownerC.id)!;
     expect(avC.present).toBe(false);
     expect(avC.deliveredVia).toBeNull();
+  });
+
+  it("unlinkedProposals lists proposals without an agenda item, and a linked one moves to its item (F1.7)", async () => {
+    const f: Fixture = await createFixture("lm-unlinked");
+    const { meeting, proposal } = await createProposalFixture(f); // created with no agendaItemId
+    const item = await addAgendaItem(f.president, { meetingId: meeting.id, title: "Izbor izvođača" });
+
+    const before = await getLiveMeetingState(f.president, meeting.id);
+    expect(before.unlinkedProposals.map((p) => p.id)).toEqual([proposal.id]);
+    expect(before.unlinkedProposals[0].code).toBe(proposal.code);
+    expect(before.agendaItems.find((a) => a.id === item.id)!.proposals).toHaveLength(0);
+
+    await linkProposalToAgendaItem(f.president, proposal.id, item.id);
+
+    const after = await getLiveMeetingState(f.president, meeting.id);
+    expect(after.unlinkedProposals).toHaveLength(0);
+    expect(after.agendaItems.find((a) => a.id === item.id)!.proposals.map((p) => p.id)).toEqual([proposal.id]);
+  });
+
+  it("linkProposalToAgendaItem links a proposal already open for voting without touching the frozen text or links (K4)", async () => {
+    const f: Fixture = await createFixture("lm-link-open");
+    const { meeting, proposal } = await createProposalFixture(f);
+    const item = await addAgendaItem(f.president, { meetingId: meeting.id, title: "Izbor izvođača" });
+    await openVoting(f.president, proposal.id);
+    const frozen = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
+    const tokensBefore = await prisma.approvalToken.count({ where: { eligibleVoter: { proposalId: proposal.id }, status: "ACTIVE" } });
+
+    const before = await getLiveMeetingState(f.president, meeting.id);
+    expect(before.unlinkedProposals.map((p) => [p.id, p.status])).toEqual([[proposal.id, "VOTING_OPEN"]]);
+
+    await linkProposalToAgendaItem(f.president, proposal.id, item.id);
+
+    const linked = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
+    expect(linked.agendaItemId).toBe(item.id);
+    expect(linked.status).toBe("VOTING_OPEN");
+    expect(linked.contentHash).toBe(frozen.contentHash);
+    expect(await prisma.approvalToken.count({ where: { eligibleVoter: { proposalId: proposal.id }, status: "ACTIVE" } })).toBe(tokensBefore);
+    const auditRow = await prisma.auditEvent.findFirst({ where: { action: "proposal.link", targetId: proposal.id } });
+    expect(auditRow).not.toBeNull();
+  });
+
+  it("linkProposalToAgendaItem refuses an already linked proposal, a closed one, an item of another meeting, and a non-president", async () => {
+    const f: Fixture = await createFixture("lm-link-refuse");
+    const { meeting, proposal } = await createProposalFixture(f);
+    const item = await addAgendaItem(f.president, { meetingId: meeting.id, title: "Tačka 1" });
+    const other = await createProposalFixture(f);
+    const foreignItem = await addAgendaItem(f.president, { meetingId: other.meeting.id, title: "Tuđa tačka" });
+
+    await expect(linkProposalToAgendaItem(f.accountant, proposal.id, item.id)).rejects.toThrow();
+    await expect(linkProposalToAgendaItem(f.president, proposal.id, foreignItem.id)).rejects.toThrow();
+
+    await linkProposalToAgendaItem(f.president, proposal.id, item.id);
+    await expect(linkProposalToAgendaItem(f.president, proposal.id, item.id)).rejects.toThrow(/već vezan/);
+
+    await openVoting(f.president, other.proposal.id);
+    await closeVoting(f.president, other.proposal.id);
+    await expect(linkProposalToAgendaItem(f.president, other.proposal.id, foreignItem.id)).rejects.toThrow(/nacrt ili prijedlog/);
   });
 
   it("activeVoters reflects a submitted electronic vote and an in-person manual vote", async () => {

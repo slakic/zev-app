@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, openVotingWithLinks, type Fixture } from "./helpers";
-import { createSupplier, createExpense, payExpense, DuplicateExpenseWarning } from "@/server/services/expenses";
+import { createSupplier, createExpense, payExpense, cancelExpense, DuplicateExpenseWarning } from "@/server/services/expenses";
 import { createPlan, addPlanItem, planVsActual, createPlanRevision, proposePlan, approvePlan, createProject } from "@/server/services/plans";
 import { allocationSummary } from "@/server/services/reports";
 import { ensureCategory } from "@/server/services/finance";
@@ -98,5 +98,32 @@ describe("expenses, suppliers and annual planning", () => {
     const approved = await approvePlan(f.president, plan.id, proposal.id);
     expect(approved.status).toBe("APPROVED");
     expect(approved.approvedByProposalId).toBe(proposal.id);
+  });
+});
+
+describe("F1 — partial expense payment and storno reason", () => {
+  let f: Fixture;
+  let supplierId: string;
+
+  beforeAll(async () => {
+    f = await createFixture("expf1");
+    supplierId = (await createSupplier(f.accountant, { name: `Izvodjac-${f.t}`, jib: "4409999990002" })).id;
+  });
+
+  it("a partial payment gives PARTIALLY_PAID and the remainder gives PAID", async () => {
+    const e = await createExpense(f.accountant, { supplierId, invoiceNumber: "F1-1", amount: "100.00" });
+    const partial = await payExpense(f.accountant, { expenseId: e.id, accountId: f.account.id, date: new Date(), amount: "40.00" });
+    expect(partial.status).toBe("PARTIALLY_PAID");
+    expect(partial.paidAmount.toString()).toBe("40");
+    const rest = await payExpense(f.accountant, { expenseId: e.id, accountId: f.account.id, date: new Date() });
+    expect(rest.status).toBe("PAID");
+    expect(rest.paidAmount.toString()).toBe("100");
+  });
+
+  it("cancelExpense with an empty reason throws and leaves the expense unpaid", async () => {
+    const e = await createExpense(f.accountant, { supplierId, invoiceNumber: "F1-2", amount: "30.00" });
+    await expect(cancelExpense(f.accountant, e.id, "  ")).rejects.toThrow(/razlog/);
+    const after = await prisma.expense.findUniqueOrThrow({ where: { id: e.id } });
+    expect(after.status).toBe("UNPAID");
   });
 });
