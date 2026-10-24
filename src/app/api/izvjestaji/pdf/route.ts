@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthContext } from "@/server/auth/session";
 import { generateFinancialReportPdf } from "@/server/services/documents";
+import { isPrefetchRequest, prefetchIgnored } from "@/server/http/prefetch";
 
 // generateFinancialReportPdf runs several aggregate reports before rendering the PDF —
 // can be tight for a larger ZEV against a platform's default (e.g. Vercel's 10s). No-op
@@ -8,6 +9,7 @@ import { generateFinancialReportPdf } from "@/server/services/documents";
 export const maxDuration = 60;
 
 export async function GET(req: NextRequest) {
+  if (isPrefetchRequest(req)) return prefetchIgnored(); // never generate/store/audit on a <Link> prefetch
   const session = await getAuthContext();
   if (!session) return NextResponse.redirect(new URL("/login", req.url));
   const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId, zevId: session.zevId, isSuperAdmin: session.isSuperAdmin };

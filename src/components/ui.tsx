@@ -407,15 +407,27 @@ export function RowAction({
   );
 }
 
+/** A file or API URL ("/api/…": PDF/CSV downloads) is NOT a page, so it gets a plain <a>, never
+ *  next/link: <Link> prefetches its target in production (on hover and when it scrolls into view),
+ *  and these GET routes have side effects — the e-vote consent form moved a fresh owner to
+ *  "Izjava preuzeta" on mere hover, the owner card stored a new Document version, downloads were
+ *  audited (v2.40.1). Every page link keeps <Link>. */
+function NavLink({ href, className, children }: { href: string; className: string; children: ReactNode }) {
+  if (href.startsWith("/api/")) {
+    return <a href={href} className={className}>{children}</a>;
+  }
+  return <Link href={href} className={className}>{children}</Link>;
+}
+
 /** `RowAction`'s `<Link>` counterpart, for a row action that navigates instead of submitting
  *  (e.g. "preuzmi" linking to a document download). */
 export function RowActionLink({
   href, children, variant, className,
 }: { href: string; children: ReactNode; variant?: BtnVariant; className?: string }) {
   return (
-    <Link href={href} className={`${rowActionBase} ${btnVariantCls[variant ?? "secondary"]} ${className ?? ""}`}>
+    <NavLink href={href} className={`${rowActionBase} ${btnVariantCls[variant ?? "secondary"]} ${className ?? ""}`}>
       {children}
-    </Link>
+    </NavLink>
   );
 }
 
@@ -425,12 +437,12 @@ export function RowActionLink({
  *  separate control competing with the real actions (Plans/ui-ux-redesign-plan.md §3.F). */
 export function RowLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
   return (
-    <Link
+    <NavLink
       href={href}
       className={`rounded font-medium text-primary-ink underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${className ?? ""}`}
     >
       {children}
-    </Link>
+    </NavLink>
   );
 }
 
@@ -466,9 +478,9 @@ type BtnVariant = "primary" | "tonal" | "secondary" | "ghost" | "caution" | "dan
 
 export function BtnLink({ href, children, variant }: { href: string; children: ReactNode; variant?: BtnVariant }) {
   return (
-    <Link href={href} className={`${btnBase} ${btnVariantCls[variant ?? "secondary"]}`}>
+    <NavLink href={href} className={`${btnBase} ${btnVariantCls[variant ?? "secondary"]}`}>
       {children}
-    </Link>
+    </NavLink>
   );
 }
 

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthContext } from "@/server/auth/session";
 import { generateEVoteConsentPdf } from "@/server/services/documents";
+import { isPrefetchRequest, prefetchIgnored } from "@/server/http/prefetch";
 
 /** Personalized "Izjava o saglasnosti" for print-and-sign. Owners can fetch only their own. */
 export async function GET(req: NextRequest, ctx: { params: Promise<{ partyId: string }> }) {
+  if (isPrefetchRequest(req)) return prefetchIgnored(); // never generate/store/audit on a <Link> prefetch
   const { partyId } = await ctx.params;
   const session = await getAuthContext();
   if (!session) return NextResponse.redirect(new URL("/login", req.url));

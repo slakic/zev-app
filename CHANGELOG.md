@@ -43,6 +43,26 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.41.0] - 2026-10-24
+
+### Ispravljeno
+
+- **Novi vlasnik je odmah imao status „Izjava preuzeta — čeka se potpis" za elektronsko glasanje, iako
+  izjavu nije preuzeo.** Dugme „Preuzmi izjavu (PDF)" bilo je Next.js link, a Next u produkciji unaprijed
+  učitava (prefetch) link čim se mišem pređe preko njega ili kad uđe u ekran. Taj zahtjev je pokretao
+  preuzimanje izjave, koje vlasnika prebacuje iz „Nije zatražena" u „Izjava preuzeta" i upisuje audit.
+  Isti problem su imali i drugi linkovi za preuzimanje: kartica vlasnika je pri svakom prefetch-u pravila
+  novu verziju dokumenta u „Dokumentima", a preuzimanja dokumenata, priloga i izvještaja su se bilježila
+  iako niko ništa nije preuzeo.
+  - Dugmad i linkovi ka fajlovima (`/api/…`) su sada obični linkovi bez prefetch-a (`BtnLink`,
+    `RowActionLink` i `RowLink` u `ui.tsx`).
+  - Rute za preuzimanje dodatno ignorišu prefetch zahtjeve (odgovor 204, bez generisanja, čuvanja i
+    audita) — `src/server/http/prefetch.ts`.
+- **Ispravka podataka:** skripta `scripts/reset-evote-prefetch-pending.ts` vraća sve nepotpisane izjave u
+  stanju „Izjava preuzeta" na „Nije zatražena" (potpisane i povučene se ne diraju), uz audit zapis
+  `party.evote_consent.reset`. Prefetch i stvarno preuzimanje se naknadno ne mogu razlikovati, pa vlasnik
+  koji je stvarno odštampao izjavu treba da je preuzme ponovo. Na produkciji je pokrenuti jednom.
+
 ## [2.40.0] - 2026-10-24
 
 **Prije deploy-a na produkciju ručno pokrenuti migraciju `20261023100000_add_invoice_email_delivery`**

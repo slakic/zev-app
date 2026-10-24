@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthContext } from "@/server/auth/session";
 import { cashFlowReport, incomeExpenseReport, receivablesReport, supplierReport, toCsv } from "@/server/services/reports";
 import { audit } from "@/server/audit";
+import { isPrefetchRequest, prefetchIgnored } from "@/server/http/prefetch";
 
 export async function GET(req: NextRequest) {
+  if (isPrefetchRequest(req)) return prefetchIgnored(); // never generate/store/audit on a <Link> prefetch
   const session = await getAuthContext();
   if (!session) return NextResponse.redirect(new URL("/login", req.url));
   const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId, zevId: session.zevId, isSuperAdmin: session.isSuperAdmin };

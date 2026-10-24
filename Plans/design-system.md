@@ -223,7 +223,7 @@ Nosioci:
 | Primitiv | Linija | Svrha |
 |---|---|---|
 | `SubmitBtn` | `:472` | `type="submit"` u server-action formi. Podrazumijevano `primary`. |
-| `BtnLink` | `:464` | Dugme koje navigira (`<Link>`). Podrazumijevano `secondary`. |
+| `BtnLink` | `:464` | Dugme koje navigira (`<Link>`). Podrazumijevano `secondary`. Za `href` koji počinje sa `/api/` (preuzimanje PDF/CSV) renderuje običan `<a>` bez prefetch-a — isto važi za `RowActionLink` i `RowLink` (v2.41.0: Next prefetch je pokretao rute za preuzimanje koje imaju posljedice). Link ka fajlu se nikad ne pravi ručnim `<Link>`. |
 | `Btn` | `:486` | Generičko client-safe dugme sa `onClick`. Postoji da client komponente prestanu da prepisuju `btnBase` klase — tri su to radile i ispale iz sinhronizacije sa ispravkom tap targeta. |
 | `ToggleBtn` | `:504` | `<summary>` za `<details>` sekciju „otkrij formu", sa rotirajućim chevronom. Bez JS-a. Obavezno `className="group"` na `<details>`. |
 | `RowAction` | `:397` | Radnja u koloni „Radnje" — **glagol**, ne identitet. Kompaktna geometrija, `type="submit"` ili `onClick`. |
