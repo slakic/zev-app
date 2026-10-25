@@ -14,21 +14,34 @@ export type SettingKey =
   | "board.termYears"
   | "board.presidentIsBoardPresident";
 
-export type SettingDefinition = { key: SettingKey; label: string; def: string };
+/** Tip vrijednosti parametra: odlučuje o polju u formi (izbor / cijeli broj / iznos) i o pravilima unosa
+ *  (`src/lib/settings-form.ts`). Vrijednost se i dalje čuva kao tekst u `Setting.value`. */
+export type SettingType = "boolean" | "integer" | "money";
+/** Jedinica uz broj: ključ u `settingsPage.unit.*` (naziv u labeli polja i oblici za prikaz). */
+export type SettingUnit = "years" | "days" | "km" | "dayOfMonth";
 
+export type SettingDefinition = {
+  key: SettingKey;
+  def: string;
+  type: SettingType;
+  unit?: SettingUnit;
+  /** Dozvoljeni opseg za `integer`/`money` (uključivo). */
+  min?: number;
+  max?: number;
+  /** Kako se bulov parametar zove u izboru i prikazu: Uključeno/Isključeno ili Da/Ne. */
+  boolLabels?: "onOff" | "yesNo";
+};
+
+// Naziv i posljedica svakog parametra su u rječniku: `settingsPage.param.<ključ>.name` / `.hint`.
 export const SETTING_DEFINITIONS: readonly SettingDefinition[] = [
-  { key: "retention.financialYears", label: "Čuvanje finansijskih dokumenata (godina)", def: "11" },
-  { key: "retention.voteIpDays", label: "Čuvanje IP metapodataka glasanja (dana)", def: "30" },
-  { key: "emergency.costThreshold", label: "Prag za hitne radove bez skupštine (KM)", def: "500" },
-  { key: "interest.enabled", label: "Zatezna kamata (isključena dok pravnik ne potvrdi)", def: "false" },
-  { key: "invoice.dueDay", label: "Podrazumijevani dan dospijeća fakture", def: "15" },
-  { key: "board.size", label: "Preporučen broj članova upravnog odbora (uključujući predsjednika)", def: "3" },
-  { key: "board.termYears", label: "Trajanje mandata organa ZEV (godina)", def: "4" },
-  {
-    key: "board.presidentIsBoardPresident",
-    label: "Predsjednik ZEV je ujedno predsjednik upravnog odbora (pretpostavka — pravna provjera u toku)",
-    def: "true",
-  },
+  { key: "retention.financialYears", def: "11", type: "integer", unit: "years", min: 1, max: 50 },
+  { key: "retention.voteIpDays", def: "30", type: "integer", unit: "days", min: 1, max: 365 },
+  { key: "emergency.costThreshold", def: "500", type: "money", unit: "km", min: 0, max: 10_000_000 },
+  { key: "interest.enabled", def: "false", type: "boolean", boolLabels: "onOff" },
+  { key: "invoice.dueDay", def: "15", type: "integer", unit: "dayOfMonth", min: 1, max: 28 },
+  { key: "board.size", def: "3", type: "integer", min: 1, max: 15 },
+  { key: "board.termYears", def: "4", type: "integer", unit: "years", min: 1, max: 10 },
+  { key: "board.presidentIsBoardPresident", def: "true", type: "boolean", boolLabels: "yesNo" },
 ] as const;
 
 export const SETTING_KEYS: readonly SettingKey[] = SETTING_DEFINITIONS.map((d) => d.key);

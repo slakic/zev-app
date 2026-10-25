@@ -43,6 +43,30 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.51.0] - 2026-10-25
+
+Faza F7 pregleda dizajna: podešavanja ne dozvoljavaju pogrešan unos parametara, uloge bez prava vide prikaz samo za čitanje umjesto polja koja ne reaguju, svaka radnja daje poruku, a dnevnici su na jednom mjestu i upotrebljivi na telefonu. **Bez migracije** — deploy ne traži ručni korak.
+
+### Dodato
+
+- **„Evidencije” (X-Q5):** nova stavka menija za upravu (ikona `IconRecords`, na kraju liste dok F9 ne preuredi navigaciju) sa tabovima *Aktivnosti* (samo predsjednik) · *Poslate poruke* · *Revizorski trag* na `/evidencije?tab=…`. Stari URL-ovi `/aktivnosti`, `/podesavanja/audit` i `/podesavanja/poruke` preusmjeravaju na odgovarajući tab (filteri i broj strane se prenose).
+- **Revizorski trag:** straničenje (20 po strani; stranica na 375px je oko 3.000px umjesto 44.000px), prevedene radnje uz sirovi kod, vrsta zapisa na srpskom, razlog u redu, a „Prije/Poslije” (JSON) i oznaka zapisa tek iza „Detalji”. Filter po periodu, osobi i tekstu; pretraga radi i nad prevedenim nazivom radnje („plaćanje”). Revizorski trag i dalje je samo za čitanje (`AuditEvent` ostaje append-only).
+- **Poslate poruke:** filter po primaocu i statusu, straničenje, jedna veličina teksta u redu.
+- **Prevod svih radnji u katalogu:** `auditAction.*` sada pokriva i finansije i sistemske događaje (radnje čija je šifra ujedno prefiks druge, npr. `auth.login`, `ballot.revoke.auto`, u `auditActionExact`); `tests/records.test.ts` čuva potpunost. `/aktivnosti` i `/admin/aktivnosti` time prikazuju prevod i za FINANSIJE/SISTEM kad se te kategorije uključe.
+- **Tipizirani parametri:** `SettingDefinition` ima tip (`boolean` / `integer` / `money`), jedinicu i opseg. Bulovi su izbor Uključeno/Isključeno (Da/Ne za „Predsjednik ZEV-a vodi i upravni odbor”), brojevi `type="number"` sa jedinicom u labeli, iznosi prihvataju decimalni zarez, a ispod svakog polja je jedna rečenica posljedice.
+
+### Promijenjeno
+
+- **Parametri:** jedna forma i jedno „Sačuvaj parametre” (umjesto osam formi); poruka „Sačuvano: Prag za hitne radove bez skupštine: 500,00 KM → 600,00 KM; …” navodi samo promijenjeno. Server (`saveSettings`) upisuje **samo promijenjene vrijednosti** — jedan `setting.update` zapis po stvarnoj izmjeni — a ako je ijedna vrijednost neispravna (prazno, tekst, „1.500”, izvan opsega), ne snima ništa. Parsiranje i poređenje su čista logika u `src/lib/settings-form.ts` (testirano).
+- **Uloge bez prava izmjene (računovođa):** „Matični podaci ZEV” i „Parametri” su prikaz samo za čitanje (`<dl>`), sa napomenom ko ih mijenja; savjet „posavjetujte se sa računovođom” vidi samo predsjednik. Nema više onemogućenih polja.
+- **Moji podaci svjesni uloge:** vlasniku i računovođi piše da ime i adresu mijenja predsjednik (bez reference na meni koji nemaju); predsjednik dobija link na svoj profil u „Vlasnici i korisnici”.
+- **Elektronsko glasanje vlasnika:** kad saglasnost nije aktivna, kartica ide prva, sa tri numerisana koraka (preuzmi → potpiši → predaj predsjedniku) i objašnjenjem šta slijedi nakon predaje. „Povuci saglasnost” se nudi samo kad je saglasnost potpisana (ranije i dok je izjava tek preuzeta).
+- **Povratna informacija:** svaka radnja na Podešavanjima (matični podaci, račun dodan/izmijenjen, parametri, kontakt, dostava računa, opoziv saglasnosti) daje `Flash`; greška pri dodavanju računa više ne pada u `error.tsx`.
+- **Copy bez implementacionih detalja:** nestali su `APP_URL`, Vercel, Mailjet, „API” i „bot” („Ova adresa nije dostupna sa telefona. Obratite se administratoru platforme.”; „E-pošta se šalje; Viber je za sada probni.”); upozorenje o lokalnoj adresi je `Flash warn inset`. Tekstovi Podešavanja i Evidencija su u rječniku (`settingsPage.*`, `records.*`, sr-Latn i en).
+- `Pagination`: dugmad „‹ Prethodna” / „Sljedeća ›” se više ne lome u dva reda na 375px (`whitespace-nowrap`).
+- Zaglavlje Podešavanja više nema tri dugmeta za dnevnike (X-N15).
+- `text-xs` u dnevnicima → `text-sm` / `text-[13px]`.
+
 ## [2.50.0] - 2026-10-25
 
 Faza F8 pregleda dizajna: tabele na telefonu više ne guraju radnje van ekrana, evidencija vlasnika pokazuje ono što određuje glas, a zbir udjela po jedinici je vidljiv tamo gdje se udio upisuje. **Bez migracije** — deploy ne traži ručni korak.

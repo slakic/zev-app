@@ -14,8 +14,8 @@ import {
   type CheckSmsResult,
 } from "@/server/actions/bankSms";
 import type { BankSmsStatus } from "@/server/services/bankSms";
-import { Card, ConfirmAction, ToggleBtn, inputCls, btnBase, btnVariantCls } from "@/components/ui";
-import { formatDateTime } from "@/lib/i18n";
+import { Card, ConfirmAction, Flash, ToggleBtn, inputCls, btnBase, btnVariantCls } from "@/components/ui";
+import { formatDateTime, t } from "@/lib/i18n";
 
 export function BankSmsTokenCard({ status }: { status: BankSmsStatus }) {
   const router = useRouter();
@@ -96,12 +96,7 @@ export function BankSmsTokenCard({ status }: { status: BankSmsStatus }) {
           </div>
         </dl>
 
-        {isLocal && (
-          <div className="rounded-xl border-l-4 border-l-amber-500 bg-amber-50 px-3 py-2.5 text-amber-800">
-            Adresa pokazuje na lokalni računar (localhost) — iPhone je ne može dosegnuti. Javna adresa aplikacije se postavlja
-            promjenljivom okruženja <span className="font-mono">APP_URL</span> (npr. u Vercel podešavanjima).
-          </div>
-        )}
+        {isLocal && <Flash warn={t("settingsPage.bankSms.localAddress")} inset />}
 
         {secret && (
           <div className="space-y-2 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-3 text-emerald-900">

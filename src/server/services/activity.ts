@@ -154,7 +154,7 @@ export async function resolveActorLabels(actor: Actor, pairs: { userId: string |
  * the right name for each tenant's actor list instead of whichever Party they happened to
  * get first.
  */
-async function listZevMembersWithPartyLabel(zevId: string) {
+export async function listZevMembersWithPartyLabel(zevId: string) {
   const memberships = await prisma.membership.findMany({
     where: { zevId },
     distinct: ["userId"],

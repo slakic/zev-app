@@ -476,6 +476,8 @@ Dijeli se na dvije isporuke:
 
 ### F7 — Podešavanja i evidencije *(M · D4 · X-Q5)*
 
+**Status: ISPORUČENO u v2.51.0 (nije commitovano).** Implementirano bez posebnog implementacionog plana, po izboru korisnika. X-Q5: „Evidencije” je stavka menija (na kraju liste do F9) sa tabovima Aktivnosti · Poslate poruke · Revizorski trag; stari URL-ovi preusmjeravaju na odgovarajući tab.
+
 - **Svrha:** podešavanja ne zbunjuju i ne dozvoljavaju pogrešan unos; dnevnici su upotrebljivi. Rješava V25–V28 i X-N13–X-N17.
 - **Šta se mijenja** (X-R08–X-R13, dio V-R08):
   - **Moji podaci:** svjesni uloge; bez reference na meni koji uloga nema.

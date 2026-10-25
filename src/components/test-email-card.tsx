@@ -111,7 +111,7 @@ export function TestEmailCard({ status, scope }: { status: TestEmailStatus; scop
           {scope === "zev" && outcome?.ok && (
             <>
               {" "}
-              <Link href="/podesavanja/poruke" className="font-medium underline underline-offset-2">
+              <Link href="/evidencije?tab=poruke" className="font-medium underline underline-offset-2">
                 Poslate poruke
               </Link>
             </>

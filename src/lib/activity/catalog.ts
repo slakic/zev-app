@@ -4,6 +4,8 @@
 // module is a read-side classification/labelling layer on top of it, following the pattern
 // already established by getEVoteConsentHistory (src/server/services/evoteConsent.ts).
 import { t, tEnum } from "@/lib/i18n";
+import { isSettingKey } from "@/lib/settings-defaults";
+import { describeSettingChanges } from "@/lib/settings-display";
 
 export const ACTIVITY_CATEGORIES = ["OWNER", "GOVERNANCE", "FINANCE", "SYSTEM"] as const;
 export type ActivityCategory = (typeof ACTIVITY_CATEGORIES)[number];
@@ -222,17 +224,41 @@ const ACTION_LABEL_OVERRIDE: Record<string, string> = {
 export function labelForAction(action: string): { label: string; translated: boolean } {
   const override = ACTION_LABEL_OVERRIDE[action];
   if (override) return { label: override, translated: true };
+  // Šifre koje su i vlastita radnja i prefiks druge ("ballot.revoke" / "ballot.revoke.auto", "auth.login" /
+  // "auth.login.failed") ne mogu u ugniježđeni rječnik — za njih postoji ravna grupa `auditActionExact`, ključ sa
+  // tačkama zamijenjenim sa "__".
+  const exactKey = `auditActionExact.${action.replaceAll(".", "__")}`;
+  const exact = t(exactKey);
+  if (exact !== exactKey) return { label: exact, translated: true };
   const fullKey = `auditAction.${action}`;
   const resolved = tEnum("auditAction", action);
   if (resolved === fullKey) return { label: action, translated: false };
   return { label: resolved, translated: true };
 }
 
+/** Šifre radnji čiji prevedeni naziv sadrži traženi tekst (bez obzira na velika/mala slova) — da pretraga u
+ *  revizorskom tragu radi i na tekstu koji korisnik vidi („plaćanje”), ne samo na internoj šifri. */
+export function actionsMatchingQuery(query: string): string[] {
+  const needle = query.trim().toLocaleLowerCase("sr-Latn");
+  if (!needle) return [];
+  return Object.keys(ACTION_CATEGORY).filter((a) => {
+    const { label, translated } = labelForAction(a);
+    return translated && label.toLocaleLowerCase("sr-Latn").includes(needle);
+  });
+}
+
+/** Naziv vrste zapisa za revizorski trag ("PlanItem" → "Stavka plana"); nepoznata vrsta ostaje kakva jeste. */
+export function labelForTarget(targetType: string): string {
+  const key = `auditTarget.${targetType}`;
+  const resolved = t(key);
+  return resolved === key ? targetType : resolved;
+}
+
 export function categoryLabel(category: ActivityCategory): string {
   return t(`activityCategory.${category}`);
 }
 
-type SummaryEvent = { action: string; before: unknown; after: unknown };
+type SummaryEvent = { action: string; before: unknown; after: unknown; targetId?: string | null };
 
 function asRecord(v: unknown): Record<string, unknown> {
   return v && typeof v === "object" ? (v as Record<string, unknown>) : {};
@@ -255,6 +281,12 @@ export function summarize(event: SummaryEvent): string | null {
       const from = typeof before.status === "string" ? tEnum("issueStatus", before.status) : null;
       const to = typeof after.status === "string" ? tEnum("issueStatus", after.status) : null;
       return from && to ? `${from} → ${to}` : null;
+    }
+    case "setting.update": {
+      // Parametar ZEV-a: "Prag za hitne radove: 500,00 KM → 600,00 KM" (targetId je ključ parametra).
+      const key = event.targetId ?? "";
+      if (!isSettingKey(key) || typeof before.value !== "string" || typeof after.value !== "string") return null;
+      return describeSettingChanges([{ key, before: before.value, after: after.value }]) || null;
     }
     default:
       return null;

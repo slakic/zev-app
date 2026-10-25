@@ -14,7 +14,7 @@ export async function sendTestEmailAction(input: TestEmailInput): Promise<SendTe
   try {
     const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
     const result = await sendTestEmail(actor, input);
-    revalidatePath("/podesavanja/poruke");
+    revalidatePath("/evidencije");
     revalidatePath("/podesavanja");
     return { ok: true, result };
   } catch (e) {

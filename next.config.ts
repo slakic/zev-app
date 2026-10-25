@@ -25,6 +25,15 @@ const nextConfig: NextConfig = {
   // Matches MAX_UPLOAD_MB so a too-large upload is rejected by attachments.ts's own
   // sr-Latn message (assertUploadable), not by a bare Next/platform body-size error —
   // the default (1 MB) was smaller than either, which is the bug this closes (§8.1).
+  // F7 (X-Q5): dnevnici su jedno mjesto, „Evidencije”. Stare adrese ostaju u upotrebi (obilježivači, linkovi u
+  // porukama) i vode na odgovarajući tab; query parametri (filteri, `str`) Next prosljeđuje na odredište.
+  async redirects() {
+    return [
+      { source: "/aktivnosti", destination: "/evidencije?tab=aktivnosti", permanent: false },
+      { source: "/podesavanja/audit", destination: "/evidencije?tab=audit", permanent: false },
+      { source: "/podesavanja/poruke", destination: "/evidencije?tab=poruke", permanent: false },
+    ];
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: `${MAX_UPLOAD_MB}mb`,

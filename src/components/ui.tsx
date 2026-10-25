@@ -575,23 +575,23 @@ export function Pagination({ page, pageCount, hrefFor }: { page: number; pageCou
   const atStart = page <= 1;
   const atEnd = page >= pageCount;
   return (
-    <nav aria-label="Stranice" className="mt-3 flex items-center justify-center gap-3 text-sm">
+    <nav aria-label="Stranice" className="mt-3 flex items-center justify-center gap-2 text-sm sm:gap-3">
       <Link
         href={hrefFor(Math.max(1, page - 1))}
         aria-disabled={atStart}
         tabIndex={atStart ? -1 : undefined}
-        className={`${btnBase} ${btnVariantCls.secondary} ${atStart ? "pointer-events-none opacity-50" : ""}`}
+        className={`${btnBase} ${btnVariantCls.secondary} whitespace-nowrap ${atStart ? "pointer-events-none opacity-50" : ""}`}
       >
         ‹ Prethodna
       </Link>
-      <span className="text-slate-500">
+      <span className="text-center text-slate-500">
         Stranica {page} od {pageCount}
       </span>
       <Link
         href={hrefFor(Math.min(pageCount, page + 1))}
         aria-disabled={atEnd}
         tabIndex={atEnd ? -1 : undefined}
-        className={`${btnBase} ${btnVariantCls.secondary} ${atEnd ? "pointer-events-none opacity-50" : ""}`}
+        className={`${btnBase} ${btnVariantCls.secondary} whitespace-nowrap ${atEnd ? "pointer-events-none opacity-50" : ""}`}
       >
         Sljedeća ›
       </Link>

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAnyUser, requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { audit } from "@/server/audit";
 import { DEFAULT_SETTINGS, SETTING_DEFINITIONS, isSettingKey, type SettingKey } from "@/lib/settings-defaults";
+import { diffSettings, type SettingChange, type SettingIssue } from "@/lib/settings-form";
 import type { Prisma } from "@/generated/prisma/client";
 
 /**
@@ -42,6 +43,43 @@ export async function setSetting(actor: Actor, key: string, value: string) {
     after: { value },
   });
   return setting;
+}
+
+export type SaveSettingsResult = { ok: true; changes: SettingChange[] } | { ok: false; issues: SettingIssue[] };
+
+/**
+ * Jedna forma „Parametri”: prima sve vrijednosti, provjerava ih (sve-ili-ništa) i upisuje SAMO one koje se razlikuju
+ * od sačuvanih — jedan `setting.update` zapis u revizorskom tragu po stvarnoj izmjeni. Neispravan unos ne upisuje
+ * ništa. Pravila parsiranja su u `src/lib/settings-form.ts`.
+ */
+export async function saveSettings(
+  actor: Actor,
+  submitted: Partial<Record<SettingKey, string | null | undefined>>,
+): Promise<SaveSettingsResult> {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  const current = await getSettings(actor);
+  const diff = diffSettings(current, submitted);
+  if (!diff.ok || diff.changes.length === 0) return diff;
+  await prisma.$transaction(
+    diff.changes.map((c) =>
+      prisma.setting.upsert({
+        where: { zevId_key: { zevId, key: c.key } },
+        create: { zevId, key: c.key, value: c.after },
+        update: { value: c.after },
+      }),
+    ),
+  );
+  for (const c of diff.changes) {
+    await audit(actor, {
+      action: "setting.update",
+      targetType: "Setting",
+      targetId: c.key,
+      before: { value: c.before },
+      after: { value: c.after },
+    });
+  }
+  return diff;
 }
 
 /**

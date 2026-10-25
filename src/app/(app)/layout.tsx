@@ -36,6 +36,8 @@ const NAV: { href: string; key: string; roles?: string[] }[] = [
   { href: "/dokumenti", key: "nav.documents" },
   { href: "/izvjestaji", key: "nav.reports", roles: ["PRESIDENT", "ACCOUNTANT"] },
   { href: "/podesavanja", key: "nav.settings" },
+  // F7 (X-Q5): dnevnici na jednom mjestu, privremeno na kraju liste dok F9 ne preuredi navigaciju.
+  { href: "/evidencije", key: "nav.records", roles: ["PRESIDENT", "ACCOUNTANT"] },
 ];
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {

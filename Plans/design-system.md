@@ -261,7 +261,7 @@ Nosioci:
 | — card-transform | `:189-227` | Tabela sa **više od 5 kolona ILI kolonom radnji** (`ColumnSpec.actions`, v2.50.0/F8.1) se ispod `md` prelama u niz kartica po redu (`labela: vrijednost`), umjesto horizontalnog skrola. Generiše se kao jedan `<style>` blok po tabeli, keyed po `id` — zato je `id` **obavezan** kad su `headers` tipa `ColumnSpec[]` (dev warning na `:298-301`). |
 | `Td` | `:375` | Ćelija. `right` prop je **deprecated** — poravnanje ide kroz `align: "right"` u `ColumnSpec`. |
 | `TableSort` | `:249` | Sortiranje kroz query parametre (`active`, `dir`, `hrefFor`) — pravi linkovi, bookmarkabilni, rade bez JS-a, komponuju se sa server-side paginacijom. Klikabilne su samo kolone koje imaju `sortKey`. |
-| `Pagination` | `:565` | „Prethodna / Stranica N od M / Sljedeća". Ne renderuje ništa za jednostranični rezultat. |
+| `Pagination` | `:565` | „Prethodna / Stranica N od M / Sljedeća". Ne renderuje ništa za jednostranični rezultat. Dugmad su `whitespace-nowrap` (F7; ranije su se na 375px lomila u dva reda). |
 | `StatusBadge` | `:84` | Tonalni chip: **tekstualna labela + boja, nikad samo boja.** Ton se čita iz `statusTone` mape. |
 | `StatusTimeline` | `:109` | Read-only prikaz napretka kroz **striktno linearan** proces („gdje sam u nizu i šta slijedi"), komplementaran sa `StatusBadge` („koji je status sada"). Koraci nisu klikabilni. |
 
@@ -296,7 +296,7 @@ Nosioci:
 - `IconBase` (`nav-icons.tsx:8-22`) definiše ugovor: **`viewBox="0 0 20 20"`, `fill="none"`, `stroke="currentColor"`, `strokeWidth={1.6}`, `strokeLinecap`/`strokeLinejoin="round"`, `aria-hidden="true"`**, podrazumijevana veličina `h-5 w-5`, `className` override od pozivaoca.
 - Boju nosi `currentColor` — **ikona nikad ne postavlja svoju boju**; nasljeđuje je od roditelja (nav linka, dugmeta, chipa).
 - **Mapa `NAV_ICONS`** (`nav-icons.tsx`) preslikava rutu → ikonu za sidebar; `IconDot` je fallback za nemapirano. Nova ruta u sidebaru **mora** dobiti unos ovdje, inače dobija tačku.
-- Isporučeno 22 ikone: `IconHome`, `IconBuilding`, `IconUsers`, `IconLandmark`, `IconBallot`, `IconReceipt`, `IconWallet`, `IconCalendar`, `IconWrench`, `IconDocument`, `IconChart`, `IconSliders`, `IconShield`, `IconActivity` (Faza 5), `IconMonitor`, `IconDot`, `IconChevronLeft`, `IconCheck`, `IconLogout`, `IconHelp`, `IconMenu` i `IconClose` (F2; dugmad menija na telefonu — nisu rute, pa ne ulaze u `NAV_ICONS`).
+- Isporučeno 23 ikone: `IconHome`, `IconBuilding`, `IconUsers`, `IconLandmark`, `IconBallot`, `IconReceipt`, `IconWallet`, `IconCalendar`, `IconWrench`, `IconDocument`, `IconChart`, `IconSliders`, `IconShield`, `IconActivity` (Faza 5), `IconRecords` (F7, „Evidencije”), `IconMonitor`, `IconDot`, `IconChevronLeft`, `IconCheck`, `IconLogout`, `IconHelp`, `IconMenu` i `IconClose` (F2; dugmad menija na telefonu — nisu rute, pa ne ulaze u `NAV_ICONS`).
 - Ikone koje **nisu** navigacione ostaju lokalne u fajlu koji ih koristi, u istom stilu — npr. `EmptyTrayIcon` (`ui.tsx:233`), `SortIcon` (`:255`), `CheckCircleIcon` (`:93`), chevron u `ToggleBtn` (`:509`). Ne zatrpavati `nav-icons.tsx` ne-nav ikonama.
 
 ---
