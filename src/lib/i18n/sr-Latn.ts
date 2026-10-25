@@ -452,7 +452,7 @@ const srLatn = {
       term: { set: "Postavljen mandat organa" },
     },
     ownership: {
-      stake: { add: "Dodat vlasnički udio" },
+      stake: { add: "Dodat vlasnički udio", end: "Zatvoren vlasnički udio" },
       transfer: "Prenos vlasništva",
     },
     unit_register: {
@@ -639,6 +639,16 @@ const srLatn = {
    * Registar posebnih dijelova (FR, v2.43.0) — Plans/fr-registar-i-glasanje-po-etaznim-vlasnicima-plan.md,
    * mockup X-M04. Placeholderi `{ime}` se popunjavaju kroz `tf()`.
    */
+  ownershipEnd: {
+    trigger: "Zatvori udio…",
+    title: "Zatvaranje vlasničkog udjela",
+    body: "Udio od {udio} % na {jedinica} vlasnika {ime} prestaje da važi od datuma ispod. Zapis ostaje u istoriji, ali {ime} od tog datuma više nije etažni vlasnik za ovu jedinicu i ne dobija glas za nju. Već otvorena glasanja se ne mijenjaju.",
+    confirm: "Da, zatvori udio",
+    dateLabel: "Udio važi do",
+    dateHint: "Najčešće datum prodaje ili upisa novog vlasnika.",
+    reasonLabel: "Razlog",
+    done: "Udio je zatvoren.",
+  },
   register: {
     title: "Registar posebnih dijelova",
     ui: { okLabel: "U redu:", warnLabel: "Pažnja:" },
@@ -684,7 +694,7 @@ const srLatn = {
     col: { share: "Udio u troškovima %", ownerSum: "Zbir udjela vlasnika" },
     sum: {
       over: "Zbir {sum} %",
-      overNote: "Zatvorite udio prethodnog vlasnika (Promjena vlasništva).",
+      overNote: "Zatvorite udio prethodnog vlasnika: Vlasnici i korisnici › prethodni vlasnik › Zatvori udio.",
       under: "Upisano {sum} %",
       underNote: "Upišite preostali dio ili suvlasnika.",
       none: "Bez vlasnika",
@@ -732,7 +742,7 @@ const srLatn = {
       changed: "Izmjena registra je evidentirana — nastala je nova verzija registra.",
       representative: "Zajednički predstavnik je određen.",
       stakeAdded: "Vlasnički udio je dodat.",
-      sumOver: "Zbir udjela za {unit} je sada {sum} % — zatvorite udio prethodnog vlasnika (Promjena vlasništva).",
+      sumOver: "Zbir udjela za {unit} je sada {sum} % — zatvorite udio prethodnog vlasnika (njegov profil › Zatvori udio).",
       sumUnder: "Zbir udjela za {unit} je sada {sum} % — upišite preostali dio ili suvlasnika.",
     },
     change: {
@@ -788,7 +798,7 @@ const srLatn = {
     pre: {
       registerNotEstablished: "Registar posebnih dijelova nije utvrđen — Zgrade i jedinice › Posebni dijelovi.",
       unitWithoutOwner: "Posebni dijelovi bez upisanog vlasnika: {units}. Upišite vlasnika u Vlasnici i korisnici › Vlasništvo.",
-      unitOverShare: "Zbir udjela vlasnika je iznad 100 % za: {units}. Zatvorite udio prethodnog vlasnika (Promjena vlasništva) da on ne bi dobio glas.",
+      unitOverShare: "Zbir udjela vlasnika je iznad 100 % za: {units}. Zatvorite udio prethodnog vlasnika (njegov profil › Zatvori udio) da on ne bi dobio glas.",
       representativeConflict: "Suvlasnici istog skupa posebnih dijelova imaju različite predstavnike: {subjects}. Glasa predstavnik posebnog dijela sa najmanjom oznakom.",
       cardTitle: "Glasanje se ne može otvoriti",
       cardHint: "Ispravite sljedeće, pa pokušajte ponovo.",

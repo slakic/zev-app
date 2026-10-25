@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
-import { getParty, partyDisplayName, updateParty, votingRoleByUnit } from "@/server/services/ownership";
+import { getParty, partyDisplayName, updateParty, votingRoleByUnit, endOwnershipStake } from "@/server/services/ownership";
 import { updateUserRoles, activateUser, deactivateUser } from "@/server/services/users";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
 import { setInvoiceEmailDelivery } from "@/server/services/invoiceEmail";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
-import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
 import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
@@ -26,6 +26,7 @@ const stakeHeaders: ColumnSpec[] = [
   { label: "Do" },
   { label: "Dokaz o vlasništvu" },
 ];
+const stakeActionHeader: ColumnSpec = { label: "Radnje" };
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
 const ALL_ROLES: Role[] = ["PRESIDENT", "ACCOUNTANT", "OWNER"];
@@ -54,6 +55,22 @@ async function updatePartyAction(formData: FormData) {
     redirect(`/vlasnici/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   redirect(`/vlasnici/${id}?msg=saved`);
+}
+
+/** v2.43.1: closes one active stake without creating a new one ("Zatvori udio"). */
+async function endStakeAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const id = String(formData.get("partyId"));
+  try {
+    await endOwnershipStake(actor, String(formData.get("stakeId")), {
+      validTo: new Date(String(formData.get("validTo"))),
+      reason: String(formData.get("reason") ?? ""),
+    });
+  } catch (e) {
+    redirect(`/vlasnici/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect(`/vlasnici/${id}?msg=stakeEnded`);
 }
 
 async function updateRolesAction(formData: FormData) {
@@ -161,7 +178,7 @@ export default async function PartyDetailPage({
   const isAccountant = actor.roles.includes("ACCOUNTANT");
   const isSelf = actor.partyId === id;
   const canEditContact = isPresident || isSelf;
-  const okMsg = msg === "saved" ? "Sačuvano." : undefined;
+  const okMsg = msg === "saved" ? "Sačuvano." : msg === "stakeEnded" ? t("ownershipEnd.done") : undefined;
 
   return (
     <div>
@@ -219,7 +236,7 @@ export default async function PartyDetailPage({
           <Table
             id="stakes-table"
             caption="Vlasnički udjeli"
-            headers={stakeHeaders}
+            headers={isPresident ? [...stakeHeaders, stakeActionHeader] : stakeHeaders}
             empty={party.ownershipStakes.length === 0}
             emptyTitle={t("empty.stakes.title")}
             emptyHint={isPresident ? <BtnLink href="/vlasnici?tab=vlasnistvo" variant="tonal">Dodaj vlasnički udio</BtnLink> : undefined}
@@ -250,6 +267,38 @@ export default async function PartyDetailPage({
                       "—"
                     )}
                   </Td>
+                  {isPresident && (
+                    <Td>
+                      {!s.validTo && (
+                        <ConfirmAction
+                          trigger={t("ownershipEnd.trigger")}
+                          triggerVariant="caution"
+                          title={t("ownershipEnd.title")}
+                          body={
+                            <p className="text-sm text-amber-900">
+                              {tf("ownershipEnd.body", {
+                                ime: partyDisplayName(party),
+                                jedinica: s.unit.label,
+                                // "100.000000" -> "100", "33.333300" -> "33,3333" (Number drops only trailing decimal zeros)
+                                udio: String(Number(s.sharePercent.toString())).replace(".", ","),
+                              })}
+                            </p>
+                          }
+                          confirmLabel={t("ownershipEnd.confirm")}
+                          confirmVariant="caution"
+                          action={endStakeAction}
+                          hiddenFields={{ stakeId: s.id, partyId: party.id }}
+                        >
+                          <Field label={t("ownershipEnd.dateLabel")} hint={t("ownershipEnd.dateHint")}>
+                            <input name="validTo" type="date" required defaultValue={toZonedDateIso(new Date())} className={inputCls} />
+                          </Field>
+                          <Field label={t("ownershipEnd.reasonLabel")}>
+                            <input name="reason" required className={inputCls} />
+                          </Field>
+                        </ConfirmAction>
+                      )}
+                    </Td>
+                  )}
                 </tr>
               );
             })}

@@ -80,6 +80,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "office.term.set": "GOVERNANCE",
   "ownership.stake.add": "GOVERNANCE",
   "ownership.transfer": "GOVERNANCE",
+  "ownership.stake.end": "GOVERNANCE",
   "unit_register.establish": "GOVERNANCE",
   "unit_register.change": "GOVERNANCE",
   "unit.voting_representative.set": "GOVERNANCE",

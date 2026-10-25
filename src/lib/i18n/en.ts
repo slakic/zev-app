@@ -207,7 +207,7 @@ const en: DeepPartial<typeof srLatn> = {
     col: { share: "Cost share %", ownerSum: "Owners' share sum" },
     sum: {
       over: "Sum {sum} %",
-      overNote: "Close the previous owner's share (Ownership change).",
+      overNote: "Close the previous owner's share: Owners › previous owner › Close share.",
       under: "Entered {sum} %",
       underNote: "Enter the remaining part or a co-owner.",
       none: "No owner",
@@ -255,7 +255,7 @@ const en: DeepPartial<typeof srLatn> = {
       changed: "The register change is recorded — a new register version was created.",
       representative: "The common representative is set.",
       stakeAdded: "The ownership share was added.",
-      sumOver: "The share sum for {unit} is now {sum} % — close the previous owner's share (Ownership change).",
+      sumOver: "The share sum for {unit} is now {sum} % — close the previous owner's share (their profile › Close share).",
       sumUnder: "The share sum for {unit} is now {sum} % — enter the remaining part or a co-owner.",
     },
     change: {
@@ -307,7 +307,7 @@ const en: DeepPartial<typeof srLatn> = {
     pre: {
       registerNotEstablished: "The register of special parts is not established — Buildings and units › Special parts.",
       unitWithoutOwner: "Special parts without an owner entered: {units}. Enter an owner under Owners and users › Ownership.",
-      unitOverShare: "The owners' share sum is above 100 % for: {units}. Close the previous owner's share (Ownership change) so he does not get a vote.",
+      unitOverShare: "The owners' share sum is above 100 % for: {units}. Close the previous owner's share (their profile › Close share) so they do not get a vote.",
       representativeConflict: "Co-owners of the same set of special parts have different representatives: {subjects}. The representative of the special part with the smallest label votes.",
       cardTitle: "Voting cannot be opened",
       cardHint: "Fix the following, then try again.",

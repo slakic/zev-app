@@ -43,6 +43,22 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.43.1] - 2026-10-25
+
+### Dodato
+
+- **Zatvori udio** (detalj vlasnika › Vlasnički udjeli, samo predsjednik): zatvara aktivan vlasnički udio od
+  izabranog datuma, bez kreiranja novog — za jedinicu sa zbirom udjela iznad 100 % kad je novi vlasnik upisan kao
+  „Dodaj udio" umjesto kroz „Promjena vlasništva". Iza potvrde, sa obaveznim datumom i razlogom; zapis ostaje u
+  istoriji, a radnja se bilježi u revizorskom tragu (`ownership.stake.end`). Ako je zatvoreni vlasnik bio izričito
+  određen predstavnik suvlasnika, jedinica se vraća na podrazumijevanog predstavnika. Već otvorena glasanja se ne
+  mijenjaju.
+
+### Izmijenjeno
+
+- Upozorenja o zbiru udjela iznad 100 % (registar, Vlasništvo, preduslovi glasanja) upućuju na „Zatvori udio" umjesto
+  na „Promjena vlasništva", koja bi novom vlasniku dodala još jedan udio.
+
 ## [2.43.0] - 2026-10-24
 
 Faza FR (`Plans/fr-registar-i-glasanje-po-etaznim-vlasnicima-plan.md`): registar posebnih dijelova i glasanje po

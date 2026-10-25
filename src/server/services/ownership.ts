@@ -221,6 +221,42 @@ export async function transferOwnership(
   });
 }
 
+/**
+ * Closes one active ownership stake as of `validTo`, without creating a new one (v2.43.1) — for a
+ * stake that should have ended when a new owner was already entered separately (e.g. a sale
+ * recorded as "Dodaj udio" instead of "Promjena vlasništva", leaving the unit at 200%). The row is
+ * closed, never deleted; a closed stake drops out of the voting base from `validTo` on. Votes that
+ * are already open keep their frozen base, so closing is allowed while voting is open. If the
+ * closed owner was the unit's explicit voting representative, the unit falls back to the default
+ * representative of the remaining co-owners.
+ */
+export async function endOwnershipStake(actor: Actor, stakeId: string, data: { validTo: Date; reason: string }) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  if (!data.reason.trim()) throw new Error("Zatvaranje udjela zahtijeva razlog.");
+  if (Number.isNaN(data.validTo.getTime())) throw new Error("Datum zatvaranja udjela nije ispravan.");
+  return prisma.$transaction(async (tx) => {
+    const stake = await tx.ownershipStake.findUniqueOrThrow({ where: { id: stakeId, zevId }, include: { unit: true } });
+    if (stake.validTo) throw new Error("Udio je već zatvoren.");
+    if (data.validTo.getTime() <= stake.validFrom.getTime()) {
+      throw new Error("Datum zatvaranja mora biti poslije datuma od kojeg udio važi.");
+    }
+    const closed = await tx.ownershipStake.update({ where: { id: stakeId, zevId }, data: { validTo: data.validTo } });
+    if (stake.unit.votingRepresentativeId === stake.ownerId) {
+      await tx.unit.update({ where: { id: stake.unitId, zevId }, data: { votingRepresentativeId: null } });
+    }
+    await audit(actor, {
+      action: "ownership.stake.end",
+      targetType: "OwnershipStake",
+      targetId: stakeId,
+      before: { unitId: stake.unitId, ownerId: stake.ownerId, sharePercent: stake.sharePercent.toString(), validTo: null },
+      after: { validTo: data.validTo.toISOString() },
+      reason: data.reason,
+    }, tx);
+    return closed;
+  });
+}
+
 // ---- Occupancies ----
 
 export async function setOccupancy(
