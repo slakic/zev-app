@@ -12,6 +12,7 @@ Donesene 2026-09-23, kao odgovor na pitanja iz §8 (izvorna pitanja ostaju dolje
 - **P1 — Saglasnost i punomoć: OBA.** Kad odsutnog vlasnika zastupa punomoćnik, elektronski kanal (korpa B, §2.1) se otvara samo ako **i** vlasnik **i** punomoćnik imaju `eVoteConsentStatus = "SIGNED"` i e-mail. Nedostatak bilo kog od dva svodi tog glasača u korpu C.
 - **P2 — Odsutan bez saglasnosti (korpa C): DA.** Ostaje u glasačkoj bazi i u imeniocu kvoruma; ne dobija e-mail; predsjednik mu naknadno može unijeti papirni (`PAPER`) glas.
 - **P3 — Upravni odbor: NE, van obima prve verzije.** Režim uživo je za sada isključivo za `body = "ASSEMBLY"` sjednice.
+  - **Dopuna 2026-10-25 (F6, P-Q4):** u isporučenom stanju režim uživo radi i za sjednice upravnog odbora (`getLiveMeetingState` već koristi `boardVotingBasis`), i to je **namjerno ostavljeno**: sjednice odbora se održavaju uživo. Prozivka i traka kvoruma broje po članu odbora (jedan član, jedan glas), a ne po etažnom vlasniku. Dugme „Vodi sjednicu uživo” zato nije ograničeno na skupštinu.
 - **P4 — Ulazna tačka: zasebna ruta.** `/uzivo/[meetingId]`, sopstvena minimalna školjka, izvan `(app)`.
 - **P5 — Status sjednice: DA.** Mora postojati mogućnost da se glasanje pokrene direktno iz režima uživo, bez povratka na desktop — uključujući jednim tapom prelazak `Meeting.status` u `VOTING_OPEN` kad sjednica još nije tamo. Razrađeno u §2.6 (novo) i §3.4.
 - **P6 — Interval osvježavanja: 10 sekundi.** Potvrđena preporuka iz §2.3, bez izmjene.

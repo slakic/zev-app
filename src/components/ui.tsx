@@ -131,14 +131,14 @@ export function StatusTimeline({
                     ? "bg-primary text-white"
                     : current
                       ? "border-2 border-primary text-primary-ink"
-                      : "border border-slate-300 text-slate-400"
+                      : "border border-slate-300 text-slate-500"
                 }`}
               >
                 {done ? <CheckCircleIcon /> : i + 1}
               </span>
               <span
                 className={`text-[11px] leading-tight ${
-                  current ? "font-semibold text-slate-700" : done ? "text-slate-500" : "text-slate-400"
+                  current ? "font-semibold text-slate-700" : "text-slate-500"
                 }`}
               >
                 {s.label}

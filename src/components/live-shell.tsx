@@ -25,7 +25,7 @@ export function LiveShell({
         </Link>
         <h1 className="truncate text-base font-semibold text-slate-900">{title}</h1>
       </header>
-      <main className="p-3">{children}</main>
+      <main className="mx-auto w-full max-w-[68ch] p-3">{children}</main>
     </div>
   );
 }

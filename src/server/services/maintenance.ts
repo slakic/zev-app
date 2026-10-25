@@ -42,7 +42,23 @@ export async function getIssue(actor: Actor, id: string) {
   if (!isManagement && issue.reporterId !== actor.partyId) {
     throw new ForbiddenError("Možete pratiti samo svoje prijave.");
   }
-  return issue;
+  // F6.4: the decision the work was approved by (a plain id column, no relation) — zevId-scoped lookup.
+  const approvalProposal = issue.approvalProposalId
+    ? await prisma.proposal.findFirst({ where: { id: issue.approvalProposalId, zevId: requireZev(actor) }, select: { id: true, code: true, title: true, status: true } })
+    : null;
+  return { ...issue, approvalProposal };
+}
+
+/** Proposals a maintenance issue can be approved by (F6.4): voting in progress or already adopted. */
+export const APPROVAL_PROPOSAL_STATUSES = ["VOTING_OPEN", "ACCEPTED"] as const;
+
+export async function listApprovalProposals(actor: Actor) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  return prisma.proposal.findMany({
+    where: { zevId: requireZev(actor), status: { in: [...APPROVAL_PROPOSAL_STATUSES] } },
+    orderBy: { code: "asc" },
+    select: { id: true, code: true, title: true, status: true },
+  });
 }
 
 /** Any authenticated owner may report an issue. */
@@ -96,7 +112,13 @@ export async function transitionIssue(
   actor: Actor,
   issueId: string,
   to: IssueStatus,
-  opts?: { note?: string; responsibleId?: string; estimatedCost?: string; actualCost?: string; approvalProposalId?: string }
+  opts?: {
+    note?: string; responsibleId?: string; estimatedCost?: string; actualCost?: string;
+    /** The decision (proposal of the same ZEV) the work is approved by (F6.4). */
+    approvalProposalId?: string;
+    /** The president approves within his own authority, without a decision (F6.4). */
+    withinAuthority?: boolean;
+  }
 ) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
@@ -108,6 +130,34 @@ export async function transitionIssue(
     if (to !== "REJECTED" && toIdx < fromIdx && !opts?.note) {
       throw new Error("Vraćanje statusa unazad zahtijeva napomenu (evidentira se).");
     }
+    // F6.4: the link to the decision. A proposal must exist in THIS ZEV and be adopted or still being voted on.
+    let proposalStatus: string | null = null;
+    if (opts?.approvalProposalId) {
+      const proposal = await tx.proposal.findFirst({ where: { id: opts.approvalProposalId, zevId }, select: { status: true } });
+      if (!proposal) throw new Error("Izabrani prijedlog nije pronađen.");
+      if (!(APPROVAL_PROPOSAL_STATUSES as readonly string[]).includes(proposal.status)) {
+        throw new Error("Izabrani prijedlog nije usvojen niti je glasanje o njemu u toku.");
+      }
+      proposalStatus = proposal.status;
+    }
+    // Approving forward needs a decision or an explicit "within the president's authority" (an earlier link counts).
+    const forward = toIdx > fromIdx;
+    // "Within authority" without a new pick replaces an earlier link (e.g. to a rejected proposal) instead of reusing it.
+    const authorityOnly = to === "APPROVED" && !!opts?.withinAuthority && !opts.approvalProposalId;
+    const proposalId = opts?.approvalProposalId ?? (to === "APPROVED" && !authorityOnly ? issue.approvalProposalId ?? undefined : undefined);
+    if (to === "APPROVED" && forward && !proposalId && !opts?.withinAuthority) {
+      throw new Error("Izaberite odluku ili ovlašćenje.");
+    }
+    if (proposalId && proposalStatus === null) {
+      proposalStatus = (await tx.proposal.findFirst({ where: { id: proposalId, zevId }, select: { status: true } }))?.status ?? null;
+      if (to === "APPROVED" && forward && proposalStatus && !(APPROVAL_PROPOSAL_STATUSES as readonly string[]).includes(proposalStatus)) {
+        throw new Error("Izabrani prijedlog nije usvojen niti je glasanje o njemu u toku.");
+      }
+    }
+    const marks: string[] = [];
+    if (to === "APPROVED" && opts?.withinAuthority && !opts.approvalProposalId) marks.push("U okviru ovlašćenja predsjednika");
+    if (to === "APPROVED" && proposalStatus && proposalStatus !== "ACCEPTED") marks.push("prije odluke");
+    const note = [opts?.note, ...marks].filter(Boolean).join(" — ") || null;
     const updated = await tx.maintenanceIssue.update({
       where: { id: issueId, zevId },
       data: {
@@ -115,13 +165,19 @@ export async function transitionIssue(
         responsibleId: opts?.responsibleId ?? undefined,
         estimatedCost: opts?.estimatedCost ?? undefined,
         actualCost: opts?.actualCost ?? undefined,
-        approvalProposalId: opts?.approvalProposalId ?? undefined,
-        statusEvents: { create: [{ from: issue.status, to, actorId: actor.userId, note: opts?.note ?? null }] },
+        approvalProposalId: authorityOnly ? null : opts?.approvalProposalId ?? undefined,
+        statusEvents: { create: [{ from: issue.status, to, actorId: actor.userId, note }] },
       },
     });
     await audit(actor, {
       action: "issue.transition", targetType: "MaintenanceIssue", targetId: issueId,
-      before: { status: issue.status }, after: { status: to }, reason: opts?.note ?? null,
+      before: { status: issue.status },
+      after: {
+        status: to,
+        approvalProposalId: proposalId ?? null,
+        ...(opts?.withinAuthority && !opts.approvalProposalId ? { withinAuthority: true } : {}),
+      },
+      reason: opts?.note ?? null,
     }, tx);
     return updated;
   });

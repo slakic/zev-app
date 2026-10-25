@@ -1,20 +1,17 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
-import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, previewSessionVotingOpen, listVotingRules, recordAttendance, listInvitationRecipients, queueMeetingInvitations, linkProposalToAgendaItem, getMeetingBallotSummary, dispatchMeetingEmails, reissueBallot, revokeBallot } from "@/server/services/meetings";
+import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, queueMeetingInvitations, linkProposalToAgendaItem, getMeetingBallotSummary, dispatchMeetingEmails, reissueBallot, revokeBallot, getMeetingNextStepInput, getLiveMeetingState } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
-import { listParties, partyDisplayName } from "@/server/services/ownership";
+import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import { MeetingNextStepPanel, MeetingTimeline } from "@/components/meeting-next-step-panel";
+import { meetingNextStep } from "@/lib/meetingNextStep";
 import type { DispatchResult } from "@/server/notifications/dailyBudget";
 import type { MeetingStatus } from "@/generated/prisma/client";
-
-const MEETING_STATUS_ORDER: MeetingStatus[] = [
-  "DRAFT", "SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN",
-  "VOTING_CLOSED", "RESULTS_REVIEW", "DECISION_RECORDED", "MINUTES_FINALIZED", "ARCHIVED",
-];
 
 // Plans/live-meeting-mode-plan.md §2.4: not before the session is at least scheduled, and
 // no longer once results review has started — the live screen has nothing to do there.
@@ -23,10 +20,12 @@ const LIVE_MEETING_STATUSES: MeetingStatus[] = [
 ];
 
 const proposalsHeaders: ColumnSpec[] = [
-  { label: "Šifra" },
-  { label: "Naziv" },
-  { label: "Verzija", align: "right" },
-  { label: "Status" },
+  { label: "Šifra", priority: "primary" },
+  { label: "Naziv", priority: "primary" },
+  { label: t("meetingPage.cols.deadline"), priority: "secondary" },
+  { label: t("meetingPage.cols.voted"), priority: "secondary" },
+  { label: "Status", priority: "primary" },
+  { label: "Verzija", align: "right", priority: "detail" },
 ];
 
 const ballotHeaders: ColumnSpec[] = [
@@ -168,18 +167,6 @@ async function ballotAction(formData: FormData) {
   redirect(`/skupstina/${meetingId}?msg=${encodeURIComponent(note)}#listici`);
 }
 
-async function attendanceAction(formData: FormData) {
-  "use server";
-  const actor = await requireActor("PRESIDENT");
-  const meetingId = String(formData.get("meetingId"));
-  await recordAttendance(actor, {
-    meetingId,
-    partyId: String(formData.get("partyId")),
-    present: formData.get("present") === "on",
-  });
-  revalidatePath(`/skupstina/${meetingId}`);
-}
-
 async function draftMinutesAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
@@ -188,18 +175,6 @@ async function draftMinutesAction(formData: FormData) {
   redirect(`/dokumenti`);
 }
 
-const NEXT_STATUS: Partial<Record<MeetingStatus, { to: MeetingStatus; label: string }>> = {
-  DRAFT: { to: "SCHEDULED", label: "Zakaži sjednicu" },
-  SCHEDULED: { to: "INVITATIONS_PREPARED", label: "Pripremi pozive (PDF)" },
-  INVITATIONS_PREPARED: { to: "INVITATIONS_SENT", label: "Pošalji pozive (e-mail)" },
-  INVITATIONS_SENT: { to: "VOTING_OPEN", label: "Označi glasanje otvorenim" },
-  VOTING_OPEN: { to: "VOTING_CLOSED", label: "Označi glasanje zatvorenim" },
-  VOTING_CLOSED: { to: "RESULTS_REVIEW", label: "Pređi na provjeru rezultata" },
-  RESULTS_REVIEW: { to: "DECISION_RECORDED", label: "Odluke evidentirane" },
-  DECISION_RECORDED: { to: "MINUTES_FINALIZED", label: "Finalizuj zapisnik (PDF)" },
-  MINUTES_FINALIZED: { to: "ARCHIVED", label: "Arhiviraj" },
-};
-
 export default async function MeetingPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string; tacka?: string }> }) {
   const { id } = await params;
   const { err, msg, tacka } = await searchParams;
@@ -207,24 +182,24 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
   const isPresident = actor.roles.includes("PRESIDENT");
   const canRunLive = isManagement(actor);
   const meeting = await getMeeting(actor, id);
-  const [rules, parties, buildings] = isPresident
-    ? await Promise.all([listVotingRules(actor), listParties(actor), listBuildings(actor)])
-    : [[], [], []];
-  const next = NEXT_STATUS[meeting.status];
+  const [rules, buildings] = isPresident
+    ? await Promise.all([listVotingRules(actor), listBuildings(actor)])
+    : [[], []];
   const ballotSummary = isPresident ? await getMeetingBallotSummary(actor, id) : null;
   // P-L2: the ballot is a locked set of proposals — once voting is open (or ballots exist) a new item goes to a new session.
   const proposalsLocked =
     (ballotSummary?.total ?? 0) > 0; // P-L2: only once ballots were issued (live mode without ballots may still add)
-  // Closing the session now also closes every proposal still VOTING_OPEN (advanceMeetingStatus,
-  // §1.1/§2.6 gap fix) — that's a real, irreversible consequence the plain one-tap status button
-  // doesn't carry for any other step, so this one transition alone gets a confirmation that names
-  // exactly what will be closed, same as openVoting/closeVoting elsewhere in this feature.
-  const invitationRecipients = isPresident && next?.to === "INVITATIONS_SENT" ? await listInvitationRecipients(actor, id) : null;
-  const sessionOpen = isPresident && next?.to === "VOTING_OPEN" ? await previewSessionVotingOpen(actor, id) : null;
+  // F6.1/F6.2: the next step, its consequence and its preconditions — one model (src/lib/meetingNextStep.ts) for the
+  // panel below and for the president's home. Only the president acts, so only he loads it.
+  const nextStepData = isPresident ? await getMeetingNextStepInput(actor, id) : null;
+  const step = nextStepData ? meetingNextStep(nextStepData.input) : null;
+  // The roll call is recorded in live mode only (P-Q3): this card just summarises it.
+  const liveAvailable = canRunLive && LIVE_MEETING_STATUSES.includes(meeting.status);
+  const roll = isPresident ? await getLiveMeetingState(actor, id) : null;
   // Proposals without an agenda item that can still be tied to one (linkProposalToAgendaItem).
   const unlinkedProposals = meeting.proposals.filter((p) => !p.agendaItemId && (p.status === "DRAFT" || p.status === "VOTING_OPEN"));
   const preselectedAgendaItem = meeting.agendaItems.some((a) => a.id === tacka) ? tacka : undefined;
-  const proposalsToAutoClose = next?.to === "VOTING_CLOSED" ? meeting.proposals.filter((p) => p.status === "VOTING_OPEN") : [];
+  const proposalsToAutoClose = step?.to === "VOTING_CLOSED" ? meeting.proposals.filter((p) => p.status === "VOTING_OPEN") : [];
   return (
     <div>
       <PageHeader
@@ -233,137 +208,29 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         backLabel={meeting.body === "BOARD" ? t("nav.back.board") : t("nav.assembly")}
         subtitle={`${meeting.body === "BOARD" ? "Upravni odbor" : "Skupština"} · ${tEnum("meetingType", meeting.type)} · ${formatDateTime(meeting.scheduledAt)} · ${meeting.location ?? ""}`}
         actions={
-          <>
-            {canRunLive && LIVE_MEETING_STATUSES.includes(meeting.status) && (
-              <BtnLink href={`/uzivo/${meeting.id}`} variant="secondary">
-                {t("live.entryButton")}
-              </BtnLink>
-            )}
-            {isPresident && next && (
-              next.to === "VOTING_CLOSED" ? (
-                <ConfirmAction
-                  trigger={next.label}
-                  triggerVariant="caution"
-                  title="Zatvaranje glasanja na sjednici je nepovratno"
-                  body={
-                    proposalsToAutoClose.length > 0 ? (
-                      <div className="space-y-1 text-sm text-amber-950">
-                        <p>Sljedeći prijedlozi su još uvijek u statusu „Glasanje otvoreno” i biće automatski zatvoreni, sa konačnim rezultatom i istekom svih neiskorišćenih linkova za elektronsko izjašnjavanje:</p>
-                        <ul className="list-disc pl-5">
-                          {proposalsToAutoClose.map((p) => (
-                            <li key={p.id}>
-                              {p.code} — {p.title}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-amber-950">Nema otvorenih glasanja koja bi ovim bila zatvorena.</p>
-                    )
-                  }
-                  confirmLabel="Da, zatvori glasanje na sjednici"
-                  action={statusAction}
-                  hiddenFields={{ meetingId: meeting.id, to: next.to }}
-                />
-              ) : invitationRecipients ? (
-                <ConfirmAction
-                  trigger={t("confirm.invitations.trigger")}
-                  triggerVariant="caution"
-                  title={t("confirm.invitations.title")}
-                  body={
-                    <div className="space-y-1 text-sm text-amber-950">
-                      <p>
-                        {tf("confirm.invitations.body", {
-                          naslov: meeting.title,
-                          datum: formatDateTime(meeting.scheduledAt),
-                          mjesto: meeting.location ?? "—",
-                          broj: invitationRecipients.withEmail.length,
-                          primaoci: meeting.body === "BOARD" ? t("confirm.invitations.board") : t("confirm.invitations.owners"),
-                        })}
-                      </p>
-                      {invitationRecipients.withoutEmailCount > 0 && (
-                        <p>{tf("confirm.invitations.noEmail", { broj: invitationRecipients.withoutEmailCount })}</p>
-                      )}
-                      <p>{t("confirm.invitations.irreversible")}</p>
-                    </div>
-                  }
-                  confirmLabel={tf("confirm.invitations.confirm", { broj: invitationRecipients.withEmail.length })}
-                  confirmVariant="primary"
-                  action={statusAction}
-                  hiddenFields={{ meetingId: meeting.id, to: next.to }}
-                />
-              ) : sessionOpen && sessionOpen.blocked ? (
-                <div className="max-w-[52ch] rounded-lg border border-amber-600/40 bg-amber-50/70 p-3 text-sm text-amber-950">
-                  <p className="font-semibold">{t("confirm.sessionOpen.blockedTitle")}</p>
-                  <ul className="mt-1 list-disc space-y-0.5 pl-5">
-                    {sessionOpen.sessionErrors.map((e) => (
-                      <li key={e}>{e}</li>
-                    ))}
-                    {sessionOpen.proposals.filter((p) => p.errors.length > 0).map((p) => (
-                      <li key={p.id}><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink>: {p.errors.join("; ")}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : sessionOpen ? (
-                <ConfirmAction
-                  trigger={next.label}
-                  triggerVariant="caution"
-                  title={t("confirm.sessionOpen.title")}
-                  body={
-                    <div className="space-y-1 text-sm text-amber-950">
-                      {sessionOpen.proposals.length === 0 ? (
-                        <p>{t("confirm.sessionOpen.none")}</p>
-                      ) : (
-                        <>
-                          <p>{t("confirm.sessionOpen.intro")}</p>
-                          <ul className="list-disc space-y-0.5 pl-5">
-                            {sessionOpen.proposals.map((p) => (
-                              <li key={p.id}>
-                                {tf("confirm.sessionOpen.row", {
-                                  kod: p.code,
-                                  naslov: p.title,
-                                  glasaca: p.preview?.voters ?? 0,
-                                  bez: p.preview?.withoutEmail ?? 0,
-                                })}
-                              </li>
-                            ))}
-                          </ul>
-                          <p>
-                            {tf("confirm.sessionOpen.messages", { broj: sessionOpen.ballots })}{" "}
-                            {!Number.isFinite(sessionOpen.remainingToday)
-                              ? t("confirm.sessionOpen.limitNone")
-                              : sessionOpen.ballots > sessionOpen.remainingToday
-                                ? tf("confirm.sessionOpen.limitOver", { preostalo: sessionOpen.remainingToday, visak: sessionOpen.ballots - sessionOpen.remainingToday })
-                                : tf("confirm.sessionOpen.limitLeft", { preostalo: sessionOpen.remainingToday })}
-                          </p>
-                          <p>{t("confirm.sessionOpen.irreversible")}</p>
-                        </>
-                      )}
-                    </div>
-                  }
-                  confirmLabel={t("confirm.sessionOpen.confirm")}
-                  confirmVariant="primary"
-                  action={statusAction}
-                  hiddenFields={{ meetingId: meeting.id, to: next.to }}
-                />
-              ) : (
-                <form action={statusAction}>
-                  <input type="hidden" name="meetingId" value={meeting.id} />
-                  <input type="hidden" name="to" value={next.to} />
-                  <SubmitBtn>{next.label}</SubmitBtn>
-                </form>
-              )
-            )}
-          </>
+          liveAvailable ? (
+            <BtnLink href={`/uzivo/${meeting.id}`} variant="secondary">
+              {t("live.entryButton")}
+            </BtnLink>
+          ) : undefined
         }
       />
       <Flash err={err} msg={msg} />
-      <StatusTimeline
-        steps={MEETING_STATUS_ORDER.map((s) => ({ key: s, label: tEnum("meetingStatus", s) }))}
-        activeKey={meeting.status}
-      />
+      {nextStepData ? (
+        <MeetingNextStepPanel
+          meeting={meeting}
+          step={step}
+          input={nextStepData.input}
+          statusAction={statusAction}
+          sessionOpen={nextStepData.sessionOpenPreview}
+          proposalsToAutoClose={proposalsToAutoClose}
+        />
+      ) : (
+        <MeetingTimeline status={meeting.status} />
+      )}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div id="dnevni-red" className="scroll-mt-20">
         <Card title="Dnevni red">
           <ol className="list-inside list-decimal space-y-1 text-sm">
             {meeting.agendaItems.map((a) => (
@@ -408,10 +275,11 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             <form action={addAgendaAction} className="mt-3 flex gap-2">
               <input type="hidden" name="meetingId" value={meeting.id} />
               <input name="title" required placeholder="Nova tačka dnevnog reda" className={inputCls} />
-              <SubmitBtn>Dodaj</SubmitBtn>
+              <SubmitBtn variant="tonal">Dodaj</SubmitBtn>
             </form>
           )}
         </Card>
+        </div>
 
         <Card title="Prijedlozi">
           <Table
@@ -426,8 +294,14 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               <tr key={p.id}>
                 <Td><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink></Td>
                 <Td>{p.title}</Td>
-                <Td>v{p.version}</Td>
+                <Td>{p.votingClosesAt ? formatDateTime(p.votingClosesAt) : "—"}</Td>
+                <Td>
+                  {["VOTING_OPEN", "VOTING_CLOSED", "ACCEPTED", "REJECTED"].includes(p.status)
+                    ? tf("meetingPage.votedOf", { glasalo: p.votedCount, ukupno: p.votersCount })
+                    : "—"}
+                </Td>
                 <Td><StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} /></Td>
+                <Td>v{p.version}</Td>
               </tr>
             ))}
           </Table>
@@ -473,7 +347,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                   </select>
                 </Field>
                 <Field label="Glasanje otvoreno do"><input name="votingClosesAt" type="datetime-local" className={inputCls} /></Field>
-                <div className="sm:col-span-2"><SubmitBtn>Sačuvaj prijedlog</SubmitBtn></div>
+                <div className="sm:col-span-2"><SubmitBtn variant="tonal">Sačuvaj prijedlog</SubmitBtn></div>
               </form>
             </details>
           )}
@@ -567,46 +441,45 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         )}
 
         {isPresident && (
-          <Card title="Prisustvo (za sjednicu uživo)">
-            <Table
-              id="attendance-table"
-              caption="Prisustvo"
-              headers={attendanceHeaders}
-              empty={meeting.attendances.length === 0}
-              emptyTitle={t("empty.attendance.title")}
-              emptyHint={t("empty.attendance.hint")}
-            >
-              {meeting.attendances.map((a) => (
-                <tr key={a.id}>
-                  <Td>{partyDisplayName(a.party)}</Td>
-                  <Td>{a.present ? "Da" : "Ne"}</Td>
-                  <Td>{a.viaProxyId ? "Da" : "—"}</Td>
-                </tr>
-              ))}
-            </Table>
-            <form action={attendanceAction} className="mt-3 flex flex-wrap items-end gap-2">
-              <input type="hidden" name="meetingId" value={meeting.id} />
-              <Field label="Lice">
-                <select name="partyId" className={inputCls}>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <label className="flex items-center gap-1 pb-2 text-sm"><input type="checkbox" name="present" defaultChecked /> prisutan</label>
-              <SubmitBtn>Evidentiraj</SubmitBtn>
-            </form>
+          <Card title={t("meetingPage.attendance.title")}>
+            {roll && (
+              <p className="text-sm text-slate-700">
+                {tf("meetingPage.attendance.summary", { prisutno: roll.presentCount, ukupno: roll.totalCount })}
+              </p>
+            )}
+            <div className="mt-3">
+              {liveAvailable ? (
+                <BtnLink href={`/uzivo/${meeting.id}`} variant="secondary">{t("meetingPage.attendance.open")}</BtnLink>
+              ) : (
+                <p className="text-[13px] text-slate-600">{t("meetingPage.attendance.unavailable")}</p>
+              )}
+            </div>
+            {meeting.attendances.length > 0 && (
+              <div className="mt-3">
+                <Table id="attendance-table" caption="Prisustvo" headers={attendanceHeaders} empty={false}>
+                  {meeting.attendances.map((a) => (
+                    <tr key={a.id}>
+                      <Td>{partyDisplayName(a.party)}</Td>
+                      <Td>{a.present ? "Da" : "Ne"}</Td>
+                      <Td>{a.viaProxyId ? "Da" : "—"}</Td>
+                    </tr>
+                  ))}
+                </Table>
+              </div>
+            )}
           </Card>
         )}
 
         {isPresident && (
+          <div id="dokumenti" className="scroll-mt-20">
           <Card title="Dokumenti sjednice">
             <form action={draftMinutesAction}>
               <input type="hidden" name="meetingId" value={meeting.id} />
               <SubmitBtn variant="secondary">Generiši nacrt zapisnika (PDF)</SubmitBtn>
             </form>
-            <p className="mt-2 text-xs text-slate-500">
-              Finalni zapisnik nastaje prelaskom u status „Zapisnik finalizovan” i tada postaje nepromjenjiv (nova verzija umjesto izmjene).
-            </p>
+            <p className="mt-2 text-[13px] text-slate-600">{t("meetingPage.documentsNote")}</p>
           </Card>
+          </div>
         )}
       </div>
     </div>

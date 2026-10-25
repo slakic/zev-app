@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { requireActor, isManagement } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
@@ -7,27 +6,35 @@ import { totalCash, reserveFundBalance } from "@/server/services/finance";
 import { receivablesReport, unpaidSupplierInvoices } from "@/server/services/reports";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { planVsActual } from "@/server/services/plans";
-import { formatMoney, dec, ZERO } from "@/lib/money";
+import { formatMoney, formatWeight, dec, ZERO } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { ownerTasks, type OwnerTask, type OwnerTaskVoting } from "@/lib/ownerTasks";
+import { presidentTasks, PLAN_ITEM_LOOKBACK_DAYS, type PresidentTask } from "@/lib/presidentTasks";
+import { meetingNextStep } from "@/lib/meetingNextStep";
+import { calendarDaysBetween } from "@/lib/paymentInstructions";
 import { isOneForm } from "@/lib/plural";
 import { partyDisplayName } from "@/server/services/ownership";
 import { IconCheck } from "@/components/nav-icons";
-import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink } from "@/components/ui";
+import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink, RowLink } from "@/components/ui";
 import { getZev } from "@/server/services/property";
+import { computeProposalResult, getMeetingNextStepInput } from "@/server/services/meetings";
+import type { IssueStatus } from "@/generated/prisma/client";
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const actor = await requireActor();
   const { err } = await searchParams;
   const flash = err === "forbidden" ? <Flash err="Nemate pravo pristupa toj stranici." /> : null;
+  // F6.5: the president gets "Za Vas sada" before the balance; the accountant-only view is untouched (that is F5).
+  if (actor.roles.includes("PRESIDENT")) {
+    return <>{flash}<PresidentDashboard actor={actor} /></>;
+  }
   if (isManagement(actor)) {
-    return <>{flash}<ManagementDashboard actorRoles={actor.roles} actor={actor} /></>;
+    return <>{flash}<ManagementDashboard actor={actor} /></>;
   }
   return <>{flash}<OwnerDashboard actor={actor} /></>;
 }
 
-async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<ReturnType<typeof requireActor>>; actorRoles: string[] }) {
-  const isPresident = actorRoles.includes("PRESIDENT");
+async function ManagementDashboard({ actor }: { actor: Awaited<ReturnType<typeof requireActor>> }) {
   const zevId = requireZev(actor);
   const [cash, receivables, supplierUnpaid, fund] = await Promise.all([
     totalCash(actor),
@@ -35,8 +42,6 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
     unpaidSupplierInvoices(actor),
     reserveFundBalance(actor),
   ]);
-  // FR-Q4: until the unit register is established ("Nacrt" / "Za provjeru") the president has one thing to do first.
-  const registerStatus = isPresident ? (await getZev(actor))?.unitRegisterStatus : undefined;
   const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
 
   // BUG FIXED HERE (2026-09-09, discovered while building the second real tenant):
@@ -65,20 +70,7 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
 
   return (
     <div>
-      <PageHeader title={isPresident ? "Pregled — predsjednik" : "Pregled — računovođa"} subtitle={`Stanje na dan ${formatDate(new Date())}`} />
-      {isPresident && registerStatus && registerStatus !== "ESTABLISHED" && (
-        <div className="mb-4">
-          <Card>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-3">
-                <StatusBadge status={`REGISTER_${registerStatus}`} label={tEnum("unitRegisterStatus", registerStatus)} />
-                <p className="max-w-[68ch] text-sm text-slate-700">{t("register.home.todo")}</p>
-              </div>
-              <BtnLink href="/zgrade?tab=posebni" variant="tonal">{t("register.home.link")}</BtnLink>
-            </div>
-          </Card>
-        </div>
-      )}
+      <PageHeader title="Pregled — računovođa" subtitle={`Stanje na dan ${formatDate(new Date())}`} />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Stanje računa i blagajne" value={formatMoney(cash)} tone="ok" />
         <Stat label="Potraživanja od vlasnika" value={formatMoney(receivables.totalOpen)} tone="neutral" />
@@ -155,6 +147,206 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
             ))}
           </ul>
         </Card>
+      </div>
+    </div>
+  );
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** Issues from "Odobreno" until they are paid: a decision still missing for them is worth a line (F6.4). */
+const ISSUE_STATUSES_IN_EXECUTION: IssueStatus[] = [
+  "APPROVED", "OFFERS_REQUESTED", "CONTRACTOR_SELECTED", "SCHEDULED", "IN_PROGRESS", "COMPLETED", "VERIFIED", "INVOICED",
+];
+
+/** Početna predsjednika (F6.5, odluka D1 A): "Za Vas sada" prvo, tek onda saldo. */
+async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof requireActor>> }) {
+  const zevId = requireZev(actor);
+  const now = new Date();
+  const horizon30 = new Date(now.getTime() + 30 * DAY_MS);
+  const lookback = new Date(now.getTime() - (PLAN_ITEM_LOOKBACK_DAYS + 1) * DAY_MS);
+  const alsoAccountant = actor.roles.includes("ACCOUNTANT");
+  const planItemBase = { zevId, type: { in: ["INSPECTION" as const, "PREVENTIVE_MAINTENANCE" as const] }, plan: { status: "APPROVED" as const } };
+
+  const [cash, receivables, supplierUnpaid, fund, zev, openProposals, meetings30, upcomingItems, passedItems, executionIssues, reportedIssues, openIssues, unmatchedPayments] = await Promise.all([
+    totalCash(actor),
+    receivablesReport(actor),
+    unpaidSupplierInvoices(actor),
+    reserveFundBalance(actor),
+    getZev(actor),
+    prisma.proposal.findMany({
+      where: { zevId, status: "VOTING_OPEN" },
+      orderBy: [{ votingClosesAt: "asc" }, { code: "asc" }],
+      take: 5,
+      include: { meeting: { select: { id: true, title: true } } },
+    }),
+    prisma.meeting.findMany({
+      where: { zevId, status: { notIn: ["MINUTES_FINALIZED", "ARCHIVED"] }, scheduledAt: { gte: new Date(now.getTime() - DAY_MS), lte: horizon30 } },
+      orderBy: [{ scheduledAt: "asc" }, { id: "asc" }],
+      take: 20,
+    }),
+    prisma.planItem.findMany({
+      where: { ...planItemBase, scheduledDate: { gte: new Date(now.getTime() - DAY_MS), lte: horizon30 } },
+      orderBy: [{ scheduledDate: "asc" }, { id: "asc" }],
+      take: 20,
+    }),
+    prisma.planItem.findMany({
+      where: { ...planItemBase, scheduledDate: { gte: lookback, lt: now } },
+      orderBy: [{ scheduledDate: "asc" }, { id: "asc" }],
+      take: 50,
+    }),
+    prisma.maintenanceIssue.findMany({
+      where: { zevId, approvalProposalId: { not: null }, status: { in: ISSUE_STATUSES_IN_EXECUTION } },
+      select: { id: true, title: true, status: true, approvalProposalId: true },
+      take: 50,
+    }),
+    prisma.maintenanceIssue.count({ where: { zevId, status: "REPORTED" } }),
+    prisma.maintenanceIssue.findMany({ where: { zevId, status: { notIn: ["CLOSED", "REJECTED", "PAID"] } }, orderBy: { createdAt: "desc" }, take: 6, select: { id: true, title: true, status: true } }),
+    alsoAccountant
+      ? prisma.payment.findMany({ where: { zevId, status: { in: ["UNAPPLIED", "PARTIALLY_APPLIED"] }, reversedAt: null }, take: 6 })
+      : Promise.resolve([]),
+  ]);
+  const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
+
+  // Open votes: result (quorum, votes cast) from the one engine, at most 5 as before.
+  const votings = await Promise.all(
+    openProposals.map(async (p) => {
+      const r = await computeProposalResult(zevId, p.id);
+      return {
+        proposalId: p.id, code: p.code, title: p.title, meetingId: p.meeting.id, meetingTitle: p.meeting.title,
+        closesAt: p.votingClosesAt, voted: r.votesCast, voters: r.totalEligibleOwners, quorumReached: r.quorumReached,
+        quorumNeeded: r.quorumRequiredOwners !== null ? String(r.quorumRequiredOwners) : r.quorumRequiredWeight ? formatWeight(r.quorumRequiredWeight) : null,
+      };
+    })
+  );
+
+  // Meetings in the next 7 days: the next step comes from the same model as the panel on the meeting page.
+  const soonMeetings = (
+    await Promise.all(
+      meetings30
+        .filter((m) => m.scheduledAt && calendarDaysBetween(now, m.scheduledAt) >= 0 && calendarDaysBetween(now, m.scheduledAt) <= 7)
+        .map(async (m) => {
+          const step = meetingNextStep((await getMeetingNextStepInput(actor, m.id, now)).input);
+          return step && m.scheduledAt
+            ? { id: m.id, title: m.title, scheduledAt: m.scheduledAt, nextStepLabel: step.label, warnings: step.preconditions.filter((p) => !p.ok).map((p) => p.text) }
+            : null;
+        })
+    )
+  ).filter((m): m is NonNullable<typeof m> => m !== null);
+
+  // Execution before the decision (F6.4): the linked proposal is not adopted yet.
+  const linkedProposals = executionIssues.length
+    ? await prisma.proposal.findMany({ where: { zevId, id: { in: executionIssues.map((i) => i.approvalProposalId!) } }, select: { id: true, code: true, status: true } })
+    : [];
+  const proposalById = new Map(linkedProposals.map((p) => [p.id, p]));
+  const issuesBeforeDecision = executionIssues.flatMap((i) => {
+    const p = proposalById.get(i.approvalProposalId!);
+    return p && p.status !== "ACCEPTED" ? [{ id: i.id, title: i.title, status: i.status, proposalCode: p.code }] : [];
+  });
+
+  // Inspections whose date passed and for which no maintenance issue was recorded (F6-Q2 (a), no migration).
+  const linkedItemIds = passedItems.length
+    ? new Set((await prisma.maintenanceIssue.findMany({ where: { zevId, planItemId: { in: passedItems.map((i) => i.id) } }, select: { planItemId: true } })).map((i) => i.planItemId))
+    : new Set<string | null>();
+  const planItemsPassed = passedItems
+    .filter((i) => i.scheduledDate && !linkedItemIds.has(i.id))
+    .map((i) => ({ id: i.id, planId: i.planId, name: i.name, scheduledDate: i.scheduledDate! }));
+
+  const { tasks, allClear } = presidentTasks({
+    now,
+    registerStatus: zev?.unitRegisterStatus ?? null,
+    votings,
+    meetings: soonMeetings,
+    issuesBeforeDecision,
+    planItemsPassed,
+    reportedIssues,
+  });
+
+  // "Narednih 30 dana": meetings and planned inspections, chronologically.
+  type Upcoming = { key: string; at: Date; href: string; title: string; kind: string };
+  const upcoming: Upcoming[] = [
+    ...meetings30.flatMap((m): Upcoming[] => (m.scheduledAt && calendarDaysBetween(now, m.scheduledAt) >= 0 ? [{ key: `m:${m.id}`, at: m.scheduledAt, href: `/skupstina/${m.id}`, title: m.title, kind: t("presidentHome.next30.meeting") }] : [])),
+    ...upcomingItems.flatMap((i): Upcoming[] => (i.scheduledDate && calendarDaysBetween(now, i.scheduledDate) >= 0 ? [{ key: `p:${i.id}`, at: i.scheduledDate, href: `/planovi/${i.planId}`, title: i.name, kind: tEnum("presidentHome.next30", i.type) }] : [])),
+  ].sort((a, b) => a.at.getTime() - b.at.getTime() || a.key.localeCompare(b.key));
+
+  return (
+    <div>
+      <PageHeader title={t("presidentHome.title")} subtitle={`Stanje na dan ${formatDate(now)}`} />
+      <Card title={t("presidentHome.forNow")}>
+        {allClear && (
+          <div className="flex items-start gap-3">
+            <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
+            <div>
+              <p className="text-sm text-slate-800">{t("presidentHome.empty")}</p>
+              {upcoming[0] && (
+                <p className="mt-1 text-[13px] text-slate-600">{tf("presidentHome.nextEvent", { naslov: upcoming[0].title, datum: formatDate(upcoming[0].at) })}</p>
+              )}
+            </div>
+          </div>
+        )}
+        {tasks.length > 0 && (
+          <ul className="divide-y divide-border">
+            {tasks.map((task) => (
+              <TaskRow key={task.key} row={presidentTaskRow(task)} />
+            ))}
+          </ul>
+        )}
+      </Card>
+      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat label={t("presidentHome.stats.cash")} value={formatMoney(cash)} tone="ok" />
+        <Stat label={t("presidentHome.stats.overdue")} value={formatMoney(receivables.totalOverdue)} tone={Number(receivables.totalOverdue) > 0 ? "bad" : "ok"} />
+        <Stat label={t("presidentHome.stats.suppliers")} value={formatMoney(supplierUnpaidTotal.toFixed(2))} tone={supplierUnpaidTotal > 0 ? "warn" : "ok"} />
+        <Stat label={t("presidentHome.stats.fund")} value={formatMoney(fund.balance)} tone="neutral" />
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card title={t("presidentHome.next30.title")}>
+          {upcoming.length === 0 && <p className="text-sm text-slate-600">{t("presidentHome.next30.empty")}</p>}
+          <ul className="space-y-2">
+            {upcoming.map((u) => (
+              <li key={u.key} className="flex items-center justify-between gap-2 text-sm">
+                <span className="min-w-0">
+                  <RowLink href={u.href}>{u.title}</RowLink>
+                  <span className="ml-2 text-[13px] text-slate-600">{u.kind}</span>
+                </span>
+                <span className="shrink-0 text-[13px] text-slate-600">{formatDateTime(u.at)}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+        <Card title={t("presidentHome.votes.title")}>
+          {votings.length === 0 && <p className="text-sm text-slate-600">{t("presidentHome.votes.empty")}</p>}
+          <ul className="space-y-2">
+            {votings.map((v) => (
+              <li key={v.proposalId} className="flex items-center justify-between gap-2 text-sm">
+                <RowLink href={`/skupstina/prijedlog/${v.proposalId}`}>{v.code} — {v.title}</RowLink>
+                <span className="shrink-0 text-[13px] text-slate-600">{tf("presidentHome.votes.voted", { glasalo: v.voted, ukupno: v.voters })}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+        <Card title={t("presidentHome.issues.title")}>
+          {openIssues.length === 0 && <p className="text-sm text-slate-600">{t("presidentHome.issues.empty")}</p>}
+          <ul className="space-y-2">
+            {openIssues.map((i) => (
+              <li key={i.id} className="flex items-center justify-between gap-2 text-sm">
+                <RowLink href={`/odrzavanje/${i.id}`}>{i.title}</RowLink>
+                <StatusBadge status={i.status} label={tEnum("issueStatus", i.status)} />
+              </li>
+            ))}
+          </ul>
+        </Card>
+        {alsoAccountant && (
+          <Card title={t("presidentHome.payments.title")}>
+            {unmatchedPayments.length === 0 && <p className="text-sm text-slate-600">{t("presidentHome.payments.empty")}</p>}
+            <ul className="space-y-2">
+              {unmatchedPayments.map((p) => (
+                <li key={p.id} className="flex items-center justify-between gap-2 text-sm">
+                  <RowLink href={`/fakture/uplate/${p.id}`}>{p.payerNameRaw ?? t("presidentHome.payments.unknownPayer")} — {formatDate(p.date)}</RowLink>
+                  <span className="tabular-nums">{formatMoney(p.amount.toString())}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
       </div>
     </div>
   );
@@ -260,7 +452,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
         {tasks.length > 0 && (
           <ul className={`divide-y divide-border ${allClear ? "mt-4 border-t border-border" : ""}`}>
             {tasks.map((task) => (
-              <TaskRow key={task.key} task={task} />
+              <TaskRow key={task.key} row={ownerTaskRow(task)} />
             ))}
           </ul>
         )}
@@ -321,60 +513,88 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
   );
 }
 
+type TaskVariant = "primary" | "secondary" | "tonal";
+
+/** Podaci jednog reda „Za Vas sada” — isti oblik za vlasnika i predsjednika, pa je red jedan (bez novog primitiva). */
+type TaskRowData = {
+  chip: { status: string; label: string };
+  text: string;
+  meta?: string | null;
+  action?: { href: string; label: string; variant: TaskVariant } | null;
+};
+
 /** Jedan red "Za Vas sada": chip, rečenica, (meta) i najviše jedno dugme; na telefonu dugme ide ispod teksta u punoj širini. */
-function TaskRow({ task }: { task: OwnerTask }) {
-  let badge: { status: string; label: string };
-  let text: string;
-  let meta: string | null = null;
-  let action: ReactNode = null;
-  switch (task.kind) {
-    case "overdue": {
-      const i = task.invoice;
-      badge = { status: "UNPAID", label: t("ownerHome.overdue.badge") };
-      text = tf("ownerHome.overdue.text", {
-        broj: i.number, jedinica: i.unitLabel, iznos: formatMoney(i.remaining), datum: formatDate(i.dueDate),
-        kada: tf(isOneForm(task.overdueDays) ? "pay.daysAgo.one" : "pay.daysAgo.other", { dana: task.overdueDays }),
-      });
-      action = <BtnLink href={`/fakture/${i.id}`} variant={task.primary ? "primary" : "secondary"}>{t("ownerHome.pay")}</BtnLink>;
-      break;
-    }
-    case "dueSoon": {
-      const i = task.invoice;
-      badge = { status: "ISSUED", label: t("ownerHome.dueSoon.badge") };
-      text = tf("ownerHome.dueSoon.text", { broj: i.number, jedinica: i.unitLabel, iznos: formatMoney(i.remaining), datum: formatDate(i.dueDate) });
-      action = <BtnLink href={`/fakture/${i.id}`} variant={task.primary ? "primary" : "secondary"}>{t("ownerHome.pay")}</BtnLink>;
-      break;
-    }
-    case "voting": {
-      const v = task.voting;
-      badge = { status: "VOTING_OPEN", label: t("ownerHome.voting.badge") };
-      text = tf("ownerHome.voting.text", { sifra: v.code, naslov: v.title });
-      meta = [v.closesAt ? tf("ownerHome.voting.deadline", { datum: formatDate(v.closesAt) }) : null, v.linkSent ? t("ownerHome.voting.linkSent") : null]
-        .filter(Boolean).join(" · ") || null;
-      action = <BtnLink href={`/skupstina/prijedlog/${v.proposalId}`} variant={task.primary ? "primary" : "secondary"}>{t("ownerHome.voting.view")}</BtnLink>;
-      break;
-    }
-    case "evoteConsent":
-      badge = { status: "NONE", label: t("ownerHome.consent.badge") };
-      text = t("ownerHome.consent.text");
-      action = <BtnLink href="/podesavanja" variant="tonal">{t("ownerHome.consent.button")}</BtnLink>;
-      break;
-    case "viaRepresentative": {
-      const v = task.voting;
-      badge = { status: "NONE", label: t("ownerHome.representative.badge") };
-      text = tf("votingSubject.owner.viaRepresentative", { units: v.representative?.units ?? "", name: v.representative?.name ?? "" });
-      meta = `${v.code} — ${v.title}`;
-      break;
-    }
-  }
+function TaskRow({ row }: { row: TaskRowData }) {
   return (
     <li className="flex flex-col gap-3 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0 space-y-1">
-        <StatusBadge status={badge.status} label={badge.label} />
-        <p className="text-sm text-slate-800">{text}</p>
-        {meta && <p className="text-[13px] text-slate-500">{meta}</p>}
+        <StatusBadge status={row.chip.status} label={row.chip.label} />
+        <p className="text-sm text-slate-800">{row.text}</p>
+        {row.meta && <p className="text-[13px] text-slate-600">{row.meta}</p>}
       </div>
-      {action && <div className="shrink-0 max-sm:[&>*]:w-full">{action}</div>}
+      {row.action && (
+        <div className="shrink-0 max-sm:[&>*]:w-full">
+          <BtnLink href={row.action.href} variant={row.action.variant}>{row.action.label}</BtnLink>
+        </div>
+      )}
     </li>
   );
+}
+
+function presidentTaskRow(task: PresidentTask): TaskRowData {
+  return {
+    chip: task.chip,
+    text: task.sentence,
+    meta: task.meta,
+    action: { href: task.href, label: task.actionLabel, variant: task.primary ? "primary" : "secondary" },
+  };
+}
+
+function ownerTaskRow(task: OwnerTask): TaskRowData {
+  const variant: TaskVariant = task.primary ? "primary" : "secondary";
+  switch (task.kind) {
+    case "overdue": {
+      const i = task.invoice;
+      return {
+        chip: { status: "UNPAID", label: t("ownerHome.overdue.badge") },
+        text: tf("ownerHome.overdue.text", {
+          broj: i.number, jedinica: i.unitLabel, iznos: formatMoney(i.remaining), datum: formatDate(i.dueDate),
+          kada: tf(isOneForm(task.overdueDays) ? "pay.daysAgo.one" : "pay.daysAgo.other", { dana: task.overdueDays }),
+        }),
+        action: { href: `/fakture/${i.id}`, label: t("ownerHome.pay"), variant },
+      };
+    }
+    case "dueSoon": {
+      const i = task.invoice;
+      return {
+        chip: { status: "ISSUED", label: t("ownerHome.dueSoon.badge") },
+        text: tf("ownerHome.dueSoon.text", { broj: i.number, jedinica: i.unitLabel, iznos: formatMoney(i.remaining), datum: formatDate(i.dueDate) }),
+        action: { href: `/fakture/${i.id}`, label: t("ownerHome.pay"), variant },
+      };
+    }
+    case "voting": {
+      const v = task.voting;
+      return {
+        chip: { status: "VOTING_OPEN", label: t("ownerHome.voting.badge") },
+        text: tf("ownerHome.voting.text", { sifra: v.code, naslov: v.title }),
+        meta: [v.closesAt ? tf("ownerHome.voting.deadline", { datum: formatDate(v.closesAt) }) : null, v.linkSent ? t("ownerHome.voting.linkSent") : null]
+          .filter(Boolean).join(" · ") || null,
+        action: { href: `/skupstina/prijedlog/${v.proposalId}`, label: t("ownerHome.voting.view"), variant },
+      };
+    }
+    case "evoteConsent":
+      return {
+        chip: { status: "NONE", label: t("ownerHome.consent.badge") },
+        text: t("ownerHome.consent.text"),
+        action: { href: "/podesavanja", label: t("ownerHome.consent.button"), variant: "tonal" },
+      };
+    case "viaRepresentative": {
+      const v = task.voting;
+      return {
+        chip: { status: "NONE", label: t("ownerHome.representative.badge") },
+        text: tf("votingSubject.owner.viaRepresentative", { units: v.representative?.units ?? "", name: v.representative?.name ?? "" }),
+        meta: `${v.code} — ${v.title}`,
+      };
+    }
+  }
 }

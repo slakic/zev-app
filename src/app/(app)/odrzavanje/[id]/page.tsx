@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
-import { getIssue, transitionIssue, markEmergency, addOffer, selectOffer, createWorkOrder, completeWorkOrder, addIssueComment, ratifyEmergency } from "@/server/services/maintenance";
+import { getIssue, listApprovalProposals, transitionIssue, markEmergency, addOffer, selectOffer, createWorkOrder, completeWorkOrder, addIssueComment, ratifyEmergency } from "@/server/services/maintenance";
 import { generateWorkOrderPdf } from "@/server/services/documents";
 import { listSuppliers } from "@/server/services/expenses";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowAction, RowLink, type ColumnSpec } from "@/components/ui";
 import type { IssueStatus } from "@/generated/prisma/client";
 
 const relatedExpenseHeaders: ColumnSpec[] = [
@@ -32,17 +32,23 @@ const workOrderHeaders: ColumnSpec[] = [
   { label: "Radnje" },
 ];
 
+/** Value of the "within the president's authority" option of the approval select (F6.4). */
+const AUTHORITY = "__authority";
+
 async function transitionAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
   const id = String(formData.get("issueId"));
+  // F6.4: one select carries either a decision (proposal id) or the explicit "within the president's authority".
+  const choice = String(formData.get("approvalChoice") ?? "");
   try {
     await transitionIssue(actor, id, String(formData.get("to")) as IssueStatus, {
       note: (formData.get("note") as string) || undefined,
       responsibleId: (formData.get("responsibleId") as string) || undefined,
       estimatedCost: parseMoneyInput(formData.get("estimatedCost") as string | null) ?? undefined,
       actualCost: parseMoneyInput(formData.get("actualCost") as string | null) ?? undefined,
-      approvalProposalId: (formData.get("approvalProposalId") as string) || undefined,
+      approvalProposalId: choice && choice !== AUTHORITY ? choice : undefined,
+      withinAuthority: choice === AUTHORITY,
     });
   } catch (e) {
     redirect(`/odrzavanje/${id}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
@@ -137,8 +143,8 @@ async function commentAction(formData: FormData) {
 
 const NEXT: Partial<Record<IssueStatus, { to: IssueStatus; label: string }[]>> = {
   REPORTED: [{ to: "TRIAGED", label: "Trijaža obavljena" }, { to: "REJECTED", label: "Odbij prijavu" }],
-  TRIAGED: [{ to: "AUTHORIZATION_REQUIRED", label: "Traži odobrenje" }, { to: "APPROVED", label: "Odobri (u okviru ovlašćenja)" }],
-  AUTHORIZATION_REQUIRED: [{ to: "APPROVED", label: "Odobreno (odluka/ovlašćenje)" }],
+  TRIAGED: [{ to: "AUTHORIZATION_REQUIRED", label: t("maintenance.approval.request") }, { to: "APPROVED", label: t("maintenance.approval.approveTriaged") }],
+  AUTHORIZATION_REQUIRED: [{ to: "APPROVED", label: t("maintenance.approval.approved") }],
   APPROVED: [{ to: "OFFERS_REQUESTED", label: "Zatraži ponude" }],
   OFFERS_REQUESTED: [],
   CONTRACTOR_SELECTED: [],
@@ -159,6 +165,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
   const issue = await getIssue(actor, id);
   const suppliers = management ? await listSuppliers(actor) : [];
   const nextSteps = NEXT[issue.status] ?? [];
+  const approvalProposals = isPresident && nextSteps.some((s) => s.to === "APPROVED" || s.to === "AUTHORIZATION_REQUIRED") ? await listApprovalProposals(actor) : [];
 
   return (
     <div>
@@ -206,13 +213,32 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
               </li>
             ))}
           </ol>
+          {issue.approvalProposal && (
+            <p className="mt-3 text-sm text-slate-700">
+              {t("maintenance.approval.approvedBy")}{" "}
+              <RowLink href={`/skupstina/prijedlog/${issue.approvalProposal.id}`}>{issue.approvalProposal.code}</RowLink>{" "}
+              <StatusBadge status={issue.approvalProposal.status} label={tEnum("proposalStatus", issue.approvalProposal.status)} />
+              {issue.approvalProposal.status !== "ACCEPTED" && <span className="ml-2 text-[13px] text-slate-600">({t("maintenance.approval.votingRunning")})</span>}
+            </p>
+          )}
           {isPresident && nextSteps.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
               {nextSteps.map((s) => (
-                <form key={s.to} action={transitionAction}>
+                <form key={s.to} action={transitionAction} className={s.to === "APPROVED" || s.to === "AUTHORIZATION_REQUIRED" ? "flex w-full flex-wrap items-end gap-2" : undefined}>
                   <input type="hidden" name="issueId" value={issue.id} />
                   <input type="hidden" name="to" value={s.to} />
                   {s.to === "INVOICED" && <input type="hidden" name="actualCost" value={issue.offers.find((o) => o.selected)?.amount.toString() ?? ""} />}
+                  {(s.to === "APPROVED" || s.to === "AUTHORIZATION_REQUIRED") && (
+                    <Field label={t("maintenance.approval.decision")}>
+                      <select name="approvalChoice" required={s.to === "APPROVED" && !issue.approvalProposalId} defaultValue={issue.approvalProposalId ?? ""} className={inputCls}>
+                        <option value="">{s.to === "APPROVED" ? t("maintenance.approval.choose") : t("maintenance.approval.notYet")}</option>
+                        {approvalProposals.map((p) => (
+                          <option key={p.id} value={p.id}>{p.code} — {p.title} ({tEnum("proposalStatus", p.status)})</option>
+                        ))}
+                        {s.to === "APPROVED" && <option value={AUTHORITY}>{t("maintenance.approval.authority")}</option>}
+                      </select>
+                    </Field>
+                  )}
                   <SubmitBtn variant={s.to === "REJECTED" ? "danger" : "secondary"}>{s.label}</SubmitBtn>
                 </form>
               ))}

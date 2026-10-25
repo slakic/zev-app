@@ -450,6 +450,8 @@ Dijeli se na dvije isporuke:
 
 ### F6 — Predsjednik: sjednica i režim uživo *(M · D1, D2)*
 
+**Status: ISPORUČENO u v2.47.0 (nije commitovano):** [`f6-predsjednik-sjednica-i-uzivo-plan.md`](f6-predsjednik-sjednica-i-uzivo-plan.md).
+
 - **F6a — Režim uživo po odobrenom planu** (P-R08):
   - **Traka:** sticky „Prisutno · Neoznačeno · Odsutno · Kvorum X % / potrebno Y %”, sa vrijednostima već odobrenim u `live-meeting-mode-plan.md §3.1`. Neoznačeni se ne računaju kao odsutni. Na desktopu sadržaj ide u `max-w-[68ch]`.
   - **Mockup:** P-M03.

@@ -8,7 +8,7 @@ import { listBuildings } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, parseMoneyInput } from "@/lib/money";
 import { formatDate, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, type ColumnSpec } from "@/components/ui";
 
 const pvaHeaders: ColumnSpec[] = [
   { label: "Stavka" },
@@ -80,6 +80,10 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const plan = await getPlan(actor, id);
   const isPresident = actor.roles.includes("PRESIDENT");
   const pva = management ? await planVsActual(actor, id) : null;
+  // F6.4: the decision that adopted the plan, as a link (zevId-scoped lookup of a plain id column).
+  const approvedBy = plan.approvedByProposalId
+    ? await prisma.proposal.findFirst({ where: { id: plan.approvedByProposalId, zevId }, select: { id: true, code: true } })
+    : null;
   const [buildings, projects, acceptedProposals] = isPresident
     ? await Promise.all([
         listBuildings(actor),
@@ -125,7 +129,12 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       <Flash err={err} />
       <div className="mb-4 flex items-center gap-3">
         <StatusBadge status={plan.status} label={tEnum("planStatus", plan.status)} />
-        {plan.approvedByProposalId && <span className="text-sm text-slate-500">Usvojen odlukom skupštine ({formatDate(plan.approvedAt)})</span>}
+        {plan.approvedByProposalId && (
+          <span className="text-sm text-slate-500">
+            {t("planPage.approvedBy")}{" "}
+            {approvedBy && <RowLink href={`/skupstina/prijedlog/${approvedBy.id}`}>{approvedBy.code}</RowLink>} ({formatDate(plan.approvedAt)})
+          </span>
+        )}
       </div>
 
       {isPresident && plan.status === "PROPOSED" && (

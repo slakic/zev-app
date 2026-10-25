@@ -10,12 +10,14 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/tokens";
-import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
+import { computeVoterWeight, computeVotingResult, presenceQuorum, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
 import { assemblyVotingSubjects, boardVotingBasis, unitOwnershipWarnings, activeProxyFor, activeProxiesFor, partyDisplayName, listOfficeHolders, type VotingSubject } from "./ownership";
 import { unitsInScope } from "./property";
 import { queueNotification, enqueueNotification } from "@/server/notifications/service";
 import { dispatchQueued, requeueFailed, remainingToday, dailyLimit, SENT_STATUSES, type DispatchResult } from "@/server/notifications/dailyBudget";
-import { dec, ZERO } from "@/lib/money";
+import { dec, ZERO, formatWeight, type Decimal } from "@/lib/money";
+import type { LiveQuorum } from "@/lib/liveQuorum";
+import type { MeetingNextStepInput } from "@/lib/meetingNextStep";
 import { getEnv } from "@/lib/env";
 import { formatDateTime, t, tf } from "@/lib/i18n";
 import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma, Party, Proposal, EligibleVoter, ApprovalToken } from "@/generated/prisma/client";
@@ -44,8 +46,9 @@ export async function listMeetings(actor: Actor, body?: MeetingBody) {
 
 export async function getMeeting(actor: Actor, id: string) {
   requireAnyUser(actor);
-  return prisma.meeting.findUniqueOrThrow({
-    where: { id, zevId: requireZev(actor) },
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({
+    where: { id, zevId },
     include: {
       agendaItems: { orderBy: { order: "asc" }, include: { proposals: true } },
       proposals: { orderBy: { code: "asc" }, include: { votingRule: true } },
@@ -53,6 +56,98 @@ export async function getMeeting(actor: Actor, id: string) {
       proxies: { include: { grantor: true, holder: true } },
     },
   });
+  // F6.2: "glasalo X od Y" per proposal in two grouped queries (not one per proposal). A vote counts once: a
+  // corrected original has `correctedBy` set and is left out, the correction row stands in for it.
+  const counts = await proposalVoteCounts(zevId, meeting.proposals.map((p) => p.id));
+  return {
+    ...meeting,
+    proposals: meeting.proposals.map((p) => ({ ...p, votersCount: counts.voters.get(p.id) ?? 0, votedCount: counts.voted.get(p.id) ?? 0 })),
+  };
+}
+
+/** Voters and effective votes per proposal in two grouped queries (no N+1). */
+async function proposalVoteCounts(zevId: string, proposalIds: string[]) {
+  const [voterRows, voteRows] = proposalIds.length
+    ? await Promise.all([
+        prisma.eligibleVoter.groupBy({ by: ["proposalId"], where: { proposalId: { in: proposalIds } }, _count: { _all: true } }),
+        prisma.vote.groupBy({
+          by: ["proposalId"],
+          where: { zevId, proposalId: { in: proposalIds }, invalid: false, correctedBy: null },
+          _count: { _all: true },
+        }),
+      ])
+    : [[], []];
+  return {
+    voters: new Map(voterRows.map((r) => [r.proposalId, r._count._all])),
+    voted: new Map(voteRows.map((r) => [r.proposalId, r._count._all])),
+  };
+}
+
+/**
+ * Everything `meetingNextStep` (src/lib/meetingNextStep.ts) needs for one meeting (F6.1/F6.2/F6.5): loaded once,
+ * only the pieces the CURRENT status reads. Shared by the meeting page and the president's home so both
+ * describe the same next step. PRESIDENT/ACCOUNTANT, zevId-scoped. Returns `{ input, sessionOpenPreview }`.
+ */
+export async function getMeetingNextStepInput(actor: Actor, meetingId: string, now: Date = new Date()) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({
+    where: { id: meetingId, zevId },
+    include: {
+      agendaItems: { orderBy: { order: "asc" }, include: { proposals: { select: { id: true, status: true } } } },
+      proposals: { select: { id: true, code: true, status: true, agendaItemId: true, votingClosesAt: true, decisionNumber: true } },
+    },
+  });
+  const live = meeting.proposals.filter((p) => p.status !== "WITHDRAWN" && p.status !== "SUPERSEDED");
+  const counts = await proposalVoteCounts(zevId, live.map((p) => p.id));
+  const quorumById = new Map<string, boolean>();
+  if (meeting.status === "VOTING_OPEN") {
+    for (const p of live.filter((x) => x.status === "VOTING_OPEN")) {
+      quorumById.set(p.id, (await computeProposalResult(zevId, p.id)).quorumReached);
+    }
+  }
+  const sourceWhere = { zevId, sourceType: "Meeting", sourceId: meetingId };
+  let invitations: MeetingNextStepInput["invitations"] = null;
+  if (meeting.status === "INVITATIONS_PREPARED") {
+    const [rec, pdfs] = await Promise.all([
+      listInvitationRecipients(actor, meetingId),
+      prisma.document.count({ where: { ...sourceWhere, type: "MEETING_INVITATION" } }),
+    ]);
+    invitations = { withEmail: rec.withEmail.length, withoutEmail: rec.withoutEmailCount, pdfExists: pdfs > 0 };
+  }
+  const sessionOpen = meeting.status === "INVITATIONS_SENT" ? await previewSessionVotingOpen(actor, meetingId) : null;
+  const minutesDraftExists = meeting.status === "DECISION_RECORDED" ? (await prisma.document.count({ where: { ...sourceWhere, type: "MINUTES" } })) > 0 : null;
+  const input: MeetingNextStepInput = {
+    meetingId,
+    status: meeting.status,
+    body: meeting.body,
+    scheduledAt: meeting.scheduledAt,
+    now,
+    agendaItems: meeting.agendaItems.map((a) => ({
+      id: a.id,
+      order: a.order,
+      title: a.title,
+      proposalCount: a.proposals.filter((p) => p.status !== "WITHDRAWN" && p.status !== "SUPERSEDED").length,
+    })),
+    proposals: live.map((p) => ({
+      id: p.id,
+      code: p.code,
+      status: p.status,
+      agendaItemId: p.agendaItemId,
+      votingClosesAt: p.votingClosesAt,
+      voters: counts.voters.get(p.id) ?? 0,
+      voted: counts.voted.get(p.id) ?? 0,
+      quorumReached: quorumById.has(p.id) ? quorumById.get(p.id)! : null,
+      decisionNumber: p.decisionNumber,
+    })),
+    invitations,
+    sessionOpen: sessionOpen
+      ? { blocked: sessionOpen.blocked, sessionErrors: sessionOpen.sessionErrors, proposals: sessionOpen.proposals.map((p) => ({ id: p.id, code: p.code, errors: p.errors })) }
+      : null,
+    minutesDraftExists,
+  };
+  // `sessionOpenPreview`: the full preview the confirmation panel needs (ballots, daily limit), loaded once.
+  return { input, sessionOpenPreview: sessionOpen };
 }
 
 /**
@@ -189,6 +284,11 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
     };
   });
   const presentCount = voters.filter((v) => v.present).length;
+  // F6.3: "not yet called" is NOT "absent" — the bar shows the three groups separately.
+  const unmarkedCount = voters.filter((v) => !v.marked).length;
+  const absentCount = voters.filter((v) => v.marked && !v.present).length;
+  const presentPartyIds = new Set(attendances.filter((a) => a.present).map((a) => a.partyId));
+  const quorum = await liveQuorum(zevId, meetingId, isBoard, meeting.agendaItems.flatMap((a) => a.proposals), basis, voters, presentPartyIds, opts?.proposalId);
 
   let activeResult = null;
   // Per-voter breakdown for the active proposal's tally screen (§3.4) — present/unvoted
@@ -277,11 +377,82 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
     })),
     voters,
     presentCount,
-    absentCount: voters.length - presentCount,
+    unmarkedCount,
+    absentCount,
     totalCount: voters.length,
+    quorum,
     activeProposalId: opts?.proposalId ?? null,
     activeVoters,
     activeResult,
+  };
+}
+
+/**
+ * Presence quorum for the live bar (F6.3, F6-Q1 (a)): which rule applies — the active agenda item's proposal if
+ * there is one, otherwise the first proposal on the agenda — or, when none is tied to it yet, of the session (open or closed: its frozen `ruleSnapshot`; a draft: its
+ * voting rule against the roll-call base). The threshold comes from the SAME `quorumRequirement` the voting result
+ * uses; only the thing compared differs (people present in the room, not votes cast). `null` = no proposal.
+ */
+async function liveQuorum(
+  zevId: string,
+  meetingId: string,
+  isBoard: boolean,
+  agendaProposals: { id: string; code: string; status: string; ruleSnapshot: Prisma.JsonValue; votingRuleId: string | null }[],
+  basis: VotingSubject[],
+  voters: { subjectKey: string; present: boolean }[],
+  presentPartyIds: Set<string>,
+  activeProposalId: string | undefined
+): Promise<LiveQuorum | null> {
+  const isLive = (p: { status: string }) => p.status !== "WITHDRAWN" && p.status !== "SUPERSEDED";
+  let candidates = agendaProposals.filter(isLive);
+  // No proposal tied to the agenda yet (the live screen offers to link them): the session's own first proposal still rules.
+  if (candidates.length === 0) {
+    candidates = (await prisma.proposal.findMany({ where: { zevId, meetingId }, orderBy: { code: "asc" } })).filter(isLive);
+  }
+  const proposal = (activeProposalId ? candidates.find((p) => p.id === activeProposalId) : undefined) ?? candidates[0];
+  if (!proposal) return null;
+
+  let rule: { quorumType: RuleSnapshot["quorumType"]; quorumPercent: string | null };
+  let totals: { totalEligibleWeight: string; totalEligibleOwners: number };
+  let present: { count: number; weight: Decimal };
+  if (proposal.ruleSnapshot) {
+    // Open/closed proposal: the frozen base is the proposal's own EligibleVoter rows (threshold from the snapshot,
+    // presence from those rows and their frozen weights) — never today's roll-call list, which may have changed
+    // since voting opened. A subject is present when any of its members is (K-03a).
+    const snap = proposal.ruleSnapshot as unknown as RuleSnapshot;
+    rule = snap;
+    totals = { totalEligibleWeight: snap.totalEligibleWeight, totalEligibleOwners: snap.totalEligibleOwners };
+    const evs = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id }, select: { ownerId: true, memberPartyIds: true, weight: true } });
+    const presentEvs = evs.filter((ev) => (ev.memberPartyIds.length > 0 ? ev.memberPartyIds : [ev.ownerId]).some((id) => presentPartyIds.has(id)));
+    present = { count: presentEvs.length, weight: presentEvs.reduce((a, ev) => a.plus(dec(ev.weight.toString())), ZERO) };
+  } else {
+    const votingRule = proposal.votingRuleId ? await prisma.votingRule.findUnique({ where: { id: proposal.votingRuleId, zevId } }) : null;
+    if (!votingRule) return null;
+    rule = { quorumType: votingRule.quorumType, quorumPercent: votingRule.quorumPercent?.toString() ?? null };
+    // K-03: on the assembly every voting subject weighs 1 whatever the (legacy) rule says; the board keeps its rule's method.
+    const weightMethod = isBoard ? votingRule.weightMethod : "PER_OWNER";
+    const total = basis.reduce((a, b) => a.plus(computeVoterWeight(weightMethod, b)), ZERO);
+    totals = { totalEligibleWeight: total.toString(), totalEligibleOwners: basis.length };
+    const presentKeys = new Set(voters.filter((v) => v.present).map((v) => v.subjectKey));
+    const presentSubjects = basis.filter((b) => presentKeys.has(b.subjectKey));
+    present = { count: presentSubjects.length, weight: presentSubjects.reduce((a, b) => a.plus(computeVoterWeight(weightMethod, b)), ZERO) };
+  }
+
+  const presence = presenceQuorum(rule, totals, present);
+  // The e-vote note only makes sense while the proposal is open and its voters were actually sent a link.
+  const acceptsEVotes =
+    proposal.status === "VOTING_OPEN" &&
+    (await prisma.approvalToken.count({ where: { eligibleVoter: { proposalId: proposal.id }, deliveredVia: { in: ["EMAIL", "BALLOT"] } } })) > 0;
+
+  const head = { proposalId: proposal.id, proposalCode: proposal.code, acceptsEVotes };
+  if (presence.kind === "NONE") return { ...head, kind: "NONE" };
+  if (presence.kind === "COUNT") {
+    return { ...head, kind: "COUNT", present: presence.present, required: presence.required, total: presence.total, reached: presence.reached, missing: presence.missing };
+  }
+  return {
+    ...head, kind: "WEIGHT",
+    present: formatWeight(presence.presentWeight), required: formatWeight(presence.requiredWeight),
+    total: formatWeight(presence.totalWeight), reached: presence.reached, missing: formatWeight(presence.missingWeight),
   };
 }
 

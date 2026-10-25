@@ -8,6 +8,7 @@ import {
 import { LiveShell } from "@/components/live-shell";
 import { LiveRefresh } from "@/components/live-refresh";
 import { RollCall } from "@/components/roll-call";
+import { LiveQuorumBar } from "@/components/live-quorum-bar";
 import { AgendaTabs, AgendaItemPanel } from "@/components/agenda-voting";
 import { Tabs, Flash, SubmitBtn, BtnLink } from "@/components/ui";
 import { t } from "@/lib/i18n";
@@ -173,9 +174,10 @@ export default async function LiveMeetingPage({
   if (tab === "dnevni-red" && activeProposal) {
     if (activeProposal.status === "DRAFT") {
       preview = await previewLiveDelivery(actor, activeProposal.id);
-    } else if (activeProposal.status === "VOTING_OPEN") {
-      liveState = await getLiveMeetingState(actor, meetingId, { proposalId: activeProposal.id });
     }
+    // The state is re-read with the active proposal: its result/voters when it is open, and always the quorum bar's
+    // rule (the active item's proposal, F6.3) — a draft too.
+    liveState = await getLiveMeetingState(actor, meetingId, { proposalId: activeProposal.id });
   }
 
   return (
@@ -196,12 +198,20 @@ export default async function LiveMeetingPage({
           meetingId={meetingId}
           voters={base.voters}
           presentCount={base.presentCount}
+          unmarkedCount={base.unmarkedCount}
           absentCount={base.absentCount}
+          quorum={base.quorum}
           action={markAttendanceAction}
           bulkAbsentAction={bulkAbsentAction}
         />
       ) : (
         <>
+          <LiveQuorumBar
+            presentCount={liveState.presentCount}
+            unmarkedCount={liveState.unmarkedCount}
+            absentCount={liveState.absentCount}
+            quorum={liveState.quorum}
+          />
           {PRE_VOTING_STATUSES.includes(base.status) && (
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-3">
               <p className="text-[13px] text-slate-600">{t("live.advanceMeetingBanner")}</p>

@@ -60,6 +60,66 @@ export function computeVoterWeight(
 }
 
 /**
+ * The quorum threshold of a rule against a voting base — the ONE formula shared by the voting result
+ * (`computeVotingResult`) and the live-meeting presence bar (`presenceQuorum`, F6.3), so the two can never
+ * disagree about what "quorum" requires. `requiredWeight` is set for a weight quorum, `requiredOwners` (rounded
+ * up) for an owner-count quorum, both null for `NONE`.
+ */
+export function quorumRequirement(
+  rule: { quorumType: QuorumType; quorumPercent: string | null },
+  totals: { totalEligibleWeight: Decimal | string; totalEligibleOwners: number }
+): { requiredWeight: Decimal | null; requiredOwners: number | null } {
+  if (rule.quorumType === "PERCENT_OF_TOTAL_WEIGHT") {
+    const pct = dec(rule.quorumPercent ?? "0").div(100);
+    return { requiredWeight: dec(totals.totalEligibleWeight).mul(pct), requiredOwners: null };
+  }
+  if (rule.quorumType === "PERCENT_OF_OWNER_COUNT") {
+    const pct = dec(rule.quorumPercent ?? "0").div(100);
+    return { requiredWeight: null, requiredOwners: dec(totals.totalEligibleOwners).mul(pct).toDecimalPlaces(6).ceil().toNumber() };
+  }
+  return { requiredWeight: null, requiredOwners: null };
+}
+
+/** How the live bar reads the quorum: by presence in the room (not by cast votes — e-votes of people who are
+ *  not in the room are counted by the voting result, not here). */
+export type PresenceQuorum =
+  | { kind: "NONE" }
+  | { kind: "COUNT"; present: number; required: number; total: number; reached: boolean; missing: number }
+  | { kind: "WEIGHT"; presentWeight: Decimal; requiredWeight: Decimal; totalWeight: Decimal; reached: boolean; missingWeight: Decimal };
+
+/** Presence-based quorum for the live bar: owner-count quorum compares the number of present subjects with the
+ *  (rounded-up) requirement; weight quorum compares the weight of the present subjects. */
+export function presenceQuorum(
+  rule: { quorumType: QuorumType; quorumPercent: string | null },
+  totals: { totalEligibleWeight: Decimal | string; totalEligibleOwners: number },
+  present: { count: number; weight: Decimal }
+): PresenceQuorum {
+  const req = quorumRequirement(rule, totals);
+  if (req.requiredWeight) {
+    const missing = req.requiredWeight.minus(present.weight);
+    return {
+      kind: "WEIGHT",
+      presentWeight: present.weight,
+      requiredWeight: req.requiredWeight,
+      totalWeight: dec(totals.totalEligibleWeight),
+      reached: present.weight.greaterThanOrEqualTo(req.requiredWeight),
+      missingWeight: missing.isNegative() ? ZERO : missing,
+    };
+  }
+  if (req.requiredOwners !== null) {
+    return {
+      kind: "COUNT",
+      present: present.count,
+      required: req.requiredOwners,
+      total: totals.totalEligibleOwners,
+      reached: present.count >= req.requiredOwners,
+      missing: Math.max(0, req.requiredOwners - present.count),
+    };
+  }
+  return { kind: "NONE" };
+}
+
+/**
  * Compute the outcome of a proposal from its rule snapshot and valid votes.
  * Corrected votes must already be excluded by the caller (a corrected vote is
  * superseded by its correction row).
@@ -75,18 +135,12 @@ export function computeVotingResult(rule: RuleSnapshot, votes: CountedVote[]): V
     .reduce((a, v) => a.plus(v.weight), ZERO);
   const quorumVoterCount = valid.filter((v) => v.countsForQuorum).length;
 
+  const req = quorumRequirement(rule, { totalEligibleWeight: totalWeight, totalEligibleOwners: totalOwners });
+  const quorumRequiredWeight = req.requiredWeight;
+  const quorumRequiredOwners = req.requiredOwners;
   let quorumReached = true;
-  let quorumRequiredWeight: Decimal | null = null;
-  let quorumRequiredOwners: number | null = null;
-  if (rule.quorumType === "PERCENT_OF_TOTAL_WEIGHT") {
-    const pct = dec(rule.quorumPercent ?? "0").div(100);
-    quorumRequiredWeight = totalWeight.mul(pct);
-    quorumReached = quorumWeight.greaterThanOrEqualTo(quorumRequiredWeight);
-  } else if (rule.quorumType === "PERCENT_OF_OWNER_COUNT") {
-    const pct = dec(rule.quorumPercent ?? "0").div(100);
-    quorumRequiredOwners = dec(totalOwners).mul(pct).toDecimalPlaces(6).ceil().toNumber();
-    quorumReached = quorumVoterCount >= quorumRequiredOwners;
-  }
+  if (quorumRequiredWeight) quorumReached = quorumWeight.greaterThanOrEqualTo(quorumRequiredWeight);
+  else if (quorumRequiredOwners !== null) quorumReached = quorumVoterCount >= quorumRequiredOwners;
 
   const approveWeight = valid
     .filter((v) => v.choice === "APPROVE")

@@ -8,8 +8,9 @@ import { createFixture, createProposalFixture, seedShapedZev, type Fixture } fro
 import {
   openVoting, recordAttendance, recordAttendanceBulk, recordManualVote, recordManualVoteBulk, submitVote,
   advanceMeetingStatus, closeVoting, getLiveMeetingState, previewLiveDelivery, createVotingRule,
-  addAgendaItem, linkProposalToAgendaItem,
+  addAgendaItem, linkProposalToAgendaItem, getMeetingNextStepInput,
 } from "@/server/services/meetings";
+import { meetingNextStep } from "@/lib/meetingNextStep";
 import { grantProxy } from "@/server/services/ownership";
 import { ForbiddenError } from "@/server/auth/guards";
 
@@ -193,7 +194,9 @@ describe("live meeting — getLiveMeetingState", () => {
     const state = await getLiveMeetingState(f.president, meeting.id, { proposalId: proposal.id });
     expect(state.totalCount).toBe(3);
     expect(state.presentCount).toBe(1);
-    expect(state.absentCount).toBe(2);
+    // F6.3: "not yet called" is not "absent" — only ownerA was marked, so nobody is recorded absent.
+    expect(state.unmarkedCount).toBe(2);
+    expect(state.absentCount).toBe(0);
     const voterA = state.voters.find((v) => v.ownerId === f.ownerA.id)!;
     expect(voterA.present).toBe(true);
     expect(voterA.marked).toBe(true);
@@ -465,7 +468,8 @@ describe("live meeting — voting subjects (FR)", () => {
     expect(c2.present).toBe(true);
     expect(c2.marked).toBe(true);
     expect(after.presentCount).toBe(1);
-    expect(after.absentCount).toBe(4);
+    expect(after.unmarkedCount).toBe(4);
+    expect(after.absentCount).toBe(0);
   });
 
   it("LIVE delivery: a community whose non-representative co-owner is present is suppressed as PRESENT, and the preview agrees", async () => {
@@ -510,5 +514,90 @@ describe("live meeting — voting subjects (FR)", () => {
     const preview = await previewLiveDelivery(f.president, proposal.id);
     expect(preview.preconditionErrors.join(" ")).toMatch(/nije utvrđen/);
     await expect(openVoting(f.president, proposal.id, { delivery: "LIVE" })).rejects.toThrow(/nije utvrđen/);
+  });
+});
+
+describe("live meeting — F6.3 quorum bar (presence)", () => {
+  it("counts not-yet-called people separately from those marked absent", async () => {
+    const f: Fixture = await createFixture("lm-unmarked");
+    const { meeting } = await createProposalFixture(f);
+    // ownerA is a subject of his own; ownerB heads another and is also a member of the u3 community (K-03b), ownerC represents it.
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: false });
+    const s = await getLiveMeetingState(f.president, meeting.id);
+    expect([s.presentCount, s.unmarkedCount, s.absentCount, s.totalCount]).toEqual([0, 2, 1, 3]);
+  });
+
+  it("quorum follows the first proposal's rule (a draft: its voting rule against the roll-call base); 50 % of 3 needs 2", async () => {
+    const f: Fixture = await createFixture("lm-quorum");
+    const { meeting, proposal } = await createProposalFixture(f);
+    const empty = await getLiveMeetingState(f.president, meeting.id);
+    expect(empty.quorum).toMatchObject({ kind: "COUNT", present: 0, required: 2, total: 3, reached: false, missing: 2, proposalId: proposal.id });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerC.id, present: true }); // representative of the u3 community
+    const two = await getLiveMeetingState(f.president, meeting.id);
+    expect(two.quorum).toMatchObject({ kind: "COUNT", present: 2, required: 2, reached: true, missing: 0 });
+  });
+
+  it("an open proposal uses its frozen snapshot, takes the active item's proposal when asked, and flags e-votes", async () => {
+    const f: Fixture = await createFixture("lm-quorum-open");
+    const { meeting, proposal } = await createProposalFixture(f);
+    const item = await addAgendaItem(f.president, { meetingId: meeting.id, title: "Tačka" });
+    await linkProposalToAgendaItem(f.president, proposal.id, item.id);
+    await markSigned(f.ownerB.id);
+    await openVoting(f.president, proposal.id, { delivery: "LIVE" });
+    const s = await getLiveMeetingState(f.president, meeting.id, { proposalId: proposal.id });
+    expect(s.quorum).toMatchObject({ kind: "COUNT", required: 2, total: 3, proposalId: proposal.id, acceptsEVotes: true });
+    // Presence is read from the proposal's own (frozen) EligibleVoter rows: ownerA plus the u3 community via its representative.
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerA.id, present: true });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerC.id, present: true });
+    const two = await getLiveMeetingState(f.president, meeting.id, { proposalId: proposal.id });
+    expect(two.quorum).toMatchObject({ kind: "COUNT", present: 2, required: 2, total: 3, reached: true, missing: 0 });
+  });
+
+  it("without any proposal the quorum is null", async () => {
+    const f: Fixture = await createFixture("lm-quorum-none");
+    const meeting = await prisma.meeting.create({ data: { zevId: f.zev.id, title: "Prazna", type: "REGULAR", body: "ASSEMBLY" } });
+    const s = await getLiveMeetingState(f.president, meeting.id);
+    expect(s.quorum).toBeNull();
+  });
+
+  it("a rule without a quorum reads as NONE", async () => {
+    const f: Fixture = await createFixture("lm-quorum-notneeded");
+    const rule = await createVotingRule(f.president, {
+      name: `Bez kvoruma ${f.t}`, quorumType: "NONE", majorityType: "SIMPLE_OF_VOTES_CAST",
+    });
+    const { meeting } = await createProposalFixture(f, { ruleId: rule.id });
+    const s = await getLiveMeetingState(f.president, meeting.id);
+    expect(s.quorum).toMatchObject({ kind: "NONE" });
+  });
+
+  it("a co-owner community counts as present when any member is (one subject, one unit of the quorum)", async () => {
+    const { f, sara } = await seedShapedZev("lm-quorum-community");
+    const { meeting } = await createProposalFixture(f, { scope: "ZEV" });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: sara.id, present: true });
+    const s = await getLiveMeetingState(f.president, meeting.id);
+    expect(s.quorum).toMatchObject({ kind: "COUNT", present: 1, total: 5 });
+  });
+
+  it("the board counts per member: its basis is the office holders", async () => {
+    const f: Fixture = await createFixture("lm-quorum-board");
+    const { meeting } = await createProposalFixture(f, { body: "BOARD" });
+    const s = await getLiveMeetingState(f.president, meeting.id);
+    expect(s.totalCount).toBe(s.quorum && s.quorum.kind === "COUNT" ? s.quorum.total : -1);
+  });
+});
+
+describe("F6.1 — getMeetingNextStepInput feeds meetingNextStep from real data", () => {
+  it("a scheduled session with an unlinked proposal and an item without a proposal warns about both; president/accountant only", async () => {
+    const f: Fixture = await createFixture("lm-nextstep");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await addAgendaItem(f.president, { meetingId: meeting.id, title: "Diskusija" });
+    await prisma.meeting.update({ where: { id: meeting.id }, data: { status: "SCHEDULED" } });
+    const { input } = await getMeetingNextStepInput(f.president, meeting.id);
+    expect(input.proposals.map((p) => p.id)).toContain(proposal.id);
+    const step = meetingNextStep(input)!;
+    expect(step.to).toBe("INVITATIONS_PREPARED");
+    expect(step.preconditions.filter((p) => !p.ok)).toHaveLength(2);
+    await expect(getMeetingNextStepInput(f.actorA, meeting.id)).rejects.toThrow(ForbiddenError);
   });
 });

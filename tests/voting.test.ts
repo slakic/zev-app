@@ -5,9 +5,9 @@ import {
   submitVote, reissueToken, revokeToken, closeVoting, recordManualVote,
   createProposalRevision, updateDraftProposal, computeProposalResult, createVotingRule,
   openVoting, advanceMeetingStatus, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
-  previewVotingDelivery, openProposalsForOwner,
+  previewVotingDelivery, openProposalsForOwner, getMeeting, correctVote,
 } from "@/server/services/meetings";
-import { computeVotingResult, type RuleSnapshot } from "@/server/engines/voting";
+import { computeVotingResult, quorumRequirement, presenceQuorum, type RuleSnapshot } from "@/server/engines/voting";
 import { dec } from "@/lib/money";
 import { addOwnershipStake, setOfficeTerm } from "@/server/services/ownership";
 import { establishUnitRegister } from "@/server/services/unitRegister";
@@ -534,5 +534,80 @@ describe("FR — assembly voting by etazni vlasnici", () => {
     const r = computeVotingResult(rule, votes);
     expect(r.quorumReached).toBe(true);
     expect(r.accepted).toBe(false);
+  });
+});
+
+describe("F6.3 — quorumRequirement and presenceQuorum (pure engine)", () => {
+  const snap = (over: Partial<RuleSnapshot>): RuleSnapshot => ({
+    ruleName: null, quorumType: "PERCENT_OF_OWNER_COUNT", quorumPercent: "50", majorityType: "SIMPLE_OF_VOTES_CAST", majorityPercent: null,
+    weightMethod: "PER_OWNER", totalEligibleWeight: "5", totalEligibleOwners: 5, ...over,
+  });
+  const votes = (n: number) =>
+    Array.from({ length: n }, (_, i) => ({ eligibleVoterId: `v${i}`, choice: "APPROVE" as const, weight: dec(1), countsForQuorum: true, invalid: false }));
+
+  it("quorumRequirement gives the same thresholds computeVotingResult reports, for all three quorum types", () => {
+    const cases: RuleSnapshot[] = [
+      snap({ quorumType: "NONE", quorumPercent: null }),
+      snap({ quorumType: "PERCENT_OF_OWNER_COUNT", quorumPercent: "50", totalEligibleOwners: 5 }),
+      snap({ quorumType: "PERCENT_OF_OWNER_COUNT", quorumPercent: "33.333", totalEligibleOwners: 10 }),
+      snap({ quorumType: "PERCENT_OF_TOTAL_WEIGHT", quorumPercent: "40", totalEligibleWeight: "250.5", totalEligibleOwners: 7 }),
+    ];
+    for (const rule of cases) {
+      const req = quorumRequirement(rule, { totalEligibleWeight: rule.totalEligibleWeight, totalEligibleOwners: rule.totalEligibleOwners });
+      const res = computeVotingResult(rule, votes(1));
+      expect(req.requiredOwners).toBe(res.quorumRequiredOwners);
+      expect(req.requiredWeight?.toFixed(6) ?? null).toBe(res.quorumRequiredWeight?.toFixed(6) ?? null);
+    }
+  });
+
+  it("owner-count threshold rounds up (50 % of 5 -> 3, 33.333 % of 10 -> 4)", () => {
+    expect(quorumRequirement(snap({}), { totalEligibleWeight: "5", totalEligibleOwners: 5 }).requiredOwners).toBe(3);
+    expect(quorumRequirement(snap({ quorumPercent: "33.333" }), { totalEligibleWeight: "10", totalEligibleOwners: 10 }).requiredOwners).toBe(4);
+    expect(quorumRequirement(snap({ quorumType: "NONE" }), { totalEligibleWeight: "10", totalEligibleOwners: 10 })).toEqual({ requiredWeight: null, requiredOwners: null });
+  });
+
+  it("presenceQuorum by head count: reached from the threshold, missing never negative", () => {
+    const totals = { totalEligibleWeight: "5", totalEligibleOwners: 5 };
+    expect(presenceQuorum(snap({}), totals, { count: 2, weight: dec(2) })).toMatchObject({ kind: "COUNT", required: 3, reached: false, missing: 1 });
+    expect(presenceQuorum(snap({}), totals, { count: 3, weight: dec(3) })).toMatchObject({ kind: "COUNT", reached: true, missing: 0 });
+    expect(presenceQuorum(snap({}), totals, { count: 5, weight: dec(5) })).toMatchObject({ reached: true, missing: 0 });
+  });
+
+  it("presenceQuorum by weight compares the weight of those present (no rounding of the weight itself)", () => {
+    const rule = snap({ quorumType: "PERCENT_OF_TOTAL_WEIGHT", quorumPercent: "50", totalEligibleWeight: "100", weightMethod: "OWNERSHIP_SHARE" });
+    const q = presenceQuorum(rule, { totalEligibleWeight: "100", totalEligibleOwners: 4 }, { count: 2, weight: dec("49.5") });
+    expect(q.kind).toBe("WEIGHT");
+    if (q.kind === "WEIGHT") {
+      expect(q.requiredWeight.toFixed(1)).toBe("50.0");
+      expect(q.reached).toBe(false);
+      expect(q.missingWeight.toFixed(1)).toBe("0.5");
+    }
+    expect(presenceQuorum(rule, { totalEligibleWeight: "100", totalEligibleOwners: 4 }, { count: 2, weight: dec("50") })).toMatchObject({ reached: true });
+  });
+
+  it("presenceQuorum for a rule without a quorum is NONE", () => {
+    expect(presenceQuorum(snap({ quorumType: "NONE" }), { totalEligibleWeight: "5", totalEligibleOwners: 5 }, { count: 0, weight: dec(0) })).toEqual({ kind: "NONE" });
+  });
+});
+
+describe("F6.2 — getMeeting: voted X of Y per proposal", () => {
+  it("counts effective votes once (a corrected vote is not counted twice) and the voters of the base", async () => {
+    const f = await createFixture("meet-agg");
+    const { meeting, proposal } = await createProposalFixture(f);
+    const draft = (await getMeeting(f.president, meeting.id)).proposals.find((p) => p.id === proposal.id)!;
+    expect([draft.votersCount, draft.votedCount]).toEqual([0, 0]);
+
+    const links = await openVotingWithLinks(f, proposal.id);
+    const lA = links.find((l) => l.toAddress === f.ownerA.email)!;
+    const lB = links.find((l) => l.toAddress === f.ownerB.email)!;
+    await submitVote({ tokenPlain: lA.token, verificationCode: lA.code, choice: "APPROVE" });
+    await submitVote({ tokenPlain: lB.token, verificationCode: lB.code, choice: "REJECT" });
+    let row = (await getMeeting(f.president, meeting.id)).proposals.find((p) => p.id === proposal.id)!;
+    expect([row.votersCount, row.votedCount]).toEqual([3, 2]);
+
+    const original = await prisma.vote.findFirstOrThrow({ where: { proposalId: proposal.id, voterId: f.ownerA.id } });
+    await correctVote(f.president, { voteId: original.id, choice: "REJECT", reason: "Greška u evidenciji", authority: "Odluka skupštine" });
+    row = (await getMeeting(f.president, meeting.id)).proposals.find((p) => p.id === proposal.id)!;
+    expect(row.votedCount).toBe(2); // original + correction still one vote
   });
 });

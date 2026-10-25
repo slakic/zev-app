@@ -43,6 +43,32 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.47.0] - 2026-10-25
+
+Faza F6 pregleda dizajna: predsjednik na svakom koraku sjednice zna gdje je i šta je sljedeće, u sali vidi ima li kvorum, a na početnoj prvo vidi šta čeka njegovu radnju. **Bez migracije** — deploy ne traži ručni korak.
+
+### Dodato
+
+- **Panel „Sljedeći korak” na detalju sjednice.** Prva kartica ispod zaglavlja (vidi je predsjednik): tok sjednice, status u kojem je, rečenica šta sljedeći korak radi, lista preduslova (✓ / ⚠) i jedno dugme. Preduslovi su samo činjenice iz podataka — tačka dnevnog reda bez prijedloga („biće diskusija”), prijedlog koji nije vezan za tačku, nedostajući PDF poziva, lica bez e-adrese, „glasalo X od Y, rok …” za otvorena glasanja, usvojen prijedlog bez broja odluke, nacrt zapisnika. ⚠ ne zaključava dugme; korak je blokiran samo kad ga servis zaista odbija (otvaranje glasanja), i tada piše zašto. Potvrde slanja poziva, otvaranja i zatvaranja glasanja preselile su se u panel sa istim tekstom; **finalizacija zapisnika** (nepovratna) sad ima svoju potvrdu.
+- **Tabela prijedloga na sjednici:** kolone „Rok” i „Glasalo” („3 od 5”), a „Verzija” je detalj na širem ekranu. „Glasalo” broji važeće glasove jednom (ispravljeni se ne broje dvaput), jednim grupisanim upitom.
+- **Traka kvoruma u režimu uživo** (obje kartice): „Prisutno · Neoznačeno · Odsutno” krupnim brojevima i ispod „Kvorum: prisutno 4 od 5 · potrebno 3 — postignut” (ili „nedostaje 2”), tekstom a ne samo bojom. Prag je ista formula kao u rezultatu glasanja (`quorumRequirement`); računa se po pravilu prijedloga aktivne tačke, a bez nje prvog prijedloga sjednice. Kad prijedlog prima elektronske glasove, piše da se oni računaju u kvorum glasanja i kad osoba nije u sali.
+- **Veza prijava održavanja → odluka.** „Traži odobrenje” i „Odobreno” nude izbor odluke (prijedlog u glasanju ili usvojen) ili „U okviru ovlašćenja predsjednika”; odobrenje bez jednog od ta dva je greška. Odobrenje prije usvajanja odluke je dozvoljeno, ali se bilježi „prije odluke” i javlja upozorenje na početnoj. Detalj prijave pokazuje „Odobreno odlukom …” sa vezom; stavka u auditu (`issue.transition`) nosi `approvalProposalId`. Plan koji je usvojila odluka skupštine sad vodi na tu odluku.
+- **„Za Vas sada” na početnoj predsjednika**, prije salda: registar nije utvrđen, glasanje kome je prošao rok, glasanje koje ističe za 3 dana bez kvoruma, sjednica u narednih 7 dana sa njenim sljedećim korakom, izvršenje prije odluke, pregled iz plana kome je prošao datum (do 90 dana) a nema prijave održavanja, i zbirna stavka novih prijava. Samo najhitnija stavka ima glavno dugme; kad nema ničega, potvrda „Ništa ne čeka Vašu radnju.” sa sljedećim događajem.
+- Čiste funkcije sa testovima: `meetingNextStep`, `presidentTasks`, `quorumRequirement` / `presenceQuorum`; `getMeetingNextStepInput` u servisu.
+
+### Izmijenjeno
+
+- **Zaglavlje sjednice** ima samo „Vodi sjednicu uživo”; dugme koraka je u panelu. Na stranici je ostalo jedno glavno dugme (u panelu): „Dodaj” tačku i „Sačuvaj prijedlog” su sada tonalna dugmad.
+- **Kartica „Prisustvo”** je sažetak („Prisutno N od M — prisustvo se evidentira u režimu uživo”) sa vezom na prozivku; stara forma sa izborom lica je ukinuta (odluka P10), a evidentirano prisustvo se i dalje vidi u tabeli.
+- **Početna predsjednika:** osam brojki svedeno na četiri (stanje računa i blagajne, dospjelo, neplaćeno dobavljačima, fond održavanja). „Predstojeće sjednice” i „Predstojeći pregledi” zamijenila je kartica „Narednih 30 dana”; sitni tekstovi su 13px. Početna računovođe je nepromijenjena.
+- **Režim uživo** na širem ekranu je u koloni od 68 znakova; ostaje i za sjednice upravnog odbora (kvorum po članu).
+- **Tok sjednice (`StatusTimeline`):** oznake koraka koji slijede više nisu `slate-400` (nisu prolazile AA kontrast).
+- Napomena uz „Dokumenti sjednice” je 13px.
+
+### Ispravljeno
+
+- **Traka uživo je brojala neoznačene kao odsutne** („Odsutno 40” prije prve prozivke). Sad su „Neoznačeno” i „Odsutno” odvojeni; `absentCount` u `getLiveMeetingState` znači „označeno kao odsutno”.
+
 ## [2.46.0] - 2026-10-25
 
 Faza F3 pregleda dizajna: vlasnik na telefonu za najviše dva dodira od početne zna koliko duguje, do kada i kako da plati. **Bez migracije** — deploy ne traži ručni korak.

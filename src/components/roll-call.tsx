@@ -7,7 +7,9 @@
 // component's own useState survives them; only its props (the voter list) change.
 import { useMemo, useState } from "react";
 import { SegmentedAction, ConfirmAction, inputCls } from "@/components/ui";
+import { LiveQuorumBar } from "@/components/live-quorum-bar";
 import { t, tf } from "@/lib/i18n";
+import type { LiveQuorum } from "@/lib/liveQuorum";
 
 export type RollCallVoter = {
   /** One row per voting SUBJECT (K-03a) — the same person can head two (K-03b), so this, not ownerId, is the key. */
@@ -35,12 +37,14 @@ const FILTERS: { value: Filter; key: string }[] = [
 ];
 
 export function RollCall({
-  meetingId, voters, presentCount, absentCount, action, bulkAbsentAction,
+  meetingId, voters, presentCount, unmarkedCount, absentCount, quorum, action, bulkAbsentAction,
 }: {
   meetingId: string;
   voters: RollCallVoter[];
   presentCount: number;
+  unmarkedCount: number;
   absentCount: number;
+  quorum: LiveQuorum | null;
   action: (formData: FormData) => void | Promise<void>;
   bulkAbsentAction: (formData: FormData) => void | Promise<void>;
 }) {
@@ -69,15 +73,7 @@ export function RollCall({
 
   return (
     <div>
-      <div className="sticky top-0 z-10 -mx-3 mb-4 border-b border-slate-200 bg-canvas/95 px-3 py-2.5 backdrop-blur">
-        <div className="flex items-baseline gap-2 text-sm">
-          <span className="text-lg font-semibold tabular-nums text-ink">{presentCount}</span>
-          <span className="text-slate-500">{t("live.present")}</span>
-          <span className="text-slate-300">·</span>
-          <span className="text-lg font-semibold tabular-nums text-ink">{absentCount}</span>
-          <span className="text-slate-500">{t("live.absent")}</span>
-        </div>
-      </div>
+      <LiveQuorumBar presentCount={presentCount} unmarkedCount={unmarkedCount} absentCount={absentCount} quorum={quorum} />
 
       <input
         type="search"
