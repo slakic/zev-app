@@ -254,7 +254,22 @@ Ostali duplikati: X-N05 = V-N25 (ikona menija); X-N08 = V-N28 (fusnota na prijav
 
 ---
 
-## 5. Odluke o dizajn sistemu (traže Vaš odgovor)
+## 5. Odluke o dizajn sistemu — ODLUČENO (2026-10-25)
+
+**Korisnik je prihvatio preporuku za svih devet odluka (2026-10-25):**
+- **D1 — „Za Vas sada”:** opcija A — kompozicija postojećih primitiva (`Card` + redovi + `StatusBadge` + jedno dugme po redu, `primary` samo na najhitnijem), opisana jednom u `design-system.md`; bez nove komponente.
+- **D2 — „Sljedeći korak”:** opcija A — kompozicija (`Card` + `StatusTimeline` + postojeća lista preduslova `PreconditionList` iz v2.43.0 + jedno dugme po pravilu potvrde), upisana u `design-system.md`.
+- **D3 — tabele na telefonu:** opcija A — pravilo: svaka tabela sa kolonom radnji postaje kartice ispod `md`, bez obzira na broj kolona; tabele bez radnji kojima je glavna kolona zadnja dobijaju preuređen redoslijed kolona. Proširuje P5; bez prop-a po tabeli.
+- **D4 — `Flash` „upozorenje” + `inset`:** da.
+- **D5 — `ReviewTable`:** opcija B — novi client primitiv za tok „pregledaj → potvrdi” (PDF izvod, SMS).
+- **D6 — `ConfirmAction` bez sopstvene forme:** opcija B, uz izuzetak upisan u DS: potvrda glasa je `primary`.
+- **D7 — „Kopiraj”:** opcija A u F3 (krupna vrijednost + `select-all`); dugme „Kopiraj” (B) kao kasnija dopuna; QR tek nakon provjere sa bankom.
+- **D8 — navigacija po ulogama:** opcija B — redoslijed po ulozi + naslov grupe (13px; u suženom režimu tanka linija); idealno provjeriti na posmatranoj sesiji (P8) prije F9.
+- **D9 — naziv ZEV-a uvijek vidljiv:** da, kao tih 13px tekst ispod „ZEV upravnik”; chip za više ZEV-ova vidljiv i na telefonu.
+
+Time su faze F2–F9 deblokirane u dijelu koji zavisi od dizajn sistema. Tabela ispod ostaje kao zapis razmotrenih opcija.
+
+### Zapis razmotrenih opcija (prije odluke)
 
 `CLAUDE.md` traži da se svaki obrazac koji sistem nema predloži izričito. Ovdje su sve takve odluke iz četiri priloga, spojene. Opcije i obrazloženja su u prilozima, na mjestu navedenom u koloni „Detalj”.
 
