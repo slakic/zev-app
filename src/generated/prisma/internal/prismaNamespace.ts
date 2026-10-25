@@ -421,6 +421,7 @@ export const ModelName = {
   ProposalUnit: 'ProposalUnit',
   EligibleVoter: 'EligibleVoter',
   ApprovalToken: 'ApprovalToken',
+  Ballot: 'Ballot',
   Vote: 'Vote',
   MoneyAccount: 'MoneyAccount',
   TransactionCategory: 'TransactionCategory',
@@ -472,7 +473,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2249,6 +2250,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ApprovalTokenCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ApprovalTokenCountAggregateOutputType> | number
+        }
+      }
+    }
+    Ballot: {
+      payload: Prisma.$BallotPayload<ExtArgs>
+      fields: Prisma.BallotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BallotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BallotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>
+        }
+        findFirst: {
+          args: Prisma.BallotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BallotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>
+        }
+        findMany: {
+          args: Prisma.BallotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>[]
+        }
+        create: {
+          args: Prisma.BallotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>
+        }
+        createMany: {
+          args: Prisma.BallotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BallotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>[]
+        }
+        delete: {
+          args: Prisma.BallotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>
+        }
+        update: {
+          args: Prisma.BallotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>
+        }
+        deleteMany: {
+          args: Prisma.BallotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BallotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BallotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>[]
+        }
+        upsert: {
+          args: Prisma.BallotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BallotPayload>
+        }
+        aggregate: {
+          args: Prisma.BallotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBallot>
+        }
+        groupBy: {
+          args: Prisma.BallotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BallotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BallotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BallotCountAggregateOutputType> | number
         }
       }
     }
@@ -5354,10 +5429,33 @@ export const ApprovalTokenScalarFieldEnum = {
   revokedAt: 'revokedAt',
   revokedReason: 'revokedReason',
   replacedById: 'replacedById',
-  failedAttempts: 'failedAttempts'
+  failedAttempts: 'failedAttempts',
+  ballotId: 'ballotId'
 } as const
 
 export type ApprovalTokenScalarFieldEnum = (typeof ApprovalTokenScalarFieldEnum)[keyof typeof ApprovalTokenScalarFieldEnum]
+
+
+export const BallotScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  meetingId: 'meetingId',
+  recipientPartyId: 'recipientPartyId',
+  tokenHash: 'tokenHash',
+  verificationHash: 'verificationHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  issuedAt: 'issuedAt',
+  openedAt: 'openedAt',
+  usedAt: 'usedAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason',
+  failedAttempts: 'failedAttempts',
+  replacedById: 'replacedById',
+  createdAt: 'createdAt'
+} as const
+
+export type BallotScalarFieldEnum = (typeof BallotScalarFieldEnum)[keyof typeof BallotScalarFieldEnum]
 
 
 export const VoteScalarFieldEnum = {
@@ -6406,6 +6504,20 @@ export type ListEnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'BallotStatus'
+ */
+export type EnumBallotStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BallotStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BallotStatus[]'
+ */
+export type ListEnumBallotStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BallotStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'VoteChoice'
  */
 export type EnumVoteChoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoteChoice'>
@@ -6901,6 +7013,7 @@ export type GlobalOmitConfig = {
   proposalUnit?: Prisma.ProposalUnitOmit
   eligibleVoter?: Prisma.EligibleVoterOmit
   approvalToken?: Prisma.ApprovalTokenOmit
+  ballot?: Prisma.BallotOmit
   vote?: Prisma.VoteOmit
   moneyAccount?: Prisma.MoneyAccountOmit
   transactionCategory?: Prisma.TransactionCategoryOmit

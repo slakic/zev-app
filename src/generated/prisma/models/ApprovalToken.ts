@@ -49,6 +49,7 @@ export type ApprovalTokenMinAggregateOutputType = {
   revokedReason: string | null
   replacedById: string | null
   failedAttempts: number | null
+  ballotId: string | null
 }
 
 export type ApprovalTokenMaxAggregateOutputType = {
@@ -66,6 +67,7 @@ export type ApprovalTokenMaxAggregateOutputType = {
   revokedReason: string | null
   replacedById: string | null
   failedAttempts: number | null
+  ballotId: string | null
 }
 
 export type ApprovalTokenCountAggregateOutputType = {
@@ -83,6 +85,7 @@ export type ApprovalTokenCountAggregateOutputType = {
   revokedReason: number
   replacedById: number
   failedAttempts: number
+  ballotId: number
   _all: number
 }
 
@@ -110,6 +113,7 @@ export type ApprovalTokenMinAggregateInputType = {
   revokedReason?: true
   replacedById?: true
   failedAttempts?: true
+  ballotId?: true
 }
 
 export type ApprovalTokenMaxAggregateInputType = {
@@ -127,6 +131,7 @@ export type ApprovalTokenMaxAggregateInputType = {
   revokedReason?: true
   replacedById?: true
   failedAttempts?: true
+  ballotId?: true
 }
 
 export type ApprovalTokenCountAggregateInputType = {
@@ -144,6 +149,7 @@ export type ApprovalTokenCountAggregateInputType = {
   revokedReason?: true
   replacedById?: true
   failedAttempts?: true
+  ballotId?: true
   _all?: true
 }
 
@@ -248,6 +254,7 @@ export type ApprovalTokenGroupByOutputType = {
   revokedReason: string | null
   replacedById: string | null
   failedAttempts: number
+  ballotId: string | null
   _count: ApprovalTokenCountAggregateOutputType | null
   _avg: ApprovalTokenAvgAggregateOutputType | null
   _sum: ApprovalTokenSumAggregateOutputType | null
@@ -288,10 +295,12 @@ export type ApprovalTokenWhereInput = {
   revokedReason?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   replacedById?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   failedAttempts?: Prisma.IntFilter<"ApprovalToken"> | number
+  ballotId?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   eligibleVoter?: Prisma.XOR<Prisma.EligibleVoterScalarRelationFilter, Prisma.EligibleVoterWhereInput>
   replacedBy?: Prisma.XOR<Prisma.ApprovalTokenNullableScalarRelationFilter, Prisma.ApprovalTokenWhereInput> | null
   replaces?: Prisma.XOR<Prisma.ApprovalTokenNullableScalarRelationFilter, Prisma.ApprovalTokenWhereInput> | null
   vote?: Prisma.XOR<Prisma.VoteNullableScalarRelationFilter, Prisma.VoteWhereInput> | null
+  ballot?: Prisma.XOR<Prisma.BallotNullableScalarRelationFilter, Prisma.BallotWhereInput> | null
 }
 
 export type ApprovalTokenOrderByWithRelationInput = {
@@ -309,10 +318,12 @@ export type ApprovalTokenOrderByWithRelationInput = {
   revokedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   replacedById?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
+  ballotId?: Prisma.SortOrderInput | Prisma.SortOrder
   eligibleVoter?: Prisma.EligibleVoterOrderByWithRelationInput
   replacedBy?: Prisma.ApprovalTokenOrderByWithRelationInput
   replaces?: Prisma.ApprovalTokenOrderByWithRelationInput
   vote?: Prisma.VoteOrderByWithRelationInput
+  ballot?: Prisma.BallotOrderByWithRelationInput
 }
 
 export type ApprovalTokenWhereUniqueInput = Prisma.AtLeast<{
@@ -333,10 +344,12 @@ export type ApprovalTokenWhereUniqueInput = Prisma.AtLeast<{
   revokedAt?: Prisma.DateTimeNullableFilter<"ApprovalToken"> | Date | string | null
   revokedReason?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   failedAttempts?: Prisma.IntFilter<"ApprovalToken"> | number
+  ballotId?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   eligibleVoter?: Prisma.XOR<Prisma.EligibleVoterScalarRelationFilter, Prisma.EligibleVoterWhereInput>
   replacedBy?: Prisma.XOR<Prisma.ApprovalTokenNullableScalarRelationFilter, Prisma.ApprovalTokenWhereInput> | null
   replaces?: Prisma.XOR<Prisma.ApprovalTokenNullableScalarRelationFilter, Prisma.ApprovalTokenWhereInput> | null
   vote?: Prisma.XOR<Prisma.VoteNullableScalarRelationFilter, Prisma.VoteWhereInput> | null
+  ballot?: Prisma.XOR<Prisma.BallotNullableScalarRelationFilter, Prisma.BallotWhereInput> | null
 }, "id" | "tokenHash" | "replacedById">
 
 export type ApprovalTokenOrderByWithAggregationInput = {
@@ -354,6 +367,7 @@ export type ApprovalTokenOrderByWithAggregationInput = {
   revokedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   replacedById?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
+  ballotId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ApprovalTokenCountOrderByAggregateInput
   _avg?: Prisma.ApprovalTokenAvgOrderByAggregateInput
   _max?: Prisma.ApprovalTokenMaxOrderByAggregateInput
@@ -379,6 +393,7 @@ export type ApprovalTokenScalarWhereWithAggregatesInput = {
   revokedReason?: Prisma.StringNullableWithAggregatesFilter<"ApprovalToken"> | string | null
   replacedById?: Prisma.StringNullableWithAggregatesFilter<"ApprovalToken"> | string | null
   failedAttempts?: Prisma.IntWithAggregatesFilter<"ApprovalToken"> | number
+  ballotId?: Prisma.StringNullableWithAggregatesFilter<"ApprovalToken"> | string | null
 }
 
 export type ApprovalTokenCreateInput = {
@@ -398,6 +413,7 @@ export type ApprovalTokenCreateInput = {
   replacedBy?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacesInput
   replaces?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacedByInput
   vote?: Prisma.VoteCreateNestedOneWithoutTokenInput
+  ballot?: Prisma.BallotCreateNestedOneWithoutTokensInput
 }
 
 export type ApprovalTokenUncheckedCreateInput = {
@@ -415,6 +431,7 @@ export type ApprovalTokenUncheckedCreateInput = {
   revokedReason?: string | null
   replacedById?: string | null
   failedAttempts?: number
+  ballotId?: string | null
   replaces?: Prisma.ApprovalTokenUncheckedCreateNestedOneWithoutReplacedByInput
   vote?: Prisma.VoteUncheckedCreateNestedOneWithoutTokenInput
 }
@@ -436,6 +453,7 @@ export type ApprovalTokenUpdateInput = {
   replacedBy?: Prisma.ApprovalTokenUpdateOneWithoutReplacesNestedInput
   replaces?: Prisma.ApprovalTokenUpdateOneWithoutReplacedByNestedInput
   vote?: Prisma.VoteUpdateOneWithoutTokenNestedInput
+  ballot?: Prisma.BallotUpdateOneWithoutTokensNestedInput
 }
 
 export type ApprovalTokenUncheckedUpdateInput = {
@@ -453,6 +471,7 @@ export type ApprovalTokenUncheckedUpdateInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replaces?: Prisma.ApprovalTokenUncheckedUpdateOneWithoutReplacedByNestedInput
   vote?: Prisma.VoteUncheckedUpdateOneWithoutTokenNestedInput
 }
@@ -472,6 +491,7 @@ export type ApprovalTokenCreateManyInput = {
   revokedReason?: string | null
   replacedById?: string | null
   failedAttempts?: number
+  ballotId?: string | null
 }
 
 export type ApprovalTokenUpdateManyMutationInput = {
@@ -504,6 +524,7 @@ export type ApprovalTokenUncheckedUpdateManyInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ApprovalTokenListRelationFilter = {
@@ -536,6 +557,7 @@ export type ApprovalTokenCountOrderByAggregateInput = {
   revokedReason?: Prisma.SortOrder
   replacedById?: Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
+  ballotId?: Prisma.SortOrder
 }
 
 export type ApprovalTokenAvgOrderByAggregateInput = {
@@ -557,6 +579,7 @@ export type ApprovalTokenMaxOrderByAggregateInput = {
   revokedReason?: Prisma.SortOrder
   replacedById?: Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
+  ballotId?: Prisma.SortOrder
 }
 
 export type ApprovalTokenMinOrderByAggregateInput = {
@@ -574,6 +597,7 @@ export type ApprovalTokenMinOrderByAggregateInput = {
   revokedReason?: Prisma.SortOrder
   replacedById?: Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
+  ballotId?: Prisma.SortOrder
 }
 
 export type ApprovalTokenSumOrderByAggregateInput = {
@@ -674,6 +698,48 @@ export type ApprovalTokenUncheckedUpdateOneWithoutReplacedByNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ApprovalTokenUpdateToOneWithWhereWithoutReplacedByInput, Prisma.ApprovalTokenUpdateWithoutReplacedByInput>, Prisma.ApprovalTokenUncheckedUpdateWithoutReplacedByInput>
 }
 
+export type ApprovalTokenCreateNestedManyWithoutBallotInput = {
+  create?: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutBallotInput, Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput> | Prisma.ApprovalTokenCreateWithoutBallotInput[] | Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput[]
+  connectOrCreate?: Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput | Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput[]
+  createMany?: Prisma.ApprovalTokenCreateManyBallotInputEnvelope
+  connect?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+}
+
+export type ApprovalTokenUncheckedCreateNestedManyWithoutBallotInput = {
+  create?: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutBallotInput, Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput> | Prisma.ApprovalTokenCreateWithoutBallotInput[] | Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput[]
+  connectOrCreate?: Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput | Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput[]
+  createMany?: Prisma.ApprovalTokenCreateManyBallotInputEnvelope
+  connect?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+}
+
+export type ApprovalTokenUpdateManyWithoutBallotNestedInput = {
+  create?: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutBallotInput, Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput> | Prisma.ApprovalTokenCreateWithoutBallotInput[] | Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput[]
+  connectOrCreate?: Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput | Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput[]
+  upsert?: Prisma.ApprovalTokenUpsertWithWhereUniqueWithoutBallotInput | Prisma.ApprovalTokenUpsertWithWhereUniqueWithoutBallotInput[]
+  createMany?: Prisma.ApprovalTokenCreateManyBallotInputEnvelope
+  set?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  disconnect?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  delete?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  connect?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  update?: Prisma.ApprovalTokenUpdateWithWhereUniqueWithoutBallotInput | Prisma.ApprovalTokenUpdateWithWhereUniqueWithoutBallotInput[]
+  updateMany?: Prisma.ApprovalTokenUpdateManyWithWhereWithoutBallotInput | Prisma.ApprovalTokenUpdateManyWithWhereWithoutBallotInput[]
+  deleteMany?: Prisma.ApprovalTokenScalarWhereInput | Prisma.ApprovalTokenScalarWhereInput[]
+}
+
+export type ApprovalTokenUncheckedUpdateManyWithoutBallotNestedInput = {
+  create?: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutBallotInput, Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput> | Prisma.ApprovalTokenCreateWithoutBallotInput[] | Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput[]
+  connectOrCreate?: Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput | Prisma.ApprovalTokenCreateOrConnectWithoutBallotInput[]
+  upsert?: Prisma.ApprovalTokenUpsertWithWhereUniqueWithoutBallotInput | Prisma.ApprovalTokenUpsertWithWhereUniqueWithoutBallotInput[]
+  createMany?: Prisma.ApprovalTokenCreateManyBallotInputEnvelope
+  set?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  disconnect?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  delete?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  connect?: Prisma.ApprovalTokenWhereUniqueInput | Prisma.ApprovalTokenWhereUniqueInput[]
+  update?: Prisma.ApprovalTokenUpdateWithWhereUniqueWithoutBallotInput | Prisma.ApprovalTokenUpdateWithWhereUniqueWithoutBallotInput[]
+  updateMany?: Prisma.ApprovalTokenUpdateManyWithWhereWithoutBallotInput | Prisma.ApprovalTokenUpdateManyWithWhereWithoutBallotInput[]
+  deleteMany?: Prisma.ApprovalTokenScalarWhereInput | Prisma.ApprovalTokenScalarWhereInput[]
+}
+
 export type ApprovalTokenCreateNestedOneWithoutVoteInput = {
   create?: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutVoteInput, Prisma.ApprovalTokenUncheckedCreateWithoutVoteInput>
   connectOrCreate?: Prisma.ApprovalTokenCreateOrConnectWithoutVoteInput
@@ -706,6 +772,7 @@ export type ApprovalTokenCreateWithoutEligibleVoterInput = {
   replacedBy?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacesInput
   replaces?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacedByInput
   vote?: Prisma.VoteCreateNestedOneWithoutTokenInput
+  ballot?: Prisma.BallotCreateNestedOneWithoutTokensInput
 }
 
 export type ApprovalTokenUncheckedCreateWithoutEligibleVoterInput = {
@@ -722,6 +789,7 @@ export type ApprovalTokenUncheckedCreateWithoutEligibleVoterInput = {
   revokedReason?: string | null
   replacedById?: string | null
   failedAttempts?: number
+  ballotId?: string | null
   replaces?: Prisma.ApprovalTokenUncheckedCreateNestedOneWithoutReplacedByInput
   vote?: Prisma.VoteUncheckedCreateNestedOneWithoutTokenInput
 }
@@ -770,6 +838,7 @@ export type ApprovalTokenScalarWhereInput = {
   revokedReason?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   replacedById?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
   failedAttempts?: Prisma.IntFilter<"ApprovalToken"> | number
+  ballotId?: Prisma.StringNullableFilter<"ApprovalToken"> | string | null
 }
 
 export type ApprovalTokenCreateWithoutReplacesInput = {
@@ -788,6 +857,7 @@ export type ApprovalTokenCreateWithoutReplacesInput = {
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutTokensInput
   replacedBy?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacesInput
   vote?: Prisma.VoteCreateNestedOneWithoutTokenInput
+  ballot?: Prisma.BallotCreateNestedOneWithoutTokensInput
 }
 
 export type ApprovalTokenUncheckedCreateWithoutReplacesInput = {
@@ -805,6 +875,7 @@ export type ApprovalTokenUncheckedCreateWithoutReplacesInput = {
   revokedReason?: string | null
   replacedById?: string | null
   failedAttempts?: number
+  ballotId?: string | null
   vote?: Prisma.VoteUncheckedCreateNestedOneWithoutTokenInput
 }
 
@@ -829,6 +900,7 @@ export type ApprovalTokenCreateWithoutReplacedByInput = {
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutTokensInput
   replaces?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacedByInput
   vote?: Prisma.VoteCreateNestedOneWithoutTokenInput
+  ballot?: Prisma.BallotCreateNestedOneWithoutTokensInput
 }
 
 export type ApprovalTokenUncheckedCreateWithoutReplacedByInput = {
@@ -845,6 +917,7 @@ export type ApprovalTokenUncheckedCreateWithoutReplacedByInput = {
   revokedAt?: Date | string | null
   revokedReason?: string | null
   failedAttempts?: number
+  ballotId?: string | null
   replaces?: Prisma.ApprovalTokenUncheckedCreateNestedOneWithoutReplacedByInput
   vote?: Prisma.VoteUncheckedCreateNestedOneWithoutTokenInput
 }
@@ -881,6 +954,7 @@ export type ApprovalTokenUpdateWithoutReplacesInput = {
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutTokensNestedInput
   replacedBy?: Prisma.ApprovalTokenUpdateOneWithoutReplacesNestedInput
   vote?: Prisma.VoteUpdateOneWithoutTokenNestedInput
+  ballot?: Prisma.BallotUpdateOneWithoutTokensNestedInput
 }
 
 export type ApprovalTokenUncheckedUpdateWithoutReplacesInput = {
@@ -898,6 +972,7 @@ export type ApprovalTokenUncheckedUpdateWithoutReplacesInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vote?: Prisma.VoteUncheckedUpdateOneWithoutTokenNestedInput
 }
 
@@ -928,6 +1003,7 @@ export type ApprovalTokenUpdateWithoutReplacedByInput = {
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutTokensNestedInput
   replaces?: Prisma.ApprovalTokenUpdateOneWithoutReplacedByNestedInput
   vote?: Prisma.VoteUpdateOneWithoutTokenNestedInput
+  ballot?: Prisma.BallotUpdateOneWithoutTokensNestedInput
 }
 
 export type ApprovalTokenUncheckedUpdateWithoutReplacedByInput = {
@@ -944,8 +1020,73 @@ export type ApprovalTokenUncheckedUpdateWithoutReplacedByInput = {
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replaces?: Prisma.ApprovalTokenUncheckedUpdateOneWithoutReplacedByNestedInput
   vote?: Prisma.VoteUncheckedUpdateOneWithoutTokenNestedInput
+}
+
+export type ApprovalTokenCreateWithoutBallotInput = {
+  id?: string
+  tokenHash: string
+  verificationHash: string
+  status?: $Enums.TokenStatus
+  expiresAt: Date | string
+  issuedAt?: Date | string
+  deliveredVia?: string | null
+  openedAt?: Date | string | null
+  usedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedReason?: string | null
+  failedAttempts?: number
+  eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutTokensInput
+  replacedBy?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacesInput
+  replaces?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacedByInput
+  vote?: Prisma.VoteCreateNestedOneWithoutTokenInput
+}
+
+export type ApprovalTokenUncheckedCreateWithoutBallotInput = {
+  id?: string
+  eligibleVoterId: string
+  tokenHash: string
+  verificationHash: string
+  status?: $Enums.TokenStatus
+  expiresAt: Date | string
+  issuedAt?: Date | string
+  deliveredVia?: string | null
+  openedAt?: Date | string | null
+  usedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedReason?: string | null
+  replacedById?: string | null
+  failedAttempts?: number
+  replaces?: Prisma.ApprovalTokenUncheckedCreateNestedOneWithoutReplacedByInput
+  vote?: Prisma.VoteUncheckedCreateNestedOneWithoutTokenInput
+}
+
+export type ApprovalTokenCreateOrConnectWithoutBallotInput = {
+  where: Prisma.ApprovalTokenWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutBallotInput, Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput>
+}
+
+export type ApprovalTokenCreateManyBallotInputEnvelope = {
+  data: Prisma.ApprovalTokenCreateManyBallotInput | Prisma.ApprovalTokenCreateManyBallotInput[]
+  skipDuplicates?: boolean
+}
+
+export type ApprovalTokenUpsertWithWhereUniqueWithoutBallotInput = {
+  where: Prisma.ApprovalTokenWhereUniqueInput
+  update: Prisma.XOR<Prisma.ApprovalTokenUpdateWithoutBallotInput, Prisma.ApprovalTokenUncheckedUpdateWithoutBallotInput>
+  create: Prisma.XOR<Prisma.ApprovalTokenCreateWithoutBallotInput, Prisma.ApprovalTokenUncheckedCreateWithoutBallotInput>
+}
+
+export type ApprovalTokenUpdateWithWhereUniqueWithoutBallotInput = {
+  where: Prisma.ApprovalTokenWhereUniqueInput
+  data: Prisma.XOR<Prisma.ApprovalTokenUpdateWithoutBallotInput, Prisma.ApprovalTokenUncheckedUpdateWithoutBallotInput>
+}
+
+export type ApprovalTokenUpdateManyWithWhereWithoutBallotInput = {
+  where: Prisma.ApprovalTokenScalarWhereInput
+  data: Prisma.XOR<Prisma.ApprovalTokenUpdateManyMutationInput, Prisma.ApprovalTokenUncheckedUpdateManyWithoutBallotInput>
 }
 
 export type ApprovalTokenCreateWithoutVoteInput = {
@@ -964,6 +1105,7 @@ export type ApprovalTokenCreateWithoutVoteInput = {
   eligibleVoter: Prisma.EligibleVoterCreateNestedOneWithoutTokensInput
   replacedBy?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacesInput
   replaces?: Prisma.ApprovalTokenCreateNestedOneWithoutReplacedByInput
+  ballot?: Prisma.BallotCreateNestedOneWithoutTokensInput
 }
 
 export type ApprovalTokenUncheckedCreateWithoutVoteInput = {
@@ -981,6 +1123,7 @@ export type ApprovalTokenUncheckedCreateWithoutVoteInput = {
   revokedReason?: string | null
   replacedById?: string | null
   failedAttempts?: number
+  ballotId?: string | null
   replaces?: Prisma.ApprovalTokenUncheckedCreateNestedOneWithoutReplacedByInput
 }
 
@@ -1016,6 +1159,7 @@ export type ApprovalTokenUpdateWithoutVoteInput = {
   eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutTokensNestedInput
   replacedBy?: Prisma.ApprovalTokenUpdateOneWithoutReplacesNestedInput
   replaces?: Prisma.ApprovalTokenUpdateOneWithoutReplacedByNestedInput
+  ballot?: Prisma.BallotUpdateOneWithoutTokensNestedInput
 }
 
 export type ApprovalTokenUncheckedUpdateWithoutVoteInput = {
@@ -1033,6 +1177,7 @@ export type ApprovalTokenUncheckedUpdateWithoutVoteInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replaces?: Prisma.ApprovalTokenUncheckedUpdateOneWithoutReplacedByNestedInput
 }
 
@@ -1050,6 +1195,7 @@ export type ApprovalTokenCreateManyEligibleVoterInput = {
   revokedReason?: string | null
   replacedById?: string | null
   failedAttempts?: number
+  ballotId?: string | null
 }
 
 export type ApprovalTokenUpdateWithoutEligibleVoterInput = {
@@ -1068,6 +1214,7 @@ export type ApprovalTokenUpdateWithoutEligibleVoterInput = {
   replacedBy?: Prisma.ApprovalTokenUpdateOneWithoutReplacesNestedInput
   replaces?: Prisma.ApprovalTokenUpdateOneWithoutReplacedByNestedInput
   vote?: Prisma.VoteUpdateOneWithoutTokenNestedInput
+  ballot?: Prisma.BallotUpdateOneWithoutTokensNestedInput
 }
 
 export type ApprovalTokenUncheckedUpdateWithoutEligibleVoterInput = {
@@ -1084,12 +1231,86 @@ export type ApprovalTokenUncheckedUpdateWithoutEligibleVoterInput = {
   revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replaces?: Prisma.ApprovalTokenUncheckedUpdateOneWithoutReplacedByNestedInput
   vote?: Prisma.VoteUncheckedUpdateOneWithoutTokenNestedInput
 }
 
 export type ApprovalTokenUncheckedUpdateManyWithoutEligibleVoterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveredVia?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  ballotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ApprovalTokenCreateManyBallotInput = {
+  id?: string
+  eligibleVoterId: string
+  tokenHash: string
+  verificationHash: string
+  status?: $Enums.TokenStatus
+  expiresAt: Date | string
+  issuedAt?: Date | string
+  deliveredVia?: string | null
+  openedAt?: Date | string | null
+  usedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedReason?: string | null
+  replacedById?: string | null
+  failedAttempts?: number
+}
+
+export type ApprovalTokenUpdateWithoutBallotInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveredVia?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  eligibleVoter?: Prisma.EligibleVoterUpdateOneRequiredWithoutTokensNestedInput
+  replacedBy?: Prisma.ApprovalTokenUpdateOneWithoutReplacesNestedInput
+  replaces?: Prisma.ApprovalTokenUpdateOneWithoutReplacedByNestedInput
+  vote?: Prisma.VoteUpdateOneWithoutTokenNestedInput
+}
+
+export type ApprovalTokenUncheckedUpdateWithoutBallotInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveredVia?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  replaces?: Prisma.ApprovalTokenUncheckedUpdateOneWithoutReplacedByNestedInput
+  vote?: Prisma.VoteUncheckedUpdateOneWithoutTokenNestedInput
+}
+
+export type ApprovalTokenUncheckedUpdateManyWithoutBallotInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eligibleVoterId?: Prisma.StringFieldUpdateOperationsInput | string
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   verificationHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
@@ -1121,10 +1342,12 @@ export type ApprovalTokenSelect<ExtArgs extends runtime.Types.Extensions.Interna
   revokedReason?: boolean
   replacedById?: boolean
   failedAttempts?: boolean
+  ballotId?: boolean
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ApprovalToken$replacedByArgs<ExtArgs>
   replaces?: boolean | Prisma.ApprovalToken$replacesArgs<ExtArgs>
   vote?: boolean | Prisma.ApprovalToken$voteArgs<ExtArgs>
+  ballot?: boolean | Prisma.ApprovalToken$ballotArgs<ExtArgs>
 }, ExtArgs["result"]["approvalToken"]>
 
 export type ApprovalTokenSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1142,8 +1365,10 @@ export type ApprovalTokenSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   revokedReason?: boolean
   replacedById?: boolean
   failedAttempts?: boolean
+  ballotId?: boolean
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ApprovalToken$replacedByArgs<ExtArgs>
+  ballot?: boolean | Prisma.ApprovalToken$ballotArgs<ExtArgs>
 }, ExtArgs["result"]["approvalToken"]>
 
 export type ApprovalTokenSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1161,8 +1386,10 @@ export type ApprovalTokenSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   revokedReason?: boolean
   replacedById?: boolean
   failedAttempts?: boolean
+  ballotId?: boolean
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ApprovalToken$replacedByArgs<ExtArgs>
+  ballot?: boolean | Prisma.ApprovalToken$ballotArgs<ExtArgs>
 }, ExtArgs["result"]["approvalToken"]>
 
 export type ApprovalTokenSelectScalar = {
@@ -1180,22 +1407,26 @@ export type ApprovalTokenSelectScalar = {
   revokedReason?: boolean
   replacedById?: boolean
   failedAttempts?: boolean
+  ballotId?: boolean
 }
 
-export type ApprovalTokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eligibleVoterId" | "tokenHash" | "verificationHash" | "status" | "expiresAt" | "issuedAt" | "deliveredVia" | "openedAt" | "usedAt" | "revokedAt" | "revokedReason" | "replacedById" | "failedAttempts", ExtArgs["result"]["approvalToken"]>
+export type ApprovalTokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eligibleVoterId" | "tokenHash" | "verificationHash" | "status" | "expiresAt" | "issuedAt" | "deliveredVia" | "openedAt" | "usedAt" | "revokedAt" | "revokedReason" | "replacedById" | "failedAttempts" | "ballotId", ExtArgs["result"]["approvalToken"]>
 export type ApprovalTokenInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ApprovalToken$replacedByArgs<ExtArgs>
   replaces?: boolean | Prisma.ApprovalToken$replacesArgs<ExtArgs>
   vote?: boolean | Prisma.ApprovalToken$voteArgs<ExtArgs>
+  ballot?: boolean | Prisma.ApprovalToken$ballotArgs<ExtArgs>
 }
 export type ApprovalTokenIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ApprovalToken$replacedByArgs<ExtArgs>
+  ballot?: boolean | Prisma.ApprovalToken$ballotArgs<ExtArgs>
 }
 export type ApprovalTokenIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   eligibleVoter?: boolean | Prisma.EligibleVoterDefaultArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ApprovalToken$replacedByArgs<ExtArgs>
+  ballot?: boolean | Prisma.ApprovalToken$ballotArgs<ExtArgs>
 }
 
 export type $ApprovalTokenPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1205,6 +1436,10 @@ export type $ApprovalTokenPayload<ExtArgs extends runtime.Types.Extensions.Inter
     replacedBy: Prisma.$ApprovalTokenPayload<ExtArgs> | null
     replaces: Prisma.$ApprovalTokenPayload<ExtArgs> | null
     vote: Prisma.$VotePayload<ExtArgs> | null
+    /**
+     * v2.44.0: listic sjednice kojem token pripada; null = klasican token po prijedlogu.
+     */
+    ballot: Prisma.$BallotPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1221,6 +1456,7 @@ export type $ApprovalTokenPayload<ExtArgs extends runtime.Types.Extensions.Inter
     revokedReason: string | null
     replacedById: string | null
     failedAttempts: number
+    ballotId: string | null
   }, ExtArgs["result"]["approvalToken"]>
   composites: {}
 }
@@ -1619,6 +1855,7 @@ export interface Prisma__ApprovalTokenClient<T, Null = never, ExtArgs extends ru
   replacedBy<T extends Prisma.ApprovalToken$replacedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApprovalToken$replacedByArgs<ExtArgs>>): Prisma.Prisma__ApprovalTokenClient<runtime.Types.Result.GetResult<Prisma.$ApprovalTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   replaces<T extends Prisma.ApprovalToken$replacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApprovalToken$replacesArgs<ExtArgs>>): Prisma.Prisma__ApprovalTokenClient<runtime.Types.Result.GetResult<Prisma.$ApprovalTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   vote<T extends Prisma.ApprovalToken$voteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApprovalToken$voteArgs<ExtArgs>>): Prisma.Prisma__VoteClient<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  ballot<T extends Prisma.ApprovalToken$ballotArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApprovalToken$ballotArgs<ExtArgs>>): Prisma.Prisma__BallotClient<runtime.Types.Result.GetResult<Prisma.$BallotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1662,6 +1899,7 @@ export interface ApprovalTokenFieldRefs {
   readonly revokedReason: Prisma.FieldRef<"ApprovalToken", 'String'>
   readonly replacedById: Prisma.FieldRef<"ApprovalToken", 'String'>
   readonly failedAttempts: Prisma.FieldRef<"ApprovalToken", 'Int'>
+  readonly ballotId: Prisma.FieldRef<"ApprovalToken", 'String'>
 }
     
 
@@ -2117,6 +2355,25 @@ export type ApprovalToken$voteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.VoteInclude<ExtArgs> | null
   where?: Prisma.VoteWhereInput
+}
+
+/**
+ * ApprovalToken.ballot
+ */
+export type ApprovalToken$ballotArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Ballot
+   */
+  select?: Prisma.BallotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Ballot
+   */
+  omit?: Prisma.BallotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BallotInclude<ExtArgs> | null
+  where?: Prisma.BallotWhereInput
 }
 
 /**

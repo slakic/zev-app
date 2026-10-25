@@ -1,13 +1,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
-import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, previewSessionVotingOpen, listVotingRules, recordAttendance, listInvitationRecipients, queueMeetingInvitations, linkProposalToAgendaItem } from "@/server/services/meetings";
+import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, previewSessionVotingOpen, listVotingRules, recordAttendance, listInvitationRecipients, queueMeetingInvitations, linkProposalToAgendaItem, getMeetingBallotSummary, dispatchMeetingEmails, reissueBallot, revokeBallot } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import type { DispatchResult } from "@/server/notifications/dailyBudget";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 const MEETING_STATUS_ORDER: MeetingStatus[] = [
@@ -27,6 +28,21 @@ const proposalsHeaders: ColumnSpec[] = [
   { label: "Verzija", align: "right" },
   { label: "Status" },
 ];
+
+const ballotHeaders: ColumnSpec[] = [
+  { label: t("ballot.card.cols.recipient"), priority: "primary" },
+  { label: t("ballot.card.cols.email"), priority: "detail" },
+  { label: t("ballot.card.cols.mail") },
+  { label: t("ballot.card.cols.ballot") },
+  { label: t("ballot.card.cols.voted") },
+  { label: t("ballot.card.cols.actions") },
+];
+
+/** "Poslato 3, u redu 2, neuspješno 0." (+ the daily-limit note) — what the president needs after a send. */
+function dispatchSummary(r: Pick<DispatchResult, "sent" | "pending" | "failed" | "dailyLimitReached">): string {
+  const base = tf("ballot.card.dispatchResult", { sent: r.sent, pending: r.pending, failed: r.failed });
+  return r.dailyLimitReached ? `${base} ${t("ballot.card.dispatchLimit")}` : base;
+}
 
 const attendanceHeaders: ColumnSpec[] = [
   { label: "Lice" },
@@ -90,15 +106,22 @@ async function statusAction(formData: FormData) {
   const actor = await requireActor("PRESIDENT");
   const meetingId = String(formData.get("meetingId"));
   const to = String(formData.get("to")) as MeetingStatus;
+  let note: string | null = null;
   try {
     // v2.43.2: opening the session's voting also opens e-voting on its draft proposals (symmetric with closing).
+    // v2.44.0: that produces one ballot (one e-mail) per recipient; they are sent right after, within the daily limit.
     await advanceMeetingStatus(actor, meetingId, to, (formData.get("reason") as string) || undefined, { openDraftProposals: to === "VOTING_OPEN" });
+    if (to === "VOTING_OPEN") {
+      const d = await dispatchMeetingEmails(actor, meetingId);
+      if (d.attempted > 0 || d.pending > 0) note = dispatchSummary(d);
+    }
     if (to === "INVITATIONS_PREPARED") {
       await generateMeetingInvitationPdf(actor, meetingId);
     }
     if (to === "INVITATIONS_SENT") {
       // Recipients come from the service (F1.5), the same list the confirmation panel counted.
-      await queueMeetingInvitations(actor, meetingId);
+      const q = await queueMeetingInvitations(actor, meetingId);
+      if (q.pending > 0 || q.failed > 0) note = dispatchSummary(q);
     }
     if (to === "MINUTES_FINALIZED") {
       await generateMinutesPdf(actor, meetingId, { finalize: true });
@@ -106,7 +129,43 @@ async function statusAction(formData: FormData) {
   } catch (e) {
     redirect(`/skupstina/${meetingId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
+  if (note) redirect(`/skupstina/${meetingId}?msg=${encodeURIComponent(note)}`);
   revalidatePath(`/skupstina/${meetingId}`);
+}
+
+/** "Pošalji neposlate": returns failed messages to the queue and sends what the daily limit allows. */
+async function dispatchEmailsAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const meetingId = String(formData.get("meetingId"));
+  let note: string;
+  try {
+    note = dispatchSummary(await dispatchMeetingEmails(actor, meetingId, { retryFailed: true }));
+  } catch (e) {
+    redirect(`/skupstina/${meetingId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  redirect(`/skupstina/${meetingId}?msg=${encodeURIComponent(note)}`);
+}
+
+async function ballotAction(formData: FormData) {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  const meetingId = String(formData.get("meetingId"));
+  const ballotId = String(formData.get("ballotId"));
+  const reason = String(formData.get("reason") ?? "");
+  let note: string;
+  try {
+    if (formData.get("op") === "revoke") {
+      await revokeBallot(actor, ballotId, reason);
+      note = t("ballot.card.revoked");
+    } else {
+      const r = await reissueBallot(actor, ballotId, reason);
+      note = t(!r.emailed ? "ballot.card.reissuedNoMail" : r.sent ? "ballot.card.reissuedSent" : "ballot.card.reissuedQueued");
+    }
+  } catch (e) {
+    redirect(`/skupstina/${meetingId}?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}#listici`);
+  }
+  redirect(`/skupstina/${meetingId}?msg=${encodeURIComponent(note)}#listici`);
 }
 
 async function attendanceAction(formData: FormData) {
@@ -152,6 +211,10 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
     ? await Promise.all([listVotingRules(actor), listParties(actor), listBuildings(actor)])
     : [[], [], []];
   const next = NEXT_STATUS[meeting.status];
+  const ballotSummary = isPresident ? await getMeetingBallotSummary(actor, id) : null;
+  // P-L2: the ballot is a locked set of proposals — once voting is open (or ballots exist) a new item goes to a new session.
+  const proposalsLocked =
+    (ballotSummary?.total ?? 0) > 0; // P-L2: only once ballots were issued (live mode without ballots may still add)
   // Closing the session now also closes every proposal still VOTING_OPEN (advanceMeetingStatus,
   // §1.1/§2.6 gap fix) — that's a real, irreversible consequence the plain one-tap status button
   // doesn't carry for any other step, so this one transition alone gets a confirmation that names
@@ -231,6 +294,9 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                 <div className="max-w-[52ch] rounded-lg border border-amber-600/40 bg-amber-50/70 p-3 text-sm text-amber-950">
                   <p className="font-semibold">{t("confirm.sessionOpen.blockedTitle")}</p>
                   <ul className="mt-1 list-disc space-y-0.5 pl-5">
+                    {sessionOpen.sessionErrors.map((e) => (
+                      <li key={e}>{e}</li>
+                    ))}
                     {sessionOpen.proposals.filter((p) => p.errors.length > 0).map((p) => (
                       <li key={p.id}><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink>: {p.errors.join("; ")}</li>
                     ))}
@@ -255,12 +321,19 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                                   kod: p.code,
                                   naslov: p.title,
                                   glasaca: p.preview?.voters ?? 0,
-                                  email: p.preview?.byEmail ?? 0,
                                   bez: p.preview?.withoutEmail ?? 0,
                                 })}
                               </li>
                             ))}
                           </ul>
+                          <p>
+                            {tf("confirm.sessionOpen.messages", { broj: sessionOpen.ballots })}{" "}
+                            {!Number.isFinite(sessionOpen.remainingToday)
+                              ? t("confirm.sessionOpen.limitNone")
+                              : sessionOpen.ballots > sessionOpen.remainingToday
+                                ? tf("confirm.sessionOpen.limitOver", { preostalo: sessionOpen.remainingToday, visak: sessionOpen.ballots - sessionOpen.remainingToday })
+                                : tf("confirm.sessionOpen.limitLeft", { preostalo: sessionOpen.remainingToday })}
+                          </p>
                           <p>{t("confirm.sessionOpen.irreversible")}</p>
                         </>
                       )}
@@ -315,9 +388,11 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                               <RowAction variant="tonal">{tf("confirm.liveLink.link", { kod: p.code })}</RowAction>
                             </form>
                           ))}
-                          <RowActionLink href={`/skupstina/${meeting.id}?tacka=${a.id}#novi-prijedlog`} variant="secondary">
-                            {t("confirm.agenda.addProposal")}
-                          </RowActionLink>
+                          {!proposalsLocked && (
+                            <RowActionLink href={`/skupstina/${meeting.id}?tacka=${a.id}#novi-prijedlog`} variant="secondary">
+                              {t("confirm.agenda.addProposal")}
+                            </RowActionLink>
+                          )}
                         </>
                       )}
                     </>
@@ -354,7 +429,10 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               </tr>
             ))}
           </Table>
-          {isPresident && (
+          {isPresident && proposalsLocked && (
+            <p className="mt-4 text-[15px] text-slate-600">{t("ballot.err.proposalLocked")}</p>
+          )}
+          {isPresident && !proposalsLocked && (
             <details id="novi-prijedlog" open={Boolean(preselectedAgendaItem)} className="group mt-4">
               <ToggleBtn>Novi prijedlog</ToggleBtn>
               <form action={addProposalAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -398,6 +476,93 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             </details>
           )}
         </Card>
+
+        {isPresident && ballotSummary && (ballotSummary.total > 0 || ballotSummary.invitationsQueued > 0) && (
+          <div id="listici" className="scroll-mt-20 lg:col-span-2">
+            <Card title={t("ballot.card.title")} hint={t("ballot.card.hint")}>
+              <p className="text-[15px] text-slate-700">
+                {t("ballot.card.total")}: <b>{ballotSummary.total}</b> · {t("ballot.card.sent")}: <b>{ballotSummary.sent}</b> ·{" "}
+                {t("ballot.card.queued")}: <b>{ballotSummary.queued}</b> · {t("ballot.card.failed")}: <b>{ballotSummary.failed}</b> ·{" "}
+                {t("ballot.card.used")}: <b>{ballotSummary.used}</b>
+              </p>
+              {ballotSummary.invitationsQueued > 0 && (
+                <p className="mt-1 text-[15px] text-slate-700">{tf("ballot.card.invitationsQueued", { broj: ballotSummary.invitationsQueued })}</p>
+              )}
+              {(ballotSummary.queued > 0 || ballotSummary.failed > 0 || ballotSummary.invitationsQueued > 0) && (
+                <form action={dispatchEmailsAction} className="mt-3">
+                  <input type="hidden" name="meetingId" value={meeting.id} />
+                  <SubmitBtn variant="secondary">{t("ballot.card.dispatch")}</SubmitBtn>
+                </form>
+              )}
+              <div className="mt-3">
+                <Table
+                  id="ballots-table"
+                  caption={t("ballot.card.title")}
+                  headers={ballotHeaders}
+                  empty={ballotSummary.rows.length === 0}
+                  emptyTitle={t("ballot.card.none")}
+                >
+                  {ballotSummary.rows.map((r) => (
+                    <tr key={r.ballotId}>
+                      <Td>{r.recipientName}</Td>
+                      <Td>{r.toAddress ?? "—"}</Td>
+                      <Td>
+                        {r.messageStatus ? (
+                          <>
+                            <StatusBadge status={r.messageStatus} label={t(`ballot.card.msgStatus.${r.messageStatus}`)} />
+                            {r.messageStatus === "FAILED" && r.lastError && (
+                              <span className="mt-1 block max-w-[28ch] text-[13px] text-red-700">{r.lastError}</span>
+                            )}
+                          </>
+                        ) : (
+                          t("ballot.card.noMessage")
+                        )}
+                      </Td>
+                      <Td><StatusBadge status={r.status} label={tEnum("tokenStatus", r.status)} /></Td>
+                      <Td>{tf("ballot.card.voted", { glasano: r.proposalsVoted, ukupno: r.proposalsTotal })}</Td>
+                      <Td>
+                        {(r.status === "ACTIVE" || r.status === "REVOKED") && (
+                          <div className="flex flex-wrap gap-1.5">
+                            <div className="min-w-0 max-w-full">
+                              <ConfirmAction
+                                trigger={t("ballot.card.reissueTrigger")}
+                                triggerVariant="caution"
+                                title={t("ballot.card.reissueTitle")}
+                                body={<p className="text-sm text-amber-950">{tf("ballot.card.reissueBody", { ime: r.recipientName })}</p>}
+                                confirmLabel={t("ballot.card.reissueConfirm")}
+                                confirmVariant="caution"
+                                action={ballotAction}
+                                hiddenFields={{ meetingId: meeting.id, ballotId: r.ballotId, op: "reissue" }}
+                              >
+                                <Field label={t("ballot.card.reasonLabel")}><input name="reason" required className={inputCls} /></Field>
+                              </ConfirmAction>
+                            </div>
+                            {r.status === "ACTIVE" && (
+                              <div className="min-w-0 max-w-full">
+                                <ConfirmAction
+                                  trigger={t("ballot.card.revokeTrigger")}
+                                  triggerVariant="caution"
+                                  title={t("ballot.card.revokeTitle")}
+                                  body={<p className="text-sm text-amber-950">{tf("ballot.card.revokeBody", { ime: r.recipientName })}</p>}
+                                  confirmLabel={t("ballot.card.revokeConfirm")}
+                                  confirmVariant="caution"
+                                  action={ballotAction}
+                                  hiddenFields={{ meetingId: meeting.id, ballotId: r.ballotId, op: "revoke" }}
+                                >
+                                  <Field label={t("ballot.card.reasonLabel")}><input name="reason" required className={inputCls} /></Field>
+                                </ConfirmAction>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </Td>
+                    </tr>
+                  ))}
+                </Table>
+              </div>
+            </Card>
+          </div>
+        )}
 
         {isPresident && (
           <Card title="Prisustvo (za sjednicu uživo)">

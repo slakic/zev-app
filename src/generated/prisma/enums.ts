@@ -201,6 +201,16 @@ export const TokenStatus = {
 export type TokenStatus = (typeof TokenStatus)[keyof typeof TokenStatus]
 
 
+export const BallotStatus = {
+  ACTIVE: 'ACTIVE',
+  USED: 'USED',
+  REVOKED: 'REVOKED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type BallotStatus = (typeof BallotStatus)[keyof typeof BallotStatus]
+
+
 export const VoteChoice = {
   APPROVE: 'APPROVE',
   REJECT: 'REJECT',

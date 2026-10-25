@@ -40,6 +40,49 @@ const en: DeepPartial<typeof srLatn> = {
     CHANGE_TYPE: "Type change",
   },
   /** Confirmation steps (v2.42.0) — `{name}` placeholders are the same as in sr-Latn. */
+  ballot: {
+    err: {
+      proposalLocked: "Ballots have been sent for this session — a new proposal goes to a new session.",
+      tokenInBallot: "This personal link belongs to the session ballot — reissue and revoke are done on the ballot (the “Ballots” card on the session page).",
+      reasonReissue: "Reissuing a ballot requires a reason.",
+      reasonRevoke: "Revoking a ballot requires a reason.",
+      usedReissue: "A used ballot cannot be reissued.",
+      usedRevoke: "A used ballot cannot be revoked.",
+      alreadySuperseded: "The ballot has already been replaced by a new one.",
+      notActive: "Only an active ballot can be revoked.",
+      nothingToReissue: "The ballot has no unused votes — nothing to reissue.",
+    },
+    pre: {
+      differentDeadlines: "The session's proposals have different voting deadlines: {prijedlozi}. A ballot is valid until one deadline — align the deadline of all proposals.",
+    },
+    mail: {
+      subject: "Voting: {sjednica} — {broj} proposals (until {rok})",
+      subjectOne: "Voting: {sjednica} — 1 proposal (until {rok})",
+      reissueSubject: "New voting link: {sjednica}",
+      greeting: "Dear {ime},",
+      intro: "you are invited to vote on the proposals of the session “{sjednica}”:",
+      introProxy: "as the proxy of {vlasnici}, you are invited to vote on the proposals of the session “{sjednica}”:",
+      reissueNote: "a new personal voting link has been issued for the session “{sjednica}”. The previous link no longer works. Proposals:",
+      link: "Your personal voting link: {link}",
+      code: "Your verification code: {kod}",
+      deadline: "Voting is open until {rok}.",
+      allAtOnce: "On that page you vote on all proposals at once; an answer is required for each. If you do not wish to take a position on a proposal, choose “Abstain”.",
+      personal: "The link is personal and must not be forwarded. The verification code is needed to confirm your identity.",
+    },
+    page: {
+      title: "Ballot",
+      until: "Voting is open until {rok}",
+      counter: "Selected {izabrano} of {ukupno}",
+      review: "Review and confirm",
+      back: "Back to edit",
+      send: "Yes, submit my vote",
+      print: "Print",
+    },
+    card: {
+      title: "Ballots",
+      dispatch: "Send unsent",
+    },
+  },
   confirm: {
     allocation: {
       chooseInvoice: "— choose an invoice —",

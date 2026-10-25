@@ -387,7 +387,7 @@ F3, F5, F6 i F7 su međusobno nezavisne, mogu ići bilo kojim redom i nijedna ne
 
 - **Svrha:** pravno obavezujuće izjašnjenje je potpuno, nedvosmisleno i ima čitljiv dokaz. Rješava K6, V11 (ostatak), V12, V13 i V-N07–V-N10, V-N27.
 - **Šta se mijenja** (V-R03, V-R04, V-R09):
-  - **Prilozi:** prikazani na listiću.
+  - **Prilozi:** prikazani na listiću. *(v2.44.0: V-R03 djelimično pokriven na listiću po sjednici — prilozi navedeni po nazivu/veličini/otisku, greška čuva izbor i izjavu, otisak pod „Tehnički detalji”, potvrda sa brojem po prijedlogu i „Odštampaj”; preuzimanje priloga i klasična stranica jednog prijedloga ostaju za F4.)*
   - **Dugmad:** okidač je `secondary`, a jedino `primary` je u panelu potvrde (D6).
   - **Greška:** čuva izbor i izjavu.
   - **Čitljivost:** sve ≥13px; tehnički otisak ide pod „Tehnički detalji”.

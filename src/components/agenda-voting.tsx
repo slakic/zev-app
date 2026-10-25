@@ -223,7 +223,7 @@ export function AgendaItemPanel({
   if (proposal.status === "VOTING_OPEN") {
     const notYetVoted = activeVoters.filter((v) => v.present && !v.voted);
     const electronic = activeVoters.filter((v) => v.voted && v.channel === "ELECTRONIC");
-    const pendingElectronic = activeVoters.filter((v) => !v.present && !v.voted && v.deliveredVia === "EMAIL");
+    const pendingElectronic = activeVoters.filter((v) => !v.present && !v.voted && (v.deliveredVia === "EMAIL" || v.deliveredVia === "BALLOT"));
     const noChannel = activeVoters.filter((v) => !v.present && !v.voted && !v.deliveredVia);
     const anyFailed = pendingElectronic.some((v) => v.notifyStatus === "FAILED");
 

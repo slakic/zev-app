@@ -23,6 +23,11 @@ describe("advanceMeetingStatus(VOTING_OPEN, { openDraftProposals })", () => {
     expect(await prisma.eligibleVoter.count({ where: { proposalId: proposal.id } })).toBe(pre.proposals[0].preview!.voters);
     const ev = await prisma.auditEvent.findFirstOrThrow({ where: { action: "meeting.status", targetId: meeting.id }, orderBy: { createdAt: "desc" } });
     expect((ev.after as { autoOpenedProposalIds: string[] }).autoOpenedProposalIds).toEqual([proposal.id]);
+    // v2.44.0: the session produces ballots (one per recipient) instead of one message per proposal.
+    expect(await prisma.notificationMessage.count({ where: { relatedType: "Proposal", relatedId: proposal.id } })).toBe(0);
+    const ballots = await prisma.ballot.findMany({ where: { meetingId: meeting.id } });
+    expect(ballots).toHaveLength(pre.ballots);
+    expect(await prisma.notificationMessage.count({ where: { template: "ballot-link", relatedType: "Ballot", relatedId: { in: ballots.map((b) => b.id) } } })).toBe(ballots.length);
   });
 
   it("without the option (live mode) only the session status changes", async () => {

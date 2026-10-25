@@ -10,12 +10,13 @@
 // progress): who you are, what you're voting on, and your choice + a real confirm step.
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { inspectApprovalToken, submitVote } from "@/server/services/meetings";
+import { inspectApprovalToken, inspectBallot, isBallotLink, submitVote } from "@/server/services/meetings";
 import { sha256 } from "@/server/auth/tokens";
 import { formatDateTime, t, tf } from "@/lib/i18n";
 import { formatWeight } from "@/lib/money";
 import { Card, Field, inputCls, SubmitBtn, ToggleBtn } from "@/components/ui";
-import { AuthBrandHeader } from "@/components/auth-shell";
+import { Shell } from "./shell";
+import { BallotForm } from "./ballot-form";
 
 const ERR_TEXT: Record<string, string> = {
   not_found: "Link nije prepoznat. Provjerite da li ste otvorili kompletan link iz poruke.",
@@ -26,6 +27,7 @@ const ERR_TEXT: Record<string, string> = {
   rate_limited: "Previše pokušaja. Pokušajte ponovo za 15 minuta.",
   bad_code: "Verifikacioni kod nije ispravan. Provjerite kod iz poruke.",
   already_voted: "Za ovog vlasnika je izjašnjavanje već evidentirano.",
+  use_ballot: t("ballot.errors.use_ballot"),
 };
 
 async function voteAction(formData: FormData) {
@@ -75,6 +77,46 @@ export default async function VotePage({ params, searchParams }: {
 
   const h = await headers();
   const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+
+  // v2.44.0: a link from a session e-mail opens the ballot with ALL the session's proposals.
+  if (await isBallotLink(token)) {
+    const ballot = await inspectBallot(token, ip ? sha256(ip) : null);
+    if (!ballot.ok) {
+      return (
+        <Shell>
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            {t(`ballot.errors.${ballot.error}`)}
+          </div>
+        </Shell>
+      );
+    }
+    return (
+      <Shell zevName={ballot.zevName}>
+        <BallotForm
+          token={token}
+          meetingTitle={ballot.meetingTitle}
+          recipientName={ballot.recipientName}
+          untilLabel={formatDateTime(ballot.expiresAt)}
+          ackText={ballot.ackText}
+          proposals={ballot.proposals.map((p) => ({
+            proposalId: p.proposalId,
+            code: p.code,
+            version: p.version,
+            title: p.title,
+            text: p.text,
+            rationale: p.rationale,
+            contentHash: p.contentHash,
+            attachments: p.attachments.map((a) => ({ id: a.id, filename: a.filename, size: a.size, sha256: a.sha256 })),
+            state: p.state,
+            ownerName: p.ownerName,
+            proxyName: p.proxyName,
+            subjectName: p.subjectName,
+          }))}
+        />
+      </Shell>
+    );
+  }
+
   const info = await inspectApprovalToken(token, ip ? sha256(ip) : null);
 
   if (!info.ok) {
@@ -186,27 +228,5 @@ export default async function VotePage({ params, searchParams }: {
         </Card>
       </div>
     </Shell>
-  );
-}
-
-function Shell({ zevName, children }: { zevName?: string; children: React.ReactNode }) {
-  return (
-    <main className="mx-auto min-h-screen max-w-2xl p-4 md:py-10">
-      <div className="mb-6 flex justify-center md:justify-start">
-        <AuthBrandHeader />
-      </div>
-      {children}
-      <div className="mt-6 space-y-2 text-center text-xs text-slate-500 md:text-left">
-        <p>
-          Ovaj postupak predstavlja evidentirano elektronsko odobravanje, a ne kvalifikovani
-          elektronski potpis.
-        </p>
-        <p>
-          {zevName ? `Ovo izjašnjavanje je za ${zevName}. ` : ""}
-          Ako vaš kod ne radi, link je istekao, ili imate bilo koje pitanje, obratite se
-          predsjedniku vaše zajednice etažnih vlasnika.
-        </p>
-      </div>
-    </main>
   );
 }

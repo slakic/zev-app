@@ -168,6 +168,12 @@ export type EligibleVoter = Prisma.EligibleVoterModel
  */
 export type ApprovalToken = Prisma.ApprovalTokenModel
 /**
+ * Model Ballot
+ * Glasacki listic po sjednici (v2.44.0): jedan link i jedan kod nad tokenima svih prijedloga sjednice
+ * za jednog primaoca. Dokaz ostaje po prijedlogu (Vote + ApprovalToken); listic je samo zajednicki kljuc.
+ */
+export type Ballot = Prisma.BallotModel
+/**
  * Model Vote
  * Immutable vote evidence. UPDATE/DELETE blocked by DB trigger.
  * Corrections are separate rows referencing correctionOfId with a reason.

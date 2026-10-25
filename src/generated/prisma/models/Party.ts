@@ -327,6 +327,7 @@ export type PartyWhereInput = {
   eligibleProxyFor?: Prisma.EligibleVoterListRelationFilter
   votesCast?: Prisma.VoteListRelationFilter
   votesRepresented?: Prisma.VoteListRelationFilter
+  ballotsReceived?: Prisma.BallotListRelationFilter
   reportedIssues?: Prisma.MaintenanceIssueListRelationFilter
   responsibleForIssues?: Prisma.MaintenanceIssueListRelationFilter
   notifications?: Prisma.NotificationMessageListRelationFilter
@@ -374,6 +375,7 @@ export type PartyOrderByWithRelationInput = {
   eligibleProxyFor?: Prisma.EligibleVoterOrderByRelationAggregateInput
   votesCast?: Prisma.VoteOrderByRelationAggregateInput
   votesRepresented?: Prisma.VoteOrderByRelationAggregateInput
+  ballotsReceived?: Prisma.BallotOrderByRelationAggregateInput
   reportedIssues?: Prisma.MaintenanceIssueOrderByRelationAggregateInput
   responsibleForIssues?: Prisma.MaintenanceIssueOrderByRelationAggregateInput
   notifications?: Prisma.NotificationMessageOrderByRelationAggregateInput
@@ -425,6 +427,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   eligibleProxyFor?: Prisma.EligibleVoterListRelationFilter
   votesCast?: Prisma.VoteListRelationFilter
   votesRepresented?: Prisma.VoteListRelationFilter
+  ballotsReceived?: Prisma.BallotListRelationFilter
   reportedIssues?: Prisma.MaintenanceIssueListRelationFilter
   responsibleForIssues?: Prisma.MaintenanceIssueListRelationFilter
   notifications?: Prisma.NotificationMessageListRelationFilter
@@ -524,6 +527,7 @@ export type PartyCreateInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -569,6 +573,7 @@ export type PartyUncheckedCreateInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -614,6 +619,7 @@ export type PartyUpdateInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -659,6 +665,7 @@ export type PartyUncheckedUpdateInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -1100,6 +1107,20 @@ export type PartyUpdateOneWithoutEligibleProxyForNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutEligibleProxyForInput, Prisma.PartyUpdateWithoutEligibleProxyForInput>, Prisma.PartyUncheckedUpdateWithoutEligibleProxyForInput>
 }
 
+export type PartyCreateNestedOneWithoutBallotsReceivedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutBallotsReceivedInput, Prisma.PartyUncheckedCreateWithoutBallotsReceivedInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutBallotsReceivedInput
+  connect?: Prisma.PartyWhereUniqueInput
+}
+
+export type PartyUpdateOneRequiredWithoutBallotsReceivedNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutBallotsReceivedInput, Prisma.PartyUncheckedCreateWithoutBallotsReceivedInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutBallotsReceivedInput
+  upsert?: Prisma.PartyUpsertWithoutBallotsReceivedInput
+  connect?: Prisma.PartyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutBallotsReceivedInput, Prisma.PartyUpdateWithoutBallotsReceivedInput>, Prisma.PartyUncheckedUpdateWithoutBallotsReceivedInput>
+}
+
 export type PartyCreateNestedOneWithoutVotesCastInput = {
   create?: Prisma.XOR<Prisma.PartyCreateWithoutVotesCastInput, Prisma.PartyUncheckedCreateWithoutVotesCastInput>
   connectOrCreate?: Prisma.PartyCreateOrConnectWithoutVotesCastInput
@@ -1270,6 +1291,7 @@ export type PartyCreateWithoutLegacyUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -1314,6 +1336,7 @@ export type PartyUncheckedCreateWithoutLegacyUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -1363,6 +1386,7 @@ export type PartyCreateWithoutUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -1407,6 +1431,7 @@ export type PartyUncheckedCreateWithoutUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -1472,6 +1497,7 @@ export type PartyUpdateWithoutLegacyUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -1516,6 +1542,7 @@ export type PartyUncheckedUpdateWithoutLegacyUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -1603,6 +1630,7 @@ export type PartyCreateWithoutZevInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -1647,6 +1675,7 @@ export type PartyUncheckedCreateWithoutZevInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -1717,6 +1746,7 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -1761,6 +1791,7 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -1810,6 +1841,7 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -1854,6 +1886,7 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -1903,6 +1936,7 @@ export type PartyCreateWithoutVotingRepresentativeForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -1947,6 +1981,7 @@ export type PartyUncheckedCreateWithoutVotingRepresentativeForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -2007,6 +2042,7 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -2051,6 +2087,7 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -2106,6 +2143,7 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -2150,6 +2188,7 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -2205,6 +2244,7 @@ export type PartyUpdateWithoutVotingRepresentativeForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -2249,6 +2289,7 @@ export type PartyUncheckedUpdateWithoutVotingRepresentativeForInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -2293,6 +2334,7 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -2337,6 +2379,7 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -2397,6 +2440,7 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -2441,6 +2485,7 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -2485,6 +2530,7 @@ export type PartyCreateWithoutOccupanciesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -2529,6 +2575,7 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -2589,6 +2636,7 @@ export type PartyUpdateWithoutOccupanciesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -2633,6 +2681,7 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -2677,6 +2726,7 @@ export type PartyCreateWithoutProxiesGivenInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -2721,6 +2771,7 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -2770,6 +2821,7 @@ export type PartyCreateWithoutProxiesHeldInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -2814,6 +2866,7 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -2874,6 +2927,7 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -2918,6 +2972,7 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -2973,6 +3028,7 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -3017,6 +3073,7 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -3061,6 +3118,7 @@ export type PartyCreateWithoutOfficeTermsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -3105,6 +3163,7 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -3165,6 +3224,7 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -3209,6 +3269,7 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -3254,6 +3315,7 @@ export type PartyCreateWithoutAttendancesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -3298,6 +3360,7 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -3358,6 +3421,7 @@ export type PartyUpdateWithoutAttendancesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -3402,6 +3466,7 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -3445,6 +3510,7 @@ export type PartyCreateWithoutEligibleVotersInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -3489,6 +3555,7 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -3538,6 +3605,7 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -3582,6 +3650,7 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -3642,6 +3711,7 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -3686,6 +3756,7 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -3741,6 +3812,7 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -3783,6 +3855,203 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
+  votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyCreateWithoutBallotsReceivedInput = {
+  id?: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+}
+
+export type PartyUncheckedCreateWithoutBallotsReceivedInput = {
+  id?: string
+  zevId: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+}
+
+export type PartyCreateOrConnectWithoutBallotsReceivedInput = {
+  where: Prisma.PartyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartyCreateWithoutBallotsReceivedInput, Prisma.PartyUncheckedCreateWithoutBallotsReceivedInput>
+}
+
+export type PartyUpsertWithoutBallotsReceivedInput = {
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutBallotsReceivedInput, Prisma.PartyUncheckedUpdateWithoutBallotsReceivedInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutBallotsReceivedInput, Prisma.PartyUncheckedCreateWithoutBallotsReceivedInput>
+  where?: Prisma.PartyWhereInput
+}
+
+export type PartyUpdateToOneWithWhereWithoutBallotsReceivedInput = {
+  where?: Prisma.PartyWhereInput
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutBallotsReceivedInput, Prisma.PartyUncheckedUpdateWithoutBallotsReceivedInput>
+}
+
+export type PartyUpdateWithoutBallotsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateWithoutBallotsReceivedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
@@ -3829,6 +4098,7 @@ export type PartyCreateWithoutVotesCastInput = {
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -3873,6 +4143,7 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -3922,6 +4193,7 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -3966,6 +4238,7 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -4026,6 +4299,7 @@ export type PartyUpdateWithoutVotesCastInput = {
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -4070,6 +4344,7 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -4125,6 +4400,7 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -4169,6 +4445,7 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -4213,6 +4490,7 @@ export type PartyCreateWithoutInvoicesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -4257,6 +4535,7 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -4317,6 +4596,7 @@ export type PartyUpdateWithoutInvoicesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -4361,6 +4641,7 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -4405,6 +4686,7 @@ export type PartyCreateWithoutPaymentsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -4449,6 +4731,7 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -4509,6 +4792,7 @@ export type PartyUpdateWithoutPaymentsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -4553,6 +4837,7 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -4598,6 +4883,7 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -4642,6 +4928,7 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -4702,6 +4989,7 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -4746,6 +5034,7 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -4790,6 +5079,7 @@ export type PartyCreateWithoutReportedIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
@@ -4834,6 +5124,7 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
@@ -4883,6 +5174,7 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
@@ -4927,6 +5219,7 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
@@ -4987,6 +5280,7 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
@@ -5031,6 +5325,7 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
@@ -5086,6 +5381,7 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
@@ -5130,6 +5426,7 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
@@ -5174,6 +5471,7 @@ export type PartyCreateWithoutNotificationsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
@@ -5218,6 +5516,7 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
@@ -5278,6 +5577,7 @@ export type PartyUpdateWithoutNotificationsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
@@ -5322,6 +5622,7 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
@@ -5366,6 +5667,7 @@ export type PartyCreateWithoutViberSubscriberInput = {
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
@@ -5410,6 +5712,7 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
   votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
@@ -5470,6 +5773,7 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -5514,6 +5818,7 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -5580,6 +5885,7 @@ export type PartyUpdateWithoutUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -5624,6 +5930,7 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -5714,6 +6021,7 @@ export type PartyUpdateWithoutZevInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
@@ -5758,6 +6066,7 @@ export type PartyUncheckedUpdateWithoutZevInput = {
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
   votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
@@ -5809,6 +6118,7 @@ export type PartyCountOutputType = {
   eligibleProxyFor: number
   votesCast: number
   votesRepresented: number
+  ballotsReceived: number
   reportedIssues: number
   responsibleForIssues: number
   notifications: number
@@ -5831,6 +6141,7 @@ export type PartyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   eligibleProxyFor?: boolean | PartyCountOutputTypeCountEligibleProxyForArgs
   votesCast?: boolean | PartyCountOutputTypeCountVotesCastArgs
   votesRepresented?: boolean | PartyCountOutputTypeCountVotesRepresentedArgs
+  ballotsReceived?: boolean | PartyCountOutputTypeCountBallotsReceivedArgs
   reportedIssues?: boolean | PartyCountOutputTypeCountReportedIssuesArgs
   responsibleForIssues?: boolean | PartyCountOutputTypeCountResponsibleForIssuesArgs
   notifications?: boolean | PartyCountOutputTypeCountNotificationsArgs
@@ -5949,6 +6260,13 @@ export type PartyCountOutputTypeCountVotesRepresentedArgs<ExtArgs extends runtim
 /**
  * PartyCountOutputType without action
  */
+export type PartyCountOutputTypeCountBallotsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BallotWhereInput
+}
+
+/**
+ * PartyCountOutputType without action
+ */
 export type PartyCountOutputTypeCountReportedIssuesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MaintenanceIssueWhereInput
 }
@@ -6021,6 +6339,7 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   eligibleProxyFor?: boolean | Prisma.Party$eligibleProxyForArgs<ExtArgs>
   votesCast?: boolean | Prisma.Party$votesCastArgs<ExtArgs>
   votesRepresented?: boolean | Prisma.Party$votesRepresentedArgs<ExtArgs>
+  ballotsReceived?: boolean | Prisma.Party$ballotsReceivedArgs<ExtArgs>
   reportedIssues?: boolean | Prisma.Party$reportedIssuesArgs<ExtArgs>
   responsibleForIssues?: boolean | Prisma.Party$responsibleForIssuesArgs<ExtArgs>
   notifications?: boolean | Prisma.Party$notificationsArgs<ExtArgs>
@@ -6125,6 +6444,7 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   eligibleProxyFor?: boolean | Prisma.Party$eligibleProxyForArgs<ExtArgs>
   votesCast?: boolean | Prisma.Party$votesCastArgs<ExtArgs>
   votesRepresented?: boolean | Prisma.Party$votesRepresentedArgs<ExtArgs>
+  ballotsReceived?: boolean | Prisma.Party$ballotsReceivedArgs<ExtArgs>
   reportedIssues?: boolean | Prisma.Party$reportedIssuesArgs<ExtArgs>
   responsibleForIssues?: boolean | Prisma.Party$responsibleForIssuesArgs<ExtArgs>
   notifications?: boolean | Prisma.Party$notificationsArgs<ExtArgs>
@@ -6173,6 +6493,7 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     eligibleProxyFor: Prisma.$EligibleVoterPayload<ExtArgs>[]
     votesCast: Prisma.$VotePayload<ExtArgs>[]
     votesRepresented: Prisma.$VotePayload<ExtArgs>[]
+    ballotsReceived: Prisma.$BallotPayload<ExtArgs>[]
     reportedIssues: Prisma.$MaintenanceIssuePayload<ExtArgs>[]
     responsibleForIssues: Prisma.$MaintenanceIssuePayload<ExtArgs>[]
     notifications: Prisma.$NotificationMessagePayload<ExtArgs>[]
@@ -6623,6 +6944,7 @@ export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Ty
   eligibleProxyFor<T extends Prisma.Party$eligibleProxyForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$eligibleProxyForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EligibleVoterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   votesCast<T extends Prisma.Party$votesCastArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$votesCastArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   votesRepresented<T extends Prisma.Party$votesRepresentedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$votesRepresentedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ballotsReceived<T extends Prisma.Party$ballotsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$ballotsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BallotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reportedIssues<T extends Prisma.Party$reportedIssuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$reportedIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   responsibleForIssues<T extends Prisma.Party$responsibleForIssuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$responsibleForIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Party$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7451,6 +7773,30 @@ export type Party$votesRepresentedArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.VoteScalarFieldEnum | Prisma.VoteScalarFieldEnum[]
+}
+
+/**
+ * Party.ballotsReceived
+ */
+export type Party$ballotsReceivedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Ballot
+   */
+  select?: Prisma.BallotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Ballot
+   */
+  omit?: Prisma.BallotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BallotInclude<ExtArgs> | null
+  where?: Prisma.BallotWhereInput
+  orderBy?: Prisma.BallotOrderByWithRelationInput | Prisma.BallotOrderByWithRelationInput[]
+  cursor?: Prisma.BallotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BallotScalarFieldEnum | Prisma.BallotScalarFieldEnum[]
 }
 
 /**

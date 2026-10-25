@@ -13,11 +13,12 @@ import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/t
 import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
 import { assemblyVotingSubjects, boardVotingBasis, unitOwnershipWarnings, activeProxyFor, activeProxiesFor, partyDisplayName, listOfficeHolders, type VotingSubject } from "./ownership";
 import { unitsInScope } from "./property";
-import { queueNotification } from "@/server/notifications/service";
+import { queueNotification, enqueueNotification } from "@/server/notifications/service";
+import { dispatchQueued, requeueFailed, remainingToday, dailyLimit, SENT_STATUSES, type DispatchResult } from "@/server/notifications/dailyBudget";
 import { dec, ZERO } from "@/lib/money";
 import { getEnv } from "@/lib/env";
-import { formatDateTime, tf } from "@/lib/i18n";
-import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma, Party } from "@/generated/prisma/client";
+import { formatDateTime, t, tf } from "@/lib/i18n";
+import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma, Party, Proposal, EligibleVoter, ApprovalToken } from "@/generated/prisma/client";
 
 const MEETING_FLOW: MeetingStatus[] = [
   "DRAFT", "SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT",
@@ -87,14 +88,17 @@ export async function listInvitationRecipients(
 
 /** Queues the "Poziv na sjednicu" e-mail to every `listInvitationRecipients().withEmail` party
  *  (called when the meeting moves to INVITATIONS_SENT). Returns how many were queued and how many
- *  recipients had no address — the same two numbers the confirmation panel showed. */
+ *  recipients had no address — the same two numbers the confirmation panel showed.
+ *  Since v2.44.0 the messages are only written to the outbox and then sent by the shared limited
+ *  dispatcher (same daily budget as invoices and ballots); what does not fit stays QUEUED and goes out
+ *  with "Pošalji neposlate" on the meeting page (`dispatchMeetingEmails`). */
 export async function queueMeetingInvitations(actor: Actor, meetingId: string) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
   const { withEmail, withoutEmailCount } = await listInvitationRecipients(actor, meetingId);
   for (const o of withEmail) {
-    await queueNotification({
+    await enqueueNotification({
       zevId,
       channel: "EMAIL",
       recipientId: o.id,
@@ -106,7 +110,11 @@ export async function queueMeetingInvitations(actor: Actor, meetingId: string) {
       relatedId: meetingId,
     });
   }
-  return { queued: withEmail.length, withoutEmailCount };
+  const dispatch = await dispatchQueued(
+    { zevId, relatedType: "Meeting", relatedId: meetingId, template: "meeting-invitation" },
+    { max: MEETING_EMAIL_DISPATCH_MAX, budgetMs: MEETING_EMAIL_DISPATCH_BUDGET_MS }
+  );
+  return { queued: withEmail.length, withoutEmailCount, ...dispatch };
 }
 
 /**
@@ -304,6 +312,12 @@ export async function updateMeeting(actor: Actor, id: string, data: Prisma.Meeti
  * What moving a session to VOTING_OPEN with `openDraftProposals` would do (v2.43.2): one row per
  * proposal still in DRAFT, with the same delivery preview and preconditions as opening it by
  * hand. `blocked` is true when any proposal cannot be opened — then nothing is opened.
+ *
+ * v2.44.0 (ballot): opening delivers ONE ballot e-mail per recipient instead of one message per
+ * proposal, so the result also carries `ballots` (distinct recipients = messages that will be
+ * queued) and the daily-limit state. P-L3: all draft proposals must have the same effective
+ * deadline (`votingClosesAt ?? meeting.eVoteClosesAt`) — the ballot is valid until that one date;
+ * otherwise `sessionErrors` names the proposals with different deadlines and `blocked` is true.
  */
 export async function previewSessionVotingOpen(actor: Actor, meetingId: string) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
@@ -315,19 +329,42 @@ export async function previewSessionVotingOpen(actor: Actor, meetingId: string) 
     select: { id: true, code: true, title: true, votingRuleId: true, votingClosesAt: true },
   });
   const rows = [];
+  const ballotRecipients = new Set<string>();
+  const sessionErrors: string[] = [];
+  const deadlines = new Set(drafts.map((d) => (d.votingClosesAt ?? meeting.eVoteClosesAt)?.getTime()).filter((x): x is number => x !== undefined));
+  if (deadlines.size > 1) {
+    sessionErrors.push(
+      tf("ballot.pre.differentDeadlines", {
+        prijedlozi: drafts
+          .map((d) => `${d.code} (${formatDateTime(d.votingClosesAt ?? meeting.eVoteClosesAt)})`)
+          .join(", "),
+      })
+    );
+  }
   for (const d of drafts) {
     const errors: string[] = [];
     if (!d.votingRuleId) errors.push("nema pravila glasanja");
     if (!(d.votingClosesAt ?? meeting.eVoteClosesAt)) errors.push("nema roka glasanja");
     let preview: { voters: number; byEmail: number; viaProxy: number; withoutEmail: number } | null = null;
     if (errors.length === 0) {
-      const p = await previewVotingDelivery(actor, d.id, "ALL");
+      const p = await previewAllDelivery(actor, d.id);
       errors.push(...p.preconditionErrors);
       preview = { voters: p.voters, byEmail: p.byEmail, viaProxy: p.viaProxy, withoutEmail: p.withoutEmail };
+      for (const id of p.recipientPartyIds) ballotRecipients.add(id);
     }
     rows.push({ id: d.id, code: d.code, title: d.title, errors, preview });
   }
-  return { proposals: rows, blocked: rows.some((r) => r.errors.length > 0) };
+  const limit = dailyLimit();
+  return {
+    proposals: rows,
+    sessionErrors,
+    blocked: rows.some((r) => r.errors.length > 0) || sessionErrors.length > 0,
+    /** Ballot e-mails this step will queue: one per distinct recipient (with an address) over all draft proposals. */
+    ballots: ballotRecipients.size,
+    /** Remaining room in today's e-mail limit (`Infinity` = no limit in this environment). */
+    remainingToday: await remainingToday(),
+    dailyLimit: limit,
+  };
 }
 
 export async function advanceMeetingStatus(
@@ -363,12 +400,13 @@ export async function advanceMeetingStatus(
   if (to === "VOTING_OPEN" && toIdx > fromIdx && opts?.openDraftProposals) {
     const pre = await previewSessionVotingOpen(actor, id);
     if (pre.blocked) {
-      const why = pre.proposals.filter((p) => p.errors.length > 0).map((p) => `${p.code}: ${p.errors.join("; ")}`);
+      const why = [...pre.sessionErrors, ...pre.proposals.filter((p) => p.errors.length > 0).map((p) => `${p.code}: ${p.errors.join("; ")}`)];
       throw new Error(`Glasanje nije otvoreno — ${why.join(" · ")}`);
     }
     for (const p of pre.proposals) {
       try {
-        await openVoting(actor, p.id);
+        // v2.44.0: tokens and the voting base only — NO per-proposal e-mail; one ballot per recipient follows below.
+        await openVoting(actor, p.id, { delivery: "BALLOT" });
       } catch (e) {
         const done = autoOpenedProposalIds.length
           ? ` Već otvoreno: ${pre.proposals.filter((x) => autoOpenedProposalIds.includes(x.id)).map((x) => x.code).join(", ")}.`
@@ -376,6 +414,14 @@ export async function advanceMeetingStatus(
         throw new Error(`Otvaranje glasanja za ${p.code} nije uspjelo: ${e instanceof Error ? e.message : "greška"}.${done} Sjednica nije prešla u „Glasanje otvoreno”; ponovite korak.`);
       }
       autoOpenedProposalIds.push(p.id);
+    }
+    // One ballot (one link, one code, one e-mail) per recipient over ALL of the session's ballot tokens that do
+    // not belong to a ballot yet. Meeting-wide on purpose: if an earlier attempt opened the proposals and then
+    // failed here, repeating the step issues the missing ballots and nothing twice (idempotent).
+    try {
+      await issueMeetingBallots(actor, id);
+    } catch (e) {
+      throw new Error(`Izdavanje glasačkih listića nije uspjelo: ${e instanceof Error ? e.message : "greška"}. Sjednica nije prešla u „Glasanje otvoreno”; ponovite korak.`);
     }
   }
 
@@ -560,7 +606,13 @@ export async function createProposal(
 ) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  await prisma.meeting.findUniqueOrThrow({ where: { id: data.meetingId, zevId } });
+  const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: data.meetingId, zevId } });
+  // P-L2 (v2.44.0, user decision 2026-10-25): the ballot is a locked set of proposals — no new proposal once
+  // ballots have been issued for the session; a new item goes to a new session. A session whose voting is
+  // open without ballots (live mode opens proposals per agenda item) can still get new proposals.
+  if ((await prisma.ballot.count({ where: { meetingId: meeting.id } })) > 0) {
+    throw new ForbiddenError(t("ballot.err.proposalLocked"));
+  }
   await assertProposalRefs(zevId, data.meetingId, data);
   await prisma.votingRule.findUniqueOrThrow({ where: { id: data.votingRuleId, zevId } });
   const p = await prisma.proposal.create({
@@ -951,8 +1003,11 @@ export async function openVoting(
      * screen's mode: owners marked present in Attendance vote in the room instead, so
      * their e-mail is suppressed; everyone still gets an EligibleVoter + ApprovalToken
      * row either way (needed for reissueToken and for a uniform closeVoting), only
-     * ApprovalToken.deliveredVia and whether queueNotification actually runs differ. */
-    delivery?: "ALL" | "LIVE";
+     * ApprovalToken.deliveredVia and whether queueNotification actually runs differ.
+     * "BALLOT" (v2.44.0, Plans/glasacki-listic-po-sjednici-plan.md §3.1) is the session-wide mode: the
+     * voting base and the tokens are written exactly as in "ALL" (`deliveredVia = "BALLOT"`) but NO message
+     * is queued — `issueMeetingBallots` then groups the tokens per recipient into one ballot and one e-mail. */
+    delivery?: "ALL" | "LIVE" | "BALLOT";
   }
 ) {
   // PRESIDENT + ACCOUNTANT — see advanceMeetingStatus above for rationale (§2.7, P7).
@@ -1136,7 +1191,7 @@ export async function openVoting(
           // null (not "EMAIL") for a suppressed live-meeting recipient — nothing was
           // actually delivered to them (§2.2). The field is already nullable and this is
           // its only other value today, so no migration is needed.
-          deliveredVia: row.deliver ? "EMAIL" : null,
+          deliveredVia: delivery === "BALLOT" ? "BALLOT" : row.deliver ? "EMAIL" : null,
         },
       });
       await audit(actor, {
@@ -1180,9 +1235,9 @@ export async function openVoting(
     return out;
   }, { timeout: 20000 });
 
-  // Queue deliveries (outside the tx; mock providers in MVP).
+  // Queue deliveries (outside the tx; mock providers in MVP). "BALLOT" queues nothing here.
   for (const d of deliveries) {
-    if (d.email && d.deliver) {
+    if (delivery !== "BALLOT" && d.email && d.deliver) {
       await queueNotification({
         zevId,
         // Faza 4 (§5 risk 3): recipientId lets getLiveMeetingState look up this message's
@@ -1210,8 +1265,10 @@ export async function openVoting(
   // action discards it), and a suppressed live-meeting recipient's link/code are otherwise
   // unrecoverable — they're never queued into a NotificationMessage, so the caller (the
   // live-meeting flow, later phases) needs them straight from here.
-  return deliveries.map(({ ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode }) => ({
-    ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode,
+  // In "BALLOT" mode nothing is delivered for these tokens and they get attached to a ballot right after
+  // (submitVote then answers "use_ballot"), so the returned link/code are never usable on their own.
+  return deliveries.map(({ ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode, recipientPartyId }) => ({
+    ownerName, email, tokenId, eligibleVoterId, viaProxy, deliver, link, verificationCode, recipientPartyId,
   }));
 }
 
@@ -1328,6 +1385,13 @@ export async function previewVotingDelivery(
 ): Promise<{ voters: number; byEmail: number; viaProxy: number; withoutEmail: number; preconditionErrors: string[]; preconditionWarnings: string[] }>;
 export async function previewVotingDelivery(actor: Actor, proposalId: string, delivery: "ALL" | "LIVE") {
   if (delivery === "LIVE") return previewLiveDelivery(actor, proposalId);
+  const { recipientPartyIds: _recipients, ...preview } = await previewAllDelivery(actor, proposalId);
+  void _recipients;
+  return preview;
+}
+
+/** The "ALL" preview plus who would be the recipient of each link (for the session-ballot message count). */
+async function previewAllDelivery(actor: Actor, proposalId: string) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const p = await prisma.proposal.findUniqueOrThrow({
@@ -1340,16 +1404,20 @@ export async function previewVotingDelivery(actor: Actor, proposalId: string, de
   const pre = await votingPreconditions(zevId, isBoard, scopedUnits, basis);
   let byEmail = 0;
   let viaProxy = 0;
+  // Who would get a link (same recipient rule as openVoting's recipientPartyId) — a ballot is one message per entry.
+  const recipientPartyIds = new Set<string>();
   for (const b of basis) {
     // Board members vote personally — no proxy lookup (same as openVoting).
     const proxy = isBoard ? null : await activeProxyFor(zevId, b.ownerId, p.meetingId);
     if (approvalLinkAddress(b.email, proxy?.holder.email ?? null)) {
       byEmail++;
       if (proxy) viaProxy++;
+      recipientPartyIds.add(proxy?.holderId ?? b.ownerId);
     }
   }
   return {
     voters: basis.length, byEmail, viaProxy, withoutEmail: basis.length - byEmail,
+    recipientPartyIds: [...recipientPartyIds],
     preconditionErrors: pre.errors, preconditionWarnings: pre.warnings,
   };
 }
@@ -1367,6 +1435,7 @@ export async function revokeToken(actor: Actor, tokenId: string, reason: string)
     include: { eligibleVoter: { include: { proposal: true } } },
   });
   if (t.eligibleVoter.proposal.zevId !== zevId) throw new Error("Token nije pronađen.");
+  if (t.ballotId) throw new Error(tf("ballot.err.tokenInBallot", {}));
   if (t.status === "USED") throw new ForbiddenError("Iskorišten token se ne može opozvati.");
   const updated = await prisma.approvalToken.update({
     where: { id: tokenId },
@@ -1388,6 +1457,7 @@ export async function reissueToken(actor: Actor, tokenId: string, reason: string
       include: { eligibleVoter: { include: { owner: true, proxy: true, proposal: true } } },
     });
     if (old.eligibleVoter.proposal.zevId !== zevId) throw new Error("Token nije pronađen.");
+    if (old.ballotId) throw new Error(tf("ballot.err.tokenInBallot", {}));
     if (old.status === "USED") throw new ForbiddenError("Iskorišten token se ne može ponovo izdati.");
     await tx.approvalToken.update({
       where: { id: tokenId },
@@ -1473,6 +1543,7 @@ export async function inspectApprovalToken(tokenPlain: string, ipHash?: string |
     await audit(null, { action: "approval_token.lookup.unknown", targetType: "ApprovalToken", ipHash });
     return { ok: false as const, error: "not_found" as const };
   }
+  if (t.ballotId) return { ok: false as const, error: "use_ballot" as const };
   if (t.status === "REVOKED" || t.status === "SUPERSEDED") {
     await audit(null, { action: "approval_token.lookup.revoked", targetType: "ApprovalToken", targetId: t.id, ipHash });
     return { ok: false as const, error: "revoked" as const };
@@ -1552,6 +1623,8 @@ export async function submitVote(input: {
         },
       });
       if (!t) throw new VoteError("not_found");
+      // v2.44.0: a token that belongs to a session ballot can only be used through the ballot.
+      if (t.ballotId) throw new VoteError("use_ballot");
       if (t.status === "REVOKED" || t.status === "SUPERSEDED") throw new VoteError("revoked");
       if (t.status === "USED" || t.vote) throw new VoteError("used");
       if (t.expiresAt < new Date()) throw new VoteError("expired");
@@ -1565,67 +1638,7 @@ export async function submitVote(input: {
         // handled outside via BadCodeSignal.
         throw new BadCodeSignal(t.id, t.failedAttempts);
       }
-      // Double-vote guard per authority: any prior valid vote for this eligible voter?
-      const existing = await tx.vote.findFirst({
-        where: { eligibleVoterId: t.eligibleVoterId, invalid: false, correctedBy: null },
-      });
-      if (existing) throw new VoteError("already_voted");
-
-      const voterParty = t.eligibleVoter.proxy ?? t.eligibleVoter.owner;
-      const vote = await tx.vote.create({
-        data: {
-          // No actor here (public token flow) — derive the tenant from the
-          // proposal itself, never trust caller input.
-          zevId: p.zevId,
-          proposalId: p.id,
-          proposalVersion: p.version,
-          eligibleVoterId: t.eligibleVoterId,
-          voterId: voterParty.id,
-          representedId: t.eligibleVoter.proxy ? t.eligibleVoter.ownerId : null,
-          proxyRecordId: t.eligibleVoter.proxyRecordId,
-          choice: input.choice,
-          channel: "ELECTRONIC",
-          weight: t.eligibleVoter.weight,
-          tokenId: t.id,
-          proposalHash: p.contentHash ?? "",
-          acknowledgementText: ACK_TEXT,
-          ipHash: input.ipHash ?? null,
-          userAgent: input.userAgent?.slice(0, 255) ?? null,
-          issuedAt: t.issuedAt,
-          openedAt: t.openedAt,
-          confirmedAt: new Date(),
-          deliveryChannel: t.deliveredVia,
-        },
-      });
-      await tx.approvalToken.update({
-        where: { id: t.id },
-        data: { status: "USED", usedAt: new Date() },
-      });
-      await audit(null, {
-        action: "vote.submit",
-        targetType: "Vote",
-        targetId: vote.id,
-        // No Actor here (public token flow) — zevId/subjectPartyId are passed explicitly
-        // instead, both already validated above (p.zevId from the resolved Proposal,
-        // voterParty.id from the resolved EligibleVoter), never from caller input
-        // (Plans/user-activity-log-plan.md §7.1).
-        zevId: p.zevId,
-        subjectPartyId: voterParty.id,
-        after: {
-          proposalId: p.id,
-          proposalVersion: p.version,
-          eligibleVoterId: t.eligibleVoterId,
-          // choice is deliberately NOT recorded here (user decision P2, plan §6a/§7.1) —
-          // a feed browsable by person is a different privacy exposure than the formal
-          // vote list tied to a meeting record. The actual choice remains correctly
-          // stored on Vote itself, above, for counting and the official result.
-          weight: t.eligibleVoter.weight.toString(),
-          tokenId: t.id, // token ID only — never the token value
-          channel: "ELECTRONIC",
-        },
-        ipHash: input.ipHash,
-      }, tx);
-      return vote;
+      return castElectronicVoteTx(tx, t, input.choice, { ipHash: input.ipHash, userAgent: input.userAgent });
     });
     return {
       ok: true as const,
@@ -1659,6 +1672,92 @@ export async function submitVote(input: {
   }
 }
 
+type CastableToken = ApprovalToken & {
+  eligibleVoter: EligibleVoter & { owner: Party; proxy: Party | null; proposal: Proposal };
+};
+
+/**
+ * The one place an electronic vote row is written (v2.44.0: extracted from `submitVote` unchanged, so a vote
+ * cast through a session ballot is the very same evidence as one cast through a single-proposal link).
+ * Runs inside the caller's transaction and assumes the caller already verified the token's own status and
+ * expiry and the identity code. It re-checks that the proposal is open and that the voter has not voted
+ * (the double-vote guard), then writes Vote + marks the token USED + audits `vote.submit`.
+ * `meta.auditExtra` adds fields (e.g. the ballot id) to the audit payload; never a choice or a secret.
+ */
+async function castElectronicVoteTx(
+  tx: Prisma.TransactionClient,
+  t: CastableToken,
+  choice: VoteChoice,
+  meta: { ipHash?: string | null; userAgent?: string | null; auditExtra?: Record<string, string> }
+) {
+  const p = t.eligibleVoter.proposal;
+  if (p.status !== "VOTING_OPEN" || (p.votingClosesAt && p.votingClosesAt < new Date())) {
+    throw new VoteError("voting_closed");
+  }
+  // Double-vote guard per authority: any prior valid vote for this eligible voter?
+  const existing = await tx.vote.findFirst({
+    where: { eligibleVoterId: t.eligibleVoterId, invalid: false, correctedBy: null },
+  });
+  if (existing) throw new VoteError("already_voted");
+
+  const voterParty = t.eligibleVoter.proxy ?? t.eligibleVoter.owner;
+  const vote = await tx.vote.create({
+    data: {
+      // No actor here (public token flow) — derive the tenant from the
+      // proposal itself, never trust caller input.
+      zevId: p.zevId,
+      proposalId: p.id,
+      proposalVersion: p.version,
+      eligibleVoterId: t.eligibleVoterId,
+      voterId: voterParty.id,
+      representedId: t.eligibleVoter.proxy ? t.eligibleVoter.ownerId : null,
+      proxyRecordId: t.eligibleVoter.proxyRecordId,
+      choice,
+      channel: "ELECTRONIC",
+      weight: t.eligibleVoter.weight,
+      tokenId: t.id,
+      proposalHash: p.contentHash ?? "",
+      acknowledgementText: ACK_TEXT,
+      ipHash: meta.ipHash ?? null,
+      userAgent: meta.userAgent?.slice(0, 255) ?? null,
+      issuedAt: t.issuedAt,
+      openedAt: t.openedAt,
+      confirmedAt: new Date(),
+      deliveryChannel: t.deliveredVia,
+    },
+  });
+  await tx.approvalToken.update({
+    where: { id: t.id },
+    data: { status: "USED", usedAt: new Date() },
+  });
+  await audit(null, {
+    action: "vote.submit",
+    targetType: "Vote",
+    targetId: vote.id,
+    // No Actor here (public token flow) — zevId/subjectPartyId are passed explicitly
+    // instead, both already validated above (p.zevId from the resolved Proposal,
+    // voterParty.id from the resolved EligibleVoter), never from caller input
+    // (Plans/user-activity-log-plan.md §7.1).
+    zevId: p.zevId,
+    subjectPartyId: voterParty.id,
+    after: {
+      proposalId: p.id,
+      proposalVersion: p.version,
+      eligibleVoterId: t.eligibleVoterId,
+      // choice is deliberately NOT recorded here (user decision P2, plan §6a/§7.1) —
+      // a feed browsable by person is a different privacy exposure than the formal
+      // vote list tied to a meeting record. The actual choice remains correctly
+      // stored on Vote itself, above, for counting and the official result.
+      weight: t.eligibleVoter.weight.toString(),
+      tokenId: t.id, // token ID only — never the token value
+      channel: "ELECTRONIC",
+      ...meta.auditExtra,
+    },
+    ipHash: meta.ipHash,
+  }, tx);
+  return vote;
+}
+
 class BadCodeSignal extends Error {
   constructor(public tokenId: string, public failedAttempts: number) {
     super("bad_code");
@@ -1668,7 +1767,7 @@ class BadCodeSignal extends Error {
 export class VoteError extends Error {
   constructor(public code:
     | "not_found" | "revoked" | "used" | "expired" | "voting_closed"
-    | "bad_code" | "already_voted") {
+    | "bad_code" | "already_voted" | "use_ballot") {
     super(code);
   }
 }
@@ -1797,6 +1896,574 @@ export async function correctVote(
     }, tx);
     return correction;
   });
+}
+
+// ---- Session ballots (v2.44.0, Plans/glasacki-listic-po-sjednici-plan.md) ----
+//
+// A ballot is ONE link + ONE verification code + ONE e-mail per recipient for all proposals a session
+// opens at once. The evidence stays per proposal: every proposal keeps its own EligibleVoter, ApprovalToken
+// (never delivered, random hash) and, on submit, its own Vote written by the same `castElectronicVoteTx`
+// as a single-proposal link. The ballot is only the shared key over those tokens: all or nothing.
+
+export const MEETING_EMAIL_DISPATCH_MAX = 100;
+export const MEETING_EMAIL_DISPATCH_BUDGET_MS = 25_000;
+const BALLOT_TEMPLATES = ["ballot-link", "ballot-link-reissue"];
+const VOTE_CHOICES: VoteChoice[] = ["APPROVE", "REJECT", "ABSTAIN"];
+
+type BallotMailInput = {
+  kind: "ISSUE" | "REISSUE";
+  recipientName: string;
+  meetingTitle: string;
+  proposals: { code: string; title: string }[];
+  link: string;
+  code: string;
+  closesAt: Date;
+  /** Owners the recipient votes for as a proxy holder (names), and co-owner community notes. */
+  proxyFor: string[];
+  notes: string[];
+};
+
+/** Subject + body of the ballot e-mail. The only place that knows the format `extractApprovalSecrets` parses. */
+export function buildBallotMail(m: BallotMailInput): { subject: string; body: string } {
+  const rok = formatDateTime(m.closesAt);
+  const n = m.proposals.length;
+  const subject =
+    m.kind === "REISSUE"
+      ? tf("ballot.mail.reissueSubject", { sjednica: m.meetingTitle })
+      : n === 1
+        ? tf("ballot.mail.subjectOne", { sjednica: m.meetingTitle, rok })
+        : tf("ballot.mail.subject", { sjednica: m.meetingTitle, broj: n, rok });
+  const intro = m.proxyFor.length > 0
+    ? tf("ballot.mail.introProxy", { vlasnici: m.proxyFor.join(", "), sjednica: m.meetingTitle })
+    : tf("ballot.mail.intro", { sjednica: m.meetingTitle });
+  const lines = [
+    tf("ballot.mail.greeting", { ime: m.recipientName }),
+    "",
+    m.kind === "REISSUE" ? tf("ballot.mail.reissueNote", { sjednica: m.meetingTitle }) : intro,
+    "",
+    ...m.proposals.map((p) => `- ${p.code} — ${p.title}`),
+    ...(m.notes.length > 0 ? ["", ...m.notes] : []),
+    "",
+    tf("ballot.mail.link", { link: m.link }),
+    tf("ballot.mail.code", { kod: m.code }),
+    "",
+    tf("ballot.mail.deadline", { rok }),
+    t("ballot.mail.allAtOnce"),
+    t("ballot.mail.personal"),
+  ];
+  return { subject, body: lines.join("\n") + "\n" };
+}
+
+/**
+ * Groups the session's ballot tokens (`deliveredVia = "BALLOT"`, not on a ballot yet) per recipient and
+ * issues ONE ballot (own link + code, hashed) and queues ONE e-mail for each recipient that has an address.
+ * Tokens of recipients without an address stay without a ballot (they remain in the voting base and quorum
+ * denominator, exactly like today's voters without an e-mail). Idempotent: only tokens without `ballotId` are
+ * taken, so a repeated call after a partial failure issues just what is missing. Messages are only written to
+ * the outbox — sending is `dispatchMeetingEmails` (limited by the daily budget).
+ */
+export async function issueMeetingBallots(actor: Actor, meetingId: string, proposalIds?: string[]) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
+  const appUrl = getEnv().APP_URL;
+  const tokens = await prisma.approvalToken.findMany({
+    where: {
+      ballotId: null,
+      deliveredVia: "BALLOT",
+      status: "ACTIVE",
+      eligibleVoter: { proposal: { zevId, meetingId, ...(proposalIds ? { id: { in: proposalIds } } : {}) } },
+    },
+    include: { eligibleVoter: { include: { owner: true, proxy: true, proposal: { select: { id: true, code: true, title: true } } } } },
+    orderBy: { issuedAt: "asc" },
+  });
+
+  const byRecipient = new Map<string, typeof tokens>();
+  for (const tok of tokens) {
+    const rid = tok.eligibleVoter.proxyId ?? tok.eligibleVoter.ownerId;
+    byRecipient.set(rid, [...(byRecipient.get(rid) ?? []), tok]);
+  }
+
+  const issued: { ballotId: string; recipientPartyId: string; messageId: string }[] = [];
+  let withoutEmail = 0;
+  for (const [recipientPartyId, group] of byRecipient) {
+    const address = group
+      .map((g) => approvalLinkAddress(g.eligibleVoter.owner.email?.trim() || null, g.eligibleVoter.proxy?.email?.trim() || null))
+      .find((a) => a);
+    if (!address) {
+      withoutEmail++;
+      continue;
+    }
+    const recipient = group[0].eligibleVoter.proxy ?? group[0].eligibleVoter.owner;
+    const linkToken = generateToken();
+    const code = generateVerificationCode();
+    const expiresAt = new Date(Math.max(...group.map((g) => g.expiresAt.getTime())));
+    const proposals = [...new Map(group.map((g) => [g.eligibleVoter.proposal.id, g.eligibleVoter.proposal])).values()].sort((a, b) =>
+      a.code.localeCompare(b.code)
+    );
+    const proxyFor = [...new Set(group.filter((g) => g.eligibleVoter.proxy).map((g) => partyDisplayName(g.eligibleVoter.owner)))];
+    const notes = [
+      ...new Set(
+        group
+          .filter((g) => g.eligibleVoter.memberPartyIds.length > 1)
+          .map((g) => (g.eligibleVoter.basis as { subjectName?: string } | null)?.subjectName)
+          .filter((x): x is string => Boolean(x))
+      ),
+    ].map((name) => tf("votingSubject.public.community", { name }));
+    const mail = buildBallotMail({
+      kind: "ISSUE",
+      recipientName: partyDisplayName(recipient),
+      meetingTitle: meeting.title,
+      proposals,
+      link: `${appUrl}/glasanje/${linkToken}`,
+      code,
+      closesAt: expiresAt,
+      proxyFor,
+      notes,
+    });
+    const out = await prisma.$transaction(async (tx) => {
+      const ballot = await tx.ballot.create({
+        data: { zevId, meetingId, recipientPartyId, tokenHash: sha256(linkToken), verificationHash: sha256(code), expiresAt },
+      });
+      await tx.approvalToken.updateMany({ where: { id: { in: group.map((g) => g.id) }, ballotId: null }, data: { ballotId: ballot.id } });
+      await audit(actor, {
+        action: "ballot.issue",
+        targetType: "Ballot",
+        targetId: ballot.id,
+        // Never the link or the code — only who/what/until when.
+        after: { meetingId, recipientPartyId, proposalIds: proposals.map((p) => p.id), tokenCount: group.length, expiresAt: expiresAt.toISOString() },
+      }, tx);
+      const msg = await enqueueNotification({
+        zevId,
+        channel: "EMAIL",
+        recipientId: recipientPartyId,
+        toAddress: address,
+        template: "ballot-link",
+        subject: mail.subject,
+        body: mail.body,
+        relatedType: "Ballot",
+        relatedId: ballot.id,
+      }, tx);
+      return { ballotId: ballot.id, recipientPartyId, messageId: msg.id };
+    }, { timeout: 20000 });
+    issued.push(out);
+  }
+  return { ballots: issued.length, queued: issued.length, withoutEmail, issued };
+}
+
+/** Message scope of a session's e-mails that share the daily budget: its invitations and its ballots. */
+async function meetingEmailWhere(zevId: string, meetingId: string): Promise<Prisma.NotificationMessageWhereInput> {
+  const ballotIds = (await prisma.ballot.findMany({ where: { zevId, meetingId }, select: { id: true } })).map((b) => b.id);
+  return {
+    zevId,
+    OR: [
+      { relatedType: "Meeting", relatedId: meetingId, template: "meeting-invitation" },
+      { relatedType: "Ballot", relatedId: { in: ballotIds }, template: { in: BALLOT_TEMPLATES } },
+    ],
+  };
+}
+
+/**
+ * "Pošalji neposlate": sends this session's queued invitations and ballot e-mails within the shared daily
+ * limit (invoices, ballots and invitations count against the same Mailjet account). With `retryFailed` it
+ * first returns the failed ones (fewer than 5 attempts) to the queue. What does not fit stays QUEUED for the
+ * next day or the next click.
+ */
+export async function dispatchMeetingEmails(
+  actor: Actor,
+  meetingId: string,
+  opts?: { retryFailed?: boolean; max?: number; budgetMs?: number; dailyLimit?: number }
+): Promise<DispatchResult & { retried: number }> {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId }, select: { id: true } });
+  const where = await meetingEmailWhere(zevId, meetingId);
+  const retried = opts?.retryFailed ? await requeueFailed(where) : 0;
+  const res = await dispatchQueued(where, {
+    max: opts?.max ?? MEETING_EMAIL_DISPATCH_MAX,
+    budgetMs: opts?.budgetMs ?? MEETING_EMAIL_DISPATCH_BUDGET_MS,
+    dailyLimit: opts?.dailyLimit,
+  });
+  if (res.attempted > 0 || res.dailyLimitReached || retried > 0) {
+    await audit(actor, {
+      action: "ballot.dispatch",
+      targetType: "Meeting",
+      targetId: meetingId,
+      after: { attempted: res.attempted, sent: res.sent, failed: res.failed, pending: res.pending, dailyLimitReached: res.dailyLimitReached, retried },
+    });
+  }
+  return { ...res, retried };
+}
+
+/** Per-session numbers and rows for the "Glasački listići" card (president/accountant). */
+export async function getMeetingBallotSummary(actor: Actor, meetingId: string) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId }, select: { id: true } });
+  const ballots = await prisma.ballot.findMany({
+    where: { zevId, meetingId, status: { not: "SUPERSEDED" } },
+    include: {
+      recipient: true,
+      tokens: {
+        include: {
+          eligibleVoter: {
+            include: {
+              proposal: { select: { code: true } },
+              votes: { where: { invalid: false, correctedBy: null }, select: { id: true } },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+  const messages = ballots.length
+    ? await prisma.notificationMessage.findMany({
+        where: { zevId, relatedType: "Ballot", relatedId: { in: ballots.map((b) => b.id) }, template: { in: BALLOT_TEMPLATES } },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+  const latest = new Map<string, (typeof messages)[number]>();
+  for (const m of messages) if (m.relatedId && !latest.has(m.relatedId)) latest.set(m.relatedId, m);
+  const rows = ballots.map((b) => {
+    const m = latest.get(b.id);
+    return {
+      ballotId: b.id,
+      recipientName: partyDisplayName(b.recipient),
+      toAddress: m?.toAddress ?? null,
+      status: b.status,
+      messageStatus: m?.status ?? null,
+      lastError: m?.lastError ?? null,
+      expiresAt: b.expiresAt,
+      proposalsTotal: b.tokens.length,
+      proposalsVoted: b.tokens.filter((tk) => tk.eligibleVoter.votes.length > 0).length,
+    };
+  });
+  const invitationsQueued = await prisma.notificationMessage.count({
+    where: { zevId, relatedType: "Meeting", relatedId: meetingId, template: "meeting-invitation", status: { in: ["QUEUED", "FAILED"] } },
+  });
+  return {
+    rows,
+    total: rows.length,
+    sent: rows.filter((r) => r.messageStatus && SENT_STATUSES.includes(r.messageStatus)).length,
+    queued: rows.filter((r) => r.messageStatus === "QUEUED").length,
+    failed: rows.filter((r) => r.messageStatus === "FAILED").length,
+    used: rows.filter((r) => r.status === "USED").length,
+    invitationsQueued,
+  };
+}
+
+/** One token of a ballot as the voter may act on it right now. */
+type BallotTokenState = "open" | "closed" | "voted";
+
+function ballotTokenState(
+  tok: {
+    status: string; expiresAt: Date; vote: unknown | null;
+    eligibleVoter: { proposal: { status: string; votingClosesAt: Date | null }; votes: unknown[] };
+  },
+  now: Date
+): BallotTokenState {
+  // An earlier valid vote (e.g. entered by the president from paper) settles the proposal for this voter.
+  if (tok.vote || tok.status === "USED" || tok.eligibleVoter.votes.length > 0) return "voted";
+  const p = tok.eligibleVoter.proposal;
+  if (tok.status !== "ACTIVE" || tok.expiresAt < now || p.status !== "VOTING_OPEN" || (p.votingClosesAt && p.votingClosesAt < now)) {
+    return "closed";
+  }
+  return "open";
+}
+
+const BALLOT_TOKEN_INCLUDE = {
+  vote: true,
+  eligibleVoter: {
+    include: {
+      owner: true,
+      proxy: true,
+      proposal: { include: { attachments: true } },
+      votes: { where: { invalid: false, correctedBy: null }, select: { id: true } },
+    },
+  },
+} as const;
+
+/** Whether a public link token is a session ballot (so the page shows the ballot, not a single proposal). */
+export async function isBallotLink(tokenPlain: string): Promise<boolean> {
+  return (await prisma.ballot.count({ where: { tokenHash: sha256(tokenPlain) } })) > 0;
+}
+
+/** Look up a ballot by its plaintext link token and show what the holder may vote on. Never returns the token. */
+export async function inspectBallot(tokenPlain: string, ipHash?: string | null) {
+  if (!rateLimitVerify(verifyKey(tokenPlain, ipHash))) {
+    return { ok: false as const, error: "rate_limited" as const };
+  }
+  const b = await prisma.ballot.findUnique({
+    where: { tokenHash: sha256(tokenPlain) },
+    include: {
+      recipient: true,
+      meeting: true,
+      zev: { select: { legalName: true, shortName: true } },
+      tokens: { include: BALLOT_TOKEN_INCLUDE, orderBy: { issuedAt: "asc" } },
+    },
+  });
+  if (!b) return { ok: false as const, error: "not_found" as const };
+  if (b.status === "REVOKED" || b.status === "SUPERSEDED") return { ok: false as const, error: "revoked" as const };
+  if (b.status === "USED") return { ok: false as const, error: "used" as const };
+  const now = new Date();
+  if (b.expiresAt < now) return { ok: false as const, error: "expired" as const };
+
+  const proposals = b.tokens
+    .map((tok) => {
+      const p = tok.eligibleVoter.proposal;
+      return {
+        tokenId: tok.id,
+        proposalId: p.id,
+        code: p.code,
+        version: p.version,
+        title: p.title,
+        text: p.text,
+        rationale: p.rationale,
+        contentHash: p.contentHash,
+        votingClosesAt: p.votingClosesAt,
+        attachments: p.attachments.map((a) => ({ id: a.id, filename: a.filename, size: a.size, sha256: a.sha256 })),
+        state: ballotTokenState(tok, now),
+        ownerName: partyDisplayName(tok.eligibleVoter.owner),
+        proxyName: tok.eligibleVoter.proxy ? partyDisplayName(tok.eligibleVoter.proxy) : null,
+        subjectName:
+          tok.eligibleVoter.memberPartyIds.length > 1
+            ? (tok.eligibleVoter.basis as { subjectName?: string } | null)?.subjectName ?? null
+            : null,
+      };
+    })
+    .sort((x, y) => x.code.localeCompare(y.code));
+  if (!proposals.some((p) => p.state === "open")) return { ok: false as const, error: "voting_closed" as const };
+
+  if (!b.openedAt) {
+    await prisma.ballot.update({ where: { id: b.id }, data: { openedAt: now } });
+    await prisma.approvalToken.updateMany({ where: { ballotId: b.id, openedAt: null }, data: { openedAt: now } });
+    await audit(null, {
+      action: "ballot.open", targetType: "Ballot", targetId: b.id, zevId: b.zevId, subjectPartyId: b.recipientPartyId, ipHash,
+    });
+  }
+  return {
+    ok: true as const,
+    ballotId: b.id,
+    meetingTitle: b.meeting.title,
+    zevName: b.zev.shortName ?? b.zev.legalName,
+    recipientName: partyDisplayName(b.recipient),
+    expiresAt: b.expiresAt,
+    proposals,
+    ackText: ACK_TEXT,
+  };
+}
+
+class BadBallotCodeSignal extends Error {
+  constructor(public ballotId: string) {
+    super("bad_code");
+  }
+}
+
+class BallotChoiceError extends Error {
+  constructor(public code: "missing_choices" | "invalid_choice", public proposals: { proposalId: string; code: string; title: string }[]) {
+    super(code);
+  }
+}
+
+/**
+ * Submit a whole ballot: one identity code, one acknowledgement, a choice for EVERY proposal still open to this
+ * voter. All or nothing — the votes are written in one transaction through the same `castElectronicVoteTx` as a
+ * single-proposal link (one Vote + one `vote.submit` per proposal), and the ballot is spent in the same step.
+ * A proposal the voter already has a vote for (paper entry) or that has meanwhile closed is skipped, not demanded.
+ * A choice for a proposal that is not on the ballot or is closed is an error (`invalid_choice`).
+ */
+export async function submitBallot(input: {
+  tokenPlain: string;
+  verificationCode: string;
+  choices: Record<string, string>;
+  ack: boolean;
+  ipHash?: string | null;
+  userAgent?: string | null;
+}) {
+  if (!rateLimitVerify(verifyKey(input.tokenPlain, input.ipHash))) return { ok: false as const, error: "rate_limited" as const };
+  if (!input.ack) return { ok: false as const, error: "ack_required" as const };
+  const tokenHash = sha256(input.tokenPlain);
+
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const b = await tx.ballot.findUnique({
+        where: { tokenHash },
+        include: {
+          recipient: true,
+          meeting: { select: { title: true } },
+          tokens: { include: BALLOT_TOKEN_INCLUDE, orderBy: { issuedAt: "asc" } },
+        },
+      });
+      if (!b) throw new VoteError("not_found");
+      if (b.status === "REVOKED" || b.status === "SUPERSEDED") throw new VoteError("revoked");
+      if (b.status === "USED") throw new VoteError("used");
+      const now = new Date();
+      if (b.expiresAt < now) throw new VoteError("expired");
+      // Identity confirmation: the code delivered with the link. Bookkeeping of a miss survives the rollback.
+      if (sha256(input.verificationCode.trim()) !== b.verificationHash) throw new BadBallotCodeSignal(b.id);
+
+      const states = b.tokens.map((tok) => ({ tok, state: ballotTokenState(tok, now) }));
+      const open = states.filter((s) => s.state === "open");
+      if (open.length === 0) throw new VoteError("voting_closed");
+      const pinfo = (s: (typeof states)[number]) => ({ proposalId: s.tok.eligibleVoter.proposal.id, code: s.tok.eligibleVoter.proposal.code, title: s.tok.eligibleVoter.proposal.title });
+
+      // A choice may only name an open proposal of this ballot (one already settled by a paper vote is ignored).
+      const byProposal = new Map(states.map((s) => [s.tok.eligibleVoter.proposal.id, s]));
+      const invalid = Object.keys(input.choices).filter((pid) => !byProposal.has(pid) || byProposal.get(pid)!.state === "closed");
+      if (invalid.length > 0) {
+        throw new BallotChoiceError("invalid_choice", invalid.map((pid) => (byProposal.has(pid) ? pinfo(byProposal.get(pid)!) : { proposalId: pid, code: pid, title: "" })));
+      }
+      const bad = open.filter((s) => {
+        const c = input.choices[s.tok.eligibleVoter.proposal.id];
+        return c !== undefined && !VOTE_CHOICES.includes(c as VoteChoice);
+      });
+      if (bad.length > 0) throw new BallotChoiceError("invalid_choice", bad.map(pinfo));
+      const missing = open.filter((s) => input.choices[s.tok.eligibleVoter.proposal.id] === undefined);
+      if (missing.length > 0) throw new BallotChoiceError("missing_choices", missing.map(pinfo));
+
+      // Spend the ballot first: a concurrent second submit loses this conditional update and sees "used".
+      const claimed = await tx.ballot.updateMany({ where: { id: b.id, status: "ACTIVE" }, data: { status: "USED", usedAt: now } });
+      if (claimed.count === 0) throw new VoteError("used");
+
+      const items: { proposalId: string; code: string; title: string; voteId: string; choice: VoteChoice }[] = [];
+      for (const s of open) {
+        const p = s.tok.eligibleVoter.proposal;
+        const choice = input.choices[p.id] as VoteChoice;
+        const vote = await castElectronicVoteTx(tx, s.tok, choice, { ipHash: input.ipHash, userAgent: input.userAgent, auditExtra: { ballotId: b.id } });
+        items.push({ proposalId: p.id, code: p.code, title: p.title, voteId: vote.id, choice });
+      }
+      await audit(null, {
+        action: "ballot.submit",
+        targetType: "Ballot",
+        targetId: b.id,
+        zevId: b.zevId,
+        subjectPartyId: b.recipientPartyId,
+        // voteIds only — never the choices (same privacy rule as vote.submit) and never a secret.
+        after: { meetingId: b.meetingId, voteIds: items.map((i) => i.voteId), proposalIds: items.map((i) => i.proposalId) },
+        ipHash: input.ipHash,
+      }, tx);
+      return {
+        ok: true as const,
+        receipt: {
+          ballotId: b.id,
+          meetingTitle: b.meeting.title,
+          submittedAt: now,
+          items,
+          skipped: states.filter((s) => s.state !== "open").map((s) => ({
+            code: s.tok.eligibleVoter.proposal.code,
+            title: s.tok.eligibleVoter.proposal.title,
+            reason: s.state as "closed" | "voted",
+          })),
+        },
+      };
+    }, { timeout: 20000 });
+  } catch (e) {
+    if (e instanceof BadBallotCodeSignal) {
+      const updated = await prisma.ballot.update({ where: { id: e.ballotId }, data: { failedAttempts: { increment: 1 } } });
+      await audit(null, { action: "vote.verify.failed", targetType: "Ballot", targetId: e.ballotId, ipHash: input.ipHash });
+      if (updated.failedAttempts >= 5 && updated.status === "ACTIVE") {
+        await prisma.ballot.update({
+          where: { id: e.ballotId },
+          data: { status: "REVOKED", revokedAt: new Date(), revokedReason: "Previše neuspjelih pokušaja verifikacije" },
+        });
+        await audit(null, { action: "ballot.revoke.auto", targetType: "Ballot", targetId: e.ballotId, reason: "failed verification attempts" });
+      }
+      return { ok: false as const, error: "bad_code" as const };
+    }
+    if (e instanceof BallotChoiceError) return { ok: false as const, error: e.code, proposals: e.proposals };
+    if (e instanceof VoteError) return { ok: false as const, error: e.code };
+    throw e;
+  }
+}
+
+/**
+ * New link + code for a ballot (PRESIDENT, reason required): the old ballot becomes SUPERSEDED (its link
+ * stops working), the still-unused tokens move to the new one, and one e-mail goes out (subject to the daily
+ * limit — it stays queued if today's limit is spent). Tokens that already carry a vote stay with the old ballot.
+ */
+export async function reissueBallot(actor: Actor, ballotId: string, reason: string) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  if (!reason.trim()) throw new Error(t("ballot.err.reasonReissue"));
+  const appUrl = getEnv().APP_URL;
+  const out = await prisma.$transaction(async (tx) => {
+    const old = await tx.ballot.findUniqueOrThrow({
+      where: { id: ballotId, zevId },
+      include: {
+        recipient: true,
+        meeting: true,
+        tokens: { include: { eligibleVoter: { include: { owner: true, proxy: true, proposal: { select: { id: true, code: true, title: true } } } } } },
+      },
+    });
+    if (old.status === "USED") throw new ForbiddenError(t("ballot.err.usedReissue"));
+    if (old.status === "SUPERSEDED") throw new Error(t("ballot.err.alreadySuperseded"));
+    const live = old.tokens.filter((tk) => tk.status === "ACTIVE");
+    if (live.length === 0) throw new Error(t("ballot.err.nothingToReissue"));
+    const linkToken = generateToken();
+    const code = generateVerificationCode();
+    const fresh = await tx.ballot.create({
+      data: {
+        zevId, meetingId: old.meetingId, recipientPartyId: old.recipientPartyId,
+        tokenHash: sha256(linkToken), verificationHash: sha256(code), expiresAt: old.expiresAt,
+      },
+    });
+    await tx.ballot.update({ where: { id: old.id }, data: { status: "SUPERSEDED", revokedAt: new Date(), revokedReason: reason, replacedById: fresh.id } });
+    await tx.approvalToken.updateMany({ where: { id: { in: live.map((tk) => tk.id) } }, data: { ballotId: fresh.id } });
+    await audit(actor, {
+      action: "ballot.reissue",
+      targetType: "Ballot",
+      targetId: fresh.id,
+      before: { oldBallotId: old.id },
+      after: { meetingId: old.meetingId, recipientPartyId: old.recipientPartyId, tokenCount: live.length },
+      reason,
+    }, tx);
+    const address = live
+      .map((g) => approvalLinkAddress(g.eligibleVoter.owner.email?.trim() || null, g.eligibleVoter.proxy?.email?.trim() || null))
+      .find((a) => a) ?? old.recipient.email?.trim() ?? null;
+    let messageId: string | null = null;
+    if (address) {
+      const proposals = [...new Map(live.map((g) => [g.eligibleVoter.proposal.id, g.eligibleVoter.proposal])).values()].sort((a, b) =>
+        a.code.localeCompare(b.code)
+      );
+      const mail = buildBallotMail({
+        kind: "REISSUE",
+        recipientName: partyDisplayName(old.recipient),
+        meetingTitle: old.meeting.title,
+        proposals,
+        link: `${appUrl}/glasanje/${linkToken}`,
+        code,
+        closesAt: old.expiresAt,
+        proxyFor: [],
+        notes: [],
+      });
+      const msg = await enqueueNotification({
+        zevId, channel: "EMAIL", recipientId: old.recipientPartyId, toAddress: address,
+        template: "ballot-link-reissue", subject: mail.subject, body: mail.body, relatedType: "Ballot", relatedId: fresh.id,
+      }, tx);
+      messageId = msg.id;
+    }
+    return { newBallotId: fresh.id, messageId };
+  }, { timeout: 20000 });
+  let sent = false;
+  if (out.messageId) {
+    const res = await dispatchQueued({ id: out.messageId }, { max: 1, budgetMs: MEETING_EMAIL_DISPATCH_BUDGET_MS });
+    sent = res.sent === 1;
+  }
+  return { newBallotId: out.newBallotId, emailed: out.messageId !== null, sent };
+}
+
+/** Revokes a ballot without issuing a new one (PRESIDENT, reason required). A used ballot cannot be revoked. */
+export async function revokeBallot(actor: Actor, ballotId: string, reason: string) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  if (!reason.trim()) throw new Error(t("ballot.err.reasonRevoke"));
+  const b = await prisma.ballot.findUniqueOrThrow({ where: { id: ballotId, zevId } });
+  if (b.status === "USED") throw new ForbiddenError(t("ballot.err.usedRevoke"));
+  if (b.status !== "ACTIVE") throw new Error(t("ballot.err.notActive"));
+  const updated = await prisma.ballot.update({ where: { id: ballotId }, data: { status: "REVOKED", revokedAt: new Date(), revokedReason: reason } });
+  await audit(actor, { action: "ballot.revoke", targetType: "Ballot", targetId: ballotId, reason });
+  return updated;
 }
 
 // ---- Closing + results ----

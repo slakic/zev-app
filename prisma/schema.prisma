@@ -148,6 +148,7 @@ model Party {
   eligibleProxyFor      EligibleVoter[] @relation("EVProxy")
   votesCast             Vote[]     @relation("VoteVoter")
   votesRepresented      Vote[]     @relation("VoteRepresented")
+  ballotsReceived       Ballot[]   @relation("BallotRecipient")
   reportedIssues        MaintenanceIssue[] @relation("IssueReporter")
   responsibleForIssues  MaintenanceIssue[] @relation("IssueResponsible")
   notifications         NotificationMessage[]
@@ -219,6 +220,7 @@ model Zev {
   allocationGroups      AllocationGroup[]
   commonAssets          CommonAsset[]
   meetings              Meeting[]
+  ballots               Ballot[]
   votingRules           VotingRule[]
   proposals             Proposal[]
   votes                 Vote[]
@@ -621,6 +623,7 @@ model Meeting {
   proposals      Proposal[]
   attendances    Attendance[]
   proxies        Proxy[]
+  ballots        Ballot[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }
@@ -800,8 +803,48 @@ model ApprovalToken {
   replaces          ApprovalToken? @relation("TokenReissue")
   failedAttempts    Int           @default(0)
   vote              Vote?
+  /// v2.44.0: listic sjednice kojem token pripada; null = klasican token po prijedlogu.
+  ballot            Ballot?       @relation(fields: [ballotId], references: [id])
+  ballotId          String?
 
   @@index([eligibleVoterId])
+  @@index([ballotId])
+}
+
+enum BallotStatus {
+  ACTIVE
+  USED
+  REVOKED
+  SUPERSEDED
+}
+
+/// Glasacki listic po sjednici (v2.44.0): jedan link i jedan kod nad tokenima svih prijedloga sjednice
+/// za jednog primaoca. Dokaz ostaje po prijedlogu (Vote + ApprovalToken); listic je samo zajednicki kljuc.
+model Ballot {
+  id               String       @id @default(cuid())
+  zev              Zev          @relation(fields: [zevId], references: [id])
+  zevId            String
+  meeting          Meeting      @relation(fields: [meetingId], references: [id])
+  meetingId        String
+  recipient        Party        @relation("BallotRecipient", fields: [recipientPartyId], references: [id])
+  recipientPartyId String
+  tokenHash        String       @unique // sha256(link token), never plaintext
+  verificationHash String       // sha256(licni kod)
+  status           BallotStatus @default(ACTIVE)
+  expiresAt        DateTime
+  issuedAt         DateTime     @default(now())
+  openedAt         DateTime?
+  usedAt           DateTime?
+  revokedAt        DateTime?
+  revokedReason    String?
+  failedAttempts   Int          @default(0)
+  replacedById     String?      @unique
+  replacedBy       Ballot?      @relation("BallotReissue", fields: [replacedById], references: [id])
+  replaces         Ballot?      @relation("BallotReissue")
+  tokens           ApprovalToken[]
+  createdAt        DateTime     @default(now())
+
+  @@index([meetingId])
 }
 
 enum VoteChoice {

@@ -75,6 +75,7 @@ export const ModelName = {
   ProposalUnit: 'ProposalUnit',
   EligibleVoter: 'EligibleVoter',
   ApprovalToken: 'ApprovalToken',
+  Ballot: 'Ballot',
   Vote: 'Vote',
   MoneyAccount: 'MoneyAccount',
   TransactionCategory: 'TransactionCategory',
@@ -528,10 +529,33 @@ export const ApprovalTokenScalarFieldEnum = {
   revokedAt: 'revokedAt',
   revokedReason: 'revokedReason',
   replacedById: 'replacedById',
-  failedAttempts: 'failedAttempts'
+  failedAttempts: 'failedAttempts',
+  ballotId: 'ballotId'
 } as const
 
 export type ApprovalTokenScalarFieldEnum = (typeof ApprovalTokenScalarFieldEnum)[keyof typeof ApprovalTokenScalarFieldEnum]
+
+
+export const BallotScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  meetingId: 'meetingId',
+  recipientPartyId: 'recipientPartyId',
+  tokenHash: 'tokenHash',
+  verificationHash: 'verificationHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  issuedAt: 'issuedAt',
+  openedAt: 'openedAt',
+  usedAt: 'usedAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason',
+  failedAttempts: 'failedAttempts',
+  replacedById: 'replacedById',
+  createdAt: 'createdAt'
+} as const
+
+export type BallotScalarFieldEnum = (typeof BallotScalarFieldEnum)[keyof typeof BallotScalarFieldEnum]
 
 
 export const VoteScalarFieldEnum = {

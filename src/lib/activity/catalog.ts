@@ -40,6 +40,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "document.download": "OWNER",
   "attachment.download": "OWNER",
   "vote.submit": "OWNER",
+  "ballot.submit": "OWNER",
 
   // ---- GOVERNANCE — management/assembly actions of legitimate interest to owners ----
   "meeting.create": "GOVERNANCE",
@@ -55,6 +56,10 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "proposal.voting.open": "GOVERNANCE",
   "proposal.voting.close": "GOVERNANCE",
   "proposal.decision.record": "GOVERNANCE",
+  "ballot.issue": "GOVERNANCE",
+  "ballot.reissue": "GOVERNANCE",
+  "ballot.revoke": "GOVERNANCE",
+  "ballot.dispatch": "GOVERNANCE",
   "vote.manual_entry": "GOVERNANCE",
   "vote.correct": "GOVERNANCE",
   "attendance.record": "GOVERNANCE",
@@ -139,6 +144,8 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "notification.test_email.rate_limited": "SYSTEM",
   "notification.test_email.send": "SYSTEM",
   "platform.email_settings.update": "SYSTEM",
+  "ballot.open": "SYSTEM",
+  "ballot.revoke.auto": "SYSTEM",
   "approval_token.issue": "SYSTEM",
   "approval_token.lookup.expired": "SYSTEM",
   "approval_token.lookup.revoked": "SYSTEM",

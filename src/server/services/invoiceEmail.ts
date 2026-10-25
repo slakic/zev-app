@@ -10,11 +10,11 @@ import { requireAnyUser, requireRole, requireSelfOrRole, requireZev, type Actor 
 import { emailAddressSchema } from "@/lib/emailAddress";
 import { getEnv } from "@/lib/env";
 import { formatDate } from "@/lib/i18n";
-import { enqueueNotification, dispatchNotification } from "@/server/notifications/service";
-import { currentEmailProviderKind, type DeliveryEvent } from "@/server/notifications/providers";
+import { enqueueNotification } from "@/server/notifications/service";
+import { dispatchQueued, requeueFailed, EMAIL_DAILY_SOFT_LIMIT_DEFAULT, SENT_STATUSES } from "@/server/notifications/dailyBudget";
 import { ensureInvoiceDocument } from "./documents";
 import { partyDisplayName } from "./ownership";
-import type { NotifStatus, Party, Prisma } from "@/generated/prisma/client";
+import type { NotifStatus, Party } from "@/generated/prisma/client";
 
 export const INVOICE_EMAIL_TEMPLATE = {
   ISSUED: "invoice-delivery",
@@ -27,12 +27,8 @@ const INVOICE_EMAIL_TEMPLATES: string[] = Object.values(INVOICE_EMAIL_TEMPLATE);
 
 export const INVOICE_EMAIL_DISPATCH_MAX = 25;
 export const INVOICE_EMAIL_DISPATCH_BUDGET_MS = 25_000;
-/** Meki dnevni limit (Mailjet besplatni plan = 200/dan za cijelu platformu); ostavlja rezervu za reset lozinke i glasanje. */
-export const INVOICE_EMAIL_DAILY_SOFT_LIMIT_DEFAULT = 180;
-/** Poslije toliko neuspjelih pokušaja poruka se više ne vraća u red ručno. */
-const MAX_ATTEMPTS = 5;
-
-const SENT_STATUSES: NotifStatus[] = ["SENT", "DELIVERED", "SEEN"];
+/** Meki dnevni limit — od v2.44.0 zajednički (notifications/dailyBudget.ts); izvoz ostaje radi kompatibilnosti. */
+export const INVOICE_EMAIL_DAILY_SOFT_LIMIT_DEFAULT = EMAIL_DAILY_SOFT_LIMIT_DEFAULT;
 
 export type InvoiceEmailKind = "ISSUED" | "CORRECTED" | "CANCELLED";
 
@@ -243,12 +239,6 @@ async function scopeInvoiceIds(zevId: string, scope: InvoiceEmailScope): Promise
   return rows.map((r) => r.id);
 }
 
-function dailyLimit(override?: number): number {
-  if (override !== undefined) return override;
-  if (currentEmailProviderKind() !== "mailjet") return Infinity;
-  return Number(process.env.EMAIL_DAILY_SOFT_LIMIT) || INVOICE_EMAIL_DAILY_SOFT_LIMIT_DEFAULT;
-}
-
 export async function dispatchInvoiceEmails(
   actor: Actor,
   scope: InvoiceEmailScope,
@@ -257,61 +247,24 @@ export async function dispatchInvoiceEmails(
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   const invoiceIds = await scopeInvoiceIds(zevId, scope);
-  const max = opts?.max ?? INVOICE_EMAIL_DISPATCH_MAX;
-  const budgetMs = opts?.budgetMs ?? INVOICE_EMAIL_DISPATCH_BUDGET_MS;
-  const limit = dailyLimit(opts?.dailyLimit);
   const where = { zevId, relatedType: "Invoice", relatedId: { in: invoiceIds }, template: { in: INVOICE_EMAIL_TEMPLATES } };
 
-  const queue = await prisma.notificationMessage.findMany({
-    where: { ...where, status: "QUEUED" },
-    orderBy: { createdAt: "asc" },
-  });
-  // Cijela platforma dijeli jedan Mailjet nalog, pa se broji sve poslato u zadnja 24 sata.
-  let sentToday = await prisma.notificationMessage.count({
-    where: { channel: "EMAIL", status: { in: SENT_STATUSES }, sentAt: { gte: new Date(Date.now() - 24 * 3600 * 1000) } },
-  });
-
-  const started = Date.now();
-  let attempted = 0;
-  let sent = 0;
-  let failed = 0;
-  let dailyLimitReached = false;
-  for (const m of queue) {
-    if (attempted >= max || Date.now() - started >= budgetMs) break;
-    if (sentToday >= limit) {
-      dailyLimitReached = true;
-      break;
-    }
-    attempted++;
-    let attachmentDocumentId = m.attachmentDocumentId;
-    if (!attachmentDocumentId && m.template !== INVOICE_EMAIL_TEMPLATE.CANCELLED && m.relatedId) {
+  // Limit, vrijeme i red su u zajedničkom dispečeru (notifications/dailyBudget.ts) — fakture, listići i pozivi
+  // troše isti dnevni limit. Ovdje ostaje samo priprema PDF-a faktur prije slanja.
+  const { attempted, sent, failed, pending, dailyLimitReached } = await dispatchQueued(where, {
+    max: opts?.max ?? INVOICE_EMAIL_DISPATCH_MAX,
+    budgetMs: opts?.budgetMs ?? INVOICE_EMAIL_DISPATCH_BUDGET_MS,
+    dailyLimit: opts?.dailyLimit,
+    prepare: async (m) => {
+      if (m.attachmentDocumentId || m.template === INVOICE_EMAIL_TEMPLATE.CANCELLED || !m.relatedId) return;
       try {
-        attachmentDocumentId = (await ensureInvoiceDocument(actor, m.relatedId)).id;
-        await prisma.notificationMessage.update({ where: { id: m.id }, data: { attachmentDocumentId } });
+        const docId = (await ensureInvoiceDocument(actor, m.relatedId)).id;
+        await prisma.notificationMessage.update({ where: { id: m.id }, data: { attachmentDocumentId: docId } });
       } catch (e) {
-        failed++;
-        const detail = e instanceof Error ? e.message : String(e);
-        await prisma.notificationMessage.update({
-          where: { id: m.id },
-          data: {
-            status: "FAILED",
-            attempts: { increment: 1 },
-            lastError: `PDF fakture nije generisan: ${detail}`,
-            events: [...(((m.events as unknown as DeliveryEvent[]) ?? [])), { at: new Date().toISOString(), type: "failed", detail }] as unknown as Prisma.InputJsonValue,
-          },
-        });
-        continue;
+        return { error: `PDF fakture nije generisan: ${e instanceof Error ? e.message : String(e)}` };
       }
-    }
-    const res = await dispatchNotification(m.id);
-    if (SENT_STATUSES.includes(res.status)) {
-      sent++;
-      sentToday++;
-    } else if (res.status === "FAILED") {
-      failed++;
-    }
-  }
-  const pending = await prisma.notificationMessage.count({ where: { ...where, status: "QUEUED" } });
+    },
+  });
   if (attempted > 0 || dailyLimitReached) {
     await audit(actor, {
       action: "invoice_email.dispatch",
@@ -328,31 +281,13 @@ export async function retryInvoiceEmails(actor: Actor, scope: InvoiceEmailScope)
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   const invoiceIds = await scopeInvoiceIds(zevId, scope);
-  const failedMsgs = await prisma.notificationMessage.findMany({
-    where: {
-      zevId,
-      relatedType: "Invoice",
-      relatedId: { in: invoiceIds },
-      template: { in: INVOICE_EMAIL_TEMPLATES },
-      status: "FAILED",
-      attempts: { lt: MAX_ATTEMPTS },
-    },
-  });
-  for (const f of failedMsgs) {
-    await prisma.notificationMessage.update({
-      where: { id: f.id },
-      data: {
-        status: "QUEUED",
-        events: [...(((f.events as unknown as DeliveryEvent[]) ?? [])), { at: new Date().toISOString(), type: "retry" }] as unknown as Prisma.InputJsonValue,
-      },
-    });
-  }
-  if (failedMsgs.length > 0) {
+  const count = await requeueFailed({ zevId, relatedType: "Invoice", relatedId: { in: invoiceIds }, template: { in: INVOICE_EMAIL_TEMPLATES } });
+  if (count > 0) {
     await audit(actor, {
       action: "invoice_email.retry",
       targetType: "batchId" in scope ? "InvoiceBatch" : "Invoice",
       targetId: "batchId" in scope ? scope.batchId : (invoiceIds[0] ?? null),
-      after: { count: failedMsgs.length },
+      after: { count },
     });
   }
   return dispatchInvoiceEmails(actor, scope);

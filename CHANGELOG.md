@@ -43,6 +43,51 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.44.0] - 2026-10-25
+
+### Dodato
+
+- **Glasački listić po sjednici.** Kad predsjednik na sjednici označi glasanje otvorenim, svaki glasač dobija
+  **jedan e-mail sa jednim ličnim linkom i jednim kodom za sve prijedloge sjednice** (ranije: zasebna poruka po
+  prijedlogu, svaka sa istim naslovom). Na javnoj stranici listića vidi sve prijedloge (tekst, obrazloženje,
+  prilozi, tehnički otisak pod „Tehnički detalji”), za svaki bira Za / Protiv / Uzdržan/a, upisuje kod jednom i
+  potvrđuje jednom. Listić se ne može poslati dok svaki prijedlog nema odgovor; ako nešto nedostaje ili kod nije
+  ispravan, greška kaže šta, a izbori i izjava ostaju na ekranu. Glasovi se upisuju **svi zajedno ili nijedan**.
+  Dokaz ostaje po prijedlogu: za svaki prijedlog nastaje poseban glas sa otiskom teksta tog prijedloga i
+  zapisom `vote.submit`, a rezultat, kvorum i glasačka lista se ne mijenjaju. Potvrda nakon slanja prikazuje
+  prijedlog, izbor, vrijeme i broj potvrde po prijedlogu (izbor samo na tom ekranu, ne u adresi) i dugme „Odštampaj”.
+  Prijedlog koji se u međuvremenu zatvorio ili za koji je već unesen papirni glas se na listiću preskače.
+- **Kartica „Glasački listići” na sjednici:** broj listića (poslato / u redu / neuspješno / iskorišteno), tabela po
+  primaocu sa stanjem poruke i listića i brojem datih glasova, „Ponovo izdaj” (novi link i kod, stari prestaje da
+  važi) i „Opozovi”, oba iza potvrde sa obaveznim razlogom. Pet pogrešnih kodova opoziva listić.
+- **Dnevni limit slanja e-pošte je zajednički** za fakture, glasačke listiće i pozive na sjednicu (isti Mailjet
+  nalog). Potvrda otvaranja glasanja kaže koliko se poruka šalje i koliko je danas preostalo od limita; što ne
+  stane ostaje u redu i odlazi sutra ili dugmetom „Pošalji neposlate” na sjednici. Podrazumijevani limit je i dalje
+  `EMAIL_DAILY_SOFT_LIMIT` (180); u probnom (mock) režimu važi samo ako je izričito postavljen.
+- Prijedlog: u tabeli glasačke baze tokeni sa listića nose oznaku „Preko listića” sa vezom na karticu; „Vaše učešće”
+  vlasniku kaže da link stiže jednim e-mailom za sve prijedloge.
+
+### Izmijenjeno
+
+- Otvaranje glasanja na sjednici zahtijeva da svi prijedlozi u nacrtu imaju **isti rok glasanja** (listić važi do
+  jednog roka); inače stranica imenuje prijedloge sa različitim rokom i ne otvara ništa.
+- Kad su za sjednicu poslati glasački listići, na nju se **ne može dodati novi prijedlog** — nova tačka ide na novu
+  sjednicu. Sjednica sa otvorenim glasanjem bez listića (režim uživo, prijedlozi po tački) i dalje može dobiti novi
+  prijedlog.
+- Pozivi na sjednicu se upisuju u red i šalju kroz isti ograničeni dispečer kao fakture (ranije odmah, bez limita).
+- Lični link jednog prijedloga koji pripada listiću ne može se koristiti sam („Ovaj link pripada listiću”), a
+  njegovo ponovno izdavanje i opoziv rade se na listiću. Pojedinačno otvaranje prijedloga i režim uživo ostaju kakvi
+  jesu. Napomena sitnog slova na javnoj stranici glasanja je sada 13 px.
+
+### Napomena za produkciju
+
+- Jedna **aditivna migracija** (`20261025100158_glasacki_listic_po_sjednici`: tabela `Ballot` i kolona
+  `ApprovalToken.ballotId`) pokreće se **ručno prije deploy-a**: `MIGRATE_DATABASE_URL=… node scripts/migrate.mjs apply`,
+  pa provjera da `_prisma_migrations` sadrži novu migraciju. Već otvorena glasanja (pojedinačni linkovi) rade do kraja kao
+  prije; listići važe za sjednice otvorene nakon ovog izdanja.
+- Povratak na 2.43.2 je moguć (stari kod ignoriše novu kolonu), ali listići izdati u 2.44.0 tada ne rade — njihovi
+  neiskorišteni glasovi se moraju ponovo izdati kao pojedinačni linkovi; već upisani glasovi ostaju.
+
 ## [2.43.2] - 2026-10-25
 
 ### Ispravljeno

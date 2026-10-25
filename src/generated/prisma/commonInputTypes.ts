@@ -681,6 +681,23 @@ export type EnumTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTokenStatusFilter<$PrismaModel>
 }
 
+export type EnumBallotStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BallotStatus | Prisma.EnumBallotStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBallotStatusFilter<$PrismaModel> | $Enums.BallotStatus
+}
+
+export type EnumBallotStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BallotStatus | Prisma.EnumBallotStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBallotStatusWithAggregatesFilter<$PrismaModel> | $Enums.BallotStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBallotStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBallotStatusFilter<$PrismaModel>
+}
+
 export type EnumVoteChoiceFilter<$PrismaModel = never> = {
   equals?: $Enums.VoteChoice | Prisma.EnumVoteChoiceFieldRefInput<$PrismaModel>
   in?: $Enums.VoteChoice[] | Prisma.ListEnumVoteChoiceFieldRefInput<$PrismaModel>
@@ -1696,6 +1713,23 @@ export type NestedEnumTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTokenStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTokenStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumBallotStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BallotStatus | Prisma.EnumBallotStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBallotStatusFilter<$PrismaModel> | $Enums.BallotStatus
+}
+
+export type NestedEnumBallotStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BallotStatus | Prisma.EnumBallotStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BallotStatus[] | Prisma.ListEnumBallotStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBallotStatusWithAggregatesFilter<$PrismaModel> | $Enums.BallotStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBallotStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBallotStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumVoteChoiceFilter<$PrismaModel = never> = {

@@ -13,7 +13,7 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { formatWeight, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, formatDateTimeLocalInput, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, BtnLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, BtnLink, RowLink, type ColumnSpec } from "@/components/ui";
 import { PreconditionList } from "@/components/precondition-list";
 
 // One row per voting SUBJECT (FR, K-03a). The weight column exists only for pre-FR snapshots and the board.
@@ -222,7 +222,9 @@ export default async function ProposalPage({ params, searchParams }: { params: P
           <Card title="Vaše učešće">
             <p className="text-sm text-slate-600">
               {ownEv
-                ? "Imate pravo glasa o ovom prijedlogu. Lični link i verifikacioni kod dobili ste e-poštom — glasa se isključivo putem ličnog linka."
+                ? ownEv.tokens.some((tk) => tk.ballotId)
+                  ? `Imate pravo glasa o ovom prijedlogu. ${t("ballot.owner.oneEmail")}`
+                  : "Imate pravo glasa o ovom prijedlogu. Lični link i verifikacioni kod dobili ste e-poštom — glasa se isključivo putem ličnog linka."
                 : viaRepresentative
                   ? tf(
                       viaRepresentative.votes.some((v) => !v.invalid) ? "votingSubject.owner.viaRepresentativeVoted" : "votingSubject.owner.viaRepresentative",
@@ -442,7 +444,10 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                     <Td>{lastToken ? <StatusBadge status={lastToken.status} label={tEnum("tokenStatus", lastToken.status)} /> : "—"}</Td>
                     <Td>{vote ? `${tEnum("vote", vote.choice)} (${tEnum("vote", vote.channel)})` : "—"}</Td>
                     <Td>
-                      {isPresident && lastToken && lastToken.status === "ACTIVE" && (
+                      {lastToken?.ballotId ? (
+                        // v2.44.0: the link belongs to the session ballot — reissue/revoke are done there, not per token.
+                        <RowLink href={`/skupstina/${p.meetingId}#listici`}>{t("ballot.proposal.viaBallot")}</RowLink>
+                      ) : isPresident && lastToken && lastToken.status === "ACTIVE" && (
                         <div className="flex flex-wrap gap-1.5">
                           <div className="min-w-0 max-w-full">
                           <ConfirmAction

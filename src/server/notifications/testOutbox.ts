@@ -27,7 +27,7 @@ import { prisma } from "@/lib/prisma";
 import { sha256 } from "@/server/auth/tokens";
 import type { TokenStatus } from "@/generated/prisma/client";
 
-const APPROVAL_TEMPLATES = ["approval-link", "approval-link-reissue"];
+const APPROVAL_TEMPLATES = ["approval-link", "approval-link-reissue", "ballot-link", "ballot-link-reissue"];
 
 /**
  * True only when BOTH of:
@@ -89,7 +89,14 @@ export async function listApprovalLinks(opts?: { zevId?: string; proposalId?: st
   const tokens = hashes.length
     ? await prisma.approvalToken.findMany({ where: { tokenHash: { in: hashes } }, select: { tokenHash: true, status: true } })
     : [];
-  const statusByHash = new Map(tokens.map((t) => [t.tokenHash, t.status]));
+  // v2.44.0: a ballot link ("ballot-link*") is hashed on Ballot, not ApprovalToken; BallotStatus uses the same names.
+  const ballots = hashes.length
+    ? await prisma.ballot.findMany({ where: { tokenHash: { in: hashes } }, select: { tokenHash: true, status: true } })
+    : [];
+  const statusByHash = new Map<string, TokenStatus>([
+    ...tokens.map((t) => [t.tokenHash, t.status] as const),
+    ...ballots.map((b) => [b.tokenHash, b.status as TokenStatus] as const),
+  ]);
   return messages.map((m, i) => ({
     id: m.id,
     toAddress: m.toAddress,

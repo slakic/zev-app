@@ -40,9 +40,10 @@ export type EnqueueInput = {
   attachmentDocumentId?: string | null;
 };
 
-/** Stores the message in the outbox (QUEUED) WITHOUT sending it — the caller dispatches later. */
-export async function enqueueNotification(input: EnqueueInput) {
-  return prisma.notificationMessage.create({
+/** Stores the message in the outbox (QUEUED) WITHOUT sending it — the caller dispatches later.
+ *  `db` lets the caller write it inside its own transaction (e.g. a ballot and its message together). */
+export async function enqueueNotification(input: EnqueueInput, db: Prisma.TransactionClient | typeof prisma = prisma) {
+  return db.notificationMessage.create({
     data: {
       zevId: input.zevId ?? null,
       channel: input.channel,

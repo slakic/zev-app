@@ -335,6 +335,7 @@ export type ZevWhereInput = {
   allocationGroups?: Prisma.AllocationGroupListRelationFilter
   commonAssets?: Prisma.CommonAssetListRelationFilter
   meetings?: Prisma.MeetingListRelationFilter
+  ballots?: Prisma.BallotListRelationFilter
   votingRules?: Prisma.VotingRuleListRelationFilter
   proposals?: Prisma.ProposalListRelationFilter
   votes?: Prisma.VoteListRelationFilter
@@ -396,6 +397,7 @@ export type ZevOrderByWithRelationInput = {
   allocationGroups?: Prisma.AllocationGroupOrderByRelationAggregateInput
   commonAssets?: Prisma.CommonAssetOrderByRelationAggregateInput
   meetings?: Prisma.MeetingOrderByRelationAggregateInput
+  ballots?: Prisma.BallotOrderByRelationAggregateInput
   votingRules?: Prisma.VotingRuleOrderByRelationAggregateInput
   proposals?: Prisma.ProposalOrderByRelationAggregateInput
   votes?: Prisma.VoteOrderByRelationAggregateInput
@@ -460,6 +462,7 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   allocationGroups?: Prisma.AllocationGroupListRelationFilter
   commonAssets?: Prisma.CommonAssetListRelationFilter
   meetings?: Prisma.MeetingListRelationFilter
+  ballots?: Prisma.BallotListRelationFilter
   votingRules?: Prisma.VotingRuleListRelationFilter
   proposals?: Prisma.ProposalListRelationFilter
   votes?: Prisma.VoteListRelationFilter
@@ -571,6 +574,7 @@ export type ZevCreateInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -632,6 +636,7 @@ export type ZevUncheckedCreateInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -693,6 +698,7 @@ export type ZevUpdateInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -754,6 +760,7 @@ export type ZevUncheckedUpdateInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -1167,6 +1174,20 @@ export type ZevUpdateOneRequiredWithoutProposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutProposalsInput, Prisma.ZevUpdateWithoutProposalsInput>, Prisma.ZevUncheckedUpdateWithoutProposalsInput>
 }
 
+export type ZevCreateNestedOneWithoutBallotsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutBallotsInput, Prisma.ZevUncheckedCreateWithoutBallotsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutBallotsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutBallotsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutBallotsInput, Prisma.ZevUncheckedCreateWithoutBallotsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutBallotsInput
+  upsert?: Prisma.ZevUpsertWithoutBallotsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutBallotsInput, Prisma.ZevUpdateWithoutBallotsInput>, Prisma.ZevUncheckedUpdateWithoutBallotsInput>
+}
+
 export type ZevCreateNestedOneWithoutVotesInput = {
   create?: Prisma.XOR<Prisma.ZevCreateWithoutVotesInput, Prisma.ZevUncheckedCreateWithoutVotesInput>
   connectOrCreate?: Prisma.ZevCreateOrConnectWithoutVotesInput
@@ -1540,6 +1561,7 @@ export type ZevCreateWithoutSessionsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -1600,6 +1622,7 @@ export type ZevUncheckedCreateWithoutSessionsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -1676,6 +1699,7 @@ export type ZevUpdateWithoutSessionsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -1736,6 +1760,7 @@ export type ZevUncheckedUpdateWithoutSessionsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -1796,6 +1821,7 @@ export type ZevCreateWithoutPartiesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -1856,6 +1882,7 @@ export type ZevUncheckedCreateWithoutPartiesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -1932,6 +1959,7 @@ export type ZevUpdateWithoutPartiesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -1992,6 +2020,7 @@ export type ZevUncheckedUpdateWithoutPartiesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -2052,6 +2081,7 @@ export type ZevCreateWithoutMembershipsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -2112,6 +2142,7 @@ export type ZevUncheckedCreateWithoutMembershipsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -2188,6 +2219,7 @@ export type ZevUpdateWithoutMembershipsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -2248,6 +2280,7 @@ export type ZevUncheckedUpdateWithoutMembershipsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -2308,6 +2341,7 @@ export type ZevCreateWithoutBuildingsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -2368,6 +2402,7 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -2444,6 +2479,7 @@ export type ZevUpdateWithoutBuildingsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -2504,6 +2540,7 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -2564,6 +2601,7 @@ export type ZevCreateWithoutEntrancesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -2624,6 +2662,7 @@ export type ZevUncheckedCreateWithoutEntrancesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -2700,6 +2739,7 @@ export type ZevUpdateWithoutEntrancesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -2760,6 +2800,7 @@ export type ZevUncheckedUpdateWithoutEntrancesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -2820,6 +2861,7 @@ export type ZevCreateWithoutUnitRegisterChangesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -2880,6 +2922,7 @@ export type ZevUncheckedCreateWithoutUnitRegisterChangesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -2956,6 +2999,7 @@ export type ZevUpdateWithoutUnitRegisterChangesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -3016,6 +3060,7 @@ export type ZevUncheckedUpdateWithoutUnitRegisterChangesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -3076,6 +3121,7 @@ export type ZevCreateWithoutUnitsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -3136,6 +3182,7 @@ export type ZevUncheckedCreateWithoutUnitsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -3212,6 +3259,7 @@ export type ZevUpdateWithoutUnitsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -3272,6 +3320,7 @@ export type ZevUncheckedUpdateWithoutUnitsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -3332,6 +3381,7 @@ export type ZevCreateWithoutOwnershipStakesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -3392,6 +3442,7 @@ export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -3468,6 +3519,7 @@ export type ZevUpdateWithoutOwnershipStakesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -3528,6 +3580,7 @@ export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -3588,6 +3641,7 @@ export type ZevCreateWithoutOccupanciesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -3648,6 +3702,7 @@ export type ZevUncheckedCreateWithoutOccupanciesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -3724,6 +3779,7 @@ export type ZevUpdateWithoutOccupanciesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -3784,6 +3840,7 @@ export type ZevUncheckedUpdateWithoutOccupanciesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -3844,6 +3901,7 @@ export type ZevCreateWithoutProxiesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -3904,6 +3962,7 @@ export type ZevUncheckedCreateWithoutProxiesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -3980,6 +4039,7 @@ export type ZevUpdateWithoutProxiesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -4040,6 +4100,7 @@ export type ZevUncheckedUpdateWithoutProxiesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -4100,6 +4161,7 @@ export type ZevCreateWithoutOfficeTermsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -4160,6 +4222,7 @@ export type ZevUncheckedCreateWithoutOfficeTermsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -4236,6 +4299,7 @@ export type ZevUpdateWithoutOfficeTermsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -4296,6 +4360,7 @@ export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -4356,6 +4421,7 @@ export type ZevCreateWithoutAllocationGroupsInput = {
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -4416,6 +4482,7 @@ export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -4492,6 +4559,7 @@ export type ZevUpdateWithoutAllocationGroupsInput = {
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -4552,6 +4620,7 @@ export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -4612,6 +4681,7 @@ export type ZevCreateWithoutCommonAssetsInput = {
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -4672,6 +4742,7 @@ export type ZevUncheckedCreateWithoutCommonAssetsInput = {
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -4748,6 +4819,7 @@ export type ZevUpdateWithoutCommonAssetsInput = {
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -4808,6 +4880,7 @@ export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -4868,6 +4941,7 @@ export type ZevCreateWithoutMeetingsInput = {
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -4928,6 +5002,7 @@ export type ZevUncheckedCreateWithoutMeetingsInput = {
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -5004,6 +5079,7 @@ export type ZevUpdateWithoutMeetingsInput = {
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -5064,6 +5140,7 @@ export type ZevUncheckedUpdateWithoutMeetingsInput = {
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -5125,6 +5202,7 @@ export type ZevCreateWithoutVotingRulesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
   transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
@@ -5185,6 +5263,7 @@ export type ZevUncheckedCreateWithoutVotingRulesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
   transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
@@ -5261,6 +5340,7 @@ export type ZevUpdateWithoutVotingRulesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
   transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
@@ -5321,6 +5401,7 @@ export type ZevUncheckedUpdateWithoutVotingRulesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
   transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
@@ -5381,6 +5462,7 @@ export type ZevCreateWithoutProposalsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
   transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
@@ -5441,6 +5523,7 @@ export type ZevUncheckedCreateWithoutProposalsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
   transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
@@ -5517,6 +5600,7 @@ export type ZevUpdateWithoutProposalsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
   transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
@@ -5577,7 +5661,268 @@ export type ZevUncheckedUpdateWithoutProposalsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutBallotsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutBallotsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutBallotsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutBallotsInput, Prisma.ZevUncheckedCreateWithoutBallotsInput>
+}
+
+export type ZevUpsertWithoutBallotsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutBallotsInput, Prisma.ZevUncheckedUpdateWithoutBallotsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutBallotsInput, Prisma.ZevUncheckedCreateWithoutBallotsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutBallotsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutBallotsInput, Prisma.ZevUncheckedUpdateWithoutBallotsInput>
+}
+
+export type ZevUpdateWithoutBallotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutBallotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
   transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
   finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
@@ -5637,6 +5982,7 @@ export type ZevCreateWithoutVotesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
@@ -5697,6 +6043,7 @@ export type ZevUncheckedCreateWithoutVotesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
@@ -5773,6 +6120,7 @@ export type ZevUpdateWithoutVotesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
@@ -5833,6 +6181,7 @@ export type ZevUncheckedUpdateWithoutVotesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
@@ -5892,6 +6241,7 @@ export type ZevCreateWithoutAccountsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -5952,6 +6302,7 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -6028,6 +6379,7 @@ export type ZevUpdateWithoutAccountsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -6088,6 +6440,7 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -6149,6 +6502,7 @@ export type ZevCreateWithoutTransactionCategoriesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -6209,6 +6563,7 @@ export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -6285,6 +6640,7 @@ export type ZevUpdateWithoutTransactionCategoriesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -6345,6 +6701,7 @@ export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -6405,6 +6762,7 @@ export type ZevCreateWithoutFinTransactionsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -6465,6 +6823,7 @@ export type ZevUncheckedCreateWithoutFinTransactionsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -6541,6 +6900,7 @@ export type ZevUpdateWithoutFinTransactionsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -6601,6 +6961,7 @@ export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -6661,6 +7022,7 @@ export type ZevCreateWithoutChargeItemsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -6721,6 +7083,7 @@ export type ZevUncheckedCreateWithoutChargeItemsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -6797,6 +7160,7 @@ export type ZevUpdateWithoutChargeItemsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -6857,6 +7221,7 @@ export type ZevUncheckedUpdateWithoutChargeItemsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -6917,6 +7282,7 @@ export type ZevCreateWithoutInvoiceBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -6977,6 +7343,7 @@ export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -7053,6 +7420,7 @@ export type ZevUpdateWithoutInvoiceBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -7113,6 +7481,7 @@ export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -7173,6 +7542,7 @@ export type ZevCreateWithoutInvoicesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -7233,6 +7603,7 @@ export type ZevUncheckedCreateWithoutInvoicesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -7309,6 +7680,7 @@ export type ZevUpdateWithoutInvoicesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -7369,6 +7741,7 @@ export type ZevUncheckedUpdateWithoutInvoicesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -7429,6 +7802,7 @@ export type ZevCreateWithoutBankImportBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -7489,6 +7863,7 @@ export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -7565,6 +7940,7 @@ export type ZevUpdateWithoutBankImportBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -7625,6 +8001,7 @@ export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -7685,6 +8062,7 @@ export type ZevCreateWithoutIncomingBankSmsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -7745,6 +8123,7 @@ export type ZevUncheckedCreateWithoutIncomingBankSmsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -7821,6 +8200,7 @@ export type ZevUpdateWithoutIncomingBankSmsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -7881,6 +8261,7 @@ export type ZevUncheckedUpdateWithoutIncomingBankSmsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -7941,6 +8322,7 @@ export type ZevCreateWithoutBankRecordMatchesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -8001,6 +8383,7 @@ export type ZevUncheckedCreateWithoutBankRecordMatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -8077,6 +8460,7 @@ export type ZevUpdateWithoutBankRecordMatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -8137,6 +8521,7 @@ export type ZevUncheckedUpdateWithoutBankRecordMatchesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -8197,6 +8582,7 @@ export type ZevCreateWithoutPaymentsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -8257,6 +8643,7 @@ export type ZevUncheckedCreateWithoutPaymentsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -8333,6 +8720,7 @@ export type ZevUpdateWithoutPaymentsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -8393,6 +8781,7 @@ export type ZevUncheckedUpdateWithoutPaymentsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -8453,6 +8842,7 @@ export type ZevCreateWithoutBalanceCorrectionsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -8513,6 +8903,7 @@ export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -8589,6 +8980,7 @@ export type ZevUpdateWithoutBalanceCorrectionsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -8649,6 +9041,7 @@ export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -8709,6 +9102,7 @@ export type ZevCreateWithoutSuppliersInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -8769,6 +9163,7 @@ export type ZevUncheckedCreateWithoutSuppliersInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -8845,6 +9240,7 @@ export type ZevUpdateWithoutSuppliersInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -8905,6 +9301,7 @@ export type ZevUncheckedUpdateWithoutSuppliersInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -8965,6 +9362,7 @@ export type ZevCreateWithoutExpensesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -9025,6 +9423,7 @@ export type ZevUncheckedCreateWithoutExpensesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -9101,6 +9500,7 @@ export type ZevUpdateWithoutExpensesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -9161,6 +9561,7 @@ export type ZevUncheckedUpdateWithoutExpensesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -9221,6 +9622,7 @@ export type ZevCreateWithoutAnnualPlansInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -9281,6 +9683,7 @@ export type ZevUncheckedCreateWithoutAnnualPlansInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -9357,6 +9760,7 @@ export type ZevUpdateWithoutAnnualPlansInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -9417,6 +9821,7 @@ export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -9477,6 +9882,7 @@ export type ZevCreateWithoutPlanItemsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -9537,6 +9943,7 @@ export type ZevUncheckedCreateWithoutPlanItemsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -9613,6 +10020,7 @@ export type ZevUpdateWithoutPlanItemsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -9673,6 +10081,7 @@ export type ZevUncheckedUpdateWithoutPlanItemsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -9733,6 +10142,7 @@ export type ZevCreateWithoutProjectsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -9793,6 +10203,7 @@ export type ZevUncheckedCreateWithoutProjectsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -9869,6 +10280,7 @@ export type ZevUpdateWithoutProjectsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -9929,6 +10341,7 @@ export type ZevUncheckedUpdateWithoutProjectsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -9989,6 +10402,7 @@ export type ZevCreateWithoutMaintenanceIssuesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -10049,6 +10463,7 @@ export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -10125,6 +10540,7 @@ export type ZevUpdateWithoutMaintenanceIssuesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -10185,6 +10601,7 @@ export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -10245,6 +10662,7 @@ export type ZevCreateWithoutWorkOrdersInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -10305,6 +10723,7 @@ export type ZevUncheckedCreateWithoutWorkOrdersInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -10381,6 +10800,7 @@ export type ZevUpdateWithoutWorkOrdersInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -10441,6 +10861,7 @@ export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -10501,6 +10922,7 @@ export type ZevCreateWithoutDocumentsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -10561,6 +10983,7 @@ export type ZevUncheckedCreateWithoutDocumentsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -10637,6 +11060,7 @@ export type ZevUpdateWithoutDocumentsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -10697,6 +11121,7 @@ export type ZevUncheckedUpdateWithoutDocumentsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -10757,6 +11182,7 @@ export type ZevCreateWithoutAttachmentsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -10817,6 +11243,7 @@ export type ZevUncheckedCreateWithoutAttachmentsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -10893,6 +11320,7 @@ export type ZevUpdateWithoutAttachmentsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -10953,6 +11381,7 @@ export type ZevUncheckedUpdateWithoutAttachmentsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -11013,6 +11442,7 @@ export type ZevCreateWithoutNotificationMessagesInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -11073,6 +11503,7 @@ export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -11149,6 +11580,7 @@ export type ZevUpdateWithoutNotificationMessagesInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -11209,6 +11641,7 @@ export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -11269,6 +11702,7 @@ export type ZevCreateWithoutAuditEventsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -11329,6 +11763,7 @@ export type ZevUncheckedCreateWithoutAuditEventsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -11405,6 +11840,7 @@ export type ZevUpdateWithoutAuditEventsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -11465,6 +11901,7 @@ export type ZevUncheckedUpdateWithoutAuditEventsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -11525,6 +11962,7 @@ export type ZevCreateWithoutSettingsInput = {
   allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteCreateNestedManyWithoutZevInput
@@ -11585,6 +12023,7 @@ export type ZevUncheckedCreateWithoutSettingsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
   commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
   meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
   votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
@@ -11661,6 +12100,7 @@ export type ZevUpdateWithoutSettingsInput = {
   allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
@@ -11721,6 +12161,7 @@ export type ZevUncheckedUpdateWithoutSettingsInput = {
   allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
   commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
   meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
   votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
@@ -11768,6 +12209,7 @@ export type ZevCountOutputType = {
   allocationGroups: number
   commonAssets: number
   meetings: number
+  ballots: number
   votingRules: number
   proposals: number
   votes: number
@@ -11811,6 +12253,7 @@ export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.In
   allocationGroups?: boolean | ZevCountOutputTypeCountAllocationGroupsArgs
   commonAssets?: boolean | ZevCountOutputTypeCountCommonAssetsArgs
   meetings?: boolean | ZevCountOutputTypeCountMeetingsArgs
+  ballots?: boolean | ZevCountOutputTypeCountBallotsArgs
   votingRules?: boolean | ZevCountOutputTypeCountVotingRulesArgs
   proposals?: boolean | ZevCountOutputTypeCountProposalsArgs
   votes?: boolean | ZevCountOutputTypeCountVotesArgs
@@ -11951,6 +12394,13 @@ export type ZevCountOutputTypeCountCommonAssetsArgs<ExtArgs extends runtime.Type
  */
 export type ZevCountOutputTypeCountMeetingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MeetingWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountBallotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BallotWhereInput
 }
 
 /**
@@ -12163,6 +12613,7 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   allocationGroups?: boolean | Prisma.Zev$allocationGroupsArgs<ExtArgs>
   commonAssets?: boolean | Prisma.Zev$commonAssetsArgs<ExtArgs>
   meetings?: boolean | Prisma.Zev$meetingsArgs<ExtArgs>
+  ballots?: boolean | Prisma.Zev$ballotsArgs<ExtArgs>
   votingRules?: boolean | Prisma.Zev$votingRulesArgs<ExtArgs>
   proposals?: boolean | Prisma.Zev$proposalsArgs<ExtArgs>
   votes?: boolean | Prisma.Zev$votesArgs<ExtArgs>
@@ -12271,6 +12722,7 @@ export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   allocationGroups?: boolean | Prisma.Zev$allocationGroupsArgs<ExtArgs>
   commonAssets?: boolean | Prisma.Zev$commonAssetsArgs<ExtArgs>
   meetings?: boolean | Prisma.Zev$meetingsArgs<ExtArgs>
+  ballots?: boolean | Prisma.Zev$ballotsArgs<ExtArgs>
   votingRules?: boolean | Prisma.Zev$votingRulesArgs<ExtArgs>
   proposals?: boolean | Prisma.Zev$proposalsArgs<ExtArgs>
   votes?: boolean | Prisma.Zev$votesArgs<ExtArgs>
@@ -12319,6 +12771,7 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     allocationGroups: Prisma.$AllocationGroupPayload<ExtArgs>[]
     commonAssets: Prisma.$CommonAssetPayload<ExtArgs>[]
     meetings: Prisma.$MeetingPayload<ExtArgs>[]
+    ballots: Prisma.$BallotPayload<ExtArgs>[]
     votingRules: Prisma.$VotingRulePayload<ExtArgs>[]
     proposals: Prisma.$ProposalPayload<ExtArgs>[]
     votes: Prisma.$VotePayload<ExtArgs>[]
@@ -12784,6 +13237,7 @@ export interface Prisma__ZevClient<T, Null = never, ExtArgs extends runtime.Type
   allocationGroups<T extends Prisma.Zev$allocationGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$allocationGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllocationGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   commonAssets<T extends Prisma.Zev$commonAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$commonAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommonAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meetings<T extends Prisma.Zev$meetingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$meetingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ballots<T extends Prisma.Zev$ballotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$ballotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BallotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   votingRules<T extends Prisma.Zev$votingRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$votingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotingRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proposals<T extends Prisma.Zev$proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   votes<T extends Prisma.Zev$votesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$votesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13606,6 +14060,30 @@ export type Zev$meetingsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.MeetingScalarFieldEnum | Prisma.MeetingScalarFieldEnum[]
+}
+
+/**
+ * Zev.ballots
+ */
+export type Zev$ballotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Ballot
+   */
+  select?: Prisma.BallotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Ballot
+   */
+  omit?: Prisma.BallotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BallotInclude<ExtArgs> | null
+  where?: Prisma.BallotWhereInput
+  orderBy?: Prisma.BallotOrderByWithRelationInput | Prisma.BallotOrderByWithRelationInput[]
+  cursor?: Prisma.BallotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BallotScalarFieldEnum | Prisma.BallotScalarFieldEnum[]
 }
 
 /**
