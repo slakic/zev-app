@@ -5,7 +5,7 @@ import { reserveFundBalance } from "@/server/services/finance";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney } from "@/lib/money";
 import { formatDate, endOfDay, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, inputCls, Tabs, FilterBar, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, BtnLink, SubmitBtn, RowLink, inputCls, Tabs, FilterBar, type ColumnSpec } from "@/components/ui";
 import { OwnerMultiSelect } from "@/components/owner-multiselect";
 
 const incExpHeaders: ColumnSpec[] = [
@@ -87,6 +87,17 @@ function balanceStatus(balance: string): { text: string; cls: string } {
   return { text: "izmireno", cls: "text-slate-500" };
 }
 
+/** „Od/Do” (F5b.4): period važi samo za tabove Novac, Fakture i Pregledi, pa se bira u njima — ne iznad tabova. */
+function PeriodBar({ tab, from, to }: { tab: string; from?: string; to?: string }) {
+  return (
+    <FilterBar submitLabel={t("reportsPage.applyPeriod")}>
+      <input type="hidden" name="tab" value={tab} />
+      <label className="text-sm">{t("reportsPage.from")} <input type="date" name="from" defaultValue={from} className={`${inputCls} ml-1 w-36`} /></label>
+      <label className="text-sm">{t("reportsPage.to")} <input type="date" name="to" defaultValue={to} className={`${inputCls} ml-1 w-36`} /></label>
+    </FilterBar>
+  );
+}
+
 /** Empty-state hint shared by every report table (H10, filter class) — the period/owner
  *  filters are page-level, so clearing them means dropping back to the tab's bare URL. */
 function FilteredEmptyHint({ clearHref }: { clearHref: string }) {
@@ -147,14 +158,8 @@ export default async function ReportsPage({
       <PageHeader
         title={t("nav.reports")}
         subtitle="Operativni finansijski pregledi — izvoz u CSV za eksternog računovođu ili u PDF za štampu/arhivu"
-        actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="primary">Izvoz svih izvještaja (PDF)</BtnLink>}
+        actions={<BtnLink href={`/api/izvjestaji/pdf${csvQ}`} variant="secondary">Izvoz svih izvještaja (PDF)</BtnLink>}
       />
-      <FilterBar submitLabel="Primijeni period">
-        <input type="hidden" name="tab" value={activeTab} />
-        <label className="text-sm">Od <input type="date" name="from" defaultValue={sp.from} className={`${inputCls} ml-1 w-36`} /></label>
-        <label className="text-sm">Do <input type="date" name="to" defaultValue={sp.to} className={`${inputCls} ml-1 w-36`} /></label>
-      </FilterBar>
-
       <Tabs
         tabs={[
           { key: "dugovanja", label: "Dugovanja" },
@@ -185,7 +190,7 @@ export default async function ReportsPage({
           />
           <SubmitBtn variant="tonal">Prikaži</SubmitBtn>
         </form>
-        <p className="mb-2 text-xs text-slate-500">
+        <p className="mb-2 text-[13px] text-slate-500">
           <strong>Prethodni saldo</strong> = ukupno stanje vlasnika prije izabranog dana. <strong>Zaduženo / Plaćeno /
           Korekcije</strong> = promjene knjižene na taj dan (ako ih nema, saldo ostaje jednak prethodnom).{" "}
           <strong>Pozitivan iznos</strong> znači da vlasnik duguje ZEV-u, <strong>negativan</strong> da ima preplatu
@@ -205,18 +210,18 @@ export default async function ReportsPage({
             const status = balanceStatus(r.balance);
             return (
               <tr key={r.partyId}>
-                <Td>{r.name}</Td>
+                <Td><RowLink href={`/vlasnici/${r.partyId}`}>{r.name}</RowLink></Td>
                 <Td>{r.units}</Td>
                 <Td>
                   {formatMoney(r.previousBalance, "")}
-                  <span className={`ml-1.5 text-xs ${prevStatus.cls}`}>({prevStatus.text})</span>
+                  <span className={`ml-1.5 text-[13px] ${prevStatus.cls}`}>({prevStatus.text})</span>
                 </Td>
                 <Td>{formatMoney(r.chargedToday, "")}</Td>
                 <Td>{formatMoney(r.paidToday, "")}</Td>
                 <Td>{formatMoney(r.correctionsToday, "")}</Td>
                 <Td className="font-semibold">
                   {formatMoney(r.balance, "")}
-                  <span className={`ml-1.5 text-xs font-normal ${status.cls}`}>({status.text})</span>
+                  <span className={`ml-1.5 text-[13px] font-normal ${status.cls}`}>({status.text})</span>
                 </Td>
               </tr>
             );
@@ -231,6 +236,8 @@ export default async function ReportsPage({
       )}
 
       {activeTab === "novac" && fund && (
+      <>
+      <PeriodBar tab="novac" from={sp.from} to={sp.to} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Stanje računa i tok novca" className="lg:col-span-2">
           <Table
@@ -277,12 +284,15 @@ export default async function ReportsPage({
 
         <Card title={`Fond održavanja (uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)})`}>
           <p className="text-2xl font-semibold tabular-nums">{formatMoney(fund.balance)}</p>
-          <p className="mt-1 text-xs text-slate-500">Prati se preko oznake „fond održavanja” na stavkama naknada i transakcijama.</p>
+          <p className="mt-1 text-[13px] text-slate-500">Prati se preko oznake „fond održavanja” na stavkama naknada i transakcijama.</p>
         </Card>
       </div>
+      </>
       )}
 
       {activeTab === "fakture" && receivables && (
+      <>
+      <PeriodBar tab="fakture" from={sp.from} to={sp.to} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title={`Neplaćene fakture vlasnika (otvoreno: ${formatMoney(receivables.totalOpen)} · dospjelo: ${formatMoney(receivables.totalOverdue)})`} className="lg:col-span-2">
           <Table
@@ -347,9 +357,12 @@ export default async function ReportsPage({
           </Table>
         </Card>
       </div>
+      </>
       )}
 
       {activeTab === "pregledi" && (
+      <>
+      <PeriodBar tab="pregledi" from={sp.from} to={sp.to} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Pregled po zgradama">
           <Table
@@ -391,6 +404,7 @@ export default async function ReportsPage({
           </Table>
         </Card>
       </div>
+      </>
       )}
     </div>
   );

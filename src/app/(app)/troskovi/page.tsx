@@ -10,6 +10,8 @@ import { prisma } from "@/lib/prisma";
 import { EXPENSE_DUE_DAYS } from "@/lib/accountantTasks";
 import { formatMoney, parseMoneyInput, dec } from "@/lib/money";
 import { formatDate, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
+import { ExpenseForm } from "@/components/expense-form";
+import { expenseValuesFromForm, type ExpenseFormState } from "@/lib/expenseFormState";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, ConfirmAction, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const supplierHeaders: ColumnSpec[] = [
@@ -44,15 +46,18 @@ async function addSupplierAction(formData: FormData) {
   revalidatePath("/troskovi");
 }
 
-async function addExpenseAction(formData: FormData) {
+/** `useActionState` akcija (F5b.3): ne preusmjerava, nego vraća stanje — pri upozorenju o duplikatu to su duplikati i sve unesene vrijednosti. */
+async function addExpenseAction(prev: ExpenseFormState, formData: FormData): Promise<ExpenseFormState> {
   "use server";
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
-  const categoryName = (formData.get("categoryName") as string) || null;
-  let categoryId: string | null = null;
-  if (categoryName) {
-    categoryId = (await ensureCategory(actor, categoryName, "EXPENSE")).id;
-  }
+  const values = expenseValuesFromForm((n) => formData.get(n));
+  const nonce = prev.nonce + 1;
   try {
+    const categoryName = (formData.get("categoryName") as string) || null;
+    let categoryId: string | null = null;
+    if (categoryName) {
+      categoryId = (await ensureCategory(actor, categoryName, "EXPENSE")).id;
+    }
     await createExpense(actor, {
       supplierId: (formData.get("supplierId") as string) || null,
       invoiceNumber: (formData.get("invoiceNumber") as string) || null,
@@ -70,11 +75,24 @@ async function addExpenseAction(formData: FormData) {
     });
   } catch (e) {
     if (e instanceof DuplicateExpenseWarning) {
-      redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(`UPOZORENJE: mogući duplikat (${e.duplicates.map((d) => d.invoiceNumber ?? d.id).join(", ")}). Označite "dozvoli duplikat" ako je unos ispravan.`)}`);
+      return {
+        status: "duplicate",
+        nonce,
+        values,
+        duplicates: e.duplicates.map((d) => ({
+          id: d.id,
+          invoiceNumber: d.invoiceNumber,
+          amount: d.amount,
+          supplierId: d.supplierId ?? null,
+          supplierName: d.supplierName ?? null,
+          invoiceDate: d.invoiceDate ?? null,
+        })),
+      };
     }
-    redirect(`/troskovi?tab=troskovi&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+    return { status: "error", nonce, values, error: e instanceof Error ? e.message : "Greška" };
   }
   revalidatePath("/troskovi");
+  return { status: "saved", nonce };
 }
 
 async function payExpenseAction(formData: FormData) {
@@ -113,7 +131,7 @@ export default async function ExpensesPage({
   const zevId = requireZev(actor);
   const sp = await searchParams;
   const { tab, err } = sp;
-  const activeTab = tab === "troskovi" ? "troskovi" : "dobavljaci";
+  const activeTab = tab === "dobavljaci" ? "dobavljaci" : "troskovi";
 
   // „Rok plaćanja”: ista kalendarska definicija kao brojač „Troškovi koji dospijevaju” na početnoj računovođe (`expensesDueWhere`).
   const dueWithinDays = sp.rok === String(EXPENSE_DUE_DAYS) ? EXPENSE_DUE_DAYS : undefined;
@@ -155,8 +173,8 @@ export default async function ExpensesPage({
       <Flash err={err} />
       <Tabs
         tabs={[
-          { key: "dobavljaci", label: "Dobavljači", count: suppliers.length },
           { key: "troskovi", label: "Troškovi", count: expenseCount },
+          { key: "dobavljaci", label: "Dobavljači", count: suppliers.length },
         ]}
         active={activeTab}
         hrefFor={(key) => `/troskovi?tab=${key}`}
@@ -175,7 +193,7 @@ export default async function ExpensesPage({
               <tr key={s.id}>
                 <Td>{s.name}</Td>
                 <Td>{s.jib ?? "—"}</Td>
-                <Td className="font-mono text-xs">{s.iban ?? "—"}</Td>
+                <Td className="font-mono text-[13px]">{s.iban ?? "—"}</Td>
                 <Td>{s.email ?? s.phone ?? "—"}</Td>
               </tr>
             ))}
@@ -196,6 +214,13 @@ export default async function ExpensesPage({
 
       {activeTab === "troskovi" && (
       <>
+        <ExpenseForm
+          action={addExpenseAction}
+          suppliers={suppliers.map((s) => ({ id: s.id, label: s.name }))}
+          buildings={buildings.map((b) => ({ id: b.id, label: b.name }))}
+          projects={projects.map((p) => ({ id: p.id, label: p.name }))}
+          planItems={planItems.map((pi) => ({ id: pi.id, label: `${pi.plan.year}: ${pi.name}` }))}
+        />
         <FilterBar>
           <input type="hidden" name="tab" value="troskovi" />
           {expenseSort && <input type="hidden" name="sort" value={expenseSort} />}
@@ -312,45 +337,6 @@ export default async function ExpensesPage({
           </Table>
         </Card>
 
-        <div className="mt-4">
-          <Card title="Novi trošak (ulazna faktura)">
-            <form action={addExpenseAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Dobavljač">
-                <select name="supplierId" className={inputCls}>
-                  <option value="">—</option>
-                  {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Broj fakture dobavljača"><input name="invoiceNumber" className={inputCls} /></Field>
-              <Field label="Datum fakture"><input name="invoiceDate" type="date" className={inputCls} /></Field>
-              <Field label="Iznos (KM)"><input name="amount" required className={inputCls} /></Field>
-              <Field label="Rok plaćanja"><input name="dueDate" type="date" className={inputCls} /></Field>
-              <Field label="Kategorija"><input name="categoryName" className={inputCls} placeholder="Struja zajedničkih prostorija" /></Field>
-              <Field label="Zgrada">
-                <select name="buildingId" className={inputCls}>
-                  <option value="">Cijela ZEV</option>
-                  {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Projekat">
-                <select name="projectId" className={inputCls}>
-                  <option value="">—</option>
-                  {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Stavka godišnjeg plana">
-                <select name="planItemId" className={inputCls}>
-                  <option value="">—</option>
-                  {planItems.map((pi) => <option key={pi.id} value={pi.id}>{pi.plan.year}: {pi.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Opis"><input name="description" className={inputCls} /></Field>
-              <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="recurring" /> ponavljajući (mjesečno)</label>
-              <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="allowDuplicate" /> dozvoli mogući duplikat</label>
-              <div className="sm:col-span-2"><SubmitBtn>Evidentiraj trošak</SubmitBtn></div>
-            </form>
-          </Card>
-        </div>
       </>
       )}
     </div>

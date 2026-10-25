@@ -181,6 +181,10 @@ function cssStringEscape(s: string): string {
   return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
+/** Labela u card-transformu uvijek ide u osnovnom fontu: ćelija sa `font-mono` (poziv na broj, IBAN) inače nasljeđuje
+ *  monospace i na `::before` (R-N22). Isti stack kao `body` u `globals.css`. */
+const CARD_LABEL_FONT = 'Roboto,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif';
+
 /** One `<style>` block per table instance, keyed by `id`, replacing what would otherwise be a
  *  `label` prop on every one of the ~260 `<Td>` call sites in the app (rejected in §3.B — it can
  *  silently drift from `headers`, which is the exact "offset" bug this whole mechanism exists to
@@ -193,7 +197,7 @@ function cssStringEscape(s: string): string {
  *    Once `useCardTransform` is on, those same columns reappear as card rows below `md`, so the
  *    "hide below md" half of the rule would fight the card CSS for the same cells — it's omitted
  *    in that case, and only the md-to-lg "detail" hide (still real table layout there) applies. */
-function buildTableCss(id: string, columns: ColumnSpec[], useCardTransform: boolean): string {
+export function buildTableCss(id: string, columns: ColumnSpec[], useCardTransform: boolean): string {
   const rules: string[] = [];
 
   columns.forEach((col, i) => {
@@ -224,7 +228,7 @@ function buildTableCss(id: string, columns: ColumnSpec[], useCardTransform: bool
         rules.push(`@media (max-width:767px){#${id} tbody td:nth-child(${n}){display:block;font-weight:600;font-size:0.9375rem;color:#0f172a;}}`);
       } else {
         rules.push(
-          `@media (max-width:767px){#${id} tbody td:nth-child(${n}):not([colspan])::before{content:"${cssStringEscape(col.label)}";font-weight:500;font-size:0.8125rem;color:#64748b;}}`,
+          `@media (max-width:767px){#${id} tbody td:nth-child(${n}):not([colspan])::before{content:"${cssStringEscape(col.label)}";font-family:${CARD_LABEL_FONT};font-weight:500;font-size:0.8125rem;color:#64748b;}}`,
         );
       }
     });
@@ -416,11 +420,12 @@ export function RowAction({
  *  and these GET routes have side effects — the e-vote consent form moved a fresh owner to
  *  "Izjava preuzeta" on mere hover, the owner card stored a new Document version, downloads were
  *  audited (v2.40.1). Every page link keeps <Link>. */
-function NavLink({ href, className, children }: { href: string; className: string; children: ReactNode }) {
+function NavLink({ href, className, children, newTab }: { href: string; className: string; children: ReactNode; newTab?: boolean }) {
+  const tab = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
   if (href.startsWith("/api/")) {
-    return <a href={href} className={className}>{children}</a>;
+    return <a href={href} className={className} {...tab}>{children}</a>;
   }
-  return <Link href={href} className={className}>{children}</Link>;
+  return <Link href={href} className={className} {...tab}>{children}</Link>;
 }
 
 /** `RowAction`'s `<Link>` counterpart, for a row action that navigates instead of submitting
@@ -439,10 +444,11 @@ export function RowActionLink({
  *  whatever the row is "about"), as distinct from a `RowAction` verb in the "Radnje" column.
  *  Plain underlined text, not a pill: it needs to read as part of the row's data, not as a
  *  separate control competing with the real actions (Plans/ui-ux-redesign-plan.md §3.F). */
-export function RowLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
+export function RowLink({ href, children, className, newTab }: { href: string; children: ReactNode; className?: string; /** Otvara u novoj kartici (npr. iz forme čiji unos se ne smije izgubiti). */ newTab?: boolean }) {
   return (
     <NavLink
       href={href}
+      newTab={newTab}
       className={`rounded font-medium text-primary-ink underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${className ?? ""}`}
     >
       {children}
@@ -748,7 +754,7 @@ const flashIcon = (err?: boolean) => (
 /** Poruka o uspjehu (`msg`), grešci (`err`) ili upozorenju (`warn`, F5a/D4). `warn` je amber (`warning-*` tokeni),
  *  `role="status"`, i prima i čvor (naslov + lista), jer upozorenje nije uvijek jedna rečenica. `inset` je za
  *  upotrebu UNUTAR `Card`-a: bez `shadow-sm` i bez donje margine (pravilo elevacije — nikad ugniježđeno). */
-export function Flash({ msg, err, warn, inset }: { msg?: string; err?: string; warn?: ReactNode; inset?: boolean }) {
+export function Flash({ msg, err, warn, inset }: { msg?: ReactNode; err?: string; warn?: ReactNode; inset?: boolean }) {
   if (!msg && !err && !warn) return null;
   const kind = err ? "err" : warn ? "warn" : "msg";
   const tone =

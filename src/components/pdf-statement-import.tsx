@@ -7,14 +7,17 @@
 // the same way structured CSV columns are.
 // Since v2.39.0 several statements can be chosen at once (FilePicker); they are reviewed in one
 // table grouped by statement and imported together, each still as its own import batch.
+// Since v2.49.0 (F5b) the review step is the shared ReviewTable primitive; the server actions are unchanged.
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { parsePdfPreviewsAction, commitPdfImportsAction } from "@/server/actions/bankPdfImport";
 import type { PdfPreviewRow, PdfStatementPreview } from "@/server/services/payments";
-import { inputCls, btnBase, btnVariantCls } from "@/components/ui";
+import { inputCls, btnBase, btnVariantCls, BtnLink, Flash } from "@/components/ui";
 import { FilePicker } from "@/components/file-picker";
-import { formatDate, formatDateTime } from "@/lib/i18n";
+import { ReviewTable, DirectionBadge, fieldLabel, reviewField, reviewFieldW, type ReviewGroup } from "@/components/review-table";
+import { formatDate, formatDateTime, t, tf } from "@/lib/i18n";
+import { formatKm, pluralForm, reviewSummary } from "@/lib/reviewSummary";
 
 type Account = { id: string; name: string };
 
@@ -22,8 +25,7 @@ type Account = { id: string; name: string };
 const MAX_TOTAL_BYTES = 4 * 1024 * 1024;
 const MAX_FILES = 31;
 
-const cellInputCls = "rounded border border-slate-300 px-1.5 py-1 text-[13px]";
-const alertCls = "rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm";
+type ImportDone = { imported: number; statements: number; linkedToSms: number; inTotal: string; outTotal: string };
 
 async function sha256Hex(file: File): Promise<string | null> {
   if (!globalThis.crypto?.subtle) return null; // non-secure context: the server then skips the check
@@ -31,7 +33,15 @@ async function sha256Hex(file: File): Promise<string | null> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
+/** „N uplata čeka uparivanje” u ispravnom obliku množine. */
+function pendingSentence(count: number): string {
+  if (count <= 0) return t("pdfImport.pendingNone");
+  const form = pluralForm(count);
+  return tf(form === "one" ? "pdfImport.pendingOne" : form === "few" ? "pdfImport.pendingFew" : "pdfImport.pendingMany", { broj: count });
+}
+
+/** `toMatchCount` je broj uplata „za uparivanje” (isti upit kao filter `ZA_UPARIVANJE`); stranica ga osvježava poslije uvoza. */
+export function PdfStatementImport({ accounts, toMatchCount }: { accounts: Account[]; toMatchCount: number }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [accountId, setAccountId] = useState(accounts[0]?.id ?? "");
@@ -40,22 +50,22 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
   const [rows, setRows] = useState<PdfPreviewRow[][]>([]);
   const [failures, setFailures] = useState<{ filename: string; error: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [done, setDone] = useState<ImportDone | null>(null);
 
   function handleParse(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setMessage(null);
+    setDone(null);
     if (files.length === 0) {
-      setError("Izaberite bar jedan PDF izvod.");
+      setError(t("pdfImport.errNoFile"));
       return;
     }
     if (files.length > MAX_FILES) {
-      setError(`Najviše ${MAX_FILES} izvoda odjednom.`);
+      setError(tf("pdfImport.errTooMany", { broj: MAX_FILES }));
       return;
     }
     if (files.reduce((n, f) => n + f.size, 0) > MAX_TOTAL_BYTES) {
-      setError("Izabrani fajlovi su zajedno veći od 4 MB. Učitajte ih u dva dijela.");
+      setError(t("pdfImport.errTooBig"));
       return;
     }
     startTransition(async () => {
@@ -116,44 +126,86 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
       skippedSmsIds: rows[si].flatMap((r) => (!r.include && r.duplicateOf ? [r.duplicateOf.smsId] : [])),
     }));
     if (statements.every((st) => st.rows.length === 0 && st.skippedSmsIds.length === 0)) {
-      setError("Nijedna stavka nije označena za uvoz.");
+      setError(t("pdfImport.errNoneSelected"));
       return;
     }
+    const totals = reviewSummary(rows.flat());
     startTransition(async () => {
       const res = await commitPdfImportsAction({ accountId, statements });
       if (!res.ok) {
         setError(res.error);
         return;
       }
-      const all = rows.flat().filter((r) => r.include);
-      const inCount = all.filter((r) => r.direction === "IN").length;
-      setMessage(
-        `Uvezeno ${res.imported} stavki (${inCount} uplata, ${res.imported - inCount} isplata) iz ${res.statements} izvoda. Uplate sa izabranom fakturom su odmah raspoređene — ostale pogledajte ` +
-          `u tabeli ispod, u koloni "detalji/uparivanje".` +
-          (res.linkedToSms > 0 ? ` Izvod je potvrdio ${res.linkedToSms} već proknjiženih SMS stavki (nisu uvezene ponovo).` : "")
-      );
+      setDone({ imported: res.imported, statements: res.statements, linkedToSms: res.linkedToSms, inTotal: totals.inTotal, outTotal: totals.outTotal });
       reset();
       router.refresh();
     });
   }
 
   const flat = rows.flat();
-  const includedCount = flat.filter((r) => r.include).length;
+  const summary = reviewSummary(flat);
   const smsConfirmCount = flat.filter((r) => !r.include && r.duplicateOf).length;
   const invoiceOptions = previews?.[0]?.invoiceOptions ?? [];
   const expenseOptions = previews?.[0]?.expenseOptions ?? [];
 
+  const groups: ReviewGroup<PdfPreviewRow>[] = (previews ?? []).map((p, si) => {
+    const rs = rows[si] ?? [];
+    const inCount = rs.filter((r) => r.include && r.direction === "IN").length;
+    const outCount = rs.filter((r) => r.include && r.direction === "OUT").length;
+    return {
+      key: p.sha256,
+      rows: rs,
+      header: (
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="font-medium text-ink">{p.filename}</span>
+            {p.statementDateIso && <span className="text-[13px] text-slate-600">{tf("pdfImport.statementOf", { datum: formatDate(p.statementDateIso) })}</span>}
+            <span className="text-[13px] text-slate-600">
+              {tf("pdfImport.statementCounts", { stavki: rs.length, uplata: inCount, isplata: outCount })}
+              {p.skipped > 0 && `, ${tf("pdfImport.skipped", { broj: p.skipped })}`}
+            </span>
+          </div>
+          {p.alreadyImportedAt && <Flash warn={tf("pdfImport.alreadyImported", { datum: formatDateTime(p.alreadyImportedAt) })} inset />}
+          {p.accountMismatch && <Flash warn={tf("pdfImport.accountMismatch", { broj: p.ownAccountNumber ?? "" })} inset />}
+        </div>
+      ),
+    };
+  });
+
   return (
     <div>
-      {error && <div role="alert" className={`mb-3 ${alertCls} border-l-red-500 bg-red-50 text-red-800`}>{error}</div>}
-      {message && <div role="status" className={`mb-3 ${alertCls} border-l-emerald-500 bg-emerald-50 text-emerald-800`}>{message}</div>}
+      <div className="space-y-3 empty:hidden">
+        {error && <Flash err={error} inset />}
+        {done && (
+          <Flash
+            inset
+            msg={
+              <div className="space-y-2">
+                <p>
+                  {tf("pdfImport.done", {
+                    broj: done.imported,
+                    izvoda: done.statements,
+                    ulaz: formatKm(done.inTotal),
+                    izlaz: formatKm(done.outTotal),
+                  })}
+                  {done.linkedToSms > 0 && ` ${tf("pdfImport.linkedSms", { broj: done.linkedToSms })}`}
+                </p>
+                <p className="font-medium">{pendingSentence(toMatchCount)}</p>
+                {toMatchCount > 0 && (
+                  <BtnLink href="/fakture/uplate?status=ZA_UPARIVANJE" variant="secondary">{t("pdfImport.matchNow")}</BtnLink>
+                )}
+              </div>
+            }
+          />
+        )}
+      </div>
 
       {!previews && (
-        <form onSubmit={handleParse} className="space-y-3">
+        <form onSubmit={handleParse} className={`space-y-3 ${error || done ? "mt-3" : ""}`}>
           <FilePicker
-            label="PDF izvodi"
-            buttonLabel="Izaberi PDF izvode…"
-            hint="Možete izabrati više izvoda odjednom ili ih prevući ovdje."
+            label={t("pdfImport.filesLabel")}
+            buttonLabel={t("pdfImport.pick")}
+            hint={t("pdfImport.pickHint")}
             accept=".pdf,application/pdf"
             multiple
             files={files}
@@ -162,7 +214,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
           />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className="block text-sm">
-              <span className="mb-1 block font-medium text-slate-700">Račun</span>
+              <span className="mb-1 block font-medium text-slate-700">{t("pdfImport.account")}</span>
               <select value={accountId} onChange={(e) => setAccountId(e.target.value)} className={inputCls}>
                 {accounts.map((a) => (
                   <option key={a.id} value={a.id}>{a.name}</option>
@@ -171,7 +223,7 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
             </label>
             <div className="flex items-end">
               <button type="submit" disabled={pending || files.length === 0} className={`${btnBase} ${btnVariantCls.primary}`}>
-                {pending ? "Čitam izvode…" : files.length > 1 ? `Učitaj i pregledaj (${files.length})` : "Učitaj i pregledaj"}
+                {pending ? t("pdfImport.loading") : files.length > 1 ? tf("pdfImport.loadMany", { broj: files.length }) : t("pdfImport.load")}
               </button>
             </div>
           </div>
@@ -179,163 +231,146 @@ export function PdfStatementImport({ accounts }: { accounts: Account[] }) {
       )}
 
       {previews && (
-        <div>
+        <div className="mt-3 space-y-3">
           {failures.length > 0 && (
-            <div role="alert" className={`mb-3 ${alertCls} border-l-red-500 bg-red-50 text-red-800`}>
-              <p className="font-medium">Nisu učitani ({failures.length}):</p>
-              <ul className="mt-1 list-disc pl-5">
-                {failures.map((f) => (
-                  <li key={f.filename}>{f.filename}: {f.error}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <p className="mb-3 text-sm text-slate-600">
-            Prepoznato {flat.length} stavki iz {previews.length} izvoda. Provjerite/ispravite
-            ispod prije uvoza — ništa još nije sačuvano.
-          </p>
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-left">
-                  <th className="px-2 py-2 font-medium text-slate-600">Uvezi</th>
-                  <th className="px-2 py-2 font-medium text-slate-600">Smjer</th>
-                  <th className="px-2 py-2 font-medium text-slate-600">Datum</th>
-                  <th className="px-2 py-2 font-medium text-slate-600">Iznos</th>
-                  <th className="px-2 py-2 font-medium text-slate-600">Platilac / primalac</th>
-                  <th className="px-2 py-2 font-medium text-slate-600">Svrha / opis</th>
-                  <th className="px-2 py-2 font-medium text-slate-600">Faktura / trošak</th>
-                </tr>
-              </thead>
-              {previews.map((p, si) => {
-                const rs = rows[si] ?? [];
-                const inCount = rs.filter((r) => r.include && r.direction === "IN").length;
-                const outCount = rs.filter((r) => r.include && r.direction === "OUT").length;
-                return (
-                  <tbody key={p.sha256} className="divide-y divide-slate-100 border-t-2 border-slate-200">
-                    <tr className="bg-slate-50/70">
-                      <td colSpan={7} className="px-3 py-2">
-                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                          <span className="font-medium text-slate-900">{p.filename}</span>
-                          {p.statementDateIso && <span className="text-[13px] text-slate-600">izvod od {formatDate(p.statementDateIso)}</span>}
-                          <span className="text-[13px] text-slate-600">
-                            {rs.length} stavki, za uvoz {inCount} uplata i {outCount} isplata
-                            {p.skipped > 0 && `, ${p.skipped} bez iznosa preskočeno`}
-                          </span>
-                        </div>
-                        {p.alreadyImportedAt && (
-                          <p className="mt-1 text-[13px] text-amber-800">
-                            Ovaj izvod je već uvezen {formatDateTime(p.alreadyImportedAt)} — stavke nisu označene za uvoz.
-                          </p>
-                        )}
-                        {p.accountMismatch && (
-                          <p className="mt-1 text-[13px] text-amber-800">
-                            Broj računa u izvodu ({p.ownAccountNumber}) ne izgleda kao odabrani račun. Provjerite izbor računa.
-                          </p>
-                        )}
-                      </td>
-                    </tr>
-                    {rs.map((r, ri) => (
-                      <tr key={ri} className={r.include ? "" : "opacity-50"}>
-                        <td className="px-2 py-1.5">
-                          <input
-                            type="checkbox"
-                            aria-label="Uvezi stavku"
-                            checked={r.include}
-                            onChange={(e) => updateRow(si, ri, { include: e.target.checked })}
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <span
-                            className={`inline-block rounded px-1.5 py-0.5 text-[13px] font-medium ${
-                              r.direction === "IN" ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800"
-                            }`}
-                          >
-                            {r.direction === "IN" ? "uplata" : "isplata"}
-                          </span>
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input type="date" value={r.date} onChange={(e) => updateRow(si, ri, { date: e.target.value })} className={`w-36 ${cellInputCls}`} />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input value={r.amount} onChange={(e) => updateRow(si, ri, { amount: e.target.value })} className={`w-24 text-right ${cellInputCls}`} />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input value={r.payerNameRaw} onChange={(e) => updateRow(si, ri, { payerNameRaw: e.target.value })} className={`w-40 ${cellInputCls}`} />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input value={r.purposeRaw} onChange={(e) => updateRow(si, ri, { purposeRaw: e.target.value })} className={`w-56 ${cellInputCls}`} />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          {r.direction === "IN" ? (
-                            <select
-                              value={r.invoiceId ?? ""}
-                              onChange={(e) => updateRow(si, ri, { invoiceId: e.target.value || null })}
-                              className={`w-64 ${cellInputCls}`}
-                            >
-                              <option value="">— ne uparuj sada —</option>
-                              {invoiceOptions.map((o) => (
-                                <option key={o.id} value={o.id}>{o.label}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <div className="space-y-1">
-                              <select
-                                value={r.expenseId ?? ""}
-                                onChange={(e) => updateRow(si, ri, { expenseId: e.target.value || null })}
-                                className={`w-64 ${cellInputCls}`}
-                              >
-                                <option value="">— bez veze (opšti izlaz) —</option>
-                                {expenseOptions.map((o) => (
-                                  <option key={o.id} value={o.id}>{o.label}</option>
-                                ))}
-                              </select>
-                              {!r.expenseId && (
-                                <input
-                                  value={r.categoryName}
-                                  onChange={(e) => updateRow(si, ri, { categoryName: e.target.value })}
-                                  placeholder="kategorija (opciono)"
-                                  className={`w-64 ${cellInputCls}`}
-                                />
-                              )}
-                            </div>
-                          )}
-                          {r.matchHint && <p className="mt-1 max-w-64 text-[13px] text-slate-500">Predlog: {r.matchHint}</p>}
-                          {r.duplicateOf && (
-                            <p className="mt-1 max-w-64 text-[13px] text-amber-800">
-                              Već evidentirano preko SMS obavještenja (stavka nije označena za uvoz; pri uvozu se bilježi da je izvod potvrdio SMS).{" "}
-                              {r.duplicateOf.paymentId && (
-                                <Link href={`/fakture/uplate/${r.duplicateOf.paymentId}`} className="font-medium underline underline-offset-2">
-                                  Pogledaj uplatu
-                                </Link>
-                              )}
-                            </p>
-                          )}
-                        </td>
-                      </tr>
+            <Flash
+              inset
+              warn={
+                <div>
+                  <p className="font-medium">{tf("pdfImport.failedTitle", { broj: failures.length })}</p>
+                  <ul className="mt-1 list-disc pl-5">
+                    {failures.map((f) => (
+                      <li key={f.filename}>{f.filename}: {f.error}</li>
                     ))}
-                  </tbody>
-                );
-              })}
-            </table>
-          </div>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={handleCommit}
-              disabled={pending || (includedCount === 0 && smsConfirmCount === 0)}
-              className={`${btnBase} ${btnVariantCls.primary}`}
-            >
-              {pending
-                ? "Uvozim…"
-                : includedCount === 0 && smsConfirmCount > 0
-                  ? `Potvrdi SMS stavke izvodom (${smsConfirmCount})`
-                  : `Uvezi (${includedCount})`}
-            </button>
-            <button type="button" onClick={handleCancel} disabled={pending} className={`${btnBase} ${btnVariantCls.secondary}`}>
-              Odustani
-            </button>
-          </div>
+                  </ul>
+                </div>
+              }
+            />
+          )}
+          <p className="text-sm text-slate-600">{tf("pdfImport.intro", { stavki: flat.length, izvoda: previews.length })}</p>
+          <ReviewTable
+            id="review-pdf"
+            caption={t("pdfImport.title")}
+            columns={[
+              { label: t("reviewTable.cols.direction") },
+              { label: t("reviewTable.cols.date") },
+              { label: t("reviewTable.cols.amount"), align: "right" },
+              { label: t("reviewTable.cols.payer") },
+              { label: t("reviewTable.cols.purpose") },
+              { label: t("reviewTable.cols.target") },
+            ]}
+            groups={groups}
+            isSelected={(r) => r.include}
+            onToggle={(si, ri, checked) => updateRow(si, ri, { include: checked })}
+            cardTitle={(r) => `${formatKm(r.amount)} · ${r.payerNameRaw || "—"}`}
+            renderCells={(r, { rowNumber, groupIndex: si, rowIndex: ri }) => [
+              <DirectionBadge key="d" direction={r.direction} />,
+              <input
+                key="date"
+                type="date"
+                value={r.date}
+                aria-label={fieldLabel(t("reviewTable.cols.date"), rowNumber)}
+                onChange={(e) => updateRow(si, ri, { date: e.target.value })}
+                className={`${reviewField} ${reviewFieldW.date}`}
+              />,
+              <input
+                key="amount"
+                value={r.amount}
+                inputMode="decimal"
+                aria-label={fieldLabel(t("reviewTable.cols.amount"), rowNumber)}
+                onChange={(e) => updateRow(si, ri, { amount: e.target.value })}
+                className={`${reviewField} ${reviewFieldW.amount}`}
+              />,
+              <input
+                key="payer"
+                value={r.payerNameRaw}
+                aria-label={fieldLabel(t("reviewTable.cols.payer"), rowNumber)}
+                onChange={(e) => updateRow(si, ri, { payerNameRaw: e.target.value })}
+                className={`${reviewField} ${reviewFieldW.text}`}
+              />,
+              <input
+                key="purpose"
+                value={r.purposeRaw}
+                aria-label={fieldLabel(t("reviewTable.cols.purpose"), rowNumber)}
+                onChange={(e) => updateRow(si, ri, { purposeRaw: e.target.value })}
+                className={`${reviewField} ${reviewFieldW.wide}`}
+              />,
+              <div key="target" className="space-y-1.5">
+                {r.direction === "IN" ? (
+                  <select
+                    value={r.invoiceId ?? ""}
+                    aria-label={fieldLabel(t("reviewTable.cols.target"), rowNumber)}
+                    onChange={(e) => updateRow(si, ri, { invoiceId: e.target.value || null })}
+                    className={`${reviewField} ${reviewFieldW.select}`}
+                  >
+                    <option value="">{t("reviewTable.invoicePlaceholder")}</option>
+                    {invoiceOptions.map((o) => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <>
+                    <select
+                      value={r.expenseId ?? ""}
+                      aria-label={fieldLabel(t("reviewTable.cols.target"), rowNumber)}
+                      onChange={(e) => updateRow(si, ri, { expenseId: e.target.value || null })}
+                      className={`${reviewField} ${reviewFieldW.select}`}
+                    >
+                      <option value="">{t("reviewTable.expensePlaceholder")}</option>
+                      {expenseOptions.map((o) => (
+                        <option key={o.id} value={o.id}>{o.label}</option>
+                      ))}
+                    </select>
+                    {!r.expenseId && (
+                      <input
+                        value={r.categoryName}
+                        onChange={(e) => updateRow(si, ri, { categoryName: e.target.value })}
+                        placeholder={t("reviewTable.categoryPlaceholder")}
+                        aria-label={fieldLabel(t("reviewTable.categoryPlaceholder"), rowNumber)}
+                        className={`${reviewField} ${reviewFieldW.select}`}
+                      />
+                    )}
+                  </>
+                )}
+                {r.matchHint && <p className="max-w-72 text-[13px] text-slate-600">{tf("reviewTable.hint", { razlog: r.matchHint })}</p>}
+                {r.duplicateOf && (
+                  <Flash
+                    inset
+                    warn={
+                      <span>
+                        {t("pdfImport.smsDuplicate")}{" "}
+                        {r.duplicateOf.paymentId && (
+                          <Link href={`/fakture/uplate/${r.duplicateOf.paymentId}`} className="font-medium underline underline-offset-2">
+                            {t("pdfImport.viewPayment")}
+                          </Link>
+                        )}
+                      </span>
+                    }
+                  />
+                )}
+              </div>,
+            ]}
+            summary={summary}
+            actions={
+              <>
+                <button
+                  type="button"
+                  onClick={handleCommit}
+                  disabled={pending || (summary.selected === 0 && smsConfirmCount === 0)}
+                  className={`${btnBase} ${btnVariantCls.primary}`}
+                >
+                  {pending
+                    ? t("pdfImport.committing")
+                    : summary.selected === 0 && smsConfirmCount > 0
+                      ? tf("pdfImport.commitSms", { broj: smsConfirmCount })
+                      : tf("pdfImport.commit", { broj: summary.selected })}
+                </button>
+                <button type="button" onClick={handleCancel} disabled={pending} className={`${btnBase} ${btnVariantCls.secondary}`}>
+                  {t("pdfImport.cancel")}
+                </button>
+              </>
+            }
+          />
         </div>
       )}
     </div>

@@ -55,3 +55,26 @@ export async function suggestedBatchPeriod(actor: Actor, now: Date = new Date())
   const issued = await prisma.invoiceBatch.findMany({ where: { zevId, status: "ISSUED" }, select: { period: true }, orderBy: { createdAt: "desc" }, take: 36 });
   return suggestBatchPeriod(issued.map((b) => b.period), now);
 }
+
+export type PaymentsWorkStrip = {
+  /** Uplate „za uparivanje” — isti uslov kao filter `ZA_UPARIVANJE` i stavka na početnoj računovođe. */
+  toMatch: number;
+  sms: { active: boolean; pending: number; rejected: number };
+  /** Mogući duplikati SMS ↔ izvod i SMS bez potvrde izvodom (samo kad je prijem uključen, kao na početnoj). */
+  duplicates: number;
+  unconfirmed: number;
+};
+
+/** Traka posla na stranici uplata (F5b.2): isti brojevi kao na početnoj računovođe, iz istih pomoćnih funkcija. */
+export async function getPaymentsWorkStrip(actor: Actor): Promise<PaymentsWorkStrip> {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const [toMatch, smsStatus] = await Promise.all([countPaymentsToMatch(zevId), getBankSmsStatus(actor)]);
+  const channel = smsStatus.active ? await getChannelReconciliation(actor) : null;
+  return {
+    toMatch,
+    sms: { active: smsStatus.active, pending: smsStatus.pending, rejected: smsStatus.rejected },
+    duplicates: channel?.duplicates.length ?? 0,
+    unconfirmed: channel?.unconfirmed.length ?? 0,
+  };
+}

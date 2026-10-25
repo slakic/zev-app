@@ -3,12 +3,13 @@ import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { listPayments, enterPayment, importBankCsv, PAYMENT_FILTER_TO_MATCH, PAYMENT_FILTER_ADVANCE, type PaymentSortKey } from "@/server/services/payments";
 import { listAccounts } from "@/server/services/finance";
-import { getBankSmsStatus } from "@/server/services/bankSms";
-import { getChannelReconciliation } from "@/server/services/paymentMatching";
+import { getPaymentsWorkStrip } from "@/server/services/accountantHome";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, parseMoneyInput, dec, ZERO } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, RowLink, FilterBar, Pagination, BtnLink, type ColumnSpec } from "@/components/ui";
+import { formatDate, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
+import { uiMappingFromForm, uiMappingToService } from "@/lib/csvMapping";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, RowLink, FilterBar, Pagination, BtnLink, ToggleBtn, type ColumnSpec } from "@/components/ui";
+import { CsvImportForm } from "@/components/csv-import-form";
 
 const paymentHeaders: ColumnSpec[] = [
   { label: "Datum", sortKey: "date" },
@@ -29,6 +30,8 @@ const ownerPaymentHeaders: ColumnSpec[] = [
 ];
 
 const PAYMENT_SORT_KEYS: PaymentSortKey[] = ["date", "amount"];
+/** Izričit izbor „Svi” (bez ovoga bi podrazumijevani filter „Za uparivanje” uvijek pobjeđivao). */
+const ALL_PAYMENTS = "SVE";
 import { PdfStatementImport } from "@/components/pdf-statement-import";
 
 async function enterPaymentAction(formData: FormData) {
@@ -42,7 +45,7 @@ async function enterPaymentAction(formData: FormData) {
       payerId: (formData.get("payerId") as string) || null,
       payerNameRaw: (formData.get("payerNameRaw") as string) || null,
       reference: (formData.get("reference") as string) || null,
-      method: String(formData.get("method") || "BANK"),
+      // „Način” se izvodi iz tipa računa u servisu (F5b.2) — polje je uklonjeno.
     });
   } catch (e) {
     redirect(`/fakture/uplate?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
@@ -54,29 +57,21 @@ async function importCsvAction(formData: FormData) {
   "use server";
   const actor = await requireActor("ACCOUNTANT");
   const file = formData.get("file") as File | null;
-  if (!file || file.size === 0) redirect(`/fakture/uplate?err=${encodeURIComponent("Odaberite CSV fajl.")}`);
+  if (!file || file.size === 0) redirect(`/fakture/uplate?err=${encodeURIComponent(t("csvImport.errNoFile"))}`);
   const content = Buffer.from(await file!.arrayBuffer()).toString("utf8");
   try {
+    // Forma šalje kolone od 1 ("1. kolona"); servis radi sa indeksima od 0 — pretvara čista funkcija.
+    const mapping = uiMappingToService(uiMappingFromForm((n) => formData.get(n)));
     const result = await importBankCsv(actor, {
       accountId: String(formData.get("accountId")),
       filename: file!.name,
       content,
-      mapping: {
-        dateCol: Number(formData.get("dateCol") ?? 0),
-        amountCol: Number(formData.get("amountCol") ?? 1),
-        payerCol: Number(formData.get("payerCol") ?? 2),
-        referenceCol: Number(formData.get("referenceCol") ?? 3),
-        purposeCol: formData.get("purposeCol") ? Number(formData.get("purposeCol")) : -1,
-        delimiter: String(formData.get("delimiter") || ";"),
-        skipRows: Number(formData.get("skipRows") ?? 1),
-        decimalComma: formData.get("decimalComma") === "on",
-        dateFormat: String(formData.get("dateFormat") || "DD.MM.YYYY"),
-      },
+      mapping,
     });
-    redirect(`/fakture/uplate?msg=${encodeURIComponent(`Uvezeno ${result.imported} uplata (${result.errors.length} grešaka).`)}`);
+    redirect(`/fakture/uplate?msg=${encodeURIComponent(tf("csvImport.done", { broj: result.imported, greske: result.errors.length }))}`);
   } catch (e) {
     if (e && typeof e === "object" && "digest" in e) throw e;
-    redirect(`/fakture/uplate?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška pri uvozu")}`);
+    redirect(`/fakture/uplate?err=${encodeURIComponent(e instanceof Error ? e.message : t("csvImport.errImport"))}`);
   }
 }
 
@@ -100,124 +95,83 @@ export default async function PaymentsPage({
   const paymentSortBy = PAYMENT_SORT_KEYS.includes(sp.sort as PaymentSortKey) ? (sp.sort as PaymentSortKey) : undefined;
   const paymentDir = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
   const paymentPage = Math.max(1, Number(sp.page) || 1);
-  const paymentFilter = management ? { status: sp.status || undefined } : undefined;
+  const canEnter = management && actor.roles.includes("ACCOUNTANT");
+  const strip = management ? await getPaymentsWorkStrip(actor) : null;
+  // Podrazumijevani filter je „Za uparivanje” kad takvih uplata ima (inače „Svi”); „SVE” je izričit izbor svih uplata.
+  const effectiveStatus = !management ? undefined : sp.status === ALL_PAYMENTS ? undefined : sp.status || (strip && strip.toMatch > 0 ? PAYMENT_FILTER_TO_MATCH : undefined);
+  const paymentFilter = management ? { status: effectiveStatus } : undefined;
   const paymentResult = await listPayments(actor, paymentFilter, { sortBy: paymentSortBy, sortDir: paymentDir, page: paymentPage });
   const payments = paymentResult.rows;
   const [accounts, parties] = management ? await Promise.all([listAccounts(actor), listParties(actor)]) : [[], []];
-  const bankSms = management ? await getBankSmsStatus(actor) : null;
-  const channel = management ? await getChannelReconciliation(actor) : null;
+  const bankAccounts = accounts.filter((a) => a.type === "BANK").map((a) => ({ id: a.id, name: a.name }));
+  const listTitle = !management ? t("paymentsPage.listOwner") : effectiveStatus === PAYMENT_FILTER_TO_MATCH ? t("paymentsPage.listToMatch") : t("paymentsPage.listAll");
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
-        title={management ? "Uplate i uparivanje" : "Moje uplate"}
-        subtitle={management ? "Ručni unos, uvoz izvoda i raspoređivanje na fakture" : undefined}
+        title={management ? "Uplate i uparivanje" : t("paymentsPage.ownerTitle")}
+        subtitle={management ? t("paymentsPage.subtitle") : undefined}
         backHref="/fakture"
         backLabel={t("nav.invoices")}
       />
       <Flash err={err} msg={msg} />
 
-      {bankSms && (
-        <Card
-          title="SMS obavještenja banke"
-          hint="Poruke Nova Banke sa telefona, sa vašom potvrdom prije knjiženja"
-          className="mb-4"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-            <div className="text-slate-700">
-              {bankSms.active ? (
-                <>
-                  Na čekanju: <b>{bankSms.pending}</b>
-                  {bankSms.rejected > 0 && <> · Neprepoznate: <b>{bankSms.rejected}</b></>}
-                  {" · "}Posljednja poruka: {bankSms.lastReceivedAt ? formatDateTime(new Date(bankSms.lastReceivedAt)) : "još nijedna"}
-                  {channel && channel.duplicates.length > 0 && <> · Mogući duplikati sa izvodom: <b>{channel.duplicates.length}</b></>}
-                  {channel && channel.unconfirmed.length > 0 && <> · Bez potvrde izvodom: <b>{channel.unconfirmed.length}</b></>}
-                </>
-              ) : (
-                <>Automatski prijem nije uključen. Podesite ga u Podešavanja → ZEV → Automatski prijem SMS obavještenja banke.</>
+      {strip && (
+        <section aria-label={t("paymentsPage.stripLabel")} className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border border-border bg-surface p-3 text-sm text-ink-body">
+          <span>
+            {t("paymentsPage.toMatch")}:{" "}
+            {strip.toMatch > 0 ? (
+              <RowLink href={`/fakture/uplate?status=${PAYMENT_FILTER_TO_MATCH}`}>{strip.toMatch}</RowLink>
+            ) : (
+              <b>0</b>
+            )}
+          </span>
+          {strip.sms.active ? (
+            <>
+              <span>
+                {t("paymentsPage.smsPending")}: <b>{strip.sms.pending}</b>
+              </span>
+              <span>
+                {t("paymentsPage.duplicates")}: <b>{strip.duplicates}</b>
+              </span>
+              {strip.unconfirmed > 0 && (
+                <span>
+                  {t("paymentsPage.unconfirmed")}: <b>{strip.unconfirmed}</b>
+                </span>
               )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <BtnLink href="/fakture/uplate/uskladjivanje" variant="secondary">Usklađivanje sa izvodom</BtnLink>
-              <BtnLink href="/fakture/uplate/sms" variant="secondary">Otvori</BtnLink>
-            </div>
-          </div>
+              {strip.sms.rejected > 0 && (
+                <span>
+                  {t("paymentsPage.rejected")}: <b>{strip.sms.rejected}</b>
+                </span>
+              )}
+            </>
+          ) : (
+            <span>
+              {t("paymentsPage.smsOff")}{" "}
+              <RowLink href="/podesavanja">{t("paymentsPage.smsOffLink")}</RowLink>
+            </span>
+          )}
+          <span className="flex flex-wrap gap-2 md:ml-auto">
+            <RowActionLink href="/fakture/uplate/sms">{t("paymentsPage.smsLink")}</RowActionLink>
+            <RowActionLink href="/fakture/uplate/uskladjivanje">{t("paymentsPage.reconcileLink")}</RowActionLink>
+          </span>
+        </section>
+      )}
+
+      {canEnter && (
+        <Card title={t("pdfImport.title")} hint={t("pdfImport.hint")}>
+          <PdfStatementImport accounts={bankAccounts} toMatchCount={strip?.toMatch ?? 0} />
         </Card>
       )}
 
-      {management && actor.roles.includes("ACCOUNTANT") && (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Card title="Ručni unos uplate">
-            <form action={enterPaymentAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label="Račun">
-                <select name="accountId" className={inputCls}>
-                  {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Datum"><input name="date" type="date" required className={inputCls} /></Field>
-              <Field label="Iznos (KM)"><input name="amount" required className={inputCls} /></Field>
-              <Field label="Platilac (iz evidencije)">
-                <select name="payerId" className={inputCls}>
-                  <option value="">— nepoznat —</option>
-                  {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
-                </select>
-              </Field>
-              <Field label="Naziv platioca (sa izvoda)"><input name="payerNameRaw" className={inputCls} /></Field>
-              <Field label="Poziv na broj"><input name="reference" className={inputCls} /></Field>
-              <Field label="Način">
-                <select name="method" className={inputCls}>
-                  <option value="BANK">Banka</option>
-                  <option value="CASH">Blagajna</option>
-                </select>
-              </Field>
-              <div className="flex items-end"><SubmitBtn>Evidentiraj uplatu</SubmitBtn></div>
-            </form>
-          </Card>
-          <Card title="Uvoz bankovnog izvoda (CSV)">
-            <form action={importCsvAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3" encType="multipart/form-data">
-              <div className="sm:col-span-2">
-                <Field label="CSV fajl"><input name="file" type="file" accept=".csv,text/csv" required className={inputCls} /></Field>
-              </div>
-              <Field label="Račun">
-                <select name="accountId" className={inputCls}>
-                  {accounts.filter((a) => a.type === "BANK").map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Separator"><input name="delimiter" defaultValue=";" className={inputCls} /></Field>
-              <Field label="Kolona datuma (0+)"><input name="dateCol" type="number" defaultValue={0} className={inputCls} /></Field>
-              <Field label="Kolona iznosa"><input name="amountCol" type="number" defaultValue={1} className={inputCls} /></Field>
-              <Field label="Kolona platioca"><input name="payerCol" type="number" defaultValue={2} className={inputCls} /></Field>
-              <Field label="Kolona poziva na broj"><input name="referenceCol" type="number" defaultValue={3} className={inputCls} /></Field>
-              <Field label="Kolona svrhe uplate (opciono)" hint="Ostavite prazno ako izvod nema posebnu kolonu za svrhu.">
-                <input name="purposeCol" type="number" className={inputCls} />
-              </Field>
-              <Field label="Preskoči redova (zaglavlje)"><input name="skipRows" type="number" defaultValue={1} className={inputCls} /></Field>
-              <Field label="Format datuma">
-                <select name="dateFormat" className={inputCls}>
-                  <option value="DD.MM.YYYY">DD.MM.GGGG</option>
-                  <option value="YYYY-MM-DD">GGGG-MM-DD</option>
-                </select>
-              </Field>
-              <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="decimalComma" defaultChecked /> decimalni zarez (1.234,56)</label>
-              <div className="flex items-end"><SubmitBtn>Uvezi</SubmitBtn></div>
-            </form>
-          </Card>
-          <Card title="Uvoz bankovnog izvoda (PDF)" className="lg:col-span-2">
-            <PdfStatementImport
-              accounts={accounts.filter((a) => a.type === "BANK").map((a) => ({ id: a.id, name: a.name }))}
-            />
-          </Card>
-        </div>
-      )}
-
-      <div className="mt-4">
+      <div>
         {management && (
           <FilterBar>
             {paymentSortBy && <input type="hidden" name="sort" value={paymentSortBy} />}
             {paymentDir && <input type="hidden" name="dir" value={paymentDir} />}
-            <Field label="Status">
-              <select name="status" defaultValue={sp.status ?? ""} className={inputCls}>
-                <option value="">Svi</option>
+            <Field label={t("paymentsPage.statusLabel")}>
+              <select name="status" defaultValue={sp.status === ALL_PAYMENTS ? ALL_PAYMENTS : effectiveStatus ?? ALL_PAYMENTS} className={inputCls}>
+                <option value={ALL_PAYMENTS}>{t("paymentsPage.filterAll")}</option>
                 <option value={PAYMENT_FILTER_TO_MATCH}>{t("paymentFilter.toMatch")}</option>
                 <option value={PAYMENT_FILTER_ADVANCE}>{t("paymentFilter.advance")}</option>
                 <option value="UNAPPLIED">{tEnum("paymentStatus", "UNAPPLIED")}</option>
@@ -226,21 +180,21 @@ export default async function PaymentsPage({
                 <option value="REVERSED">{tEnum("paymentStatus", "REVERSED")}</option>
               </select>
             </Field>
-            {sp.status && <BtnLink href="/fakture/uplate" variant="secondary">Poništi filter</BtnLink>}
+            {effectiveStatus && <BtnLink href={`/fakture/uplate?status=${ALL_PAYMENTS}`} variant="secondary">{t("paymentsPage.showAll")}</BtnLink>}
           </FilterBar>
         )}
-        <Card title={management ? "Sve uplate" : "Moje evidentirane uplate"}>
+        <Card title={listTitle}>
           <Table
             id="payments-table"
-            caption={management ? "Sve uplate" : "Moje evidentirane uplate"}
+            caption={listTitle}
             headers={management ? paymentHeaders : ownerPaymentHeaders}
             sort={{ active: paymentSortBy, dir: paymentDir, hrefFor: (key, d) => uplateHref({ sort: key, dir: d }) }}
             empty={payments.length === 0}
-            emptyTitle={t(payments.length === 0 && sp.status ? "empty.filteredQuery.title" : "empty.payments.title")}
+            emptyTitle={t(payments.length === 0 && effectiveStatus ? "empty.filteredQuery.title" : "empty.payments.title")}
             emptyHint={
-              payments.length === 0 && sp.status
+              payments.length === 0 && effectiveStatus
                 ? t("empty.filteredQuery.hint")
-                : management && actor.roles.includes("ACCOUNTANT")
+                : canEnter
                   ? t("empty.payments.hint")
                   : undefined
             }
@@ -277,7 +231,7 @@ export default async function PaymentsPage({
               <tr key={p.id}>
                 <Td>{formatDate(p.date)}</Td>
                 <Td>{p.payer ? partyDisplayName(p.payer) : p.payerNameRaw ?? "—"}</Td>
-                <Td className="font-mono text-xs">{p.reference ?? "—"}</Td>
+                <Td className="font-mono text-[13px]">{p.reference ?? "—"}</Td>
                 <Td>{formatMoney(p.amount.toString())}</Td>
                 <Td><StatusBadge status={p.status} label={tEnum("paymentStatus", p.status)} /></Td>
                 <Td>
@@ -292,6 +246,47 @@ export default async function PaymentsPage({
           <Pagination page={paymentResult.page} pageCount={paymentResult.pageCount} hrefFor={(p) => uplateHref({ page: String(p) })} />
         </Card>
       </div>
+
+      {canEnter && (
+        <div className="space-y-3">
+          <details className="group">
+            <ToggleBtn>{t("paymentsPage.manual.toggle")}</ToggleBtn>
+            <div className="mt-3">
+              <Card>
+                <form action={enterPaymentAction} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label={t("paymentsPage.manual.account")}>
+                    <select name="accountId" className={inputCls}>
+                      {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    </select>
+                  </Field>
+                  <Field label={t("paymentsPage.manual.date")}>
+                    <input name="date" type="date" required defaultValue={toZonedDateIso(new Date())} className={inputCls} />
+                  </Field>
+                  <Field label={t("paymentsPage.manual.amount")}><input name="amount" required inputMode="decimal" className={inputCls} /></Field>
+                  <Field label={t("paymentsPage.manual.payer")}>
+                    <select name="payerId" className={inputCls}>
+                      <option value="">{t("paymentsPage.manual.unknownPayer")}</option>
+                      {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                    </select>
+                  </Field>
+                  <Field label={t("paymentsPage.manual.payerRaw")}><input name="payerNameRaw" className={inputCls} /></Field>
+                  <Field label={t("paymentsPage.manual.reference")}><input name="reference" className={inputCls} /></Field>
+                  <p className="text-[13px] text-slate-500 sm:col-span-2">{t("paymentsPage.manual.hint")}</p>
+                  <div className="sm:col-span-2"><SubmitBtn variant="tonal">{t("paymentsPage.manual.submit")}</SubmitBtn></div>
+                </form>
+              </Card>
+            </div>
+          </details>
+          <details className="group">
+            <ToggleBtn>{t("csvImport.toggle")}</ToggleBtn>
+            <div className="mt-3">
+              <Card>
+                <CsvImportForm accounts={bankAccounts} action={importCsvAction} />
+              </Card>
+            </div>
+          </details>
+        </div>
+      )}
     </div>
   );
 }

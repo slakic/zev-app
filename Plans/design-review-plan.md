@@ -425,7 +425,7 @@ F3, F5, F6 i F7 su međusobno nezavisne, mogu ići bilo kojim redom i nijedna ne
 
 ### F5 — Računovođa: radni red i tok unosa novca *(M–L · D1, D5, D4)*
 
-**Status: F5a ISPORUČENO u v2.48.0 (nije commitovano); F5b čeka (v2.49.0).**
+**Status: F5a ISPORUČENO u v2.48.0, F5b u v2.49.0 (nije commitovano).**
 
 Dijeli se na dvije isporuke:
 

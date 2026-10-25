@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.49.0] - 2026-10-25
+
+Faza F5b pregleda dizajna: stranica uplata počinje od posla, pregled uvoza je jedna tabela koja radi i na telefonu, a upozorenje o duplikatu troška više ne briše unos. **Bez migracije** — deploy ne traži ručni korak.
+
+### Dodato
+
+- **`ReviewTable`** (`src/components/review-table.tsx`): zajednički pregled za PDF izvod i SMS obavještenja. Na računaru izgleda kao `Table` (polja `inputCls`, bez sopstvenog okvira i sjenke); ispod `md` je svaki red kartica sa labelom iznad polja. Svako polje ima oznaku sa brojem reda („Iznos, red 3”), smjer je `StatusBadge`, upozorenja su `Flash warn inset`, a ljepljiva traka pokazuje „Označeno 12 od 15 · Uplate … · Isplate …” uz dugme potvrde. Server akcije uvoza nisu mijenjane.
+- **Poslije uvoza izvoda:** poruka sa brojem uvezenih stavki i zbirom ulaza/izlaza, „N uplata čeka uparivanje” (isti broj kao filter „Za uparivanje”) i dugme „Upari sada”.
+- **Traka posla** na stranici uplata (za uparivanje, SMS na čekanju, mogući duplikati, linkovi na SMS i usklađivanje) sa istim brojevima kao početna računovođe.
+- **CSV uvoz:** izbor fajla kroz `FilePicker`, kolone se biraju kao „1. kolona …”, a mapiranje se pamti po računu u pregledaču (`localStorage`); bez njega forma radi isto.
+- **Troškovi:** forma „Novi trošak” iza dugmeta, u grupama Faktura · Raspored · Veze. Kad servis upozori na mogući duplikat, forma ostaje popunjena, iznad nje su sumnjivi troškovi (broj, dobavljač, iznos, datum, veza), a dugme „Ipak evidentiraj” je jedini način da se unos svejedno sačuva.
+
+### Promijenjeno
+
+- **Stranica uplata:** redoslijed je traka posla → uvoz PDF izvoda (jedino glavno dugme) → lista (podrazumijevano „Za uparivanje” kad takvih ima; „Svi” je izričit izbor) → „Ručni unos” i „CSV uvoz” iza dugmeta. Ručni unos nema polje „Način” (izvodi se iz tipa računa: banka/blagajna), a datum je danas.
+- SMS stranica i usklađivanje kažu da automatski prijem nije uključen (sa vezom na Podešavanja) umjesto da obećavaju da poruke stižu.
+- Troškovi se otvaraju na tabu „Troškovi”. Izvještaji: izvoz svih izvještaja je `secondary`; „Od/Do” je prešao u tabove Novac, Fakture i Pregledi, a „Dugovanja” zadržava samo „Stanje na dan” i vlasnike; legenda i oznake salda su 13px, ime vlasnika je veza na karticu vlasnika. Parsiranje datuma perioda nije mijenjano.
+- „Predlog” → „Prijedlog”. Poziv na broj i IBAN su `font-mono text-[13px]`; labela u card-prikazu `Table` više ne nasljeđuje `font-mono`.
+
 ## [2.48.0] - 2026-10-25
 
 Faza F5a pregleda dizajna: računovođa sa početne vidi koliko posla čeka i gdje, nacrt serije provjerava na jednom ekranu, a liste faktura imaju „Otvoreno” i „Dospjela”. **Bez migracije** — deploy ne traži ručni korak.

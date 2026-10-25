@@ -75,7 +75,16 @@ export async function createExpense(
   if (!data.allowDuplicate) {
     const dups = await findDuplicateExpenses(actor, data);
     if (dups.length > 0) {
-      throw new DuplicateExpenseWarning(dups.map((d) => ({ id: d.id, invoiceNumber: d.invoiceNumber, amount: d.amount.toString() })));
+      throw new DuplicateExpenseWarning(
+        dups.map((d) => ({
+          id: d.id,
+          invoiceNumber: d.invoiceNumber,
+          amount: d.amount.toString(),
+          supplierId: d.supplierId,
+          supplierName: d.supplier?.name ?? null,
+          invoiceDate: d.invoiceDate ? toZonedDateIso(d.invoiceDate) : null,
+        }))
+      );
     }
   }
   // Every optional FK on Expense points at another tenant-scoped model —
@@ -99,7 +108,10 @@ export async function createExpense(
 }
 
 export class DuplicateExpenseWarning extends Error {
-  constructor(public duplicates: { id: string; invoiceNumber: string | null; amount: string }[]) {
+  constructor(
+    /** Sumnjivi postojeći troškovi — dovoljno podataka da ih forma prikaže (broj, dobavljač, iznos, datum) i veže. */
+    public duplicates: { id: string; invoiceNumber: string | null; amount: string; supplierId?: string | null; supplierName?: string | null; invoiceDate?: string | null }[]
+  ) {
     super("Mogući duplikat fakture dobavljača.");
     this.name = "DuplicateExpenseWarning";
   }

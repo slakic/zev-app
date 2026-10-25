@@ -1,6 +1,6 @@
 # F5 — Računovođa: radni red, serija i unos novca — implementacioni plan
 
-**Status: F5a ISPORUČENO u v2.48.0 (nije commitovano); F5b čeka.** Ranije: ODOBRENO 2026-10-25 — F5a → minor 2.48.0, zatim F5b → minor 2.49.0.** Implementira Sonnet po planu, pregleda Opus (svaku isporuku posebno). Korisnik je prihvatio preporuke §8:
+**Status: ISPORUČENO: F5a u v2.48.0, F5b u v2.49.0 (nije commitovano).** Ranije: ODOBRENO 2026-10-25 — F5a → minor 2.48.0, zatim F5b → minor 2.49.0.** Implementira Sonnet po planu, pregleda Opus (svaku isporuku posebno). Korisnik je prihvatio preporuke §8:
 - **F5-Q1: B** — `TaskList`/`TaskRow` u `ui.tsx`; vlasnik i predsjednik prelaze na njega bez vizuelne promjene.
 - **F5-Q2: (a)** — korisnik sa obje uloge ima jednu listu, rangirano spajanje.
 - **F5-Q3: (a)** — avans je izvedeno pravilo (platilac bez otvorenih faktura), bez migracije.

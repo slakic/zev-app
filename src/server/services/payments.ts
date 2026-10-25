@@ -12,6 +12,11 @@ import { foldDiacritics } from "@/lib/text";
 
 // ---- Manual entry ----
 
+/** „Način” uplate se izvodi iz tipa računa (F5b): bankovni račun → BANK, blagajna → CASH. */
+export function paymentMethodForAccountType(type: string): "BANK" | "CASH" {
+  return type === "CASH" ? "CASH" : "BANK";
+}
+
 export async function enterPayment(
   actor: Actor,
   data: {
@@ -21,6 +26,7 @@ export async function enterPayment(
     payerId?: string | null;
     payerNameRaw?: string | null;
     reference?: string | null;
+    /** Izostavljen = izvodi se iz tipa računa (`paymentMethodForAccountType`). */
     method?: string;
     note?: string | null;
   }
@@ -28,7 +34,8 @@ export async function enterPayment(
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (dec(data.amount).lessThanOrEqualTo(0)) throw new Error("Iznos uplate mora biti pozitivan.");
-  await prisma.moneyAccount.findUniqueOrThrow({ where: { id: data.accountId, zevId } });
+  const account = await prisma.moneyAccount.findUniqueOrThrow({ where: { id: data.accountId, zevId } });
+  const method = data.method ?? paymentMethodForAccountType(account.type);
   if (data.payerId) await prisma.party.findUniqueOrThrow({ where: { id: data.payerId, zevId } });
   const p = await prisma.$transaction(async (tx) => {
     const payment = await tx.payment.create({
@@ -40,7 +47,7 @@ export async function enterPayment(
         payerId: data.payerId ?? null,
         payerNameRaw: data.payerNameRaw ?? null,
         reference: data.reference ?? null,
-        method: data.method ?? "BANK",
+        method,
         note: data.note ?? null,
         createdById: actor.userId,
       },
@@ -53,7 +60,7 @@ export async function enterPayment(
         type: "INCOME",
         amount: data.amount,
         counterpartyName: data.payerNameRaw ?? null,
-        paymentMethod: data.method ?? "BANK",
+        paymentMethod: method,
         description: "Uplata vlasnika",
         paymentId: payment.id,
         createdById: actor.userId,

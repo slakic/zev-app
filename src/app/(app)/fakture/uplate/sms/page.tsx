@@ -1,5 +1,5 @@
 import { requireActor } from "@/server/actor";
-import { listBankSmsOther, listBankSmsReview } from "@/server/services/bankSms";
+import { getBankSmsStatus, listBankSmsOther, listBankSmsReview } from "@/server/services/bankSms";
 import { dismissBankSmsAction } from "@/server/actions/bankSms";
 import { formatDateTime } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
@@ -40,7 +40,7 @@ export default async function BankSmsPage({
   const { tab, err, msg } = await searchParams;
   const activeTab = tab === "potvrdjene" || tab === "neprepoznate" ? tab : "cekanje";
 
-  const [review, other] = await Promise.all([listBankSmsReview(actor), listBankSmsOther(actor)]);
+  const [review, other, smsStatus] = await Promise.all([listBankSmsReview(actor), listBankSmsOther(actor), getBankSmsStatus(actor)]);
 
   return (
     <div>
@@ -64,7 +64,7 @@ export default async function BankSmsPage({
 
       {activeTab === "cekanje" && (
         <Card>
-          <BankSmsReviewTable key={review.rows.map((r) => r.id).join(",")} review={review} canConfirm={canConfirm} />
+          <BankSmsReviewTable key={review.rows.map((r) => r.id).join(",")} review={review} canConfirm={canConfirm} receiptEnabled={smsStatus.active} />
         </Card>
       )}
 

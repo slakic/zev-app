@@ -12,7 +12,8 @@ import {
   markChannelNotSameAction,
   mergeChannelDuplicateAction,
 } from "@/server/actions/paymentMatching";
-import { formatDate, formatDateTime } from "@/lib/i18n";
+import { getBankSmsStatus } from "@/server/services/bankSms";
+import { formatDate, formatDateTime, t } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
 import { PageHeader, Card, Table, Td, StatusBadge, Flash, Tabs, RowAction, ConfirmAction, type ColumnSpec } from "@/components/ui";
 
@@ -137,7 +138,17 @@ export default async function ChannelReconciliationPage({
   const canDecide = actor.roles.includes("ACCOUNTANT");
   const { tab, err, msg } = await searchParams;
   const activeTab = tab === "bez-izvoda" ? "bez-izvoda" : "duplikati";
-  const rec = await getChannelReconciliation(actor);
+  const [rec, smsStatus] = await Promise.all([getChannelReconciliation(actor), getBankSmsStatus(actor)]);
+  // Kad automatski prijem SMS-a nije uključen, prazna stanja to kažu (R-N16) umjesto da obećavaju da poruke stižu.
+  const receiptOff = !smsStatus.active;
+  const receiptOffHint = (
+    <>
+      {t("smsReceiptOff.reconcileHint")}{" "}
+      <Link href="/podesavanja" className="font-medium text-primary-ink underline-offset-2 hover:underline">
+        {t("smsReceiptOff.link")}
+      </Link>
+    </>
+  );
 
   return (
     <div>
@@ -164,8 +175,8 @@ export default async function ChannelReconciliationPage({
             caption="Mogući duplikati SMS-a i izvoda"
             headers={duplicateHeaders}
             empty={rec.duplicates.length === 0}
-            emptyTitle="Nema mogućih duplikata."
-            emptyHint="Svaka transakcija iz SMS-a evidentirana je samo jednom."
+            emptyTitle={receiptOff ? t("smsReceiptOff.title") : "Nema mogućih duplikata."}
+            emptyHint={receiptOff ? receiptOffHint : "Svaka transakcija iz SMS-a evidentirana je samo jednom."}
           >
             {rec.duplicates.map((d) => (
               <tr key={`${d.smsId}-${d.other.id}`}>
@@ -199,7 +210,8 @@ export default async function ChannelReconciliationPage({
             caption="SMS stavke bez potvrde izvodom"
             headers={unconfirmedHeaders}
             empty={rec.unconfirmed.length === 0}
-            emptyTitle="Sve SMS stavke su potvrđene izvodom."
+            emptyTitle={receiptOff ? t("smsReceiptOff.title") : "Sve SMS stavke su potvrđene izvodom."}
+            emptyHint={receiptOff ? receiptOffHint : undefined}
           >
             {rec.unconfirmed.map((u) => (
               <tr key={u.smsId}>
