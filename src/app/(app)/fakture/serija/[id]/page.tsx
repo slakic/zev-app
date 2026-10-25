@@ -247,7 +247,7 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
               <Td>{calc.buildingName}</Td>
               <Td>{calc.debtorId ? calc.debtorName : t("batchPage.noDebtor")}</Td>
               <Td>{formatMoney(calc.total)}</Td>
-              <Td>{flagged.has(calc.unitId) ? <StatusBadge status="PENDING" label={t("batchWarnings.chip")} /> : "—"}</Td>
+              <Td>{flagged.has(calc.unitId) ? <StatusBadge status="BATCH_WARNING" label={t("batchWarnings.chip")} /> : "—"}</Td>
               <Td>
                 {calc.lines.length === 0 ? "—" : (
                   <details>

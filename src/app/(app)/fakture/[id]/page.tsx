@@ -180,7 +180,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
                   <span>{tf("pay.due", { datum: formatDate(pay.dueDate) })}</span>
-                  {overdue && <StatusBadge status="UNPAID" label={tEnum("invoiceStatus", "OVERDUE")} />}
+                  {overdue && <StatusBadge status="OVERDUE" label={tEnum("invoiceStatus", "OVERDUE")} />}
                 </div>
                 {overdue && (
                   <p className="text-[13px] text-slate-600">

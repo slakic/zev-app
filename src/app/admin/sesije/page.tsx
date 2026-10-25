@@ -14,7 +14,7 @@ const sessionHeaders: ColumnSpec[] = [
   { label: "Prijava", nowrap: true },
   { label: "Posljednja aktivnost", nowrap: true },
   { label: "Ističe", nowrap: true },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 async function revokeAction(formData: FormData) {
@@ -90,7 +90,7 @@ export default async function AdminSessionsPage({
                           {tEnum("roles", r)}
                         </span>
                       ))}
-                      {s.zevSuspended && <StatusBadge status="FAILED" label="ZEV suspendovan" />}
+                      {s.zevSuspended && <StatusBadge status="ZEV_SUSPENDED" label="ZEV suspendovan" />}
                     </div>
                   </>
                 ) : (

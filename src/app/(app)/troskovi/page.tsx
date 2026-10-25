@@ -30,7 +30,7 @@ const expenseHeaders: ColumnSpec[] = [
   { label: "Plaćeno", align: "right", nowrap: true },
   { label: "Rok", sortKey: "due" },
   { label: "Status" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 async function addSupplierAction(formData: FormData) {

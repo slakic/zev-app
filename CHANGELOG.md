@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.50.0] - 2026-10-25
+
+Faza F8 pregleda dizajna: tabele na telefonu više ne guraju radnje van ekrana, evidencija vlasnika pokazuje ono što određuje glas, a zbir udjela po jedinici je vidljiv tamo gdje se udio upisuje. **Bez migracije** — deploy ne traži ručni korak.
+
+### Dodato
+
+- **Pravilo `Table` (odluka D3):** tabela sa kolonom radnji (`ColumnSpec.actions`) ispod `md` uvijek postaje kartice, bez obzira na broj kolona. U kartici radnje idu na dno, bez labele, jedna do druge; `primary` kolona ide na vrh. Pravilo kartice je u `src/components/table-css.ts` (testirano).
+- **Tab „Vlasništvo”:** kartica „Aktivni udjeli” — tabela grupisana po jedinici sa chipom zbira (`100 %` / `Upisano 50,00 %` / `Zbir 150,00 %` / `Bez vlasnika`), iznad formi. Isti chip (`src/lib/shareSum.ts`) je uz svaku aktivnu jedinicu na detalju vlasnika.
+- **Početna predsjednika:** stavka „Zbir udjela” — iznad 100 % odmah iza registra (blokira otvaranje glasanja), ispod 100 % ili bez vlasnika niže, ispred novih prijava.
+- **Dokumenti:** filter po vrsti (Sjednice i odluke · Fakture · Izvještaji · Ostalo); na detalju sjednice spisak poziva, zapisnika i odluka sa statusom objave.
+- Forma „Prijavi kvar”: kategorija je izbor (Vodovod i kanalizacija, Struja, Lift, Krov i fasada, Grijanje, Zajednički prostori, Drugo); bezbjednosni rizik ima naslov i objašnjenje.
+- `ProofFileField`: `FilePicker` u serverskim formama (dokaz o vlasništvu u „Dodaj udio” i „Prenos”, sken izjave o saglasnosti, otpremanje dokumenta). Server akcije čitaju isto polje kao ranije.
+
+### Promijenjeno
+
+- **Ispravka kartice (X-N19):** sadržaj ćelije ide u drugu kolonu (drugo dijete više ne pada pod labelu), chip se ne rasteže, dugi tekst (e-adresa) se lomi umjesto da izlazi iz kartice.
+- `/aktivnosti` i `/admin/aktivnosti`: „Aktivnost” je prva kolona; „Kategorija” se na telefonu krije.
+- **Lista prvo, forma iza dugmeta:** Održavanje („Prijavi kvar” ispod liste, otvoreno samo vlasniku bez prijava; vlasnik ne vidi kolonu „Prijavio”), Planovi („Novi plan”, „Novi projekat”), dnevni red sjednice („Dodaj tačku”).
+- **Detalj vlasnika:** Vlasnički udjeli → Punomoći → Saglasnost → saldo → Kontakt (samo za čitanje, „Uredi kontakt”) → Korištenje → Dostava računa → Korisnički nalog. Saldo 0 nije zelen.
+- **Dokumenti:** uprava — „Naziv” je glavna kolona, broj bez `font-mono`; vlasnik — Naziv · Vrsta · Datum · Preuzmi PDF, verzija samo kad ih ima više.
+- **Statusi:** sopstveni ključevi umjesto pozajmljenih (isti tonovi): `SAFETY_RISK`, `EMERGENCY`, `OVERDUE`, `BATCH_WARNING`, `ZEV_SUSPENDED`, `DIRECTION_IN`, `DIRECTION_OUT`. „Razlika” u planu je neutralna, crvena samo za prekoračenje.
+- `text-xs` sa sadržajem → `text-[13px]` na stranicama vlasnika, održavanja, organa i planova; lista lica: e-mail je `detail`.
+
 ## [2.49.0] - 2026-10-25
 
 Faza F5b pregleda dizajna: stranica uplata počinje od posla, pregled uvoza je jedna tabela koja radi i na telefonu, a upozorenje o duplikatu troška više ne briše unos. **Bez migracije** — deploy ne traži ručni korak.

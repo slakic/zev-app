@@ -133,7 +133,7 @@ export default async function BuildingsPage({
     { label: "Adresa" },
     { label: "Ulazi" },
     { label: "Jedinica", align: "right" },
-    ...(isPresident ? [{ label: "Radnje" } as ColumnSpec] : []),
+    ...(isPresident ? [{ label: "Radnje", actions: true } as ColumnSpec] : []),
   ];
   const entranceHeaders: ColumnSpec[] = [{ label: "Zgrada" }, { label: "Ulaz" }, { label: "Adresa" }];
   const assetHeaders: ColumnSpec[] = [{ label: "Naziv" }, { label: "Vrsta" }, { label: "Zgrada" }, { label: "Opis" }];
@@ -149,7 +149,7 @@ export default async function BuildingsPage({
     { label: "Vlasnici" },
     ...(ownerColumns ? [{ label: t("register.col.ownerSum") } as ColumnSpec] : []),
     { label: "Stanari/zakupci", priority: "detail" },
-    ...(isPresident && registerOpen ? [{ label: "Radnje" } as ColumnSpec] : []),
+    ...(isPresident && registerOpen ? [{ label: "Radnje", actions: true } as ColumnSpec] : []),
   ];
   return (
     <div>

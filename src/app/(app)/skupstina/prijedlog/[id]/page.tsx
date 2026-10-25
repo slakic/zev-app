@@ -24,7 +24,7 @@ const voterHeaders = (showWeight: boolean): ColumnSpec[] => [
   ...(showWeight ? [{ label: "Težina", align: "right", priority: "detail" } as ColumnSpec] : []),
   { label: "Token status" },
   { label: "Izjašnjenje" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 type EvBasis = { subjectName?: string; units?: { label: string }[]; members?: { partyId: string; name: string }[] } | null;

@@ -6,6 +6,10 @@
 import Link from "next/link";
 import type { ReactNode, ButtonHTMLAttributes } from "react";
 import { IconCheck } from "@/components/nav-icons";
+import { buildTableCss, usesCardTransform, type ColumnSpec } from "@/components/table-css";
+
+export { buildTableCss, usesCardTransform };
+export type { ColumnSpec };
 
 export function PageHeader({
   title, subtitle, actions, backHref, backLabel,
@@ -85,6 +89,11 @@ const statusTone: Record<string, string> = {
   // registar posebnih dijelova (FR): Nacrt / Utvrđen / Za provjeru
   REGISTER_DRAFT: "slate", REGISTER_ESTABLISHED: "green", REGISTER_REVIEW: "amber",
   OWNER_SUM_OK: "slate", OWNER_SUM_WARN: "amber",
+  // F8.7: sopstveni ključevi umjesto pozajmljenih (tonovi nepromijenjeni): bezbjednosni rizik (bio UNPAID), hitna intervencija
+  // (bio REVOKED), faktura kasni (bio UNPAID), upozorenje serije (bio PENDING), suspendovan ZEV (bio FAILED), smjer uplate/isplate
+  // (bili PAID/UNPAID).
+  SAFETY_RISK: "amber", EMERGENCY: "red", OVERDUE: "amber", BATCH_WARNING: "amber", ZEV_SUSPENDED: "red",
+  DIRECTION_IN: "green", DIRECTION_OUT: "amber",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */
@@ -155,86 +164,8 @@ export function StatusTimeline({
   );
 }
 
-/** A table column's behavior across breakpoints (Plans/ui-ux-redesign-plan.md §3.B).
- *  `priority` controls desktop/tablet progressive disclosure: "primary" is always a real table
- *  column; "secondary" only becomes one from `md`; "detail" only from `lg`. Below `md`, none of
- *  that matters — if the table has more than 5 columns (`useCardTransform` below, per P5) the
- *  whole table becomes a stack of row-cards instead, and *every* column reappears there as a
- *  label:value line (nothing "disappears", it just moves — see `buildTableCss`). `sortKey` is
- *  inert until Faza 3g wires up sortable headers; it's here now so 3g doesn't need to touch
- *  every call site's `headers` array again. */
-export type ColumnSpec = {
-  label: string;
-  priority?: "primary" | "secondary" | "detail";
-  align?: "left" | "right";
-  sortKey?: string;
-  nowrap?: boolean;
-};
-
 function isColumnSpecArray(headers: string[] | ColumnSpec[]): headers is ColumnSpec[] {
   return headers.length > 0 && typeof headers[0] === "object";
-}
-
-/** Escapes a string for safe use inside a generated CSS `content: "…"` value — the only
- *  untrusted-ish input here is a column label, and only quotes/backslashes can break out of it. */
-function cssStringEscape(s: string): string {
-  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-}
-
-/** Labela u card-transformu uvijek ide u osnovnom fontu: ćelija sa `font-mono` (poziv na broj, IBAN) inače nasljeđuje
- *  monospace i na `::before` (R-N22). Isti stack kao `body` u `globals.css`. */
-const CARD_LABEL_FONT = 'Roboto,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif';
-
-/** One `<style>` block per table instance, keyed by `id`, replacing what would otherwise be a
- *  `label` prop on every one of the ~260 `<Td>` call sites in the app (rejected in §3.B — it can
- *  silently drift from `headers`, which is the exact "offset" bug this whole mechanism exists to
- *  prevent). `nth-child` reads the column's position, so alignment/priority/card-labels all come
- *  from one source of truth (`columns`) that `<thead>` and `<tbody>` both render from.
- *  Breakpoint reasoning, since it's easy to get backwards:
- *  - `align`/`nowrap` apply at every width — they're about the *content*, not the layout mode.
- *  - `priority` "secondary"/"detail" hide a column *as a table column* between `md` and `lg` (or
- *    below `lg` entirely for "detail") — but only when the table ISN'T using the card transform.
- *    Once `useCardTransform` is on, those same columns reappear as card rows below `md`, so the
- *    "hide below md" half of the rule would fight the card CSS for the same cells — it's omitted
- *    in that case, and only the md-to-lg "detail" hide (still real table layout there) applies. */
-export function buildTableCss(id: string, columns: ColumnSpec[], useCardTransform: boolean): string {
-  const rules: string[] = [];
-
-  columns.forEach((col, i) => {
-    const n = i + 1;
-    const sel = `#${id} thead th:nth-child(${n}), #${id} tbody td:nth-child(${n})`;
-    if (col.align === "right") rules.push(`${sel}{text-align:right}`);
-    if (col.nowrap) rules.push(`${sel}{white-space:nowrap}`);
-    if (col.priority === "secondary" && !useCardTransform) {
-      rules.push(`@media (max-width:767px){${sel}{display:none}}`);
-    }
-    if (col.priority === "detail") {
-      const lowerBound = useCardTransform ? " and (min-width:768px)" : "";
-      rules.push(`@media (max-width:1023px)${lowerBound}{${sel}{display:none}}`);
-    }
-  });
-
-  if (useCardTransform) {
-    rules.push(`@media (max-width:767px) {
-  #${id} thead { display:none; }
-  #${id} tbody tr { display:block; border:1px solid #e2e8f0; border-radius:0.75rem; padding:0.75rem 1rem; margin-bottom:0.75rem; background:#fff; }
-  #${id} tbody tr:last-child { margin-bottom:0; }
-  #${id} tbody td { display:grid; grid-template-columns:40% 1fr; gap:0.5rem; align-items:baseline; padding:0.375rem 0; border:none !important; text-align:left !important; white-space:normal !important; }
-  #${id} tbody td[colspan] { display:block; grid-template-columns:none; }
-}`);
-    columns.forEach((col, i) => {
-      const n = i + 1;
-      if (col.priority === "primary") {
-        rules.push(`@media (max-width:767px){#${id} tbody td:nth-child(${n}){display:block;font-weight:600;font-size:0.9375rem;color:#0f172a;}}`);
-      } else {
-        rules.push(
-          `@media (max-width:767px){#${id} tbody td:nth-child(${n}):not([colspan])::before{content:"${cssStringEscape(col.label)}";font-family:${CARD_LABEL_FONT};font-weight:500;font-size:0.8125rem;color:#64748b;}}`,
-        );
-      }
-    });
-  }
-
-  return rules.join("\n");
 }
 
 /** Hand-drawn empty-state glyph (an open tray), matching the sidebar icon style
@@ -304,7 +235,7 @@ export function Table({
   sort?: TableSort;
 }) {
   const columns: ColumnSpec[] = isColumnSpecArray(headers) ? headers : headers.map((label) => ({ label }));
-  const useCardTransform = columns.length > 5; // P5: only tables with >5 columns get the card fallback
+  const useCardTransform = usesCardTransform(columns);
   const css = id ? buildTableCss(id, columns, useCardTransform) : null;
   if (process.env.NODE_ENV !== "production" && isColumnSpecArray(headers) && !id) {
     // eslint-disable-next-line no-console

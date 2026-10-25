@@ -6,10 +6,11 @@ import { formatDateTime, endOfDay, t } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Pagination, inputCls, FilterBar, type ColumnSpec } from "@/components/ui";
 
 const activityHeaders: ColumnSpec[] = [
+  // F8.1, opcija C: glavna kolona (šta je urađeno) je prva; kategorija se izvodi iz opisa pa se ispod `md` krije.
+  { label: "Aktivnost", priority: "primary" },
   { label: "Vrijeme", nowrap: true },
   { label: "Akter" },
-  { label: "Kategorija" },
-  { label: "Aktivnost" },
+  { label: "Kategorija", priority: "secondary" },
 ];
 
 function daysAgoIso(n: number): string {
@@ -128,13 +129,13 @@ export default async function ActivityPage({
             const summary = summarize(e);
             return (
               <tr key={e.id}>
-                <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>
-                <Td className="text-xs">{e.actorId ? actorLabelById.get(e.actorId) ?? e.actorLabel ?? "—" : e.actorLabel ?? "—"}</Td>
-                <Td className="text-xs">{categoryLabel(categoryForAction(e.action))}</Td>
                 <Td className={label.translated ? "text-sm" : "font-mono text-xs text-slate-500"}>
                   {label.label}
                   {summary && <span className="ml-1.5 text-slate-500">— {summary}</span>}
                 </Td>
+                <Td className="text-xs">{formatDateTime(e.createdAt)}</Td>
+                <Td className="text-xs">{e.actorId ? actorLabelById.get(e.actorId) ?? e.actorLabel ?? "—" : e.actorLabel ?? "—"}</Td>
+                <Td className="text-xs">{categoryLabel(categoryForAction(e.action))}</Td>
               </tr>
             );
           })}

@@ -3,25 +3,36 @@ import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
 import { listDocuments, publishDocument } from "@/server/services/documents";
 import { listAttachments, uploadAttachment, ATTACHMENT_CATEGORIES } from "@/server/services/attachments";
-import { formatDateTime, tEnum, t, tf } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, RowActionLink, type ColumnSpec } from "@/components/ui";
+import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { DOCUMENT_GROUPS, documentGroupOf, parseDocumentGroup } from "@/lib/documentGroups";
+import { ProofFileField } from "@/components/proof-file-field";
+import { PageHeader, Card, Table, Td, StatusBadge, Flash, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, RowActionLink, FilterBar, type ColumnSpec } from "@/components/ui";
 
 const attachmentHeaders: ColumnSpec[] = [
   { label: "Kategorija" },
-  { label: "Naziv fajla" },
+  { label: "Naziv fajla", priority: "primary" },
   { label: "Otpremljen" },
-  { label: "Preuzmi" },
+  { label: "Preuzmi", actions: true },
 ];
 
+// F8.6: uprava — „Naziv” je glavna kolona; broj bez monospace fonta.
 const documentHeaders: ColumnSpec[] = [
-  { label: "Broj", priority: "primary", nowrap: true },
+  { label: "Naziv", priority: "primary" },
+  { label: "Broj", nowrap: true },
   { label: "Vrsta", priority: "detail" },
-  { label: "Naziv" },
   { label: "Verzija", align: "right" },
   { label: "Status" },
   { label: "Objavljen vlasnicima", priority: "detail" },
   { label: "Generisan", priority: "detail" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
+];
+
+// F8.6: vlasnik — samo ono što mu treba: naziv, vrsta, datum i preuzimanje (bez statusa, verzije i objave).
+const ownerDocumentHeaders = (): ColumnSpec[] => [
+  { label: t("docsPage.owner.name"), priority: "primary" },
+  { label: t("docsPage.owner.type") },
+  { label: t("docsPage.owner.date"), nowrap: true },
+  { label: t("docsPage.owner.download"), actions: true },
 ];
 
 async function publishAction(formData: FormData) {
@@ -54,13 +65,18 @@ async function uploadAttachmentAction(formData: FormData) {
 export default async function DocumentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ msg?: string; err?: string; cat?: string }>;
+  searchParams: Promise<{ msg?: string; err?: string; cat?: string; vrsta?: string }>;
 }) {
   const actor = await requireActor();
   const management = isManagement(actor);
-  const { msg, err, cat } = await searchParams;
+  const { msg, err, cat, vrsta } = await searchParams;
   const okMsg = msg === "uploaded" ? "Dokument je otpremljen." : undefined;
-  const docs = await listDocuments(actor);
+  const allDocs = await listDocuments(actor);
+  const group = management ? parseDocumentGroup(vrsta) : undefined;
+  const docs = group ? allDocs.filter((d) => documentGroupOf(d.type) === group) : allDocs;
+  // Verzija se prikazuje vlasniku samo kad postoji više verzija istog dokumenta.
+  const versionCount = new Map<string, number>();
+  for (const d of allDocs) versionCount.set(`${d.type}|${d.number}`, (versionCount.get(`${d.type}|${d.number}`) ?? 0) + 1);
   const attachments = management
     ? await listAttachments(actor, cat ? { category: cat } : undefined)
     : [];
@@ -72,57 +88,94 @@ export default async function DocumentsPage({
         subtitle={management ? "Generisani dokumenti — finalizovani su verzionisani i nepromjenjivi" : "Dokumenti objavljeni članovima skupštine"}
       />
       <Flash err={err} msg={okMsg} />
+      {management && (
+        <FilterBar>
+          {cat && <input type="hidden" name="cat" value={cat} />}
+          <Field label={t("docsPage.filter.label")}>
+            <select name="vrsta" defaultValue={group ?? ""} className={inputCls}>
+              <option value="">{t("docsPage.filter.all")}</option>
+              {DOCUMENT_GROUPS.map((g) => <option key={g} value={g}>{t(`docsPage.filter.groups.${g}`)}</option>)}
+            </select>
+          </Field>
+        </FilterBar>
+      )}
       <Card>
-        <Table
-          id="documents-table"
-          caption="Generisani dokumenti"
-          headers={documentHeaders}
-          empty={docs.length === 0}
-          emptyTitle={t("empty.documents.title")}
-        >
-          {docs.map((d) => (
-            <tr key={d.id}>
-              <Td className="font-mono text-xs">{d.number}</Td>
-              <Td>{tEnum("docType", d.type)}</Td>
-              <Td>{d.title}</Td>
-              <Td>v{d.version}</Td>
-              <Td><StatusBadge status={d.status} label={tEnum("docStatus", d.status)} /></Td>
-              <Td>{d.publishedToOwners ? "Da" : "—"}</Td>
-              <Td>{formatDateTime(d.createdAt)}</Td>
-              <Td>
-                <div className="flex items-center gap-1.5">
-                  <RowActionLink href={`/api/dokumenti/${d.id}`}>PDF</RowActionLink>
-                  {management && !d.publishedToOwners && actor.roles.includes("PRESIDENT") && (
-                    d.status === "FINAL" ? (
-                      <ConfirmAction
-                        trigger={t("confirm.publishDoc.trigger")}
-                        triggerVariant="caution"
-                        title={t("confirm.publishDoc.title")}
-                        body={<p className="text-sm text-amber-950">{tf("confirm.publishDoc.body", { naslov: d.title, broj: d.number })}</p>}
-                        confirmLabel={t("confirm.publishDoc.confirm")}
-                        confirmVariant="primary"
-                        action={publishAction}
-                        hiddenFields={{ documentId: d.id }}
-                      />
-                    ) : (
-                      <span className="text-[13px] text-slate-500">{t("confirm.publishDoc.draftNote")}</span>
-                    )
+        {management ? (
+          <Table
+            id="documents-table"
+            caption="Generisani dokumenti"
+            headers={documentHeaders}
+            empty={docs.length === 0}
+            emptyTitle={t(group ? "empty.filteredQuery.title" : "empty.documents.title")}
+            emptyHint={group ? t("empty.filteredQuery.hint") : undefined}
+          >
+            {docs.map((d) => (
+              <tr key={d.id}>
+                <Td>{d.title}</Td>
+                <Td className="text-[13px]">{d.number}</Td>
+                <Td>{tEnum("docType", d.type)}</Td>
+                <Td>v{d.version}</Td>
+                <Td><StatusBadge status={d.status} label={tEnum("docStatus", d.status)} /></Td>
+                <Td>{d.publishedToOwners ? "Da" : "—"}</Td>
+                <Td>{formatDateTime(d.createdAt)}</Td>
+                <Td>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <RowActionLink href={`/api/dokumenti/${d.id}`}>PDF</RowActionLink>
+                    {!d.publishedToOwners && actor.roles.includes("PRESIDENT") && (
+                      d.status === "FINAL" ? (
+                        <ConfirmAction
+                          trigger={t("confirm.publishDoc.trigger")}
+                          triggerVariant="caution"
+                          title={t("confirm.publishDoc.title")}
+                          body={<p className="text-sm text-amber-950">{tf("confirm.publishDoc.body", { naslov: d.title, broj: d.number })}</p>}
+                          confirmLabel={t("confirm.publishDoc.confirm")}
+                          confirmVariant="primary"
+                          action={publishAction}
+                          hiddenFields={{ documentId: d.id }}
+                        />
+                      ) : (
+                        <span className="text-[13px] text-slate-500">{t("confirm.publishDoc.draftNote")}</span>
+                      )
+                    )}
+                  </div>
+                </Td>
+              </tr>
+            ))}
+          </Table>
+        ) : (
+          <Table
+            id="documents-table"
+            caption="Dokumenti"
+            headers={ownerDocumentHeaders()}
+            empty={docs.length === 0}
+            emptyTitle={t("empty.documents.title")}
+          >
+            {docs.map((d) => (
+              <tr key={d.id}>
+                <Td>
+                  {d.title}
+                  {(versionCount.get(`${d.type}|${d.number}`) ?? 1) > 1 && (
+                    <span className="ml-2 text-[13px] text-slate-500">{tf("docsPage.owner.version", { broj: d.version })}</span>
                   )}
-                </div>
-              </Td>
-            </tr>
-          ))}
-        </Table>
+                </Td>
+                <Td>{tEnum("docType", d.type)}</Td>
+                <Td>{formatDate(d.finalizedAt ?? d.createdAt)}</Td>
+                <Td><RowActionLink href={`/api/dokumenti/${d.id}`}>{t("docsPage.owner.downloadPdf")}</RowActionLink></Td>
+              </tr>
+            ))}
+          </Table>
+        )}
       </Card>
 
       {management && (
         <Card title="Otpremljeni dokumenti" className="mt-4">
-          <p className="mb-3 text-xs text-slate-500">
+          <p className="mb-3 text-[13px] text-slate-500">
             Skenirana ili primljena dokumentacija koju čuva ZEV — ugovori, izvještaji, zapisnici, prepiska i slično.
             Dokazi o vlasništvu priloženi uz vlasničke udjele takođe se čuvaju ovdje i dostupni su na stranici vlasnika.
           </p>
 
           <form method="get" className="mb-3 flex flex-wrap items-end gap-3">
+            {group && <input type="hidden" name="vrsta" value={group} />}
             <Field label="Filtriraj po kategoriji">
               <select name="cat" defaultValue={cat ?? ""} className={inputCls}>
                 <option value="">Sve kategorije</option>
@@ -163,9 +216,14 @@ export default async function DocumentsPage({
                 </select>
               </Field>
               <div className="sm:col-span-2">
-                <Field label="Fajl" hint="PDF, JPG, PNG ili WEBP, do 15 MB.">
-                  <input name="file" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
-                </Field>
+                <ProofFileField
+                  name="file"
+                  label={t("docsPage.upload.label")}
+                  buttonLabel={t("docsPage.upload.pick")}
+                  hint={t("docsPage.upload.hint")}
+                  accept=".pdf,application/pdf,image/jpeg,image/png,image/webp"
+                  required
+                />
               </div>
               <div><SubmitBtn>Otpremi</SubmitBtn></div>
             </form>

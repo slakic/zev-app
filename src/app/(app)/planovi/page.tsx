@@ -3,20 +3,20 @@ import { requireActor, isManagement } from "@/server/actor";
 import { listPlans, createPlan, listProjects, createProject } from "@/server/services/plans";
 import { parseMoneyInput } from "@/lib/money";
 import { tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, RowLink, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
 const projectsHeaders: ColumnSpec[] = [
-  { label: "Naziv" },
-  { label: "Opis" },
+  { label: "Naziv", priority: "primary" },
+  { label: "Opis", priority: "detail" },
   { label: "Procjena (KM)", align: "right" },
   { label: "Status" },
 ];
 
 const plansHeaders: ColumnSpec[] = [
   { label: "Godina" },
-  { label: "Vrsta" },
-  { label: "Naziv" },
-  { label: "Verzija", align: "right" },
+  { label: "Vrsta", priority: "detail" },
+  { label: "Naziv", priority: "primary" },
+  { label: "Verzija", align: "right", priority: "detail" },
   { label: "Status" },
 ];
 
@@ -68,17 +68,20 @@ export default async function PlansPage() {
           ))}
         </Table>
         {actor.roles.includes("PRESIDENT") && (
-          <form action={addPlanAction} className="mt-4 flex flex-wrap items-end gap-3">
-            <Field label="Godina"><input name="year" type="number" defaultValue={new Date().getFullYear() + 1} className={inputCls} /></Field>
-            <Field label="Vrsta">
-              <select name="kind" className={inputCls}>
-                <option value="MAINTENANCE">Plan održavanja</option>
-                <option value="BUDGET">Finansijski plan</option>
-              </select>
-            </Field>
-            <Field label="Naziv"><input name="title" required className={inputCls} placeholder="Godišnji plan održavanja 2027." /></Field>
-            <SubmitBtn>Kreiraj plan</SubmitBtn>
-          </form>
+          <details className="group mt-4">
+            <ToggleBtn>{t("plansPage.newPlan")}</ToggleBtn>
+            <form action={addPlanAction} className="mt-3 flex flex-wrap items-end gap-3">
+              <Field label="Godina"><input name="year" type="number" defaultValue={new Date().getFullYear() + 1} className={inputCls} /></Field>
+              <Field label="Vrsta">
+                <select name="kind" className={inputCls}>
+                  <option value="MAINTENANCE">Plan održavanja</option>
+                  <option value="BUDGET">Finansijski plan</option>
+                </select>
+              </Field>
+              <Field label="Naziv"><input name="title" required className={inputCls} placeholder="Godišnji plan održavanja 2027." /></Field>
+              <SubmitBtn variant="tonal">Kreiraj plan</SubmitBtn>
+            </form>
+          </details>
         )}
       </Card>
       {isManagement(actor) && (
@@ -102,12 +105,15 @@ export default async function PlansPage() {
               ))}
             </Table>
             {actor.roles.includes("PRESIDENT") && (
-              <form action={addProjectAction} className="mt-3 flex flex-wrap items-end gap-3">
-                <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
-                <Field label="Opis"><input name="description" className={inputCls} /></Field>
-                <Field label="Procjena (KM)"><input name="estimatedCost" className={inputCls} /></Field>
-                <SubmitBtn>Dodaj projekat</SubmitBtn>
-              </form>
+              <details className="group mt-4">
+                <ToggleBtn>{t("plansPage.newProject")}</ToggleBtn>
+                <form action={addProjectAction} className="mt-3 flex flex-wrap items-end gap-3">
+                  <Field label="Naziv"><input name="name" required className={inputCls} /></Field>
+                  <Field label="Opis"><input name="description" className={inputCls} /></Field>
+                  <Field label="Procjena (KM)"><input name="estimatedCost" className={inputCls} /></Field>
+                  <SubmitBtn variant="tonal">Dodaj projekat</SubmitBtn>
+                </form>
+              </details>
             )}
           </Card>
         </div>

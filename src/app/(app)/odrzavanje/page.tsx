@@ -5,11 +5,13 @@ import { listIssues, reportIssue } from "@/server/services/maintenance";
 import { listBuildings, listUnits } from "@/server/services/property";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatDate, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowLink, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
+import { MAINTENANCE_CATEGORY_KEYS } from "@/lib/maintenanceCategories";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowLink, FilterBar, BtnLink, ToggleBtn, type ColumnSpec } from "@/components/ui";
 
-const issueHeaders: ColumnSpec[] = [
+// „Prijavio” samo za upravu: vlasnik vidi isključivo svoje prijave, pa bi kolona bila uvijek on sâm (V-R06).
+const issueHeaders = (management: boolean): ColumnSpec[] => [
   { label: "Naslov", priority: "primary" },
-  { label: "Prijavio", priority: "detail" },
+  ...(management ? [{ label: "Prijavio", priority: "detail" } as ColumnSpec] : []),
   { label: "Kategorija", priority: "detail" },
   { label: "Hitnost", sortKey: "urgency" },
   { label: "Status" },
@@ -80,40 +82,7 @@ export default async function MaintenancePage({
     <div>
       <PageHeader title="Održavanje" subtitle={management ? "Prijave, trijaža, ponude, radni nalozi i realizacija" : "Vaše prijave kvarova"} />
       <Flash err={err} />
-      <Card title="Prijavi kvar / problem">
-        <form action={reportAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-3">
-          <Field label="Naslov"><input name="title" required className={inputCls} placeholder="Curenje u podrumu" /></Field>
-          <Field label="Zgrada">
-            <select name="buildingId" className={inputCls}>
-              <option value="">—</option>
-              {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-            </select>
-          </Field>
-          <Field label="Jedinica (ako se odnosi na jedinicu)">
-            <select name="unitId" className={inputCls}>
-              <option value="">—</option>
-              {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
-            </select>
-          </Field>
-          <div className="sm:col-span-2">
-            <Field label="Opis problema"><textarea name="description" required rows={2} className={inputCls} /></Field>
-          </div>
-          <Field label="Lokacija (napomena)"><input name="locationNote" className={inputCls} placeholder="podrum, kod liftovskog okna" /></Field>
-          <Field label="Kategorija"><input name="category" className={inputCls} placeholder="vodovod / struja / lift..." /></Field>
-          <Field label="Hitnost">
-            <select name="urgency" className={inputCls}>
-              <option value="NORMAL">Normalna</option>
-              <option value="LOW">Niska</option>
-              <option value="HIGH">Visoka</option>
-              <option value="EMERGENCY">Hitno</option>
-            </select>
-          </Field>
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="safetyImpact" /> utiče na bezbjednost</label>
-          <div className="flex items-end"><SubmitBtn>Pošalji prijavu</SubmitBtn></div>
-        </form>
-      </Card>
-
-      <div className="mt-4">
+      <div>
         {management && (
           <FilterBar>
             {issueSort && <input type="hidden" name="sort" value={issueSort} />}
@@ -134,7 +103,7 @@ export default async function MaintenancePage({
           <Table
             id="issues-table"
             caption={management ? "Sve prijave" : "Moje prijave"}
-            headers={issueHeaders}
+            headers={issueHeaders(management)}
             sort={{ active: issueSort, dir: issueDir, hrefFor: (key, d) => odrzavanjeHref({ sort: key, dir: d }) }}
             empty={issues.length === 0}
             emptyTitle={t(
@@ -155,7 +124,7 @@ export default async function MaintenancePage({
             {issues.map((i) => (
               <tr key={i.id}>
                 <Td><RowLink href={`/odrzavanje/${i.id}`}>{i.title}</RowLink></Td>
-                <Td>{partyDisplayName(i.reporter)}</Td>
+                {management && <Td>{partyDisplayName(i.reporter)}</Td>}
                 <Td>{i.category ?? "—"}</Td>
                 <Td>{tEnum("urgency", i.urgency)}{i.isEmergency ? " ⚠" : ""}</Td>
                 <Td><StatusBadge status={i.status} label={tEnum("issueStatus", i.status)} /></Td>
@@ -165,6 +134,51 @@ export default async function MaintenancePage({
           </Table>
         </Card>
       </div>
+      <Card title={t("maintenanceForm.title")} className="mt-4">
+        <details className="group" open={!management && issues.length === 0}>
+          <ToggleBtn>{t("maintenanceForm.trigger")}</ToggleBtn>
+          <form action={reportAction} className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <Field label="Naslov"><input name="title" required className={inputCls} placeholder="Curenje u podrumu" /></Field>
+            <Field label="Zgrada">
+              <select name="buildingId" className={inputCls}>
+                <option value="">—</option>
+                {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+              </select>
+            </Field>
+            <Field label="Jedinica (ako se odnosi na jedinicu)">
+              <select name="unitId" className={inputCls}>
+                <option value="">—</option>
+                {units.map((u) => <option key={u.id} value={u.id}>{u.building.name} / {u.label}</option>)}
+              </select>
+            </Field>
+            <div className="sm:col-span-2">
+              <Field label="Opis problema"><textarea name="description" required rows={2} className={inputCls} /></Field>
+            </div>
+            <Field label="Lokacija (napomena)"><input name="locationNote" className={inputCls} placeholder="podrum, kod liftovskog okna" /></Field>
+            <Field label={t("maintenanceForm.category")}>
+              <select name="category" defaultValue="" className={inputCls}>
+                <option value="">{t("maintenanceForm.categoryNone")}</option>
+                {MAINTENANCE_CATEGORY_KEYS.map((k) => {
+                  const label = t(`maintenanceForm.categories.${k}`);
+                  return <option key={k} value={label}>{label}</option>;
+                })}
+              </select>
+            </Field>
+            <Field label="Hitnost">
+              <select name="urgency" className={inputCls}>
+                <option value="NORMAL">Normalna</option>
+                <option value="LOW">Niska</option>
+                <option value="HIGH">Visoka</option>
+                <option value="EMERGENCY">Hitno</option>
+              </select>
+            </Field>
+            <Field label={t("maintenanceForm.safety.label")} hint={t("maintenanceForm.safety.hint")}>
+              <span className="flex items-center gap-2 pt-1 text-sm"><input type="checkbox" name="safetyImpact" /> {t("maintenanceForm.safety.option")}</span>
+            </Field>
+            <div className="flex items-end sm:col-span-2 lg:col-span-3"><SubmitBtn variant="tonal">{t("maintenanceForm.submit")}</SubmitBtn></div>
+          </form>
+        </details>
+      </Card>
     </div>
   );
 }

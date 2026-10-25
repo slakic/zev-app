@@ -16,7 +16,7 @@ const suggestionHeaders: ColumnSpec[] = [
   { label: "Jedinica" },
   { label: "Otvoreno", align: "right" },
   { label: "Osnov prijedloga" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const allocationHeaders: ColumnSpec[] = [
@@ -24,7 +24,7 @@ const allocationHeaders: ColumnSpec[] = [
   { label: "Faktura" },
   { label: "Iznos", align: "right" },
   { label: "Napomena" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 async function allocateAction(formData: FormData) {

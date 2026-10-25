@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { requireZev } from "@/server/auth/guards";
 import { requireActor } from "@/server/actor";
-import { getParty, partyDisplayName, updateParty, votingRoleByUnit, endOwnershipStake } from "@/server/services/ownership";
+import { getParty, partyDisplayName, updateParty, votingRoleByUnit, endOwnershipStake, unitOwnershipWarnings } from "@/server/services/ownership";
 import { updateUserRoles, activateUser, deactivateUser } from "@/server/services/users";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
@@ -8,7 +9,9 @@ import { setInvoiceEmailDelivery } from "@/server/services/invoiceEmail";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
 import { formatDate, formatDateTime, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
-import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
+import { shareSumChip } from "@/lib/shareSum";
+import { ProofFileField } from "@/components/proof-file-field";
+import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, ToggleBtn, type ColumnSpec } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
 
 const occupancyHeaders: ColumnSpec[] = [
@@ -26,7 +29,7 @@ const stakeHeaders: ColumnSpec[] = [
   { label: "Do" },
   { label: "Dokaz o vlasništvu" },
 ];
-const stakeActionHeader: ColumnSpec = { label: "Radnje" };
+const stakeActionHeader: ColumnSpec = { label: "Radnje", actions: true };
 
 const ROLE_LABELS: Record<Role, string> = { PRESIDENT: "Predsjednik", ACCOUNTANT: "Računovođa", OWNER: "Vlasnik" };
 const ALL_ROLES: Role[] = ["PRESIDENT", "ACCOUNTANT", "OWNER"];
@@ -176,6 +179,10 @@ export default async function PartyDetailPage({
   ]);
   const isPresident = actor.roles.includes("PRESIDENT");
   const isAccountant = actor.roles.includes("ACCOUNTANT");
+  // F8.3: zbir udjela svake jedinice na kojoj lice ima aktivan udio (upozorenje = zbir ≠ 100 %, kao na tabu „Vlasništvo”).
+  const shareWarningByUnit = new Map(
+    (await unitOwnershipWarnings(requireZev(actor), party.ownershipStakes.filter((st) => !st.validTo).map((st) => st.unitId))).map((w) => [w.unitId, w]),
+  );
   const isSelf = actor.partyId === id;
   const canEditContact = isPresident || isSelf;
   const okMsg = msg === "saved" ? "Sačuvano." : msg === "stakeEnded" ? t("ownershipEnd.done") : undefined;
@@ -190,49 +197,9 @@ export default async function PartyDetailPage({
         actions={<BtnLink href={`/api/dokumenti/kartica/${party.id}`} variant="secondary">Kartica vlasnika (PDF)</BtnLink>}
       />
       <Flash err={err} msg={okMsg} />
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Saldo (duguje)" value={formatMoney(balance.balance)} tone={Number(balance.balance) > 0 ? "warn" : "ok"} />
-        <Stat label="Zaduženo" value={formatMoney(balance.charged)} tone="neutral" />
-        <Stat label="Plaćeno" value={formatMoney(balance.paid)} tone="ok" />
-        <Stat label="Avans" value={formatMoney(advance)} tone="neutral" />
-      </div>
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card title="Kontakt">
-          {canEditContact ? (
-            <form action={updatePartyAction} className="space-y-3">
-              <input type="hidden" name="id" value={party.id} />
-              {isPresident && party.kind === "PERSON" && (
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Ime"><input name="firstName" defaultValue={party.firstName ?? ""} className={inputCls} /></Field>
-                  <Field label="Prezime"><input name="lastName" defaultValue={party.lastName ?? ""} className={inputCls} /></Field>
-                </div>
-              )}
-              {isPresident && party.kind === "ORGANIZATION" && (
-                <Field label="Naziv"><input name="orgName" defaultValue={party.orgName ?? ""} className={inputCls} /></Field>
-              )}
-              <Field label="E-mail"><input name="email" type="email" defaultValue={party.email ?? ""} className={inputCls} /></Field>
-              <Field label="Telefon"><input name="phone" defaultValue={party.phone ?? ""} className={inputCls} /></Field>
-              {isPresident && (
-                <Field label="Adresa nekretnine"><input name="address" defaultValue={party.address ?? ""} className={inputCls} /></Field>
-              )}
-              <Field label="Adresa za prepisku (ako je različita)">
-                <input name="correspondenceAddress" defaultValue={party.correspondenceAddress ?? ""} className={inputCls} />
-              </Field>
-              {!isPresident && (
-                <p className="text-xs text-slate-500">Kao vlasnik možete mijenjati samo svoje kontakt podatke.</p>
-              )}
-              <SubmitBtn>Sačuvaj</SubmitBtn>
-            </form>
-          ) : (
-            <dl className="space-y-1 text-sm">
-              <div><dt className="inline font-medium">E-mail: </dt><dd className="inline">{party.email ?? "—"}</dd></div>
-              <div><dt className="inline font-medium">Telefon: </dt><dd className="inline">{party.phone ?? "—"}</dd></div>
-              <div><dt className="inline font-medium">Adresa: </dt><dd className="inline">{party.address ?? "—"}</dd></div>
-              <div><dt className="inline font-medium">Adresa za prepisku: </dt><dd className="inline">{party.correspondenceAddress ?? party.address ?? "—"}</dd></div>
-            </dl>
-          )}
-        </Card>
-        <Card title="Vlasnički udjeli" hint="Istorija se čuva — raniji udjeli ostaju vidljivi.">
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card title="Vlasnički udjeli" hint="Istorija se čuva — raniji udjeli ostaju vidljivi." className="lg:col-span-2">
           <Table
             id="stakes-table"
             caption="Vlasnički udjeli"
@@ -244,8 +211,16 @@ export default async function PartyDetailPage({
             {party.ownershipStakes.map((s) => {
               const proof = proofsByStake.get(s.id);
               return (
-                <tr key={s.id} className={s.validTo ? "text-slate-400" : ""}>
-                  <Td>{s.unit.building.name} / {s.unit.label}</Td>
+                <tr key={s.id} className={s.validTo ? "text-slate-500" : ""}>
+                  <Td>
+                    {s.unit.building.name} / {s.unit.label}
+                    {!s.validTo && (() => {
+                      // F8.3: zbir udjela te jedinice (isti chip kao na tabu „Vlasništvo”).
+                      const w = shareWarningByUnit.get(s.unitId);
+                      const chip = w ? shareSumChip(w.sum, w.kind === "NONE" ? 0 : 1) : shareSumChip(100, 1);
+                      return <StatusBadge status={chip.status} label={chip.label} />;
+                    })()}
+                  </Td>
                   <Td>{s.sharePercent.toString()}</Td>
                   <Td>
                     {s.validTo ? "—" : (() => {
@@ -304,25 +279,6 @@ export default async function PartyDetailPage({
             })}
           </Table>
         </Card>
-        <Card title="Korištenje jedinica">
-          <Table
-            id="occupancies-table"
-            caption="Korištenje jedinica"
-            headers={occupancyHeaders}
-            empty={party.occupancies.length === 0}
-            emptyTitle={t("empty.occupancies.title")}
-            emptyHint={isPresident ? <BtnLink href="/vlasnici?tab=vlasnistvo" variant="tonal">Evidentiraj korišćenje</BtnLink> : undefined}
-          >
-            {party.occupancies.map((o) => (
-              <tr key={o.id}>
-                <Td>{o.unit.label}</Td>
-                <Td>{o.type === "OWNER_OCCUPANT" ? "Vlasnik stanuje" : o.type === "TENANT" ? "Zakupac" : "Korisnik"}</Td>
-                <Td>{formatDate(o.validFrom)}</Td>
-                <Td>{o.validTo ? formatDate(o.validTo) : "aktivno"}</Td>
-              </tr>
-            ))}
-          </Table>
-        </Card>
         <Card title="Punomoći">
           <div className="text-sm">
             <p className="font-medium">Date punomoći:</p>
@@ -340,32 +296,6 @@ export default async function PartyDetailPage({
               ))}
             </ul>
           </div>
-        </Card>
-        <Card title="Dostava računa e-poštom">
-          <form action={setInvoiceEmailAction} className="space-y-3 text-sm">
-            <input type="hidden" name="id" value={party.id} />
-            <p className="text-slate-600">
-              {party.invoiceEmailDelivery
-                ? `Uključena${party.invoiceEmailDeliveryAt ? ` od ${formatDate(party.invoiceEmailDeliveryAt)}` : ""} — računi idu na ${party.email ?? "—"}.`
-                : "Isključena."}
-            </p>
-            <label className="flex items-start gap-2">
-              <input type="checkbox" name="invoiceEmail" defaultChecked={party.invoiceEmailDelivery} disabled={!party.email && !party.invoiceEmailDelivery} className="mt-1" />
-              <span>{isSelf ? "Dostavi mi račun putem e-maila" : "Dostavljaj račune ovom vlasniku putem e-maila"}</span>
-            </label>
-            {!party.email && !party.invoiceEmailDelivery && (
-              <p className="text-slate-600">Prvo upišite e-mail adresu u kartici „Kontakt”.</p>
-            )}
-            {!isSelf && (
-              <Field label="Napomena (npr. pisani zahtjev vlasnika)">
-                <input name="reason" className={inputCls} />
-              </Field>
-            )}
-            <p className="text-[13px] text-slate-500">
-              {isSelf ? "Promjena se bilježi u revizorski trag." : "Uključite samo na zahtjev vlasnika. Promjena se bilježi u revizorski trag."}
-            </p>
-            <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>
-          </form>
         </Card>
         <Card title="Saglasnost za elektronsko glasanje">
           <div className="space-y-3 text-sm">
@@ -407,15 +337,14 @@ export default async function PartyDetailPage({
             {(isPresident || isAccountant) && (
               <form action={markConsentSignedAction} className="space-y-2 border-t border-slate-100 pt-3">
                 <input type="hidden" name="id" value={party.id} />
-                <Field label="Skenirana potpisana izjava" hint="PDF, JPG, PNG ili WEBP.">
-                  <input
-                    name="scanFile"
-                    type="file"
-                    accept=".pdf,application/pdf,image/jpeg,image/png,image/webp"
-                    required
-                    className={inputCls}
-                  />
-                </Field>
+                <ProofFileField
+                  name="scanFile"
+                  label={t("ownerPage.scanLabel")}
+                  buttonLabel={t("ownerPage.scanPick")}
+                  hint={t("ownerPage.scanHint")}
+                  accept=".pdf,application/pdf,image/jpeg,image/png,image/webp"
+                  required
+                />
                 <SubmitBtn variant="secondary">Označi kao potpisanu i sačuvaj sken</SubmitBtn>
               </form>
             )}
@@ -437,6 +366,98 @@ export default async function PartyDetailPage({
               </div>
             )}
           </div>
+        </Card>
+        </div>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Stat label="Saldo (duguje)" value={formatMoney(balance.balance)} tone={Number(balance.balance) > 0 ? "warn" : "neutral"} />
+          <Stat label="Zaduženo" value={formatMoney(balance.charged)} tone="neutral" />
+          <Stat label="Plaćeno" value={formatMoney(balance.paid)} tone="ok" />
+          <Stat label="Avans" value={formatMoney(advance)} tone="neutral" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card title="Kontakt">
+          <dl className="space-y-1 text-sm">
+            <div><dt className="inline font-medium">E-mail: </dt><dd className="inline">{party.email ?? "—"}</dd></div>
+            <div><dt className="inline font-medium">Telefon: </dt><dd className="inline">{party.phone ?? "—"}</dd></div>
+            <div><dt className="inline font-medium">Adresa: </dt><dd className="inline">{party.address ?? "—"}</dd></div>
+            <div><dt className="inline font-medium">Adresa za prepisku: </dt><dd className="inline">{party.correspondenceAddress ?? party.address ?? "—"}</dd></div>
+          </dl>
+          {canEditContact && (
+            <details className="group mt-4">
+              <ToggleBtn>{t("ownerPage.editContact")}</ToggleBtn>
+              <form action={updatePartyAction} className="mt-3 space-y-3">
+                <input type="hidden" name="id" value={party.id} />
+                {isPresident && party.kind === "PERSON" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Ime"><input name="firstName" defaultValue={party.firstName ?? ""} className={inputCls} /></Field>
+                    <Field label="Prezime"><input name="lastName" defaultValue={party.lastName ?? ""} className={inputCls} /></Field>
+                  </div>
+                )}
+                {isPresident && party.kind === "ORGANIZATION" && (
+                  <Field label="Naziv"><input name="orgName" defaultValue={party.orgName ?? ""} className={inputCls} /></Field>
+                )}
+                <Field label="E-mail"><input name="email" type="email" defaultValue={party.email ?? ""} className={inputCls} /></Field>
+                <Field label="Telefon"><input name="phone" defaultValue={party.phone ?? ""} className={inputCls} /></Field>
+                {isPresident && (
+                  <Field label="Adresa nekretnine"><input name="address" defaultValue={party.address ?? ""} className={inputCls} /></Field>
+                )}
+                <Field label="Adresa za prepisku (ako je različita)">
+                  <input name="correspondenceAddress" defaultValue={party.correspondenceAddress ?? ""} className={inputCls} />
+                </Field>
+                {!isPresident && (
+                  <p className="text-[13px] text-slate-500">Kao vlasnik možete mijenjati samo svoje kontakt podatke.</p>
+                )}
+                <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>
+              </form>
+            </details>
+          )}
+        </Card>
+        <Card title="Korištenje jedinica">
+          <Table
+            id="occupancies-table"
+            caption="Korištenje jedinica"
+            headers={occupancyHeaders}
+            empty={party.occupancies.length === 0}
+            emptyTitle={t("empty.occupancies.title")}
+            emptyHint={isPresident ? <BtnLink href="/vlasnici?tab=vlasnistvo" variant="tonal">Evidentiraj korišćenje</BtnLink> : undefined}
+          >
+            {party.occupancies.map((o) => (
+              <tr key={o.id}>
+                <Td>{o.unit.label}</Td>
+                <Td>{o.type === "OWNER_OCCUPANT" ? "Vlasnik stanuje" : o.type === "TENANT" ? "Zakupac" : "Korisnik"}</Td>
+                <Td>{formatDate(o.validFrom)}</Td>
+                <Td>{o.validTo ? formatDate(o.validTo) : "aktivno"}</Td>
+              </tr>
+            ))}
+          </Table>
+        </Card>
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card title="Dostava računa e-poštom">
+          <form action={setInvoiceEmailAction} className="space-y-3 text-sm">
+            <input type="hidden" name="id" value={party.id} />
+            <p className="text-slate-600">
+              {party.invoiceEmailDelivery
+                ? `Uključena${party.invoiceEmailDeliveryAt ? ` od ${formatDate(party.invoiceEmailDeliveryAt)}` : ""} — računi idu na ${party.email ?? "—"}.`
+                : "Isključena."}
+            </p>
+            <label className="flex items-start gap-2">
+              <input type="checkbox" name="invoiceEmail" defaultChecked={party.invoiceEmailDelivery} disabled={!party.email && !party.invoiceEmailDelivery} className="mt-1" />
+              <span>{isSelf ? "Dostavi mi račun putem e-maila" : "Dostavljaj račune ovom vlasniku putem e-maila"}</span>
+            </label>
+            {!party.email && !party.invoiceEmailDelivery && (
+              <p className="text-slate-600">Prvo upišite e-mail adresu u kartici „Kontakt”.</p>
+            )}
+            {!isSelf && (
+              <Field label="Napomena (npr. pisani zahtjev vlasnika)">
+                <input name="reason" className={inputCls} />
+              </Field>
+            )}
+            <p className="text-[13px] text-slate-500">
+              {isSelf ? "Promjena se bilježi u revizorski trag." : "Uključite samo na zahtjev vlasnika. Promjena se bilježi u revizorski trag."}
+            </p>
+            <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>
+          </form>
         </Card>
         {isPresident && party.user && (
           <Card title="Korisnički nalog">
@@ -480,6 +501,7 @@ export default async function PartyDetailPage({
             </form>
           </Card>
         )}
+        </div>
       </div>
     </div>
   );

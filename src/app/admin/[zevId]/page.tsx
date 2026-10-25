@@ -13,7 +13,7 @@ const membershipHeaders: ColumnSpec[] = [
   { label: "Rola" },
   { label: "Nalog aktivan" },
   { label: "Član od" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const TIER_LABELS: Record<string, string> = {

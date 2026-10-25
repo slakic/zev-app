@@ -572,6 +572,8 @@ const en: DeepPartial<typeof srLatn> = {
     },
   },
   meetingPage: {
+    documentsTitle: "Meeting documents",
+    addAgendaItem: "Add an item",
     cols: { deadline: "Deadline", voted: "Voted" },
     votedOf: "{glasalo} of {ukupno}",
     attendance: {
@@ -615,6 +617,24 @@ const en: DeepPartial<typeof srLatn> = {
     },
     beforeDecision: { badge: "Before the decision", text: "The issue “{naslov}” is “{status}”, but decision {sifra} has not been adopted yet." },
     planItem: { badge: "Date passed", text: "{naziv}: planned for {datum} ({kada}); no issue or execution has been recorded." },
+    shareSum: {
+      badge: "Share sum",
+      item: "{jedinica}: {zbir} %",
+      itemNone: "{jedinica}: no owner",
+      more: "and {broj} more",
+      over: {
+        one: "{broj} unit has an ownership share sum above 100 %: {lista}.",
+        few: "{broj} units have an ownership share sum above 100 %: {lista}.",
+        many: "{broj} units have an ownership share sum above 100 %: {lista}.",
+      },
+      under: {
+        one: "{broj} unit has an ownership share sum below 100 % or no owner: {lista}.",
+        few: "{broj} units have an ownership share sum below 100 % or no owner: {lista}.",
+        many: "{broj} units have an ownership share sum below 100 % or no owner: {lista}.",
+      },
+      overMeta: "Until this is corrected, voting cannot be opened.",
+      action: "Open ownership",
+    },
     reported: {
       badge: "New issues",
       one: "{broj} new maintenance issue is waiting for triage.",
@@ -908,6 +928,73 @@ const en: DeepPartial<typeof srLatn> = {
     force: "Record anyway",
   },
   reportsPage: { period: "Period", applyPeriod: "Apply period", from: "From", to: "To" },
+  stakesTable: {
+    title: "Active shares",
+    hint: "Current owners per unit and the sum of their shares. Where the sum is not 100 %, correct the shares in the forms below.",
+    caption: "Active ownership shares per unit",
+    col: { unit: "Unit and share sum", owner: "Owner", share: "Share %", since: "Since" },
+    emptyTitle: "No units yet.",
+    emptyHint: "Add the first unit on the Buildings page.",
+    noOwner: "no owner",
+    proofLabel: "Proof of ownership",
+    proofPick: "Choose a document…",
+    addHint: "Required — contract, land-register extract etc. (PDF, JPG or PNG, up to 15 MB).",
+    transferHint: "Required — sales contract, land-register extract etc. (PDF, JPG or PNG, up to 15 MB).",
+  },
+  ownerPage: {
+    editContact: "Edit contact",
+    scanLabel: "Scanned signed statement",
+    scanPick: "Choose a scan…",
+    scanHint: "PDF, JPG, PNG or WEBP.",
+  },
+  maintenanceForm: {
+    trigger: "Report a fault",
+    title: "Report a fault / problem",
+    submit: "Send report",
+    category: "Category",
+    categoryNone: "— choose —",
+    categories: {
+      plumbing: "Plumbing and sewage",
+      electric: "Electricity",
+      lift: "Lift",
+      roof: "Roof and facade",
+      heating: "Heating",
+      common: "Common areas",
+      other: "Other",
+    },
+    safety: {
+      label: "Safety risk",
+      option: "Affects safety",
+      hint: "Tick if the fault endangers people or property (e.g. an electrical fault, a damaged lift, dangerous roof damage).",
+    },
+  },
+  plansPage: { newPlan: "New plan", newProject: "New project" },
+  docsPage: {
+    filter: {
+      label: "Document type",
+      all: "All types",
+      groups: { sjednice: "Meetings and decisions", fakture: "Invoices", izvjestaji: "Reports", ostalo: "Other" },
+    },
+    owner: {
+      name: "Name",
+      type: "Type",
+      date: "Date",
+      download: "Download",
+      downloadPdf: "Download PDF",
+      version: "version {broj}",
+    },
+    upload: { label: "File", pick: "Choose a file…", hint: "PDF, JPG, PNG or WEBP, up to 15 MB." },
+    meeting: {
+      empty: "There are no invitations, minutes or decisions for this meeting yet.",
+      title: "Name",
+      type: "Type",
+      status: "Status",
+      published: "Published to owners",
+      publishedYes: "Published",
+      publishedNo: "Not published",
+      actions: "Actions",
+    },
+  },
 };
 
 export default en;

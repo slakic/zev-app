@@ -1467,6 +1467,8 @@ const srLatn = {
   },
   /** Detalj sjednice (F6.2): nove kolone i kartica prisustva. */
   meetingPage: {
+    documentsTitle: "Dokumenti sjednice",
+    addAgendaItem: "Dodaj tačku",
     cols: { deadline: "Rok", voted: "Glasalo" },
     votedOf: "{glasalo} od {ukupno}",
     attendance: {
@@ -1526,6 +1528,24 @@ const srLatn = {
       badge: "Rok prošao",
       text: "{naziv}: planirano za {datum} ({kada}); nije evidentirana prijava ni izvršenje.",
     },
+    shareSum: {
+      badge: "Zbir udjela",
+      item: "{jedinica}: {zbir} %",
+      itemNone: "{jedinica}: bez vlasnika",
+      more: "i još {broj}",
+      over: {
+        one: "{broj} jedinica ima zbir udjela iznad 100 %: {lista}.",
+        few: "{broj} jedinice imaju zbir udjela iznad 100 %: {lista}.",
+        many: "{broj} jedinica ima zbir udjela iznad 100 %: {lista}.",
+      },
+      under: {
+        one: "{broj} jedinica ima zbir udjela ispod 100 % ili nema vlasnika: {lista}.",
+        few: "{broj} jedinice imaju zbir udjela ispod 100 % ili nemaju vlasnika: {lista}.",
+        many: "{broj} jedinica ima zbir udjela ispod 100 % ili nema vlasnika: {lista}.",
+      },
+      overMeta: "Dok se to ne ispravi, glasanje se ne može otvoriti.",
+      action: "Otvori vlasništvo",
+    },
     reported: {
       badge: "Nove prijave",
       one: "{broj} nova prijava održavanja čeka trijažu.",
@@ -1548,6 +1568,78 @@ const srLatn = {
       approvedBy: "Odobreno odlukom",
       votingRunning: "glasanje još traje",
       required: "Izaberite odluku ili ovlašćenje.",
+    },
+  },
+  /** F8.4: tabela aktivnih udjela na tabu „Vlasništvo” i polja za dokaz. */
+  stakesTable: {
+    title: "Aktivni udjeli",
+    hint: "Trenutni vlasnici po posebnom dijelu i zbir njihovih udjela. Gdje zbir nije 100 %, ispravite udjele u obrascima ispod.",
+    caption: "Aktivni vlasnički udjeli po posebnom dijelu",
+    col: { unit: "Jedinica i zbir udjela", owner: "Vlasnik", share: "Udio %", since: "Od" },
+    emptyTitle: "Još nema posebnih dijelova.",
+    emptyHint: "Dodajte prvi posebni dio na stranici Zgrade.",
+    noOwner: "nema vlasnika",
+    proofLabel: "Dokaz o vlasništvu",
+    proofPick: "Izaberi dokument…",
+    addHint: "Obavezno — ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).",
+    transferHint: "Obavezno — kupoprodajni ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).",
+  },
+  /** F8.3: detalj vlasnika. */
+  ownerPage: {
+    editContact: "Uredi kontakt",
+    scanLabel: "Skenirana potpisana izjava",
+    scanPick: "Izaberi sken…",
+    scanHint: "PDF, JPG, PNG ili WEBP.",
+  },
+  /** F8.2: forma „Prijavi kvar” (lista prvo, forma iza dugmeta). */
+  maintenanceForm: {
+    trigger: "Prijavi kvar",
+    title: "Prijavi kvar / problem",
+    submit: "Pošalji prijavu",
+    category: "Kategorija",
+    categoryNone: "— izaberite —",
+    categories: {
+      plumbing: "Vodovod i kanalizacija",
+      electric: "Struja",
+      lift: "Lift",
+      roof: "Krov i fasada",
+      heating: "Grijanje",
+      common: "Zajednički prostori",
+      other: "Drugo",
+    },
+    safety: {
+      label: "Bezbjednosni rizik",
+      option: "Utiče na bezbjednost",
+      hint: "Označite ako kvar ugrožava ljude ili imovinu (npr. strujni kvar, oštećen lift, opasno oštećenje krova).",
+    },
+  },
+  /** F8.2: forme planova iza dugmeta. */
+  plansPage: { newPlan: "Novi plan", newProject: "Novi projekat" },
+  /** F8.6: stranica „Dokumenti” i dokumenti sjednice. */
+  docsPage: {
+    filter: {
+      label: "Vrsta dokumenta",
+      all: "Sve vrste",
+      groups: { sjednice: "Sjednice i odluke", fakture: "Fakture", izvjestaji: "Izvještaji", ostalo: "Ostalo" },
+    },
+    owner: {
+      name: "Naziv",
+      type: "Vrsta",
+      date: "Datum",
+      download: "Preuzmi",
+      downloadPdf: "Preuzmi PDF",
+      version: "verzija {broj}",
+    },
+    upload: { label: "Fajl", pick: "Izaberi fajl…", hint: "PDF, JPG, PNG ili WEBP, do 15 MB." },
+    meeting: {
+      empty: "Još nema poziva, zapisnika ni odluka za ovu sjednicu.",
+      title: "Naziv",
+      type: "Vrsta",
+      status: "Status",
+      published: "Objava vlasnicima",
+      publishedYes: "Objavljeno",
+      publishedNo: "Nije objavljeno",
+      actions: "Radnje",
     },
   },
   empty: {
@@ -1580,13 +1672,13 @@ const srLatn = {
     voters: { title: "Glasačka baza još nije formirana.", hint: "Baza se popunjava kada se glasanje otvori." },
     proposals: { title: "Još nema prijedloga.", hint: "Dodajte prvi prijedlog obrascem „Novi prijedlog” ispod." },
     attendance: { title: "Još nema evidentiranog prisustva.", hint: "Evidentirajte prisustvo obrascem ispod." },
-    plans: { title: "Još nema planova.", hint: "Kreirajte prvi plan obrascem ispod." },
-    projects: { title: "Još nema investicionih projekata.", hint: "Dodajte prvi projekat obrascem ispod." },
+    plans: { title: "Još nema planova.", hint: "Kreirajte prvi plan dugmetom „Novi plan” ispod." },
+    projects: { title: "Još nema investicionih projekata.", hint: "Dodajte prvi projekat dugmetom „Novi projekat” ispod." },
     planItems: { title: "Još nema stavki plana.", hint: "Dodajte prvu stavku obrascem „Nova stavka” ispod." },
     planItemsReadonly: { title: "Ovaj plan nema stavki." },
     pva: { title: "Još nema podataka o realizaciji." },
-    issuesManagement: { title: "Još nema prijavljenih kvarova.", hint: "Prijavite kvar obrascem „Prijavi kvar / problem” iznad." },
-    issuesOwner: { title: "Još niste prijavili nijedan kvar.", hint: "Prijavite kvar obrascem „Prijavi kvar / problem” iznad." },
+    issuesManagement: { title: "Još nema prijavljenih kvarova.", hint: "Prijavite kvar dugmetom „Prijavi kvar” ispod." },
+    issuesOwner: { title: "Još niste prijavili nijedan kvar.", hint: "Prijavite kvar obrascem „Prijavi kvar” ispod." },
     offers: { title: "Još nema ponuda izvođača.", hint: "Dodajte prvu ponudu obrascem ispod." },
     workOrders: { title: "Još nema radnih naloga.", hint: "Kreirajte radni nalog obrascem ispod." },
     documents: { title: "Još nema generisanih dokumenata." },

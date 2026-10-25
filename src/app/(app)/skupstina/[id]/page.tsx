@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
 import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, queueMeetingInvitations, linkProposalToAgendaItem, getMeetingBallotSummary, dispatchMeetingEmails, reissueBallot, revokeBallot, getMeetingNextStepInput, getLiveMeetingState } from "@/server/services/meetings";
-import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
+import { generateMeetingInvitationPdf, generateMinutesPdf, listMeetingDocuments } from "@/server/services/documents";
 import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { parseMoneyInput } from "@/lib/money";
@@ -34,7 +34,16 @@ const ballotHeaders: ColumnSpec[] = [
   { label: t("ballot.card.cols.mail") },
   { label: t("ballot.card.cols.ballot") },
   { label: t("ballot.card.cols.voted") },
-  { label: t("ballot.card.cols.actions") },
+  { label: t("ballot.card.cols.actions"), actions: true },
+];
+
+/** F8.6: dokumenti sjednice (poziv, zapisnik, odluke) sa statusom objave vlasnicima. */
+const meetingDocumentHeaders = (): ColumnSpec[] => [
+  { label: t("docsPage.meeting.title"), priority: "primary" },
+  { label: t("docsPage.meeting.type") },
+  { label: t("docsPage.meeting.status") },
+  { label: t("docsPage.meeting.published") },
+  { label: t("docsPage.meeting.actions"), actions: true },
 ];
 
 /** "Poslato 3, u redu 2, neuspješno 0." (+ the daily-limit note) — what the president needs after a send. */
@@ -186,6 +195,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
     ? await Promise.all([listVotingRules(actor), listBuildings(actor)])
     : [[], []];
   const ballotSummary = isPresident ? await getMeetingBallotSummary(actor, id) : null;
+  const meetingDocs = isPresident ? await listMeetingDocuments(actor, id) : [];
   // P-L2: the ballot is a locked set of proposals — once voting is open (or ballots exist) a new item goes to a new session.
   const proposalsLocked =
     (ballotSummary?.total ?? 0) > 0; // P-L2: only once ballots were issued (live mode without ballots may still add)
@@ -272,11 +282,14 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             {meeting.agendaItems.length === 0 && <p className="text-sm text-slate-500">Dnevni red je prazan.</p>}
           </ol>
           {isPresident && !["MINUTES_FINALIZED", "ARCHIVED"].includes(meeting.status) && (
-            <form action={addAgendaAction} className="mt-3 flex gap-2">
-              <input type="hidden" name="meetingId" value={meeting.id} />
-              <input name="title" required placeholder="Nova tačka dnevnog reda" className={inputCls} />
-              <SubmitBtn variant="tonal">Dodaj</SubmitBtn>
-            </form>
+            <details className="group mt-3" open={meeting.agendaItems.length === 0}>
+              <ToggleBtn>{t("meetingPage.addAgendaItem")}</ToggleBtn>
+              <form action={addAgendaAction} className="mt-3 flex gap-2">
+                <input type="hidden" name="meetingId" value={meeting.id} />
+                <input name="title" required placeholder="Nova tačka dnevnog reda" aria-label={t("meetingPage.addAgendaItem")} className={inputCls} />
+                <SubmitBtn variant="tonal">Dodaj</SubmitBtn>
+              </form>
+            </details>
           )}
         </Card>
         </div>
@@ -478,6 +491,25 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               <SubmitBtn variant="secondary">Generiši nacrt zapisnika (PDF)</SubmitBtn>
             </form>
             <p className="mt-2 text-[13px] text-slate-600">{t("meetingPage.documentsNote")}</p>
+            <div className="mt-4">
+              <Table
+                id="meeting-documents-table"
+                caption={t("meetingPage.documentsTitle")}
+                headers={meetingDocumentHeaders()}
+                empty={meetingDocs.length === 0}
+                emptyTitle={t("docsPage.meeting.empty")}
+              >
+                {meetingDocs.map((d) => (
+                  <tr key={d.id}>
+                    <Td>{d.title}</Td>
+                    <Td>{tEnum("docType", d.type)}</Td>
+                    <Td><StatusBadge status={d.status} label={tEnum("docStatus", d.status)} /></Td>
+                    <Td>{d.publishedToOwners ? t("docsPage.meeting.publishedYes") : t("docsPage.meeting.publishedNo")}</Td>
+                    <Td><RowActionLink href={`/api/dokumenti/${d.id}`}>PDF</RowActionLink></Td>
+                  </tr>
+                ))}
+              </Table>
+            </div>
           </Card>
           </div>
         )}

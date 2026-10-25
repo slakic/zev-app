@@ -33,7 +33,7 @@ export const reviewMono = "font-mono text-[13px] text-slate-600";
 export function DirectionBadge({ direction }: { direction: "IN" | "OUT" }) {
   return (
     <StatusBadge
-      status={direction === "IN" ? "PAID" : "UNPAID"}
+      status={direction === "IN" ? "DIRECTION_IN" : "DIRECTION_OUT"}
       label={direction === "IN" ? t("reviewTable.directionIn") : t("reviewTable.directionOut")}
     />
   );
@@ -73,7 +73,9 @@ export type ReviewTableProps<R> = {
 // je to pretijesno), a zaglavlje grupe i red-kartica dobijaju prilagođen izgled.
 function reviewCss(id: string): string {
   return `@media (max-width:767px){
+  #${id} tbody tr { display:block; }
   #${id} tbody td { grid-template-columns:1fr !important; gap:0.25rem !important; }
+  #${id} tbody td > * { grid-column:auto; justify-self:stretch; }
   #${id} tbody tr[data-group-head] { border:none; padding:0.25rem 0; background:transparent; margin-bottom:0.5rem; }
   #${id} tbody tr[data-group-head] td { display:block !important; padding:0 !important; }
   #${id} tbody tr[data-off="true"] { background:#f8fafc; }

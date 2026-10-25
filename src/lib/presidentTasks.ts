@@ -4,6 +4,7 @@
 import { calendarDaysBetween } from "@/lib/paymentInstructions";
 import { isFewForm, isOneForm } from "@/lib/plural";
 import { formatDate, t, tEnum, tf } from "@/lib/i18n";
+import { formatMoney } from "@/lib/money";
 
 export const EXPIRING_VOTE_DAYS = 3;
 export const MEETING_SOON_DAYS = 7;
@@ -26,7 +27,12 @@ export type PresidentTasksInput = {
   planItemsPassed: { id: string; planId: string; name: string; scheduledDate: Date }[];
   /** Prijave u statusu "Prijavljeno" (čekaju trijažu). */
   reportedIssues: number;
+  /** F8.5: jedinice sa zbirom aktivnih udjela različitim od 100 % (`unitOwnershipWarnings`); `sum` je decimalni string. */
+  unitShareWarnings?: { unitId: string; label: string; kind: "OVER" | "UNDER" | "NONE"; sum: string }[];
 };
+
+/** Najviše toliko jedinica se navodi imenom u rečenici; ostale su „i još N”. */
+export const SHARE_WARNING_NAMED = 3;
 
 export type PresidentTask = {
   key: string;
@@ -57,6 +63,33 @@ export function presidentTasks(input: PresidentTasksInput): PresidentTasksResult
       sentence: t("register.home.todo"),
       href: "/zgrade?tab=posebni",
       actionLabel: t("register.home.link"),
+    });
+  }
+
+  // 1b. Zbir udjela iznad 100 % (F8.5) — odmah iza registra, jer blokira otvaranje glasanja (K-01b). Isti rang kao registar.
+  // Dok je registar u nacrtu tab „Vlasništvo” je zaključan, pa stavka tada ne postoji (prva je stavka registra).
+  const shareWarnings = input.registerStatus === "DRAFT" ? [] : [...(input.unitShareWarnings ?? [])]
+    .sort((a, b) => a.label.localeCompare(b.label, "sr-Latn") || a.unitId.localeCompare(b.unitId));
+  const shareList = (ws: typeof shareWarnings) => {
+    const named = ws.slice(0, SHARE_WARNING_NAMED).map((w) =>
+      w.kind === "NONE" ? tf("presidentTasks.shareSum.itemNone", { jedinica: w.label })
+        : tf("presidentTasks.shareSum.item", { jedinica: w.label, zbir: formatMoney(w.sum, "").trim() }));
+    const rest = ws.length - named.length;
+    return rest > 0 ? `${named.join(", ")} ${tf("presidentTasks.shareSum.more", { broj: rest })}` : named.join(", ");
+  };
+  const shareSentence = (kind: "over" | "under", ws: typeof shareWarnings) => {
+    const n = ws.length;
+    return tf(`presidentTasks.shareSum.${kind}.${isOneForm(n) ? "one" : isFewForm(n) ? "few" : "many"}`, { broj: n, lista: shareList(ws) });
+  };
+  const over = shareWarnings.filter((w) => w.kind === "OVER");
+  if (over.length > 0) {
+    add(1, {
+      key: "share-sum-over",
+      chip: { status: "OWNER_SUM_WARN", label: t("presidentTasks.shareSum.badge") },
+      sentence: shareSentence("over", over),
+      meta: t("presidentTasks.shareSum.overMeta"),
+      href: "/vlasnici?tab=vlasnistvo",
+      actionLabel: t("presidentTasks.shareSum.action"),
     });
   }
 
@@ -128,6 +161,18 @@ export function presidentTasks(input: PresidentTasksInput): PresidentTasksResult
       }),
       href: `/planovi/${p.planId}`,
       actionLabel: t("presidentTasks.viewPlan"),
+    });
+  }
+
+  // 7a. Zbir udjela ispod 100 % ili jedinica bez vlasnika (F8.5) — ne blokira glasanje, pa niži rang.
+  const under = shareWarnings.filter((w) => w.kind !== "OVER");
+  if (under.length > 0) {
+    add(7, {
+      key: "share-sum-under",
+      chip: { status: "OWNER_SUM_WARN", label: t("presidentTasks.shareSum.badge") },
+      sentence: shareSentence("under", under),
+      href: "/vlasnici?tab=vlasnistvo",
+      actionLabel: t("presidentTasks.shareSum.action"),
     });
   }
 

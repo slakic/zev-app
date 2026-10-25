@@ -15,7 +15,7 @@ import { paymentWhereForFilter, PAYMENT_FILTER_TO_MATCH } from "@/server/service
 import { meetingNextStep } from "@/lib/meetingNextStep";
 import { calendarDaysBetween } from "@/lib/paymentInstructions";
 import { isOneForm } from "@/lib/plural";
-import { partyDisplayName } from "@/server/services/ownership";
+import { partyDisplayName, unitOwnershipWarnings } from "@/server/services/ownership";
 import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink, RowLink, TaskList, type TaskRowData } from "@/components/ui";
 import { getZev } from "@/server/services/property";
 import { computeProposalResult, getMeetingNextStepInput } from "@/server/services/meetings";
@@ -115,7 +115,7 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
   const alsoAccountant = actor.roles.includes("ACCOUNTANT");
   const planItemBase = { zevId, type: { in: ["INSPECTION" as const, "PREVENTIVE_MAINTENANCE" as const] }, plan: { status: "APPROVED" as const } };
 
-  const [cash, receivables, supplierUnpaid, fund, zev, openProposals, meetings30, upcomingItems, passedItems, executionIssues, reportedIssues, openIssues, unmatchedPayments, accountantResult] = await Promise.all([
+  const [cash, receivables, supplierUnpaid, fund, zev, openProposals, meetings30, upcomingItems, passedItems, executionIssues, reportedIssues, openIssues, unmatchedPayments, accountantResult, shareWarnings] = await Promise.all([
     totalCash(actor),
     receivablesReport(actor),
     unpaidSupplierInvoices(actor),
@@ -153,6 +153,7 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
       ? prisma.payment.findMany({ where: paymentWhereForFilter(zevId, PAYMENT_FILTER_TO_MATCH), take: 6 })
       : Promise.resolve([]),
     alsoAccountant ? getAccountantTasks(actor, now) : Promise.resolve(null),
+    unitOwnershipWarnings(zevId), // F8.5: jedinice sa zbirom udjela ≠ 100 %
   ]);
   const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
 
@@ -208,6 +209,7 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
     issuesBeforeDecision,
     planItemsPassed,
     reportedIssues,
+    unitShareWarnings: shareWarnings.map((w) => ({ unitId: w.unitId, label: w.label, kind: w.kind, sum: w.sum.toString() })),
   });
   // F5-Q2 (a): predsjednik + računovođa ima jednu rangiranu listu (predsjednikove stavke 1–3, računovođine, ostale).
   const tasks: HomeTask[] = accountantResult ? mergeTasks(presidentResult.tasks, accountantResult.tasks) : presidentResult.tasks;

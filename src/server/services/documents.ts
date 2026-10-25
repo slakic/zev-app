@@ -169,6 +169,27 @@ export async function listDocuments(actor: Actor) {
   });
 }
 
+/** F8.6: pozivi, zapisnici i odluke jedne sjednice (po `sourceType/sourceId`: sjednica i njeni prijedlozi) sa statusom objave. */
+export async function listMeetingDocuments(actor: Actor, meetingId: string) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({
+    where: { id: meetingId, zevId },
+    select: { id: true, proposals: { select: { id: true } } },
+  });
+  return prisma.document.findMany({
+    where: {
+      zevId,
+      type: { in: ["MEETING_INVITATION", "MINUTES", "DECISION"] },
+      OR: [
+        { sourceType: "Meeting", sourceId: meeting.id },
+        { sourceType: "Proposal", sourceId: { in: meeting.proposals.map((p) => p.id) } },
+      ],
+    },
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+  });
+}
+
 /** Read a document file with access control (owners: published docs + own invoices/statements). */
 export async function readDocumentFile(actor: Actor, documentId: string): Promise<{ doc: { title: string; number: string }; buffer: Buffer }> {
   requireAnyUser(actor);

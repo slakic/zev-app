@@ -22,7 +22,7 @@ const accountHeaders: ColumnSpec[] = [
   { label: "Vrsta" },
   { label: "Broj računa" },
   { label: "Početno stanje", align: "right" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 async function saveZevAction(formData: FormData) {

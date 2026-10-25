@@ -17,7 +17,7 @@ const paymentHeaders: ColumnSpec[] = [
   { label: "Poziv na broj", priority: "detail" },
   { label: "Iznos", align: "right", nowrap: true, sortKey: "amount" },
   { label: "Status" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 // Vlasnik: bez "Platilac" (uvijek on) i "Radnje" (uvijek prazne), a sa "Raspoređeno na" (F3.3).

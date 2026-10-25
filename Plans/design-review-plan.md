@@ -584,6 +584,8 @@ Dijeli se na dvije isporuke:
 
 ### F8 — Mobilne tabele i evidencija vlasnika i jedinica *(M · D3 · preporučeno nakon P8 sesije)*
 
+**Status: ISPORUČENO u v2.50.0 (nije commitovano):** [`f8-mobilne-tabele-i-evidencija-plan.md`](f8-mobilne-tabele-i-evidencija-plan.md).
+
 - **Svrha:** nijedna radnja ni ključni podatak van ekrana na 375; lista je prvi sadržaj na svakoj listi. Rješava K7, X-N19, P-N17–P-N22 i V-N19–V-N23.
 - **Šta se mijenja:**
   - **Tabele:** pravilo card-transforma (D3) i bugfix rasporeda kartice (X-R14, P-R11, dio V-R05).

@@ -18,7 +18,7 @@ const tenantHeaders: ColumnSpec[] = [
   { label: "Zgrade", align: "right", priority: "detail" },
   { label: "Vlasnici", align: "right", priority: "detail" },
   { label: "Status" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const TIER_LABELS: Record<string, string> = {

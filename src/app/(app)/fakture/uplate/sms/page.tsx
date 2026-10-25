@@ -21,7 +21,7 @@ const rejectedHeaders: ColumnSpec[] = [
   { label: "Primljeno", nowrap: true },
   { label: "Razlog", priority: "primary" },
   { label: "Tekst poruke", priority: "detail" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 /**
@@ -81,7 +81,7 @@ export default async function BankSmsPage({
               <tr key={s.id}>
                 <Td className="text-[13px]">{formatDateTime(new Date(s.receivedAt))}</Td>
                 <Td>
-                  <StatusBadge status={s.kind === "PRILIV" ? "PAID" : "UNPAID"} label={s.kind === "PRILIV" ? "uplata" : "isplata"} />
+                  <StatusBadge status={s.kind === "PRILIV" ? "DIRECTION_IN" : "DIRECTION_OUT"} label={s.kind === "PRILIV" ? "uplata" : "isplata"} />
                 </Td>
                 <Td>{s.amount ? formatMoney(s.amount) : "—"}</Td>
                 <Td>{s.counterpartyName ?? "—"}</Td>

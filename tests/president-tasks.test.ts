@@ -93,4 +93,53 @@ describe("presidentTasks", () => {
     expect(presidentTasks(input({ reportedIssues: 3 })).tasks[0].sentence).toContain("3 nove");
     expect(presidentTasks(input({ reportedIssues: 7 })).tasks[0].sentence).toContain("7 novih");
   });
+
+  // F8.5 — jedinice sa zbirom udjela ≠ 100 %.
+  const warn = (label: string, kind: "OVER" | "UNDER" | "NONE", sum: string, id = label) => ({ unitId: id, label, kind, sum });
+
+  it("share sum above 100 % is ranked right after the register item; below 100 % / no owner ranks lower", () => {
+    const r = presidentTasks(input({
+      registerStatus: "REVIEW",
+      votings: [voting("late", { closesAt: at("2026-10-20") })],
+      reportedIssues: 1,
+      unitShareWarnings: [warn("Garaža 2", "UNDER", "50"), warn("Garaža 1", "OVER", "150")],
+    }));
+    expect(r.tasks.map((t) => t.key)).toEqual(["register", "share-sum-over", "vote-overdue:late", "share-sum-under", "issues-reported"]);
+    expect(r.tasks.map((t) => t.rank)).toEqual([1, 1, 2, 7, 7]);
+    expect(r.tasks[0].primary).toBe(true);
+  });
+
+  it("the over item names the units with their sums and is the first (primary) item when the register is established", () => {
+    const r = presidentTasks(input({ unitShareWarnings: [warn("Garaža 1", "OVER", "150.000000")] }));
+    expect(r.tasks).toHaveLength(1);
+    expect(r.tasks[0].primary).toBe(true);
+    expect(r.tasks[0].href).toBe("/vlasnici?tab=vlasnistvo");
+    expect(r.tasks[0].sentence).toContain("Garaža 1: 150,00 %");
+    expect(r.tasks[0].sentence).toContain("1 jedinica ima");
+    expect(r.tasks[0].meta).toContain("glasanje");
+  });
+
+  it("under / none units are one summary item with plural forms and a capped list", () => {
+    const r = presidentTasks(input({
+      unitShareWarnings: [warn("A", "UNDER", "50"), warn("B", "NONE", "0"), warn("C", "UNDER", "80"), warn("D", "NONE", "0"), warn("E", "UNDER", "10")],
+    }));
+    expect(r.tasks.map((t) => t.key)).toEqual(["share-sum-under"]);
+    expect(r.tasks[0].sentence).toContain("5 jedinica ima");
+    expect(r.tasks[0].sentence).toContain("B: bez vlasnika");
+    expect(r.tasks[0].sentence).toContain("i još 2");
+    const two = presidentTasks(input({ unitShareWarnings: [warn("A", "UNDER", "50"), warn("B", "NONE", "0")] }));
+    expect(two.tasks[0].sentence).toContain("2 jedinice imaju");
+  });
+
+  it("no share item while the register is a draft (the ownership tab is locked) or when every sum is 100 %", () => {
+    expect(presidentTasks(input({ registerStatus: "DRAFT", unitShareWarnings: [warn("A", "OVER", "150")] })).tasks.map((t) => t.key)).toEqual(["register"]);
+    expect(presidentTasks(input({ unitShareWarnings: [] })).tasks).toEqual([]);
+  });
+
+  it("share items are deterministic regardless of the input order", () => {
+    const a = presidentTasks(input({ unitShareWarnings: [warn("B", "OVER", "120"), warn("A", "OVER", "130")] })).tasks[0].sentence;
+    const b = presidentTasks(input({ unitShareWarnings: [warn("A", "OVER", "130"), warn("B", "OVER", "120")] })).tasks[0].sentence;
+    expect(a).toBe(b);
+    expect(a.indexOf("A:")).toBeLessThan(a.indexOf("B:"));
+  });
 });

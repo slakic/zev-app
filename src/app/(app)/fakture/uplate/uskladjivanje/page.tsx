@@ -22,7 +22,7 @@ const duplicateHeaders: ColumnSpec[] = [
   { label: "Iznos", align: "right", nowrap: true },
   { label: "Iz SMS-a", priority: "primary" },
   { label: "Iz izvoda / ručni unos" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const unconfirmedHeaders: ColumnSpec[] = [
@@ -30,7 +30,7 @@ const unconfirmedHeaders: ColumnSpec[] = [
   { label: "Smjer" },
   { label: "Iznos", align: "right", nowrap: true },
   { label: "Platilac / primalac", priority: "primary" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const sourceLabel: Record<ChannelRecord["source"], string> = {
@@ -220,7 +220,7 @@ export default async function ChannelReconciliationPage({
                   <p className="text-slate-500">prije {u.ageDays} dana</p>
                 </Td>
                 <Td>
-                  <StatusBadge status={u.direction === "IN" ? "PAID" : "UNPAID"} label={u.direction === "IN" ? "uplata" : "isplata"} />
+                  <StatusBadge status={u.direction === "IN" ? "DIRECTION_IN" : "DIRECTION_OUT"} label={u.direction === "IN" ? "uplata" : "isplata"} />
                 </Td>
                 <Td>{formatMoney(u.record.amount)}</Td>
                 <Td>

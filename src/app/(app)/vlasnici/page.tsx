@@ -10,6 +10,8 @@ import { parseMoneyInput, formatMoney } from "@/lib/money";
 import { formatDate, t, tf, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, Tabs, FilterBar, BtnLink, StatusBadge, type ColumnSpec } from "@/components/ui";
 import { PreconditionList } from "@/components/precondition-list";
+import { ProofFileField } from "@/components/proof-file-field";
+import { shareSumChip, sumShares } from "@/lib/shareSum";
 import { RepresentativeChange } from "@/components/representative-change";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
@@ -25,11 +27,20 @@ const proxyHeaders: ColumnSpec[] = [
 const partyHeaders: ColumnSpec[] = [
   { label: "Ime / naziv", priority: "primary", sortKey: "name" },
   { label: "Vrsta", priority: "detail" },
-  { label: "E-mail" },
+  { label: "E-mail", priority: "detail" },
   { label: "Račun e-poštom", priority: "detail" },
   { label: "Telefon", priority: "detail" },
   { label: "Vlasništvo (aktivno)" },
   { label: "Nalog", priority: "detail" },
+];
+
+/** F8.4: tabela aktivnih udjela — grupisana po jedinici, zbir jedinice u prvom redu grupe. */
+const activeStakeHeaders = (): ColumnSpec[] => [
+  // Zbir jedinice (chip) stoji u ćeliji „Jedinica”, ispod oznake: peta kolona bi na 375 px tabelu vratila na horizontalni skrol.
+  { label: t("stakesTable.col.unit"), priority: "primary" },
+  { label: t("stakesTable.col.owner") },
+  { label: t("stakesTable.col.share"), align: "right", nowrap: true },
+  { label: t("stakesTable.col.since"), priority: "secondary", nowrap: true },
 ];
 
 async function addPartyAction(formData: FormData) {
@@ -174,6 +185,8 @@ export default async function OwnersPage({
   const ownershipTab = isPresident && activeTab === "vlasnistvo";
   const registerStatus = ownershipTab ? (await getZev(actor))?.unitRegisterStatus ?? "DRAFT" : "DRAFT";
   const reg = ownershipTab && registerStatus !== "DRAFT" ? await getUnitRegister(actor) : null;
+  const now = new Date();
+  const shareWarningByUnit = new Map((reg?.warnings ?? []).map((w) => [w.unitId, w]));
   const communities = (reg?.subjects ?? []).filter((sub) => sub.memberPartyIds.length > 1);
   const proxies =
     isPresident && activeTab === "punomoci"
@@ -323,6 +336,50 @@ export default async function OwnersPage({
             )}
           </Card>
         )}
+        <Card title={t("stakesTable.title")} hint={t("stakesTable.hint")}>
+          <Table
+            id="active-stakes-table"
+            caption={t("stakesTable.caption")}
+            headers={activeStakeHeaders()}
+            empty={units.length === 0}
+            emptyTitle={t("stakesTable.emptyTitle")}
+            emptyHint={t("stakesTable.emptyHint")}
+          >
+            {units.flatMap((u) => {
+              const stakes = u.ownershipStakes.filter((st) => st.validFrom <= now);
+              const warning = shareWarningByUnit.get(u.id);
+              // Isto što i upozorenja iznad (`unitOwnershipWarnings`): bez upozorenja je zbir 100 %.
+              const chip = warning
+                ? shareSumChip(warning.sum, warning.kind === "NONE" ? 0 : 1)
+                : shareSumChip(sumShares(stakes.map((st) => st.sharePercent.toString())), Math.max(stakes.length, 1));
+              const unitCell = (
+                <div className="space-y-1">
+                  <div>{u.label}</div>
+                  <div className="text-[13px] text-slate-500">{u.building.name}</div>
+                  <StatusBadge status={chip.status} label={chip.label} />
+                </div>
+              );
+              if (stakes.length === 0) {
+                return [(
+                  <tr key={u.id}>
+                    <Td>{unitCell}</Td>
+                    <Td><span className="text-slate-500">{t("stakesTable.noOwner")}</span></Td>
+                    <Td>—</Td>
+                    <Td>—</Td>
+                  </tr>
+                )];
+              }
+              return stakes.map((st, i) => (
+                <tr key={st.id}>
+                  <Td>{i === 0 ? unitCell : ""}</Td>
+                  <Td>{partyDisplayName(st.owner)}</Td>
+                  <Td>{formatMoney(st.sharePercent.toString(), "").trim()}</Td>
+                  <Td>{formatDate(st.validFrom)}</Td>
+                </tr>
+              ));
+            })}
+          </Table>
+        </Card>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Dodaj vlasnički udio">
             <details className="group">
@@ -349,16 +406,21 @@ export default async function OwnersPage({
                   </Field>
                 </div>
                 <div className="sm:col-span-2">
-                  <Field label="Dokaz o vlasništvu" hint="Obavezno — ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
-                    <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
-                  </Field>
+                  <ProofFileField
+                    name="proofFile"
+                    label={t("stakesTable.proofLabel")}
+                    buttonLabel={t("stakesTable.proofPick")}
+                    hint={t("stakesTable.addHint")}
+                    accept=".pdf,application/pdf,image/jpeg,image/png,image/webp"
+                    required
+                  />
                 </div>
                 <div className="sm:col-span-2"><SubmitBtn>Dodaj udio</SubmitBtn></div>
               </form>
             </details>
           </Card>
           <Card title="Promjena vlasništva (promet jedinice)">
-            <p className="mb-3 text-xs text-slate-500">
+            <p className="mb-3 text-[13px] text-slate-500">
               Istorijski dug ostaje na prethodnom vlasniku; prenos duga moguć je samo izričitom korekcijom salda.
             </p>
             <details className="group">
@@ -382,16 +444,21 @@ export default async function OwnersPage({
                 <Field label="Datum prenosa"><input name="effectiveDate" type="date" required className={inputCls} /></Field>
                 <Field label="Napomena / osnov"><input name="note" className={inputCls} placeholder="kupoprodajni ugovor br..." /></Field>
                 <div className="sm:col-span-2">
-                  <Field label="Dokaz o vlasništvu" hint="Obavezno — kupoprodajni ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
-                    <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
-                  </Field>
+                  <ProofFileField
+                    name="proofFile"
+                    label={t("stakesTable.proofLabel")}
+                    buttonLabel={t("stakesTable.proofPick")}
+                    hint={t("stakesTable.transferHint")}
+                    accept=".pdf,application/pdf,image/jpeg,image/png,image/webp"
+                    required
+                  />
                 </div>
                 <div className="flex items-end"><SubmitBtn variant="tonal">Evidentiraj prenos</SubmitBtn></div>
               </form>
             </details>
           </Card>
           <Card title="Evidentiraj stanara / zakupca">
-            <p className="mb-3 text-xs text-slate-500">Stanar ili zakupac NE stiče pravo glasa stanovanjem.</p>
+            <p className="mb-3 text-[13px] text-slate-500">Stanar ili zakupac NE stiče pravo glasa stanovanjem.</p>
             <details className="group">
               <ToggleBtn>Evidentiraj</ToggleBtn>
               <form action={addOccupancyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">

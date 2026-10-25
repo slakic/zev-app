@@ -149,7 +149,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
             </Field>
             <SubmitBtn>Usvoji plan</SubmitBtn>
           </form>
-          {acceptedProposals.length === 0 && <p className="mt-2 text-xs text-amber-700">Nema usvojenih prijedloga — plan se usvaja tek nakon odluke skupštine.</p>}
+          {acceptedProposals.length === 0 && <p className="mt-2 text-[13px] text-amber-700">Nema usvojenih prijedloga — plan se usvaja tek nakon odluke skupštine.</p>}
         </Card>
       )}
 
@@ -233,7 +233,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
                   <Td>{r.name}</Td>
                   <Td>{formatMoney(r.planned, "")}</Td>
                   <Td>{formatMoney(r.actual, "")}</Td>
-                  <Td className={Number(r.difference) < 0 ? "text-red-700" : "text-emerald-700"}>{formatMoney(r.difference, "")}</Td>
+                  <Td className={Number(r.difference) < 0 ? "text-red-700" : undefined}>{formatMoney(r.difference, "")}</Td>
                 </tr>
               ))}
             </Table>

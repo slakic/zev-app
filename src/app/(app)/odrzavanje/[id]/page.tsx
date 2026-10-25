@@ -21,7 +21,7 @@ const offerHeaders: ColumnSpec[] = [
   { label: "Iznos", align: "right" },
   { label: "Opis" },
   { label: "Izabrana" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const workOrderHeaders: ColumnSpec[] = [
@@ -29,7 +29,7 @@ const workOrderHeaders: ColumnSpec[] = [
   { label: "Izvođač" },
   { label: "Termin" },
   { label: "Status" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 /** Value of the "within the president's authority" option of the approval select (F6.4). */
@@ -179,8 +179,8 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <StatusBadge status={issue.status} label={tEnum("issueStatus", issue.status)} />
         <span className="text-sm text-slate-500">Hitnost: {tEnum("urgency", issue.urgency)}</span>
-        {issue.safetyImpact && <StatusBadge status="UNPAID" label="Bezbjednosni rizik" />}
-        {issue.isEmergency && <StatusBadge status="REVOKED" label="Hitna intervencija" />}
+        {issue.safetyImpact && <StatusBadge status="SAFETY_RISK" label="Bezbjednosni rizik" />}
+        {issue.isEmergency && <StatusBadge status="EMERGENCY" label="Hitna intervencija" />}
         {issue.estimatedCost && <span className="text-sm">Procjena: {formatMoney(issue.estimatedCost.toString())}</span>}
         {issue.actualCost && <span className="text-sm">Stvarni trošak: {formatMoney(issue.actualCost.toString())}</span>}
       </div>
@@ -209,7 +209,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
             {issue.statusEvents.map((e) => (
               <li key={e.id} className="flex justify-between gap-2">
                 <span>{tEnum("issueStatus", e.to)}{e.note ? ` — ${e.note}` : ""}</span>
-                <span className="whitespace-nowrap text-xs text-slate-500">{formatDateTime(e.createdAt)}</span>
+                <span className="whitespace-nowrap text-[13px] text-slate-500">{formatDateTime(e.createdAt)}</span>
               </li>
             ))}
           </ol>
@@ -353,7 +353,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
           <ul className="space-y-2 text-sm">
             {issue.comments.map((c) => (
               <li key={c.id} className="rounded bg-slate-50 p-2">
-                <span className="text-xs text-slate-500">{formatDateTime(c.createdAt)}:</span> {c.text}
+                <span className="text-[13px] text-slate-500">{formatDateTime(c.createdAt)}:</span> {c.text}
               </li>
             ))}
             {issue.comments.length === 0 && <li className="text-slate-500">Nema komentara.</li>}

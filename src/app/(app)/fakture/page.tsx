@@ -20,7 +20,7 @@ const chargeItemHeaders: ColumnSpec[] = [
   { label: "Obuhvat", priority: "detail" },
   { label: "Frekvencija", priority: "detail" },
   { label: "Fond", priority: "detail" },
-  { label: "Radnje" },
+  { label: "Radnje", actions: true },
 ];
 
 const batchHeaders: ColumnSpec[] = [
