@@ -5,6 +5,7 @@
 // look at once.
 import Link from "next/link";
 import type { ReactNode, ButtonHTMLAttributes } from "react";
+import { IconCheck } from "@/components/nav-icons";
 
 export function PageHeader({
   title, subtitle, actions, backHref, backLabel,
@@ -689,7 +690,7 @@ export function Tabs({
             }`}
           >
             {tab.label}
-            {tab.count !== undefined && <span className="ml-1.5 text-xs text-slate-400">· {tab.count}</span>}
+            {tab.count !== undefined && <span className="ml-1.5 text-[13px] text-slate-500">· {tab.count}</span>}
           </Link>
         );
       })}
@@ -744,17 +745,99 @@ const flashIcon = (err?: boolean) => (
   </svg>
 );
 
-export function Flash({ msg, err }: { msg?: string; err?: string }) {
-  if (!msg && !err) return null;
+/** Poruka o uspjehu (`msg`), grešci (`err`) ili upozorenju (`warn`, F5a/D4). `warn` je amber (`warning-*` tokeni),
+ *  `role="status"`, i prima i čvor (naslov + lista), jer upozorenje nije uvijek jedna rečenica. `inset` je za
+ *  upotrebu UNUTAR `Card`-a: bez `shadow-sm` i bez donje margine (pravilo elevacije — nikad ugniježđeno). */
+export function Flash({ msg, err, warn, inset }: { msg?: string; err?: string; warn?: ReactNode; inset?: boolean }) {
+  if (!msg && !err && !warn) return null;
+  const kind = err ? "err" : warn ? "warn" : "msg";
+  const tone =
+    kind === "err" ? "border-l-red-500 bg-red-50 text-red-800"
+    : kind === "warn" ? "border-l-warning bg-warning-soft text-warning-ink"
+    : "border-l-emerald-500 bg-emerald-50 text-emerald-800";
   return (
     <div
-      role={err ? "alert" : "status"}
-      className={`mb-4 flex items-start gap-2 rounded-xl border-l-4 px-3 py-2.5 text-sm shadow-sm ${
-        err ? "border-l-red-500 bg-red-50 text-red-800" : "border-l-emerald-500 bg-emerald-50 text-emerald-800"
-      }`}
+      role={kind === "err" ? "alert" : "status"}
+      className={`flex items-start gap-2 rounded-xl border-l-4 px-3 py-2.5 text-sm ${inset ? "" : "mb-4 shadow-sm"} ${tone}`}
     >
-      {flashIcon(Boolean(err))}
-      <span>{err ?? msg}</span>
+      {flashIcon(kind !== "msg")}
+      <div className="min-w-0">{err ?? warn ?? msg}</div>
     </div>
+  );
+}
+
+/** Podaci jednog reda „Za Vas sada” — isti oblik za vlasnika, predsjednika i računovođu. */
+export type TaskRowData = {
+  /** Stabilan ključ reda (npr. `Task.key`); bez njega se koristi redni broj. */
+  key?: string;
+  chip: { status: string; label: string };
+  text: string;
+  meta?: string | null;
+  /** Broj stavki koje čekaju (računovođa); isti broj stoji na odredištu veze. */
+  count?: number;
+  action?: { href: string; label: string; variant: "primary" | "secondary" | "tonal" } | null;
+};
+
+/** Jedan red "Za Vas sada": chip (uz opcioni broj), rečenica, (meta) i najviše jedno dugme; na telefonu dugme ide
+ *  ispod teksta u punoj širini reda. */
+export function TaskRow({ row }: { row: TaskRowData }) {
+  const chip = <StatusBadge status={row.chip.status} label={row.chip.label} />;
+  return (
+    <li className="flex flex-col gap-3 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0 space-y-1">
+        {row.count !== undefined ? (
+          <div className="flex items-center gap-2">
+            {chip}
+            <span className="text-sm font-semibold tabular-nums text-slate-900">{row.count}</span>
+          </div>
+        ) : chip}
+        <p className="text-sm text-slate-800">{row.text}</p>
+        {row.meta && <p className="text-[13px] text-slate-600">{row.meta}</p>}
+      </div>
+      {row.action && (
+        <div className="shrink-0 max-sm:[&>*]:w-full">
+          <BtnLink href={row.action.href} variant={row.action.variant}>{row.action.label}</BtnLink>
+        </div>
+      )}
+    </li>
+  );
+}
+
+/** „Za Vas sada” (D1 A): jedna `Card` po početnoj, uvijek prva ispod `PageHeader`-a. `empty` je potvrda
+ *  „ništa ne čeka” (ikona + rečenica + opciona meta); `rows` su rangirani redovi (najviše jedan `primary`);
+ *  `doneNote` je sažeti red „Sve ostalo je završeno” ispod redova. */
+export function TaskList({
+  title, rows, empty, doneNote,
+}: {
+  title: string;
+  rows: TaskRowData[];
+  empty?: { text: string; meta?: string | null };
+  doneNote?: string;
+}) {
+  return (
+    <Card title={title}>
+      {empty && (
+        <div className="flex items-start gap-3">
+          <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
+          <div>
+            <p className="text-sm text-slate-800">{empty.text}</p>
+            {empty.meta && <p className="mt-1 text-[13px] text-slate-600">{empty.meta}</p>}
+          </div>
+        </div>
+      )}
+      {rows.length > 0 && (
+        <ul className={`divide-y divide-border ${empty ? "mt-4 border-t border-border" : ""}`}>
+          {rows.map((row, i) => (
+            <TaskRow key={row.key ?? i} row={row} />
+          ))}
+        </ul>
+      )}
+      {doneNote && rows.length > 0 && (
+        <div className="mt-3 flex items-center gap-2 border-t border-border pt-3 text-[13px] text-slate-600">
+          <IconCheck className="h-4 w-4 shrink-0 text-emerald-700" />
+          <span>{doneNote}</span>
+        </div>
+      )}
+    </Card>
   );
 }

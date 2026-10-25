@@ -4,6 +4,7 @@ import { audit } from "@/server/audit";
 import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec } from "@/lib/money";
 import type { Prisma } from "@/generated/prisma/client";
+import { endOfDay, toZonedDateIso } from "@/lib/i18n";
 
 // ---- Suppliers ----
 
@@ -188,15 +189,33 @@ export async function cancelExpense(actor: Actor, id: string, reason: string) {
   return e;
 }
 
-export async function listExpenses(actor: Actor, filter?: { status?: string; supplierId?: string; buildingId?: string; projectId?: string }) {
+/** Troškovi koji dospijevaju: neplaćeni (ili djelimično plaćeni) sa rokom najkasnije za `days` dana od danas
+ *  (kalendarski dan Europe/Sarajevo, uključujući taj dan); `days = -1` su već dospjeli (rok prije danas). Isti uslov
+ *  koristi filter „Rok plaćanja” na stranici troškova i brojač na početnoj računovođe, pa se brojevi poklapaju. */
+export function expensesDueWhere(zevId: string, now: Date, days: number): Prisma.ExpenseWhereInput {
+  const [y, m, d] = toZonedDateIso(now).split("-").map(Number);
+  const limitIso = new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+  return { zevId, status: { in: ["UNPAID", "PARTIALLY_PAID"] }, dueDate: { lte: endOfDay(limitIso) } };
+}
+
+export async function listExpenses(
+  actor: Actor,
+  filter?: { status?: string; supplierId?: string; buildingId?: string; projectId?: string; dueWithinDays?: number },
+) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
   return prisma.expense.findMany({
     where: {
-      zevId: requireZev(actor),
-      status: filter?.status as never,
-      supplierId: filter?.supplierId,
-      buildingId: filter?.buildingId,
-      projectId: filter?.projectId,
+      AND: [
+        {
+          zevId,
+          status: filter?.status as never,
+          supplierId: filter?.supplierId,
+          buildingId: filter?.buildingId,
+          projectId: filter?.projectId,
+        },
+        filter?.dueWithinDays !== undefined ? expensesDueWhere(zevId, new Date(), filter.dueWithinDays) : {},
+      ],
     },
     include: { supplier: true, category: true, maintenanceIssue: true },
     orderBy: { createdAt: "desc" },

@@ -2,13 +2,15 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
-import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount, type InvoiceSortKey } from "@/server/services/billing";
+import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount, invoiceTotals, INVOICE_FILTER_OVERDUE, type InvoiceSortKey } from "@/server/services/billing";
+import { suggestedBatchPeriod } from "@/server/services/accountantHome";
 import { prisma } from "@/lib/prisma";
 import { listBuildings, listUnits } from "@/server/services/property";
 import { ownerBalance } from "@/server/services/payments";
 import { isInvoiceOverdue } from "@/lib/paymentInstructions";
+import { describeChargeRate } from "@/lib/chargeLine";
 import { formatMoney, parseMoneyInput, dec } from "@/lib/money";
-import { formatDate, t, tEnum } from "@/lib/i18n";
+import { formatDate, t, tf, tEnum } from "@/lib/i18n";
 import { PageHeader, Card, Stat, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, Tabs, FilterBar, Pagination, type ColumnSpec } from "@/components/ui";
 
 const chargeItemHeaders: ColumnSpec[] = [
@@ -33,12 +35,12 @@ function invoiceHeadersFor(management: boolean): ColumnSpec[] {
     { label: "Broj", priority: "primary", nowrap: true, sortKey: "number" },
     { label: "Jedinica" },
     ...(management ? [{ label: "Dužnik" } as ColumnSpec] : []),
-    { label: "Period", priority: "detail" },
-    { label: "Dospijeće", sortKey: "dueDate" },
+    { label: "Period", priority: "detail", nowrap: management },
+    { label: "Dospijeće", sortKey: "dueDate", nowrap: management },
     { label: "Iznos", align: "right", nowrap: true, sortKey: "total" },
     { label: "Plaćeno", align: "right", nowrap: true, sortKey: "paid" },
-    ...(management ? [] : [{ label: t("ownerInvoices.remaining"), align: "right", nowrap: true } as ColumnSpec]),
-    { label: "Status" },
+    { label: management ? t("invoiceList.open") : t("ownerInvoices.remaining"), align: "right", nowrap: true },
+    { label: "Status", nowrap: management },
   ];
 }
 import { ChargeItemRow } from "@/components/charge-item-row";
@@ -133,6 +135,8 @@ export default async function InvoicesPage({
         ])
       : [[], [], []];
   const filterUnits = management && activeTab === "fakture" ? await listUnits(actor) : [];
+  const totals = management && activeTab === "fakture" ? await invoiceTotals(actor, invoiceFilter) : null;
+  const suggestedPeriod = management && activeTab === "naknade" && actor.roles.includes("ACCOUNTANT") ? await suggestedBatchPeriod(actor) : "";
   // F3.3: zbirni iznosi "od početka" sišli su sa početne vlasnika na listu faktura.
   const ownerTotals = !management && actor.partyId ? await ownerBalance(actor, actor.partyId) : null;
 
@@ -175,6 +179,7 @@ export default async function InvoicesPage({
                     name: c.name,
                     method: c.method,
                     rate: c.rate?.toString() ?? null,
+                    rateLabel: describeChargeRate(c.method, c.rate?.toString() ?? null),
                     scopeType: c.scopeType,
                     buildingId: c.buildingId,
                     frequency: c.frequency,
@@ -273,7 +278,9 @@ export default async function InvoicesPage({
             </Table>
             {actor.roles.includes("ACCOUNTANT") && (
               <form action={createBatchAction} className="mt-3 flex flex-wrap items-end gap-2">
-                <Field label="Period (GGGG-MM)"><input name="period" required pattern="\d{4}-\d{2}" placeholder="2026-08" className={inputCls} /></Field>
+                <Field label={t("invoiceList.period")} hint={t("invoiceList.periodHint")}>
+                  <input name="period" type="month" required defaultValue={suggestedPeriod} pattern="\d{4}-\d{2}" placeholder="2026-08" className={inputCls} />
+                </Field>
                 <SubmitBtn>Kreiraj nacrt serije sa pregledom obračuna</SubmitBtn>
               </form>
             )}
@@ -298,6 +305,7 @@ export default async function InvoicesPage({
               <select name="status" defaultValue={sp.status ?? ""} className={inputCls}>
                 <option value="">Svi</option>
                 <option value="ISSUED">{tEnum("invoiceStatus", "ISSUED")}</option>
+                <option value={INVOICE_FILTER_OVERDUE}>{t("invoiceList.overdueFilter")}</option>
                 <option value="PAID">{tEnum("invoiceStatus", "PAID")}</option>
                 <option value="CANCELLED">{tEnum("invoiceStatus", "CANCELLED")}</option>
                 <option value="CORRECTED">{tEnum("invoiceStatus", "CORRECTED")}</option>
@@ -356,7 +364,7 @@ export default async function InvoicesPage({
                   <Td>{formatDate(inv.dueDate)}</Td>
                   <Td>{formatMoney(inv.total.toString())}</Td>
                   <Td>{formatMoney(paid.toFixed(2))}</Td>
-                  {!management && <Td>{inv.status === "ISSUED" ? formatMoney(remaining.toFixed(2)) : inv.status === "PAID" ? formatMoney(0) : "—"}</Td>}
+                  <Td>{inv.status === "ISSUED" ? formatMoney(remaining.toFixed(2)) : inv.status === "PAID" ? formatMoney(0) : "—"}</Td>
                   <Td>
                     <StatusBadge
                       status={overdue ? "UNPAID" : inv.status}
@@ -367,6 +375,11 @@ export default async function InvoicesPage({
               );
             })}
           </Table>
+          {totals && (
+            <p className="mt-3 text-sm font-medium tabular-nums text-slate-700">
+              {tf("invoiceList.totals", { broj: totals.count, iznos: formatMoney(totals.total), placeno: formatMoney(totals.paid), otvoreno: formatMoney(totals.open) })}
+            </p>
+          )}
           <Pagination page={invoiceResult.page} pageCount={invoiceResult.pageCount} hrefFor={(p) => fakturaHref({ page: String(p) })} />
         </Card>
       </div>

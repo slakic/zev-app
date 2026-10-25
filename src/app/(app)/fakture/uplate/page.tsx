@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
-import { listPayments, enterPayment, importBankCsv, type PaymentSortKey } from "@/server/services/payments";
+import { listPayments, enterPayment, importBankCsv, PAYMENT_FILTER_TO_MATCH, PAYMENT_FILTER_ADVANCE, type PaymentSortKey } from "@/server/services/payments";
 import { listAccounts } from "@/server/services/finance";
 import { getBankSmsStatus } from "@/server/services/bankSms";
 import { getChannelReconciliation } from "@/server/services/paymentMatching";
@@ -218,6 +218,8 @@ export default async function PaymentsPage({
             <Field label="Status">
               <select name="status" defaultValue={sp.status ?? ""} className={inputCls}>
                 <option value="">Svi</option>
+                <option value={PAYMENT_FILTER_TO_MATCH}>{t("paymentFilter.toMatch")}</option>
+                <option value={PAYMENT_FILTER_ADVANCE}>{t("paymentFilter.advance")}</option>
                 <option value="UNAPPLIED">{tEnum("paymentStatus", "UNAPPLIED")}</option>
                 <option value="PARTIALLY_APPLIED">{tEnum("paymentStatus", "PARTIALLY_APPLIED")}</option>
                 <option value="APPLIED">{tEnum("paymentStatus", "APPLIED")}</option>

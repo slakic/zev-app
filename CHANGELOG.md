@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.48.0] - 2026-10-25
+
+Faza F5a pregleda dizajna: računovođa sa početne vidi koliko posla čeka i gdje, nacrt serije provjerava na jednom ekranu, a liste faktura imaju „Otvoreno” i „Dospjela”. **Bez migracije** — deploy ne traži ručni korak.
+
+### Dodato
+
+- **„Za Vas sada” na početnoj računovođe**, prije salda: nacrt serije koji čeka izdavanje, neuspjela e-pošta faktura (po seriji), uplate za uparivanje, SMS na čekanju, mogući duplikati SMS ↔ izvod, SMS bez potvrde izvodom (SMS stavke samo kad je automatski prijem uključen), troškovi koji dospijevaju u 7 dana ili su dospjeli, i „serija za tekući period nije napravljena”. Uz svaku stavku je broj, a isti uslov koristi i odredište (filter), pa se brojevi poklapaju. Samo prva radnja ima glavno dugme; kad je sve gotovo, potvrda umjesto prazne kartice. Ispod su četiri `Stat`-a, „Posljednje uplate” i „Serije faktura”; kartica „Neraspoređene uplate” (6 redova bez ukupnog broja) i kartice sjednica/glasanja/prijava/pregleda su sa ove početne uklonjene.
+- **Avans je izvedeno pravilo.** Uplata sa slobodnim iznosom čiji je platilac poznat i **nema nijednu otvorenu fakturu** je avans: izlazi iz „za uparivanje” i vodi se kao informativni red „Avans”. Kad se platiocu izda nova faktura, uplata sama postaje „za uparivanje”. Ništa se ne upisuje u bazu. Lista uplata ima nove filtere „Za uparivanje” (`status=ZA_UPARIVANJE`) i „Avansi” (`status=AVANS`).
+- **Korisnik sa ulogama predsjednik + računovođa** ima jednu listu: stavke predsjednika ranga 1–3, pa računovođine, pa ostale.
+- **Nacrt i izdata serija:** red `Stat`-ova (faktura, ukupan iznos, e-pošta, dospijeće), „Upozorenja prije izdavanja” (stavke od 0,00 KM sa razlogom, jedinica bez primaoca fakture, jedinica sa ukupno 0,00, dospijeće u prošlosti) i jedna zbirna tabela sa „Prikaži obračun” po jedinici, napisanim običnim jezikom (`describeChargeLine`). Upozorenja ne sprečavaju izdavanje, osim jedinice bez primaoca koju servis i ranije odbija: tada se dugme „Izdaj” ne nudi, a upozorenje kaže da treba evidentirati vlasnika i napraviti novi nacrt.
+- **Lista faktura (uprava):** kolona „Otvoreno”, filter „Dospjela (neplaćena)” (kalendarski dan Europe/Sarajevo) i zbir za izabrani filter.
+- **Troškovi:** filter „Rok plaćanja” (dospijeva u 7 dana ili je dospjelo); tab „Troškovi” ima brojač.
+- **Primitivi:** `Flash warn` i `inset`, `TaskList`/`TaskRow` u `ui.tsx` (vlasnik i predsjednik prešli na njih bez vizuelne razlike — provjereno screenshotom, bajt-identično).
+
+### Izmijenjeno
+
+- Period nove serije je `month` polje sa predloženim mjesecom poslije posljednje izdate serije; „Stopa/iznos” naknada piše jedinicu („0,30 KM/m²”).
+- Brojač na tabu je 13px `slate-500` (bio 12px `slate-400`); „Potvrđene” SMS poruke imaju brojač.
+
 ## [2.47.0] - 2026-10-25
 
 Faza F6 pregleda dizajna: predsjednik na svakom koraku sjednice zna gdje je i šta je sljedeće, u sali vidi ima li kvorum, a na početnoj prvo vidi šta čeka njegovu radnju. **Bez migracije** — deploy ne traži ručni korak.

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, sumDecimals, type Decimal } from "@/lib/money";
-import type { Prisma } from "@/generated/prisma/client";
+import type { Prisma, PaymentStatus } from "@/generated/prisma/client";
 import { extractPdfText, parseNovaBankaStatement, extractUnitNumberCandidates } from "@/server/services/bankStatementPdf";
 import { partyDisplayName } from "@/server/services/ownership";
 import { foldDiacritics } from "@/lib/text";
@@ -1055,6 +1055,52 @@ export function netAllocationsByInvoice(allocations: { invoiceId: string; amount
 
 export type PaymentSortKey = "date" | "amount";
 
+/** Filteri liste uplata koji nisu status u bazi (F5a, F5-Q3 (a)). Isti uslov koristi i lista i brojač na početnoj
+ *  računovođe, pa se brojevi uvijek poklapaju. */
+export const PAYMENT_FILTER_TO_MATCH = "ZA_UPARIVANJE";
+export const PAYMENT_FILTER_ADVANCE = "AVANS";
+
+/** Platilac ima bar jednu otvorenu fakturu (izdata, ukupno > 0; faktura se plaćenom označava u `refreshInvoiceStatus`). */
+const payerHasOpenInvoice = { invoices: { some: { status: "ISSUED" as const, total: { gt: 0 } } } };
+
+/**
+ * Where za listu uplata po statusu filtera.
+ *  - `ZA_UPARIVANJE`: neraspoređene/djelimično raspoređene uplate koje NISU avans — platilac nepoznat ili ima otvorenih
+ *    faktura (posao računovođe).
+ *  - `AVANS`: ista skupina uplata, ali platilac je poznat i nema nijednu otvorenu fakturu — nema šta da se upari dok se
+ *    ne izda nova faktura (izvedeno pravilo, bez migracije: izdavanjem fakture uplata sama prelazi u „za uparivanje”).
+ *  - drugo: status u bazi kao do sada.
+ * `zevId` je uvijek dio uslova.
+ */
+export function paymentWhereForFilter(zevId: string, status?: string): Prisma.PaymentWhereInput {
+  const free = { zevId, reversedAt: null, status: { in: ["UNAPPLIED", "PARTIALLY_APPLIED"] as PaymentStatus[] } };
+  if (status === PAYMENT_FILTER_TO_MATCH) {
+    return { ...free, OR: [{ payerId: null }, { payer: payerHasOpenInvoice }] };
+  }
+  if (status === PAYMENT_FILTER_ADVANCE) {
+    return { ...free, payerId: { not: null }, payer: { is: { invoices: { none: payerHasOpenInvoice.invoices.some } } } };
+  }
+  return { zevId, status: (status || undefined) as PaymentStatus | undefined };
+}
+
+/** Broj uplata „za uparivanje” (isti uslov kao filter `ZA_UPARIVANJE`). Pozivalac prosljeđuje zevId aktera. */
+export function countPaymentsToMatch(zevId: string): Promise<number> {
+  return prisma.payment.count({ where: paymentWhereForFilter(zevId, PAYMENT_FILTER_TO_MATCH) });
+}
+
+/** Avansi: broj uplata i ukupan slobodan (neraspoređen) iznos — isti uslov kao filter `AVANS`. */
+export async function advanceSummary(zevId: string): Promise<{ count: number; total: string }> {
+  const rows = await prisma.payment.findMany({
+    where: paymentWhereForFilter(zevId, PAYMENT_FILTER_ADVANCE),
+    select: { amount: true, allocations: { select: { amount: true } } },
+  });
+  let total = ZERO;
+  for (const p of rows) {
+    total = total.plus(dec(p.amount.toString()).minus(sumDecimals(p.allocations.map((a) => dec(a.amount.toString())))));
+  }
+  return { count: rows.length, total: total.toFixed(2) };
+}
+
 const PAYMENT_PAGE_SIZE = 20;
 
 /** `sortBy`/`page` — same deliberate §8 exception as `listInvoices` (Plans/
@@ -1068,7 +1114,10 @@ export async function listPayments(
   const zevId = requireZev(actor);
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   const payerId = isManagement ? filter?.payerId : actor.partyId ?? "__none__";
-  const where: Prisma.PaymentWhereInput = { zevId, status: filter?.status as never, payerId: payerId ?? undefined };
+  const where: Prisma.PaymentWhereInput = {
+    ...paymentWhereForFilter(zevId, filter?.status),
+    ...(payerId ? { payerId } : {}),
+  };
   const dir = opts?.sortDir ?? "desc";
   const orderBy: Prisma.PaymentOrderByWithRelationInput = opts?.sortBy === "amount" ? { amount: dir } : { date: dir };
   const page = Math.max(1, opts?.page ?? 1);

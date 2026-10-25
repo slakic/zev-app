@@ -401,3 +401,35 @@ export async function countOptedInDebtors(actor: Actor, debtorIds: string[]): Pr
   const zevId = requireZev(actor);
   return prisma.party.count({ where: { id: { in: debtorIds }, zevId, invoiceEmailDelivery: true } });
 }
+
+/** Serije sa fakturama čija je POSLJEDNJA poruka e-poštom „Neuspješno” (isti pojam kao „Neuspješno” na stranici
+ *  serije), po seriji. Za početnu računovođe. Pozivalac prosljeđuje zevId aktera. */
+export async function failedInvoiceEmailsByBatch(zevId: string): Promise<{ batchId: string; period: string; failed: number }[]> {
+  const failedMsgs = await prisma.notificationMessage.findMany({
+    where: { zevId, relatedType: "Invoice", template: { in: INVOICE_EMAIL_TEMPLATES }, status: "FAILED" },
+    select: { relatedId: true },
+  });
+  const invoiceIds = [...new Set(failedMsgs.map((m) => m.relatedId).filter((id): id is string => Boolean(id)))];
+  if (invoiceIds.length === 0) return [];
+  const all = await prisma.notificationMessage.findMany({
+    where: { zevId, relatedType: "Invoice", relatedId: { in: invoiceIds }, template: { in: INVOICE_EMAIL_TEMPLATES } },
+    orderBy: { createdAt: "desc" },
+    select: { relatedId: true, status: true },
+  });
+  const latest = new Map<string, NotifStatus>();
+  for (const m of all) if (m.relatedId && !latest.has(m.relatedId)) latest.set(m.relatedId, m.status);
+  const stillFailed = [...latest.entries()].filter(([, status]) => status === "FAILED").map(([id]) => id);
+  if (stillFailed.length === 0) return [];
+  const invoices = await prisma.invoice.findMany({
+    where: { zevId, id: { in: stillFailed }, batchId: { not: null } },
+    select: { batchId: true, batch: { select: { period: true } } },
+  });
+  const byBatch = new Map<string, { period: string; failed: number }>();
+  for (const inv of invoices) {
+    if (!inv.batchId || !inv.batch) continue;
+    const cur = byBatch.get(inv.batchId) ?? { period: inv.batch.period, failed: 0 };
+    cur.failed += 1;
+    byBatch.set(inv.batchId, cur);
+  }
+  return [...byBatch.entries()].map(([batchId, v]) => ({ batchId, ...v }));
+}

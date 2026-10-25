@@ -64,3 +64,16 @@ describe("describeChargeLine — povratak na allocationBasis", () => {
     expect(describeChargeLine({ allocationBasis: "x" })).toBe("x");
   });
 });
+
+describe("describeChargeRate (F5a.4)", () => {
+  it("amount with a decimal comma and a unit per method", async () => {
+    const { describeChargeRate } = await import("@/lib/chargeLine");
+    expect(describeChargeRate("PER_AREA", "0.30")).toBe("0,30 KM/m²");
+    expect(describeChargeRate("FIXED_PER_UNIT", "8")).toBe("8,00 KM po jedinici");
+    expect(describeChargeRate("EQUAL_SPLIT", "120.00")).toBe("120,00 KM ukupno");
+    expect(describeChargeRate("PER_OCCUPANT", "1.95")).toBe("1,95 KM po korisniku");
+    expect(describeChargeRate("PER_OWNERSHIP_SHARE", "0.5")).toBe("0,50 KM po udjelu");
+    expect(describeChargeRate("MANUAL", null)).toBe("ručni iznos");
+    expect(describeChargeRate("PER_AREA", null)).toBe("—");
+  });
+});

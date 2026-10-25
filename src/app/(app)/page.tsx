@@ -5,17 +5,18 @@ import { prisma } from "@/lib/prisma";
 import { totalCash, reserveFundBalance } from "@/server/services/finance";
 import { receivablesReport, unpaidSupplierInvoices } from "@/server/services/reports";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
-import { planVsActual } from "@/server/services/plans";
 import { formatMoney, formatWeight, dec, ZERO } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { ownerTasks, type OwnerTask, type OwnerTaskVoting } from "@/lib/ownerTasks";
-import { presidentTasks, PLAN_ITEM_LOOKBACK_DAYS, type PresidentTask } from "@/lib/presidentTasks";
+import { presidentTasks, PLAN_ITEM_LOOKBACK_DAYS } from "@/lib/presidentTasks";
+import { mergeTasks, type HomeTask } from "@/lib/accountantTasks";
+import { getAccountantTasks } from "@/server/services/accountantHome";
+import { paymentWhereForFilter, PAYMENT_FILTER_TO_MATCH } from "@/server/services/payments";
 import { meetingNextStep } from "@/lib/meetingNextStep";
 import { calendarDaysBetween } from "@/lib/paymentInstructions";
 import { isOneForm } from "@/lib/plural";
 import { partyDisplayName } from "@/server/services/ownership";
-import { IconCheck } from "@/components/nav-icons";
-import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink, RowLink } from "@/components/ui";
+import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink, RowLink, TaskList, type TaskRowData } from "@/components/ui";
 import { getZev } from "@/server/services/property";
 import { computeProposalResult, getMeetingNextStepInput } from "@/server/services/meetings";
 import type { IssueStatus } from "@/generated/prisma/client";
@@ -24,128 +25,75 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const actor = await requireActor();
   const { err } = await searchParams;
   const flash = err === "forbidden" ? <Flash err="Nemate pravo pristupa toj stranici." /> : null;
-  // F6.5: the president gets "Za Vas sada" before the balance; the accountant-only view is untouched (that is F5).
+  // F6.5: the president gets "Za Vas sada" before the balance (merged with the accountant's list when he is both, F5-Q2);
+  // F5a: the accountant-only user gets his own "Za Vas sada".
   if (actor.roles.includes("PRESIDENT")) {
     return <>{flash}<PresidentDashboard actor={actor} /></>;
   }
   if (isManagement(actor)) {
-    return <>{flash}<ManagementDashboard actor={actor} /></>;
+    return <>{flash}<AccountantDashboard actor={actor} /></>;
   }
   return <>{flash}<OwnerDashboard actor={actor} /></>;
 }
 
-async function ManagementDashboard({ actor }: { actor: Awaited<ReturnType<typeof requireActor>> }) {
+/** Početna računovođe (F5a, odluka D1 A): „Za Vas sada” prije salda; broj uz svaku stavku je isti kao na odredištu. */
+async function AccountantDashboard({ actor }: { actor: Awaited<ReturnType<typeof requireActor>> }) {
   const zevId = requireZev(actor);
-  const [cash, receivables, supplierUnpaid, fund] = await Promise.all([
+  const now = new Date();
+  const [cash, receivables, supplierUnpaid, taskResult, lastPayments, lastBatches] = await Promise.all([
     totalCash(actor),
     receivablesReport(actor),
     unpaidSupplierInvoices(actor),
-    reserveFundBalance(actor),
+    getAccountantTasks(actor, now),
+    prisma.payment.findMany({ where: { zevId, reversedAt: null }, orderBy: [{ date: "desc" }, { createdAt: "desc" }], take: 5, include: { payer: true } }),
+    prisma.invoiceBatch.findMany({ where: { zevId }, orderBy: { createdAt: "desc" }, take: 3, include: { _count: { select: { invoices: true } } } }),
   ]);
   const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
 
-  // BUG FIXED HERE (2026-09-09, discovered while building the second real tenant):
-  // every query below was missing its zevId filter — invisible with one tenant, but
-  // with two it means this dashboard silently mixes in another tenant's meetings,
-  // votes, maintenance issues, draft invoice batches and unmatched payments. See
-  // docs/multitenancy-plan.md, Faza 1 "Napredak" addendum.
-  const [upcomingMeetings, openProposals, openIssues, draftBatches, unmatchedPayments] = await Promise.all([
-    prisma.meeting.findMany({ where: { zevId, status: { in: ["SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
-    prisma.proposal.findMany({ where: { zevId, status: "VOTING_OPEN" }, include: { eligibleVoters: { include: { votes: true } } }, take: 5 }),
-    prisma.maintenanceIssue.findMany({ where: { zevId, status: { notIn: ["CLOSED", "REJECTED", "PAID"] } }, orderBy: { createdAt: "desc" }, take: 6, include: { reporter: true } }),
-    prisma.invoiceBatch.findMany({ where: { zevId, status: "DRAFT" }, take: 3 }),
-    prisma.payment.findMany({ where: { zevId, status: { in: ["UNAPPLIED", "PARTIALLY_APPLIED"] }, reversedAt: null }, take: 6 }),
-  ]);
-
-  // The most severe instance of the same bug: an unscoped findFirst() picking "the
-  // first approved plan in the whole database" — a president in tenant A could get
-  // tenant B's plan id fed into planVsActual(), which correctly rejects it as
-  // "not found" for the wrong zevId, crashing the dashboard on login.
-  const approvedPlan = await prisma.annualPlan.findFirst({ where: { zevId, status: "APPROVED", year: new Date().getFullYear() }, orderBy: { version: "desc" } });
-  const pva = approvedPlan ? await planVsActual(actor, approvedPlan.id) : null;
-  const inspections = await prisma.planItem.findMany({
-    where: { zevId, type: { in: ["INSPECTION", "PREVENTIVE_MAINTENANCE"] }, scheduledDate: { gte: new Date() } },
-    orderBy: { scheduledDate: "asc" }, take: 5,
-  });
-
   return (
     <div>
-      <PageHeader title="Pregled — računovođa" subtitle={`Stanje na dan ${formatDate(new Date())}`} />
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Stanje računa i blagajne" value={formatMoney(cash)} tone="ok" />
-        <Stat label="Potraživanja od vlasnika" value={formatMoney(receivables.totalOpen)} tone="neutral" />
-        <Stat label="Dospjelo (kasni)" value={formatMoney(receivables.totalOverdue)} tone={Number(receivables.totalOverdue) > 0 ? "bad" : "ok"} />
-        <Stat label="Neplaćeno dobavljačima" value={formatMoney(supplierUnpaidTotal.toFixed(2))} tone={supplierUnpaidTotal > 0 ? "warn" : "ok"} />
+      <PageHeader title={t("accountantHome.title")} subtitle={`Stanje na dan ${formatDate(now)}`} />
+      <TaskList
+        title={t("accountantHome.forNow")}
+        rows={taskResult.tasks.map(homeTaskRow)}
+        empty={taskResult.allClear ? { text: t("accountantHome.empty") } : undefined}
+        doneNote={taskResult.restDone ? t("accountantHome.restDone") : undefined}
+      />
+      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat label={t("accountantHome.stats.cash")} value={formatMoney(cash)} tone="ok" />
+        <Stat label={t("accountantHome.stats.receivables")} value={formatMoney(receivables.totalOpen)} tone="neutral" />
+        <Stat label={t("accountantHome.stats.overdue")} value={formatMoney(receivables.totalOverdue)} tone={Number(receivables.totalOverdue) > 0 ? "bad" : "ok"} />
+        <Stat label={t("accountantHome.stats.suppliers")} value={formatMoney(supplierUnpaidTotal.toFixed(2))} tone={supplierUnpaidTotal > 0 ? "warn" : "ok"} />
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Fond održavanja" value={formatMoney(fund.balance)} tone="neutral" />
-        {pva && <Stat label={`Plan ${approvedPlan!.year} — planirano`} value={formatMoney(pva.totalPlanned)} tone="neutral" />}
-        {pva && <Stat label={`Plan ${approvedPlan!.year} — realizovano`} value={formatMoney(pva.totalActual)} tone={dec(pva.totalActual).greaterThan(dec(pva.totalPlanned)) ? "bad" : "ok"} />}
-        <Stat label="Nacrti serija faktura" value={String(draftBatches.length)} tone={draftBatches.length ? "warn" : "neutral"} />
-      </div>
-
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card title="Prijedlozi na glasanju">
-          {openProposals.length === 0 && <p className="text-sm text-slate-500">Nema otvorenih glasanja.</p>}
+        <Card title={t("accountantHome.lastPayments.title")}>
+          {lastPayments.length === 0 && <p className="text-sm text-slate-600">{t("accountantHome.lastPayments.empty")}</p>}
           <ul className="space-y-2">
-            {openProposals.map((p) => {
-              const voted = p.eligibleVoters.filter((ev) => ev.votes.some((v) => !v.invalid)).length;
-              return (
-                <li key={p.id} className="flex items-center justify-between gap-2 text-sm">
-                  <Link className="text-blue-700 hover:underline" href={`/skupstina/prijedlog/${p.id}`}>
-                    {p.code} — {p.title}
-                  </Link>
-                  <span className="text-xs text-slate-500">glasalo {voted}/{p.eligibleVoters.length}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
-        <Card title="Predstojeće sjednice">
-          {upcomingMeetings.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih sjednica.</p>}
-          <ul className="space-y-2">
-            {upcomingMeetings.map((m) => (
-              <li key={m.id} className="flex items-center justify-between gap-2 text-sm">
-                <Link className="text-blue-700 hover:underline" href={`/skupstina/${m.id}`}>{m.title}</Link>
-                <span className="text-xs text-slate-500">{formatDateTime(m.scheduledAt)}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-        <Card title="Otvorene prijave održavanja">
-          {openIssues.length === 0 && <p className="text-sm text-slate-500">Nema otvorenih prijava.</p>}
-          <ul className="space-y-2">
-            {openIssues.map((i) => (
-              <li key={i.id} className="flex items-center justify-between gap-2 text-sm">
-                <Link className="text-blue-700 hover:underline" href={`/odrzavanje/${i.id}`}>{i.title}</Link>
-                <StatusBadge status={i.status} label={tEnum("issueStatus", i.status)} />
-              </li>
-            ))}
-          </ul>
-        </Card>
-        <Card title="Neraspoređene uplate">
-          {unmatchedPayments.length === 0 && <p className="text-sm text-slate-500">Sve uplate su raspoređene.</p>}
-          <ul className="space-y-2">
-            {unmatchedPayments.map((p) => (
+            {lastPayments.map((p) => (
               <li key={p.id} className="flex items-center justify-between gap-2 text-sm">
-                <Link className="text-blue-700 hover:underline" href={`/fakture/uplate/${p.id}`}>
-                  {p.payerNameRaw ?? "Nepoznat platilac"} — {formatDate(p.date)}
-                </Link>
+                <RowLink href={`/fakture/uplate/${p.id}`}>
+                  {p.payer ? partyDisplayName(p.payer) : p.payerNameRaw ?? t("accountantHome.lastPayments.unknownPayer")} — {formatDate(p.date)}
+                </RowLink>
                 <span className="tabular-nums">{formatMoney(p.amount.toString())}</span>
               </li>
             ))}
           </ul>
+          <div className="mt-3"><BtnLink href="/fakture/uplate" variant="secondary">{t("accountantHome.lastPayments.all")}</BtnLink></div>
         </Card>
-        <Card title="Predstojeći pregledi i preventivno održavanje">
-          {inspections.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih pregleda.</p>}
+        <Card title={t("accountantHome.batches.title")}>
+          {lastBatches.length === 0 && <p className="text-sm text-slate-600">{t("accountantHome.batches.empty")}</p>}
           <ul className="space-y-2">
-            {inspections.map((i) => (
-              <li key={i.id} className="flex items-center justify-between gap-2 text-sm">
-                <span>{i.name}</span>
-                <span className="text-xs text-slate-500">{formatDate(i.scheduledDate)}</span>
+            {lastBatches.map((b) => (
+              <li key={b.id} className="flex items-center justify-between gap-2 text-sm">
+                <RowLink href={`/fakture/serija/${b.id}`}>{b.period}</RowLink>
+                <span className="flex items-center gap-2">
+                  <span className="text-[13px] text-slate-600">{b._count.invoices} faktura</span>
+                  <StatusBadge status={b.status} label={b.status === "DRAFT" ? "Nacrt" : b.status === "ISSUED" ? "Izdata" : "Stornirana"} />
+                </span>
               </li>
             ))}
           </ul>
+          <div className="mt-3"><BtnLink href="/fakture?tab=naknade" variant="secondary">{t("accountantHome.batches.all")}</BtnLink></div>
         </Card>
       </div>
     </div>
@@ -167,7 +115,7 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
   const alsoAccountant = actor.roles.includes("ACCOUNTANT");
   const planItemBase = { zevId, type: { in: ["INSPECTION" as const, "PREVENTIVE_MAINTENANCE" as const] }, plan: { status: "APPROVED" as const } };
 
-  const [cash, receivables, supplierUnpaid, fund, zev, openProposals, meetings30, upcomingItems, passedItems, executionIssues, reportedIssues, openIssues, unmatchedPayments] = await Promise.all([
+  const [cash, receivables, supplierUnpaid, fund, zev, openProposals, meetings30, upcomingItems, passedItems, executionIssues, reportedIssues, openIssues, unmatchedPayments, accountantResult] = await Promise.all([
     totalCash(actor),
     receivablesReport(actor),
     unpaidSupplierInvoices(actor),
@@ -202,8 +150,9 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
     prisma.maintenanceIssue.count({ where: { zevId, status: "REPORTED" } }),
     prisma.maintenanceIssue.findMany({ where: { zevId, status: { notIn: ["CLOSED", "REJECTED", "PAID"] } }, orderBy: { createdAt: "desc" }, take: 6, select: { id: true, title: true, status: true } }),
     alsoAccountant
-      ? prisma.payment.findMany({ where: { zevId, status: { in: ["UNAPPLIED", "PARTIALLY_APPLIED"] }, reversedAt: null }, take: 6 })
+      ? prisma.payment.findMany({ where: paymentWhereForFilter(zevId, PAYMENT_FILTER_TO_MATCH), take: 6 })
       : Promise.resolve([]),
+    alsoAccountant ? getAccountantTasks(actor, now) : Promise.resolve(null),
   ]);
   const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
 
@@ -251,7 +200,7 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
     .filter((i) => i.scheduledDate && !linkedItemIds.has(i.id))
     .map((i) => ({ id: i.id, planId: i.planId, name: i.name, scheduledDate: i.scheduledDate! }));
 
-  const { tasks, allClear } = presidentTasks({
+  const presidentResult = presidentTasks({
     now,
     registerStatus: zev?.unitRegisterStatus ?? null,
     votings,
@@ -260,6 +209,9 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
     planItemsPassed,
     reportedIssues,
   });
+  // F5-Q2 (a): predsjednik + računovođa ima jednu rangiranu listu (predsjednikove stavke 1–3, računovođine, ostale).
+  const tasks: HomeTask[] = accountantResult ? mergeTasks(presidentResult.tasks, accountantResult.tasks) : presidentResult.tasks;
+  const allClear = tasks.every((task) => task.actionLabel === undefined);
 
   // "Narednih 30 dana": meetings and planned inspections, chronologically.
   type Upcoming = { key: string; at: Date; href: string; title: string; kind: string };
@@ -271,26 +223,16 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
   return (
     <div>
       <PageHeader title={t("presidentHome.title")} subtitle={`Stanje na dan ${formatDate(now)}`} />
-      <Card title={t("presidentHome.forNow")}>
-        {allClear && (
-          <div className="flex items-start gap-3">
-            <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
-            <div>
-              <p className="text-sm text-slate-800">{t("presidentHome.empty")}</p>
-              {upcoming[0] && (
-                <p className="mt-1 text-[13px] text-slate-600">{tf("presidentHome.nextEvent", { naslov: upcoming[0].title, datum: formatDate(upcoming[0].at) })}</p>
-              )}
-            </div>
-          </div>
-        )}
-        {tasks.length > 0 && (
-          <ul className="divide-y divide-border">
-            {tasks.map((task) => (
-              <TaskRow key={task.key} row={presidentTaskRow(task)} />
-            ))}
-          </ul>
-        )}
-      </Card>
+      <TaskList
+        title={t("presidentHome.forNow")}
+        rows={tasks.map(homeTaskRow)}
+        empty={
+          allClear
+            ? { text: t("presidentHome.empty"), meta: upcoming[0] ? tf("presidentHome.nextEvent", { naslov: upcoming[0].title, datum: formatDate(upcoming[0].at) }) : null }
+            : undefined
+        }
+        doneNote={accountantResult?.restDone ? t("accountantHome.restDone") : undefined}
+      />
       <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label={t("presidentHome.stats.cash")} value={formatMoney(cash)} tone="ok" />
         <Stat label={t("presidentHome.stats.overdue")} value={formatMoney(receivables.totalOverdue)} tone={Number(receivables.totalOverdue) > 0 ? "bad" : "ok"} />
@@ -435,28 +377,18 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
   return (
     <div>
       <PageHeader title="Moj pregled" subtitle={actor.displayName} />
-      <Card title={t("ownerHome.title")}>
-        {allClear && (
-          <div className="flex items-start gap-3">
-            <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
-            <div>
-              <p className="text-sm text-slate-800">{t(unpaidLater ? "ownerHome.empty.nothingSoon" : "ownerHome.empty.allPaid")}</p>
-              {lastPayment && (
-                <p className="mt-1 text-[13px] text-slate-500">
-                  {tf("ownerHome.empty.lastPayment", { datum: formatDate(lastPayment.date), iznos: formatMoney(lastPayment.amount.toString()) })}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-        {tasks.length > 0 && (
-          <ul className={`divide-y divide-border ${allClear ? "mt-4 border-t border-border" : ""}`}>
-            {tasks.map((task) => (
-              <TaskRow key={task.key} row={ownerTaskRow(task)} />
-            ))}
-          </ul>
-        )}
-      </Card>
+      <TaskList
+        title={t("ownerHome.title")}
+        rows={tasks.map(ownerTaskRow)}
+        empty={
+          allClear
+            ? {
+                text: t(unpaidLater ? "ownerHome.empty.nothingSoon" : "ownerHome.empty.allPaid"),
+                meta: lastPayment ? tf("ownerHome.empty.lastPayment", { datum: formatDate(lastPayment.date), iznos: formatMoney(lastPayment.amount.toString()) }) : null,
+              }
+            : undefined
+        }
+      />
       <div className="mt-6 grid grid-cols-2 gap-3">
         <Stat label={t("ownerHome.stats.owed")} value={formatMoney(balance.balance)} tone={Number(balance.balance) > 0 ? "warn" : "ok"} />
         <Stat label={t("ownerHome.stats.advance")} value={formatMoney(advance)} tone="neutral" />
@@ -515,42 +447,24 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
 
 type TaskVariant = "primary" | "secondary" | "tonal";
 
-/** Podaci jednog reda „Za Vas sada” — isti oblik za vlasnika i predsjednika, pa je red jedan (bez novog primitiva). */
-type TaskRowData = {
-  chip: { status: string; label: string };
-  text: string;
-  meta?: string | null;
-  action?: { href: string; label: string; variant: TaskVariant } | null;
-};
-
-/** Jedan red "Za Vas sada": chip, rečenica, (meta) i najviše jedno dugme; na telefonu dugme ide ispod teksta u punoj širini. */
-function TaskRow({ row }: { row: TaskRowData }) {
-  return (
-    <li className="flex flex-col gap-3 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
-      <div className="min-w-0 space-y-1">
-        <StatusBadge status={row.chip.status} label={row.chip.label} />
-        <p className="text-sm text-slate-800">{row.text}</p>
-        {row.meta && <p className="text-[13px] text-slate-600">{row.meta}</p>}
-      </div>
-      {row.action && (
-        <div className="shrink-0 max-sm:[&>*]:w-full">
-          <BtnLink href={row.action.href} variant={row.action.variant}>{row.action.label}</BtnLink>
-        </div>
-      )}
-    </li>
-  );
-}
-
-function presidentTaskRow(task: PresidentTask): TaskRowData {
+/** Red „Za Vas sada” iz zajedničkog oblika stavki predsjednika/računovođe (`HomeTask`); bez `actionLabel` je informativan. */
+function homeTaskRow(task: HomeTask): TaskRowData {
   return {
+    key: task.key,
     chip: task.chip,
     text: task.sentence,
     meta: task.meta,
-    action: { href: task.href, label: task.actionLabel, variant: task.primary ? "primary" : "secondary" },
+    count: task.count,
+    action: task.actionLabel ? { href: task.href, label: task.actionLabel, variant: task.primary ? "primary" : "secondary" } : null,
   };
 }
 
 function ownerTaskRow(task: OwnerTask): TaskRowData {
+  const row = ownerTaskRowData(task);
+  return { ...row, key: task.key };
+}
+
+function ownerTaskRowData(task: OwnerTask): TaskRowData {
   const variant: TaskVariant = task.primary ? "primary" : "secondary";
   switch (task.kind) {
     case "overdue": {

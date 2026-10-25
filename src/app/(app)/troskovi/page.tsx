@@ -7,6 +7,7 @@ import { listAccounts, ensureCategory } from "@/server/services/finance";
 import { listBuildings } from "@/server/services/property";
 import { listProjects } from "@/server/services/plans";
 import { prisma } from "@/lib/prisma";
+import { EXPENSE_DUE_DAYS } from "@/lib/accountantTasks";
 import { formatMoney, parseMoneyInput, dec } from "@/lib/money";
 import { formatDate, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, ConfirmAction, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
@@ -106,7 +107,7 @@ async function cancelExpenseAction(formData: FormData) {
 export default async function ExpensesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; err?: string; status?: string; supplier?: string; sort?: string; dir?: string }>;
+  searchParams: Promise<{ tab?: string; err?: string; status?: string; supplier?: string; rok?: string; sort?: string; dir?: string }>;
 }) {
   const actor = await requireActor("ACCOUNTANT", "PRESIDENT");
   const zevId = requireZev(actor);
@@ -114,8 +115,11 @@ export default async function ExpensesPage({
   const { tab, err } = sp;
   const activeTab = tab === "troskovi" ? "troskovi" : "dobavljaci";
 
-  function troskoviHref(overrides: Partial<{ status: string; supplier: string; sort: string; dir: string }>) {
-    const merged = { status: sp.status, supplier: sp.supplier, sort: sp.sort, dir: sp.dir, ...overrides };
+  // „Rok plaćanja”: ista kalendarska definicija kao brojač „Troškovi koji dospijevaju” na početnoj računovođe (`expensesDueWhere`).
+  const dueWithinDays = sp.rok === String(EXPENSE_DUE_DAYS) ? EXPENSE_DUE_DAYS : undefined;
+
+  function troskoviHref(overrides: Partial<{ status: string; supplier: string; rok: string; sort: string; dir: string }>) {
+    const merged = { status: sp.status, supplier: sp.supplier, rok: sp.rok, sort: sp.sort, dir: sp.dir, ...overrides };
     const params = new URLSearchParams({ tab: "troskovi" });
     for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
     return `/troskovi?${params.toString()}`;
@@ -123,11 +127,11 @@ export default async function ExpensesPage({
 
   const expenseSort = sp.sort === "amount" || sp.sort === "due" ? sp.sort : sp.sort === "date" ? "date" : undefined;
   const expenseDir: "asc" | "desc" | undefined = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
-  const suppliers = await listSuppliers(actor);
+  const [suppliers, expenseCount] = await Promise.all([listSuppliers(actor), prisma.expense.count({ where: { zevId } })]);
   const [rawExpenses, accounts, buildings, projects, planItems] =
     activeTab === "troskovi"
       ? await Promise.all([
-          listExpenses(actor, { status: sp.status || undefined, supplierId: sp.supplier || undefined }),
+          listExpenses(actor, { status: sp.status || undefined, supplierId: sp.supplier || undefined, dueWithinDays }),
           listAccounts(actor),
           listBuildings(actor),
           listProjects(actor),
@@ -152,7 +156,7 @@ export default async function ExpensesPage({
       <Tabs
         tabs={[
           { key: "dobavljaci", label: "Dobavljači", count: suppliers.length },
-          { key: "troskovi", label: "Troškovi" },
+          { key: "troskovi", label: "Troškovi", count: expenseCount },
         ]}
         active={activeTab}
         hrefFor={(key) => `/troskovi?tab=${key}`}
@@ -211,7 +215,13 @@ export default async function ExpensesPage({
               {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </Field>
-          {(sp.status || sp.supplier) && <BtnLink href="/troskovi?tab=troskovi" variant="secondary">Poništi filter</BtnLink>}
+          <Field label={t("expensesFilter.due")}>
+            <select name="rok" defaultValue={dueWithinDays ? String(dueWithinDays) : ""} className={inputCls}>
+              <option value="">{t("expensesFilter.any")}</option>
+              <option value={EXPENSE_DUE_DAYS}>{t("expensesFilter.dueSoon")}</option>
+            </select>
+          </Field>
+          {(sp.status || sp.supplier || dueWithinDays) && <BtnLink href="/troskovi?tab=troskovi" variant="secondary">Poništi filter</BtnLink>}
         </FilterBar>
         <Card title="Troškovi">
           <Table
@@ -220,9 +230,9 @@ export default async function ExpensesPage({
             headers={expenseHeaders}
             sort={{ active: expenseSort, dir: expenseDir, hrefFor: (key, d) => troskoviHref({ sort: key, dir: d }) }}
             empty={expenses.length === 0}
-            emptyTitle={t(expenses.length === 0 && (sp.status || sp.supplier) ? "empty.filteredQuery.title" : "empty.expenses.title")}
+            emptyTitle={t(expenses.length === 0 && (sp.status || sp.supplier || dueWithinDays) ? "empty.filteredQuery.title" : "empty.expenses.title")}
             emptyHint={
-              expenses.length === 0 && (sp.status || sp.supplier)
+              expenses.length === 0 && (sp.status || sp.supplier || dueWithinDays)
                 ? t("empty.filteredQuery.hint")
                 : t("empty.expenses.hint")
             }

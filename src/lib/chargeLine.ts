@@ -107,3 +107,19 @@ export function describeChargeLine(snapshot: ChargeSnapshot): string {
   }
   return text ? text + limits(inputs) : fallback;
 }
+
+/** „Stopa/iznos” stavke naknade za upravu (F5a.4): iznos sa decimalnim zarezom i jedinicom po metodi
+ *  („0,30 KM/m²”, „8,00 KM po jedinici”, „120,00 KM ukupno”). Bez cijene piše „—”. */
+export function describeChargeRate(method: string, rate: unknown): string {
+  if (method === "MANUAL") return tf("chargeRate.manual", {});
+  const iznos = num(rate);
+  if (!iznos) return "—";
+  switch (method) {
+    case "FIXED_PER_UNIT": return tf("chargeRate.perUnit", { iznos });
+    case "PER_AREA": return tf("chargeRate.perArea", { iznos });
+    case "PER_OWNERSHIP_SHARE": return tf("chargeRate.perShare", { iznos });
+    case "PER_OCCUPANT": return tf("chargeRate.perOccupant", { iznos });
+    case "CONSUMPTION": return tf("chargeRate.perConsumption", { iznos });
+    default: return tf("chargeRate.total", { iznos }); // EQUAL_SPLIT, UNIT_TYPE_COEFFICIENT, CUSTOM_WEIGHTS: ukupan iznos za raspodjelu
+  }
+}

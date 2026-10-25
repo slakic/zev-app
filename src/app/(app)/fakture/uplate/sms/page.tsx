@@ -55,7 +55,7 @@ export default async function BankSmsPage({
       <Tabs
         tabs={[
           { key: "cekanje", label: "Na čekanju", count: review.rows.length },
-          { key: "potvrdjene", label: "Potvrđene" },
+          { key: "potvrdjene", label: "Potvrđene", count: other.confirmed.length },
           { key: "neprepoznate", label: "Neprepoznate", count: other.rejected.length },
         ]}
         active={activeTab}

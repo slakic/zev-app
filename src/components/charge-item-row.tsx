@@ -10,6 +10,8 @@ type ChargeItemData = {
   name: string;
   method: string;
   rate: string | null;
+  /** Čitljiva stopa/iznos sa jedinicom („0,30 KM/m²”), složena na serveru (`describeChargeRate`) — money.ts nije za klijent. */
+  rateLabel: string;
   scopeType: string;
   buildingId: string | null;
   frequency: string;
@@ -40,7 +42,7 @@ export function ChargeItemRow({
           {!c.active && <span className="ml-1.5 text-xs text-slate-500">(neaktivna)</span>}
         </Td>
         <Td>{tEnum("chargeMethod", c.method)}</Td>
-        <Td>{c.rate ?? "—"}</Td>
+        <Td>{c.rateLabel}</Td>
         <Td>{tEnum("scope", c.scopeType)}</Td>
         <Td>{tEnum("frequency", c.frequency)}</Td>
         <Td>{c.isReserveFund ? "Da" : "—"}</Td>

@@ -6,6 +6,7 @@ import { audit } from "@/server/audit";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import { calculateCharge, type BillingUnitInput, type ChargeDefinitionInput } from "@/server/engines/billing";
 import { dec, ZERO, sumDecimals, type Decimal } from "@/lib/money";
+import { endOfDay, toZonedDateIso } from "@/lib/i18n";
 import { unitsInScope } from "./property";
 import { currentStakesForUnit, partyDisplayName } from "./ownership";
 import { queueInvoiceEmails } from "./invoiceEmail";
@@ -415,6 +416,46 @@ const INVOICE_PAGE_SIZE = 20;
  * sorted array by hand. Fine at this app's scale (a ZEV's invoice count is in the hundreds, not
  * the millions a real DB-level sort would be needed for).
  */
+/** Filter „Dospjela” nije status u bazi: izdata faktura kojoj je rok prošao, poređeno po kalendarskom danu
+ *  Europe/Sarajevo (na sam dan roka još nije dospjela) — isto kao `isInvoiceOverdue` i F3 „Dospjela”. */
+export const INVOICE_FILTER_OVERDUE = "OVERDUE";
+
+export function invoiceWhereForFilter(
+  zevId: string,
+  filter?: { debtorId?: string; unitId?: string; status?: string; period?: string },
+  now: Date = new Date(),
+): Prisma.InvoiceWhereInput {
+  const base = { zevId, debtorId: filter?.debtorId, unitId: filter?.unitId, periodLabel: filter?.period };
+  if (filter?.status === INVOICE_FILTER_OVERDUE) {
+    const [y, m, d] = toZonedDateIso(now).split("-").map(Number);
+    const yesterday = new Date(Date.UTC(y, m - 1, d - 1)).toISOString().slice(0, 10);
+    return { ...base, status: "ISSUED", dueDate: { lte: endOfDay(yesterday) } };
+  }
+  return { ...base, status: (filter?.status || undefined) as never };
+}
+
+/** Zbir za filter liste faktura (uprava): izdate i plaćene fakture — iznos, plaćeno, otvoreno (izdate: iznos − plaćeno). */
+export async function invoiceTotals(
+  actor: Actor,
+  filter?: { unitId?: string; status?: string; period?: string },
+): Promise<{ count: number; total: string; paid: string; open: string }> {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const where = invoiceWhereForFilter(requireZev(actor), filter);
+  const rows = await prisma.invoice.findMany({
+    where: { AND: [where, { status: { in: ["ISSUED", "PAID"] } }] },
+    select: { status: true, total: true, allocations: { select: { amount: true } } },
+  });
+  let total = ZERO, paid = ZERO, open = ZERO;
+  for (const r of rows) {
+    const t = dec(r.total.toString());
+    const p = invoicePaidAmount(r);
+    total = total.plus(t);
+    paid = paid.plus(p);
+    if (r.status === "ISSUED") open = open.plus(t.minus(p));
+  }
+  return { count: rows.length, total: total.toFixed(2), paid: paid.toFixed(2), open: open.toFixed(2) };
+}
+
 export async function listInvoices(
   actor: Actor,
   filter?: { debtorId?: string; unitId?: string; status?: string; period?: string },
@@ -423,13 +464,7 @@ export async function listInvoices(
   requireAnyUser(actor);
   const isManagement = actor.roles.includes("PRESIDENT") || actor.roles.includes("ACCOUNTANT");
   const debtorId = isManagement ? filter?.debtorId : actor.partyId ?? "__none__";
-  const where: Prisma.InvoiceWhereInput = {
-    zevId: requireZev(actor),
-    debtorId: debtorId ?? undefined,
-    unitId: filter?.unitId,
-    status: filter?.status as never,
-    periodLabel: filter?.period,
-  };
+  const where = invoiceWhereForFilter(requireZev(actor), { ...filter, debtorId: debtorId ?? undefined });
   const dir = opts?.sortDir ?? "desc";
   const page = Math.max(1, opts?.page ?? 1);
   const include = { unit: { include: { building: true } }, debtor: true, allocations: true };

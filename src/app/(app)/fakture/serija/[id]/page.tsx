@@ -13,8 +13,10 @@ import {
 } from "@/server/services/invoiceEmail";
 import { prisma } from "@/lib/prisma";
 import { formatMoney, dec, sumDecimals } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
+import { formatDate, formatDateTime, t, tf, toZonedDateIso } from "@/lib/i18n";
+import { describeChargeLine } from "@/lib/chargeLine";
+import { batchWarnings, type WarningEntry } from "@/lib/batchWarnings";
+import { PageHeader, Card, Stat, Table, Td, StatusBadge, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
 
 // Izdavanje generiše PDF svake fakture i šalje do 25 e-mailova; Vercel default bi to presjekao.
 export const maxDuration = 60;
@@ -34,15 +36,32 @@ const emailHeaders: ColumnSpec[] = [
   { label: "Status" },
 ];
 
-const calcLineHeaders: ColumnSpec[] = [
-  { label: "Stavka", priority: "primary" },
-  { label: "Metoda" },
-  { label: "Formula", priority: "detail" },
-  { label: "Ulazne vrijednosti", priority: "detail" },
-  { label: "Osnov raspodjele", priority: "detail" },
-  { label: "Prije zaokruž.", align: "right", priority: "detail" },
-  { label: "Iznos", align: "right" },
+const unitHeaders: ColumnSpec[] = [
+  { label: t("batchPage.headers.unit"), priority: "primary" },
+  { label: t("batchPage.headers.building"), priority: "secondary" },
+  { label: t("batchPage.headers.debtor") },
+  { label: t("batchPage.headers.amount"), align: "right", nowrap: true },
+  { label: t("batchPage.headers.warning") },
+  { label: t("batchPage.headers.calc") },
 ];
+
+const MAX_WARNING_ENTRIES = 10;
+
+/** Jedna grupa upozorenja: naslovna rečenica i (do 10) stavki „Zgrada / jedinica — detalj”. */
+function WarningGroup({ text, entries }: { text: string; entries: WarningEntry[] }) {
+  const shown = entries.slice(0, MAX_WARNING_ENTRIES);
+  return (
+    <li>
+      {text}
+      <ul className="mt-1 list-none space-y-0.5 pl-3 text-[13px]">
+        {shown.map((e, i) => (
+          <li key={`${e.unitId}:${i}`}>{e.unit}{e.detail ? ` — ${e.detail}` : ""}</li>
+        ))}
+        {entries.length > shown.length && <li>{tf("batchWarnings.more", { broj: entries.length - shown.length })}</li>}
+      </ul>
+    </li>
+  );
+}
 
 function emailSummaryText(r: InvoiceEmailDispatchResult, withSent = true): string {
   const parts = [`${withSent ? "E-poštom poslato" : "Poslato"}: ${r.sent}, čeka slanje: ${r.pending}, neuspješno: ${r.failed}.`];
@@ -100,6 +119,8 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
   const debtorIds = [...new Set(preview.map((c) => c.debtorId).filter((d): d is string => Boolean(d)))];
   const draftOptedIn = batch.status === "DRAFT" ? await countOptedInDebtors(actor, debtorIds) : 0;
   const emailSummary = batch.status === "ISSUED" ? await getBatchEmailSummary(actor, id) : null;
+  const warnings = batch.status === "DRAFT" ? batchWarnings(preview, dueDate, new Date()) : null;
+  const flagged = new Set(warnings?.flaggedUnitIds ?? []);
 
   return (
     <div>
@@ -109,7 +130,9 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
         backLabel={t("nav.back.batches")}
         subtitle="Pregled obračuna za svaku jedinicu prije izdavanja"
         actions={
-          batch.status === "DRAFT" && actor.roles.includes("ACCOUNTANT") ? (
+          // issueBatch rejects a unit without a recipient (the draft's frozen preview): no "Izdaj" that is bound to fail —
+          // the warning list below says what to do (record the owner, then make a new draft for this period).
+          batch.status === "DRAFT" && actor.roles.includes("ACCOUNTANT") && !(warnings && warnings.noDebtor.length > 0) ? (
             <ConfirmAction
               trigger={t("confirm.batchIssue.trigger")}
               triggerVariant="caution"
@@ -139,11 +162,16 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
         <StatusBadge status={batch.status} label={batch.status === "DRAFT" ? "Nacrt — fakture još nisu izdate" : batch.status === "ISSUED" ? `Izdata (${batch.invoices.length} faktura)` : "Stornirana"} />
       </div>
 
-      {batch.status === "DRAFT" && (
-        <p className="-mt-2 mb-4 text-[13px] text-slate-600">
-          Račun e-poštom (PDF) dobiće {draftOptedIn} od {debtorIds.length} dužnika.
-        </p>
-      )}
+      <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat label={t("batchPage.statInvoices")} value={String(batch.status === "DRAFT" ? preview.length : batch.invoices.length)} tone="neutral" />
+        <Stat label={t("batchPage.statTotal")} value={formatMoney(grandTotal.toFixed(2))} tone="neutral" />
+        {batch.status === "DRAFT" ? (
+          <Stat label={t("batchPage.statEmailDraft")} value={tf("batchPage.ofDebtors", { broj: draftOptedIn, ukupno: debtorIds.length })} tone="neutral" />
+        ) : emailSummary ? (
+          <Stat label={t("batchPage.statEmailIssued")} value={tf("batchPage.sentOf", { poslato: emailSummary.sent, ukupno: emailSummary.optedIn })} tone={emailSummary.failed > 0 ? "bad" : "neutral"} />
+        ) : null}
+        <Stat label={t("batchPage.statDue")} value={formatDate(dueDate)} tone={batch.status === "DRAFT" && dueInPast ? "warn" : "neutral"} />
+      </div>
 
       {emailSummary && (emailSummary.optedIn > 0 || emailSummary.rows.length > 0) && (
         <div className="mb-4">
@@ -186,34 +214,66 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
         </div>
       )}
 
-      <div className="space-y-4">
-        {preview.map((calc) => (
-          <Card key={calc.unitId} title={`${calc.buildingName} / ${calc.unitLabel} — ${calc.debtorName} — ukupno ${formatMoney(calc.total)}`}>
-            <Table
-              id={`calc-lines-${calc.unitId}`}
-              caption={`Obračun — ${calc.buildingName} / ${calc.unitLabel}`}
-              headers={calcLineHeaders}
-              empty={calc.lines.length === 0}
-              emptyTitle={t("empty.calcLines.title")}
-            >
-              {calc.lines.map((l, i) => (
-                <tr key={i}>
-                  <Td>{l.name}</Td>
-                  <Td>{tEnum("chargeMethod", l.method)}</Td>
-                  <Td className="text-xs">{l.formula}</Td>
-                  <Td className="text-xs">
-                    {Object.entries(l.inputs).map(([k, v]) => `${k}=${v}`).join(", ")}
-                  </Td>
-                  <Td className="text-xs">{l.allocationBasis}</Td>
-                  <Td className="text-xs">{l.rawAmount}</Td>
-                  <Td>{formatMoney(l.amount, "")}</Td>
-                </tr>
-              ))}
-            </Table>
-          </Card>
-        ))}
-        {preview.length === 0 && <p className="text-sm text-slate-500">Serija nema obračunatih stavki.</p>}
-      </div>
+      <Card title={t("batchPage.unitsTitle")}>
+        {warnings && warnings.count > 0 && (
+          <div className="mb-3">
+            <Flash
+              inset
+              warn={
+                <div>
+                  <p className="font-semibold">{t("batchWarnings.title")}</p>
+                  <p className="mt-0.5 text-[13px]">{t("batchWarnings.intro")}</p>
+                  <ul className="mt-2 list-disc space-y-1.5 pl-5">
+                    {warnings.duePast && <li>{tf("batchWarnings.duePast", { datum: formatDate(dueDate) })}</li>}
+                    {warnings.noDebtor.length > 0 && <WarningGroup text={tf("batchWarnings.noDebtor", { broj: warnings.noDebtor.length })} entries={warnings.noDebtor} />}
+                    {warnings.zeroLines.length > 0 && <WarningGroup text={tf("batchWarnings.zeroLines", { broj: warnings.zeroLines.length })} entries={warnings.zeroLines} />}
+                    {warnings.zeroUnits.length > 0 && <WarningGroup text={tf("batchWarnings.zeroUnits", { broj: warnings.zeroUnits.length })} entries={warnings.zeroUnits} />}
+                  </ul>
+                </div>
+              }
+            />
+          </div>
+        )}
+        <Table
+          id="batch-units-table"
+          caption={t("batchPage.unitsTitle")}
+          headers={unitHeaders}
+          empty={preview.length === 0}
+          emptyTitle="Serija nema obračunatih stavki."
+        >
+          {preview.map((calc) => (
+            <tr key={calc.unitId}>
+              <Td>{calc.unitLabel}</Td>
+              <Td>{calc.buildingName}</Td>
+              <Td>{calc.debtorId ? calc.debtorName : t("batchPage.noDebtor")}</Td>
+              <Td>{formatMoney(calc.total)}</Td>
+              <Td>{flagged.has(calc.unitId) ? <StatusBadge status="PENDING" label={t("batchWarnings.chip")} /> : "—"}</Td>
+              <Td>
+                {calc.lines.length === 0 ? "—" : (
+                  <details>
+                    <summary className="cursor-pointer text-[13px] font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                      {t("batchPage.showCalc")}
+                    </summary>
+                    <ul className="mt-2 space-y-1 text-[13px] text-slate-700">
+                      {calc.lines.map((l, i) => (
+                        <li key={i}>
+                          {l.name} — {describeChargeLine({ method: l.method, allocationBasis: l.allocationBasis, inputs: l.inputs })} = {formatMoney(l.amount)}
+                        </li>
+                      ))}
+                      <li className="font-semibold">{tf("batchPage.lineTotal", { iznos: formatMoney(calc.total) })}</li>
+                    </ul>
+                  </details>
+                )}
+              </Td>
+            </tr>
+          ))}
+        </Table>
+        {preview.length > 0 && (
+          <p className="mt-3 text-sm font-semibold tabular-nums text-slate-700">
+            {tf("batchPage.totalLine", { broj: preview.length, iznos: formatMoney(grandTotal.toFixed(2)) })}
+          </p>
+        )}
+      </Card>
     </div>
   );
 }
