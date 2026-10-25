@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { requireActor, isManagement } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
@@ -6,8 +7,12 @@ import { totalCash, reserveFundBalance } from "@/server/services/finance";
 import { receivablesReport, unpaidSupplierInvoices } from "@/server/services/reports";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { planVsActual } from "@/server/services/plans";
-import { formatMoney, dec } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
+import { formatMoney, dec, ZERO } from "@/lib/money";
+import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { ownerTasks, type OwnerTask, type OwnerTaskVoting } from "@/lib/ownerTasks";
+import { isOneForm } from "@/lib/plural";
+import { partyDisplayName } from "@/server/services/ownership";
+import { IconCheck } from "@/components/nav-icons";
 import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink } from "@/components/ui";
 import { getZev } from "@/server/services/property";
 
@@ -161,6 +166,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
     return <p className="text-slate-500">Vaš nalog nije povezan sa evidencijom vlasnika. Obratite se predsjedniku ZEV.</p>;
   }
   const zevId = requireZev(actor);
+  const now = new Date();
   const [balance, advance] = await Promise.all([
     ownerBalance(actor, partyId),
     ownerAdvance(actor, partyId),
@@ -171,59 +177,99 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
   // Plans/party-per-tenant-plan.md §4, not a stale global User.partyId), so they can't
   // cross tenants even without an explicit zevId — meeting/document below have no such
   // implicit scoping and did need the fix (see ManagementDashboard above).
-  const [unpaid, recentPayments, openVoting, meetings, decisions, myIssues] = await Promise.all([
+  const [unpaid, recentPayments, openVoting, boardTerm, party, decisions, myIssues] = await Promise.all([
     prisma.invoice.findMany({ where: { debtorId: partyId, status: "ISSUED" }, include: { allocations: true, unit: true }, orderBy: { dueDate: "asc" } }),
     prisma.payment.findMany({ where: { payerId: partyId, reversedAt: null }, orderBy: { date: "desc" }, take: 5 }),
     prisma.eligibleVoter.findMany({
       where: { OR: [{ ownerId: partyId }, { proxyId: partyId }, { memberPartyIds: { has: partyId } }], proposal: { status: "VOTING_OPEN" } },
-      include: { proposal: true, votes: { where: { invalid: false } } },
+      include: { proposal: true, owner: true, votes: { where: { invalid: false } }, tokens: { where: { status: "ACTIVE" }, select: { id: true } } },
     }),
-    prisma.meeting.findMany({ where: { zevId, status: { in: ["SCHEDULED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
+    // V-N18: sjednice upravnog odbora vide samo aktivni članovi odbora (ili predsjednik).
+    prisma.officeTerm.findFirst({
+      where: { zevId, partyId, role: { in: ["BOARD_MEMBER", "PRESIDENT"] }, validFrom: { lte: now }, OR: [{ validTo: null }, { validTo: { gte: now } }] },
+      select: { id: true },
+    }),
+    prisma.party.findUnique({ where: { id: partyId, zevId }, select: { eVoteConsentStatus: true } }),
     prisma.document.findMany({ where: { zevId, type: "DECISION", publishedToOwners: true }, orderBy: { createdAt: "desc" }, take: 5 }),
     prisma.maintenanceIssue.findMany({ where: { reporterId: partyId }, orderBy: { createdAt: "desc" }, take: 5 }),
   ]);
+  const isBoard = Boolean(boardTerm);
+  const [meetings, ballots] = await Promise.all([
+    prisma.meeting.findMany({
+      where: { zevId, ...(isBoard ? {} : { body: "ASSEMBLY" as const }), status: { in: ["SCHEDULED", "INVITATIONS_SENT", "VOTING_OPEN"] } },
+      orderBy: { scheduledAt: "asc" }, take: 5,
+    }),
+    openVoting.length
+      ? prisma.ballot.findMany({
+          where: { zevId, recipientPartyId: partyId, status: "ACTIVE", meetingId: { in: [...new Set(openVoting.map((ev) => ev.proposal.meetingId))] } },
+          select: { meetingId: true },
+        })
+      : Promise.resolve([] as { meetingId: string }[]),
+  ]);
+
+  // "Za Vas sada" (F3.4): iste podatke koje stranica ionako učitava, rangirane čistom funkcijom.
+  const unpaidOpen = unpaid
+    .map((inv) => ({
+      id: inv.id,
+      number: inv.number,
+      unitLabel: inv.unit.label,
+      dueDate: inv.dueDate,
+      remainingDec: dec(inv.total.toString()).minus(inv.allocations.reduce((a, x) => a.plus(dec(x.amount.toString())), ZERO)),
+    }))
+    .filter((i) => i.remainingDec.greaterThan(ZERO));
+  const ballotMeetings = new Set(ballots.map((b) => b.meetingId));
+  const votings: OwnerTaskVoting[] = openVoting.map((ev) => {
+    const canVote = ev.ownerId === partyId || ev.proxyId === partyId;
+    const units = ((ev.basis as { units?: { label: string }[] } | null)?.units ?? []).map((u) => u.label).join(", ");
+    return {
+      proposalId: ev.proposalId,
+      code: ev.proposal.code,
+      title: ev.proposal.title,
+      closesAt: ev.proposal.votingClosesAt,
+      canVote,
+      voted: ev.votes.length > 0,
+      representative: !canVote && ev.memberPartyIds.includes(partyId) ? { name: partyDisplayName(ev.owner), units } : null,
+      linkSent: ballotMeetings.has(ev.proposal.meetingId) || ev.tokens.length > 0,
+    };
+  });
+  const { tasks, allClear, unpaidLater } = ownerTasks({
+    now,
+    invoices: unpaidOpen.map((i) => ({ id: i.id, number: i.number, unitLabel: i.unitLabel, dueDate: i.dueDate, remaining: i.remainingDec.toFixed(2) })),
+    votings,
+    eVoteConsentStatus: party?.eVoteConsentStatus ?? "NONE",
+  });
+  const lastPayment = recentPayments[0];
+
   return (
     <div>
       <PageHeader title="Moj pregled" subtitle={actor.displayName} />
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Moj saldo (dugujem)" value={formatMoney(balance.balance)} tone={Number(balance.balance) > 0 ? "warn" : "ok"} />
-        <Stat label="Ukupno zaduženo" value={formatMoney(balance.charged)} tone="neutral" />
-        <Stat label="Ukupno plaćeno" value={formatMoney(balance.paid)} tone="ok" />
-        <Stat label="Avans / preplata" value={formatMoney(advance)} tone="neutral" />
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card title="Moje neplaćene fakture">
-          {unpaid.length === 0 && <p className="text-sm text-slate-500">Nemate neplaćenih faktura.</p>}
-          <ul className="space-y-2">
-            {unpaid.map((inv) => {
-              const paid = inv.allocations.reduce((a, x) => a + Number(x.amount), 0);
-              return (
-                <li key={inv.id} className="flex items-center justify-between gap-2 text-sm">
-                  <Link className="text-blue-700 hover:underline" href={`/fakture/${inv.id}`}>
-                    {inv.number} ({inv.unit.label})
-                  </Link>
-                  <span className="text-xs text-slate-500">rok {formatDate(inv.dueDate)}</span>
-                  <span className="tabular-nums">{formatMoney((Number(inv.total) - paid).toFixed(2))}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
-        <Card title="Otvorena glasanja">
-          {openVoting.length === 0 && <p className="text-sm text-slate-500">Trenutno nema otvorenih izjašnjavanja.</p>}
-          <ul className="space-y-2">
-            {openVoting.map((ev) => (
-              <li key={ev.id} className="flex items-center justify-between gap-2 text-sm">
-                <span>{ev.proposal.code} — {ev.proposal.title}</span>
-                {ev.votes.length > 0
-                  ? <StatusBadge status="ACCEPTED" label={ev.ownerId === partyId || ev.proxyId === partyId ? "Izjašnjeni ste" : t("votingSubject.owner.communityVoted")} />
-                  : ev.ownerId === partyId || ev.proxyId === partyId
-                    ? <span className="text-xs text-amber-700">Link ste dobili e-poštom</span>
-                    : <span className="text-[13px] text-slate-600">{t("votingSubject.owner.communityPending")}</span>}
-              </li>
+      <Card title={t("ownerHome.title")}>
+        {allClear && (
+          <div className="flex items-start gap-3">
+            <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
+            <div>
+              <p className="text-sm text-slate-800">{t(unpaidLater ? "ownerHome.empty.nothingSoon" : "ownerHome.empty.allPaid")}</p>
+              {lastPayment && (
+                <p className="mt-1 text-[13px] text-slate-500">
+                  {tf("ownerHome.empty.lastPayment", { datum: formatDate(lastPayment.date), iznos: formatMoney(lastPayment.amount.toString()) })}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+        {tasks.length > 0 && (
+          <ul className={`divide-y divide-border ${allClear ? "mt-4 border-t border-border" : ""}`}>
+            {tasks.map((task) => (
+              <TaskRow key={task.key} task={task} />
             ))}
           </ul>
-        </Card>
+        )}
+      </Card>
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <Stat label={t("ownerHome.stats.owed")} value={formatMoney(balance.balance)} tone={Number(balance.balance) > 0 ? "warn" : "ok"} />
+        <Stat label={t("ownerHome.stats.advance")} value={formatMoney(advance)} tone="neutral" />
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Moje nedavne uplate">
           {recentPayments.length === 0 && <p className="text-sm text-slate-500">Nema evidentiranih uplata.</p>}
           <ul className="space-y-2">
@@ -238,9 +284,12 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
         <Card title="Predstojeće sjednice">
           <ul className="space-y-2">
             {meetings.map((m) => (
-              <li key={m.id} className="flex items-center justify-between text-sm">
-                <Link className="text-blue-700 hover:underline" href={`/skupstina/${m.id}`}>{m.title}</Link>
-                <span className="text-xs text-slate-500">{formatDateTime(m.scheduledAt)}</span>
+              <li key={m.id} className="flex items-center justify-between gap-2 text-sm">
+                <span className="min-w-0">
+                  <Link className="text-blue-700 hover:underline" href={`/skupstina/${m.id}`}>{m.title}</Link>
+                  {isBoard && <span className="ml-2 text-[13px] text-slate-500">{tEnum("ownerHome.body", m.body)}</span>}
+                </span>
+                <span className="text-[13px] text-slate-500">{formatDateTime(m.scheduledAt)}</span>
               </li>
             ))}
             {meetings.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih sjednica.</p>}
@@ -269,5 +318,63 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
         </Card>
       </div>
     </div>
+  );
+}
+
+/** Jedan red "Za Vas sada": chip, rečenica, (meta) i najviše jedno dugme; na telefonu dugme ide ispod teksta u punoj širini. */
+function TaskRow({ task }: { task: OwnerTask }) {
+  let badge: { status: string; label: string };
+  let text: string;
+  let meta: string | null = null;
+  let action: ReactNode = null;
+  switch (task.kind) {
+    case "overdue": {
+      const i = task.invoice;
+      badge = { status: "UNPAID", label: t("ownerHome.overdue.badge") };
+      text = tf("ownerHome.overdue.text", {
+        broj: i.number, jedinica: i.unitLabel, iznos: formatMoney(i.remaining), datum: formatDate(i.dueDate),
+        kada: tf(isOneForm(task.overdueDays) ? "pay.daysAgo.one" : "pay.daysAgo.other", { dana: task.overdueDays }),
+      });
+      action = <BtnLink href={`/fakture/${i.id}`} variant={task.primary ? "primary" : "secondary"}>{t("ownerHome.pay")}</BtnLink>;
+      break;
+    }
+    case "dueSoon": {
+      const i = task.invoice;
+      badge = { status: "ISSUED", label: t("ownerHome.dueSoon.badge") };
+      text = tf("ownerHome.dueSoon.text", { broj: i.number, jedinica: i.unitLabel, iznos: formatMoney(i.remaining), datum: formatDate(i.dueDate) });
+      action = <BtnLink href={`/fakture/${i.id}`} variant={task.primary ? "primary" : "secondary"}>{t("ownerHome.pay")}</BtnLink>;
+      break;
+    }
+    case "voting": {
+      const v = task.voting;
+      badge = { status: "VOTING_OPEN", label: t("ownerHome.voting.badge") };
+      text = tf("ownerHome.voting.text", { sifra: v.code, naslov: v.title });
+      meta = [v.closesAt ? tf("ownerHome.voting.deadline", { datum: formatDate(v.closesAt) }) : null, v.linkSent ? t("ownerHome.voting.linkSent") : null]
+        .filter(Boolean).join(" · ") || null;
+      action = <BtnLink href={`/skupstina/prijedlog/${v.proposalId}`} variant={task.primary ? "primary" : "secondary"}>{t("ownerHome.voting.view")}</BtnLink>;
+      break;
+    }
+    case "evoteConsent":
+      badge = { status: "NONE", label: t("ownerHome.consent.badge") };
+      text = t("ownerHome.consent.text");
+      action = <BtnLink href="/podesavanja" variant="tonal">{t("ownerHome.consent.button")}</BtnLink>;
+      break;
+    case "viaRepresentative": {
+      const v = task.voting;
+      badge = { status: "NONE", label: t("ownerHome.representative.badge") };
+      text = tf("votingSubject.owner.viaRepresentative", { units: v.representative?.units ?? "", name: v.representative?.name ?? "" });
+      meta = `${v.code} — ${v.title}`;
+      break;
+    }
+  }
+  return (
+    <li className="flex flex-col gap-3 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0 space-y-1">
+        <StatusBadge status={badge.status} label={badge.label} />
+        <p className="text-sm text-slate-800">{text}</p>
+        {meta && <p className="text-[13px] text-slate-500">{meta}</p>}
+      </div>
+      {action && <div className="shrink-0 max-sm:[&>*]:w-full">{action}</div>}
+    </li>
   );
 }

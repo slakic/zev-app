@@ -4,7 +4,7 @@ import { createFixture, createAreaCharges, uid, type Fixture } from "./helpers";
 import { calculateCharge } from "@/server/engines/billing";
 import { dec } from "@/lib/money";
 import {
-  createChargeItem, createDraftBatch, issueBatch, previewBatch,
+  createChargeItem, createDraftBatch, issueBatch, previewBatch, listInvoices,
   correctInvoice, cancelInvoice, enterMeterReading, defaultBatchDueDate,
 } from "@/server/services/billing";
 import { enterPayment, allocatePayment } from "@/server/services/payments";
@@ -227,5 +227,33 @@ describe("F1 — cancel guard and default due date", () => {
     const invoices = await issueBatch(f.accountant, batch.id);
     expect(invoices.length).toBeGreaterThan(0);
     for (const inv of invoices) expect(inv.dueDate.toISOString()).toBe(defaultBatchDueDate("2034-03").toISOString());
+  });
+});
+
+describe("F3 — owner invoice list order", () => {
+  it("'owner' sort: unpaid first by due date (overdue lead), then settled newest-issued first; management ignores it", async () => {
+    const f = await createFixture("f3list");
+    const chargeIds = await createAreaCharges(f, "1.00");
+    const first = await issueBatch(f.accountant, (await createDraftBatch(f.accountant, "2037-01", undefined, chargeIds)).batch.id);
+    const second = await issueBatch(f.accountant, (await createDraftBatch(f.accountant, "2037-02", undefined, chargeIds)).batch.id);
+    // Owner A has u1 and u4 in both periods. Settle the earliest u1 invoice completely.
+    const paidInv = first.find((i) => i.unitId === f.u1.id)!;
+    const p = await enterPayment(f.accountant, { accountId: f.account.id, date: new Date(), amount: "50.00", payerId: f.ownerA.id });
+    await allocatePayment(f.accountant, { paymentId: p.id, invoiceId: paidInv.id, amount: "50.00" });
+    // Make the u4 invoice of period 2 due earlier than every other unpaid one.
+    const earliest = second.find((i) => i.unitId === f.u4.id)!;
+    await prisma.invoice.update({ where: { id: earliest.id }, data: { dueDate: new Date("2000-01-01") } });
+
+    const r = await listInvoices(f.actorA, undefined, { sortBy: "owner" });
+    const ids = r.rows.map((x) => x.id);
+    expect(r.rows.length).toBe(4);
+    expect(ids[0]).toBe(earliest.id);
+    expect(r.rows.map((x) => x.status)).toEqual(["ISSUED", "ISSUED", "ISSUED", "PAID"]);
+    expect(ids[3]).toBe(paidInv.id);
+
+    // Management: "owner" is not a management order; it falls back to the plain number order.
+    const mgmt = await listInvoices(f.accountant, { debtorId: f.ownerA.id }, { sortBy: "owner" });
+    const numbers = mgmt.rows.map((x) => x.number);
+    expect(numbers).toEqual([...numbers].sort().reverse());
   });
 });

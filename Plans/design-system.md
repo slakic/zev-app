@@ -209,6 +209,7 @@ Ovo je lista „ponovo upotrijebi ovo, nemoj pisati novo". Svaki primitiv ima je
 | `Card` | `:31` | Sekcija stranice: opcioni naslov + hint + sadržaj. Osnovni kontejner za sve — tabele, forme, sažetke. |
 | `Stat` | `:43` | KPI kutija sa 1px tonskom trakom (`ok`/`warn`/`bad`/`neutral`). **Referentni uzor za gustinu i za količinu boje koju jedan element smije da nosi.** |
 | `Flash` | `:677` | Poruka o uspjehu/grešci iz query stringa. `role="alert"` za greške, `role="status"` za uspjeh. |
+| **„Za Vas sada” (obrazac, ne komponenta)** | `(app)/page.tsx` `OwnerDashboard` (F3.4, v2.46.0, odluka D1 A) | Jedan po početnoj, uvijek prvi ispod `PageHeader`-a. Kompozicija postojećih primitiva: `Card` + `ul.divide-y` + redovi (`StatusBadge` chip, rečenica `text-sm`, meta `text-[13px]`, najviše jedno dugme) — bez unutrašnjih okvira, pa bez ugniježđene elevacije. Redovi su rangirani po hitnosti čistom funkcijom (`src/lib/ownerTasks.ts`, determinističan redoslijed), **`primary` samo na najhitnijem redu**, ostali `secondary`/`tonal`; informativni redovi nemaju dugme. Na telefonu dugme ide ispod teksta u punoj širini reda. Prazno stanje je potvrda (ikona `IconCheck`, „Sve je izmireno…”), ne prazna kartica. Brojke (`Stat`) idu ispod liste, ne iznad. Kasnije ga koriste računovođa (F5) i predsjednik (F6); primitiv `TaskList` tek ako treća uloga to zatraži. |
 
 ### 4.2 Dugmad — stablo odlučivanja
 

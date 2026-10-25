@@ -379,6 +379,8 @@ F3, F5, F6 i F7 su međusobno nezavisne, mogu ići bilo kojim redom i nijedna ne
 
 ### F3 — Vlasnik: „koliko dugujem i kako da platim” + početna *(M · D1, D7)*
 
+**Status: ISPORUČENO u v2.46.0 (nije commitovano):** [`f3-vlasnik-kako-da-platim-i-pocetna-plan.md`](f3-vlasnik-kako-da-platim-i-pocetna-plan.md).
+
 - **Svrha:** posao br. 1 vlasnika rješiv je u aplikaciji, na telefonu, bez PDF-a. Rješava K5, V10, V11 (dio) i V-N11–V-N16.
 - **F3a — plaćanje** (V-R01, V-R05):
   - **Blok „Kako da platim”** je prva kartica na neplaćenoj fakturi. Sadrži preostali iznos, rok i broj dana kašnjenja, primaoca, račun i banku, poziv na broj (15px), svrhu i `secondary` „Preuzmi PDF”. PDF i QR računaju preostali iznos.

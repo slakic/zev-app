@@ -43,6 +43,48 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.46.0] - 2026-10-25
+
+Faza F3 pregleda dizajna: vlasnik na telefonu za najviše dva dodira od početne zna koliko duguje, do kada i kako da plati. **Bez migracije** — deploy ne traži ručni korak.
+
+### Dodato
+
+- **„Kako da platim” na detalju fakture.** Prva kartica ispod zaglavlja (vidi je i uprava) pokazuje iznos za uplatu
+  (preostali, ne ukupan), rok, a kad je rok prošao i „Dospjela (neplaćena)” sa brojem dana. Ispod su primalac,
+  račun primaoca (sa bankom), iznos, poziv na broj i svrha uplate („ZEV {period} — {broj fakture}”) kao krupne
+  vrijednosti koje se jednim dodirom označe cijele, pa više ne treba otvarati PDF. Ako ZEV nema bankovni račun,
+  piše da podaci još nisu uneseni (upravi i gdje da ih unese). Plaćena faktura umjesto toga ima karticu „Plaćanje”
+  bez uplatnih podataka.
+- **„Za Vas sada” na početnoj vlasnika.** Prva kartica, rangirana po hitnosti: dospjele fakture (najstarija prva),
+  glasanja u kojima vlasnik još nije glasao, uključivanje elektronskog glasanja, fakture koje dospijevaju u narednih
+  14 dana i informativni red za suvlasnika čiji predstavnik glasa. Samo najhitnija stavka ima glavno dugme. Kad
+  nema ničega, prikazuje se potvrda („Sve je izmireno”) sa posljednjom uplatom.
+- **Lista faktura vlasnika:** kolona „Preostalo”, neplaćene fakture prve (dospjele pa po roku), a zbirni iznosi
+  „Zaduženo od početka” i „Plaćeno od početka” (sa početne) stoje iznad tabele.
+- **„Moje uplate”:** kolona „Raspoređeno na” sa vezama na fakture (bez storniranih alokacija).
+- Čiste funkcije sa testovima: `describeChargeLine`, `ownerTasks`, `paymentQrPayload` i pomoćne za rok/kašnjenje.
+
+### Izmijenjeno
+
+- **Stavke fakture za vlasnika** imaju tri kolone (Stavka, Osnov obračuna, Iznos); „Osnov obračuna” je čitljiva
+  rečenica (npr. „15,00 m² × 0,30 KM/m²”) umjesto internih „Formula” i „Ulazi”, koje i dalje vidi uprava.
+- **Jedan status chip** na fakturi i u listi: dospjela faktura nosi samo „Dospjela (neplaćena)”. „Dospjela” se
+  računa po kalendarskom danu (Sarajevo): na sam dan roka faktura još nije dospjela.
+- **Početna vlasnika:** četiri jednaka broja zamijenjena sa dva („Dugujete ukupno”, „Avans / preplata”);
+  kartice „Moje neplaćene fakture” i „Otvorena glasanja” su ušle u „Za Vas sada”. „Predstojeće sjednice” pokazuje
+  samo skupštinu, a članovima upravnog odbora i sjednice odbora sa oznakom tijela. Sitni tekstovi na stranici su 13px.
+- **PDF fakture:** „UKUPNO ZA PLAĆANJE” je zamijenjeno sa „ZA UPLATU” (preostali iznos; uz „Ukupno” i „Plaćeno”
+  kad je bilo uplata), a QR kod nosi preostali iznos. PDF plaćene (ili stornirane) fakture nema račun, poziv na
+  broj ni QR kod; plaćena nosi „PLAĆENO U CIJELOSTI”.
+- **Preuzimanje PDF-a fakture ne pravi novu verziju na svaki klik:** vraća se posljednja sačuvana verzija, a nova
+  nastaje samo kad je poslije nje evidentirana ili stornirana uplata po fakturi, ili je faktura stornirana. Ranije
+  verzije se ne mijenjaju. Isto pravilo važi i za PDF u e-mailu fakture.
+
+### Ispravljeno
+
+- Račun na koji se uplaćuje je određen: najstariji aktivan bankovni račun ZEV-a sa upisanim brojem (dosad je
+  PDF uzimao „prvi” bez redoslijeda, pa je kod više računa izbor bio neodređen). Isti izbor važi za ekran i PDF.
+
 ## [2.45.0] - 2026-10-25
 
 Faza F2 pregleda dizajna: orijentacija u školjci i ekrani za prijavu. **Bez migracije** — deploy ne traži ručni korak.

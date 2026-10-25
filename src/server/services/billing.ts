@@ -396,7 +396,9 @@ export async function issueSingleInvoice(
 
 // ---- Invoice queries with owner isolation ----
 
-export type InvoiceSortKey = "number" | "dueDate" | "total" | "paid";
+/** `"owner"` (F3.3) is the owner list's default order, not a column the user can click: unpaid first (earliest due date first, so overdue
+ *  ones lead), then everything else newest-issued first. It only applies to an owner's own list — management falls back to the plain number order. */
+export type InvoiceSortKey = "number" | "dueDate" | "total" | "paid" | "owner";
 
 const INVOICE_PAGE_SIZE = 20;
 
@@ -432,6 +434,15 @@ export async function listInvoices(
   const page = Math.max(1, opts?.page ?? 1);
   const include = { unit: { include: { building: true } }, debtor: true, allocations: true };
 
+  if (opts?.sortBy === "owner" && !isManagement) {
+    // Same in-memory approach as "paid": the order needs a CASE over status, which Prisma's orderBy cannot express.
+    const all = await prisma.invoice.findMany({ where, include });
+    all.sort(compareOwnerInvoices);
+    const total = all.length;
+    const rows = all.slice((page - 1) * INVOICE_PAGE_SIZE, page * INVOICE_PAGE_SIZE);
+    return { rows, page, pageCount: Math.max(1, Math.ceil(total / INVOICE_PAGE_SIZE)) };
+  }
+
   if (opts?.sortBy === "paid") {
     const all = await prisma.invoice.findMany({ where, include });
     all.sort((a, b) => invoicePaidAmount(a).comparedTo(invoicePaidAmount(b)) * (dir === "desc" ? -1 : 1));
@@ -449,6 +460,17 @@ export async function listInvoices(
     prisma.invoice.count({ where }),
   ]);
   return { rows, page, pageCount: Math.max(1, Math.ceil(total / INVOICE_PAGE_SIZE)) };
+}
+
+/** Owner list order (F3.3): ISSUED first by due date (overdue lead), then PAID/CANCELLED/CORRECTED by issue date descending. */
+export function compareOwnerInvoices(
+  a: { status: string; dueDate: Date; issueDate: Date; number: string },
+  b: { status: string; dueDate: Date; issueDate: Date; number: string },
+): number {
+  const rank = (x: { status: string }) => (x.status === "ISSUED" ? 0 : 1);
+  if (rank(a) !== rank(b)) return rank(a) - rank(b);
+  if (rank(a) === 0) return a.dueDate.getTime() - b.dueDate.getTime() || a.number.localeCompare(b.number);
+  return b.issueDate.getTime() - a.issueDate.getTime() || b.number.localeCompare(a.number);
 }
 
 export async function getInvoice(actor: Actor, id: string) {

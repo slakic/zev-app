@@ -1,8 +1,11 @@
+import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireActor, isManagement } from "@/server/actor";
 import { getInvoice, cancelInvoice, correctInvoice, invoicePaidAmount } from "@/server/services/billing";
-import { generateInvoicePdf } from "@/server/services/documents";
+import { ensureInvoiceDocument } from "@/server/services/documents";
+import { getPaymentInstructions } from "@/server/services/paymentInstructions";
+import { describeChargeLine } from "@/lib/chargeLine";
 import {
   dispatchInvoiceEmails,
   getInvoiceEmailStatus,
@@ -10,15 +13,24 @@ import {
   sendInvoiceEmailNow,
 } from "@/server/services/invoiceEmail";
 import { partyDisplayName } from "@/server/services/ownership";
-import { formatMoney, dec, parseMoneyInput } from "@/lib/money";
+import { formatMoney, dec, parseMoneyInput, ZERO } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { isOneForm } from "@/lib/plural";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowLink, Flash, type ColumnSpec } from "@/components/ui";
 
 // Slanje e-pošte može potrajati (PDF + Mailjet), pa isti budžet kao na stranici serije.
 export const maxDuration = 60;
 
-const invoiceLineHeaders: ColumnSpec[] = [
+// Vlasnik vidi čitljiv "Osnov obračuna"; "Formula" i "Ulazi" ostaju upravi, koja ih koristi za provjeru (F3.2).
+const ownerLineHeaders: ColumnSpec[] = [
   { label: "Stavka" },
+  { label: t("pay.basis") },
+  { label: "Iznos", align: "right" },
+];
+
+const managementLineHeaders: ColumnSpec[] = [
+  { label: "Stavka" },
+  { label: t("pay.basis") },
   { label: "Formula" },
   { label: "Ulazi" },
   { label: "Iznos", align: "right" },
@@ -35,7 +47,7 @@ async function pdfAction(formData: FormData) {
   "use server";
   const actor = await requireActor();
   const id = String(formData.get("invoiceId"));
-  const doc = await generateInvoicePdf(actor, id);
+  const doc = await ensureInvoiceDocument(actor, id);
   redirect(`/api/dokumenti/${doc.id}`);
 }
 
@@ -116,6 +128,8 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const management = isManagement(actor);
   const paid = invoicePaidAmount(inv);
   const open = dec(inv.total.toString()).minus(paid);
+  const pay = await getPaymentInstructions(actor, id);
+  const overdue = pay.payable && pay.overdueDays > 0;
   const emailStatus = await getInvoiceEmailStatus(actor, id);
   const isAccountant = actor.roles.includes("ACCOUNTANT");
   // Payments that still hold money on this invoice (net of storno rows) — the ones to reverse first.
@@ -126,6 +140,21 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
     livePayments.set(a.paymentId, cur);
   }
   const holdingPayments = [...livePayments.entries()].filter(([, v]) => !v.net.isZero());
+  // "Plaćanje" kartica plaćene fakture: posljednja uplata koja na njoj stvarno stoji (neto po uplati).
+  const paidByPayment = new Map<string, { date: Date; net: ReturnType<typeof dec> }>();
+  for (const a of inv.allocations) {
+    const cur = paidByPayment.get(a.paymentId) ?? { date: a.payment.date, net: ZERO };
+    cur.net = cur.net.plus(dec(a.amount.toString()));
+    paidByPayment.set(a.paymentId, cur);
+  }
+  const settledPayments = [...paidByPayment.values()].filter((p) => p.net.greaterThan(ZERO));
+  const lastPaymentDate = settledPayments.reduce<Date | null>((m, p) => (m && m > p.date ? m : p.date), null);
+  const pdfForm = (
+    <form action={pdfAction}>
+      <input type="hidden" name="invoiceId" value={inv.id} />
+      <SubmitBtn variant="secondary">{pay.payable ? t("pay.pdf") : "Preuzmi PDF"}</SubmitBtn>
+    </form>
+  );
   const debtorName = partyDisplayName(inv.debtor);
   const emailsDebtor = inv.debtor.invoiceEmailDelivery && Boolean(inv.debtor.email?.trim());
 
@@ -136,21 +165,73 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
         backHref="/fakture?tab=fakture"
         backLabel={t("nav.invoices")}
         subtitle={`${inv.unit.building.name} / ${inv.unit.label} · ${partyDisplayName(inv.debtor)}`}
-        actions={
-          <form action={pdfAction}>
-            <input type="hidden" name="invoiceId" value={inv.id} />
-            <SubmitBtn variant="secondary">Preuzmi PDF</SubmitBtn>
-          </form>
-        }
+        actions={pay.payable ? undefined : pdfForm}
       />
       <Flash err={err} msg={msg} />
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <StatusBadge status={inv.status} label={tEnum("invoiceStatus", inv.status)} />
-        {inv.status === "ISSUED" && inv.dueDate < new Date() && <StatusBadge status="UNPAID" label={tEnum("invoiceStatus", "OVERDUE")} />}
-        {inv.correctionOf && <span className="text-sm text-slate-500">Korekcija fakture {inv.correctionOf.number}</span>}
-        {inv.correctedBy && <span className="text-sm text-slate-500">Korigovana fakturom {inv.correctedBy.number}</span>}
-        {inv.cancelReason && <span className="text-sm text-red-600">Storno: {inv.cancelReason}</span>}
-      </div>
+      {pay.payable && (
+        <div className="mb-4">
+          <Card title={t("pay.title")}>
+            {/* Na telefonu: iznos, uplatni podaci, pa napomena i PDF (podaci moraju biti vidljivi bez skrolanja); na širokom ekranu podaci su desna kolona. */}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="space-y-3 lg:col-start-1 lg:row-start-1">
+                <div>
+                  <div className="text-[13px] text-slate-500">{t("pay.amount")}</div>
+                  <div className="text-2xl font-semibold tabular-nums text-ink">{formatMoney(pay.remaining)}</div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
+                  <span>{tf("pay.due", { datum: formatDate(pay.dueDate) })}</span>
+                  {overdue && <StatusBadge status="UNPAID" label={tEnum("invoiceStatus", "OVERDUE")} />}
+                </div>
+                {overdue && (
+                  <p className="text-[13px] text-slate-600">
+                    {tf("pay.overdueSince", { kada: tf(isOneForm(pay.overdueDays) ? "pay.daysAgo.one" : "pay.daysAgo.other", { dana: pay.overdueDays }) })}
+                  </p>
+                )}
+              </div>
+              <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+                {pay.account ? (
+                  <dl className="space-y-3">
+                    <PayField label={t("pay.recipient")}>{pay.recipient}</PayField>
+                    <PayField label={t("pay.account")} extra={pay.account.bankName} breakAll>{pay.account.iban}</PayField>
+                    <PayField label={t("pay.amountField")} unit="KM">{formatMoney(pay.remaining, "").trim()}</PayField>
+                    <PayField label={t("pay.reference")} breakAll>{pay.reference}</PayField>
+                    <PayField label={t("pay.purpose")}>{pay.purpose}</PayField>
+                  </dl>
+                ) : (
+                  <p className="max-w-[68ch] text-sm text-slate-700">
+                    {t("pay.noAccount")}
+                    {management && <> {t("pay.noAccountManagement")}</>}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-3 lg:col-start-1 lg:row-start-2">
+                <p className="max-w-[68ch] text-[13px] text-slate-500">{t("pay.note")}</p>
+                {pdfForm}
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+      {inv.status === "PAID" && lastPaymentDate && (
+        <div className="mb-4">
+          <Card title={t("pay.paidTitle")}>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-700">
+              <StatusBadge status="PAID" label={tEnum("invoiceStatus", "PAID")} />
+              <span>
+                {tf(settledPayments.length > 1 ? "pay.paidMany" : "pay.paidOne", { iznos: formatMoney(paid.toFixed(2)), datum: formatDate(lastPaymentDate) })}
+              </span>
+            </div>
+          </Card>
+        </div>
+      )}
+      {(!(overdue || inv.status === "PAID") || inv.correctionOf || inv.correctedBy || inv.cancelReason) && (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {!(overdue || inv.status === "PAID") && <StatusBadge status={inv.status} label={tEnum("invoiceStatus", inv.status)} />}
+          {inv.correctionOf && <span className="text-sm text-slate-500">Korekcija fakture {inv.correctionOf.number}</span>}
+          {inv.correctedBy && <span className="text-sm text-slate-500">Korigovana fakturom {inv.correctedBy.number}</span>}
+          {inv.cancelReason && <span className="text-sm text-red-600">Storno: {inv.cancelReason}</span>}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card title="Iznosi">
@@ -160,7 +241,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             <div className="flex justify-between"><dt>Otvoreno:</dt><dd className="tabular-nums font-semibold">{formatMoney(open.toFixed(2))}</dd></div>
             <div className="flex justify-between"><dt>Izdata:</dt><dd>{formatDate(inv.issueDate)}</dd></div>
             <div className="flex justify-between"><dt>Dospijeće:</dt><dd>{formatDate(inv.dueDate)}</dd></div>
-            <div className="flex justify-between"><dt>Poziv na broj:</dt><dd className="font-mono text-xs">{inv.paymentReference ?? "—"}</dd></div>
+            <div className="flex justify-between"><dt>Poziv na broj:</dt><dd className="text-[13px] tabular-nums">{inv.paymentReference ?? "—"}</dd></div>
             <div className="flex justify-between gap-3">
               <dt>Dostava e-poštom:</dt>
               <dd className="text-right">
@@ -195,17 +276,18 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             <Table
               id="invoice-lines-table"
               caption="Stavke sa obračunom"
-              headers={invoiceLineHeaders}
+              headers={management ? managementLineHeaders : ownerLineHeaders}
               empty={inv.lines.length === 0}
               emptyTitle={t("empty.invoiceLines.title")}
             >
               {inv.lines.map((l) => {
-                const snap = l.calcSnapshot as { formula?: string; inputs?: Record<string, unknown> } | null;
+                const snap = l.calcSnapshot as { method?: string; formula?: string; allocationBasis?: string; inputs?: Record<string, unknown> } | null;
                 return (
                   <tr key={l.id}>
                     <Td>{l.description}</Td>
-                    <Td className="text-xs">{snap?.formula ?? ""}</Td>
-                    <Td className="text-xs">{snap?.inputs ? Object.entries(snap.inputs).map(([k, v]) => `${k}=${v}`).join(", ") : ""}</Td>
+                    <Td>{describeChargeLine(snap)}</Td>
+                    {management && <Td className="text-xs">{snap?.formula ?? ""}</Td>}
+                    {management && <Td className="text-xs">{snap?.inputs ? Object.entries(snap.inputs).map(([k, v]) => `${k}=${v}`).join(", ") : ""}</Td>}
                     <Td>{formatMoney(l.amount.toString(), "")}</Td>
                   </tr>
                 );
@@ -290,6 +372,20 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
           </Card>
         </div>
       )}
+    </div>
+  );
+}
+
+/** Jedan red uplatnih podataka: vrijednost je `select-all`, pa jedan dodir označi cijelu vrijednost (D7 A). */
+function PayField({ label, children, unit, extra, breakAll }: { label: string; children: ReactNode; unit?: string; extra?: string | null; breakAll?: boolean }) {
+  return (
+    <div>
+      <dt className="text-[13px] text-slate-500">{label}</dt>
+      <dd className="text-[15px] tabular-nums text-ink">
+        <span className={`select-all ${breakAll ? "break-all" : "break-words"}`}>{children}</span>
+        {unit && <span className="ml-1 text-slate-600">{unit}</span>}
+        {extra && <span className="block text-[13px] text-slate-500">{extra}</span>}
+      </dd>
     </div>
   );
 }

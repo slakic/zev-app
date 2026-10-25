@@ -6,9 +6,9 @@ import { listAccounts } from "@/server/services/finance";
 import { getBankSmsStatus } from "@/server/services/bankSms";
 import { getChannelReconciliation } from "@/server/services/paymentMatching";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
-import { formatMoney, parseMoneyInput } from "@/lib/money";
+import { formatMoney, parseMoneyInput, dec, ZERO } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, FilterBar, Pagination, BtnLink, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowActionLink, RowLink, FilterBar, Pagination, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const paymentHeaders: ColumnSpec[] = [
   { label: "Datum", sortKey: "date" },
@@ -17,6 +17,15 @@ const paymentHeaders: ColumnSpec[] = [
   { label: "Iznos", align: "right", nowrap: true, sortKey: "amount" },
   { label: "Status" },
   { label: "Radnje" },
+];
+
+// Vlasnik: bez "Platilac" (uvijek on) i "Radnje" (uvijek prazne), a sa "Raspoređeno na" (F3.3).
+const ownerPaymentHeaders: ColumnSpec[] = [
+  { label: "Datum", priority: "primary", sortKey: "date" },
+  { label: "Poziv na broj", priority: "detail" },
+  { label: "Iznos", align: "right", nowrap: true, sortKey: "amount" },
+  { label: t("ownerInvoices.allocatedTo") },
+  { label: "Status", priority: "secondary" },
 ];
 
 const PAYMENT_SORT_KEYS: PaymentSortKey[] = ["date", "amount"];
@@ -222,7 +231,7 @@ export default async function PaymentsPage({
           <Table
             id="payments-table"
             caption={management ? "Sve uplate" : "Moje evidentirane uplate"}
-            headers={paymentHeaders}
+            headers={management ? paymentHeaders : ownerPaymentHeaders}
             sort={{ active: paymentSortBy, dir: paymentDir, hrefFor: (key, d) => uplateHref({ sort: key, dir: d }) }}
             empty={payments.length === 0}
             emptyTitle={t(payments.length === 0 && sp.status ? "empty.filteredQuery.title" : "empty.payments.title")}
@@ -234,7 +243,35 @@ export default async function PaymentsPage({
                   : undefined
             }
           >
-            {payments.map((p) => (
+            {payments.map((p) => {
+              if (!management) {
+                // Neto po fakturi (storno redovi su negativni): prikazuju se samo fakture na kojima uplata stvarno stoji.
+                const net = new Map<string, { number: string; amount: ReturnType<typeof dec> }>();
+                for (const a of p.allocations) {
+                  const cur = net.get(a.invoiceId) ?? { number: a.invoice.number, amount: ZERO };
+                  cur.amount = cur.amount.plus(dec(a.amount.toString()));
+                  net.set(a.invoiceId, cur);
+                }
+                const applied = [...net.entries()].filter(([, v]) => v.amount.greaterThan(ZERO));
+                return (
+                  <tr key={p.id}>
+                    <Td>{formatDate(p.date)}</Td>
+                    <Td className="font-mono text-[13px]">{p.reference ?? "—"}</Td>
+                    <Td>{formatMoney(p.amount.toString())}</Td>
+                    <Td>
+                      {applied.length === 0 ? "—" : (
+                        <span className="flex flex-wrap gap-x-3 gap-y-1">
+                          {applied.map(([invoiceId, v]) => (
+                            <RowLink key={invoiceId} href={`/fakture/${invoiceId}`}>{v.number}</RowLink>
+                          ))}
+                        </span>
+                      )}
+                    </Td>
+                    <Td><StatusBadge status={p.status} label={tEnum("paymentStatus", p.status)} /></Td>
+                  </tr>
+                );
+              }
+              return (
               <tr key={p.id}>
                 <Td>{formatDate(p.date)}</Td>
                 <Td>{p.payer ? partyDisplayName(p.payer) : p.payerNameRaw ?? "—"}</Td>
@@ -242,14 +279,13 @@ export default async function PaymentsPage({
                 <Td>{formatMoney(p.amount.toString())}</Td>
                 <Td><StatusBadge status={p.status} label={tEnum("paymentStatus", p.status)} /></Td>
                 <Td>
-                  {management && (
-                    <RowActionLink href={`/fakture/uplate/${p.id}`}>
-                      {p.status === "UNAPPLIED" || p.status === "PARTIALLY_APPLIED" ? "uparivanje" : "detalji"}
-                    </RowActionLink>
-                  )}
+                  <RowActionLink href={`/fakture/uplate/${p.id}`}>
+                    {p.status === "UNAPPLIED" || p.status === "PARTIALLY_APPLIED" ? "uparivanje" : "detalji"}
+                  </RowActionLink>
                 </Td>
               </tr>
-            ))}
+              );
+            })}
           </Table>
           <Pagination page={paymentResult.page} pageCount={paymentResult.pageCount} hrefFor={(p) => uplateHref({ page: String(p) })} />
         </Card>

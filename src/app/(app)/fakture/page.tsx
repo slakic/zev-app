@@ -5,9 +5,11 @@ import { requireZev } from "@/server/auth/guards";
 import { listInvoices, listChargeItems, createChargeItem, updateChargeItem, createDraftBatch, invoicePaidAmount, type InvoiceSortKey } from "@/server/services/billing";
 import { prisma } from "@/lib/prisma";
 import { listBuildings, listUnits } from "@/server/services/property";
-import { formatMoney, parseMoneyInput } from "@/lib/money";
+import { ownerBalance } from "@/server/services/payments";
+import { isInvoiceOverdue } from "@/lib/paymentInstructions";
+import { formatMoney, parseMoneyInput, dec } from "@/lib/money";
 import { formatDate, t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, Tabs, FilterBar, Pagination, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Stat, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, BtnLink, ToggleBtn, RowLink, Tabs, FilterBar, Pagination, type ColumnSpec } from "@/components/ui";
 
 const chargeItemHeaders: ColumnSpec[] = [
   { label: "Naziv", priority: "primary" },
@@ -35,6 +37,7 @@ function invoiceHeadersFor(management: boolean): ColumnSpec[] {
     { label: "Dospijeće", sortKey: "dueDate" },
     { label: "Iznos", align: "right", nowrap: true, sortKey: "total" },
     { label: "Plaćeno", align: "right", nowrap: true, sortKey: "paid" },
+    ...(management ? [] : [{ label: t("ownerInvoices.remaining"), align: "right", nowrap: true } as ColumnSpec]),
     { label: "Status" },
   ];
 }
@@ -118,7 +121,7 @@ export default async function InvoicesPage({
   const invoiceFilter = management ? { status: sp.status || undefined, period: sp.period || undefined, unitId: sp.unit || undefined } : undefined;
   const invoiceResult =
     !management || activeTab === "fakture"
-      ? await listInvoices(actor, invoiceFilter, { sortBy: invoiceSortBy, sortDir: invoiceDir, page: invoicePage })
+      ? await listInvoices(actor, invoiceFilter, { sortBy: invoiceSortBy ?? (management ? undefined : "owner"), sortDir: invoiceDir, page: invoicePage })
       : { rows: [], page: 1, pageCount: 1 };
   const invoices = invoiceResult.rows;
   const [chargeItems, batches, buildings] =
@@ -130,6 +133,8 @@ export default async function InvoicesPage({
         ])
       : [[], [], []];
   const filterUnits = management && activeTab === "fakture" ? await listUnits(actor) : [];
+  // F3.3: zbirni iznosi "od početka" sišli su sa početne vlasnika na listu faktura.
+  const ownerTotals = !management && actor.partyId ? await ownerBalance(actor, actor.partyId) : null;
 
   return (
     <div>
@@ -278,6 +283,12 @@ export default async function InvoicesPage({
 
       {(!management || activeTab === "fakture") && (
       <div className="mt-4">
+        {ownerTotals && (
+          <div className="mb-4 grid grid-cols-2 gap-3">
+            <Stat label={t("ownerInvoices.charged")} value={formatMoney(ownerTotals.charged)} tone="neutral" />
+            <Stat label={t("ownerInvoices.paid")} value={formatMoney(ownerTotals.paid)} tone="ok" />
+          </div>
+        )}
         {management && (
           <FilterBar>
             <input type="hidden" name="tab" value="fakture" />
@@ -332,7 +343,8 @@ export default async function InvoicesPage({
           >
             {invoices.map((inv) => {
               const paid = invoicePaidAmount(inv);
-              const overdue = inv.status === "ISSUED" && inv.dueDate < new Date();
+              const overdue = isInvoiceOverdue(inv);
+              const remaining = dec(inv.total.toString()).minus(paid);
               return (
                 <tr key={inv.id}>
                   <Td><RowLink href={`/fakture/${inv.id}`}>{inv.number}</RowLink></Td>
@@ -344,6 +356,7 @@ export default async function InvoicesPage({
                   <Td>{formatDate(inv.dueDate)}</Td>
                   <Td>{formatMoney(inv.total.toString())}</Td>
                   <Td>{formatMoney(paid.toFixed(2))}</Td>
+                  {!management && <Td>{inv.status === "ISSUED" ? formatMoney(remaining.toFixed(2)) : inv.status === "PAID" ? formatMoney(0) : "—"}</Td>}
                   <Td>
                     <StatusBadge
                       status={overdue ? "UNPAID" : inv.status}

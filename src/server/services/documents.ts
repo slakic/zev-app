@@ -3,7 +3,9 @@
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
-import { formatMoney, formatWeight } from "@/lib/money";
+import { formatMoney, formatWeight, dec } from "@/lib/money";
+import { paymentQrPayload } from "@/lib/paymentInstructions";
+import { getPaymentInstructions } from "./paymentInstructions";
 import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
 import { partyDisplayName } from "./ownership";
 import {
@@ -229,8 +231,11 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
     },
   });
   requireSelfOrRole(actor, inv.debtorId, "PRESIDENT", "ACCOUNTANT");
-  const zev = await prisma.zev.findUnique({ where: { id: zevId }, include: { accounts: { where: { type: "BANK", active: true } } } });
-  const bank = zev?.accounts[0];
+  // F3.1: račun, preostali iznos i svrha dolaze iz iste funkcije kao ekran "Kako da platim". Svako novo
+  // generisanje je nova VERZIJA dokumenta (storeDocument) — ranije verzije ostaju netaknute sa iznosom
+  // koji su imale kad su nastale; preostali iznos ide samo u nove PDF-ove.
+  const pay = await getPaymentInstructions(actor, invoiceId);
+  const bank = pay.account;
 
   const buffer = await renderPdf(async (doc) => {
     await zevHeader(doc, zevId, { number: inv.number, title: `FAKTURA ${inv.number}`, issueDate: inv.issueDate });
@@ -264,17 +269,29 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
     }
     doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
     doc.moveDown(0.5);
-    doc.font("bold").text(`UKUPNO ZA PLAĆANJE: ${formatMoney(inv.total.toString())}`, 50, doc.y, { width: 495, align: "right" });
+    const hadPayments = !dec(pay.paid).isZero();
+    if (hadPayments) {
+      doc.font("reg").text(`Ukupno: ${formatMoney(pay.total)}`, 50, doc.y, { width: 495, align: "right" });
+      doc.text(`Plaćeno: ${formatMoney(pay.paid)}`, 50, doc.y, { width: 495, align: "right" });
+    }
+    if (!pay.payable) {
+      // Plaćena (ili stornirana) faktura nema šta da se uplati: bez računa, poziva na broj i QR koda,
+      // da niko ne uplati ponovo po starom PDF-u.
+      if (dec(pay.remaining).isZero() && inv.status === "PAID") {
+        doc.font("bold").text("PLAĆENO U CIJELOSTI", 50, doc.y, { width: 495, align: "right" });
+      }
+      doc.font("reg");
+      docFooter(doc, { sourceRef: `Invoice ${inv.number}`, version: 1, status: inv.status });
+      return;
+    }
+    doc.font("bold").text(`ZA UPLATU: ${formatMoney(pay.remaining)}`, 50, doc.y, { width: 495, align: "right" });
     doc.font("reg").moveDown();
 
     doc.fontSize(9)
       .text(`Uplatu izvršiti na račun: ${bank?.iban ?? "—"} (${bank?.bankName ?? ""})`, 50)
-      .text(`Poziv na broj: ${inv.paymentReference ?? inv.number}`);
-    // QR payment stub (configurable payment-slip output)
-    const qrPayload = JSON.stringify({
-      racun: bank?.iban ?? "", primalac: zev?.legalName ?? "", iznos: inv.total.toString(),
-      pozivNaBroj: inv.paymentReference ?? inv.number, svrha: `ZEV ${inv.periodLabel ?? ""}`,
-    });
+      .text(`Poziv na broj: ${pay.reference}`);
+    // QR payment stub (configurable payment-slip output) — nosi PREOSTALI iznos (V-N26).
+    const qrPayload = paymentQrPayload(pay);
     const qrDataUrl = await QRCode.toDataURL(qrPayload, { margin: 0, width: 110 });
     const qrBuf = Buffer.from(qrDataUrl.split(",")[1], "base64");
     doc.image(qrBuf, 445, doc.y + 6, { width: 90 });
@@ -296,17 +313,31 @@ export async function generateInvoicePdf(actor: Actor, invoiceId: string) {
   return row;
 }
 
-/** Najnovija sačuvana verzija PDF-a fakture; generiše je samo ako ne postoji. */
+/**
+ * Najnovija sačuvana verzija PDF-a fakture. Nova verzija nastaje samo ako PDF ne postoji ili je
+ * zastario: poslije njega je evidentirana (ili stornirana) uplata po fakturi, ili je faktura
+ * stornirana — tj. promijenio se plaćeni iznos ili status koji PDF prikazuje.
+ */
 export async function ensureInvoiceDocument(actor: Actor, invoiceId: string): Promise<{ id: string; number: string }> {
   const zevId = requireZev(actor);
-  const invoice = await prisma.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, select: { debtorId: true } });
+  const invoice = await prisma.invoice.findUniqueOrThrow({
+    where: { id: invoiceId, zevId },
+    select: { debtorId: true, cancelledAt: true },
+  });
   requireSelfOrRole(actor, invoice.debtorId, "PRESIDENT", "ACCOUNTANT");
   const existing = await prisma.document.findFirst({
     where: { zevId, type: "INVOICE", sourceType: "Invoice", sourceId: invoiceId },
     orderBy: { version: "desc" },
-    select: { id: true, number: true },
+    select: { id: true, number: true, createdAt: true },
   });
-  if (existing) return existing;
+  if (existing) {
+    const newerAllocation = await prisma.paymentAllocation.findFirst({
+      where: { invoiceId, createdAt: { gt: existing.createdAt } },
+      select: { id: true },
+    });
+    const cancelledSince = invoice.cancelledAt != null && invoice.cancelledAt > existing.createdAt;
+    if (!newerAllocation && !cancelledSince) return { id: existing.id, number: existing.number };
+  }
   const row = await generateInvoicePdf(actor, invoiceId);
   return { id: row.id, number: row.number };
 }
