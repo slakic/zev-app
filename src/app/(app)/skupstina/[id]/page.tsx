@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
-import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, recordAttendance, listInvitationRecipients, queueMeetingInvitations, linkProposalToAgendaItem } from "@/server/services/meetings";
+import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, previewSessionVotingOpen, listVotingRules, recordAttendance, listInvitationRecipients, queueMeetingInvitations, linkProposalToAgendaItem } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf } from "@/server/services/documents";
 import { listParties, partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
@@ -91,7 +91,8 @@ async function statusAction(formData: FormData) {
   const meetingId = String(formData.get("meetingId"));
   const to = String(formData.get("to")) as MeetingStatus;
   try {
-    await advanceMeetingStatus(actor, meetingId, to, (formData.get("reason") as string) || undefined);
+    // v2.43.2: opening the session's voting also opens e-voting on its draft proposals (symmetric with closing).
+    await advanceMeetingStatus(actor, meetingId, to, (formData.get("reason") as string) || undefined, { openDraftProposals: to === "VOTING_OPEN" });
     if (to === "INVITATIONS_PREPARED") {
       await generateMeetingInvitationPdf(actor, meetingId);
     }
@@ -156,6 +157,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
   // doesn't carry for any other step, so this one transition alone gets a confirmation that names
   // exactly what will be closed, same as openVoting/closeVoting elsewhere in this feature.
   const invitationRecipients = isPresident && next?.to === "INVITATIONS_SENT" ? await listInvitationRecipients(actor, id) : null;
+  const sessionOpen = isPresident && next?.to === "VOTING_OPEN" ? await previewSessionVotingOpen(actor, id) : null;
   // Proposals without an agenda item that can still be tied to one (linkProposalToAgendaItem).
   const unlinkedProposals = meeting.proposals.filter((p) => !p.agendaItemId && (p.status === "DRAFT" || p.status === "VOTING_OPEN"));
   const preselectedAgendaItem = meeting.agendaItems.some((a) => a.id === tacka) ? tacka : undefined;
@@ -221,6 +223,50 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                     </div>
                   }
                   confirmLabel={tf("confirm.invitations.confirm", { broj: invitationRecipients.withEmail.length })}
+                  confirmVariant="primary"
+                  action={statusAction}
+                  hiddenFields={{ meetingId: meeting.id, to: next.to }}
+                />
+              ) : sessionOpen && sessionOpen.blocked ? (
+                <div className="max-w-[52ch] rounded-lg border border-amber-600/40 bg-amber-50/70 p-3 text-sm text-amber-950">
+                  <p className="font-semibold">{t("confirm.sessionOpen.blockedTitle")}</p>
+                  <ul className="mt-1 list-disc space-y-0.5 pl-5">
+                    {sessionOpen.proposals.filter((p) => p.errors.length > 0).map((p) => (
+                      <li key={p.id}><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink>: {p.errors.join("; ")}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : sessionOpen ? (
+                <ConfirmAction
+                  trigger={next.label}
+                  triggerVariant="caution"
+                  title={t("confirm.sessionOpen.title")}
+                  body={
+                    <div className="space-y-1 text-sm text-amber-950">
+                      {sessionOpen.proposals.length === 0 ? (
+                        <p>{t("confirm.sessionOpen.none")}</p>
+                      ) : (
+                        <>
+                          <p>{t("confirm.sessionOpen.intro")}</p>
+                          <ul className="list-disc space-y-0.5 pl-5">
+                            {sessionOpen.proposals.map((p) => (
+                              <li key={p.id}>
+                                {tf("confirm.sessionOpen.row", {
+                                  kod: p.code,
+                                  naslov: p.title,
+                                  glasaca: p.preview?.voters ?? 0,
+                                  email: p.preview?.byEmail ?? 0,
+                                  bez: p.preview?.withoutEmail ?? 0,
+                                })}
+                              </li>
+                            ))}
+                          </ul>
+                          <p>{t("confirm.sessionOpen.irreversible")}</p>
+                        </>
+                      )}
+                    </div>
+                  }
+                  confirmLabel={t("confirm.sessionOpen.confirm")}
                   confirmVariant="primary"
                   action={statusAction}
                   hiddenFields={{ meetingId: meeting.id, to: next.to }}

@@ -300,7 +300,49 @@ export async function updateMeeting(actor: Actor, id: string, data: Prisma.Meeti
   return m;
 }
 
-export async function advanceMeetingStatus(actor: Actor, id: string, to: MeetingStatus, reason?: string) {
+/**
+ * What moving a session to VOTING_OPEN with `openDraftProposals` would do (v2.43.2): one row per
+ * proposal still in DRAFT, with the same delivery preview and preconditions as opening it by
+ * hand. `blocked` is true when any proposal cannot be opened — then nothing is opened.
+ */
+export async function previewSessionVotingOpen(actor: Actor, meetingId: string) {
+  requireRole(actor, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const meeting = await prisma.meeting.findUniqueOrThrow({ where: { id: meetingId, zevId } });
+  const drafts = await prisma.proposal.findMany({
+    where: { meetingId, status: "DRAFT" },
+    orderBy: { code: "asc" },
+    select: { id: true, code: true, title: true, votingRuleId: true, votingClosesAt: true },
+  });
+  const rows = [];
+  for (const d of drafts) {
+    const errors: string[] = [];
+    if (!d.votingRuleId) errors.push("nema pravila glasanja");
+    if (!(d.votingClosesAt ?? meeting.eVoteClosesAt)) errors.push("nema roka glasanja");
+    let preview: { voters: number; byEmail: number; viaProxy: number; withoutEmail: number } | null = null;
+    if (errors.length === 0) {
+      const p = await previewVotingDelivery(actor, d.id, "ALL");
+      errors.push(...p.preconditionErrors);
+      preview = { voters: p.voters, byEmail: p.byEmail, viaProxy: p.viaProxy, withoutEmail: p.withoutEmail };
+    }
+    rows.push({ id: d.id, code: d.code, title: d.title, errors, preview });
+  }
+  return { proposals: rows, blocked: rows.some((r) => r.errors.length > 0) };
+}
+
+export async function advanceMeetingStatus(
+  actor: Actor,
+  id: string,
+  to: MeetingStatus,
+  reason?: string,
+  opts?: {
+    /** Desktop "Označi glasanje otvorenim" (v2.43.2): also open e-voting (delivery "ALL") on every
+     *  DRAFT proposal of the session — symmetric with moving past VOTING_OPEN closing them. The live
+     *  screen does NOT pass this: there each proposal is opened per agenda item with delivery "LIVE",
+     *  so owners present in the room get no e-mail. */
+    openDraftProposals?: boolean;
+  }
+) {
   // PRESIDENT + ACCOUNTANT (Plans/live-meeting-mode-plan.md §2.7, P7) — widened so the
   // live-meeting screen can advance a session to VOTING_OPEN without a desktop trip;
   // applies here too, not only from /uzivo, since this is the one shared function.
@@ -313,6 +355,30 @@ export async function advanceMeetingStatus(actor: Actor, id: string, to: Meeting
   if (toIdx < fromIdx && !reason) {
     throw new Error("Vraćanje statusa unazad zahtijeva razlog (evidentira se u auditu).");
   }
+
+  // Opening the session's voting opens its draft proposals first, and only then moves the session:
+  // every proposal is checked up front (nothing is opened if any one cannot be), and if an opening
+  // still fails halfway the session stays where it was — repeating the step opens the remaining drafts.
+  const autoOpenedProposalIds: string[] = [];
+  if (to === "VOTING_OPEN" && toIdx > fromIdx && opts?.openDraftProposals) {
+    const pre = await previewSessionVotingOpen(actor, id);
+    if (pre.blocked) {
+      const why = pre.proposals.filter((p) => p.errors.length > 0).map((p) => `${p.code}: ${p.errors.join("; ")}`);
+      throw new Error(`Glasanje nije otvoreno — ${why.join(" · ")}`);
+    }
+    for (const p of pre.proposals) {
+      try {
+        await openVoting(actor, p.id);
+      } catch (e) {
+        const done = autoOpenedProposalIds.length
+          ? ` Već otvoreno: ${pre.proposals.filter((x) => autoOpenedProposalIds.includes(x.id)).map((x) => x.code).join(", ")}.`
+          : "";
+        throw new Error(`Otvaranje glasanja za ${p.code} nije uspjelo: ${e instanceof Error ? e.message : "greška"}.${done} Sjednica nije prešla u „Glasanje otvoreno”; ponovite korak.`);
+      }
+      autoOpenedProposalIds.push(p.id);
+    }
+  }
+
   const m = await prisma.meeting.update({ where: { id, zevId }, data: { status: to } });
 
   // Meeting.status was deliberately never a gate for Proposal.status (§1.1) — but that also
@@ -338,7 +404,7 @@ export async function advanceMeetingStatus(actor: Actor, id: string, to: Meeting
 
   await audit(actor, {
     action: "meeting.status", targetType: "Meeting", targetId: id,
-    before: { status: meeting.status }, after: { status: to, autoClosedProposalIds }, reason: reason ?? null,
+    before: { status: meeting.status }, after: { status: to, autoClosedProposalIds, autoOpenedProposalIds }, reason: reason ?? null,
   });
   return m;
 }

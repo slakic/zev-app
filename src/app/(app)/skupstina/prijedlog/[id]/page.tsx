@@ -233,7 +233,11 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                     )
                   : mine
                     ? "Imate pravo glasa o ovom prijedlogu."
-                    : "Niste u glasačkoj bazi ovog prijedloga."}
+                    : p.meeting.body === "BOARD"
+                      ? t("confirm.participation.board")
+                      : p.status === "DRAFT"
+                        ? t("confirm.participation.draft")
+                        : t("confirm.participation.notInBase")}
             </p>
           </Card>
         </div>

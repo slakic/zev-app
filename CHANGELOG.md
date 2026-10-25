@@ -43,6 +43,19 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.43.2] - 2026-10-25
+
+### Ispravljeno
+
+- **„Označi glasanje otvorenim” na sjednici** je mijenjao samo status sjednice, a prijedlozi su ostajali u nacrtu,
+  pa niko nije bio u glasačkoj bazi niti je dobio lični link. Sada taj korak otvara i elektronsko glasanje za sve
+  prijedloge sjednice koji su u nacrtu (simetrično sa zatvaranjem, koje već zatvara otvorene prijedloge). Potvrda
+  prikazuje, po prijedlogu, broj glasova i koliko ličnih linkova ide e-poštom. Ako neki prijedlog ne ispunjava
+  preduslove (registar, vlasnici, rok, pravilo), ne otvara se ništa i stranica kaže zašto. Režim uživo se ne
+  mijenja: tamo se prijedlozi i dalje otvaraju po tački, bez e-pošte prisutnima.
+- **„Vaše učešće” na prijedlogu** je vlasniku pisalo „Niste u glasačkoj bazi” i za prijedlog u nacrtu i za
+  prijedlog upravnog odbora. Sada piše da glasanje još nije otvoreno, odnosno da glasaju samo članovi odbora.
+
 ## [2.43.1] - 2026-10-25
 
 ### Dodato

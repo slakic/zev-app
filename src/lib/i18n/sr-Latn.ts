@@ -530,6 +530,20 @@ const srLatn = {
       irreversible: "Izdate fakture se ne mogu mijenjati; ispravka ide kroz korektivnu fakturu ili storno.",
       confirm: "Da, izdaj {broj} faktura",
     },
+    sessionOpen: {
+      title: "Otvoriti glasanje na sjednici?",
+      intro: "Otvara se elektronsko glasanje za sve prijedloge ove sjednice koji su još u nacrtu:",
+      row: "{kod} — {naslov}: {glasaca} glasova, lični link e-poštom za {email}, bez e-adrese {bez}",
+      irreversible: "Tekstovi prijedloga se zaključavaju, a lični linkovi i kodovi odmah odlaze e-poštom. Ovo se ne može povući.",
+      none: "Na sjednici nema prijedloga u nacrtu — mijenja se samo status sjednice.",
+      confirm: "Da, otvori glasanje",
+      blockedTitle: "Glasanje na sjednici još se ne može otvoriti:",
+    },
+    participation: {
+      draft: "Glasanje o ovom prijedlogu još nije otvoreno. Ko glasa utvrđuje se u trenutku otvaranja: svaki etažni vlasnik u obuhvatu prijedloga dobija jedan glas, a lični link i kod stižu e-poštom.",
+      board: "O ovom prijedlogu glasaju samo članovi upravnog odbora.",
+      notInBase: "Niste u glasačkoj bazi ovog prijedloga: prijedlog se odnosi na posebne dijelove čiji niste vlasnik, ili ste vlasnik postali nakon otvaranja glasanja.",
+    },
     invitations: {
       trigger: "Pošalji pozive (e-mail)…",
       title: "Slanje poziva na sjednicu",
