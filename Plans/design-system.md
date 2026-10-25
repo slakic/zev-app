@@ -68,9 +68,9 @@ Primarna boja je **blue-600 i ostaje blue-600** (odluka P1, `ui-ux-redesign-plan
 
 | Uloga | Token | Vrijednost | Kada |
 |---|---|---|---|
-| Uspjeh | `--color-success` | `#059669` (emerald-600) | traka na `Stat`, ikona |
+| Uspjeh | `--color-success` | `#059669` (emerald-600) | tačka na `Stat`, ikona |
 | Uspjeh tonalni | `--color-success-soft` / `-ink` | `#ecfdf5` / `#065f46` | chip, uspješan `Flash` |
-| Upozorenje | `--color-warning` | `#d97706` (amber-600) | traka, ikona |
+| Upozorenje | `--color-warning` | `#d97706` (amber-600) | tačka, ikona |
 | Upozorenje tonalno | `--color-warning-soft` / `-ink` | `#fffbeb` / `#92400e` | chip, **`caution` dugme, panel potvrde** |
 | Opasnost | `--color-danger` | `#dc2626` (red-600) | **samo nepovratno uništavanje** |
 | Opasnost tonalna | `--color-danger-soft` / `-ink` | `#fef2f2` / `#991b1b` | chip greške, `Flash` greške |
@@ -278,9 +278,10 @@ Nosioci:
 
 | Komponenta | Fajl | Svrha |
 |---|---|---|
-| `NavShell` | `nav-shell.tsx:48` | Školjka prijavljene aplikacije: suzivi sidebar sa pamćenjem stanja, mobilni drawer sa fokus zamkom, sticky top bar, meni naloga, prekidač aktivnog ZEV-a. `variant?: "tenant" \| "platform"` (Faza 5) bira akcenat i sadržaj top-bar oznake — vidi §7. |
-| `AuthShell`, `AuthBrandHeader` | `auth-shell.tsx:24, :12` | Školjka neautentifikovanih stranica (prijava, zaboravljena lozinka, reset). |
-| `PasswordField` | `password-field.tsx:28` | Polje za lozinku sa „prikaži lozinku" prekidačem. |
+| `NavShell` | `nav-shell.tsx` | Školjka prijavljene aplikacije: suzivi sidebar sa pamćenjem stanja, mobilni drawer sa fokus zamkom, sticky top bar, meni naloga, prekidač aktivnog ZEV-a. `variant?: "tenant" \| "platform"` (Faza 5) bira akcenat i sadržaj top-bar oznake — vidi §7. **Aktivna stavka** se računa čistom funkcijom `activeHref` (`nav-active.ts`): tačno poklapanje ili podstranica (`href + "/"`), najduži `href` pobjeđuje, `/` samo tačno; aktivna stavka nosi `aria-current="page"`. Podstranice dobijaju „‹ Nazad” kroz `PageHeader backHref`. **Naziv aktivnog ZEV-a je uvijek vidljiv** (D9, F2): `text-[13px] text-slate-500` ispod naziva aplikacije u sidebaru i meniju na telefonu (skriven u suženom režimu i u platformskoj školjci), i kad korisnik ima samo jedan ZEV; chip u gornjoj traci (samo za više ZEV-ova) vidljiv je i na telefonu. Dugmad „Meni” (`h-11`, ikona + labela) i „Zatvori” (`h-11 w-11`) imaju metu od 44px. Meni naloga nema `role="menu"` (obična lista linkova i formi, kao `Tabs`): dugme ima `aria-expanded` + `aria-controls`, Escape zatvara i vraća fokus na avatar. |
+| `AuthShell`, `AuthBrandHeader` | `auth-shell.tsx` | Školjka neautentifikovanih stranica (prijava, zaboravljena lozinka, reset). Prop `flash` crta `Flash` **iznad** kartice, nikad unutar nje (bez ugniježđene elevacije); fusnota je `text-[13px]`. |
+| `PasswordInput` | `password-input.tsx` | Polje za lozinku koju osoba sama kuca (prijava, reset): maskirano, sa prekidačem „Prikaži / Sakrij” (`text-slate-500`). Ikona prikazuje **radnju** (oko = prikaži, precrtano oko = sakrij), uz `aria-label` i `aria-pressed`. |
+| `PasswordField` | `password-field.tsx` | Admin polje za dodjelu početne lozinke drugoj osobi: običan tekst (ne maskirano), uz dugmad „Generiši” i „Kopiraj” kao `Btn variant="secondary"` (44px na telefonu); „Kopirano” se najavljuje kroz `aria-live="polite"`. |
 
 ---
 
@@ -290,7 +291,7 @@ Nosioci:
 - `IconBase` (`nav-icons.tsx:8-22`) definiše ugovor: **`viewBox="0 0 20 20"`, `fill="none"`, `stroke="currentColor"`, `strokeWidth={1.6}`, `strokeLinecap`/`strokeLinejoin="round"`, `aria-hidden="true"`**, podrazumijevana veličina `h-5 w-5`, `className` override od pozivaoca.
 - Boju nosi `currentColor` — **ikona nikad ne postavlja svoju boju**; nasljeđuje je od roditelja (nav linka, dugmeta, chipa).
 - **Mapa `NAV_ICONS`** (`nav-icons.tsx`) preslikava rutu → ikonu za sidebar; `IconDot` je fallback za nemapirano. Nova ruta u sidebaru **mora** dobiti unos ovdje, inače dobija tačku.
-- Isporučeno 18 ikona: `IconHome`, `IconBuilding`, `IconUsers`, `IconLandmark`, `IconBallot`, `IconReceipt`, `IconWallet`, `IconCalendar`, `IconWrench`, `IconDocument`, `IconChart`, `IconSliders`, `IconShield`, `IconActivity` (Faza 5), `IconDot`, `IconChevronLeft`, `IconCheck`, `IconLogout`.
+- Isporučeno 22 ikone: `IconHome`, `IconBuilding`, `IconUsers`, `IconLandmark`, `IconBallot`, `IconReceipt`, `IconWallet`, `IconCalendar`, `IconWrench`, `IconDocument`, `IconChart`, `IconSliders`, `IconShield`, `IconActivity` (Faza 5), `IconMonitor`, `IconDot`, `IconChevronLeft`, `IconCheck`, `IconLogout`, `IconHelp`, `IconMenu` i `IconClose` (F2; dugmad menija na telefonu — nisu rute, pa ne ulaze u `NAV_ICONS`).
 - Ikone koje **nisu** navigacione ostaju lokalne u fajlu koji ih koristi, u istom stilu — npr. `EmptyTrayIcon` (`ui.tsx:233`), `SortIcon` (`:255`), `CheckCircleIcon` (`:93`), chevron u `ToggleBtn` (`:509`). Ne zatrpavati `nav-icons.tsx` ne-nav ikonama.
 
 ---

@@ -43,6 +43,41 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.45.0] - 2026-10-25
+
+Faza F2 pregleda dizajna: orijentacija u školjci i ekrani za prijavu. **Bez migracije** — deploy ne traži ručni korak.
+
+### Izmijenjeno
+
+- **Aktivna stavka menija se prepoznaje i na podstranicama.** Dosad je bila označena samo na tačnoj ruti, pa na
+  detalju fakture, sjednice ili plana nijedna stavka nije svijetlila. Sad je označena stavka kojoj podstranica
+  pripada (najduže poklapanje pobjeđuje, „Početna” samo na `/`), uz `aria-current="page"` za čitače ekrana.
+  Isto važi za platformsku školjku (`/admin/[zevId]` označava „ZEV nalozi”).
+- **„‹ Nazad” na podstranicama:** detalj fakture, serija faktura, uplate, detalj plana, sjednice, prijedloga i
+  prijave održavanja, revizorski trag i poslate poruke vode jednim dodirom na stranicu (i karticu) odakle se
+  dolazi. Vlasnik na prijedlogu takođe.
+- **Naziv ZEV-a je uvijek vidljiv.** Ispod naziva aplikacije u meniju (i meniju na telefonu) stoji naziv
+  aktivnog ZEV-a, i kad korisnik ima samo jedan; pun naziv je u opisu pri prelasku mišem. Oznaka ZEV-a u
+  gornjoj traci (za korisnike sa više ZEV-ova) sad se vidi i na telefonu.
+- **Dugmad menija na telefonu** su prava dugmad od 44px sa ikonama umjesto slovnih znakova; „Meni” ima vidljivu
+  labelu.
+- **Meni naloga:** uklonjene lažne ARIA uloge `menu` / `menuitem` (nije bilo navigacije strelicama); Escape
+  zatvara meni i vraća fokus na avatar. Uloge i naslov prekidača ZEV-a su 13px (bez verzala).
+- **Ekrani za prijavu:** poruke na prijavi, zaboravljenoj lozinci i resetu prikazuju se istom komponentom
+  (`Flash`) iznad kartice, ne u njoj, a greška na resetu se sad najavljuje čitačima ekrana. Tekstovi su u
+  rječniku (`auth.login.*`, `auth.forgot.*`, `auth.reset.*`), fusnota je 13px.
+- **Prekidač „prikaži lozinku”** je tamniji (kontrast iznad 3:1) i ikona sad prikazuje radnju (oko = prikaži,
+  precrtano oko = sakrij), a ne stanje.
+- **Admin polje za lozinku:** „Generiši” i „Kopiraj” su standardna dugmad (44px na telefonu); „Kopirano” se
+  najavljuje čitačima ekrana.
+- Dizajn sistem (`Plans/design-system.md`): ispravljen opis `Stat` (tačka, ne traka), dodat `PasswordInput`,
+  ispravljen opis `PasswordField`, ikone `IconMenu` / `IconClose`, ponašanje naziva ZEV-a (D9).
+
+### Ispravljeno
+
+- Kod ključa `auth.login` u rječniku pretvoren je u grupu (`auth.login.submit`) da bi mogla postojati
+  podgrupa `auth.login.*`; nema vidljive promjene.
+
 ## [2.44.0] - 2026-10-25
 
 ### Dodato

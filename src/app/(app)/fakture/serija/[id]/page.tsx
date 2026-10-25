@@ -105,6 +105,8 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
     <div>
       <PageHeader
         title={`Serija faktura — ${batch.period}`}
+        backHref="/fakture?tab=naknade"
+        backLabel={t("nav.back.batches")}
         subtitle="Pregled obračuna za svaku jedinicu prije izdavanja"
         actions={
           batch.status === "DRAFT" && actor.roles.includes("ACCOUNTANT") ? (

@@ -4,7 +4,7 @@ import { t } from "@/lib/i18n";
 import { authenticate } from "@/server/services/users";
 import { createSession, getAuthContext, clientIp } from "@/server/auth/session";
 import { sha256 } from "@/server/auth/tokens";
-import { Flash, Field, inputCls, SubmitBtn } from "@/components/ui";
+import { Field, inputCls, SubmitBtn } from "@/components/ui";
 import { AuthShell } from "@/components/auth-shell";
 import { PasswordInput } from "@/components/password-input";
 import { headers } from "next/headers";
@@ -35,16 +35,16 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const errMsg =
     err === "invalid" ? t("auth.invalidCredentials")
     : err === "deactivated" ? t("auth.accountDisabled")
-    : err === "rate_limited" ? "Previše pokušaja prijave. Pokušajte ponovo za 15 minuta."
-    : err === "zev_suspended" ? "Vaš ZEV nalog je trenutno suspendovan. Obratite se administratoru."
+    : err === "rate_limited" ? t("auth.login.rateLimited")
+    : err === "zev_suspended" ? t("auth.login.zevSuspended")
     : undefined;
-  const okMsg = msg === "password_reset_done" ? "Lozinka je uspješno promijenjena. Prijavite se novom lozinkom." : undefined;
+  const okMsg = msg === "password_reset_done" ? t("auth.login.resetDone") : undefined;
   return (
     <AuthShell
       pageTitle={t("auth.loginTitle")}
-      footnote="Nalog dobijate od predsjednika vaše zajednice etažnih vlasnika."
+      footnote={t("auth.login.footnote")}
+      flash={{ err: errMsg, msg: okMsg }}
     >
-      <Flash err={errMsg} msg={okMsg} />
       <form action={loginAction} className="space-y-4">
         <Field label={t("auth.email")}>
           <input name="email" type="email" required autoComplete="username" className={inputCls} />
@@ -52,10 +52,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <Field label={t("auth.password")}>
           <PasswordInput name="password" required autoComplete="current-password" />
         </Field>
-        <SubmitBtn>{t("auth.login")}</SubmitBtn>
+        <SubmitBtn>{t("auth.login.submit")}</SubmitBtn>
       </form>
       <p className="mt-4 text-sm">
-        <Link href="/zaboravljena-lozinka" className="text-blue-700 hover:underline">Zaboravili ste lozinku?</Link>
+        <Link href="/zaboravljena-lozinka" className="text-blue-700 hover:underline">{t("auth.login.forgotLink")}</Link>
       </p>
     </AuthShell>
   );

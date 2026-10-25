@@ -9,6 +9,7 @@ import { sha256 } from "@/server/auth/tokens";
 import { Field, inputCls, SubmitBtn } from "@/components/ui";
 import { AuthShell } from "@/components/auth-shell";
 import { getEnv } from "@/lib/env";
+import { t } from "@/lib/i18n";
 
 async function requestResetAction(formData: FormData) {
   "use server";
@@ -27,25 +28,22 @@ export default async function ForgotPasswordPage({ searchParams }: { searchParam
   const { sent } = await searchParams;
 
   return (
-    <AuthShell pageTitle="Zaboravljena lozinka">
-      {sent ? (
-        <div role="status" className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-          Ako nalog sa tom e-mail adresom postoji, poslali smo link za postavljanje nove lozinke. Link važi 1 sat.
-        </div>
-      ) : (
+    <AuthShell
+      pageTitle={t("auth.forgot.title")}
+      flash={sent ? { msg: t("auth.forgot.sent") } : undefined}
+    >
+      {!sent && (
         <form action={requestResetAction} className="space-y-4">
-          <p className="text-sm text-slate-600">
-            Unesite e-mail adresu naloga. Ako postoji nalog sa tom adresom, poslaćemo link za postavljanje nove lozinke.
-          </p>
-          <Field label="E-mail adresa">
+          <p className="text-sm text-slate-600">{t("auth.forgot.intro")}</p>
+          <Field label={t("auth.forgot.emailLabel")}>
             <input name="email" type="email" required autoComplete="username" className={inputCls} />
           </Field>
-          <SubmitBtn>Pošalji link za resetovanje</SubmitBtn>
+          <SubmitBtn>{t("auth.forgot.submit")}</SubmitBtn>
         </form>
       )}
 
       <p className="mt-4 text-sm">
-        <Link href="/login" className="text-blue-700 hover:underline">‹ Nazad na prijavu</Link>
+        <Link href="/login" className="text-blue-700 hover:underline">{t("auth.forgot.backToLogin")}</Link>
       </p>
     </AuthShell>
   );

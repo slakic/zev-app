@@ -31,6 +31,8 @@ export default async function MessagesPage() {
     <div>
       <PageHeader
         title="Poslate poruke"
+        backHref="/podesavanja"
+        backLabel={t("nav.settings")}
         subtitle={
           describeEmailProvider().kind === "mailjet"
             ? "E-mail i Viber poruke. E-mail se stvarno šalje (Mailjet); Viber je simulacija."

@@ -35,7 +35,12 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
   const emailById = new Map(memberships.map((m) => [m.user.id, m.user.email]));
   return (
     <div>
-      <PageHeader title="Revizorski trag" subtitle="Append-only zapis svih bitnih radnji (UPDATE/DELETE blokiran na nivou baze)" />
+      <PageHeader
+        title="Revizorski trag"
+        subtitle="Append-only zapis svih bitnih radnji (UPDATE/DELETE blokiran na nivou baze)"
+        backHref="/podesavanja"
+        backLabel={t("nav.settings")}
+      />
       <FilterBar submitLabel="Filtriraj">
         <Field label="Pretraga">
           <input name="q" defaultValue={q} placeholder="filter po radnji ili tipu (npr. vote, invoice)" className={`${inputCls} w-72`} />

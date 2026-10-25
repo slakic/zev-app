@@ -6,7 +6,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   NAV_ICONS,
   IconDot,
@@ -17,7 +17,10 @@ import {
   IconSliders,
   IconShield,
   IconHelp,
+  IconMenu,
+  IconClose,
 } from "@/components/nav-icons";
+import { activeHref } from "@/components/nav-active";
 import { t } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
@@ -70,9 +73,9 @@ export function NavShell({
   logoutAction: () => void | Promise<void>;
   settingsHref?: string;
   settingsLabel?: string;
-  /** Every ZEV the signed-in user holds a Membership in. The switcher (below) and the
-   * active-ZEV chip only render when there's more than one — a single-membership user
-   * (practically everyone today) sees no change at all. */
+  /** Every ZEV the signed-in user holds a Membership in. The active ZEV's name is always
+   * shown under the app name (D9, Plans/design-review-plan.md §5); the switcher (below) and
+   * the active-ZEV chip in the top bar only render when there's more than one. */
   tenants?: TenantOption[];
   activeZevId?: string | null;
   switchZevAction?: (formData: FormData) => void | Promise<void>;
@@ -114,6 +117,8 @@ export function NavShell({
   // server and first client render always agree on the expanded default.
   const [collapsed, setCollapsed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const avatarRef = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
   const drawerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -142,7 +147,10 @@ export function NavShell({
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
     };
     const onEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        avatarRef.current?.focus();
+      }
     };
     document.addEventListener("mousedown", onClickOutside);
     document.addEventListener("keydown", onEscape);
@@ -204,10 +212,11 @@ export function NavShell({
     setDrawerOpen(false);
   }, [pathname]);
 
+  const current = activeHref(pathname, links.map((n) => n.href));
   const linkCls = (href: string) =>
     `flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
       collapsed ? "md:mx-auto md:w-11 md:justify-center md:gap-0 md:rounded-xl md:px-0" : ""
-    } ${pathname === href ? accent.activeLink : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"}`;
+    } ${current === href ? accent.activeLink : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"}`;
 
   return (
     <div className="min-h-screen md:flex">
@@ -235,7 +244,7 @@ export function NavShell({
             collapsed ? "md:flex-col md:justify-center md:gap-3" : ""
           }`}
         >
-          <div className={`flex items-center gap-2 ${collapsed ? "md:hidden" : ""}`}>
+          <div className={`flex min-w-0 items-center gap-2 ${collapsed ? "md:hidden" : ""}`}>
             <Image
               src="/logo-mark.png"
               alt=""
@@ -244,7 +253,17 @@ export function NavShell({
               className="h-8 w-auto shrink-0"
               priority
             />
-            <div className={`text-lg font-bold tracking-tight ${accent.appName}`}>{appName}</div>
+            <div className="min-w-0">
+              <div className={`text-lg font-bold tracking-tight ${accent.appName}`}>{appName}</div>
+              {!platform && activeTenant && (
+                <div
+                  className="truncate text-[13px] text-slate-500"
+                  title={tenantTitle(activeTenant) ?? activeTenant.label}
+                >
+                  {activeTenant.label}
+                </div>
+              )}
+            </div>
           </div>
           <div className={`hidden shrink-0 items-center justify-center ${collapsed ? "md:flex" : ""}`}>
             <Image
@@ -268,16 +287,22 @@ export function NavShell({
             type="button"
             onClick={() => setDrawerOpen(false)}
             aria-label="Zatvori meni"
-            className="rounded-full p-1 text-slate-500 hover:bg-slate-100 md:hidden"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 md:hidden"
           >
-            ✕
+            <IconClose />
           </button>
         </div>
         <nav className="space-y-0.5 px-2 pb-4">
           {links.map((n) => {
             const Icon = NAV_ICONS[n.href] ?? IconDot;
             return (
-              <Link key={n.href} href={n.href} title={n.label} className={linkCls(n.href)}>
+              <Link
+                key={n.href}
+                href={n.href}
+                title={n.label}
+                aria-current={current === n.href ? "page" : undefined}
+                className={linkCls(n.href)}
+              >
                 <Icon className="h-5 w-5 shrink-0" />
                 <span className={collapsed ? "md:hidden" : ""}>{n.label}</span>
               </Link>
@@ -292,9 +317,10 @@ export function NavShell({
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-label="Otvori meni"
-            className="rounded-full p-1.5 text-slate-500 hover:bg-slate-100 md:hidden"
+            className="inline-flex h-11 items-center gap-2 rounded-full px-3 text-sm font-medium text-slate-700 hover:bg-slate-100 md:hidden"
           >
-            ☰
+            <IconMenu />
+            {t("nav.menu")}
           </button>
           <div className="flex-1" />
 
@@ -308,7 +334,7 @@ export function NavShell({
             activeTenant && (
               <span
                 title={tenantTitle(activeTenant) ?? activeTenant.label}
-                className="hidden max-w-[16rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:inline-flex"
+                className="inline-flex max-w-[10rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-[13px] font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:max-w-[16rem]"
               >
                 <IconBuilding className="h-3.5 w-3.5 shrink-0 text-blue-500" />
                 <span className="truncate">{activeTenant.label}</span>
@@ -319,8 +345,9 @@ export function NavShell({
           <div className="relative" ref={menuRef}>
             <button
               type="button"
+              ref={avatarRef}
               onClick={() => setMenuOpen((v) => !v)}
-              aria-haspopup="menu"
+              aria-controls={menuOpen ? menuId : undefined}
               aria-expanded={menuOpen}
               aria-label={`Nalog: ${displayName}`}
               className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm transition-shadow hover:shadow ${accent.avatar}`}
@@ -329,7 +356,7 @@ export function NavShell({
             </button>
             {menuOpen && (
               <div
-                role="menu"
+                id={menuId}
                 className="dropdown-in absolute right-0 z-30 mt-2 w-64 origin-top-right rounded-2xl border border-slate-200/80 bg-white py-1.5 shadow-xl ring-1 ring-slate-900/5"
               >
                 <div className="flex items-center gap-3 border-b border-slate-100 px-3.5 py-3">
@@ -338,12 +365,12 @@ export function NavShell({
                   </div>
                   <div className="min-w-0">
                     <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
-                    <div className="truncate text-xs text-slate-500">{rolesText}</div>
+                    <div className="truncate text-[13px] text-slate-500">{rolesText}</div>
                   </div>
                 </div>
                 {showSwitcher && (
                   <div className="border-b border-slate-100 py-1.5">
-                    <div className="px-3.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    <div className="px-3.5 pb-1 text-[13px] font-medium text-slate-500">
                       {t("tenant.switcherHeading")}
                     </div>
                     <div className="px-1.5">
@@ -354,7 +381,6 @@ export function NavShell({
                             <input type="hidden" name="zevId" value={tt.zevId} />
                             <button
                               type="submit"
-                              role="menuitem"
                               aria-current={isActive ? "true" : undefined}
                               title={tenantTitle(tt)}
                               disabled={isActive}
@@ -395,7 +421,6 @@ export function NavShell({
                   {!platform && (
                     <Link
                       href={settingsHref}
-                      role="menuitem"
                       onClick={() => setMenuOpen(false)}
                       className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
                     >
@@ -407,7 +432,6 @@ export function NavShell({
                     href="/korisnicko-uputstvo.html"
                     target="_blank"
                     rel="noopener noreferrer"
-                    role="menuitem"
                     onClick={() => setMenuOpen(false)}
                     className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
                   >
@@ -417,7 +441,6 @@ export function NavShell({
                   <form action={logoutAction}>
                     <button
                       type="submit"
-                      role="menuitem"
                       className="flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
                     >
                       <IconLogout className="h-4 w-4 shrink-0 text-slate-400" />

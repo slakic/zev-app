@@ -7,6 +7,7 @@
 // legitimate first question, and bare text answers it worse than a logo does.
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { Flash } from "@/components/ui";
 import { t } from "@/lib/i18n";
 
 export function AuthBrandHeader() {
@@ -21,17 +22,23 @@ export function AuthBrandHeader() {
   );
 }
 
+/** `flash` renders ABOVE the card (between the brand header and the card), never inside it —
+ *  Flash is elevation 1 and so is the card, and nesting them is the "box in a box" the design
+ *  system forbids (Plans/f2-orijentacija-u-skoljci-plan.md F2.6). */
 export function AuthShell({
-  pageTitle, children, footnote,
-}: { pageTitle: string; children: ReactNode; footnote?: ReactNode }) {
+  pageTitle, children, footnote, flash,
+}: { pageTitle: string; children: ReactNode; footnote?: ReactNode; flash?: { err?: string; msg?: string } }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
       <AuthBrandHeader />
-      <div className="w-full max-w-sm rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
-        <h1 className="mb-4 text-base font-semibold text-slate-900">{pageTitle}</h1>
-        {children}
+      <div className="w-full max-w-sm">
+        {flash && <Flash err={flash.err} msg={flash.msg} />}
+        <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
+          <h1 className="mb-4 text-base font-semibold text-slate-900">{pageTitle}</h1>
+          {children}
+        </div>
       </div>
-      {footnote && <p className="max-w-sm text-center text-xs text-slate-500">{footnote}</p>}
+      {footnote && <p className="max-w-sm text-center text-[13px] text-slate-500">{footnote}</p>}
     </main>
   );
 }

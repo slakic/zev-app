@@ -196,6 +196,11 @@ async function deleteDraftAction(formData: FormData) {
   redirect(`/skupstina/${meetingId}?msg=${encodeURIComponent("Nacrt prijedloga je obrisan.")}`);
 }
 
+/** Session title shortened for the "‹ Nazad" label (full title stays in the subtitle). */
+function shortTitle(title: string, max = 40): string {
+  return title.length > max ? `${title.slice(0, max - 1).trimEnd()}…` : title;
+}
+
 export default async function ProposalPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ err?: string; msg?: string }> }) {
   const { id } = await params;
   const { err, msg } = await searchParams;
@@ -214,7 +219,12 @@ export default async function ProposalPage({ params, searchParams }: { params: P
     const ownEv = p.eligibleVoters.find((ev) => ev.ownerId === myPartyId || ev.proxyId === myPartyId);
     return (
       <div>
-        <PageHeader title={`${p.code} — ${p.title}`} subtitle={`Verzija ${p.version} · ${p.meeting.title}`} />
+        <PageHeader
+          title={`${p.code} — ${p.title}`}
+          subtitle={`Verzija ${p.version} · ${p.meeting.title}`}
+          backHref={`/skupstina/${p.meetingId}`}
+          backLabel={shortTitle(p.meeting.title)}
+        />
         <div className="mb-4"><StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} /></div>
         <Card title="Tekst prijedloga"><p className="whitespace-pre-wrap text-sm">{p.text}</p></Card>
         {p.rationale && <div className="mt-4"><Card title="Obrazloženje"><p className="whitespace-pre-wrap text-sm">{p.rationale}</p></Card></div>}
@@ -293,6 +303,8 @@ export default async function ProposalPage({ params, searchParams }: { params: P
     <div>
       <PageHeader
         title={`${p.code} — ${p.title}`}
+        backHref={`/skupstina/${p.meetingId}`}
+        backLabel={shortTitle(p.meeting.title)}
         subtitle={`Verzija ${p.version} · ${p.meeting.title} · glasanje do ${formatDateTime(p.votingClosesAt)}`}
         actions={
           isPresident ? (

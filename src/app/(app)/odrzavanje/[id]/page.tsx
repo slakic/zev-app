@@ -164,6 +164,8 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
     <div>
       <PageHeader
         title={issue.title}
+        backHref="/odrzavanje"
+        backLabel={t("nav.maintenance")}
         subtitle={`Prijavio: ${partyDisplayName(issue.reporter)} · ${formatDate(issue.createdAt)} · ${issue.unit ? `${issue.unit.building.name} / ${issue.unit.label}` : issue.locationNote ?? ""}`}
       />
       <Flash err={err} />

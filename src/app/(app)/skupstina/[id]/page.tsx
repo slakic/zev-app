@@ -229,6 +229,8 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
     <div>
       <PageHeader
         title={meeting.title}
+        backHref={`/skupstina?tab=${meeting.body === "BOARD" ? "BOARD" : "ASSEMBLY"}`}
+        backLabel={meeting.body === "BOARD" ? t("nav.back.board") : t("nav.assembly")}
         subtitle={`${meeting.body === "BOARD" ? "Upravni odbor" : "Skupština"} · ${tEnum("meetingType", meeting.type)} · ${formatDateTime(meeting.scheduledAt)} · ${meeting.location ?? ""}`}
         actions={
           <>

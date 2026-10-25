@@ -360,6 +360,8 @@ F3, F5, F6 i F7 su međusobno nezavisne, mogu ići bilo kojim redom i nijedna ne
 
 ### F2 — Orijentacija u školjci i prijava *(sve uloge · S · D9 za jedan dio)*
 
+**Status: ISPORUČENO u v2.45.0 (nije commitovano):** [`f2-orijentacija-u-skoljci-plan.md`](f2-orijentacija-u-skoljci-plan.md).
+
 - **Svrha:** korisnik uvijek zna gdje je i u kom ZEV-u, i ima jedan dodir nazad. Rješava V8, V9, X-N05–X-N09 i R-N03.
 - **Šta se mijenja** (X-R01, X-R04, X-R05, X-R06, X-R07, X-R02):
   - **Meni:** aktivna stavka po prefiksu putanje, uz `aria-current`.

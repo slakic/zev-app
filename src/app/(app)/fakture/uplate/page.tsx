@@ -100,7 +100,12 @@ export default async function PaymentsPage({
 
   return (
     <div>
-      <PageHeader title={management ? "Uplate i uparivanje" : "Moje uplate"} subtitle={management ? "Ručni unos, uvoz izvoda i raspoređivanje na fakture" : undefined} />
+      <PageHeader
+        title={management ? "Uplate i uparivanje" : "Moje uplate"}
+        subtitle={management ? "Ručni unos, uvoz izvoda i raspoređivanje na fakture" : undefined}
+        backHref="/fakture"
+        backLabel={t("nav.invoices")}
+      />
       <Flash err={err} msg={msg} />
 
       {bankSms && (

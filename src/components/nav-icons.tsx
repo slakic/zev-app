@@ -181,6 +181,22 @@ export function IconChevronLeft(props: IconProps) {
   );
 }
 
+export function IconMenu(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13" />
+    </IconBase>
+  );
+}
+
+export function IconClose(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 5l10 10M15 5 5 15" />
+    </IconBase>
+  );
+}
+
 export function IconCheck(props: IconProps) {
   return (
     <IconBase {...props}>

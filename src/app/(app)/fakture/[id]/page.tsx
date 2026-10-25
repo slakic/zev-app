@@ -133,6 +133,8 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
     <div>
       <PageHeader
         title={`Faktura ${inv.number}`}
+        backHref="/fakture?tab=fakture"
+        backLabel={t("nav.invoices")}
         subtitle={`${inv.unit.building.name} / ${inv.unit.label} · ${partyDisplayName(inv.debtor)}`}
         actions={
           <form action={pdfAction}>

@@ -94,6 +94,8 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     <div>
       <PageHeader
         title={`${plan.title} (v${plan.version})`}
+        backHref="/planovi"
+        backLabel={t("nav.plans")}
         subtitle={`${plan.year}. · ${tEnum("planKind", plan.kind)}`}
         actions={
           isPresident ? (

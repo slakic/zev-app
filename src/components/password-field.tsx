@@ -8,7 +8,7 @@
 // come back through a redirect URL or rendered page, both easy ways for a
 // password to end up logged or in browser history).
 import { useId, useState } from "react";
-import { inputCls } from "@/components/ui";
+import { Btn, inputCls } from "@/components/ui";
 import { t } from "@/lib/i18n";
 
 const PASSWORD_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
@@ -19,11 +19,6 @@ function generatePassword(): string {
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (n) => PASSWORD_CHARS[n % PASSWORD_CHARS.length]).join("");
 }
-
-const smallBtnCls =
-  "shrink-0 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 " +
-  "transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 " +
-  "focus-visible:ring-blue-500/40";
 
 export function PasswordField({
   name,
@@ -64,12 +59,13 @@ export function PasswordField({
         onChange={(e) => setValue(e.target.value)}
         className={inputCls}
       />
-      <button type="button" onClick={() => setValue(generatePassword())} className={smallBtnCls}>
+      <Btn type="button" variant="secondary" onClick={() => setValue(generatePassword())} className="shrink-0">
         {t("common.generate")}
-      </button>
-      <button type="button" onClick={copy} disabled={!value} className={smallBtnCls}>
+      </Btn>
+      <Btn type="button" variant="secondary" onClick={copy} disabled={!value} className="shrink-0">
         {copied ? t("common.copied") : t("common.copy")}
-      </button>
+      </Btn>
+      <span aria-live="polite" className="sr-only">{copied ? t("common.copied") : ""}</span>
     </div>
   );
 }
