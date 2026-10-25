@@ -3,7 +3,8 @@
 // that finish voting simply drop out of "Unos iz sale" on the next server-action-triggered
 // refresh, which is exactly what a plain <form action={...}> without JS already does.
 import Link from "next/link";
-import { Card, ConfirmAction, ToggleBtn, SegmentedAction, StatusBadge, RowAction } from "@/components/ui";
+import { Card, ConfirmAction, ToggleBtn, SegmentedAction, StatusBadge, RowAction, BtnLink } from "@/components/ui";
+import { PreconditionList } from "@/components/precondition-list";
 import { formatWeight } from "@/lib/money";
 import { tEnum, t, tf } from "@/lib/i18n";
 
@@ -22,6 +23,9 @@ export type LivePreview = {
   deliverCount: number;
   noChannelCount: number;
   quorumReachable: boolean;
+  /** FR (K-02, K-01b): why the vote cannot be opened yet; while non-empty the confirm button is replaced by this list. */
+  preconditionErrors?: string[];
+  preconditionWarnings?: string[];
 };
 
 export type LiveResult = {
@@ -38,6 +42,8 @@ export type ActiveVoter = {
   eligibleVoterId: string;
   ownerId: string;
   ownerName: string;
+  /** A co-owner community voting through its representative (K-03a). */
+  isCommunity?: boolean;
   present: boolean;
   voted: boolean;
   channel: string | null;
@@ -174,7 +180,17 @@ export function AgendaItemPanel({
           <p className="mt-2 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm text-slate-700">{proposal.text}</p>
         </details>
 
-        {preview && (
+        {preview && (preview.preconditionErrors?.length ?? 0) > 0 && (
+          <div className="mt-4 space-y-3">
+            <p className="text-sm font-medium text-slate-700">{t("votingSubject.pre.cardTitle")}</p>
+            <PreconditionList items={(preview.preconditionErrors ?? []).map((text) => ({ ok: false, text }))} />
+            <div className="flex flex-wrap gap-2">
+              <BtnLink href="/zgrade?tab=posebni" variant="secondary">{t("votingSubject.pre.linkRegister")}</BtnLink>
+              <BtnLink href="/vlasnici?tab=vlasnistvo" variant="secondary">{t("votingSubject.pre.linkOwnership")}</BtnLink>
+            </div>
+          </div>
+        )}
+        {preview && (preview.preconditionErrors?.length ?? 0) === 0 && (
           <div className="mt-4">
             <ConfirmAction
               trigger={t("live.openVotingTrigger")}
@@ -190,6 +206,7 @@ export function AgendaItemPanel({
                     — {t("live.previewNoChannelHint")}.
                   </p>
                   {!preview.quorumReachable && <p className="font-medium">{t("live.quorumUnreachable")}</p>}
+                  {(preview.preconditionWarnings ?? []).map((w) => <p key={w}>{w}</p>)}
                 </div>
               }
               confirmLabel={t("live.openVotingConfirm")}
@@ -231,7 +248,10 @@ export function AgendaItemPanel({
           <ul className="space-y-2">
             {notYetVoted.map((v) => (
               <li key={v.eligibleVoterId} className="rounded-lg border border-slate-200/80 p-2.5">
-                <p className="mb-2 text-[15px] font-medium text-slate-900">{v.ownerName}</p>
+                <p className="mb-2 text-[15px] font-medium text-slate-900">
+                  {v.ownerName}
+                  {v.isCommunity && <span className="block text-[13px] font-normal text-slate-500">{t("votingSubject.live.communityHint")}</span>}
+                </p>
                 <form action={manualVoteAction}>
                   <input type="hidden" name="proposalId" value={proposal.id} />
                   <input type="hidden" name="agendaItemId" value={item.id} />

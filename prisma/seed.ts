@@ -15,6 +15,7 @@ import type { Role } from "../src/generated/prisma/client";
 import * as property from "../src/server/services/property";
 import * as ownership from "../src/server/services/ownership";
 import * as meetings from "../src/server/services/meetings";
+import * as unitRegister from "../src/server/services/unitRegister";
 import * as billing from "../src/server/services/billing";
 import * as payments from "../src/server/services/payments";
 import * as finance from "../src/server/services/finance";
@@ -138,6 +139,9 @@ async function main() {
   await property.createCommonAsset(president, { buildingId: null, kind: "AREA", name: "Zajedničko dvorište", description: "Parking i zelena površina" });
   await property.createCommonAsset(president, { buildingId: zgradaB.id, kind: "EQUIPMENT", name: "Hidrofor — Zgrada B", warrantyUntil: new Date(Date.UTC(year + 1, 5, 30)) });
 
+  // K-02: registar posebnih dijelova se utvrdjuje prije prvog vlasnika.
+  await unitRegister.establishUnitRegister(president, { reason: "Seed" });
+
   // --- Ownership (incl. co-owners, multi-unit owner), occupancy, proxy ------
   const past = new Date(Date.UTC(2019, 0, 1));
   // Demo placeholder — a real deployment always attaches a scanned contract/land-registry excerpt.
@@ -152,6 +156,9 @@ async function main() {
   await ownership.addOwnershipStake(president, { unitId: garaza1.id, ownerId: ownerAna.id, sharePercent: "100", validFrom: past }, seedProof);
   await ownership.addOwnershipStake(president, { unitId: garaza2.id, ownerId: presidentParty.id, sharePercent: "100", validFrom: past }, seedProof);
   await ownership.addOwnershipStake(president, { unitId: stan5.id, ownerId: presidentParty.id, sharePercent: "100", validFrom: past }, seedProof);
+
+  // K-03a: Stan 3 je u suvlasnistvu (Nikola 60 / Sara 40) — zajedno imaju jedan glas, preko predstavnika.
+  await ownership.setVotingRepresentative(president, stan3.id, ownerNikola.id);
 
   await ownership.setOccupancy(president, { unitId: stan1.id, partyId: ownerAna.id, type: "OWNER_OCCUPANT", headcount: 3, validFrom: past });
   await ownership.setOccupancy(president, { unitId: stan4.id, partyId: tenantIvana.id, type: "TENANT", headcount: 1, validFrom: new Date(Date.UTC(year - 1, 8, 1)) });
@@ -288,21 +295,16 @@ async function main() {
   await plans.addPlanItem(president, { planId: planBudzet.id, type: "CONTINGENCY", name: "Rezerva za nepredviđene troškove", plannedAmount: "500.00" });
 
   // --- Voting rules -------------------------------------------------------------
+  // K-03: jedan etazni vlasnik = jedan glas (tezina se vise ne bira), kvorum i vecina po broju etaznih vlasnika.
   const ruleRegular = await meetings.createVotingRule(president, {
-    name: "Redovno upravljanje (>50% udjela, prosta većina)",
-    quorumType: "PERCENT_OF_TOTAL_WEIGHT", quorumPercent: "50",
-    majorityType: "SIMPLE_OF_VOTES_CAST", weightMethod: "OWNERSHIP_SHARE",
-  });
-  await meetings.createVotingRule(president, {
-    name: "Veći radovi (2/3 ukupne baze po udjelu)",
-    quorumType: "PERCENT_OF_TOTAL_WEIGHT", quorumPercent: "66.67",
-    majorityType: "PERCENT_OF_ELIGIBLE_WEIGHT", majorityPercent: "66.67",
-    weightMethod: "OWNERSHIP_SHARE",
-  });
-  await meetings.createVotingRule(president, {
-    name: "Po vlasniku (1 vlasnik = 1 glas)",
+    name: "Redovno upravljanje (>50% etažnih vlasnika, prosta većina)",
     quorumType: "PERCENT_OF_OWNER_COUNT", quorumPercent: "50",
-    majorityType: "SIMPLE_OF_VOTES_CAST", weightMethod: "PER_OWNER",
+    majorityType: "SIMPLE_OF_VOTES_CAST",
+  });
+  await meetings.createVotingRule(president, {
+    name: "Veći radovi (2/3 ukupnog broja etažnih vlasnika)",
+    quorumType: "PERCENT_OF_OWNER_COUNT", quorumPercent: "66.67",
+    majorityType: "PERCENT_OF_ELIGIBLE_WEIGHT", majorityPercent: "66.67",
   });
 
   // --- Meeting with proposals; one completed vote cycle --------------------------

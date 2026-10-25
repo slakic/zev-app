@@ -4,7 +4,7 @@
 // Party.eVoteConsentStatus and Attendance — state that must not leak between cases.
 import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { createFixture, createProposalFixture, type Fixture } from "./helpers";
+import { createFixture, createProposalFixture, seedShapedZev, type Fixture } from "./helpers";
 import {
   openVoting, recordAttendance, recordAttendanceBulk, recordManualVote, recordManualVoteBulk, submitVote,
   advanceMeetingStatus, closeVoting, getLiveMeetingState, previewLiveDelivery, createVotingRule,
@@ -442,5 +442,73 @@ describe("live meeting — Faza 4 (poliranje)", () => {
       where: { relatedType: "Proposal", relatedId: proposal.id, toAddress: f.ownerB.email! },
     });
     expect(msg.recipientId).toBe(f.ownerB.id);
+  });
+});
+
+// FR (K-03a) — plan §3.4: the roll-call and the delivery split work per voting SUBJECT.
+describe("live meeting — voting subjects (FR)", () => {
+  it("the roll-call lists 5 subjects for the seed's 6 persons; a co-owner community is present when ONE co-owner is", async () => {
+    const { f, nikola, sara } = await seedShapedZev("lm-subj-state");
+    const { meeting } = await createProposalFixture(f, { scope: "ZEV" });
+
+    const before = await getLiveMeetingState(f.president, meeting.id);
+    expect(before.totalCount).toBe(5);
+    const community = before.voters.find((v) => v.isCommunity)!;
+    expect(community.ownerId).toBe(nikola.id); // representative
+    expect(community.ownerName).toContain("Sara");
+    expect(community.marked).toBe(false);
+
+    // only Sara (not the representative) is in the room
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: sara.id, present: true });
+    const after = await getLiveMeetingState(f.president, meeting.id);
+    const c2 = after.voters.find((v) => v.isCommunity)!;
+    expect(c2.present).toBe(true);
+    expect(c2.marked).toBe(true);
+    expect(after.presentCount).toBe(1);
+    expect(after.absentCount).toBe(4);
+  });
+
+  it("LIVE delivery: a community whose non-representative co-owner is present is suppressed as PRESENT, and the preview agrees", async () => {
+    const { f, sara, nikola } = await seedShapedZev("lm-subj-live");
+    const { meeting, proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: sara.id, present: true });
+    await markSigned(nikola.id);
+
+    const preview = await previewLiveDelivery(f.president, proposal.id);
+    expect(preview.preconditionErrors).toEqual([]);
+    expect(preview.presentCount).toBe(1);
+    expect(preview.deliverCount).toBe(0);
+    expect(preview.noChannelCount).toBe(4);
+    expect(preview.totalEligibleWeight).toBe("5.000000");
+
+    await openVoting(f.president, proposal.id, { delivery: "LIVE" });
+    const ev = await prisma.eligibleVoter.findFirstOrThrow({ where: { proposalId: proposal.id, ownerId: nikola.id }, include: { tokens: true } });
+    expect(ev.tokens[0].deliveredVia).toBeNull(); // in the room — votes IN_PERSON through the manual entry
+    const audit = await prisma.auditEvent.findFirstOrThrow({ where: { action: "proposal.voting.open", targetId: proposal.id } });
+    expect((audit.after as { suppressedPresent: number }).suppressedPresent).toBe(1);
+
+    const state = await getLiveMeetingState(f.president, meeting.id, { proposalId: proposal.id });
+    const av = state.activeVoters.find((v) => v.ownerId === nikola.id)!;
+    expect(av.isCommunity).toBe(true);
+    expect(av.present).toBe(true);
+    expect(av.ownerName).toContain("Sara");
+  });
+
+  it("a present proxy holder makes the grantor's subject present (the holder votes in the room)", async () => {
+    const f: Fixture = await createFixture("lm-subj-proxy");
+    const { meeting, proposal } = await createProposalFixture(f);
+    await grantProxy(f.president, { grantorId: f.ownerA.id, holderId: f.ownerB.id, scope: "ALL", validFrom: new Date("2020-01-01") });
+    await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerB.id, present: true });
+    const preview = await previewLiveDelivery(f.president, proposal.id);
+    // B is a member of two subjects (own u2 + the u3 community), and A is represented by B: all three are "present"
+    expect(preview.presentCount).toBe(3);
+  });
+
+  it("the preview shows the register preconditions instead of numbers that cannot be acted on", async () => {
+    const f: Fixture = await createFixture("lm-subj-pre", { registerStatus: "REVIEW" });
+    const { proposal } = await createProposalFixture(f);
+    const preview = await previewLiveDelivery(f.president, proposal.id);
+    expect(preview.preconditionErrors.join(" ")).toMatch(/nije utvrđen/);
+    await expect(openVoting(f.president, proposal.id, { delivery: "LIVE" })).rejects.toThrow(/nije utvrđen/);
   });
 });

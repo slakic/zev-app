@@ -58,6 +58,7 @@ export const ModelName = {
   Membership: 'Membership',
   Building: 'Building',
   Entrance: 'Entrance',
+  UnitRegisterChange: 'UnitRegisterChange',
   Unit: 'Unit',
   OwnershipStake: 'OwnershipStake',
   Occupancy: 'Occupancy',
@@ -203,6 +204,9 @@ export const ZevScalarFieldEnum = {
   note: 'note',
   tier: 'tier',
   active: 'active',
+  unitRegisterStatus: 'unitRegisterStatus',
+  unitRegisterVersion: 'unitRegisterVersion',
+  unitRegisterEstablishedAt: 'unitRegisterEstablishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -251,6 +255,22 @@ export const EntranceScalarFieldEnum = {
 export type EntranceScalarFieldEnum = (typeof EntranceScalarFieldEnum)[keyof typeof EntranceScalarFieldEnum]
 
 
+export const UnitRegisterChangeScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  version: 'version',
+  kind: 'kind',
+  reason: 'reason',
+  attachmentId: 'attachmentId',
+  before: 'before',
+  after: 'after',
+  actorId: 'actorId',
+  createdAt: 'createdAt'
+} as const
+
+export type UnitRegisterChangeScalarFieldEnum = (typeof UnitRegisterChangeScalarFieldEnum)[keyof typeof UnitRegisterChangeScalarFieldEnum]
+
+
 export const UnitScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
@@ -267,6 +287,7 @@ export const UnitScalarFieldEnum = {
   note: 'note',
   invoiceRecipientId: 'invoiceRecipientId',
   correspondenceContactId: 'correspondenceContactId',
+  votingRepresentativeId: 'votingRepresentativeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -485,6 +506,8 @@ export const EligibleVoterScalarFieldEnum = {
   proxyRecordId: 'proxyRecordId',
   weight: 'weight',
   basis: 'basis',
+  subjectKey: 'subjectKey',
+  memberPartyIds: 'memberPartyIds',
   createdAt: 'createdAt'
 } as const
 
@@ -1167,19 +1190,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

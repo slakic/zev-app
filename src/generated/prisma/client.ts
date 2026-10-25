@@ -77,6 +77,11 @@ export type Building = Prisma.BuildingModel
  */
 export type Entrance = Prisma.EntranceModel
 /**
+ * Model UnitRegisterChange
+ * Istorija utvrdjenog registra posebnih dijelova. Append-only (trigger forbid_update_delete).
+ */
+export type UnitRegisterChange = Prisma.UnitRegisterChangeModel
+/**
  * Model Unit
  * 
  */

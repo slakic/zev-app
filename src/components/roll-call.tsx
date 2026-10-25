@@ -7,9 +7,13 @@
 // component's own useState survives them; only its props (the voter list) change.
 import { useMemo, useState } from "react";
 import { SegmentedAction, ConfirmAction, inputCls } from "@/components/ui";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 
 export type RollCallVoter = {
+  /** One row per voting SUBJECT (K-03a) — the same person can head two (K-03b), so this, not ownerId, is the key. */
+  subjectKey: string;
+  isCommunity: boolean;
+  representativeName: string;
   ownerId: string;
   ownerName: string;
   marked: boolean;
@@ -102,11 +106,20 @@ export function RollCall({
         })}
       </div>
 
+      {voters.some((v) => v.isCommunity) && (
+        <p className="mb-3 text-[13px] text-slate-600">{t("votingSubject.live.communityNote")}</p>
+      )}
+
       <ul className="space-y-2">
         {filtered.map((v) => (
-          <li key={v.ownerId} className="rounded-xl border border-slate-200/80 bg-white p-3">
+          <li key={v.subjectKey} className="rounded-xl border border-slate-200/80 bg-white p-3">
             <div className="mb-2">
               <div className="text-[15px] font-medium text-slate-900">{v.ownerName}</div>
+              {v.isCommunity && (
+                <div className="text-[13px] text-slate-600">
+                  {tf("votingSubject.live.representative", { name: v.representativeName })}
+                </div>
+              )}
               <div className="text-[13px] text-slate-500">
                 {v.unitLabels.length > 0 ? v.unitLabels.join(", ") : "—"}
                 {" · "}
@@ -162,7 +175,7 @@ export function RollCall({
             hiddenFields={{ meetingId }}
           >
             {unmarked.map((v) => (
-              <input key={v.ownerId} type="hidden" name="partyId" value={v.ownerId} />
+              <input key={v.subjectKey} type="hidden" name="partyId" value={v.ownerId} />
             ))}
           </ConfirmAction>
         </div>

@@ -39,10 +39,34 @@ export const UnitType = {
   APARTMENT: 'APARTMENT',
   BUSINESS: 'BUSINESS',
   GARAGE: 'GARAGE',
+  GARAGE_SPACE: 'GARAGE_SPACE',
   OTHER: 'OTHER'
 } as const
 
 export type UnitType = (typeof UnitType)[keyof typeof UnitType]
+
+
+export const UnitRegisterStatus = {
+  DRAFT: 'DRAFT',
+  ESTABLISHED: 'ESTABLISHED',
+  REVIEW: 'REVIEW'
+} as const
+
+export type UnitRegisterStatus = (typeof UnitRegisterStatus)[keyof typeof UnitRegisterStatus]
+
+
+export const UnitRegisterChangeKind = {
+  ESTABLISH: 'ESTABLISH',
+  ADD_UNIT: 'ADD_UNIT',
+  RETIRE_UNIT: 'RETIRE_UNIT',
+  MERGE_SPLIT: 'MERGE_SPLIT',
+  CHANGE_AREA: 'CHANGE_AREA',
+  CHANGE_SHARE: 'CHANGE_SHARE',
+  CHANGE_LABEL: 'CHANGE_LABEL',
+  CHANGE_TYPE: 'CHANGE_TYPE'
+} as const
+
+export type UnitRegisterChangeKind = (typeof UnitRegisterChangeKind)[keyof typeof UnitRegisterChangeKind]
 
 
 export const OccupancyType = {

@@ -9,7 +9,7 @@ const votingRuleHeaders: ColumnSpec[] = [
   { label: "Naziv" },
   { label: "Kvorum" },
   { label: "Većina" },
-  { label: "Težina glasa" },
+  { label: "Broj glasova" },
 ];
 
 const meetingHeaders: ColumnSpec[] = [
@@ -46,7 +46,7 @@ async function addRuleAction(formData: FormData) {
     quorumPercent: parseMoneyInput(formData.get("quorumPercent") as string | null),
     majorityType: formData.get("majorityType") as never,
     majorityPercent: parseMoneyInput(formData.get("majorityPercent") as string | null),
-    weightMethod: formData.get("weightMethod") as never,
+    // K-03: no weight choice any more — createVotingRule stores PER_OWNER (one etazni vlasnik, one vote).
   });
   revalidatePath("/skupstina");
 }
@@ -147,7 +147,7 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
                   <Td>{r.name}</Td>
                   <Td>{tEnum("quorum", r.quorumType)}{r.quorumPercent ? ` (${r.quorumPercent}%)` : ""}</Td>
                   <Td>{tEnum("majority", r.majorityType)}{r.majorityPercent ? ` (${r.majorityPercent}%)` : ""}</Td>
-                  <Td>{tEnum("weight", r.weightMethod)}</Td>
+                  <Td>{t("votingSubject.weightCell")}</Td>
                 </tr>
               ))}
             </Table>
@@ -158,27 +158,20 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
                   <Field label="Naziv"><input name="name" required className={inputCls} placeholder="Redovno upravljanje" /></Field>
                   <Field label="Tip kvoruma">
                     <select name="quorumType" className={inputCls}>
-                      <option value="PERCENT_OF_TOTAL_WEIGHT">% ukupne težine</option>
-                      <option value="PERCENT_OF_OWNER_COUNT">% broja vlasnika</option>
-                      <option value="NONE">Bez kvoruma</option>
+                      <option value="PERCENT_OF_OWNER_COUNT">{tEnum("quorum", "PERCENT_OF_OWNER_COUNT")}</option>
+                      <option value="NONE">{tEnum("quorum", "NONE")}</option>
                     </select>
                   </Field>
                   <Field label="Kvorum %"><input name="quorumPercent" className={inputCls} placeholder="50" /></Field>
                   <Field label="Tip većine">
                     <select name="majorityType" className={inputCls}>
                       <option value="SIMPLE_OF_VOTES_CAST">Prosta većina glasalih</option>
-                      <option value="PERCENT_OF_VOTES_CAST">% glasalih</option>
-                      <option value="PERCENT_OF_ELIGIBLE_WEIGHT">% ukupne baze</option>
+                      <option value="PERCENT_OF_VOTES_CAST">{tEnum("majority", "PERCENT_OF_VOTES_CAST")}</option>
+                      <option value="PERCENT_OF_ELIGIBLE_WEIGHT">{tEnum("majority", "PERCENT_OF_ELIGIBLE_WEIGHT")}</option>
                     </select>
                   </Field>
                   <Field label="Većina %"><input name="majorityPercent" className={inputCls} placeholder="50" /></Field>
-                  <Field label="Težina glasa">
-                    <select name="weightMethod" className={inputCls}>
-                      <option value="OWNERSHIP_SHARE">Po vlasničkom udjelu</option>
-                      <option value="PER_OWNER">Po vlasniku (1 glas)</option>
-                      <option value="USABLE_AREA">Po površini</option>
-                    </select>
-                  </Field>
+                  <p className="max-w-[68ch] self-end text-[13px] text-slate-500">{t("votingSubject.weightNote")}</p>
                   <div className="flex items-end"><SubmitBtn>Sačuvaj pravilo</SubmitBtn></div>
                 </form>
               </details>

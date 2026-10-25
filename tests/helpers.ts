@@ -6,6 +6,7 @@ import * as ownership from "@/server/services/ownership";
 import * as finance from "@/server/services/finance";
 import * as meetings from "@/server/services/meetings";
 import * as billing from "@/server/services/billing";
+import * as unitRegister from "@/server/services/unitRegister";
 import { seedDefaultSettings } from "@/server/services/settings";
 import { extractApprovalSecrets } from "@/server/notifications/testOutbox";
 
@@ -41,8 +42,13 @@ export async function createSuperAdminActor(tag = "super"): Promise<Actor> {
  * Self-contained fixture: a ZEV context with 2 buildings, 4 units,
  * 3 owners (one co-owned unit), users/actors for each role and a bank account.
  * All names are unique per call so suites do not interfere.
+ *
+ * The unit register is established (FR, K-02) before any owner is written — addOwnershipStake
+ * refuses a DRAFT register. `opts.registerStatus` is for the gate tests: "REVIEW" establishes the
+ * register, writes the owners, then flips the ZEV to "Za provjeru" (FR-Q4); "DRAFT" leaves the
+ * register unestablished and therefore writes no owners at all.
  */
-export async function createFixture(tag: string) {
+export async function createFixture(tag: string, opts?: { registerStatus?: "DRAFT" | "REVIEW" }) {
   const t = uid(tag);
   const pw = await hashPassword("Test1234!");
 
@@ -118,12 +124,23 @@ export async function createFixture(tag: string) {
 
   const past = new Date("2020-01-01");
   const proof = { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" };
-  await ownership.addOwnershipStake(president, { unitId: u1.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
-  await ownership.addOwnershipStake(president, { unitId: u2.id, ownerId: ownerB.id, sharePercent: "100", validFrom: past }, proof);
-  // co-owned unit: B 50 / C 50
-  await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerB.id, sharePercent: "50", validFrom: past }, proof);
-  await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerC.id, sharePercent: "50", validFrom: past }, proof);
-  await ownership.addOwnershipStake(president, { unitId: u4.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
+  if (opts?.registerStatus !== "DRAFT") {
+    await unitRegister.establishUnitRegister(president, { reason: "Fixture" });
+    await ownership.addOwnershipStake(president, { unitId: u1.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
+    await ownership.addOwnershipStake(president, { unitId: u2.id, ownerId: ownerB.id, sharePercent: "100", validFrom: past }, proof);
+    // co-owned unit: B 50 / C 50
+    await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerB.id, sharePercent: "50", validFrom: past }, proof);
+    await ownership.addOwnershipStake(president, { unitId: u3.id, ownerId: ownerC.id, sharePercent: "50", validFrom: past }, proof);
+    await ownership.addOwnershipStake(president, { unitId: u4.id, ownerId: ownerA.id, sharePercent: "100", validFrom: past }, proof);
+    // K-03a: B and C co-own u3 and vote together through ONE representative. C is named explicitly so
+    // that each of A, B and C is the "ownerId" of exactly one voting subject (B: his own u2; C: the
+    // u3 community) — the pre-FR three-voter shape the older voting/live-meeting tests are written
+    // against. B is, however, also a member of the u3 community (K-03b: two subjects for him).
+    await ownership.setVotingRepresentative(president, u3.id, ownerC.id);
+    if (opts?.registerStatus === "REVIEW") {
+      await prisma.zev.update({ where: { id: zev.id }, data: { unitRegisterStatus: "REVIEW" } });
+    }
+  }
 
   const account = await finance.createAccount(accountant, {
     type: "BANK", name: `Racun-${t}`, openingBalance: "1000.00", openingDate: past,
@@ -134,7 +151,7 @@ export async function createFixture(tag: string) {
     quorumType: "PERCENT_OF_TOTAL_WEIGHT",
     quorumPercent: "50",
     majorityType: "SIMPLE_OF_VOTES_CAST",
-    weightMethod: "OWNERSHIP_SHARE",
+    weightMethod: "OWNERSHIP_SHARE", // ignored since FR (K-03): createVotingRule always stores PER_OWNER
   });
 
   return {
@@ -179,8 +196,8 @@ export async function createProposalFixture(f: Fixture, opts?: { ruleId?: string
     code: uid(`P-${f.t}`),
     title: `Prijedlog ${f.t}`,
     text: "Tekst prijedloga za test.",
-    scopeType: "UNITS",
-    unitIds: [f.u1.id, f.u2.id, f.u3.id, f.u4.id],
+    scopeType: opts?.scope === "ZEV" ? "ZEV" : "UNITS",
+    unitIds: opts?.scope === "ZEV" ? undefined : [f.u1.id, f.u2.id, f.u3.id, f.u4.id],
     votingRuleId: opts?.ruleId ?? f.rule.id,
     votingClosesAt: new Date(Date.now() + 7 * 86400000),
   });
@@ -199,3 +216,34 @@ export async function openVotingWithLinks(f: Fixture, proposalId: string) {
     return { toAddress: m.toAddress, token: token ?? "", code: code ?? "" };
   });
 }
+
+const SEED_PROOF = { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" };
+
+/**
+ * The seed's shape (prisma/seed.ts): 6 persons, 8 posebnih dijelova, 5 voting subjects —
+ * Ana (2 units), Marko (2 units), Nikola 60 % + Sara 40 % (one unit), a firm, the president (2 units).
+ */
+export async function seedShapedZev(tag: string) {
+  const f = await createFixture(tag, { registerStatus: "DRAFT" });
+  const mkParty = (first: string) =>
+    prisma.party.create({ data: { zevId: f.zev.id, kind: "PERSON", firstName: first, lastName: `${first}-${f.t}`, email: `${first.toLowerCase()}-${f.t}@example.com` } });
+  const [nikola, sara, firma] = await Promise.all([mkParty("Nikola"), mkParty("Sara"), mkParty("Firma")]);
+  const mkUnit = (label: string, b = f.b1.id) =>
+    prisma.unit.create({ data: { zevId: f.zev.id, buildingId: b, type: "APARTMENT", label: `${label}-${f.t}`, usableArea: "50", ownershipShare: "12.5" } });
+  const [u5, u6, u7, u8] = await Promise.all([mkUnit("U5"), mkUnit("U6"), mkUnit("U7"), mkUnit("U8")]);
+  await prisma.unit.updateMany({ where: { zevId: f.zev.id }, data: { ownershipShare: "12.5" } });
+  await unitRegister.establishUnitRegister(f.president, { reason: "test" });
+  const stake = (unitId: string, ownerId: string, pct: string, validFrom = new Date("2020-01-01")) =>
+    ownership.addOwnershipStake(f.president, { unitId, ownerId, sharePercent: pct, validFrom }, SEED_PROOF);
+  await stake(f.u1.id, f.ownerA.id, "100"); // Ana
+  await stake(f.u4.id, f.ownerA.id, "100"); // Ana, second unit
+  await stake(f.u2.id, f.ownerB.id, "100"); // Marko
+  await stake(u5.id, f.ownerB.id, "100"); //   Marko, second unit
+  await stake(f.u3.id, nikola.id, "60"); //    co-owned 60/40
+  await stake(f.u3.id, sara.id, "40");
+  await stake(u6.id, firma.id, "100");
+  await stake(u7.id, f.presidentParty.id, "100");
+  await stake(u8.id, f.presidentParty.id, "100");
+  return { f, nikola, sara, firma, u5, u6, u7, u8 };
+}
+

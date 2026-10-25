@@ -80,6 +80,9 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "office.term.set": "GOVERNANCE",
   "ownership.stake.add": "GOVERNANCE",
   "ownership.transfer": "GOVERNANCE",
+  "unit_register.establish": "GOVERNANCE",
+  "unit_register.change": "GOVERNANCE",
+  "unit.voting_representative.set": "GOVERNANCE",
   "occupancy.create": "GOVERNANCE",
   "occupancy.end": "GOVERNANCE",
   "party.create": "GOVERNANCE",
@@ -170,6 +173,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "user.update_roles": "SYSTEM",
   "vote.verify.failed": "SYSTEM",
   "voting_rule.create": "SYSTEM",
+  "voting_rule.convert": "SYSTEM",
 };
 
 export function categoryForAction(action: string): ActivityCategory {

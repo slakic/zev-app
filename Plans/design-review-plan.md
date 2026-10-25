@@ -468,7 +468,9 @@ Dijeli se na dvije isporuke:
 - **Rizik:** srednji. Parametri utiču na obračun: potrebni su testovi parsiranja, a server upisuje samo promijenjene vrijednosti (zbog revizorskog traga).
 - **Izlazni kriterijum:** nema slobodnog teksta za bulove; nijedna onemogućena forma; svaka radnja potvrđena; revizorski trag ≤ ~3.000px po strani na 375.
 
-### FR — Registar posebnih dijelova i spisak etažnih vlasnika: temelj glasanja *(M–L · domenska izmjena · K-02, K-03, K-03a · pitanja FR-Q3, FR-Q4, K-03b)*
+### FR — Registar posebnih dijelova i spisak etažnih vlasnika: temelj glasanja *(M–L · domenska izmjena · K-02, K-03, K-03a, FR-Q3, FR-Q4 odlučeni · otvoreno samo K-03b, pravnik)*
+
+**Status: ISPORUČENO u v2.43.0 (nije commitovano). Odluke donesene 2026-10-24; implementacioni plan: [`fr-registar-i-glasanje-po-etaznim-vlasnicima-plan.md`](fr-registar-i-glasanje-po-etaznim-vlasnicima-plan.md).**
 
 - **Svrha:** spisak posebnih dijelova je potpun i utvrđen prije prvog vlasnika. Zato je i spisak etažnih vlasnika potpun prije prvog glasanja. Kvorum i većina se računaju po **broju glasačkih subjekata**: samostalni vlasnik ili suvlasnička zajednica, svaki sa jednim glasom (K-03, K-03a), nad utvrđenim registrom (K-02).
 - **Rješava:**
@@ -550,8 +552,11 @@ Dijeli se na dvije isporuke:
 - **Pitanja:**
   - **FR-Q1:** *zatvoreno odlukom K-03.* Svi posebni dijelovi, uključujući garaže i garažna mjesta, čine vlasnika etažnim vlasnikom.
   - **FR-Q2:** *zatvoreno odlukama K-03 i K-03a.* Jedan glas po samostalnom vlasniku ili suvlasničkoj zajednici. Ostaje **K-03b** (granični slučaj, pravnik).
-  - **FR-Q3 — Ko i kako mijenja utvrđen registar:** predsjednik uz razlog i dokument, ili tek nakon odluke skupštine? **Preporuka:** predsjednik uz razlog i dokument, zabranjeno dok traje glasanje. Ako pravnik kaže da treba odluka, izmjena se veže za usvojen prijedlog (isti obrazac kao P-R04).
-  - **FR-Q4 — Postojeći ZEV-ovi:** prelazni režim „Za provjeru” (preporuka) ili odmah blokirati dodavanje vlasnika dok se registar ne utvrdi?
+  - **FR-Q3 — ODLUČENO (2026-10-24):** utvrđen registar mijenja **predsjednik**, uz obavezan razlog i dokument (elaborat, rješenje katastra i sl.). Izmjena je zabranjena dok traje bilo koje glasanje, a svaka izmjena je nova verzija registra u auditu. Veza na odluku skupštine nije obavezna.
+  - **FR-Q4 — ODLUČENO (2026-10-24):** postojeći ZEV-ovi prelaze u **prelazni režim „Za provjeru”**:
+    - dodavanje vlasnika i dalje radi;
+    - predsjednik dobija zadatak da registar provjeri i utvrdi;
+    - novo glasanje se ne može otvoriti dok registar nije utvrđen.
   - **FR-Q5:** *zatvoreno odlukom K-03.* Zbir od 100% je preduslov samo zbog troškova; glasanje ne koristi procente.
 
 ### F8 — Mobilne tabele i evidencija vlasnika i jedinica *(M · D3 · preporučeno nakon P8 sesije)*
@@ -658,8 +663,8 @@ Uz to se predlaže jednostavna CI provjera koja pada ako broj `text-xs` raste (h
 | FR-Q2 — „jedan vlasnik — jedan glas” uz registar | §6 FR | — | **zatvoreno (K-03):** po licu, bez duplikata | — |
 | K-03a — suvlasnici istog posebnog dijela | §Odluke korisnika | — | **odlučeno:** zajedno jedan glas, preko zajedničkog predstavnika | — |
 | K-03b — lice koje je samostalni vlasnik jednog dijela i suvlasnik drugog | §Odluke korisnika K-03a | dva subjekta (dva glasa) vs. jedan glas, a zajednica glasa preko drugog suvlasnika | dva subjekta; potvrda pravnika | FR (ne blokira) |
-| FR-Q3 — izmjena utvrđenog registra | §6 FR | predsjednik uz dokument vs. odluka skupštine | predsjednik uz razlog i dokument; ne tokom glasanja | FR |
-| FR-Q4 — postojeći ZEV-ovi | §6 FR | prelazni režim vs. odmah blokada | prelazni režim „Za provjeru” | FR |
+| FR-Q3 — izmjena utvrđenog registra | §6 FR | — | **odlučeno:** predsjednik uz razlog i dokument; ne tokom glasanja | — |
+| FR-Q4 — postojeći ZEV-ovi | §6 FR | — | **odlučeno:** prelazni režim „Za provjeru” | — |
 | FR-Q5 — 100% za sve jedinice ili samo za one sa pravom glasa | §6 FR | — | **zatvoreno (K-03):** 100% samo kao osnova troškova; glasanje ne koristi procente | — |
 | V-Q5 — vlasnik vidi imena drugih vlasnika i zakupaca | 02 | zaštita ličnih podataka | ne, dok se ne potvrdi osnov | F8 |
 | R-Q1 — uplate: tab ili stavka menija | 03 | vidljivost vs. dužina menija | stavka menija | F5 / F9 |

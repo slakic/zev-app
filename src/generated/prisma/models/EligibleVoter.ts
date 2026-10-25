@@ -41,6 +41,7 @@ export type EligibleVoterMinAggregateOutputType = {
   proxyId: string | null
   proxyRecordId: string | null
   weight: runtime.Decimal | null
+  subjectKey: string | null
   createdAt: Date | null
 }
 
@@ -51,6 +52,7 @@ export type EligibleVoterMaxAggregateOutputType = {
   proxyId: string | null
   proxyRecordId: string | null
   weight: runtime.Decimal | null
+  subjectKey: string | null
   createdAt: Date | null
 }
 
@@ -62,6 +64,8 @@ export type EligibleVoterCountAggregateOutputType = {
   proxyRecordId: number
   weight: number
   basis: number
+  subjectKey: number
+  memberPartyIds: number
   createdAt: number
   _all: number
 }
@@ -82,6 +86,7 @@ export type EligibleVoterMinAggregateInputType = {
   proxyId?: true
   proxyRecordId?: true
   weight?: true
+  subjectKey?: true
   createdAt?: true
 }
 
@@ -92,6 +97,7 @@ export type EligibleVoterMaxAggregateInputType = {
   proxyId?: true
   proxyRecordId?: true
   weight?: true
+  subjectKey?: true
   createdAt?: true
 }
 
@@ -103,6 +109,8 @@ export type EligibleVoterCountAggregateInputType = {
   proxyRecordId?: true
   weight?: true
   basis?: true
+  subjectKey?: true
+  memberPartyIds?: true
   createdAt?: true
   _all?: true
 }
@@ -201,6 +209,8 @@ export type EligibleVoterGroupByOutputType = {
   proxyRecordId: string | null
   weight: runtime.Decimal
   basis: runtime.JsonValue
+  subjectKey: string
+  memberPartyIds: string[]
   createdAt: Date
   _count: EligibleVoterCountAggregateOutputType | null
   _avg: EligibleVoterAvgAggregateOutputType | null
@@ -235,6 +245,8 @@ export type EligibleVoterWhereInput = {
   proxyRecordId?: Prisma.StringNullableFilter<"EligibleVoter"> | string | null
   weight?: Prisma.DecimalFilter<"EligibleVoter"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonFilter<"EligibleVoter">
+  subjectKey?: Prisma.StringFilter<"EligibleVoter"> | string
+  memberPartyIds?: Prisma.StringNullableListFilter<"EligibleVoter">
   createdAt?: Prisma.DateTimeFilter<"EligibleVoter"> | Date | string
   proposal?: Prisma.XOR<Prisma.ProposalScalarRelationFilter, Prisma.ProposalWhereInput>
   owner?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -251,6 +263,8 @@ export type EligibleVoterOrderByWithRelationInput = {
   proxyRecordId?: Prisma.SortOrderInput | Prisma.SortOrder
   weight?: Prisma.SortOrder
   basis?: Prisma.SortOrder
+  subjectKey?: Prisma.SortOrder
+  memberPartyIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   proposal?: Prisma.ProposalOrderByWithRelationInput
   owner?: Prisma.PartyOrderByWithRelationInput
@@ -261,7 +275,7 @@ export type EligibleVoterOrderByWithRelationInput = {
 
 export type EligibleVoterWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  proposalId_ownerId?: Prisma.EligibleVoterProposalIdOwnerIdCompoundUniqueInput
+  proposalId_subjectKey_ownerId?: Prisma.EligibleVoterProposalIdSubjectKeyOwnerIdCompoundUniqueInput
   AND?: Prisma.EligibleVoterWhereInput | Prisma.EligibleVoterWhereInput[]
   OR?: Prisma.EligibleVoterWhereInput[]
   NOT?: Prisma.EligibleVoterWhereInput | Prisma.EligibleVoterWhereInput[]
@@ -271,13 +285,15 @@ export type EligibleVoterWhereUniqueInput = Prisma.AtLeast<{
   proxyRecordId?: Prisma.StringNullableFilter<"EligibleVoter"> | string | null
   weight?: Prisma.DecimalFilter<"EligibleVoter"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonFilter<"EligibleVoter">
+  subjectKey?: Prisma.StringFilter<"EligibleVoter"> | string
+  memberPartyIds?: Prisma.StringNullableListFilter<"EligibleVoter">
   createdAt?: Prisma.DateTimeFilter<"EligibleVoter"> | Date | string
   proposal?: Prisma.XOR<Prisma.ProposalScalarRelationFilter, Prisma.ProposalWhereInput>
   owner?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   proxy?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
   tokens?: Prisma.ApprovalTokenListRelationFilter
   votes?: Prisma.VoteListRelationFilter
-}, "id" | "proposalId_ownerId">
+}, "id" | "proposalId_subjectKey_ownerId">
 
 export type EligibleVoterOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -287,6 +303,8 @@ export type EligibleVoterOrderByWithAggregationInput = {
   proxyRecordId?: Prisma.SortOrderInput | Prisma.SortOrder
   weight?: Prisma.SortOrder
   basis?: Prisma.SortOrder
+  subjectKey?: Prisma.SortOrder
+  memberPartyIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EligibleVoterCountOrderByAggregateInput
   _avg?: Prisma.EligibleVoterAvgOrderByAggregateInput
@@ -306,6 +324,8 @@ export type EligibleVoterScalarWhereWithAggregatesInput = {
   proxyRecordId?: Prisma.StringNullableWithAggregatesFilter<"EligibleVoter"> | string | null
   weight?: Prisma.DecimalWithAggregatesFilter<"EligibleVoter"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonWithAggregatesFilter<"EligibleVoter">
+  subjectKey?: Prisma.StringWithAggregatesFilter<"EligibleVoter"> | string
+  memberPartyIds?: Prisma.StringNullableListFilter<"EligibleVoter">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EligibleVoter"> | Date | string
 }
 
@@ -314,6 +334,8 @@ export type EligibleVoterCreateInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   proposal: Prisma.ProposalCreateNestedOneWithoutEligibleVotersInput
   owner: Prisma.PartyCreateNestedOneWithoutEligibleVotersInput
@@ -330,6 +352,8 @@ export type EligibleVoterUncheckedCreateInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   tokens?: Prisma.ApprovalTokenUncheckedCreateNestedManyWithoutEligibleVoterInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutEligibleVoterInput
@@ -340,6 +364,8 @@ export type EligibleVoterUpdateInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutEligibleVotersNestedInput
   owner?: Prisma.PartyUpdateOneRequiredWithoutEligibleVotersNestedInput
@@ -356,6 +382,8 @@ export type EligibleVoterUncheckedUpdateInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokens?: Prisma.ApprovalTokenUncheckedUpdateManyWithoutEligibleVoterNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutEligibleVoterNestedInput
@@ -369,6 +397,8 @@ export type EligibleVoterCreateManyInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
 }
 
@@ -377,6 +407,8 @@ export type EligibleVoterUpdateManyMutationInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -388,6 +420,8 @@ export type EligibleVoterUncheckedUpdateManyInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -401,8 +435,17 @@ export type EligibleVoterOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type EligibleVoterProposalIdOwnerIdCompoundUniqueInput = {
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
+export type EligibleVoterProposalIdSubjectKeyOwnerIdCompoundUniqueInput = {
   proposalId: string
+  subjectKey: string
   ownerId: string
 }
 
@@ -414,6 +457,8 @@ export type EligibleVoterCountOrderByAggregateInput = {
   proxyRecordId?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   basis?: Prisma.SortOrder
+  subjectKey?: Prisma.SortOrder
+  memberPartyIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -428,6 +473,7 @@ export type EligibleVoterMaxOrderByAggregateInput = {
   proxyId?: Prisma.SortOrder
   proxyRecordId?: Prisma.SortOrder
   weight?: Prisma.SortOrder
+  subjectKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -438,6 +484,7 @@ export type EligibleVoterMinOrderByAggregateInput = {
   proxyId?: Prisma.SortOrder
   proxyRecordId?: Prisma.SortOrder
   weight?: Prisma.SortOrder
+  subjectKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -576,6 +623,15 @@ export type EligibleVoterUncheckedUpdateManyWithoutProposalNestedInput = {
   deleteMany?: Prisma.EligibleVoterScalarWhereInput | Prisma.EligibleVoterScalarWhereInput[]
 }
 
+export type EligibleVoterCreatememberPartyIdsInput = {
+  set: string[]
+}
+
+export type EligibleVoterUpdatememberPartyIdsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type EligibleVoterCreateNestedOneWithoutTokensInput = {
   create?: Prisma.XOR<Prisma.EligibleVoterCreateWithoutTokensInput, Prisma.EligibleVoterUncheckedCreateWithoutTokensInput>
   connectOrCreate?: Prisma.EligibleVoterCreateOrConnectWithoutTokensInput
@@ -609,6 +665,8 @@ export type EligibleVoterCreateWithoutOwnerInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   proposal: Prisma.ProposalCreateNestedOneWithoutEligibleVotersInput
   proxy?: Prisma.PartyCreateNestedOneWithoutEligibleProxyForInput
@@ -623,6 +681,8 @@ export type EligibleVoterUncheckedCreateWithoutOwnerInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   tokens?: Prisma.ApprovalTokenUncheckedCreateNestedManyWithoutEligibleVoterInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutEligibleVoterInput
@@ -643,6 +703,8 @@ export type EligibleVoterCreateWithoutProxyInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   proposal: Prisma.ProposalCreateNestedOneWithoutEligibleVotersInput
   owner: Prisma.PartyCreateNestedOneWithoutEligibleVotersInput
@@ -657,6 +719,8 @@ export type EligibleVoterUncheckedCreateWithoutProxyInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   tokens?: Prisma.ApprovalTokenUncheckedCreateNestedManyWithoutEligibleVoterInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutEligibleVoterInput
@@ -699,6 +763,8 @@ export type EligibleVoterScalarWhereInput = {
   proxyRecordId?: Prisma.StringNullableFilter<"EligibleVoter"> | string | null
   weight?: Prisma.DecimalFilter<"EligibleVoter"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonFilter<"EligibleVoter">
+  subjectKey?: Prisma.StringFilter<"EligibleVoter"> | string
+  memberPartyIds?: Prisma.StringNullableListFilter<"EligibleVoter">
   createdAt?: Prisma.DateTimeFilter<"EligibleVoter"> | Date | string
 }
 
@@ -723,6 +789,8 @@ export type EligibleVoterCreateWithoutProposalInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   owner: Prisma.PartyCreateNestedOneWithoutEligibleVotersInput
   proxy?: Prisma.PartyCreateNestedOneWithoutEligibleProxyForInput
@@ -737,6 +805,8 @@ export type EligibleVoterUncheckedCreateWithoutProposalInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   tokens?: Prisma.ApprovalTokenUncheckedCreateNestedManyWithoutEligibleVoterInput
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutEligibleVoterInput
@@ -773,6 +843,8 @@ export type EligibleVoterCreateWithoutTokensInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   proposal: Prisma.ProposalCreateNestedOneWithoutEligibleVotersInput
   owner: Prisma.PartyCreateNestedOneWithoutEligibleVotersInput
@@ -788,6 +860,8 @@ export type EligibleVoterUncheckedCreateWithoutTokensInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   votes?: Prisma.VoteUncheckedCreateNestedManyWithoutEligibleVoterInput
 }
@@ -813,6 +887,8 @@ export type EligibleVoterUpdateWithoutTokensInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutEligibleVotersNestedInput
   owner?: Prisma.PartyUpdateOneRequiredWithoutEligibleVotersNestedInput
@@ -828,6 +904,8 @@ export type EligibleVoterUncheckedUpdateWithoutTokensInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   votes?: Prisma.VoteUncheckedUpdateManyWithoutEligibleVoterNestedInput
 }
@@ -837,6 +915,8 @@ export type EligibleVoterCreateWithoutVotesInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   proposal: Prisma.ProposalCreateNestedOneWithoutEligibleVotersInput
   owner: Prisma.PartyCreateNestedOneWithoutEligibleVotersInput
@@ -852,6 +932,8 @@ export type EligibleVoterUncheckedCreateWithoutVotesInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
   tokens?: Prisma.ApprovalTokenUncheckedCreateNestedManyWithoutEligibleVoterInput
 }
@@ -877,6 +959,8 @@ export type EligibleVoterUpdateWithoutVotesInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutEligibleVotersNestedInput
   owner?: Prisma.PartyUpdateOneRequiredWithoutEligibleVotersNestedInput
@@ -892,6 +976,8 @@ export type EligibleVoterUncheckedUpdateWithoutVotesInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokens?: Prisma.ApprovalTokenUncheckedUpdateManyWithoutEligibleVoterNestedInput
 }
@@ -903,6 +989,8 @@ export type EligibleVoterCreateManyOwnerInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
 }
 
@@ -913,6 +1001,8 @@ export type EligibleVoterCreateManyProxyInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
 }
 
@@ -921,6 +1011,8 @@ export type EligibleVoterUpdateWithoutOwnerInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutEligibleVotersNestedInput
   proxy?: Prisma.PartyUpdateOneWithoutEligibleProxyForNestedInput
@@ -935,6 +1027,8 @@ export type EligibleVoterUncheckedUpdateWithoutOwnerInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokens?: Prisma.ApprovalTokenUncheckedUpdateManyWithoutEligibleVoterNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutEligibleVoterNestedInput
@@ -947,6 +1041,8 @@ export type EligibleVoterUncheckedUpdateManyWithoutOwnerInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -955,6 +1051,8 @@ export type EligibleVoterUpdateWithoutProxyInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proposal?: Prisma.ProposalUpdateOneRequiredWithoutEligibleVotersNestedInput
   owner?: Prisma.PartyUpdateOneRequiredWithoutEligibleVotersNestedInput
@@ -969,6 +1067,8 @@ export type EligibleVoterUncheckedUpdateWithoutProxyInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokens?: Prisma.ApprovalTokenUncheckedUpdateManyWithoutEligibleVoterNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutEligibleVoterNestedInput
@@ -981,6 +1081,8 @@ export type EligibleVoterUncheckedUpdateManyWithoutProxyInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -991,6 +1093,8 @@ export type EligibleVoterCreateManyProposalInput = {
   proxyRecordId?: string | null
   weight: runtime.Decimal | runtime.DecimalJsLike | number | string
   basis: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: string
+  memberPartyIds?: Prisma.EligibleVoterCreatememberPartyIdsInput | string[]
   createdAt?: Date | string
 }
 
@@ -999,6 +1103,8 @@ export type EligibleVoterUpdateWithoutProposalInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.PartyUpdateOneRequiredWithoutEligibleVotersNestedInput
   proxy?: Prisma.PartyUpdateOneWithoutEligibleProxyForNestedInput
@@ -1013,6 +1119,8 @@ export type EligibleVoterUncheckedUpdateWithoutProposalInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokens?: Prisma.ApprovalTokenUncheckedUpdateManyWithoutEligibleVoterNestedInput
   votes?: Prisma.VoteUncheckedUpdateManyWithoutEligibleVoterNestedInput
@@ -1025,6 +1133,8 @@ export type EligibleVoterUncheckedUpdateManyWithoutProposalInput = {
   proxyRecordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   basis?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  subjectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  memberPartyIds?: Prisma.EligibleVoterUpdatememberPartyIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1076,6 +1186,8 @@ export type EligibleVoterSelect<ExtArgs extends runtime.Types.Extensions.Interna
   proxyRecordId?: boolean
   weight?: boolean
   basis?: boolean
+  subjectKey?: boolean
+  memberPartyIds?: boolean
   createdAt?: boolean
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1093,6 +1205,8 @@ export type EligibleVoterSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   proxyRecordId?: boolean
   weight?: boolean
   basis?: boolean
+  subjectKey?: boolean
+  memberPartyIds?: boolean
   createdAt?: boolean
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1107,6 +1221,8 @@ export type EligibleVoterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   proxyRecordId?: boolean
   weight?: boolean
   basis?: boolean
+  subjectKey?: boolean
+  memberPartyIds?: boolean
   createdAt?: boolean
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1121,10 +1237,12 @@ export type EligibleVoterSelectScalar = {
   proxyRecordId?: boolean
   weight?: boolean
   basis?: boolean
+  subjectKey?: boolean
+  memberPartyIds?: boolean
   createdAt?: boolean
 }
 
-export type EligibleVoterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "proposalId" | "ownerId" | "proxyId" | "proxyRecordId" | "weight" | "basis" | "createdAt", ExtArgs["result"]["eligibleVoter"]>
+export type EligibleVoterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "proposalId" | "ownerId" | "proxyId" | "proxyRecordId" | "weight" | "basis" | "subjectKey" | "memberPartyIds" | "createdAt", ExtArgs["result"]["eligibleVoter"]>
 export type EligibleVoterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   proposal?: boolean | Prisma.ProposalDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1161,6 +1279,15 @@ export type $EligibleVoterPayload<ExtArgs extends runtime.Types.Extensions.Inter
     proxyRecordId: string | null
     weight: runtime.Decimal
     basis: runtime.JsonValue
+    /**
+     * Glasacki subjekt (K-03/K-03a): "P:<partyId>" samostalni vlasnik, "G:<sortirani partyId-jevi>"
+     * suvlasnicka zajednica, "B:<partyId>" clan odbora. Prazno = red upisan starim kodom (v2.42.0).
+     */
+    subjectKey: string
+    /**
+     * Sva lica subjekta (za samostalnog = [ownerId]); ownerId je lice koje glasa (predstavnik).
+     */
+    memberPartyIds: string[]
     createdAt: Date
   }, ExtArgs["result"]["eligibleVoter"]>
   composites: {}
@@ -1597,6 +1724,8 @@ export interface EligibleVoterFieldRefs {
   readonly proxyRecordId: Prisma.FieldRef<"EligibleVoter", 'String'>
   readonly weight: Prisma.FieldRef<"EligibleVoter", 'Decimal'>
   readonly basis: Prisma.FieldRef<"EligibleVoter", 'Json'>
+  readonly subjectKey: Prisma.FieldRef<"EligibleVoter", 'String'>
+  readonly memberPartyIds: Prisma.FieldRef<"EligibleVoter", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"EligibleVoter", 'DateTime'>
 }
     

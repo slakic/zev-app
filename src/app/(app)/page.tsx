@@ -7,8 +7,9 @@ import { receivablesReport, unpaidSupplierInvoices } from "@/server/services/rep
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { planVsActual } from "@/server/services/plans";
 import { formatMoney, dec } from "@/lib/money";
-import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
-import { Card, Stat, StatusBadge, PageHeader, Flash } from "@/components/ui";
+import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
+import { Card, Stat, StatusBadge, PageHeader, Flash, BtnLink } from "@/components/ui";
+import { getZev } from "@/server/services/property";
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const actor = await requireActor();
@@ -29,6 +30,8 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
     unpaidSupplierInvoices(actor),
     reserveFundBalance(actor),
   ]);
+  // FR-Q4: until the unit register is established ("Nacrt" / "Za provjeru") the president has one thing to do first.
+  const registerStatus = isPresident ? (await getZev(actor))?.unitRegisterStatus : undefined;
   const supplierUnpaidTotal = supplierUnpaid.reduce((a, e) => a + Number(e.amount) - Number(e.paidAmount), 0);
 
   // BUG FIXED HERE (2026-09-09, discovered while building the second real tenant):
@@ -58,6 +61,19 @@ async function ManagementDashboard({ actor, actorRoles }: { actor: Awaited<Retur
   return (
     <div>
       <PageHeader title={isPresident ? "Pregled — predsjednik" : "Pregled — računovođa"} subtitle={`Stanje na dan ${formatDate(new Date())}`} />
+      {isPresident && registerStatus && registerStatus !== "ESTABLISHED" && (
+        <div className="mb-4">
+          <Card>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <StatusBadge status={`REGISTER_${registerStatus}`} label={tEnum("unitRegisterStatus", registerStatus)} />
+                <p className="max-w-[68ch] text-sm text-slate-700">{t("register.home.todo")}</p>
+              </div>
+              <BtnLink href="/zgrade?tab=posebni" variant="tonal">{t("register.home.link")}</BtnLink>
+            </div>
+          </Card>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Stanje računa i blagajne" value={formatMoney(cash)} tone="ok" />
         <Stat label="Potraživanja od vlasnika" value={formatMoney(receivables.totalOpen)} tone="neutral" />
@@ -159,7 +175,7 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
     prisma.invoice.findMany({ where: { debtorId: partyId, status: "ISSUED" }, include: { allocations: true, unit: true }, orderBy: { dueDate: "asc" } }),
     prisma.payment.findMany({ where: { payerId: partyId, reversedAt: null }, orderBy: { date: "desc" }, take: 5 }),
     prisma.eligibleVoter.findMany({
-      where: { OR: [{ ownerId: partyId }, { proxyId: partyId }], proposal: { status: "VOTING_OPEN" } },
+      where: { OR: [{ ownerId: partyId }, { proxyId: partyId }, { memberPartyIds: { has: partyId } }], proposal: { status: "VOTING_OPEN" } },
       include: { proposal: true, votes: { where: { invalid: false } } },
     }),
     prisma.meeting.findMany({ where: { zevId, status: { in: ["SCHEDULED", "INVITATIONS_SENT", "VOTING_OPEN"] } }, orderBy: { scheduledAt: "asc" }, take: 5 }),
@@ -200,8 +216,10 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
               <li key={ev.id} className="flex items-center justify-between gap-2 text-sm">
                 <span>{ev.proposal.code} — {ev.proposal.title}</span>
                 {ev.votes.length > 0
-                  ? <StatusBadge status="ACCEPTED" label="Izjašnjeni ste" />
-                  : <span className="text-xs text-amber-700">Link ste dobili e-poštom</span>}
+                  ? <StatusBadge status="ACCEPTED" label={ev.ownerId === partyId || ev.proxyId === partyId ? "Izjašnjeni ste" : t("votingSubject.owner.communityVoted")} />
+                  : ev.ownerId === partyId || ev.proxyId === partyId
+                    ? <span className="text-xs text-amber-700">Link ste dobili e-poštom</span>
+                    : <span className="text-[13px] text-slate-600">{t("votingSubject.owner.communityPending")}</span>}
               </li>
             ))}
           </ul>

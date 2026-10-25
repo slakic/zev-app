@@ -58,6 +58,7 @@ export type UnitMinAggregateOutputType = {
   note: string | null
   invoiceRecipientId: string | null
   correspondenceContactId: string | null
+  votingRepresentativeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -78,6 +79,7 @@ export type UnitMaxAggregateOutputType = {
   note: string | null
   invoiceRecipientId: string | null
   correspondenceContactId: string | null
+  votingRepresentativeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -98,6 +100,7 @@ export type UnitCountAggregateOutputType = {
   note: number
   invoiceRecipientId: number
   correspondenceContactId: number
+  votingRepresentativeId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -136,6 +139,7 @@ export type UnitMinAggregateInputType = {
   note?: true
   invoiceRecipientId?: true
   correspondenceContactId?: true
+  votingRepresentativeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -156,6 +160,7 @@ export type UnitMaxAggregateInputType = {
   note?: true
   invoiceRecipientId?: true
   correspondenceContactId?: true
+  votingRepresentativeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -176,6 +181,7 @@ export type UnitCountAggregateInputType = {
   note?: true
   invoiceRecipientId?: true
   correspondenceContactId?: true
+  votingRepresentativeId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -283,6 +289,7 @@ export type UnitGroupByOutputType = {
   note: string | null
   invoiceRecipientId: string | null
   correspondenceContactId: string | null
+  votingRepresentativeId: string | null
   createdAt: Date
   updatedAt: Date
   _count: UnitCountAggregateOutputType | null
@@ -326,6 +333,7 @@ export type UnitWhereInput = {
   note?: Prisma.StringNullableFilter<"Unit"> | string | null
   invoiceRecipientId?: Prisma.StringNullableFilter<"Unit"> | string | null
   correspondenceContactId?: Prisma.StringNullableFilter<"Unit"> | string | null
+  votingRepresentativeId?: Prisma.StringNullableFilter<"Unit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
@@ -333,6 +341,7 @@ export type UnitWhereInput = {
   entrance?: Prisma.XOR<Prisma.EntranceNullableScalarRelationFilter, Prisma.EntranceWhereInput> | null
   invoiceRecipient?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
   correspondenceContact?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
+  votingRepresentative?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
   ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
   occupancies?: Prisma.OccupancyListRelationFilter
   allocationMemberships?: Prisma.AllocationGroupMemberListRelationFilter
@@ -360,6 +369,7 @@ export type UnitOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   invoiceRecipientId?: Prisma.SortOrderInput | Prisma.SortOrder
   correspondenceContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  votingRepresentativeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
@@ -367,6 +377,7 @@ export type UnitOrderByWithRelationInput = {
   entrance?: Prisma.EntranceOrderByWithRelationInput
   invoiceRecipient?: Prisma.PartyOrderByWithRelationInput
   correspondenceContact?: Prisma.PartyOrderByWithRelationInput
+  votingRepresentative?: Prisma.PartyOrderByWithRelationInput
   ownershipStakes?: Prisma.OwnershipStakeOrderByRelationAggregateInput
   occupancies?: Prisma.OccupancyOrderByRelationAggregateInput
   allocationMemberships?: Prisma.AllocationGroupMemberOrderByRelationAggregateInput
@@ -398,6 +409,7 @@ export type UnitWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"Unit"> | string | null
   invoiceRecipientId?: Prisma.StringNullableFilter<"Unit"> | string | null
   correspondenceContactId?: Prisma.StringNullableFilter<"Unit"> | string | null
+  votingRepresentativeId?: Prisma.StringNullableFilter<"Unit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
@@ -405,6 +417,7 @@ export type UnitWhereUniqueInput = Prisma.AtLeast<{
   entrance?: Prisma.XOR<Prisma.EntranceNullableScalarRelationFilter, Prisma.EntranceWhereInput> | null
   invoiceRecipient?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
   correspondenceContact?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
+  votingRepresentative?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
   ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
   occupancies?: Prisma.OccupancyListRelationFilter
   allocationMemberships?: Prisma.AllocationGroupMemberListRelationFilter
@@ -432,6 +445,7 @@ export type UnitOrderByWithAggregationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   invoiceRecipientId?: Prisma.SortOrderInput | Prisma.SortOrder
   correspondenceContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  votingRepresentativeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UnitCountOrderByAggregateInput
@@ -460,6 +474,7 @@ export type UnitScalarWhereWithAggregatesInput = {
   note?: Prisma.StringNullableWithAggregatesFilter<"Unit"> | string | null
   invoiceRecipientId?: Prisma.StringNullableWithAggregatesFilter<"Unit"> | string | null
   correspondenceContactId?: Prisma.StringNullableWithAggregatesFilter<"Unit"> | string | null
+  votingRepresentativeId?: Prisma.StringNullableWithAggregatesFilter<"Unit"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Unit"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Unit"> | Date | string
 }
@@ -482,6 +497,7 @@ export type UnitCreateInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -509,6 +525,7 @@ export type UnitUncheckedCreateInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -540,6 +557,7 @@ export type UnitUpdateInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -567,6 +585,7 @@ export type UnitUncheckedUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -596,6 +615,7 @@ export type UnitCreateManyInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -631,6 +651,7 @@ export type UnitUncheckedUpdateManyInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -666,6 +687,7 @@ export type UnitCountOrderByAggregateInput = {
   note?: Prisma.SortOrder
   invoiceRecipientId?: Prisma.SortOrder
   correspondenceContactId?: Prisma.SortOrder
+  votingRepresentativeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -694,6 +716,7 @@ export type UnitMaxOrderByAggregateInput = {
   note?: Prisma.SortOrder
   invoiceRecipientId?: Prisma.SortOrder
   correspondenceContactId?: Prisma.SortOrder
+  votingRepresentativeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -714,6 +737,7 @@ export type UnitMinOrderByAggregateInput = {
   note?: Prisma.SortOrder
   invoiceRecipientId?: Prisma.SortOrder
   correspondenceContactId?: Prisma.SortOrder
+  votingRepresentativeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -750,6 +774,13 @@ export type UnitCreateNestedManyWithoutCorrespondenceContactInput = {
   connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
 }
 
+export type UnitCreateNestedManyWithoutVotingRepresentativeInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput> | Prisma.UnitCreateWithoutVotingRepresentativeInput[] | Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput | Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput[]
+  createMany?: Prisma.UnitCreateManyVotingRepresentativeInputEnvelope
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+}
+
 export type UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput = {
   create?: Prisma.XOR<Prisma.UnitCreateWithoutInvoiceRecipientInput, Prisma.UnitUncheckedCreateWithoutInvoiceRecipientInput> | Prisma.UnitCreateWithoutInvoiceRecipientInput[] | Prisma.UnitUncheckedCreateWithoutInvoiceRecipientInput[]
   connectOrCreate?: Prisma.UnitCreateOrConnectWithoutInvoiceRecipientInput | Prisma.UnitCreateOrConnectWithoutInvoiceRecipientInput[]
@@ -761,6 +792,13 @@ export type UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput = {
   create?: Prisma.XOR<Prisma.UnitCreateWithoutCorrespondenceContactInput, Prisma.UnitUncheckedCreateWithoutCorrespondenceContactInput> | Prisma.UnitCreateWithoutCorrespondenceContactInput[] | Prisma.UnitUncheckedCreateWithoutCorrespondenceContactInput[]
   connectOrCreate?: Prisma.UnitCreateOrConnectWithoutCorrespondenceContactInput | Prisma.UnitCreateOrConnectWithoutCorrespondenceContactInput[]
   createMany?: Prisma.UnitCreateManyCorrespondenceContactInputEnvelope
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+}
+
+export type UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput> | Prisma.UnitCreateWithoutVotingRepresentativeInput[] | Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput | Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput[]
+  createMany?: Prisma.UnitCreateManyVotingRepresentativeInputEnvelope
   connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
 }
 
@@ -792,6 +830,20 @@ export type UnitUpdateManyWithoutCorrespondenceContactNestedInput = {
   deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
 }
 
+export type UnitUpdateManyWithoutVotingRepresentativeNestedInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput> | Prisma.UnitCreateWithoutVotingRepresentativeInput[] | Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput | Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput[]
+  upsert?: Prisma.UnitUpsertWithWhereUniqueWithoutVotingRepresentativeInput | Prisma.UnitUpsertWithWhereUniqueWithoutVotingRepresentativeInput[]
+  createMany?: Prisma.UnitCreateManyVotingRepresentativeInputEnvelope
+  set?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  disconnect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  delete?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  update?: Prisma.UnitUpdateWithWhereUniqueWithoutVotingRepresentativeInput | Prisma.UnitUpdateWithWhereUniqueWithoutVotingRepresentativeInput[]
+  updateMany?: Prisma.UnitUpdateManyWithWhereWithoutVotingRepresentativeInput | Prisma.UnitUpdateManyWithWhereWithoutVotingRepresentativeInput[]
+  deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
+}
+
 export type UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput = {
   create?: Prisma.XOR<Prisma.UnitCreateWithoutInvoiceRecipientInput, Prisma.UnitUncheckedCreateWithoutInvoiceRecipientInput> | Prisma.UnitCreateWithoutInvoiceRecipientInput[] | Prisma.UnitUncheckedCreateWithoutInvoiceRecipientInput[]
   connectOrCreate?: Prisma.UnitCreateOrConnectWithoutInvoiceRecipientInput | Prisma.UnitCreateOrConnectWithoutInvoiceRecipientInput[]
@@ -817,6 +869,20 @@ export type UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput = {
   connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
   update?: Prisma.UnitUpdateWithWhereUniqueWithoutCorrespondenceContactInput | Prisma.UnitUpdateWithWhereUniqueWithoutCorrespondenceContactInput[]
   updateMany?: Prisma.UnitUpdateManyWithWhereWithoutCorrespondenceContactInput | Prisma.UnitUpdateManyWithWhereWithoutCorrespondenceContactInput[]
+  deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
+}
+
+export type UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput> | Prisma.UnitCreateWithoutVotingRepresentativeInput[] | Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput[]
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput | Prisma.UnitCreateOrConnectWithoutVotingRepresentativeInput[]
+  upsert?: Prisma.UnitUpsertWithWhereUniqueWithoutVotingRepresentativeInput | Prisma.UnitUpsertWithWhereUniqueWithoutVotingRepresentativeInput[]
+  createMany?: Prisma.UnitCreateManyVotingRepresentativeInputEnvelope
+  set?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  disconnect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  delete?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  connect?: Prisma.UnitWhereUniqueInput | Prisma.UnitWhereUniqueInput[]
+  update?: Prisma.UnitUpdateWithWhereUniqueWithoutVotingRepresentativeInput | Prisma.UnitUpdateWithWhereUniqueWithoutVotingRepresentativeInput[]
+  updateMany?: Prisma.UnitUpdateManyWithWhereWithoutVotingRepresentativeInput | Prisma.UnitUpdateManyWithWhereWithoutVotingRepresentativeInput[]
   deleteMany?: Prisma.UnitScalarWhereInput | Prisma.UnitScalarWhereInput[]
 }
 
@@ -956,14 +1022,6 @@ export type DecimalFieldUpdateOperationsInput = {
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type UnitCreateNestedOneWithoutOwnershipStakesInput = {
@@ -1111,6 +1169,7 @@ export type UnitCreateWithoutInvoiceRecipientInput = {
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -1137,6 +1196,7 @@ export type UnitUncheckedCreateWithoutInvoiceRecipientInput = {
   active?: boolean
   note?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1177,6 +1237,7 @@ export type UnitCreateWithoutCorrespondenceContactInput = {
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -1203,6 +1264,7 @@ export type UnitUncheckedCreateWithoutCorrespondenceContactInput = {
   active?: boolean
   note?: string | null
   invoiceRecipientId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1223,6 +1285,74 @@ export type UnitCreateOrConnectWithoutCorrespondenceContactInput = {
 
 export type UnitCreateManyCorrespondenceContactInputEnvelope = {
   data: Prisma.UnitCreateManyCorrespondenceContactInput | Prisma.UnitCreateManyCorrespondenceContactInput[]
+  skipDuplicates?: boolean
+}
+
+export type UnitCreateWithoutVotingRepresentativeInput = {
+  id?: string
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
+  building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
+  entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
+  invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
+  correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
+  allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUnitInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutUnitInput
+  meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutUnitInput
+  proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
+  planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+}
+
+export type UnitUncheckedCreateWithoutVotingRepresentativeInput = {
+  id?: string
+  zevId: string
+  buildingId: string
+  entranceId?: string | null
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  invoiceRecipientId?: string | null
+  correspondenceContactId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutUnitInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUncheckedCreateNestedManyWithoutUnitInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUnitInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutUnitInput
+  meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutUnitInput
+  proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
+  planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+}
+
+export type UnitCreateOrConnectWithoutVotingRepresentativeInput = {
+  where: Prisma.UnitWhereUniqueInput
+  create: Prisma.XOR<Prisma.UnitCreateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput>
+}
+
+export type UnitCreateManyVotingRepresentativeInputEnvelope = {
+  data: Prisma.UnitCreateManyVotingRepresentativeInput | Prisma.UnitCreateManyVotingRepresentativeInput[]
   skipDuplicates?: boolean
 }
 
@@ -1261,6 +1391,7 @@ export type UnitScalarWhereInput = {
   note?: Prisma.StringNullableFilter<"Unit"> | string | null
   invoiceRecipientId?: Prisma.StringNullableFilter<"Unit"> | string | null
   correspondenceContactId?: Prisma.StringNullableFilter<"Unit"> | string | null
+  votingRepresentativeId?: Prisma.StringNullableFilter<"Unit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Unit"> | Date | string
 }
@@ -1281,6 +1412,22 @@ export type UnitUpdateManyWithWhereWithoutCorrespondenceContactInput = {
   data: Prisma.XOR<Prisma.UnitUpdateManyMutationInput, Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactInput>
 }
 
+export type UnitUpsertWithWhereUniqueWithoutVotingRepresentativeInput = {
+  where: Prisma.UnitWhereUniqueInput
+  update: Prisma.XOR<Prisma.UnitUpdateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedUpdateWithoutVotingRepresentativeInput>
+  create: Prisma.XOR<Prisma.UnitCreateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedCreateWithoutVotingRepresentativeInput>
+}
+
+export type UnitUpdateWithWhereUniqueWithoutVotingRepresentativeInput = {
+  where: Prisma.UnitWhereUniqueInput
+  data: Prisma.XOR<Prisma.UnitUpdateWithoutVotingRepresentativeInput, Prisma.UnitUncheckedUpdateWithoutVotingRepresentativeInput>
+}
+
+export type UnitUpdateManyWithWhereWithoutVotingRepresentativeInput = {
+  where: Prisma.UnitScalarWhereInput
+  data: Prisma.XOR<Prisma.UnitUpdateManyMutationInput, Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeInput>
+}
+
 export type UnitCreateWithoutZevInput = {
   id?: string
   type: $Enums.UnitType
@@ -1298,6 +1445,7 @@ export type UnitCreateWithoutZevInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -1324,6 +1472,7 @@ export type UnitUncheckedCreateWithoutZevInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1380,6 +1529,7 @@ export type UnitCreateWithoutBuildingInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -1406,6 +1556,7 @@ export type UnitUncheckedCreateWithoutBuildingInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1462,6 +1613,7 @@ export type UnitCreateWithoutEntranceInput = {
   building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -1488,6 +1640,7 @@ export type UnitUncheckedCreateWithoutEntranceInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1545,6 +1698,7 @@ export type UnitCreateWithoutOwnershipStakesInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUnitInput
@@ -1571,6 +1725,7 @@ export type UnitUncheckedCreateWithoutOwnershipStakesInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutUnitInput
@@ -1617,6 +1772,7 @@ export type UnitUpdateWithoutOwnershipStakesInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUnitNestedInput
@@ -1643,6 +1799,7 @@ export type UnitUncheckedUpdateWithoutOwnershipStakesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutUnitNestedInput
@@ -1673,6 +1830,7 @@ export type UnitCreateWithoutOccupanciesInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUnitInput
@@ -1699,6 +1857,7 @@ export type UnitUncheckedCreateWithoutOccupanciesInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1745,6 +1904,7 @@ export type UnitUpdateWithoutOccupanciesInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUnitNestedInput
@@ -1771,6 +1931,7 @@ export type UnitUncheckedUpdateWithoutOccupanciesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -1801,6 +1962,7 @@ export type UnitCreateWithoutAllocationMembershipsInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUnitInput
@@ -1827,6 +1989,7 @@ export type UnitUncheckedCreateWithoutAllocationMembershipsInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -1873,6 +2036,7 @@ export type UnitUpdateWithoutAllocationMembershipsInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUnitNestedInput
@@ -1899,6 +2063,7 @@ export type UnitUncheckedUpdateWithoutAllocationMembershipsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -1929,6 +2094,7 @@ export type UnitCreateWithoutProposalScopesInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -1955,6 +2121,7 @@ export type UnitUncheckedCreateWithoutProposalScopesInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -2001,6 +2168,7 @@ export type UnitUpdateWithoutProposalScopesInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2027,6 +2195,7 @@ export type UnitUncheckedUpdateWithoutProposalScopesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2057,6 +2226,7 @@ export type UnitCreateWithoutChargeExceptionsInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -2083,6 +2253,7 @@ export type UnitUncheckedCreateWithoutChargeExceptionsInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -2129,6 +2300,7 @@ export type UnitUpdateWithoutChargeExceptionsInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2155,6 +2327,7 @@ export type UnitUncheckedUpdateWithoutChargeExceptionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2185,6 +2358,7 @@ export type UnitCreateWithoutMeterReadingsInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -2211,6 +2385,7 @@ export type UnitUncheckedCreateWithoutMeterReadingsInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -2257,6 +2432,7 @@ export type UnitUpdateWithoutMeterReadingsInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2283,6 +2459,7 @@ export type UnitUncheckedUpdateWithoutMeterReadingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2313,6 +2490,7 @@ export type UnitCreateWithoutInvoicesInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -2339,6 +2517,7 @@ export type UnitUncheckedCreateWithoutInvoicesInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -2385,6 +2564,7 @@ export type UnitUpdateWithoutInvoicesInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2411,6 +2591,7 @@ export type UnitUncheckedUpdateWithoutInvoicesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2441,6 +2622,7 @@ export type UnitCreateWithoutPlanItemScopesInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -2467,6 +2649,7 @@ export type UnitUncheckedCreateWithoutPlanItemScopesInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -2513,6 +2696,7 @@ export type UnitUpdateWithoutPlanItemScopesInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2539,6 +2723,7 @@ export type UnitUncheckedUpdateWithoutPlanItemScopesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2569,6 +2754,7 @@ export type UnitCreateWithoutMaintenanceIssuesInput = {
   entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
   invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
   correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
   allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
@@ -2595,6 +2781,7 @@ export type UnitUncheckedCreateWithoutMaintenanceIssuesInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
@@ -2641,6 +2828,7 @@ export type UnitUpdateWithoutMaintenanceIssuesInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2667,6 +2855,7 @@ export type UnitUncheckedUpdateWithoutMaintenanceIssuesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2694,6 +2883,7 @@ export type UnitCreateManyInvoiceRecipientInput = {
   active?: boolean
   note?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2713,6 +2903,27 @@ export type UnitCreateManyCorrespondenceContactInput = {
   active?: boolean
   note?: string | null
   invoiceRecipientId?: string | null
+  votingRepresentativeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UnitCreateManyVotingRepresentativeInput = {
+  id?: string
+  zevId: string
+  buildingId: string
+  entranceId?: string | null
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  invoiceRecipientId?: string | null
+  correspondenceContactId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2734,6 +2945,7 @@ export type UnitUpdateWithoutInvoiceRecipientInput = {
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2760,6 +2972,7 @@ export type UnitUncheckedUpdateWithoutInvoiceRecipientInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2788,6 +3001,7 @@ export type UnitUncheckedUpdateManyWithoutInvoiceRecipientInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2809,6 +3023,7 @@ export type UnitUpdateWithoutCorrespondenceContactInput = {
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2835,6 +3050,7 @@ export type UnitUncheckedUpdateWithoutCorrespondenceContactInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2863,6 +3079,85 @@ export type UnitUncheckedUpdateManyWithoutCorrespondenceContactInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UnitUpdateWithoutVotingRepresentativeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
+  building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
+  entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
+  invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
+  correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUnitNestedInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUpdateManyWithoutUnitNestedInput
+  meterReadings?: Prisma.MeterReadingUpdateManyWithoutUnitNestedInput
+  proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
+  planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+}
+
+export type UnitUncheckedUpdateWithoutVotingRepresentativeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutUnitNestedInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUncheckedUpdateManyWithoutUnitNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUnitNestedInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutUnitNestedInput
+  meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutUnitNestedInput
+  proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
+  planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+}
+
+export type UnitUncheckedUpdateManyWithoutVotingRepresentativeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2882,6 +3177,7 @@ export type UnitCreateManyZevInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2903,6 +3199,7 @@ export type UnitUpdateWithoutZevInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -2929,6 +3226,7 @@ export type UnitUncheckedUpdateWithoutZevInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -2957,6 +3255,7 @@ export type UnitUncheckedUpdateManyWithoutZevInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2976,6 +3275,7 @@ export type UnitCreateManyBuildingInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2997,6 +3297,7 @@ export type UnitUpdateWithoutBuildingInput = {
   entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -3023,6 +3324,7 @@ export type UnitUncheckedUpdateWithoutBuildingInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -3051,6 +3353,7 @@ export type UnitUncheckedUpdateManyWithoutBuildingInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -3070,6 +3373,7 @@ export type UnitCreateManyEntranceInput = {
   note?: string | null
   invoiceRecipientId?: string | null
   correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -3091,6 +3395,7 @@ export type UnitUpdateWithoutEntranceInput = {
   building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
   invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
   correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
   allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
@@ -3117,6 +3422,7 @@ export type UnitUncheckedUpdateWithoutEntranceInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
@@ -3145,6 +3451,7 @@ export type UnitUncheckedUpdateManyWithoutEntranceInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -3268,6 +3575,7 @@ export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   note?: boolean
   invoiceRecipientId?: boolean
   correspondenceContactId?: boolean
+  votingRepresentativeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -3275,6 +3583,7 @@ export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
+  votingRepresentative?: boolean | Prisma.Unit$votingRepresentativeArgs<ExtArgs>
   ownershipStakes?: boolean | Prisma.Unit$ownershipStakesArgs<ExtArgs>
   occupancies?: boolean | Prisma.Unit$occupanciesArgs<ExtArgs>
   allocationMemberships?: boolean | Prisma.Unit$allocationMembershipsArgs<ExtArgs>
@@ -3303,6 +3612,7 @@ export type UnitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   note?: boolean
   invoiceRecipientId?: boolean
   correspondenceContactId?: boolean
+  votingRepresentativeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -3310,6 +3620,7 @@ export type UnitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
+  votingRepresentative?: boolean | Prisma.Unit$votingRepresentativeArgs<ExtArgs>
 }, ExtArgs["result"]["unit"]>
 
 export type UnitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -3328,6 +3639,7 @@ export type UnitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   note?: boolean
   invoiceRecipientId?: boolean
   correspondenceContactId?: boolean
+  votingRepresentativeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -3335,6 +3647,7 @@ export type UnitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
+  votingRepresentative?: boolean | Prisma.Unit$votingRepresentativeArgs<ExtArgs>
 }, ExtArgs["result"]["unit"]>
 
 export type UnitSelectScalar = {
@@ -3353,17 +3666,19 @@ export type UnitSelectScalar = {
   note?: boolean
   invoiceRecipientId?: boolean
   correspondenceContactId?: boolean
+  votingRepresentativeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UnitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "buildingId" | "entranceId" | "type" | "label" | "floor" | "usableArea" | "ownershipShare" | "occupantCount" | "typeCoefficient" | "active" | "note" | "invoiceRecipientId" | "correspondenceContactId" | "createdAt" | "updatedAt", ExtArgs["result"]["unit"]>
+export type UnitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "buildingId" | "entranceId" | "type" | "label" | "floor" | "usableArea" | "ownershipShare" | "occupantCount" | "typeCoefficient" | "active" | "note" | "invoiceRecipientId" | "correspondenceContactId" | "votingRepresentativeId" | "createdAt" | "updatedAt", ExtArgs["result"]["unit"]>
 export type UnitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   building?: boolean | Prisma.BuildingDefaultArgs<ExtArgs>
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
+  votingRepresentative?: boolean | Prisma.Unit$votingRepresentativeArgs<ExtArgs>
   ownershipStakes?: boolean | Prisma.Unit$ownershipStakesArgs<ExtArgs>
   occupancies?: boolean | Prisma.Unit$occupanciesArgs<ExtArgs>
   allocationMemberships?: boolean | Prisma.Unit$allocationMembershipsArgs<ExtArgs>
@@ -3381,6 +3696,7 @@ export type UnitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
+  votingRepresentative?: boolean | Prisma.Unit$votingRepresentativeArgs<ExtArgs>
 }
 export type UnitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -3388,6 +3704,7 @@ export type UnitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   entrance?: boolean | Prisma.Unit$entranceArgs<ExtArgs>
   invoiceRecipient?: boolean | Prisma.Unit$invoiceRecipientArgs<ExtArgs>
   correspondenceContact?: boolean | Prisma.Unit$correspondenceContactArgs<ExtArgs>
+  votingRepresentative?: boolean | Prisma.Unit$votingRepresentativeArgs<ExtArgs>
 }
 
 export type $UnitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3398,6 +3715,10 @@ export type $UnitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     entrance: Prisma.$EntrancePayload<ExtArgs> | null
     invoiceRecipient: Prisma.$PartyPayload<ExtArgs> | null
     correspondenceContact: Prisma.$PartyPayload<ExtArgs> | null
+    /**
+     * Zajednicki predstavnik suvlasnika za glasanje (K-03a); null = podrazumijevani (najveci udio).
+     */
+    votingRepresentative: Prisma.$PartyPayload<ExtArgs> | null
     ownershipStakes: Prisma.$OwnershipStakePayload<ExtArgs>[]
     occupancies: Prisma.$OccupancyPayload<ExtArgs>[]
     allocationMemberships: Prisma.$AllocationGroupMemberPayload<ExtArgs>[]
@@ -3424,6 +3745,7 @@ export type $UnitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     note: string | null
     invoiceRecipientId: string | null
     correspondenceContactId: string | null
+    votingRepresentativeId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["unit"]>
@@ -3825,6 +4147,7 @@ export interface Prisma__UnitClient<T, Null = never, ExtArgs extends runtime.Typ
   entrance<T extends Prisma.Unit$entranceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$entranceArgs<ExtArgs>>): Prisma.Prisma__EntranceClient<runtime.Types.Result.GetResult<Prisma.$EntrancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invoiceRecipient<T extends Prisma.Unit$invoiceRecipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$invoiceRecipientArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   correspondenceContact<T extends Prisma.Unit$correspondenceContactArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$correspondenceContactArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  votingRepresentative<T extends Prisma.Unit$votingRepresentativeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$votingRepresentativeArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   ownershipStakes<T extends Prisma.Unit$ownershipStakesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$ownershipStakesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OwnershipStakePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   occupancies<T extends Prisma.Unit$occupanciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$occupanciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OccupancyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   allocationMemberships<T extends Prisma.Unit$allocationMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$allocationMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllocationGroupMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3878,6 +4201,7 @@ export interface UnitFieldRefs {
   readonly note: Prisma.FieldRef<"Unit", 'String'>
   readonly invoiceRecipientId: Prisma.FieldRef<"Unit", 'String'>
   readonly correspondenceContactId: Prisma.FieldRef<"Unit", 'String'>
+  readonly votingRepresentativeId: Prisma.FieldRef<"Unit", 'String'>
   readonly createdAt: Prisma.FieldRef<"Unit", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Unit", 'DateTime'>
 }
@@ -4322,6 +4646,25 @@ export type Unit$invoiceRecipientArgs<ExtArgs extends runtime.Types.Extensions.I
  * Unit.correspondenceContact
  */
 export type Unit$correspondenceContactArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Party
+   */
+  select?: Prisma.PartySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Party
+   */
+  omit?: Prisma.PartyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartyInclude<ExtArgs> | null
+  where?: Prisma.PartyWhereInput
+}
+
+/**
+ * Unit.votingRepresentative
+ */
+export type Unit$votingRepresentativeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Party
    */

@@ -112,7 +112,9 @@ describe("tenant isolation — no service function may read or write another ten
     bEligibleVoterId = bEligibleVoters[0].id;
     const bTokens = await prisma.approvalToken.findMany({ where: { eligibleVoterId: { in: bEligibleVoters.map((v) => v.id) } } });
     bTokenId = bTokens[0].id;
-    const submitted = await meetings.submitVote({ tokenPlain: bLinks[0].token, verificationCode: bLinks[0].code, choice: "APPROVE" });
+    // FR: the base is built per voting subject and its order is no longer "first owner first" — pick A's link by address.
+    const bLinkA = bLinks.find((l) => l.toAddress === b.ownerA.email)!;
+    const submitted = await meetings.submitVote({ tokenPlain: bLinkA.token, verificationCode: bLinkA.code, choice: "APPROVE" });
     if (!submitted.ok) throw new Error("fixture setup: vote submission failed");
     bVoteId = submitted.receipt.voteId;
 

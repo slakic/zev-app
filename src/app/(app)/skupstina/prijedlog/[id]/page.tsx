@@ -13,16 +13,29 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { formatWeight, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, formatDateTimeLocalInput, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, BtnLink, type ColumnSpec } from "@/components/ui";
+import { PreconditionList } from "@/components/precondition-list";
 
-const voterHeaders: ColumnSpec[] = [
-  { label: "Vlasnik", priority: "primary" },
+// One row per voting SUBJECT (FR, K-03a). The weight column exists only for pre-FR snapshots and the board.
+const voterHeaders = (showWeight: boolean): ColumnSpec[] => [
+  { label: t("votingSubject.col.owner"), priority: "primary" },
+  { label: t("votingSubject.col.units"), priority: "detail" },
   { label: "Punomoćnik", priority: "detail" },
-  { label: "Težina", align: "right", priority: "detail" },
+  ...(showWeight ? [{ label: "Težina", align: "right", priority: "detail" } as ColumnSpec] : []),
   { label: "Token status" },
   { label: "Izjašnjenje" },
   { label: "Radnje" },
 ];
+
+type EvBasis = { subjectName?: string; units?: { label: string }[]; members?: { partyId: string; name: string }[] } | null;
+
+/** "Nikola Ilić i Sara Ilić (predstavnik: Nikola Ilić)" for a community, the plain name otherwise. */
+function subjectLabel(ev: { owner: Parameters<typeof partyDisplayName>[0]; memberPartyIds: string[]; basis: unknown }): string {
+  const b = ev.basis as EvBasis;
+  return ev.memberPartyIds.length > 1 && b?.subjectName
+    ? tf("votingSubject.communityLabel", { name: b.subjectName, rep: partyDisplayName(ev.owner) })
+    : partyDisplayName(ev.owner);
+}
 
 async function openVotingAction(formData: FormData) {
   "use server";
@@ -192,7 +205,13 @@ export default async function ProposalPage({ params, searchParams }: { params: P
 
   // Owners see only their own participation, not others' voting evidence.
   if (!isPresident && !actor.roles.includes("ACCOUNTANT")) {
-    const mine = p.eligibleVoters.some((ev) => ev.ownerId === actor.partyId || ev.proxyId === actor.partyId);
+    const myPartyId = actor.partyId ?? "";
+    const mine = p.eligibleVoters.some((ev) => ev.ownerId === myPartyId || ev.proxyId === myPartyId || ev.memberPartyIds.includes(myPartyId));
+    // A co-owner who is not the representative holds no link: the community votes through the representative (K-03a).
+    const viaRepresentative = p.eligibleVoters.find(
+      (ev) => ev.ownerId !== myPartyId && ev.proxyId !== myPartyId && ev.memberPartyIds.includes(myPartyId),
+    );
+    const ownEv = p.eligibleVoters.find((ev) => ev.ownerId === myPartyId || ev.proxyId === myPartyId);
     return (
       <div>
         <PageHeader title={`${p.code} — ${p.title}`} subtitle={`Verzija ${p.version} · ${p.meeting.title}`} />
@@ -202,9 +221,19 @@ export default async function ProposalPage({ params, searchParams }: { params: P
         <div className="mt-4">
           <Card title="Vaše učešće">
             <p className="text-sm text-slate-600">
-              {mine
+              {ownEv
                 ? "Imate pravo glasa o ovom prijedlogu. Lični link i verifikacioni kod dobili ste e-poštom — glasa se isključivo putem ličnog linka."
-                : "Niste u glasačkoj bazi ovog prijedloga."}
+                : viaRepresentative
+                  ? tf(
+                      viaRepresentative.votes.some((v) => !v.invalid) ? "votingSubject.owner.viaRepresentativeVoted" : "votingSubject.owner.viaRepresentative",
+                      {
+                        units: ((viaRepresentative.basis as EvBasis)?.units ?? []).map((u) => u.label).join(", "),
+                        name: partyDisplayName(viaRepresentative.owner),
+                      },
+                    )
+                  : mine
+                    ? "Imate pravo glasa o ovom prijedlogu."
+                    : "Niste u glasačkoj bazi ovog prijedloga."}
             </p>
           </Card>
         </div>
@@ -213,7 +242,22 @@ export default async function ProposalPage({ params, searchParams }: { params: P
   }
 
   const result = p.ruleSnapshot ? serializeResult(await computeProposalResult(p.zevId, p.id)) : null;
-  const rule = p.ruleSnapshot as { ruleName?: string; quorumType?: string; quorumPercent?: string; majorityType?: string; majorityPercent?: string; weightMethod?: string } | null;
+  const rule = p.ruleSnapshot as {
+    ruleName?: string; quorumType?: string; quorumPercent?: string; majorityType?: string; majorityPercent?: string;
+    weightMethod?: string; basisKind?: string; unitRegisterVersion?: number | null;
+  } | null;
+  // K-03: on the assembly every voting subject is exactly one vote, so numbers read as whole votes, not "weight".
+  const byVotes = rule?.basisKind === "ASSEMBLY_SUBJECTS";
+  const baseUnits = new Set(p.eligibleVoters.flatMap((ev) => ((ev.basis as EvBasis)?.units ?? []).map((u) => u.label)));
+  const basePersons = new Set(p.eligibleVoters.flatMap((ev) => (ev.memberPartyIds.length > 0 ? ev.memberPartyIds : [ev.ownerId])));
+  const quorumNeeded = (r: { quorumRequiredOwners: number | null; quorumRequiredWeight: string | null }) =>
+    r.quorumRequiredOwners ?? (r.quorumRequiredWeight ? Math.ceil(Number(r.quorumRequiredWeight) - 1e-9) : null);
+  const turnoutText = (r: { votesCast: number; totalEligibleOwners: number; quorumRequiredOwners: number | null; quorumRequiredWeight: string | null }) => {
+    const need = quorumNeeded(r);
+    return need === null
+      ? tf("votingSubject.result.turnout", { cast: r.votesCast, total: r.totalEligibleOwners })
+      : tf("votingSubject.result.turnoutQuorum", { cast: r.votesCast, total: r.totalEligibleOwners, need, missing: Math.max(0, need - r.votesCast) });
+  };
 
   const [votingRules, buildings, meetingWithAgenda] =
     isPresident && p.status === "DRAFT"
@@ -227,6 +271,8 @@ export default async function ProposalPage({ params, searchParams }: { params: P
     isPresident && p.status === "DRAFT"
       ? await previewVotingDelivery(actor, p.id, "ALL").catch(() => null)
       : null;
+  // FR (K-02, K-01b): reasons the vote cannot be opened yet replace the confirm button with the list below.
+  const preconditionErrors = openPreview?.preconditionErrors ?? [];
   const closesAt = p.votingClosesAt ?? p.meeting.eVoteClosesAt;
   const votingOpen = p.status === "VOTING_OPEN";
   const activeLinks = p.eligibleVoters.filter((ev) => ev.tokens.some((tk) => tk.status === "ACTIVE")).length;
@@ -244,7 +290,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
         subtitle={`Verzija ${p.version} · ${p.meeting.title} · glasanje do ${formatDateTime(p.votingClosesAt)}`}
         actions={
           isPresident ? (
-            p.status === "DRAFT" ? (
+            p.status === "DRAFT" && preconditionErrors.length > 0 ? undefined : p.status === "DRAFT" ? (
               <ConfirmAction
                 trigger={t("confirm.openVoting.trigger")}
                 triggerVariant="caution"
@@ -279,7 +325,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 body={
                   result ? (
                     <div className="rounded-md bg-white/70 p-2 text-sm text-amber-950">
-                      <p>{quorumText(result)} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
+                      <p>{quorumText(result)} ({byVotes ? turnoutText(result) : `učestvovalo ${formatWeight(result.weightCast)} od ${formatWeight(result.totalEligibleWeight)}`})</p>
                       <p><b>Za:</b> {formatWeight(result.approveWeight)} · <b>Protiv:</b> {formatWeight(result.rejectWeight)} · <b>Uzdržani:</b> {formatWeight(result.abstainWeight)}</p>
                       <p>{t("live.resultOutcomeIfClosedNow")}: {outcomeText(result)}</p>
                     </div>
@@ -296,6 +342,17 @@ export default async function ProposalPage({ params, searchParams }: { params: P
         }
       />
       <Flash err={err} msg={msg} />
+      {preconditionErrors.length > 0 && (
+        <div className="mb-4">
+          <Card title={t("votingSubject.pre.cardTitle")} hint={t("votingSubject.pre.cardHint")}>
+            <PreconditionList items={preconditionErrors.map((text) => ({ ok: false, text }))} />
+            <div className="mt-4 flex flex-wrap gap-2">
+              <BtnLink href="/zgrade?tab=posebni" variant="secondary">{t("votingSubject.pre.linkRegister")}</BtnLink>
+              <BtnLink href="/vlasnici?tab=vlasnistvo" variant="secondary">{t("votingSubject.pre.linkOwnership")}</BtnLink>
+            </div>
+          </Card>
+        </div>
+      )}
       <div className="mb-4 flex items-center gap-2">
         <StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} />
         {p.decisionNumber && <span className="text-sm text-slate-500">Odluka br. {p.decisionNumber}</span>}
@@ -316,7 +373,21 @@ export default async function ProposalPage({ params, searchParams }: { params: P
               <div><dt className="inline font-medium">Pravilo: </dt><dd className="inline">{rule.ruleName}</dd></div>
               <div><dt className="inline font-medium">Kvorum: </dt><dd className="inline">{tEnum("quorum", rule.quorumType)} {rule.quorumPercent ? `(${rule.quorumPercent}%)` : ""}</dd></div>
               <div><dt className="inline font-medium">Većina: </dt><dd className="inline">{tEnum("majority", rule.majorityType)} {rule.majorityPercent ? `(${rule.majorityPercent}%)` : ""}</dd></div>
-              <div><dt className="inline font-medium">Težina glasa: </dt><dd className="inline">{tEnum("weight", rule.weightMethod)}</dd></div>
+              {byVotes ? (
+                <div>
+                  <dt className="inline font-medium">{t("votingSubject.baseLabel")}: </dt>
+                  <dd className="inline">
+                    {tf("votingSubject.base", {
+                      version: rule.unitRegisterVersion ?? "—",
+                      votes: p.eligibleVoters.length,
+                      persons: basePersons.size,
+                      units: baseUnits.size,
+                    })}
+                  </dd>
+                </div>
+              ) : (
+                <div><dt className="inline font-medium">Težina glasa: </dt><dd className="inline">{tEnum("weight", rule.weightMethod)}</dd></div>
+              )}
             </dl>
           ) : (
             <p className="text-sm text-slate-500">
@@ -330,14 +401,14 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                   ? tf("confirm.result.openTitle", { datum: closesAt ? formatDateTime(closesAt) : "—" })
                   : t("confirm.result.finalTitle")}
               </p>
-              <p>{quorumText(result)} (učestvovalo {formatWeight(result.weightCast)} od {formatWeight(result.totalEligibleWeight)})</p>
+              <p>{quorumText(result)} ({byVotes ? turnoutText(result) : `učestvovalo ${formatWeight(result.weightCast)} od ${formatWeight(result.totalEligibleWeight)}`})</p>
               <p><b>Za:</b> {formatWeight(result.approveWeight)} · <b>Protiv:</b> {formatWeight(result.rejectWeight)} · <b>Uzdržani:</b> {formatWeight(result.abstainWeight)}</p>
               <p>
                 <b>Prag većine:</b> {formatWeight(result.majorityThreshold)} ·{" "}
                 {votingOpen ? `${t("live.resultOutcomeIfClosedNow")}: ` : `${t("confirm.result.outcome")}: `}
                 {outcomeText(result)}
               </p>
-              <p className="text-xs text-slate-500">Nevažećih: {result.invalidCount} · Glasalo: {result.votesCast}/{result.totalEligibleOwners} vlasnika</p>
+              <p className="text-[13px] text-slate-500">Nevažećih: {result.invalidCount} · Glasalo: {result.votesCast}/{result.totalEligibleOwners} {byVotes ? t("votingSubject.result.votesUnit") : "vlasnika"}</p>
             </div>
           )}
         </Card>
@@ -349,7 +420,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
             <Table
               id="voters-table"
               caption="Glasačka baza i lični linkovi"
-              headers={voterHeaders}
+              headers={voterHeaders(!byVotes)}
               empty={p.eligibleVoters.length === 0}
               emptyTitle={t("empty.voters.title")}
               emptyHint={t("empty.voters.hint")}
@@ -360,9 +431,10 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 const vote = ev.votes.filter((v) => !v.invalid).at(-1);
                 return (
                   <tr key={ev.id}>
-                    <Td>{partyDisplayName(ev.owner)}</Td>
+                    <Td>{subjectLabel(ev)}</Td>
+                    <Td>{((ev.basis as EvBasis)?.units ?? []).map((u) => u.label).join(", ") || "—"}</Td>
                     <Td>{ev.proxy ? partyDisplayName(ev.proxy) : "—"}</Td>
-                    <Td>{formatWeight(ev.weight)}</Td>
+                    {!byVotes && <Td>{formatWeight(ev.weight)}</Td>}
                     <Td>{lastToken ? <StatusBadge status={lastToken.status} label={tEnum("tokenStatus", lastToken.status)} /> : "—"}</Td>
                     <Td>{vote ? `${tEnum("vote", vote.choice)} (${tEnum("vote", vote.channel)})` : "—"}</Td>
                     <Td>
@@ -519,7 +591,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
               <Field label="Vlasnik">
                 <select name="eligibleVoterId" className={inputCls}>
                   {p.eligibleVoters.map((ev) => (
-                    <option key={ev.id} value={ev.id}>{partyDisplayName(ev.owner)}</option>
+                    <option key={ev.id} value={ev.id}>{subjectLabel(ev)}</option>
                   ))}
                 </select>
               </Field>

@@ -671,22 +671,40 @@ export async function generateVotingListPdf(actor: Actor, proposalId: string) {
   });
   const buffer = await renderPdf(async (doc) => {
     await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "VOTING_LIST"), title: `GLASAČKA LISTA — ${p.code} v${p.version}`, issueDate: new Date() });
-    doc.font("bold");
-    const y0 = doc.y;
-    doc.text("Vlasnik", 50, y0, { width: 180 });
-    doc.text("Punomoćnik", 235, y0, { width: 120 });
-    doc.text("Težina", 360, y0, { width: 70, align: "right" });
-    doc.text("Izjašnjenje", 435, y0, { width: 110, align: "right" });
-    doc.font("reg");
-    doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
-    for (const ev of p.eligibleVoters) {
+    // One row per voting SUBJECT (FR, K-03a): a co-owner community reads "A i B (predstavnik: A)". pdfTable
+    // measures every cell, so a long community name wraps instead of overlapping the next row.
+    const weighted = p.eligibleVoters.some((ev) => ev.weight.toString() !== "1" && formatWeight(ev.weight) !== "1");
+    const cols: PdfCol[] = weighted
+      ? [
+          { label: "Etažni vlasnik", x: 50, width: 150 },
+          { label: "Posebni dijelovi", x: 205, width: 100 },
+          { label: "Punomoćnik", x: 310, width: 85 },
+          { label: "Težina", x: 400, width: 45, right: true },
+          { label: "Izjašnjenje", x: 450, width: 95, right: true },
+        ]
+      : [
+          { label: "Etažni vlasnik", x: 50, width: 190 },
+          { label: "Posebni dijelovi", x: 245, width: 125 },
+          { label: "Punomoćnik", x: 375, width: 80 },
+          { label: "Izjašnjenje", x: 460, width: 85, right: true },
+        ];
+    const rows = p.eligibleVoters.map((ev) => {
       const vote = ev.votes.find((v) => !v.correctionOfId) ?? ev.votes[0];
-      const y = doc.y + 4;
-      doc.text(partyDisplayName(ev.owner), 50, y, { width: 180 });
-      doc.text(ev.proxy ? partyDisplayName(ev.proxy) : "—", 235, y, { width: 120 });
-      doc.text(formatWeight(ev.weight), 360, y, { width: 70, align: "right" });
-      doc.text(vote ? tEnum("vote", vote.choice) : "nije glasao", 435, y, { width: 110, align: "right" });
-    }
+      const b = (ev.basis ?? {}) as { subjectName?: string; units?: { label: string }[] };
+      const members = ev.memberPartyIds.length > 1;
+      const name = members && b.subjectName
+        ? `${b.subjectName} (predstavnik: ${partyDisplayName(ev.owner)})`
+        : partyDisplayName(ev.owner);
+      const cells = [
+        name,
+        (b.units ?? []).map((u) => u.label).join(", ") || "—",
+        ev.proxy ? partyDisplayName(ev.proxy) : "—",
+      ];
+      if (weighted) cells.push(formatWeight(ev.weight));
+      cells.push(vote ? tEnum("vote", vote.choice) : "nije glasao");
+      return cells;
+    });
+    pdfTable(doc, cols, rows, "Nema upisanih glasača.");
     docFooter(doc, { sourceRef: `Proposal ${p.code} v${p.version}`, version: p.version, status: "FINAL" });
   });
   const { row } = await storeDocument(actor, {

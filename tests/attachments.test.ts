@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { addOwnershipStake, transferOwnership } from "@/server/services/ownership";
-import * as property from "@/server/services/property";
 import {
   uploadAttachment,
   listAttachments,
@@ -15,17 +14,22 @@ const PDF_PROOF = { buffer: Buffer.from("test proof content"), filename: "dokaz.
 
 /**
  * The fixture's 4 units are already fully allocated (100% each) from day one — adding another
- * stake on one of them would hit the "sum exceeds 100%" guard, not the thing under test here.
+ * stake on one of them would only produce an over-100% warning, not the thing under test here.
  * Create a fresh, unallocated unit per test that needs a stake actually created successfully.
+ * Written straight through Prisma: the fixture's register is established (FR, K-02), so
+ * property.createUnit is closed by design.
  */
 async function freshUnit(f: Fixture) {
-  return property.createUnit(f.president, {
-    buildingId: f.b1.id,
-    type: "APARTMENT",
-    label: `Test-${uid("u")}`,
-    usableArea: "40.00",
-    ownershipShare: "1.00",
-    occupantCount: 1,
+  return prisma.unit.create({
+    data: {
+      zevId: f.zev.id,
+      buildingId: f.b1.id,
+      type: "APARTMENT",
+      label: `Test-${uid("u")}`,
+      usableArea: "40.00",
+      ownershipShare: "1.00",
+      occupantCount: 1,
+    },
   });
 }
 
@@ -67,7 +71,7 @@ describe("mandatory proof of ownership", () => {
   it("creates the stake and a linked OWNERSHIP_PROOF attachment together", async () => {
     const f = await createFixture("proof-ok");
     const unit = await freshUnit(f);
-    const stake = await addOwnershipStake(
+    const { stake } = await addOwnershipStake(
       f.president,
       { unitId: unit.id, ownerId: f.ownerA.id, sharePercent: "100", validFrom: new Date("2020-06-01") },
       PDF_PROOF
@@ -146,7 +150,7 @@ describe("attachment access control", () => {
   it("an owner can download the proof attached to their own stake", async () => {
     const f = await createFixture("access-self");
     const unit = await freshUnit(f);
-    const stake = await addOwnershipStake(
+    const { stake } = await addOwnershipStake(
       f.president,
       { unitId: unit.id, ownerId: f.ownerA.id, sharePercent: "100", validFrom: new Date() },
       PDF_PROOF
@@ -160,7 +164,7 @@ describe("attachment access control", () => {
   it("an owner cannot download another owner's proof of ownership", async () => {
     const f = await createFixture("access-other");
     const unit = await freshUnit(f);
-    const stake = await addOwnershipStake(
+    const { stake } = await addOwnershipStake(
       f.president,
       { unitId: unit.id, ownerId: f.ownerA.id, sharePercent: "100", validFrom: new Date() },
       PDF_PROOF
@@ -185,7 +189,7 @@ describe("attachment access control", () => {
   it("maps ownership proofs back to their stake ids for display", async () => {
     const f = await createFixture("access-map");
     const unit = await freshUnit(f);
-    const stake = await addOwnershipStake(
+    const { stake } = await addOwnershipStake(
       f.president,
       { unitId: unit.id, ownerId: f.ownerA.id, sharePercent: "100", validFrom: new Date() },
       PDF_PROOF

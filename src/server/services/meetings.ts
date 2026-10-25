@@ -11,12 +11,12 @@ import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/tokens";
 import { computeVoterWeight, computeVotingResult, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
-import { ownersVotingBasis, boardVotingBasis, activeProxyFor, activeProxiesFor, partyDisplayName, listOfficeHolders } from "./ownership";
+import { assemblyVotingSubjects, boardVotingBasis, unitOwnershipWarnings, activeProxyFor, activeProxiesFor, partyDisplayName, listOfficeHolders, type VotingSubject } from "./ownership";
 import { unitsInScope } from "./property";
 import { queueNotification } from "@/server/notifications/service";
 import { dec, ZERO } from "@/lib/money";
 import { getEnv } from "@/lib/env";
-import { formatDateTime } from "@/lib/i18n";
+import { formatDateTime, tf } from "@/lib/i18n";
 import type { MeetingStatus, MeetingType, MeetingBody, ScopeType, VoteChoice, VoteChannel, Prisma, Party } from "@/generated/prisma/client";
 
 const MEETING_FLOW: MeetingStatus[] = [
@@ -130,8 +130,8 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
   // Same source as openVoting's own eligible-voter basis (§3.2: "lista je lista glasača, ne
   // lista lica") — the roll-call and the voting base can never disagree about who counts.
   const isBoard = meeting.body === "BOARD";
-  const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId);
-  const ownerIds = basis.map((b) => b.ownerId);
+  const basis = isBoard ? await boardVotingBasis(zevId) : await assemblyVotingSubjects(zevId);
+  const ownerIds = [...new Set(basis.map((b) => b.ownerId))];
 
   const [attendances, parties, proxiesByOwner] = await Promise.all([
     prisma.attendance.findMany({
@@ -150,17 +150,27 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
   const attendanceByOwner = new Map(attendances.map((a) => [a.partyId, a]));
   const consentByOwner = new Map(parties.map((p) => [p.id, p.eVoteConsentStatus]));
 
+  // One row per voting SUBJECT (K-03/K-03a): a sole owner, or a co-owner community that votes
+  // through one representative. A subject counts as present when ANY of its members is marked
+  // present (one co-owner in the room is enough); the roll-call action itself records attendance
+  // of the representative (ownerId), the person who holds the link.
   const voters = basis.map((b) => {
-    const att = attendanceByOwner.get(b.ownerId);
+    const memberAtts = b.memberPartyIds.map((id) => attendanceByOwner.get(id)).filter((a) => a !== undefined);
+    const att = attendanceByOwner.get(b.ownerId) ?? memberAtts.find((a) => a.present) ?? memberAtts[0];
     const proxy = proxiesByOwner.get(b.ownerId) ?? null;
     return {
+      subjectKey: b.subjectKey,
       ownerId: b.ownerId,
       ownerName: b.ownerName,
+      /** True when several co-owners vote together through `ownerId` (the representative). */
+      isCommunity: b.memberPartyIds.length > 1,
+      representativeName: b.members.find((m) => m.partyId === b.ownerId)?.name ?? b.ownerName,
+      representativeConfirmed: b.representativeConfirmed,
       // `marked` distinguishes "explicitly recorded absent" from "not prozivka'd yet" —
       // the roll-call screen's default "Neoznačeni" filter (§3.2) needs this, a plain
       // boolean `present` alone can't tell the two apart.
-      marked: att !== undefined,
-      present: att?.present ?? false,
+      marked: memberAtts.length > 0,
+      present: memberAtts.some((a) => a.present),
       viaProxyId: att?.viaProxyId ?? null,
       eVoteConsentSigned: consentByOwner.get(b.ownerId) === "SIGNED",
       unitLabels: b.units.map((u) => u.label),
@@ -178,7 +188,7 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
   // proposal's own eligible-voter count, not the whole meeting, so this stays cheap even
   // though getLiveMeetingState is polled (Faza 3).
   let activeVoters: {
-    eligibleVoterId: string; ownerId: string; ownerName: string; present: boolean;
+    eligibleVoterId: string; subjectKey: string; ownerId: string; ownerName: string; isCommunity: boolean; present: boolean;
     voted: boolean; channel: VoteChannel | null; deliveredVia: string | null;
     notifyStatus: string | null;
   }[] = [];
@@ -214,17 +224,24 @@ export async function getLiveMeetingState(actor: Actor, meetingId: string, opts?
             ).map((n) => [n.recipientId as string, n.status as string])
           )
         : new Map<string, string>();
-      activeVoters = eligibleVoters.map((ev) => ({
+      activeVoters = eligibleVoters.map((ev) => {
+        // memberPartyIds is empty only on rows written by pre-FR code (v2.42.0): fall back to the owner.
+        const members = ev.memberPartyIds.length > 0 ? ev.memberPartyIds : [ev.ownerId];
+        const subjectName = (ev.basis as { subjectName?: string } | null)?.subjectName;
+        return {
         eligibleVoterId: ev.id,
+        subjectKey: ev.subjectKey,
         ownerId: ev.ownerId,
-        ownerName: ev.proxy ? partyDisplayName(ev.proxy) : partyDisplayName(ev.owner),
-        present: attendanceByOwner.get(ev.ownerId)?.present ?? false,
+        ownerName: ev.proxy ? partyDisplayName(ev.proxy) : subjectName ?? partyDisplayName(ev.owner),
+        isCommunity: members.length > 1,
+        present: members.some((id) => attendanceByOwner.get(id)?.present ?? false),
         voted: ev.votes.length > 0,
         channel: ev.votes[0]?.channel ?? null,
         deliveredVia: ev.tokens[0]?.deliveredVia ?? null,
         notifyStatus:
           ev.tokens[0]?.deliveredVia === "EMAIL" ? notifyStatusByRecipient.get(ev.proxyId ?? ev.ownerId) ?? null : null,
-      }));
+        };
+      });
     }
   }
 
@@ -401,13 +418,17 @@ export async function createVotingRule(
     quorumPercent?: string | null;
     majorityType: "SIMPLE_OF_VOTES_CAST" | "PERCENT_OF_VOTES_CAST" | "PERCENT_OF_ELIGIBLE_WEIGHT";
     majorityPercent?: string | null;
-    weightMethod: "PER_OWNER" | "OWNERSHIP_SHARE" | "USABLE_AREA";
+    /** Ignored since FR (K-03): every new rule is stored as PER_OWNER — one etazni vlasnik, one vote. */
+    weightMethod?: "PER_OWNER" | "OWNERSHIP_SHARE" | "USABLE_AREA";
     note?: string | null;
   }
 ) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  const r = await prisma.votingRule.create({ data: { ...data, zevId } });
+  // K-03: weight is always 1 per voting subject, so a "% of total weight" quorum is the same thing as
+  // "% of the number of etazni vlasnici"; only the latter is stored for new rules.
+  const quorumType = data.quorumType === "PERCENT_OF_TOTAL_WEIGHT" ? "PERCENT_OF_OWNER_COUNT" : data.quorumType;
+  const r = await prisma.votingRule.create({ data: { ...data, quorumType, weightMethod: "PER_OWNER", zevId } });
   await audit(actor, { action: "voting_rule.create", targetType: "VotingRule", targetId: r.id, after: { name: r.name } });
   return r;
 }
@@ -759,15 +780,21 @@ type DeliverySuppressReason = "PRESENT" | "NO_CONSENT" | "NO_EMAIL";
  * once voting opens — the whole point of previewing it at all.
  */
 function classifyLiveDelivery(input: {
-  ownerId: string;
+  /** All persons of the voting subject (one co-owner in the room is enough — K-03a). */
+  memberPartyIds: string[];
   ownerEmail: string | null;
+  /** Party.id of the representative's proxy holder, if any — a present holder votes in the room too. */
+  proxyHolderId?: string | null;
   proxyEmail: string | null;
   ownerConsentSigned: boolean;
   /** null when this owner has no proxy. */
   proxyConsentSigned: boolean | null;
   presentOwnerIds: Set<string>;
 }): { deliver: boolean; suppressReason: DeliverySuppressReason | null } {
-  if (input.presentOwnerIds.has(input.ownerId)) {
+  if (
+    input.memberPartyIds.some((id) => input.presentOwnerIds.has(id)) ||
+    (input.proxyHolderId != null && input.presentOwnerIds.has(input.proxyHolderId))
+  ) {
     // Korpa A — in the room, votes IN_PERSON via recordManualVote instead.
     return { deliver: false, suppressReason: "PRESENT" };
   }
@@ -810,8 +837,29 @@ async function loadVotingBasis(
             unitIds: p.scopeUnits.map((s) => s.unitId),
           })
         ).map((u) => u.id);
-  const basis = isBoard ? await boardVotingBasis(zevId) : await ownersVotingBasis(zevId, scopedUnits);
-  return { isBoard, basis };
+  const basis: VotingSubject[] = isBoard ? await boardVotingBasis(zevId) : await assemblyVotingSubjects(zevId, scopedUnits);
+  return { isBoard, basis, scopedUnits };
+}
+
+/**
+ * Preconditions for opening ASSEMBLY voting (FR, K-02 / K-01b) — empty for the board. Shared by `openVoting`
+ * (which throws) and both delivery previews (which show them instead of the confirm button), so the panel and
+ * the real call can never disagree. Non-blocking observations come back as `warnings`.
+ */
+async function votingPreconditions(zevId: string, isBoard: boolean, scopedUnits: string[] | undefined, basis: VotingSubject[]) {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  if (isBoard) return { errors, warnings, registerVersion: null as number | null };
+  const zev = await prisma.zev.findUniqueOrThrow({ where: { id: zevId }, select: { unitRegisterStatus: true, unitRegisterVersion: true } });
+  if (zev.unitRegisterStatus !== "ESTABLISHED") errors.push(tf("votingSubject.pre.registerNotEstablished", {}));
+  const warn = await unitOwnershipWarnings(zevId, scopedUnits);
+  const none = warn.filter((w) => w.kind === "NONE").map((w) => w.label);
+  const over = warn.filter((w) => w.kind === "OVER").map((w) => `${w.label} (${w.sum.toFixed(2).replace(".", ",")} %)`);
+  if (none.length > 0) errors.push(tf("votingSubject.pre.unitWithoutOwner", { units: none.join(", ") }));
+  if (over.length > 0) errors.push(tf("votingSubject.pre.unitOverShare", { units: over.join(", ") }));
+  const conflicts = basis.filter((b) => b.representativeConflict).map((b) => b.ownerName);
+  if (conflicts.length > 0) warnings.push(tf("votingSubject.pre.representativeConflict", { subjects: conflicts.join("; ") }));
+  return { errors, warnings, registerVersion: zev.unitRegisterVersion };
 }
 
 /** Who actually receives the personal link in "ALL" mode: the proxy's e-mail if the proxy has
@@ -865,7 +913,11 @@ export async function openVoting(
     if (!closesAt) throw new Error("Vrijeme zatvaranja glasanja nije definisano.");
     const expiresAt = opts?.expiresAt ?? closesAt;
 
-    const { isBoard, basis } = await loadVotingBasis(zevId, p);
+    const { isBoard, basis, scopedUnits } = await loadVotingBasis(zevId, p);
+    // K-02 / K-01b: an assembly vote opens only on an established register, with no unit left without
+    // an owner and none over 100% (the previous owner would otherwise still get a vote).
+    const pre = await votingPreconditions(zevId, isBoard, scopedUnits, basis);
+    if (pre.errors.length > 0) throw new Error(pre.errors.join(" "));
     if (basis.length === 0) {
       throw new Error(isBoard ? "Upravni odbor trenutno nema evidentiranih članova." : "Nema nijednog vlasnika u obuhvatu prijedloga.");
     }
@@ -896,9 +948,12 @@ export async function openVoting(
           )
         : null;
 
-    const weightMethod = p.votingRule.weightMethod;
+    // K-03: on the assembly every voting subject weighs exactly 1, whatever the (legacy) rule says.
+    // The board keeps the rule's own weight method (its rules are PER_OWNER anyway).
+    const weightMethod = isBoard ? p.votingRule.weightMethod : "PER_OWNER";
     let totalWeight = ZERO;
     const voterRows: {
+      subjectKey: string; memberPartyIds: string[]; subjectNote: string | null;
       ownerId: string; ownerName: string; email: string | null; weight: string;
       proxyId: string | null; proxyRecordId: string | null; proxyName: string | null; proxyEmail: string | null;
       /** Who the e-mail is actually addressed to (proxy if any, else the owner) — stamped
@@ -921,8 +976,9 @@ export async function openVoting(
       let suppressReason: DeliverySuppressReason | null = null;
       if (delivery === "LIVE") {
         const cls = classifyLiveDelivery({
-          ownerId: b.ownerId,
+          memberPartyIds: b.memberPartyIds,
           ownerEmail: b.email,
+          proxyHolderId: proxy?.holderId ?? null,
           proxyEmail: proxy?.holder.email ?? null,
           ownerConsentSigned: consentById!.get(b.ownerId) === "SIGNED",
           proxyConsentSigned: proxy ? proxy.holder.eVoteConsentStatus === "SIGNED" : null,
@@ -933,8 +989,13 @@ export async function openVoting(
       }
 
       voterRows.push({
+        subjectKey: b.subjectKey,
+        memberPartyIds: b.memberPartyIds,
+        subjectNote: b.memberPartyIds.length > 1 && !isBoard
+          ? tf("votingSubject.mail.community", { units: b.units.map((u) => u.label).join(", "), members: b.ownerName })
+          : null,
         ownerId: b.ownerId,
-        ownerName: b.ownerName,
+        ownerName: b.members.find((m) => m.partyId === b.ownerId)?.name ?? b.ownerName,
         email: b.email,
         weight: w.toFixed(6),
         proxyId: proxy?.holderId ?? null,
@@ -942,7 +1003,14 @@ export async function openVoting(
         proxyName: proxy ? partyDisplayName(proxy.holder) : null,
         proxyEmail: proxy?.holder.email ?? null,
         recipientPartyId: proxy?.holderId ?? b.ownerId,
-        basis: { units: b.units, ownershipShareSum: b.ownershipShareSum.toFixed(6), areaSum: b.areaSum.toFixed(6) },
+        basis: {
+          units: b.units,
+          members: b.members,
+          subjectName: b.ownerName,
+          representativeConfirmed: b.representativeConfirmed,
+          ownershipShareSum: b.ownershipShareSum.toFixed(6),
+          areaSum: b.areaSum.toFixed(6),
+        },
         deliver,
         suppressReason,
       });
@@ -957,6 +1025,7 @@ export async function openVoting(
       weightMethod,
       totalEligibleWeight: totalWeight.toFixed(6),
       totalEligibleOwners: basis.length,
+      ...(isBoard ? {} : { basisKind: "ASSEMBLY_SUBJECTS" as const, unitRegisterVersion: pre.registerVersion }),
     };
     const contentHash = proposalContentHash(p, p.attachments.map((a) => a.sha256 ?? ""));
 
@@ -975,12 +1044,14 @@ export async function openVoting(
     const out: {
       ownerName: string; email: string | null; link: string; verificationCode: string;
       tokenId: string; eligibleVoterId: string; viaProxy: string | null; deliver: boolean;
-      recipientPartyId: string;
+      recipientPartyId: string; subjectNote: string | null;
     }[] = [];
     for (const row of voterRows) {
       const ev = await tx.eligibleVoter.create({
         data: {
           proposalId: p.id,
+          subjectKey: row.subjectKey,
+          memberPartyIds: row.memberPartyIds,
           ownerId: row.ownerId,
           proxyId: row.proxyId,
           proxyRecordId: row.proxyRecordId,
@@ -1018,6 +1089,7 @@ export async function openVoting(
         viaProxy: row.proxyName ? row.ownerName : null,
         deliver: row.deliver,
         recipientPartyId: row.recipientPartyId,
+        subjectNote: row.subjectNote,
       });
     }
 
@@ -1035,6 +1107,7 @@ export async function openVoting(
       targetId: p.id,
       after: {
         contentHash, totalEligibleWeight: ruleSnapshot.totalEligibleWeight, voters: out.length,
+        basisKind: ruleSnapshot.basisKind ?? "BOARD_MEMBERS", unitRegisterVersion: ruleSnapshot.unitRegisterVersion ?? null,
         delivery, deliveredCount, suppressedPresent, suppressedNoConsent, suppressedNoEmail,
       },
     }, tx);
@@ -1056,7 +1129,8 @@ export async function openVoting(
         body:
           `Poštovani ${d.ownerName},\n\n` +
           (d.viaProxy ? `kao punomoćnik vlasnika ${d.viaProxy}, ` : "") +
-          `pozvani ste da se izjasnite o prijedlogu skupštine ZEV.\n\n` +
+          `pozvani ste da se izjasnite o prijedlogu skupštine ZEV.\n` +
+          (d.subjectNote ? `${d.subjectNote}\n` : "") + `\n` +
           `Vaš lični link za izjašnjavanje: ${d.link}\n` +
           `Vaš verifikacioni kod: ${d.verificationCode}\n\n` +
           `Link je ličan i ne smije se prosljeđivati. Za potvrdu identiteta biće potreban verifikacioni kod.\n`,
@@ -1095,9 +1169,13 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
   if (p.status !== "DRAFT") throw new Error("Pregled dostave ima smisla samo dok je prijedlog u statusu Nacrt.");
   if (!p.votingRule) throw new Error("Prijedlog nema definisano pravilo glasanja.");
 
-  const { isBoard, basis } = await loadVotingBasis(zevId, p);
+  const { isBoard, basis, scopedUnits } = await loadVotingBasis(zevId, p);
+  const pre = await votingPreconditions(zevId, isBoard, scopedUnits, basis);
   if (basis.length === 0) {
-    return { presentCount: 0, deliverCount: 0, noChannelCount: 0, totalEligibleWeight: "0", reachableWeight: "0", quorumReachable: false };
+    return {
+      presentCount: 0, deliverCount: 0, noChannelCount: 0, totalEligibleWeight: "0", reachableWeight: "0", quorumReachable: false,
+      preconditionErrors: pre.errors, preconditionWarnings: pre.warnings,
+    };
   }
 
   const presentOwnerIds = new Set(
@@ -1114,7 +1192,7 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
     ).map((pt) => [pt.id, pt.eVoteConsentStatus])
   );
 
-  const weightMethod = p.votingRule.weightMethod;
+  const weightMethod = isBoard ? p.votingRule.weightMethod : "PER_OWNER"; // K-03: assembly weight is always 1
   let totalWeight = ZERO;
   let reachableWeight = ZERO;
   let presentCount = 0;
@@ -1126,8 +1204,9 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
     totalWeight = totalWeight.plus(w);
     const proxy = isBoard ? null : await activeProxyFor(zevId, b.ownerId, p.meetingId);
     const cls = classifyLiveDelivery({
-      ownerId: b.ownerId,
+      memberPartyIds: b.memberPartyIds,
       ownerEmail: b.email,
+      proxyHolderId: proxy?.holderId ?? null,
       proxyEmail: proxy?.holder.email ?? null,
       ownerConsentSigned: consentById.get(b.ownerId) === "SIGNED",
       proxyConsentSigned: proxy ? proxy.holder.eVoteConsentStatus === "SIGNED" : null,
@@ -1136,11 +1215,11 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
     if (cls.suppressReason === "PRESENT") {
       presentCount++;
       reachableWeight = reachableWeight.plus(w);
-      syntheticVotes.push({ eligibleVoterId: b.ownerId, choice: "APPROVE", weight: w, countsForQuorum: true, invalid: false });
+      syntheticVotes.push({ eligibleVoterId: b.subjectKey, choice: "APPROVE", weight: w, countsForQuorum: true, invalid: false });
     } else if (cls.deliver) {
       deliverCount++;
       reachableWeight = reachableWeight.plus(w);
-      syntheticVotes.push({ eligibleVoterId: b.ownerId, choice: "APPROVE", weight: w, countsForQuorum: true, invalid: false });
+      syntheticVotes.push({ eligibleVoterId: b.subjectKey, choice: "APPROVE", weight: w, countsForQuorum: true, invalid: false });
     } else {
       noChannelCount++;
     }
@@ -1163,6 +1242,8 @@ export async function previewLiveDelivery(actor: Actor, proposalId: string) {
     totalEligibleWeight: totalWeight.toFixed(6),
     reachableWeight: reachableWeight.toFixed(6),
     quorumReachable,
+    preconditionErrors: pre.errors,
+    preconditionWarnings: pre.warnings,
   };
 }
 
@@ -1178,7 +1259,7 @@ export async function previewVotingDelivery(
   actor: Actor,
   proposalId: string,
   delivery: "ALL"
-): Promise<{ voters: number; byEmail: number; viaProxy: number; withoutEmail: number }>;
+): Promise<{ voters: number; byEmail: number; viaProxy: number; withoutEmail: number; preconditionErrors: string[]; preconditionWarnings: string[] }>;
 export async function previewVotingDelivery(actor: Actor, proposalId: string, delivery: "ALL" | "LIVE") {
   if (delivery === "LIVE") return previewLiveDelivery(actor, proposalId);
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
@@ -1189,7 +1270,8 @@ export async function previewVotingDelivery(actor: Actor, proposalId: string, de
   });
   if (p.status !== "DRAFT") throw new Error("Pregled dostave ima smisla samo dok je prijedlog u statusu Nacrt.");
   if (!p.votingRule) throw new Error("Prijedlog nema definisano pravilo glasanja.");
-  const { isBoard, basis } = await loadVotingBasis(zevId, p);
+  const { isBoard, basis, scopedUnits } = await loadVotingBasis(zevId, p);
+  const pre = await votingPreconditions(zevId, isBoard, scopedUnits, basis);
   let byEmail = 0;
   let viaProxy = 0;
   for (const b of basis) {
@@ -1200,7 +1282,10 @@ export async function previewVotingDelivery(actor: Actor, proposalId: string, de
       if (proxy) viaProxy++;
     }
   }
-  return { voters: basis.length, byEmail, viaProxy, withoutEmail: basis.length - byEmail };
+  return {
+    voters: basis.length, byEmail, viaProxy, withoutEmail: basis.length - byEmail,
+    preconditionErrors: pre.errors, preconditionWarnings: pre.warnings,
+  };
 }
 
 // ---- Token lifecycle ----
@@ -1364,6 +1449,10 @@ export async function inspectApprovalToken(tokenPlain: string, ipHash?: string |
     },
     voter: {
       ownerName: partyDisplayName(t.eligibleVoter.owner),
+      /** Set for a co-owner community ("A i B") — the link holder votes in the name of all of them. */
+      subjectName: t.eligibleVoter.memberPartyIds.length > 1
+        ? (t.eligibleVoter.basis as { subjectName?: string } | null)?.subjectName ?? null
+        : null,
       proxyName: t.eligibleVoter.proxy ? partyDisplayName(t.eligibleVoter.proxy) : null,
       weight: t.eligibleVoter.weight.toString(),
     },
@@ -1729,7 +1818,8 @@ export async function openProposalsForOwner(actor: Actor, partyId: string) {
   }
   return prisma.eligibleVoter.findMany({
     where: {
-      OR: [{ ownerId: partyId }, { proxyId: partyId }],
+      // memberPartyIds: a co-owner who is not the representative still sees the vote of his community.
+      OR: [{ ownerId: partyId }, { proxyId: partyId }, { memberPartyIds: { has: partyId } }],
       proposal: { zevId, status: "VOTING_OPEN" },
     },
     include: {

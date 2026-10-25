@@ -1,13 +1,17 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { createFixture, createProposalFixture, openVotingWithLinks, type Fixture } from "./helpers";
+import { createFixture, createProposalFixture, openVotingWithLinks, seedShapedZev, type Fixture } from "./helpers";
 import {
   submitVote, reissueToken, revokeToken, closeVoting, recordManualVote,
   createProposalRevision, updateDraftProposal, computeProposalResult, createVotingRule,
   openVoting, advanceMeetingStatus, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
+  previewVotingDelivery, openProposalsForOwner,
 } from "@/server/services/meetings";
 import { computeVotingResult, type RuleSnapshot } from "@/server/engines/voting";
 import { dec } from "@/lib/money";
+import { addOwnershipStake, setOfficeTerm } from "@/server/services/ownership";
+import { establishUnitRegister } from "@/server/services/unitRegister";
+import { generateVotingListPdf } from "@/server/services/documents";
 
 describe("secure electronic approval", () => {
   let f: Fixture;
@@ -147,28 +151,31 @@ describe("secure electronic approval", () => {
   });
 
   it("quorum, weight and majority are computed from the frozen rule snapshot", async () => {
-    // fixture unit shares: A: u1(25)+u4(10)=35, B: u2(35)+50% u3(15)=50, C: 50% u3=15
+    // K-03: since FR every voting subject weighs exactly 1 on the assembly (the fixture's rule was
+    // written with OWNERSHIP_SHARE weights: A 35 / B 50 / C 15 of 100). Subjects: A, B, and the u3 community (C).
     const { proposal } = await createProposalFixture(f);
     const links = await openVotingWithLinks(f, proposal.id);
     const p = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
     const snapshot = p.ruleSnapshot as unknown as RuleSnapshot;
-    expect(dec(snapshot.totalEligibleWeight).toFixed(2)).toBe("100.00");
+    expect(dec(snapshot.totalEligibleWeight).toFixed(2)).toBe("3.00");
     expect(snapshot.totalEligibleOwners).toBe(3);
+    expect(snapshot.weightMethod).toBe("PER_OWNER");
+    expect(snapshot.basisKind).toBe("ASSEMBLY_SUBJECTS");
 
-    // Only A votes (35%): quorum of 50% NOT reached
+    // Only A votes (1 of 3): quorum of 50% (2 subjects) NOT reached
     const lA = links.find((x) => x.toAddress === f.ownerA.email)!;
     await submitVote({ tokenPlain: lA.token, verificationCode: lA.code, choice: "APPROVE" });
     let result = await computeProposalResult(f.zev.id, proposal.id);
     expect(result.quorumReached).toBe(false);
-    expect(result.weightCast.toFixed(2)).toBe("35.00");
+    expect(result.weightCast.toFixed(0)).toBe("1");
 
-    // B votes REJECT (50%): quorum reached (85 >= 50); approve 35 vs reject 50 -> rejected
+    // B votes REJECT: quorum reached (2 >= 2); approve 1 vs reject 1 -> not more approve than reject -> rejected
     const lB = links.find((x) => x.toAddress === f.ownerB.email)!;
     await submitVote({ tokenPlain: lB.token, verificationCode: lB.code, choice: "REJECT" });
     result = await computeProposalResult(f.zev.id, proposal.id);
     expect(result.quorumReached).toBe(true);
-    expect(result.approveWeight.toFixed(2)).toBe("35.00");
-    expect(result.rejectWeight.toFixed(2)).toBe("50.00");
+    expect(result.approveWeight.toFixed(0)).toBe("1");
+    expect(result.rejectWeight.toFixed(0)).toBe("1");
     expect(result.accepted).toBe(false);
 
     const { result: closedResult } = await closeVoting(f.president, proposal.id);
@@ -362,5 +369,170 @@ describe("draft proposal management (Dio A)", () => {
     const { proposal } = await createProposalFixture(f);
     await openVotingWithLinks(f, proposal.id);
     await expect(deleteDraftProposal(f.president, proposal.id, "Greška.")).rejects.toThrow(/nacrt/);
+  });
+});
+
+// FR (K-02, K-03, K-03a, K-01b) — plan §3.4: the assembly votes by etazni vlasnici, one vote each.
+describe("FR — assembly voting by etazni vlasnici", () => {
+  it("opens with one EligibleVoter per voting subject (5 for the seed's 6 persons / 8 units), each weighing 1", async () => {
+    const { f, nikola, sara } = await seedShapedZev("fr-open");
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await openVoting(f.president, proposal.id);
+
+    const evs = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id } });
+    expect(evs).toHaveLength(5);
+    expect(evs.every((ev) => ev.weight.toString() === "1")).toBe(true);
+    expect(evs.every((ev) => ev.subjectKey !== "" && ev.memberPartyIds.length >= 1)).toBe(true);
+
+    const community = evs.find((ev) => ev.memberPartyIds.length === 2)!;
+    expect(community.ownerId).toBe(nikola.id); // default representative: 60 %
+    expect([...community.memberPartyIds].sort()).toEqual([nikola.id, sara.id].sort());
+    // only the representative holds a link: Sara has no EligibleVoter of her own and gets no e-mail
+    expect(evs.some((ev) => ev.ownerId === sara.id)).toBe(false);
+    const mails = await prisma.notificationMessage.findMany({ where: { relatedType: "Proposal", relatedId: proposal.id, template: "approval-link" } });
+    expect(mails).toHaveLength(5);
+    expect(mails.some((m) => m.toAddress === sara.email)).toBe(false);
+    expect(mails.find((m) => m.toAddress === nikola.email)!.body).toContain("zajednički predstavnik");
+
+    const snap = (await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).ruleSnapshot as unknown as RuleSnapshot;
+    expect(snap.totalEligibleOwners).toBe(5);
+    expect(dec(snap.totalEligibleWeight).toFixed(0)).toBe("5");
+    expect(snap.weightMethod).toBe("PER_OWNER");
+    expect(snap.basisKind).toBe("ASSEMBLY_SUBJECTS");
+    expect(snap.unitRegisterVersion).toBe(1);
+    const audit = await prisma.auditEvent.findFirstOrThrow({ where: { action: "proposal.voting.open", targetId: proposal.id } });
+    expect((audit.after as { basisKind: string }).basisKind).toBe("ASSEMBLY_SUBJECTS");
+  });
+
+  it("a legacy share-weighted rule is forced to weight 1 on the assembly (K-03)", async () => {
+    const f = await createFixture("fr-legacy-rule");
+    const legacy = await prisma.votingRule.create({
+      data: {
+        zevId: f.zev.id, name: `Stara ${f.t}`, quorumType: "PERCENT_OF_TOTAL_WEIGHT", quorumPercent: "50",
+        majorityType: "SIMPLE_OF_VOTES_CAST", weightMethod: "OWNERSHIP_SHARE",
+      },
+    });
+    const { proposal } = await createProposalFixture(f, { ruleId: legacy.id });
+    await openVoting(f.president, proposal.id);
+    const evs = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id } });
+    expect(evs.map((ev) => ev.weight.toString())).toEqual(["1", "1", "1"]);
+    const snap = (await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).ruleSnapshot as unknown as RuleSnapshot;
+    expect(snap.weightMethod).toBe("PER_OWNER");
+    expect(snap.totalEligibleWeight).toBe("3.000000");
+  });
+
+  it("the result reads in whole votes: 'Glasalo 2 od 5', quorum needs 3 of 5 (50 %, rounded up)", async () => {
+    const { f } = await seedShapedZev("fr-result");
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await openVoting(f.president, proposal.id);
+    const evs = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id } });
+    for (const ev of evs.slice(0, 2)) {
+      await recordManualVote(f.president, { eligibleVoterId: ev.id, choice: "APPROVE", channel: "PAPER" });
+    }
+    const result = await computeProposalResult(f.zev.id, proposal.id);
+    expect(result.votesCast).toBe(2);
+    expect(result.totalEligibleOwners).toBe(5);
+    expect(result.quorumRequiredOwners).toBe(3);
+    expect(result.quorumReached).toBe(false);
+  });
+
+  it("refuses to open while the register is not established, naming the way out; the previews report the same errors", async () => {
+    const f = await createFixture("fr-pre-register", { registerStatus: "REVIEW" });
+    const { proposal } = await createProposalFixture(f);
+    await expect(openVoting(f.president, proposal.id)).rejects.toThrow(/Registar posebnih dijelova nije utvrđen/);
+    const all = await previewVotingDelivery(f.president, proposal.id, "ALL");
+    const live = await previewVotingDelivery(f.president, proposal.id, "LIVE");
+    expect(all.preconditionErrors).toHaveLength(1);
+    expect(live.preconditionErrors).toEqual(all.preconditionErrors);
+    expect((await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).status).toBe("DRAFT");
+    expect(await prisma.eligibleVoter.count({ where: { proposalId: proposal.id } })).toBe(0);
+
+    // once the president establishes it, the same proposal opens
+    await establishUnitRegister(f.president);
+    expect((await previewVotingDelivery(f.president, proposal.id, "ALL")).preconditionErrors).toEqual([]);
+    await expect(openVoting(f.president, proposal.id)).resolves.toBeTruthy();
+  });
+
+  it("refuses a unit without an owner and a unit over 100 % (K-01b), naming the units; fixed, it opens", async () => {
+    const f = await createFixture("fr-pre-units");
+    // u2 loses its owner, u1 gets a second owner on top of A's 100 %
+    await prisma.ownershipStake.updateMany({ where: { unitId: f.u2.id, validTo: null }, data: { validTo: new Date("2021-01-01") } });
+    await addOwnershipStake(f.president, { unitId: f.u1.id, ownerId: f.ownerC.id, sharePercent: "50", validFrom: new Date("2022-01-01") },
+      { buffer: Buffer.from("x"), filename: "d.pdf", mime: "application/pdf" });
+    const { proposal } = await createProposalFixture(f);
+
+    const preview = await previewVotingDelivery(f.president, proposal.id, "ALL");
+    expect(preview.preconditionErrors).toHaveLength(2);
+    const text = preview.preconditionErrors.join(" ");
+    expect(text).toContain(f.u2.label);
+    expect(text).toContain(f.u1.label);
+    expect(text).toMatch(/150,00 %/);
+    await expect(openVoting(f.president, proposal.id)).rejects.toThrow(new RegExp(f.u2.label));
+
+    await prisma.ownershipStake.updateMany({ where: { unitId: f.u1.id, ownerId: f.ownerC.id }, data: { validTo: new Date("2022-02-01") } });
+    await prisma.ownershipStake.create({ data: { zevId: f.zev.id, unitId: f.u2.id, ownerId: f.ownerB.id, sharePercent: "100", validFrom: new Date("2022-02-01") } });
+    expect((await previewVotingDelivery(f.president, proposal.id, "ALL")).preconditionErrors).toEqual([]);
+    await expect(openVoting(f.president, proposal.id)).resolves.toBeTruthy();
+  });
+
+  it("the board is untouched: a BOARD proposal opens on an unestablished register, with the pre-FR snapshot shape", async () => {
+    const f = await createFixture("fr-board", { registerStatus: "DRAFT" });
+    await setOfficeTerm(f.president, { role: "PRESIDENT", partyId: f.presidentParty.id, validFrom: new Date("2024-01-01") });
+    const { proposal } = await createProposalFixture(f, { body: "BOARD" });
+    await openVoting(f.president, proposal.id);
+    const snap = (await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).ruleSnapshot as unknown as RuleSnapshot;
+    expect(snap.basisKind).toBeUndefined();
+    expect(snap.unitRegisterVersion).toBeUndefined();
+    const evs = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id } });
+    expect(evs.map((ev) => ev.subjectKey)).toContain(`B:${f.presidentParty.id}`);
+  });
+
+  it("the voting-list PDF renders one row per subject (incl. a long community name) without errors", async () => {
+    const { f } = await seedShapedZev("fr-pdf");
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await openVoting(f.president, proposal.id);
+    const row = await generateVotingListPdf(f.president, proposal.id);
+    expect(row.type).toBe("VOTING_LIST");
+  });
+
+  it("a co-owner who is not the representative sees the community's vote (openProposalsForOwner) and holds no link", async () => {
+    const { f, sara, nikola } = await seedShapedZev("fr-owner-view");
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await openVoting(f.president, proposal.id);
+    const saraActor = { userId: "sara-user", roles: ["OWNER" as const], partyId: sara.id, zevId: f.zev.id };
+    const mine = await openProposalsForOwner(saraActor, sara.id);
+    expect(mine).toHaveLength(1);
+    expect(mine[0].ownerId).toBe(nikola.id);
+    expect(mine[0].proposalId).toBe(proposal.id);
+    // an unrelated owner does not see it
+    const other = await openProposalsForOwner({ userId: "x", roles: ["OWNER" as const], partyId: f.ownerA.id, zevId: f.zev.id }, f.ownerA.id);
+    expect(other.map((o) => o.ownerId)).toEqual([f.ownerA.id]);
+  });
+
+  it("the representative's link votes for the whole community; the vote is recorded under the representative", async () => {
+    const { f, nikola } = await seedShapedZev("fr-vote");
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    const links = await openVotingWithLinks(f, proposal.id);
+    const l = links.find((x) => x.toAddress === nikola.email)!;
+    expect((await submitVote({ tokenPlain: l.token, verificationCode: l.code, choice: "APPROVE" })).ok).toBe(true);
+    const vote = await prisma.vote.findFirstOrThrow({ where: { proposalId: proposal.id, voterId: nikola.id } });
+    expect(vote.weight.toString()).toBe("1");
+  });
+
+  it("closed proposals frozen with a pre-FR snapshot count the same before and after the rules are converted (K-03 safety)", async () => {
+    // (the conversion itself is covered in tests/voting-rules-convert.test.ts — this one checks the engine:
+    //  a share-weighted legacy snapshot is still evaluated by its own frozen numbers)
+    const rule: RuleSnapshot = {
+      ruleName: "stari", quorumType: "PERCENT_OF_TOTAL_WEIGHT", quorumPercent: "50",
+      majorityType: "SIMPLE_OF_VOTES_CAST", majorityPercent: null, weightMethod: "OWNERSHIP_SHARE",
+      totalEligibleWeight: "100", totalEligibleOwners: 3,
+    };
+    const votes = [
+      { eligibleVoterId: "a", choice: "APPROVE" as const, weight: dec(35), countsForQuorum: true, invalid: false },
+      { eligibleVoterId: "b", choice: "REJECT" as const, weight: dec(50), countsForQuorum: true, invalid: false },
+    ];
+    const r = computeVotingResult(rule, votes);
+    expect(r.quorumReached).toBe(true);
+    expect(r.accepted).toBe(false);
   });
 });

@@ -43,6 +43,63 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.43.0] - 2026-10-24
+
+Faza FR (`Plans/fr-registar-i-glasanje-po-etaznim-vlasnicima-plan.md`): registar posebnih dijelova i glasanje po
+etažnim vlasnicima. Svaki vlasnik **bilo kog** posebnog dijela (i garaže, i garažnog mjesta) je etažni vlasnik sa
+**jednim glasom**; suvlasnici istog posebnog dijela zajedno imaju jedan glas, preko zajedničkog predstavnika.
+Kvorum i većina skupštine računaju se po broju glasova, ne po udjelima. **Migracija baze** (aditivna) i jednokratna
+skripta za pravila glasanja — vidi „Nadogradnja" ispod.
+
+### Dodato
+
+- **Registar posebnih dijelova** (Zgrade i jedinice › Posebni dijelovi): stanja „Nacrt", „Utvrđen · verzija N" i
+  „Za provjeru". Dok je u nacrtu, posebni dijelovi se mijenjaju slobodno; predsjednik ga utvrđuje iza potvrde
+  (preduslovi: bar jedan posebni dio, oznaka/vrsta/površina, zbir udjela u troškovima 100 %). Utvrđen registar se
+  mijenja samo kroz **Izmjenu registra** (`/zgrade/registar/izmjena`): vrsta izmjene, pregled „prije → poslije" sa
+  zbirom koji mora ostati 100,00 %, obavezan razlog i dokument; svaka izmjena je nova verzija u nepromjenjivoj
+  istoriji registra. Izmjena je zabranjena dok traje bilo koje glasanje. Ulazi za obračun (broj korisnika,
+  koeficijent tipa, sprat, ulaz) ostaju uredivi i u utvrđenom registru. Nova vrsta posebnog dijela: „Garažno mjesto".
+- **Sažetak i vlasnici u registru:** broj posebnih dijelova, glasova (etažnih vlasnika), dijelova bez vlasnika i
+  zbir udjela; kartica „Etažni vlasnici" (samostalni vlasnici i suvlasničke zajednice, ko glasa) sa upozorenjima za
+  zbir udjela vlasnika ≠ 100 % i dijelove bez vlasnika; kartica „Istorija registra" sa dokumentima.
+- **Zajednički predstavnik suvlasnika:** određuje ga predsjednik (Zgrade › Posebni dijelovi i Vlasnici ›
+  Vlasništvo); važi za sve posebne dijelove istih suvlasnika i ne može se mijenjati dok traje glasanje. Bez
+  izričitog izbora glasa suvlasnik sa najvećim udjelom i to je označeno „nije potvrđen". Suvlasnik koji nije
+  predstavnik vidi da njegovu zajednicu zastupa predstavnik i da li je zajednica glasala.
+- **Početna predsjednika:** dok je registar „Nacrt" ili „Za provjeru", na vrhu stoji kartica sa linkom na registar.
+- Detalj vlasnika pokazuje uz svaki posebni dio da li je vlasnik samostalan ili suvlasnik i ko glasa.
+- Skripta `scripts/fr-convert-voting-rules.ts` (jednokratna, idempotentna, `--dry-run`), audit `voting_rule.convert`.
+- Novi audit zapisi: `unit_register.establish`, `unit_register.change`, `unit.voting_representative.set`.
+- Engleski prevod za novu grupu `register`, `votingSubject` i za grupu `confirm` iz v2.42.0.
+
+### Izmijenjeno
+
+- **Glasanje skupštine:** osnova je lista glasačkih subjekata (samostalni vlasnik ili suvlasnička zajednica), svaki
+  sa težinom 1 bez obzira na pravilo. Pravila glasanja više nemaju izbor težine: „Svaki etažni vlasnik ima jedan
+  glas…", kvorum je „Bez kvoruma" ili „% broja etažnih vlasnika". Rezultat se čita u glasovima („Glasalo 2 od 5;
+  kvorum: potrebno 3"), osnova navodi verziju registra, broj glasova, lica i posebnih dijelova. Glasanje upravnog
+  odbora je nepromijenjeno.
+- **Otvaranje glasanja skupštine** traži: utvrđen registar, da nijedan posebni dio nema zbir udjela vlasnika iznad
+  100 % (prethodni vlasnik bi dobio glas) i da svaki ima vlasnika. Razlozi se prikazuju u potvrdi (desktop i uživo)
+  umjesto dugmeta; ista provjera je u serveru.
+- **Prozivka uživo** je po subjektu: zajednica je prisutna ako je prisutan bilo koji suvlasnik (ili punomoćnik
+  predstavnika); prisustvo se bilježi na predstavnika. Glasačka lista (PDF) ima red po subjektu i prelama dug naziv.
+- **Dodavanje vlasnika** je moguće tek kad registar nije u nacrtu. Zbir udjela jedinice iznad ili ispod 100 % više
+  ne blokira upis — prikazuje se kao upozorenje uz sljedeći korak.
+- Kolona „Udio %" posebnih dijelova zove se „Udio u troškovima %" (služi za raspodjelu troškova, ne za glasanje).
+  Revizorski trag `unit.update` sada bilježi i udio i vrstu (ranije je promjena udjela bila nevidljiva).
+- Seed: registar se utvrđuje prije vlasnika, Stan 3 ima predstavnika (Nikola), dva pravila po broju etažnih vlasnika.
+
+### Nadogradnja (produkcija)
+
+1. Prije deploy-a ručno: `MIGRATE_DATABASE_URL=… node scripts/migrate.mjs apply` (migracija
+   `20261025100000_fr_unit_register`; ne briše podatke; postojeći ZEV-ovi sa jedinicama prelaze u „Za provjeru").
+2. Deploy, pa odmah `DATABASE_URL=… npx tsx scripts/fr-convert-voting-rules.ts` (prevodi pravila na „jedan etažni
+   vlasnik — jedan glas"; zatvorena i otvorena glasanja ostaju po zamrznutom snimku).
+3. Nova glasanja skupštine se ne mogu otvoriti dok predsjednik ne utvrdi registar — najaviti unaprijed.
+4. Povlačenje na v2.42.0 radi sa novom šemom (`EligibleVoter.subjectKey` ima podrazumijevanu vrijednost).
+
 ## [2.42.0] - 2026-10-24
 
 Faza F1 dizajn pregleda (`Plans/f1-sigurnost-novca-i-pravnih-koraka-plan.md`): nijedna radnja koja knjiži ili

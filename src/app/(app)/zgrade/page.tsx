@@ -1,11 +1,16 @@
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import { listBuildings, listUnits, createBuilding, createEntrance, createUnit, getZev, listCommonAssets, createCommonAsset } from "@/server/services/property";
 import { partyDisplayName } from "@/server/services/ownership";
+import { getUnitRegister, establishUnitRegister } from "@/server/services/unitRegister";
+import { dec } from "@/lib/money";
 import { updateBuildingAction, updateUnitAction } from "@/server/actions/property";
 import { parseMoneyInput, formatMoney } from "@/lib/money";
-import { t, tEnum } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
+import { t, tf, tEnum, formatDate, formatDateTime } from "@/lib/i18n";
+import { PageHeader, Card, Stat, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, FilterBar, BtnLink, StatusBadge, ConfirmAction, RowLink, type ColumnSpec } from "@/components/ui";
+import { PreconditionList } from "@/components/precondition-list";
+import { RepresentativeChange } from "@/components/representative-change";
 import { BuildingRow } from "@/components/building-row";
 import { UnitRow } from "@/components/unit-row";
 
@@ -34,6 +39,7 @@ async function addEntranceAction(formData: FormData) {
 async function addUnitAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
+  try {
   await createUnit(actor, {
     buildingId: String(formData.get("buildingId")),
     entranceId: (formData.get("entranceId") as string) || null,
@@ -45,7 +51,23 @@ async function addUnitAction(formData: FormData) {
     occupantCount: Number(formData.get("occupantCount") ?? 0),
     typeCoefficient: parseMoneyInput(formData.get("typeCoefficient") as string | null) ?? "1",
   });
+  } catch (e) {
+    redirect(`/zgrade?tab=posebni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
   revalidatePath("/zgrade");
+}
+
+async function establishRegisterAction() {
+  "use server";
+  const actor = await requireActor("PRESIDENT");
+  try {
+    await establishUnitRegister(actor);
+  } catch (e) {
+    redirect(`/zgrade?tab=posebni&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  revalidatePath("/zgrade");
+  revalidatePath("/");
+  redirect("/zgrade?tab=posebni&msg=established");
 }
 
 async function addAssetAction(formData: FormData) {
@@ -69,7 +91,12 @@ export default async function BuildingsPage({
   const isPresident = actor.roles.includes("PRESIDENT");
   const sp = await searchParams;
   const { tab, err, msg } = sp;
-  const okMsg = msg === "saved" ? "Sačuvano." : undefined;
+  const okMsg =
+    msg === "saved" ? "Sačuvano."
+    : msg === "established" ? t("register.msg.established")
+    : msg === "changed" ? t("register.msg.changed")
+    : msg === "representative" ? t("register.msg.representative")
+    : undefined;
   const activeTab = ["ulazi", "posebni", "zajednicki"].includes(tab ?? "") ? (tab as string) : "zgrade";
 
   function posebniHref(overrides: Partial<{ building: string; entrance: string; sort: string; dir: string }>) {
@@ -80,7 +107,15 @@ export default async function BuildingsPage({
   }
 
   const [zev, buildings] = await Promise.all([getZev(actor), listBuildings(actor)]);
-  let units = activeTab === "posebni" ? await listUnits(actor, { buildingId: sp.building || undefined, entranceId: sp.entrance || undefined }) : [];
+  // Registar posebnih dijelova (FR): stanje je vidljivo svima, detalji (preduslovi, vlasnici, istorija) upravi.
+  const registerStatus = zev?.unitRegisterStatus ?? "DRAFT";
+  const isManagement = isPresident || actor.roles.includes("ACCOUNTANT");
+  const reg = activeTab === "posebni" && isManagement ? await getUnitRegister(actor) : null;
+  const registerOpen = registerStatus !== "ESTABLISHED"; // DRAFT / REVIEW: jedinice se mijenjaju direktno
+  const ownerColumns = registerStatus !== "DRAFT"; // vlasnici se upisuju tek kad registar nije u nacrtu
+  const pctLabel = (v: string | number) => `${formatMoney(v, "").trim()} %`;
+  const warningByUnit = new Map((reg?.warnings ?? []).map((w) => [w.unitId, w]));
+  let units = activeTab === "posebni" ? (await listUnits(actor, { buildingId: sp.building || undefined, entranceId: sp.entrance || undefined })).filter((u) => u.active) : [];
   const unitSort = sp.sort === "area" || sp.sort === "share" || sp.sort === "label" ? sp.sort : undefined;
   const unitDir: "asc" | "desc" | undefined = sp.dir === "asc" ? "asc" : sp.dir === "desc" ? "desc" : undefined;
   const sortMul = unitDir === "desc" ? -1 : 1;
@@ -91,7 +126,8 @@ export default async function BuildingsPage({
   const entrances = buildings.flatMap((b) => b.entrances.map((e) => ({ ...e, buildingName: b.name })));
   const totalArea = units.reduce((sum, u) => sum + Number(u.usableArea), 0);
   const totalShare = units.reduce((sum, u) => sum + Number(u.ownershipShare), 0);
-  const shareBalanced = Math.abs(totalShare - 100) < 0.01;
+  // With the register loaded the 100 % check covers ALL active units, not just the filtered list.
+  const shareBalanced = Math.abs((reg ? Number(reg.summary.shareSum) : totalShare) - 100) < 0.01;
   const buildingHeaders: ColumnSpec[] = [
     { label: "Naziv" },
     { label: "Adresa" },
@@ -108,11 +144,12 @@ export default async function BuildingsPage({
     { label: "Tip" },
     { label: "Sprat", align: "right", priority: "detail" },
     { label: "Površina m²", align: "right", nowrap: true, sortKey: "area" },
-    { label: "Udio %", align: "right", nowrap: true, sortKey: "share" },
+    { label: t("register.col.share"), align: "right", nowrap: true, sortKey: "share" },
     { label: "Korisnika", align: "right", priority: "detail" },
     { label: "Vlasnici" },
+    ...(ownerColumns ? [{ label: t("register.col.ownerSum") } as ColumnSpec] : []),
     { label: "Stanari/zakupci", priority: "detail" },
-    ...(isPresident ? [{ label: "Radnje" } as ColumnSpec] : []),
+    ...(isPresident && registerOpen ? [{ label: "Radnje" } as ColumnSpec] : []),
   ];
   return (
     <div>
@@ -201,133 +238,342 @@ export default async function BuildingsPage({
       )}
 
       {activeTab === "posebni" && (
-        <Card
-          title="Posebni dijelovi (stanovi, poslovni prostori, garaže)"
-          hint={
-            units.length > 0 ? (
-              <>
-                {units.length} jedinica · {formatMoney(totalArea, "")}m² ·{" "}
-                <span className={shareBalanced ? "font-semibold text-slate-700" : "font-semibold text-amber-700"}>
-                  ukupan udio {formatMoney(totalShare, "")}%
-                </span>
-                {!shareBalanced && " — provjerite raspodjelu, zbir treba biti 100%"}
-              </>
-            ) : undefined
-          }
-        >
-          {buildings.length > 0 && (
-            <FilterBar>
-              <input type="hidden" name="tab" value="posebni" />
-              {unitSort && <input type="hidden" name="sort" value={unitSort} />}
-              {unitDir && <input type="hidden" name="dir" value={unitDir} />}
-              <Field label="Zgrada">
-                <select name="building" defaultValue={sp.building ?? ""} className={inputCls}>
-                  <option value="">Sve</option>
-                  {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Ulaz">
-                <select name="entrance" defaultValue={sp.entrance ?? ""} className={inputCls}>
-                  <option value="">Svi</option>
-                  {entrances.map((e) => <option key={e.id} value={e.id}>{e.buildingName} / {e.name}</option>)}
-                </select>
-              </Field>
-              {(sp.building || sp.entrance) && <BtnLink href="/zgrade?tab=posebni" variant="secondary">Poništi filter</BtnLink>}
-            </FilterBar>
+        <div className="space-y-6">
+          {reg && reg.status !== "ESTABLISHED" && (
+            <Card
+              title={t("register.next.title")}
+              hint={reg.status === "REVIEW" ? t("register.next.hintReview") : t("register.next.hintDraft")}
+            >
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <StatusBadge status={`REGISTER_${reg.status}`} label={tEnum("unitRegisterStatus", reg.status)} />
+              </div>
+              <PreconditionList
+                items={[
+                  ...reg.preconditions.map((p) => ({ ok: p.ok, text: p.text })),
+                  { ok: false, text: t("register.pre.garagesReminder") },
+                  ...(reg.status === "REVIEW"
+                    ? [
+                        { ok: true, text: t("register.next.reviewOwnersOk") },
+                        { ok: false, text: t("register.next.reviewVotingBlocked") },
+                      ]
+                    : []),
+                ]}
+              />
+              {isPresident && (
+                <div className="mt-4">
+                  {reg.preconditions.every((p) => p.ok) ? (
+                    <ConfirmAction
+                      trigger={t("register.establish.trigger")}
+                      triggerVariant="caution"
+                      title={t("register.establish.title")}
+                      body={
+                        <div className="space-y-2 text-sm text-slate-700">
+                          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+                            <dt className="text-slate-500">{t("register.establish.units")}</dt>
+                            <dd className="tabular-nums">{reg.summary.unitCount}</dd>
+                            <dt className="text-slate-500">{t("register.establish.byType")}</dt>
+                            <dd>
+                              {Object.entries(reg.summary.byType)
+                                .map(([type, n]) => `${n} · ${tEnum("unitType", type).toLowerCase()}`)
+                                .join(" · ")}
+                            </dd>
+                            <dt className="text-slate-500">{t("register.establish.shareSum")}</dt>
+                            <dd className="tabular-nums">{pctLabel(reg.summary.shareSum)}</dd>
+                          </dl>
+                          <p>{t("register.establish.body")}</p>
+                        </div>
+                      }
+                      confirmLabel={t("register.establish.confirm")}
+                      confirmVariant="primary"
+                      action={establishRegisterAction}
+                    />
+                  ) : (
+                    <p className="text-[13px] text-amber-800">{t("register.establish.blocked")}</p>
+                  )}
+                </div>
+              )}
+            </Card>
           )}
-          <Table
-            id="units-table"
-            caption="Posebni dijelovi — stanovi, poslovni prostori i garaže"
-            headers={unitHeaders}
-            sort={{ active: unitSort, dir: unitDir, hrefFor: (key, d) => posebniHref({ sort: key, dir: d }) }}
-            empty={units.length === 0}
-            emptyTitle={t(
-              units.length === 0 && (sp.building || sp.entrance)
-                ? "empty.filteredQuery.title"
-                : buildings.length === 0
-                  ? "empty.unitsNoBuilding.title"
-                  : "empty.units.title"
-            )}
-            emptyHint={
-              units.length === 0 && (sp.building || sp.entrance)
-                ? t("empty.filteredQuery.hint")
-                : buildings.length === 0
-                  ? t("empty.unitsNoBuilding.hint")
-                  : isPresident
-                    ? t("empty.units.hint")
-                    : undefined
+
+          {reg && (
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <Stat label={t("register.stat.units")} value={String(reg.summary.unitCount)} />
+              <Stat
+                label={t("register.stat.votes")}
+                value={ownerColumns ? String(reg.summary.votes) : "—"}
+              />
+              <Stat
+                label={t("register.stat.noOwner")}
+                value={ownerColumns ? String(reg.summary.unitsWithoutOwner) : "—"}
+                tone={ownerColumns && reg.summary.unitsWithoutOwner > 0 ? "warn" : "neutral"}
+              />
+              <Stat
+                label={t("register.stat.share")}
+                value={pctLabel(reg.summary.shareSum)}
+                tone={shareBalanced ? "ok" : "warn"}
+              />
+            </div>
+          )}
+
+          <Card
+            title={t("register.units.title")}
+            hint={
+              <>
+                {reg && (
+                  <>
+                    <StatusBadge
+                      status={`REGISTER_${reg.status}`}
+                      label={
+                        reg.status === "ESTABLISHED"
+                          ? tf("register.status.established", { version: reg.version })
+                          : tEnum("unitRegisterStatus", reg.status)
+                      }
+                    />{" "}
+                  </>
+                )}
+                {reg?.status === "ESTABLISHED" && reg.establishedAt
+                  ? tf("register.units.hintEstablished", { date: formatDate(reg.establishedAt) })
+                  : reg?.status === "DRAFT"
+                    ? t("register.units.hintDraft")
+                    : units.length > 0
+                      ? `${units.length} · ${formatMoney(totalArea, "")}m²`
+                      : undefined}
+                {units.length > 0 && !shareBalanced && ` ${t("register.units.shareBad")}`}
+              </>
             }
           >
-            {units.map((u) => (
-              <UnitRow
-                key={u.id}
-                canEdit={isPresident}
-                action={updateUnitAction}
-                buildings={buildings.map((b) => ({ id: b.id, name: b.name }))}
-                entrances={entrances.map((e) => ({ id: e.id, name: e.name, buildingName: e.buildingName }))}
-                unit={{
-                  id: u.id,
-                  buildingId: u.buildingId,
-                  entranceId: u.entranceId,
-                  type: u.type,
-                  label: u.label,
-                  floor: u.floor,
-                  usableArea: u.usableArea.toString(),
-                  ownershipShare: u.ownershipShare.toString(),
-                  occupantCount: u.occupantCount,
-                  typeCoefficient: u.typeCoefficient.toString(),
-                  buildingName: u.building.name,
-                  entranceName: u.entrance?.name ?? null,
-                  typeLabel: tEnum("unitType", u.type),
-                  ownersDisplay: u.ownershipStakes.map((s) => `${partyDisplayName(s.owner)} (${s.sharePercent}%)`).join(", ") || "—",
-                  occupantsDisplay: u.occupancies.map((o) => `${partyDisplayName(o.party)} (${tEnum("occupancy", o.type)})`).join(", ") || "—",
-                }}
-              />
-            ))}
-          </Table>
-          {isPresident && buildings.length > 0 && (
-            <details className="group mt-4">
-              <ToggleBtn>Dodaj jedinicu</ToggleBtn>
-              <form action={addUnitAction} className="mt-3 space-y-4">
-                <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Lokacija</legend>
-                  <Field label="Zgrada">
-                    <select name="buildingId" className={inputCls}>
-                      {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                    </select>
-                  </Field>
-                  <Field label="Ulaz (opciono)">
-                    <select name="entranceId" className={inputCls}>
-                      <option value="">—</option>
-                      {entrances.map((e) => <option key={e.id} value={e.id}>{e.buildingName} / {e.name}</option>)}
-                    </select>
-                  </Field>
-                  <Field label="Oznaka"><input name="label" required className={inputCls} placeholder="Stan 12" /></Field>
-                </fieldset>
-                <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Tip i mjere</legend>
-                  <Field label="Tip">
-                    <select name="type" className={inputCls}>
-                      <option value="APARTMENT">Stan</option>
-                      <option value="BUSINESS">Poslovni prostor</option>
-                      <option value="GARAGE">Garaža</option>
-                      <option value="OTHER">Ostalo</option>
-                    </select>
-                  </Field>
-                  <Field label="Sprat"><input name="floor" type="number" className={inputCls} /></Field>
-                  <Field label="Korisna površina (m²)"><input name="usableArea" required className={inputCls} placeholder="54.50" /></Field>
-                </fieldset>
-                <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Obračun</legend>
-                  <Field label="Vlasnički udio u ZEV (%)"><input name="ownershipShare" required className={inputCls} placeholder="3.25" /></Field>
-                  <Field label="Broj korisnika"><input name="occupantCount" type="number" defaultValue={0} className={inputCls} /></Field>
-                  <Field label="Koeficijent tipa"><input name="typeCoefficient" defaultValue="1" className={inputCls} /></Field>
-                </fieldset>
-                <div className="flex items-end justify-end"><SubmitBtn>Dodaj jedinicu</SubmitBtn></div>
-              </form>
-            </details>
+            {isPresident && reg?.status === "ESTABLISHED" && (
+              <div className="mb-3">
+                <BtnLink href="/zgrade/registar/izmjena" variant="secondary">{t("register.change.link")}</BtnLink>
+              </div>
+            )}
+            {buildings.length > 0 && (
+              <FilterBar>
+                <input type="hidden" name="tab" value="posebni" />
+                {unitSort && <input type="hidden" name="sort" value={unitSort} />}
+                {unitDir && <input type="hidden" name="dir" value={unitDir} />}
+                <Field label="Zgrada">
+                  <select name="building" defaultValue={sp.building ?? ""} className={inputCls}>
+                    <option value="">Sve</option>
+                    {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                  </select>
+                </Field>
+                <Field label="Ulaz">
+                  <select name="entrance" defaultValue={sp.entrance ?? ""} className={inputCls}>
+                    <option value="">Svi</option>
+                    {entrances.map((e) => <option key={e.id} value={e.id}>{e.buildingName} / {e.name}</option>)}
+                  </select>
+                </Field>
+                {(sp.building || sp.entrance) && <BtnLink href="/zgrade?tab=posebni" variant="secondary">Poništi filter</BtnLink>}
+              </FilterBar>
+            )}
+            <Table
+              id="units-table"
+              caption="Posebni dijelovi — stanovi, poslovni prostori i garaže"
+              headers={unitHeaders}
+              sort={{ active: unitSort, dir: unitDir, hrefFor: (key, d) => posebniHref({ sort: key, dir: d }) }}
+              empty={units.length === 0}
+              emptyTitle={t(
+                units.length === 0 && (sp.building || sp.entrance)
+                  ? "empty.filteredQuery.title"
+                  : buildings.length === 0
+                    ? "empty.unitsNoBuilding.title"
+                    : "empty.units.title"
+              )}
+              emptyHint={
+                units.length === 0 && (sp.building || sp.entrance)
+                  ? t("empty.filteredQuery.hint")
+                  : buildings.length === 0
+                    ? t("empty.unitsNoBuilding.hint")
+                    : isPresident
+                      ? t("empty.units.hint")
+                      : undefined
+              }
+            >
+              {units.map((u) => {
+                const w = warningByUnit.get(u.id);
+                const sum = u.ownershipStakes.reduce((a, s) => a.plus(dec(s.sharePercent.toString())), dec(0));
+                const ownerSum = ownerColumns && reg
+                  ? !w
+                    ? { label: "100 %", ok: true }
+                    : w.kind === "OVER"
+                      ? { label: tf("register.sum.over", { sum: formatMoney(sum.toString(), "").trim() }), ok: false, note: t("register.sum.overNote") }
+                      : w.kind === "UNDER"
+                        ? { label: tf("register.sum.under", { sum: formatMoney(sum.toString(), "").trim() }), ok: false, note: t("register.sum.underNote") }
+                        : { label: t("register.sum.none"), ok: false, note: t("register.sum.noneNote") }
+                  : undefined;
+                return (
+                  <UnitRow
+                    key={u.id}
+                    canEdit={isPresident}
+                    registerLocked={!registerOpen}
+                    action={updateUnitAction}
+                    buildings={buildings.map((b) => ({ id: b.id, name: b.name }))}
+                    entrances={entrances.map((e) => ({ id: e.id, name: e.name, buildingName: e.buildingName }))}
+                    unit={{
+                      id: u.id,
+                      buildingId: u.buildingId,
+                      entranceId: u.entranceId,
+                      type: u.type,
+                      label: u.label,
+                      floor: u.floor,
+                      usableArea: u.usableArea.toString(),
+                      ownershipShare: u.ownershipShare.toString(),
+                      occupantCount: u.occupantCount,
+                      typeCoefficient: u.typeCoefficient.toString(),
+                      buildingName: u.building.name,
+                      entranceName: u.entrance?.name ?? null,
+                      typeLabel: tEnum("unitType", u.type),
+                      ownersDisplay: u.ownershipStakes.map((s) => `${partyDisplayName(s.owner)} (${s.sharePercent}%)`).join(", ") || "—",
+                      occupantsDisplay: u.occupancies.map((o) => `${partyDisplayName(o.party)} (${tEnum("occupancy", o.type)})`).join(", ") || "—",
+                      ownerSum,
+                    }}
+                  />
+                );
+              })}
+            </Table>
+            {isPresident && registerOpen && buildings.length > 0 && (
+              <details className="group mt-4">
+                <ToggleBtn>{t("register.add.trigger")}</ToggleBtn>
+                <form action={addUnitAction} className="mt-3 space-y-4">
+                  <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Lokacija</legend>
+                    <Field label="Zgrada">
+                      <select name="buildingId" className={inputCls}>
+                        {buildings.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                      </select>
+                    </Field>
+                    <Field label="Ulaz (opciono)">
+                      <select name="entranceId" className={inputCls}>
+                        <option value="">—</option>
+                        {entrances.map((e) => <option key={e.id} value={e.id}>{e.buildingName} / {e.name}</option>)}
+                      </select>
+                    </Field>
+                    <Field label="Oznaka"><input name="label" required className={inputCls} placeholder="Stan 12" /></Field>
+                  </fieldset>
+                  <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Tip i mjere</legend>
+                    <Field label="Tip">
+                      <select name="type" className={inputCls}>
+                        <option value="APARTMENT">Stan</option>
+                        <option value="BUSINESS">Poslovni prostor</option>
+                        <option value="GARAGE">Garaža</option>
+                        <option value="GARAGE_SPACE">Garažno mjesto</option>
+                        <option value="OTHER">Ostalo</option>
+                      </select>
+                    </Field>
+                    <Field label="Sprat"><input name="floor" type="number" className={inputCls} /></Field>
+                    <Field label="Korisna površina (m²)"><input name="usableArea" required className={inputCls} placeholder="54.50" /></Field>
+                  </fieldset>
+                  <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Obračun</legend>
+                    <Field label={t("register.add.share")}><input name="ownershipShare" required className={inputCls} placeholder="3.25" /></Field>
+                    <Field label="Broj korisnika"><input name="occupantCount" type="number" defaultValue={0} className={inputCls} /></Field>
+                    <Field label="Koeficijent tipa"><input name="typeCoefficient" defaultValue="1" className={inputCls} /></Field>
+                  </fieldset>
+                  <div className="flex items-end justify-end"><SubmitBtn>{t("register.add.submit")}</SubmitBtn></div>
+                </form>
+              </details>
+            )}
+          </Card>
+
+          {reg && ownerColumns && (
+            <Card
+              title={tf("register.owners.title", { votes: reg.summary.votes, persons: reg.summary.persons })}
+              hint={t("register.owners.hint")}
+            >
+              <Table
+                id="register-owners-table"
+                caption={t("register.owners.caption")}
+                headers={[
+                  { label: t("register.owners.col.owner"), priority: "primary" },
+                  { label: t("register.owners.col.units") },
+                  { label: t("register.owners.col.voter") },
+                  { label: t("register.owners.col.votes"), align: "right", nowrap: true },
+                ] as ColumnSpec[]}
+                empty={reg.subjects.length === 0}
+                emptyTitle={t("register.owners.emptyTitle")}
+                emptyHint={t("register.owners.emptyHint")}
+              >
+                {reg.subjects.map((sub) => {
+                  const isCommunity = sub.memberPartyIds.length > 1;
+                  return (
+                    <tr key={sub.subjectKey}>
+                      <Td>
+                        <div className="font-medium text-slate-900">{sub.ownerName}</div>
+                        <div className="text-[13px] text-slate-500">
+                          {isCommunity ? t("register.owners.community") : t("register.owners.sole")}
+                        </div>
+                      </Td>
+                      <Td>{sub.units.map((u) => u.label).join(", ")}</Td>
+                      <Td>
+                        {isCommunity ? (
+                          <div className="space-y-1">
+                            <div>
+                              {tf("register.owners.representative", { name: sub.members.find((m) => m.partyId === sub.ownerId)?.name ?? sub.ownerName })}
+                              {!sub.representativeConfirmed && (
+                                <span className="ml-2 text-[13px] text-amber-800">{t("register.owners.notConfirmed")}</span>
+                              )}
+                            </div>
+                            {isPresident && (
+                              <RepresentativeChange
+                                unitId={sub.units[0].unitId}
+                                unitLabels={sub.units.map((u) => u.label)}
+                                members={sub.members}
+                                currentId={sub.ownerId}
+                                returnTo="zgrade"
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          sub.ownerName
+                        )}
+                      </Td>
+                      <Td>1</Td>
+                    </tr>
+                  );
+                })}
+              </Table>
+              <div className="mt-4">
+                <PreconditionList
+                  items={
+                    reg.warnings.length === 0
+                      ? [{ ok: true, text: t("register.owners.warningsOk") }]
+                      : reg.warnings.map((w) => ({
+                          ok: false,
+                          text:
+                            w.kind === "OVER"
+                              ? tf("register.owners.warnOver", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
+                              : w.kind === "UNDER"
+                                ? tf("register.owners.warnUnder", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
+                                : tf("register.owners.warnNone", { unit: w.label }),
+                        }))
+                  }
+                />
+              </div>
+            </Card>
           )}
-        </Card>
+
+          {reg && reg.history.length > 0 && (
+            <Card title={t("register.history.title")}>
+              <ol className="space-y-3">
+                {reg.history.map((h) => (
+                  <li key={h.id} className="text-sm text-slate-700">
+                    <div className="flex flex-wrap items-baseline gap-x-3">
+                      <span className="font-medium text-slate-900">{tf("register.history.version", { version: h.version })}</span>
+                      <span className="text-[13px] text-slate-500">{formatDateTime(h.createdAt)}</span>
+                      <span className="text-[13px] text-slate-500">{tEnum("unitRegisterChangeKind", h.kind)}</span>
+                    </div>
+                    <p>{h.reason}</p>
+                    {h.attachmentId && (
+                      <RowLink href={`/api/prilozi/${h.attachmentId}`}>{t("register.history.document")}</RowLink>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </Card>
+          )}
+        </div>
       )}
 
       {activeTab === "zajednicki" && (

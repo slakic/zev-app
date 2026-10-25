@@ -14,6 +14,10 @@ export type RuleSnapshot = {
   totalEligibleWeight: string;
   /** Number of eligible owners at freeze time. */
   totalEligibleOwners: number;
+  /** FR (K-03): "ASSEMBLY_SUBJECTS" = one vote per voting subject (etazni vlasnik / suvlasnicka zajednica). */
+  basisKind?: "ASSEMBLY_SUBJECTS";
+  /** FR: the version of the unit register the base was taken from. */
+  unitRegisterVersion?: number | null;
 };
 
 export type CountedVote = {

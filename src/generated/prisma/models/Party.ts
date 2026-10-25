@@ -321,6 +321,7 @@ export type PartyWhereInput = {
   invoices?: Prisma.InvoiceListRelationFilter
   invoiceRecipientFor?: Prisma.UnitListRelationFilter
   correspondenceFor?: Prisma.UnitListRelationFilter
+  votingRepresentativeFor?: Prisma.UnitListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   eligibleVoters?: Prisma.EligibleVoterListRelationFilter
   eligibleProxyFor?: Prisma.EligibleVoterListRelationFilter
@@ -367,6 +368,7 @@ export type PartyOrderByWithRelationInput = {
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
   invoiceRecipientFor?: Prisma.UnitOrderByRelationAggregateInput
   correspondenceFor?: Prisma.UnitOrderByRelationAggregateInput
+  votingRepresentativeFor?: Prisma.UnitOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   eligibleVoters?: Prisma.EligibleVoterOrderByRelationAggregateInput
   eligibleProxyFor?: Prisma.EligibleVoterOrderByRelationAggregateInput
@@ -417,6 +419,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   invoices?: Prisma.InvoiceListRelationFilter
   invoiceRecipientFor?: Prisma.UnitListRelationFilter
   correspondenceFor?: Prisma.UnitListRelationFilter
+  votingRepresentativeFor?: Prisma.UnitListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   eligibleVoters?: Prisma.EligibleVoterListRelationFilter
   eligibleProxyFor?: Prisma.EligibleVoterListRelationFilter
@@ -515,6 +518,7 @@ export type PartyCreateInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -559,6 +563,7 @@ export type PartyUncheckedCreateInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -603,6 +608,7 @@ export type PartyUpdateInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -647,6 +653,7 @@ export type PartyUncheckedUpdateInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -943,6 +950,12 @@ export type PartyCreateNestedOneWithoutCorrespondenceForInput = {
   connect?: Prisma.PartyWhereUniqueInput
 }
 
+export type PartyCreateNestedOneWithoutVotingRepresentativeForInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutVotingRepresentativeForInput, Prisma.PartyUncheckedCreateWithoutVotingRepresentativeForInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutVotingRepresentativeForInput
+  connect?: Prisma.PartyWhereUniqueInput
+}
+
 export type PartyUpdateOneWithoutInvoiceRecipientForNestedInput = {
   create?: Prisma.XOR<Prisma.PartyCreateWithoutInvoiceRecipientForInput, Prisma.PartyUncheckedCreateWithoutInvoiceRecipientForInput>
   connectOrCreate?: Prisma.PartyCreateOrConnectWithoutInvoiceRecipientForInput
@@ -961,6 +974,16 @@ export type PartyUpdateOneWithoutCorrespondenceForNestedInput = {
   delete?: Prisma.PartyWhereInput | boolean
   connect?: Prisma.PartyWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutCorrespondenceForInput, Prisma.PartyUpdateWithoutCorrespondenceForInput>, Prisma.PartyUncheckedUpdateWithoutCorrespondenceForInput>
+}
+
+export type PartyUpdateOneWithoutVotingRepresentativeForNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutVotingRepresentativeForInput, Prisma.PartyUncheckedCreateWithoutVotingRepresentativeForInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutVotingRepresentativeForInput
+  upsert?: Prisma.PartyUpsertWithoutVotingRepresentativeForInput
+  disconnect?: Prisma.PartyWhereInput | boolean
+  delete?: Prisma.PartyWhereInput | boolean
+  connect?: Prisma.PartyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutVotingRepresentativeForInput, Prisma.PartyUpdateWithoutVotingRepresentativeForInput>, Prisma.PartyUncheckedUpdateWithoutVotingRepresentativeForInput>
 }
 
 export type PartyCreateNestedOneWithoutOwnershipStakesInput = {
@@ -1241,6 +1264,7 @@ export type PartyCreateWithoutLegacyUserInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -1284,6 +1308,7 @@ export type PartyUncheckedCreateWithoutLegacyUserInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -1332,6 +1357,7 @@ export type PartyCreateWithoutUserInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -1375,6 +1401,7 @@ export type PartyUncheckedCreateWithoutUserInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -1439,6 +1466,7 @@ export type PartyUpdateWithoutLegacyUserInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -1482,6 +1510,7 @@ export type PartyUncheckedUpdateWithoutLegacyUserInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -1568,6 +1597,7 @@ export type PartyCreateWithoutZevInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -1611,6 +1641,7 @@ export type PartyUncheckedCreateWithoutZevInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -1680,6 +1711,7 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -1723,6 +1755,7 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -1771,6 +1804,7 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -1814,6 +1848,7 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -1830,6 +1865,99 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
 export type PartyCreateOrConnectWithoutCorrespondenceForInput = {
   where: Prisma.PartyWhereUniqueInput
   create: Prisma.XOR<Prisma.PartyCreateWithoutCorrespondenceForInput, Prisma.PartyUncheckedCreateWithoutCorrespondenceForInput>
+}
+
+export type PartyCreateWithoutVotingRepresentativeForInput = {
+  id?: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+}
+
+export type PartyUncheckedCreateWithoutVotingRepresentativeForInput = {
+  id?: string
+  zevId: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+}
+
+export type PartyCreateOrConnectWithoutVotingRepresentativeForInput = {
+  where: Prisma.PartyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartyCreateWithoutVotingRepresentativeForInput, Prisma.PartyUncheckedCreateWithoutVotingRepresentativeForInput>
 }
 
 export type PartyUpsertWithoutInvoiceRecipientForInput = {
@@ -1873,6 +2001,7 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -1916,6 +2045,7 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -1970,6 +2100,7 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -2013,6 +2144,106 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUpsertWithoutVotingRepresentativeForInput = {
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutVotingRepresentativeForInput, Prisma.PartyUncheckedUpdateWithoutVotingRepresentativeForInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutVotingRepresentativeForInput, Prisma.PartyUncheckedCreateWithoutVotingRepresentativeForInput>
+  where?: Prisma.PartyWhereInput
+}
+
+export type PartyUpdateToOneWithWhereWithoutVotingRepresentativeForInput = {
+  where?: Prisma.PartyWhereInput
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutVotingRepresentativeForInput, Prisma.PartyUncheckedUpdateWithoutVotingRepresentativeForInput>
+}
+
+export type PartyUpdateWithoutVotingRepresentativeForInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateWithoutVotingRepresentativeForInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -2056,6 +2287,7 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -2099,6 +2331,7 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -2158,6 +2391,7 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -2201,6 +2435,7 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -2244,6 +2479,7 @@ export type PartyCreateWithoutOccupanciesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -2287,6 +2523,7 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -2346,6 +2583,7 @@ export type PartyUpdateWithoutOccupanciesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -2389,6 +2627,7 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -2432,6 +2671,7 @@ export type PartyCreateWithoutProxiesGivenInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -2475,6 +2715,7 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -2523,6 +2764,7 @@ export type PartyCreateWithoutProxiesHeldInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -2566,6 +2808,7 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -2625,6 +2868,7 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -2668,6 +2912,7 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -2722,6 +2967,7 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -2765,6 +3011,7 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -2808,6 +3055,7 @@ export type PartyCreateWithoutOfficeTermsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -2851,6 +3099,7 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -2910,6 +3159,7 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -2953,6 +3203,7 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -2997,6 +3248,7 @@ export type PartyCreateWithoutAttendancesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -3040,6 +3292,7 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -3099,6 +3352,7 @@ export type PartyUpdateWithoutAttendancesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -3142,6 +3396,7 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -3185,6 +3440,7 @@ export type PartyCreateWithoutEligibleVotersInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
@@ -3228,6 +3484,7 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
@@ -3276,6 +3533,7 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
@@ -3319,6 +3577,7 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
@@ -3378,6 +3637,7 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
@@ -3421,6 +3681,7 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
@@ -3475,6 +3736,7 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
@@ -3518,6 +3780,7 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
@@ -3561,6 +3824,7 @@ export type PartyCreateWithoutVotesCastInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -3604,6 +3868,7 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -3652,6 +3917,7 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -3695,6 +3961,7 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -3754,6 +4021,7 @@ export type PartyUpdateWithoutVotesCastInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -3797,6 +4065,7 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -3851,6 +4120,7 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -3894,6 +4164,7 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -3936,6 +4207,7 @@ export type PartyCreateWithoutInvoicesInput = {
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -3979,6 +4251,7 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -4038,6 +4311,7 @@ export type PartyUpdateWithoutInvoicesInput = {
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -4081,6 +4355,7 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -4125,6 +4400,7 @@ export type PartyCreateWithoutPaymentsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
@@ -4168,6 +4444,7 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
   votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
@@ -4227,6 +4504,7 @@ export type PartyUpdateWithoutPaymentsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
@@ -4270,6 +4548,7 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
   votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
@@ -4313,6 +4592,7 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -4356,6 +4636,7 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -4415,6 +4696,7 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -4458,6 +4740,7 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -4501,6 +4784,7 @@ export type PartyCreateWithoutReportedIssuesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -4544,6 +4828,7 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -4592,6 +4877,7 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -4635,6 +4921,7 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -4694,6 +4981,7 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -4737,6 +5025,7 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -4791,6 +5080,7 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -4834,6 +5124,7 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -4877,6 +5168,7 @@ export type PartyCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -4920,6 +5212,7 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -4979,6 +5272,7 @@ export type PartyUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -5022,6 +5316,7 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -5065,6 +5360,7 @@ export type PartyCreateWithoutViberSubscriberInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
@@ -5108,6 +5404,7 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
   correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
@@ -5167,6 +5464,7 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -5210,6 +5508,7 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -5275,6 +5574,7 @@ export type PartyUpdateWithoutUserInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -5318,6 +5618,7 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -5407,6 +5708,7 @@ export type PartyUpdateWithoutZevInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
@@ -5450,6 +5752,7 @@ export type PartyUncheckedUpdateWithoutZevInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
   eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
   eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
@@ -5500,6 +5803,7 @@ export type PartyCountOutputType = {
   invoices: number
   invoiceRecipientFor: number
   correspondenceFor: number
+  votingRepresentativeFor: number
   payments: number
   eligibleVoters: number
   eligibleProxyFor: number
@@ -5521,6 +5825,7 @@ export type PartyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   invoices?: boolean | PartyCountOutputTypeCountInvoicesArgs
   invoiceRecipientFor?: boolean | PartyCountOutputTypeCountInvoiceRecipientForArgs
   correspondenceFor?: boolean | PartyCountOutputTypeCountCorrespondenceForArgs
+  votingRepresentativeFor?: boolean | PartyCountOutputTypeCountVotingRepresentativeForArgs
   payments?: boolean | PartyCountOutputTypeCountPaymentsArgs
   eligibleVoters?: boolean | PartyCountOutputTypeCountEligibleVotersArgs
   eligibleProxyFor?: boolean | PartyCountOutputTypeCountEligibleProxyForArgs
@@ -5596,6 +5901,13 @@ export type PartyCountOutputTypeCountInvoiceRecipientForArgs<ExtArgs extends run
  * PartyCountOutputType without action
  */
 export type PartyCountOutputTypeCountCorrespondenceForArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnitWhereInput
+}
+
+/**
+ * PartyCountOutputType without action
+ */
+export type PartyCountOutputTypeCountVotingRepresentativeForArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UnitWhereInput
 }
 
@@ -5703,6 +6015,7 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   invoices?: boolean | Prisma.Party$invoicesArgs<ExtArgs>
   invoiceRecipientFor?: boolean | Prisma.Party$invoiceRecipientForArgs<ExtArgs>
   correspondenceFor?: boolean | Prisma.Party$correspondenceForArgs<ExtArgs>
+  votingRepresentativeFor?: boolean | Prisma.Party$votingRepresentativeForArgs<ExtArgs>
   payments?: boolean | Prisma.Party$paymentsArgs<ExtArgs>
   eligibleVoters?: boolean | Prisma.Party$eligibleVotersArgs<ExtArgs>
   eligibleProxyFor?: boolean | Prisma.Party$eligibleProxyForArgs<ExtArgs>
@@ -5806,6 +6119,7 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   invoices?: boolean | Prisma.Party$invoicesArgs<ExtArgs>
   invoiceRecipientFor?: boolean | Prisma.Party$invoiceRecipientForArgs<ExtArgs>
   correspondenceFor?: boolean | Prisma.Party$correspondenceForArgs<ExtArgs>
+  votingRepresentativeFor?: boolean | Prisma.Party$votingRepresentativeForArgs<ExtArgs>
   payments?: boolean | Prisma.Party$paymentsArgs<ExtArgs>
   eligibleVoters?: boolean | Prisma.Party$eligibleVotersArgs<ExtArgs>
   eligibleProxyFor?: boolean | Prisma.Party$eligibleProxyForArgs<ExtArgs>
@@ -5853,6 +6167,7 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
     invoiceRecipientFor: Prisma.$UnitPayload<ExtArgs>[]
     correspondenceFor: Prisma.$UnitPayload<ExtArgs>[]
+    votingRepresentativeFor: Prisma.$UnitPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     eligibleVoters: Prisma.$EligibleVoterPayload<ExtArgs>[]
     eligibleProxyFor: Prisma.$EligibleVoterPayload<ExtArgs>[]
@@ -6302,6 +6617,7 @@ export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Ty
   invoices<T extends Prisma.Party$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoiceRecipientFor<T extends Prisma.Party$invoiceRecipientForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$invoiceRecipientForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   correspondenceFor<T extends Prisma.Party$correspondenceForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$correspondenceForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  votingRepresentativeFor<T extends Prisma.Party$votingRepresentativeForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$votingRepresentativeForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.Party$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   eligibleVoters<T extends Prisma.Party$eligibleVotersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$eligibleVotersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EligibleVoterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   eligibleProxyFor<T extends Prisma.Party$eligibleProxyForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$eligibleProxyForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EligibleVoterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6973,6 +7289,30 @@ export type Party$invoiceRecipientForArgs<ExtArgs extends runtime.Types.Extensio
  * Party.correspondenceFor
  */
 export type Party$correspondenceForArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Unit
+   */
+  select?: Prisma.UnitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Unit
+   */
+  omit?: Prisma.UnitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnitInclude<ExtArgs> | null
+  where?: Prisma.UnitWhereInput
+  orderBy?: Prisma.UnitOrderByWithRelationInput | Prisma.UnitOrderByWithRelationInput[]
+  cursor?: Prisma.UnitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnitScalarFieldEnum | Prisma.UnitScalarFieldEnum[]
+}
+
+/**
+ * Party.votingRepresentativeFor
+ */
+export type Party$votingRepresentativeForArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Unit
    */

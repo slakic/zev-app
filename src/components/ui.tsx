@@ -81,6 +81,9 @@ const statusTone: Record<string, string> = {
   SCHEDULED_M: "blue", FINAL: "green",
   QUEUED: "amber", SENT: "blue", DELIVERED: "green", SEEN: "green", FAILED: "red",
   PENDING: "amber", SIGNED: "green", NONE: "slate",
+  // registar posebnih dijelova (FR): Nacrt / Utvrđen / Za provjeru
+  REGISTER_DRAFT: "slate", REGISTER_ESTABLISHED: "green", REGISTER_REVIEW: "amber",
+  OWNER_SUM_OK: "slate", OWNER_SUM_WARN: "amber",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */
@@ -594,6 +597,7 @@ export function ConfirmAction({
   confirmVariant,
   action,
   hiddenFields,
+  formId,
   children,
 }: {
   trigger: ReactNode;
@@ -604,12 +608,15 @@ export function ConfirmAction({
   confirmVariant?: BtnVariant;
   action: (formData: FormData) => void | Promise<void>;
   hiddenFields?: Record<string, string>;
+  /** `id` of the confirm form, so fields rendered ABOVE the trigger (a change form with its own
+   *  before/after table and file) can join it through the HTML `form="…"` attribute. */
+  formId?: string;
   children?: ReactNode;
 }) {
   return (
     <details className="group">
       <ToggleBtn variant={triggerVariant ?? "caution"}>{trigger}</ToggleBtn>
-      <form action={action} className="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+      <form id={formId} action={action} className="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
         <p className="text-sm font-semibold text-amber-900">{title}</p>
         {body}
         {hiddenFields &&

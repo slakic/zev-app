@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { inspectApprovalToken, submitVote } from "@/server/services/meetings";
 import { sha256 } from "@/server/auth/tokens";
-import { formatDateTime } from "@/lib/i18n";
+import { formatDateTime, t, tf } from "@/lib/i18n";
 import { formatWeight } from "@/lib/money";
 import { Card, Field, inputCls, SubmitBtn, ToggleBtn } from "@/components/ui";
 import { AuthBrandHeader } from "@/components/auth-shell";
@@ -98,7 +98,12 @@ export default async function VotePage({ params, searchParams }: {
               ? <>{info.voter.proxyName} — kao punomoćnik vlasnika <b>{info.voter.ownerName}</b></>
               : <b>{info.voter.ownerName}</b>}
           </p>
-          <p className="mt-1 text-sm text-slate-500">Vaša glasačka težina: {formatWeight(info.voter.weight)}</p>
+          {info.voter.subjectName && (
+            <p className="mt-1 text-sm text-slate-700">{tf("votingSubject.public.community", { name: info.voter.subjectName })}</p>
+          )}
+          <p className="mt-1 text-sm text-slate-500">
+            {formatWeight(info.voter.weight) === "1" ? t("votingSubject.public.oneVote") : `Vaša glasačka težina: ${formatWeight(info.voter.weight)}`}
+          </p>
         </Card>
 
         <Card title="2. O čemu se izjašnjavate">

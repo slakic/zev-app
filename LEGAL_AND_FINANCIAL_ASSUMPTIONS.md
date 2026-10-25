@@ -28,8 +28,8 @@ Zajednicom etažnih vlasnika (ZEV) u Republici Srpskoj.
 |---|---|---|
 | ZEV kao pravno lice sa registracijom (čl. o osnivanju i registraciji ZEV) | Matični podaci ZEV: naziv, JIB, registarski broj, sjedište, osnivački akti, podaci za prijavu u registar; generisanje dokumenta „Podaci za prijavu u registar" | Tačan sadržaj prijave zavisi od opštinskog obrasca — šablon je uredljiv. **[PRAVNA PROVJERA]** |
 | Organi ZEV: skupština, predsjednik i upravni odbor | Uloge PREDSJEDNIK, ČLAN SKUPŠTINE/VLASNIK i ČLAN UPRAVNOG ODBORA; evidencija mandata sa datumima važenja za sve funkcije; stranica „Organi ZEV" prikazuje trenutni sastav i istoriju | Broj članova i trajanje mandata upravnog odbora konfigurabilni — vidi §7. |
-| Etažni vlasnici kao članovi skupštine | Članstvo u skupštini izvodi se isključivo iz aktivnih vlasničkih udjela (`OwnershipStake`), nikada iz stanovanja | Stanar/zakupac nema pravo glasa. |
-| Odlučivanje skupštine, kvorum i većina | Konfigurabilna pravila kvoruma i većine po prijedlogu + snimak pravila u trenutku otvaranja glasanja | ZOZ RS ne uređuje sve tipove odluka jednoznačno; **podrazumijevana vrijednost** u seed-u: kvorum >50% vlasničkih udjela, obična većina prisutnih po udjelu. **[PRAVNA PROVJERA]** |
+| Etažni vlasnici kao članovi skupštine | Članstvo u skupštini izvodi se isključivo iz aktivnih vlasničkih udjela (`OwnershipStake`), nikada iz stanovanja. Etažni vlasnik je vlasnik **bilo kog** posebnog dijela, uključujući garaže i garažna mjesta; spisak posebnih dijelova je utvrđen u registru (verzionisan, mijenja ga predsjednik uz razlog i dokument, ne tokom glasanja) | Stanar/zakupac nema pravo glasa. Odluke korisnika K-02 i K-03 (2026-10-24). |
+| Odlučivanje skupštine, kvorum i većina | Konfigurabilna pravila kvoruma i većine po prijedlogu + snimak pravila u trenutku otvaranja glasanja | ZOZ RS ne uređuje sve tipove odluka jednoznačno; **podrazumijevano pravilo: jedan etažni vlasnik — jedan glas; suvlasnici istog posebnog dijela zajedno imaju jedan glas, preko zajedničkog predstavnika** (K-03, K-03a). Kvorum i većina se računaju po broju glasova, ne po udjelima ili površini. Seed: kvorum >50% etažnih vlasnika, obična većina. **[PRAVNA PROVJERA]** |
 | Pismeno izjašnjavanje / glasanje van sjednice | Elektronsko odobravanje sa pojedinačnim linkovima, evidencija papirnih glasova | Zakon iz 2011. ne poznaje elektronsko glasanje; modelovano kao *dokaziva evidencija izjašnjavanja*, ne kao kvalifikovani potpis. **[PRAVNA PROVJERA]** |
 | Punomoć za zastupanje vlasnika | `Proxy` sa obimom (sve/sjednica/prijedlog), datumima važenja i referencom na dokument punomoći | Formu punomoći (ovjera) aplikacija ne provjerava — polje napomene. **[PRAVNA PROVJERA]** |
 | Zapisnik i odluke skupštine | Generisanje zapisnika i odluka iz podataka o sjednici; finalizovani dokumenti su verzionisani i nepromjenjivi | |
@@ -44,10 +44,15 @@ prema službenom prečišćenom tekstu ZOZ RS 101/11 prije citiranja u dokumenti
 
 1. **Kvorum i većina po tipu odluke** (redovno upravljanje vs. raspolaganje vs. kapitalni radovi):
    konfigurabilno po prijedlogu; podrazumijevane vrijednosti su samo seed podaci.
-2. **Težina glasa** (po vlasniku / po vlasničkom udjelu / po površini): konfigurabilno; snimak po prijedlogu.
-3. **Da li suvlasnici glasaju srazmjerno udjelu ili jedinica ima jedan glas**: MVP računa težinu po
-   udjelu suvlasnika; alternativa "jedna jedinica – jedan glas" je podržana izborom metode PER_OWNER
-   uz napomenu. **[PRAVNA PROVJERA]**
+2. **Težina glasa**: *odgovoreno odlukom K-03 (korisnik, 2026-10-24).* Jedan etažni vlasnik ima jedan glas,
+   bez obzira na broj posebnih dijelova; procenti udjela i površine se za glasanje ne koriste i težina se više
+   ne bira. Snimak pravila se i dalje čuva po prijedlogu (stari snimci sa težinom po udjelu ostaju kakvi su bili).
+3. **Da li suvlasnici glasaju srazmjerno udjelu ili jedinica ima jedan glas**: *odgovoreno odlukom K-03a
+   (korisnik, 2026-10-24).* Suvlasnici istog posebnog dijela zajedno imaju jedan glas, preko zajedničkog
+   predstavnika (podrazumijevano suvlasnik sa najvećim udjelom, predsjednik ga može odrediti izričito).
+   **[PRAVNA PROVJERA] ostaje samo za K-03b:** lice koje je samostalni vlasnik jednog posebnog dijela i suvlasnik
+   drugog; aplikacija ga trenutno računa kao **dva glasačka subjekta** (dva glasa), a prelazak na „jedan glas po
+   licu" je izmjena jedne funkcije (`subjectKeyFor`).
 4. **Pravna snaga elektronskog izjašnjavanja**: evidencija je dokaziva (hash sadržaja, žig vremena,
    identifikacija), ali status prema propisima o e-potpisu mora ocijeniti pravnik. UI označava
    postupak kao „elektronsko odobravanje", ne „elektronski potpis".
@@ -162,7 +167,7 @@ skupštine.
 
 ## 8. Stavke za pravnu / računovodstvenu reviziju (zbirno)
 
-1. Kvorum, većine i težina glasa po tipu odluke (§3.1–3.3).
+1. Kvorum i većine po tipu odluke (§3.1); K-03b — lice koje je i samostalni vlasnik i suvlasnik (§3.3).
 2. Pravna snaga elektronskog odobravanja i uslovi identifikacije (§3.4).
 3. Zatezna kamata (§3.5).
 4. Rokovi čuvanja i obim metapodataka glasanja (§3.6).

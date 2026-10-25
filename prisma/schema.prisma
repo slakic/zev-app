@@ -142,6 +142,7 @@ model Party {
   invoices              Invoice[]  @relation("InvoiceDebtor")
   invoiceRecipientFor   Unit[]     @relation("UnitInvoiceRecipient")
   correspondenceFor     Unit[]     @relation("UnitCorrespondenceContact")
+  votingRepresentativeFor Unit[]   @relation("UnitVotingRepresentative")
   payments              Payment[]
   eligibleVoters        EligibleVoter[] @relation("EVOwner")
   eligibleProxyFor      EligibleVoter[] @relation("EVProxy")
@@ -193,6 +194,12 @@ model Zev {
   tier               ZevTier  @default(FULL)
   /// Soft-disable a tenant without deleting its data (e.g. suspended account).
   active             Boolean  @default(true)
+  /// Registar posebnih dijelova (FR, K-02): DRAFT -> ESTABLISHED; REVIEW = postojeci ZEV koji
+  /// predsjednik tek treba da provjeri i utvrdi (FR-Q4).
+  unitRegisterStatus        UnitRegisterStatus @default(DRAFT)
+  unitRegisterVersion       Int                @default(0)
+  unitRegisterEstablishedAt DateTime?
+  unitRegisterChanges       UnitRegisterChange[]
   buildings          Building[]
   accounts           MoneyAccount[]
   memberships        Membership[]
@@ -329,7 +336,43 @@ enum UnitType {
   APARTMENT
   BUSINESS
   GARAGE
+  GARAGE_SPACE
   OTHER
+}
+
+/// Stanje registra posebnih dijelova ZEV-a. REVIEW = "Za provjeru" (FR-Q4).
+enum UnitRegisterStatus {
+  DRAFT
+  ESTABLISHED
+  REVIEW
+}
+
+enum UnitRegisterChangeKind {
+  ESTABLISH
+  ADD_UNIT
+  RETIRE_UNIT
+  MERGE_SPLIT
+  CHANGE_AREA
+  CHANGE_SHARE
+  CHANGE_LABEL
+  CHANGE_TYPE
+}
+
+/// Istorija utvrdjenog registra posebnih dijelova. Append-only (trigger forbid_update_delete).
+model UnitRegisterChange {
+  id           String                 @id @default(cuid())
+  zev          Zev                    @relation(fields: [zevId], references: [id])
+  zevId        String
+  version      Int                    // verzija registra NAKON ove izmjene
+  kind         UnitRegisterChangeKind
+  reason       String
+  attachmentId String?                // dokument izmjene (FR-Q3); obavezan osim za ESTABLISH
+  before       Json                   // pogodjene jedinice prije
+  after        Json                   // pogodjene jedinice poslije
+  actorId      String
+  createdAt    DateTime               @default(now())
+
+  @@unique([zevId, version])
 }
 
 model Unit {
@@ -353,6 +396,9 @@ model Unit {
   invoiceRecipientId     String?
   correspondenceContact  Party?    @relation("UnitCorrespondenceContact", fields: [correspondenceContactId], references: [id])
   correspondenceContactId String?
+  /// Zajednicki predstavnik suvlasnika za glasanje (K-03a); null = podrazumijevani (najveci udio).
+  votingRepresentative   Party?    @relation("UnitVotingRepresentative", fields: [votingRepresentativeId], references: [id])
+  votingRepresentativeId String?
   ownershipStakes        OwnershipStake[]
   occupancies            Occupancy[]
   allocationMemberships  AllocationGroupMember[]
@@ -714,11 +760,16 @@ model EligibleVoter {
   proxyRecordId String?  // Proxy.id used
   weight       Decimal   @db.Decimal(14, 6)
   basis        Json      // units + shares this weight derives from
+  /// Glasacki subjekt (K-03/K-03a): "P:<partyId>" samostalni vlasnik, "G:<sortirani partyId-jevi>"
+  /// suvlasnicka zajednica, "B:<partyId>" clan odbora. Prazno = red upisan starim kodom (v2.42.0).
+  subjectKey     String   @default("")
+  /// Sva lica subjekta (za samostalnog = [ownerId]); ownerId je lice koje glasa (predstavnik).
+  memberPartyIds String[] @default([])
   tokens       ApprovalToken[]
   votes        Vote[]
   createdAt    DateTime  @default(now())
 
-  @@unique([proposalId, ownerId])
+  @@unique([proposalId, subjectKey, ownerId])
 }
 
 enum TokenStatus {

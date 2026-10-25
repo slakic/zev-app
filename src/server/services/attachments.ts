@@ -14,6 +14,7 @@ type Tx = Prisma.TransactionClient;
 
 export const ATTACHMENT_CATEGORIES = [
   "OWNERSHIP_PROOF",
+  "UNIT_REGISTER_CHANGE",
   "INVOICE",
   "REPORT",
   "MINUTES",

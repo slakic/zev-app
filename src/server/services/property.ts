@@ -1,5 +1,6 @@
 // ZEV, buildings, entrances, units, allocation groups, common assets.
 import { prisma } from "@/lib/prisma";
+import { dec } from "@/lib/money";
 import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import type { Prisma, UnitType, CommonAssetKind } from "@/generated/prisma/client";
@@ -110,6 +111,14 @@ export async function listUnits(actor: Actor, filter?: { buildingId?: string; en
   });
 }
 
+/** FR (K-02): utvrdjen registar se ne mijenja slobodno — izmjene idu kroz changeUnitRegister. */
+async function assertRegisterNotEstablished(zevId: string) {
+  const zev = await prisma.zev.findUniqueOrThrow({ where: { id: zevId }, select: { unitRegisterStatus: true } });
+  if (zev.unitRegisterStatus === "ESTABLISHED") {
+    throw new Error("Registar je utvrđen — izmjene idu kroz Izmjenu registra.");
+  }
+}
+
 export async function createUnit(
   actor: Actor,
   data: {
@@ -130,6 +139,7 @@ export async function createUnit(
   if (data.entranceId) {
     await prisma.entrance.findUniqueOrThrow({ where: { id: data.entranceId, zevId } });
   }
+  await assertRegisterNotEstablished(zevId);
   const u = await prisma.unit.create({
     data: {
       zevId,
@@ -148,15 +158,39 @@ export async function createUnit(
   return u;
 }
 
+/** True when `data` would change a field that belongs to the unit register (K-02). Fields absent
+ *  from `data` are untouched; equal values (the edit form resends every field) are not a change. */
+function registerFieldsChanged(
+  before: { label: string; type: string; usableArea: Prisma.Decimal; ownershipShare: Prisma.Decimal; buildingId: string; active: boolean },
+  data: Prisma.UnitUncheckedUpdateInput
+): boolean {
+  const differs = (next: unknown, current: string) =>
+    next !== undefined && (typeof next === "object" && next !== null && "set" in next ? String((next as { set: unknown }).set) : String(next)) !== current;
+  const decDiffers = (next: unknown, current: Prisma.Decimal) =>
+    next !== undefined && next !== null && !dec(String(next)).equals(dec(current.toString()));
+  return (
+    differs(data.label, before.label) ||
+    differs(data.type, before.type) ||
+    differs(data.buildingId, before.buildingId) ||
+    differs(data.active, String(before.active)) ||
+    decDiffers(data.usableArea, before.usableArea) ||
+    decDiffers(data.ownershipShare, before.ownershipShare)
+  );
+}
+
 export async function updateUnit(actor: Actor, id: string, data: Prisma.UnitUncheckedUpdateInput) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
   const before = await prisma.unit.findUniqueOrThrow({ where: { id, zevId } });
+  // On an established register only the register fields are locked (they change through
+  // changeUnitRegister); billing inputs — occupants, type coefficient, floor, entrance — stay editable.
+  if (registerFieldsChanged(before, data)) await assertRegisterNotEstablished(zevId);
   const u = await prisma.unit.update({ where: { id, zevId }, data });
+  // ownershipShare i type su u tragu od v2.43.0 (ranije je promjena udjela bila nevidljiva).
   await audit(actor, {
     action: "unit.update", targetType: "Unit", targetId: id,
-    before: { label: before.label, usableArea: String(before.usableArea), occupantCount: before.occupantCount },
-    after: { label: u.label, usableArea: String(u.usableArea), occupantCount: u.occupantCount },
+    before: { label: before.label, type: before.type, usableArea: String(before.usableArea), ownershipShare: String(before.ownershipShare), occupantCount: before.occupantCount },
+    after: { label: u.label, type: u.type, usableArea: String(u.usableArea), ownershipShare: String(u.ownershipShare), occupantCount: u.occupantCount },
   });
   return u;
 }

@@ -7,6 +7,7 @@ import { emailAddressSchema } from "@/lib/emailAddress";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, type Decimal } from "@/lib/money";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
+import { unitsInScope } from "@/server/services/property";
 import type { PartyKind, OccupancyType, ProxyScope, Prisma } from "@/generated/prisma/client";
 
 /** The proof-of-ownership document a president must attach whenever a new stake is opened. */
@@ -110,6 +111,12 @@ export async function currentStakesForUnit(zevId: string, unitId: string, asOf: 
   });
 }
 
+/** K-02: vlasnici se upisuju tek kad je registar posebnih dijelova utvrdjen (ili "Za provjeru" — FR-Q4). */
+async function assertRegisterOpenForOwners(zevId: string) {
+  const zev = await prisma.zev.findUniqueOrThrow({ where: { id: zevId }, select: { unitRegisterStatus: true } });
+  if (zev.unitRegisterStatus === "DRAFT") throw new Error("Prvo utvrdite registar posebnih dijelova.");
+}
+
 /**
  * Adding a stake without proof of ownership (a sale contract, a land-registry excerpt...) is
  * refused outright — proof is not optional metadata, it's the evidence the stake itself rests
@@ -126,17 +133,17 @@ export async function addOwnershipStake(
   if (!proof || !proof.buffer || proof.buffer.length === 0) {
     throw new Error("Dokaz o vlasništvu (dokument) je obavezan za dodavanje vlasničkog udjela.");
   }
+  await assertRegisterOpenForOwners(zevId);
   await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
   await prisma.party.findUniqueOrThrow({ where: { id: data.ownerId, zevId } });
   const share = dec(data.sharePercent);
   if (share.lessThanOrEqualTo(0) || share.greaterThan(100)) {
     throw new Error("Udio mora biti u rasponu (0, 100].");
   }
+  // K-01a: zbir udjela na jedinici (ispod ili iznad 100%) ne blokira upis — vraca se kao upozorenje
+  // (unitShareSum), a iznad 100% blokira tek otvaranje glasanja (K-01b).
   const existing = await currentStakesForUnit(zevId, data.unitId, data.validFrom);
-  const sum = existing.reduce((a, s) => a.plus(dec(s.sharePercent.toString())), share);
-  if (sum.greaterThan(dec(100).plus(dec("0.0001")))) {
-    throw new Error(`Zbir udjela za jedinicu prelazi 100% (${sum.toFixed(4)}%).`);
-  }
+  const unitShareSum = existing.reduce((a, s) => a.plus(dec(s.sharePercent.toString())), share);
   const stake = await prisma.$transaction(async (tx) => {
     const s = await tx.ownershipStake.create({ data: { ...data, zevId } });
     await createLinkedAttachmentTx(tx, actor, {
@@ -151,7 +158,7 @@ export async function addOwnershipStake(
     }, tx);
     return s;
   });
-  return stake;
+  return { stake, unitShareSum };
 }
 
 /**
@@ -175,6 +182,7 @@ export async function transferOwnership(
   if (!proof || !proof.buffer || proof.buffer.length === 0) {
     throw new Error("Dokaz o vlasništvu (dokument) je obavezan za promjenu vlasništva.");
   }
+  await assertRegisterOpenForOwners(zevId);
   await prisma.party.findUniqueOrThrow({ where: { id: data.toOwnerId, zevId } });
   return prisma.$transaction(async (tx) => {
     const stake = await tx.ownershipStake.findFirst({
@@ -441,7 +449,7 @@ export async function endBoardMembership(actor: Actor, termId: string, validTo: 
  * Shaped like ownersVotingBasis() so it plugs into the same voting engine
  * (use a VotingRule with weightMethod PER_OWNER for board proposals).
  */
-export async function boardVotingBasis(zevId: string, asOf: Date = new Date()) {
+export async function boardVotingBasis(zevId: string, asOf: Date = new Date()): Promise<VotingSubject[]> {
   const terms = await prisma.officeTerm.findMany({
     where: {
       zevId,
@@ -451,16 +459,21 @@ export async function boardVotingBasis(zevId: string, asOf: Date = new Date()) {
     },
     include: { party: true },
   });
-  const seen = new Map<string, { ownerId: string; ownerName: string; email: string | null; ownershipShareSum: Decimal; areaSum: Decimal; units: { unitId: string; label: string; stakePercent: string }[] }>();
+  const seen = new Map<string, VotingSubject>();
   for (const t of terms) {
     if (seen.has(t.partyId)) continue; // predsjednik + board term for same party counts once
     seen.set(t.partyId, {
+      subjectKey: `B:${t.partyId}`,
       ownerId: t.partyId,
       ownerName: partyDisplayName(t.party),
       email: t.party.email,
+      memberPartyIds: [t.partyId],
+      members: [{ partyId: t.partyId, name: partyDisplayName(t.party) }],
       ownershipShareSum: ZERO,
       areaSum: ZERO,
       units: [],
+      representativeConfirmed: true,
+      representativeConflict: false,
     });
   }
   return [...seen.values()];
@@ -468,11 +481,66 @@ export async function boardVotingBasis(zevId: string, asOf: Date = new Date()) {
 
 // ---- Aggregates used by voting ----
 
+/** Jedan glasacki subjekt (K-03/K-03a): samostalni vlasnik, suvlasnicka zajednica ili clan odbora. */
+export type VotingSubject = {
+  /** "P:<partyId>" | "G:<sortirani partyId-jevi>" | "B:<partyId>" — vidi subjectKeyFor. */
+  subjectKey: string;
+  /** Lice koje glasa: samostalni vlasnik ili zajednicki predstavnik. */
+  ownerId: string;
+  /** "Ana Savic" ili "Nikola Ilic i Sara Ilic". */
+  ownerName: string;
+  /** E-mail lica koje glasa. */
+  email: string | null;
+  memberPartyIds: string[];
+  members: { partyId: string; name: string }[];
+  units: { unitId: string; label: string; stakePercent: string }[];
+  /** Ostaju radi kompatibilnosti (zapis u EligibleVoter.basis); od K-03 se ne koriste za tezinu. */
+  ownershipShareSum: Decimal;
+  areaSum: Decimal;
+  /** Predstavnik je izricito odredjen (inace je podrazumijevani — "nije potvrdjen"). Za samostalnog: true. */
+  representativeConfirmed: boolean;
+  /** Jedinice istog skupa vlasnika imaju razlicite predstavnike (preduslov: upozorenje). */
+  representativeConflict: boolean;
+};
+
 /**
- * Current voting base: for each owner party, the sum of ownership-share
- * percentages (unit share × unit ownershipShare in ZEV) and areas they hold.
+ * K-03b: JEDINO mjesto koje odlucuje u koji glasacki subjekt spada skup vlasnika jedne jedinice.
+ * Jedan vlasnik jedinice = samostalni subjekt "P:<id>" (sve takve jedinice istog lica su jedan subjekt);
+ * vise vlasnika = zajednica "G:<sortirani ids>" (jedinice sa istim skupom su jedan subjekt).
+ * Isto lice moze biti i u "P:" i u "G:" subjektu (dva glasa) — preporuka pregleda; ako pravnik
+ * odgovori "jedan glas po licu", mijenja se samo ova funkcija.
  */
-export async function ownersVotingBasis(zevId: string, unitIds?: string[], asOf: Date = new Date()) {
+export function subjectKeyFor(ownerIds: string[]): string {
+  const ids = [...new Set(ownerIds)].sort();
+  return ids.length === 1 ? `P:${ids[0]}` : `G:${ids.join(",")}`;
+}
+
+type StakeWithRefs = Prisma.OwnershipStakeGetPayload<{ include: { unit: true; owner: true } }>;
+
+/** Podrazumijevani predstavnik: najveci udio, pa raniji validFrom, pa raniji createdAt (pa id). */
+function defaultRepresentative(stakes: StakeWithRefs[]): StakeWithRefs {
+  return [...stakes].sort((a, b) => {
+    const byShare = dec(b.sharePercent.toString()).comparedTo(dec(a.sharePercent.toString()));
+    if (byShare !== 0) return byShare;
+    const byFrom = a.validFrom.getTime() - b.validFrom.getTime();
+    if (byFrom !== 0) return byFrom;
+    const byCreated = a.createdAt.getTime() - b.createdAt.getTime();
+    if (byCreated !== 0) return byCreated;
+    return a.ownerId.localeCompare(b.ownerId);
+  })[0];
+}
+
+function joinNames(names: string[]): string {
+  if (names.length <= 1) return names.join("");
+  return `${names.slice(0, -1).join(", ")} i ${names[names.length - 1]}`;
+}
+
+/**
+ * Glasacki subjekti skupstine (K-03, K-03a): jedan etazni vlasnik = jedan glas, bez obzira na broj
+ * posebnih dijelova; suvlasnici istog posebnog dijela glasaju zajedno preko predstavnika.
+ * Jedino mjesto koje odlucuje "ko je u bazi" za prozivku, pregled dostave i otvaranje glasanja.
+ */
+export async function assemblyVotingSubjects(zevId: string, unitIds?: string[], asOf: Date = new Date()): Promise<VotingSubject[]> {
   const stakes = await prisma.ownershipStake.findMany({
     where: {
       zevId,
@@ -483,28 +551,204 @@ export async function ownersVotingBasis(zevId: string, unitIds?: string[], asOf:
     },
     include: { unit: true, owner: true },
   });
-  const byOwner = new Map<
-    string,
-    { ownerId: string; ownerName: string; email: string | null; ownershipShareSum: Decimal; areaSum: Decimal; units: { unitId: string; label: string; stakePercent: string }[] }
-  >();
-  for (const s of stakes) {
-    const stakeFraction = dec(s.sharePercent.toString()).div(100);
-    const shareContribution = dec(s.unit.ownershipShare.toString()).mul(stakeFraction);
-    const areaContribution = dec(s.unit.usableArea.toString()).mul(stakeFraction);
-    const cur = byOwner.get(s.ownerId) ?? {
-      ownerId: s.ownerId,
-      ownerName: partyDisplayName(s.owner),
-      email: s.owner.email,
-      ownershipShareSum: ZERO,
-      areaSum: ZERO,
-      units: [],
-    };
-    cur.ownershipShareSum = cur.ownershipShareSum.plus(shareContribution);
-    cur.areaSum = cur.areaSum.plus(areaContribution);
-    cur.units.push({ unitId: s.unitId, label: s.unit.label, stakePercent: s.sharePercent.toString() });
-    byOwner.set(s.ownerId, cur);
+  const byUnit = new Map<string, StakeWithRefs[]>();
+  for (const s of stakes) byUnit.set(s.unitId, [...(byUnit.get(s.unitId) ?? []), s]);
+
+  type Acc = { key: string; unitStakes: StakeWithRefs[][] };
+  const subjects = new Map<string, Acc>();
+  for (const unitStakes of byUnit.values()) {
+    const key = subjectKeyFor(unitStakes.map((s) => s.ownerId));
+    const acc = subjects.get(key) ?? { key, unitStakes: [] };
+    acc.unitStakes.push(unitStakes);
+    subjects.set(key, acc);
   }
-  return [...byOwner.values()];
+
+  const out: VotingSubject[] = [];
+  for (const { key, unitStakes } of subjects.values()) {
+    const sortedUnits = [...unitStakes].sort((a, b) => a[0].unit.label.localeCompare(b[0].unit.label, "sr"));
+    const memberIds = key.slice(2).split(",");
+    const partyById = new Map<string, StakeWithRefs["owner"]>();
+    for (const us of sortedUnits) for (const s of us) partyById.set(s.ownerId, s.owner);
+    const members = memberIds
+      .map((id) => ({ partyId: id, name: partyDisplayName(partyById.get(id)!) }))
+      .sort((a, b) => a.name.localeCompare(b.name, "sr"));
+
+    let repId: string;
+    let confirmed: boolean;
+    let conflict = false;
+    if (key.startsWith("P:")) {
+      repId = memberIds[0];
+      confirmed = true;
+    } else {
+      // Predstavnik zajednice sa vise posebnih dijelova: uzima se jedinica sa najmanjom oznakom; ako se
+      // predstavnici jedinica razlikuju, to je upozorenje u preduslovima (§3.3).
+      const perUnit = sortedUnits.map((us) => {
+        const explicit = us[0].unit.votingRepresentativeId;
+        const valid = explicit && us.some((s) => s.ownerId === explicit) ? explicit : null;
+        return { repId: valid ?? defaultRepresentative(us).ownerId, explicit: valid !== null };
+      });
+      repId = perUnit[0].repId;
+      confirmed = perUnit.every((p) => p.explicit) && perUnit.every((p) => p.repId === repId);
+      conflict = perUnit.some((p) => p.repId !== repId);
+    }
+    const rep = partyById.get(repId)!;
+
+    let shareSum = ZERO;
+    let areaSum = ZERO;
+    const units: VotingSubject["units"] = [];
+    for (const us of sortedUnits) {
+      for (const s of us) {
+        const fraction = dec(s.sharePercent.toString()).div(100);
+        shareSum = shareSum.plus(dec(s.unit.ownershipShare.toString()).mul(fraction));
+        areaSum = areaSum.plus(dec(s.unit.usableArea.toString()).mul(fraction));
+      }
+      const repStake = us.find((s) => s.ownerId === repId) ?? us[0];
+      units.push({ unitId: us[0].unitId, label: us[0].unit.label, stakePercent: repStake.sharePercent.toString() });
+    }
+
+    out.push({
+      subjectKey: key,
+      ownerId: repId,
+      ownerName: joinNames(members.map((m) => m.name)),
+      email: rep.email,
+      memberPartyIds: key.startsWith("P:") ? [repId] : [...memberIds].sort(),
+      members,
+      units,
+      ownershipShareSum: shareSum,
+      areaSum,
+      representativeConfirmed: confirmed,
+      representativeConflict: conflict,
+    });
+  }
+  return out.sort((a, b) => a.ownerName.localeCompare(b.ownerName, "sr") || a.subjectKey.localeCompare(b.subjectKey));
+}
+
+export type UnitOwnershipWarning = {
+  unitId: string;
+  label: string;
+  /** NONE = nema nijednog aktivnog udjela; UNDER/OVER = zbir udjela ispod/iznad 100%. */
+  kind: "NONE" | "UNDER" | "OVER";
+  /** Zbir udjela (%) aktivnih vlasnika jedinice. */
+  sum: Decimal;
+};
+
+/**
+ * Jedinice sa zbirom vlasnickih udjela razlicitim od 100% i jedinice bez ijednog aktivnog udjela
+ * (K-01a: samo upozorenje; K-01b: OVER blokira otvaranje glasanja). Koristi ga registar, tab
+ * "Vlasnistvo" i preduslovi glasanja.
+ */
+export async function unitOwnershipWarnings(zevId: string, unitIds?: string[], asOf: Date = new Date()): Promise<UnitOwnershipWarning[]> {
+  const units = await prisma.unit.findMany({
+    where: { zevId, active: true, id: unitIds ? { in: unitIds } : undefined },
+    orderBy: { label: "asc" },
+  });
+  const stakes = await prisma.ownershipStake.findMany({
+    where: {
+      zevId,
+      unitId: { in: units.map((u) => u.id) },
+      validFrom: { lte: asOf },
+      OR: [{ validTo: null }, { validTo: { gt: asOf } }],
+    },
+    select: { unitId: true, sharePercent: true },
+  });
+  const sums = new Map<string, Decimal>();
+  const counts = new Map<string, number>();
+  for (const s of stakes) {
+    sums.set(s.unitId, (sums.get(s.unitId) ?? ZERO).plus(dec(s.sharePercent.toString())));
+    counts.set(s.unitId, (counts.get(s.unitId) ?? 0) + 1);
+  }
+  const out: UnitOwnershipWarning[] = [];
+  for (const u of units) {
+    const sum = sums.get(u.id) ?? ZERO;
+    if (!counts.get(u.id)) out.push({ unitId: u.id, label: u.label, kind: "NONE", sum });
+    else if (sum.greaterThan(dec(100).plus("0.0001"))) out.push({ unitId: u.id, label: u.label, kind: "OVER", sum });
+    else if (sum.lessThan(dec(100).minus("0.0001"))) out.push({ unitId: u.id, label: u.label, kind: "UNDER", sum });
+  }
+  return out;
+}
+
+/**
+ * Zajednicki predstavnik suvlasnika za glasanje (K-03a). Postavlja se na SVIM aktivnim jedinicama sa istim
+ * skupom trenutnih vlasnika, da zajednica sa vise posebnih dijelova ima jednog predstavnika.
+ * Zabranjeno dok traje glasanje o prijedlogu ciji obuhvat ukljucuje te jedinice.
+ */
+export async function setVotingRepresentative(
+  actor: Actor,
+  unitId: string,
+  partyId: string,
+  opts: { note?: string | null } = {},
+  document?: OwnershipProofInput
+) {
+  requireRole(actor, "PRESIDENT");
+  const zevId = requireZev(actor);
+  await prisma.unit.findUniqueOrThrow({ where: { id: unitId, zevId } });
+  const stakes = await prisma.ownershipStake.findMany({
+    where: { zevId, validFrom: { lte: new Date() }, OR: [{ validTo: null }, { validTo: { gt: new Date() } }], unit: { active: true } },
+    include: { unit: true },
+  });
+  const byUnit = new Map<string, string[]>();
+  for (const s of stakes) byUnit.set(s.unitId, [...(byUnit.get(s.unitId) ?? []), s.ownerId]);
+  const owners = byUnit.get(unitId) ?? [];
+  if (new Set(owners).size < 2) throw new Error("Zajednički predstavnik se određuje samo za posebni dio sa više suvlasnika.");
+  if (!owners.includes(partyId)) throw new Error("Predstavnik mora biti suvlasnik ovog posebnog dijela (imati aktivan udio).");
+  const key = subjectKeyFor(owners);
+  const sameSetUnitIds = [...byUnit.entries()].filter(([, o]) => subjectKeyFor(o) === key).map(([id]) => id);
+
+  // Zabrana tokom glasanja: obuhvat bilo kog otvorenog prijedloga skupstine dodiruje te jedinice.
+  const open = await prisma.proposal.findMany({
+    where: { zevId, status: "VOTING_OPEN", meeting: { body: "ASSEMBLY" } },
+    include: { scopeUnits: true },
+  });
+  for (const p of open) {
+    const inScope = p.scopeType === "ZEV"
+      ? sameSetUnitIds
+      : (await unitsInScope(zevId, {
+          scopeType: p.scopeType, buildingId: p.buildingId, entranceId: p.entranceId,
+          allocationGroupId: p.allocationGroupId, unitIds: p.scopeUnits.map((x) => x.unitId),
+        })).map((u) => u.id).filter((id) => sameSetUnitIds.includes(id));
+    if (inScope.length > 0) {
+      throw new Error(`Predstavnik se ne može mijenjati dok traje glasanje o ${p.code} — zamrznuta osnova se ne mijenja.`);
+    }
+  }
+
+  const before = await prisma.unit.findMany({ where: { id: { in: sameSetUnitIds }, zevId }, select: { id: true, label: true, votingRepresentativeId: true } });
+  return prisma.$transaction(async (tx) => {
+    await tx.unit.updateMany({ where: { id: { in: sameSetUnitIds }, zevId }, data: { votingRepresentativeId: partyId } });
+    if (document) {
+      await createLinkedAttachmentTx(tx, actor, { ...document, category: "OTHER", linkedType: "Unit", linkedId: unitId });
+    }
+    await audit(actor, {
+      action: "unit.voting_representative.set", targetType: "Unit", targetId: unitId,
+      before: { units: before.map((u) => ({ unitId: u.id, label: u.label, representativeId: u.votingRepresentativeId })) },
+      after: { units: before.map((u) => ({ unitId: u.id, label: u.label, representativeId: partyId })) },
+      reason: opts.note ?? null,
+    }, tx);
+    return { unitIds: sameSetUnitIds, representativeId: partyId };
+  });
+}
+
+/**
+ * Kako party glasa za svaku svoju jedinicu (K-03a), za detalj vlasnika: samostalni vlasnik ili suvlasnik
+ * ("glasa {predstavnik}"). Mapa: unitId -> opis.
+ */
+export async function votingRoleByUnit(actor: Actor, partyId: string) {
+  requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
+  const zevId = requireZev(actor);
+  const subjects = await assemblyVotingSubjects(zevId);
+  const out = new Map<string, { sole: boolean; representativeName: string | null; isRepresentative: boolean; confirmed: boolean }>();
+  for (const sub of subjects) {
+    if (!sub.memberPartyIds.includes(partyId)) continue;
+    const sole = sub.memberPartyIds.length === 1;
+    for (const u of sub.units) {
+      out.set(u.unitId, {
+        sole,
+        representativeName: sole ? null : sub.members.find((m) => m.partyId === sub.ownerId)?.name ?? null,
+        isRepresentative: sub.ownerId === partyId,
+        confirmed: sub.representativeConfirmed,
+      });
+    }
+  }
+  return out;
 }
 
 export async function requireOwnerParty(actor: Actor) {

@@ -78,7 +78,7 @@ describe("previewVotingDelivery(…, \"ALL\")", () => {
     const preview = await previewVotingDelivery(f.president, proposal.id, "ALL");
     expect(await prisma.approvalToken.count({ where: { eligibleVoter: { proposalId: proposal.id } } })).toBe(0);
     expect(await outboxCount("approval-link", "Proposal", proposal.id)).toBe(0);
-    expect(preview).toEqual({ voters: 3, byEmail: 2, viaProxy: 1, withoutEmail: 1 });
+    expect(preview).toEqual({ voters: 3, byEmail: 2, viaProxy: 1, withoutEmail: 1, preconditionErrors: [], preconditionWarnings: [] });
 
     const deliveries = await openVoting(f.president, proposal.id);
     const tokens = await prisma.approvalToken.count({ where: { eligibleVoter: { proposalId: proposal.id } } });

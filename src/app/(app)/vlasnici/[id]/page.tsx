@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
-import { getParty, partyDisplayName, updateParty } from "@/server/services/ownership";
+import { getParty, partyDisplayName, updateParty, votingRoleByUnit } from "@/server/services/ownership";
 import { updateUserRoles, activateUser, deactivateUser } from "@/server/services/users";
 import { ownerBalance, ownerAdvance } from "@/server/services/payments";
 import { listOwnershipProofsByStakeIds } from "@/server/services/attachments";
 import { setInvoiceEmailDelivery } from "@/server/services/invoiceEmail";
 import { markEVoteConsentSigned, revokeEVoteConsent, getEVoteConsentHistory } from "@/server/services/evoteConsent";
-import { formatDate, formatDateTime, tEnum, t } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { formatMoney } from "@/lib/money";
 import { PageHeader, Card, Table, Td, Stat, BtnLink, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
 import type { Role, Prisma } from "@/generated/prisma/client";
@@ -21,6 +21,7 @@ const occupancyHeaders: ColumnSpec[] = [
 const stakeHeaders: ColumnSpec[] = [
   { label: "Jedinica" },
   { label: "Udio %", align: "right" },
+  { label: "Glasanje" },
   { label: "Od" },
   { label: "Do" },
   { label: "Dokaz o vlasništvu" },
@@ -149,11 +150,12 @@ export default async function PartyDetailPage({
   const actor = await requireActor();
   const { err, msg } = await searchParams;
   const party = await getParty(actor, id);
-  const [balance, advance, proofsByStake, consentHistory] = await Promise.all([
+  const [balance, advance, proofsByStake, consentHistory, votingRoles] = await Promise.all([
     ownerBalance(actor, id),
     ownerAdvance(actor, id),
     listOwnershipProofsByStakeIds(actor, party.ownershipStakes.map((s) => s.id)),
     getEVoteConsentHistory(actor, id),
+    votingRoleByUnit(actor, id),
   ]);
   const isPresident = actor.roles.includes("PRESIDENT");
   const isAccountant = actor.roles.includes("ACCOUNTANT");
@@ -228,6 +230,17 @@ export default async function PartyDetailPage({
                 <tr key={s.id} className={s.validTo ? "text-slate-400" : ""}>
                   <Td>{s.unit.building.name} / {s.unit.label}</Td>
                   <Td>{s.sharePercent.toString()}</Td>
+                  <Td>
+                    {s.validTo ? "—" : (() => {
+                      const r = votingRoles.get(s.unitId);
+                      if (!r) return "—";
+                      return r.sole
+                        ? t("register.vote.sole")
+                        : r.isRepresentative
+                          ? t("register.vote.youRepresent")
+                          : tf("register.vote.coOwner", { name: r.representativeName ?? "—" });
+                    })()}
+                  </Td>
                   <Td>{formatDate(s.validFrom)}</Td>
                   <Td>{s.validTo ? formatDate(s.validTo) : "aktivno"}</Td>
                   <Td>

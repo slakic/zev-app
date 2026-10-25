@@ -404,6 +404,7 @@ export const ModelName = {
   Membership: 'Membership',
   Building: 'Building',
   Entrance: 'Entrance',
+  UnitRegisterChange: 'UnitRegisterChange',
   Unit: 'Unit',
   OwnershipStake: 'OwnershipStake',
   Occupancy: 'Occupancy',
@@ -471,7 +472,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -990,6 +991,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EntranceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EntranceCountAggregateOutputType> | number
+        }
+      }
+    }
+    UnitRegisterChange: {
+      payload: Prisma.$UnitRegisterChangePayload<ExtArgs>
+      fields: Prisma.UnitRegisterChangeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnitRegisterChangeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnitRegisterChangeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>
+        }
+        findFirst: {
+          args: Prisma.UnitRegisterChangeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnitRegisterChangeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>
+        }
+        findMany: {
+          args: Prisma.UnitRegisterChangeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>[]
+        }
+        create: {
+          args: Prisma.UnitRegisterChangeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>
+        }
+        createMany: {
+          args: Prisma.UnitRegisterChangeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnitRegisterChangeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>[]
+        }
+        delete: {
+          args: Prisma.UnitRegisterChangeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>
+        }
+        update: {
+          args: Prisma.UnitRegisterChangeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>
+        }
+        deleteMany: {
+          args: Prisma.UnitRegisterChangeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnitRegisterChangeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnitRegisterChangeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>[]
+        }
+        upsert: {
+          args: Prisma.UnitRegisterChangeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnitRegisterChangePayload>
+        }
+        aggregate: {
+          args: Prisma.UnitRegisterChangeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnitRegisterChange>
+        }
+        groupBy: {
+          args: Prisma.UnitRegisterChangeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnitRegisterChangeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnitRegisterChangeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnitRegisterChangeCountAggregateOutputType> | number
         }
       }
     }
@@ -4955,6 +5030,9 @@ export const ZevScalarFieldEnum = {
   note: 'note',
   tier: 'tier',
   active: 'active',
+  unitRegisterStatus: 'unitRegisterStatus',
+  unitRegisterVersion: 'unitRegisterVersion',
+  unitRegisterEstablishedAt: 'unitRegisterEstablishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -5003,6 +5081,22 @@ export const EntranceScalarFieldEnum = {
 export type EntranceScalarFieldEnum = (typeof EntranceScalarFieldEnum)[keyof typeof EntranceScalarFieldEnum]
 
 
+export const UnitRegisterChangeScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  version: 'version',
+  kind: 'kind',
+  reason: 'reason',
+  attachmentId: 'attachmentId',
+  before: 'before',
+  after: 'after',
+  actorId: 'actorId',
+  createdAt: 'createdAt'
+} as const
+
+export type UnitRegisterChangeScalarFieldEnum = (typeof UnitRegisterChangeScalarFieldEnum)[keyof typeof UnitRegisterChangeScalarFieldEnum]
+
+
 export const UnitScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
@@ -5019,6 +5113,7 @@ export const UnitScalarFieldEnum = {
   note: 'note',
   invoiceRecipientId: 'invoiceRecipientId',
   correspondenceContactId: 'correspondenceContactId',
+  votingRepresentativeId: 'votingRepresentativeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -5237,6 +5332,8 @@ export const EligibleVoterScalarFieldEnum = {
   proxyRecordId: 'proxyRecordId',
   weight: 'weight',
   basis: 'basis',
+  subjectKey: 'subjectKey',
+  memberPartyIds: 'memberPartyIds',
   createdAt: 'createdAt'
 } as const
 
@@ -5919,19 +6016,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -6043,6 +6140,20 @@ export type ListEnumZevTierFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
 
 
 /**
+ * Reference to a field of type 'UnitRegisterStatus'
+ */
+export type EnumUnitRegisterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnitRegisterStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'UnitRegisterStatus[]'
+ */
+export type ListEnumUnitRegisterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnitRegisterStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -6053,6 +6164,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UnitRegisterChangeKind'
+ */
+export type EnumUnitRegisterChangeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnitRegisterChangeKind'>
+    
+
+
+/**
+ * Reference to a field of type 'UnitRegisterChangeKind[]'
+ */
+export type ListEnumUnitRegisterChangeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnitRegisterChangeKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -6249,20 +6388,6 @@ export type EnumProposalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'ProposalStatus[]'
  */
 export type ListEnumProposalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProposalStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -6759,6 +6884,7 @@ export type GlobalOmitConfig = {
   membership?: Prisma.MembershipOmit
   building?: Prisma.BuildingOmit
   entrance?: Prisma.EntranceOmit
+  unitRegisterChange?: Prisma.UnitRegisterChangeOmit
   unit?: Prisma.UnitOmit
   ownershipStake?: Prisma.OwnershipStakeOmit
   occupancy?: Prisma.OccupancyOmit

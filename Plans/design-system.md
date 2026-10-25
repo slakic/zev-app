@@ -94,6 +94,11 @@ Nijedna od ove četiri vrijednosti nije nova u aplikaciji — sve su već u upot
 
 `green` (emerald) · `red` · `amber` · `blue` · `slate`
 
+Od v2.43.0 (faza FR, registar posebnih dijelova) mapa ima i ključeve `REGISTER_DRAFT` (slate, „Nacrt"),
+`REGISTER_ESTABLISHED` (green, „Utvrđen · verzija N"), `REGISTER_REVIEW` (amber, „Za provjeru") te
+`OWNER_SUM_OK` (slate) i `OWNER_SUM_WARN` (amber) za chip zbira vlasničkih udjela („100 %" / „Zbir 150 %" /
+„Upisano 60 %"). Bez novog tona.
+
 Mapa `statusTone` (`ui.tsx:67-81`) je jedino mjesto gdje se odlučuje koji status je koje boje. **Novi enum status dodaje red u tu mapu**, ne novi chip i ne inline boju na stranici.
 
 > **Napomena o zatečenom stanju:** `ui.tsx` u velikoj mjeri i dalje koristi sirove Tailwind nijanse (`bg-blue-600`, `text-slate-700`) umjesto tokena — tokeni i nijanse su iste vrijednosti, pa nema vizuelne razlike. Tokeni se dosljedno koriste tamo gdje su uvedeni kasnije (`StatusTimeline` `ui.tsx:126-142`, `RowLink` `:427`, `Tabs` `:615-618`, fokus prsteni). **Za novi kod: koristiti tokene** (`bg-primary`, `text-ink-muted`), ne sirove nijanse.
@@ -226,7 +231,7 @@ Ovo je lista „ponovo upotrijebi ovo, nemoj pisati novo". Svaki primitiv ima je
 | **Korektivna radnja** (poništava, oduzima) | `caution` | `caution` | Storno alokacije, storno troška, opoziv linka, nova verzija prijedloga, okončanje mandata, uklanjanje pristupa |
 | **Nepovratno uništavanje novca ili prava** (4 mjesta iznad) | `caution` | `danger` | Storno uplate, storno fakture, suspenzija ZEV-a, Obriši nacrt |
 
-Tijelo potvrde (`body`) uvijek sadrži **broj ili iznos** (primaoci, fakture, KM), **ko je druga strana** (dužnik, dobavljač, vlasnik) i **šta se ne može povući**. `primary` u otvorenom panelu potvrde ne krši pravilo „jedno `primary` po regiji": otvoren panel je zasebna regija koja zamjenjuje okidač, a okidač je `caution`. Tekstovi potvrda žive u rječniku pod `confirm.*` i popunjavaju se kroz `tf()` (`{ime}` placeholderi). Radnja koja traži razlog ima `required` polje razloga u `children`, a akcija ga ne zamjenjuje podrazumijevanom vrijednošću.
+Tijelo potvrde (`body`) uvijek sadrži **broj ili iznos** (primaoci, fakture, KM), **ko je druga strana** (dužnik, dobavljač, vlasnik) i **šta se ne može povući**. `primary` u otvorenom panelu potvrde ne krši pravilo „jedno `primary` po regiji": otvoren panel je zasebna regija koja zamjenjuje okidač, a okidač je `caution`. Tekstovi potvrda žive u rječniku pod `confirm.*` i popunjavaju se kroz `tf()` (`{ime}` placeholderi). Radnja koja traži razlog ima `required` polje razloga u `children`, a akcija ga ne zamjenjuje podrazumijevanom vrijednošću. Opcioni `formId` daje formi potvrde `id`, pa polja iznad okidača (npr. tabela „prije → poslije", razlog i dokument u Izmjeni registra) mogu da joj se priključe HTML atributom `form="…"`.
 
 Nosioci:
 
@@ -266,6 +271,7 @@ Nosioci:
 | `FilterBar` | `:636` | GET forma za filtriranje: bez `action` (submit na trenutnu putanju), fiksno „Primijeni" dugme na kraju. Zamjenjuje ručno kopirane filter redove sa 4 stranice. |
 | `Tabs` | `:602` | Prebacivanje između **ravnopravnih, nezavisnih** sekcija stranice. Obični `<Link>`-ovi, **ne** ARIA tabovi (jer nemaju navigaciju strelicama — lažna `role="tab"` bi bila gora priča od nikakve). Nikad za linearan proces — za to je `StatusTimeline`. |
 | `FilePicker` | `file-picker.tsx` (client) | Izbor fajlova (dodato u v2.39.0, odluka korisnika 2026-10-22): `secondary` dugme („Izaberi PDF izvode…") koje otvara dijalog pregledača, lista izabranih fajlova (naziv, veličina, × za uklanjanje) i prevlačenje fajlova na isprekidanu površinu. Kontrolisan (`files`/`onChange`), opciono `multiple` i `accept`. Zamjenjuje goli `<input type="file">`, čiji izgled i tekst zavise od pregledača. **Za sada ga koristi samo uvoz PDF izvoda**; ostala polja za fajl (Dokumenti, Vlasnici ×2, CSV uvoz) prelaze na njega kad se ta stranica sljedeći put mijenja. Dugme za slanje forme ostaje zasebno (`primary`), jer izbor fajla nije radnja. |
+| `PreconditionList` | `precondition-list.tsx` | Lista preduslova ✓/⚠ sa tekstualnom labelom za čitače ekrana (nikad samo boja). Dio obrasca „Sljedeći korak" (odluka D2, opcija A: kompozicija `Card` + lista + jedno dugme). **D2 još nije odobren za ostale ekrane — od v2.43.0 koristi se samo na registru posebnih dijelova** (panel utvrđivanja, kartica „Etažni vlasnici", tab „Vlasništvo", razlozi zbog kojih se glasanje ne može otvoriti). Kad se D2 odobri, ostaje isti sastavni dio. |
 | `ConfirmAction` | `:525` | Korak potvrde za nepovratnu radnju, **bez ijedne linije client JS-a**: `<details>` + `ToggleBtn` + amber panel sa `title`/`body` koji korisnik mora vidjeti + zasebno stilizovano dugme potvrde. `body` je mjesto gdje ide ono što korisnik mora znati **u trenutku odluke** (sažetak kvoruma, iznos koji se stornira), a ne u drugoj kartici niže na stranici. |
 
 ### 4.5 Školjke (izvan `ui.tsx`)

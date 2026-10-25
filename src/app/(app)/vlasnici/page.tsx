@@ -1,13 +1,16 @@
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/actor";
 import { requireZev } from "@/server/auth/guards";
-import { listParties, createParty, partyDisplayName, addOwnershipStake, setOccupancy, grantProxy, transferOwnership } from "@/server/services/ownership";
+import { listParties, createParty, partyDisplayName, addOwnershipStake, setOccupancy, grantProxy, transferOwnership, setVotingRepresentative } from "@/server/services/ownership";
+import { getUnitRegister } from "@/server/services/unitRegister";
 import { createUserForParty } from "@/server/services/users";
-import { listUnits } from "@/server/services/property";
+import { listUnits, getZev } from "@/server/services/property";
 import { prisma } from "@/lib/prisma";
-import { parseMoneyInput } from "@/lib/money";
-import { formatDate, t } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
+import { parseMoneyInput, formatMoney } from "@/lib/money";
+import { formatDate, t, tf, tEnum } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, RowLink, Tabs, FilterBar, BtnLink, StatusBadge, type ColumnSpec } from "@/components/ui";
+import { PreconditionList } from "@/components/precondition-list";
+import { RepresentativeChange } from "@/components/representative-change";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
@@ -62,18 +65,29 @@ async function addStakeAction(formData: FormData) {
   "use server";
   const actor = await requireActor("PRESIDENT");
   const proof = await readProofFile(formData);
+  let notice = t("register.msg.stakeAdded");
   try {
     if (!proof) throw new Error("Dokaz o vlasništvu (dokument) je obavezan za dodavanje vlasničkog udjela.");
-    await addOwnershipStake(actor, {
-      unitId: String(formData.get("unitId")),
+    const unitId = String(formData.get("unitId"));
+    const { unitShareSum } = await addOwnershipStake(actor, {
+      unitId,
       ownerId: String(formData.get("ownerId")),
       sharePercent: parseMoneyInput(formData.get("sharePercent") as string | null) ?? "",
       validFrom: new Date(String(formData.get("validFrom"))),
     }, proof);
+    // K-01a: a share sum other than 100 % never blocks the write — it is reported right here, with the next step.
+    if (unitShareSum.minus(100).abs().greaterThan("0.0001")) {
+      const unit = await prisma.unit.findUnique({ where: { id: unitId, zevId: requireZev(actor) }, select: { label: true } });
+      const sum = formatMoney(unitShareSum.toString(), "").trim();
+      notice += " " + tf(unitShareSum.greaterThan(100) ? "register.msg.sumOver" : "register.msg.sumUnder", { unit: unit?.label ?? "", sum });
+    }
+    const representativeId = (formData.get("representativeId") as string) || "";
+    if (representativeId) await setVotingRepresentative(actor, unitId, representativeId);
   } catch (e) {
     redirect(`/vlasnici?tab=vlasnistvo&err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
   }
   revalidatePath("/vlasnici");
+  redirect(`/vlasnici?tab=vlasnistvo&msg=${encodeURIComponent(notice)}`);
 }
 
 async function transferAction(formData: FormData) {
@@ -129,13 +143,14 @@ async function grantProxyAction(formData: FormData) {
 export default async function OwnersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; err?: string; q?: string; sort?: string; dir?: string }>;
+  searchParams: Promise<{ tab?: string; err?: string; msg?: string; q?: string; sort?: string; dir?: string }>;
 }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
   const isPresident = actor.roles.includes("PRESIDENT");
   const sp = await searchParams;
   const { tab, err, q } = sp;
+  const okMsg = sp.msg === "representative" ? t("register.msg.representative") : sp.msg;
   const activeTab = tab === "vlasnistvo" || tab === "punomoci" ? tab : "lica";
 
   function licaHref(overrides: Partial<{ q: string; sort: string; dir: string }>) {
@@ -155,7 +170,11 @@ export default async function OwnersPage({
     const qLower = q.toLowerCase();
     displayParties = displayParties.filter((p) => partyDisplayName(p).toLowerCase().includes(qLower));
   }
-  const units = isPresident && activeTab === "vlasnistvo" ? await listUnits(actor) : [];
+  const units = isPresident && activeTab === "vlasnistvo" ? (await listUnits(actor)).filter((u) => u.active) : [];
+  const ownershipTab = isPresident && activeTab === "vlasnistvo";
+  const registerStatus = ownershipTab ? (await getZev(actor))?.unitRegisterStatus ?? "DRAFT" : "DRAFT";
+  const reg = ownershipTab && registerStatus !== "DRAFT" ? await getUnitRegister(actor) : null;
+  const communities = (reg?.subjects ?? []).filter((sub) => sub.memberPartyIds.length > 1);
   const proxies =
     isPresident && activeTab === "punomoci"
       ? await prisma.proxy.findMany({ where: { zevId, revokedAt: null }, include: { grantor: true, holder: true } })
@@ -163,7 +182,7 @@ export default async function OwnersPage({
   return (
     <div>
       <PageHeader title={t("nav.owners")} subtitle="Etažni vlasnici, suvlasnici, stanari, zakupci i punomoćnici" />
-      <Flash err={err} />
+      <Flash err={err} msg={okMsg} />
       <Tabs
         tabs={
           isPresident
@@ -236,7 +255,74 @@ export default async function OwnersPage({
       </>
       )}
 
-      {isPresident && activeTab === "vlasnistvo" && (
+      {ownershipTab && registerStatus === "DRAFT" && (
+        <Card title={t("register.owners.lockedCardTitle")}>
+          <div className="py-4 text-center">
+            <p className="text-[15px] font-medium text-slate-700">{t("register.owners.lockedTitle")}</p>
+            <p className="mx-auto mt-1 max-w-[68ch] text-[13px] text-slate-500">{t("register.owners.lockedHint")}</p>
+            <div className="mt-4"><BtnLink href="/zgrade?tab=posebni" variant="tonal">{t("register.owners.lockedLink")}</BtnLink></div>
+          </div>
+        </Card>
+      )}
+
+      {ownershipTab && registerStatus !== "DRAFT" && (
+        <div className="space-y-4">
+        {reg && registerStatus === "REVIEW" && (
+          <Card title={t("register.title")}>
+            <div className="mb-3"><StatusBadge status="REGISTER_REVIEW" label={tEnum("unitRegisterStatus", "REVIEW")} /></div>
+            <p className="mb-3 max-w-[68ch] text-sm text-slate-700">
+              {tf("register.review.body", { units: reg.summary.unitCount, votes: reg.summary.votes, persons: reg.summary.persons })}
+            </p>
+            <PreconditionList
+              items={[
+                { ok: true, text: t("register.next.reviewOwnersOk") },
+                { ok: false, text: t("register.next.reviewVotingBlocked") },
+              ]}
+            />
+            <div className="mt-4"><BtnLink href="/zgrade?tab=posebni" variant="tonal">{t("register.review.link")}</BtnLink></div>
+          </Card>
+        )}
+        {reg && (communities.length > 0 || reg.warnings.length > 0) && (
+          <Card title={t("register.rep.cardTitle")} hint={t("register.rep.cardHint")}>
+            {communities.length > 0 && (
+              <ul className="divide-y divide-slate-100">
+                {communities.map((sub) => (
+                  <li key={sub.subjectKey} className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0">
+                    <div className="text-sm text-slate-700">
+                      <div className="font-medium text-slate-900">{sub.units.map((u) => u.label).join(", ")} · {sub.ownerName}</div>
+                      <div>
+                        {tf("register.owners.representative", { name: sub.members.find((m) => m.partyId === sub.ownerId)?.name ?? sub.ownerName })}
+                        {!sub.representativeConfirmed && <span className="ml-2 text-[13px] text-amber-800">{t("register.owners.notConfirmed")}</span>}
+                      </div>
+                    </div>
+                    <RepresentativeChange
+                      unitId={sub.units[0].unitId}
+                      unitLabels={sub.units.map((u) => u.label)}
+                      members={sub.members}
+                      currentId={sub.ownerId}
+                      returnTo="vlasnici"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+            {reg.warnings.length > 0 && (
+              <div className={communities.length > 0 ? "mt-4" : ""}>
+                <PreconditionList
+                  items={reg.warnings.map((w) => ({
+                    ok: false,
+                    text:
+                      w.kind === "OVER"
+                        ? tf("register.owners.warnOver", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
+                        : w.kind === "UNDER"
+                          ? tf("register.owners.warnUnder", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
+                          : tf("register.owners.warnNone", { unit: w.label }),
+                  }))}
+                />
+              </div>
+            )}
+          </Card>
+        )}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card title="Dodaj vlasnički udio">
             <details className="group">
@@ -254,6 +340,14 @@ export default async function OwnersPage({
                 </Field>
                 <Field label="Udio na jedinici (%)"><input name="sharePercent" required className={inputCls} placeholder="100 ili 50" /></Field>
                 <Field label="Važi od"><input name="validFrom" type="date" required className={inputCls} /></Field>
+                <div className="sm:col-span-2">
+                  <Field label={t("register.rep.label")} hint={t("register.rep.formHint")}>
+                    <select name="representativeId" defaultValue="" className={inputCls}>
+                      <option value="">{t("register.rep.default")}</option>
+                      {parties.map((p) => <option key={p.id} value={p.id}>{partyDisplayName(p)}</option>)}
+                    </select>
+                  </Field>
+                </div>
                 <div className="sm:col-span-2">
                   <Field label="Dokaz o vlasništvu" hint="Obavezno — ugovor, izvod iz zemljišnih knjiga i sl. (PDF, JPG ili PNG, do 15 MB).">
                     <input name="proofFile" type="file" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" required className={inputCls} />
@@ -324,6 +418,7 @@ export default async function OwnersPage({
               </form>
             </details>
           </Card>
+        </div>
         </div>
       )}
 
