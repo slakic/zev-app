@@ -30,10 +30,48 @@ const root = path.resolve(__dirname, "..");
 const migrationsDir = path.join(root, "prisma", "migrations");
 const schemaPath = path.join(root, "prisma", "schema.prisma");
 
-const url = process.env.MIGRATE_DATABASE_URL || process.env.DATABASE_URL;
+// Target database. An empty MIGRATE_DATABASE_URL used to fall back silently to DATABASE_URL (the local
+// database), so a production migration "succeeded" locally while production stayed behind (v2.54.0).
+// Rules:
+//  - MIGRATE_DATABASE_URL set but empty → always refused (almost certainly a pasted command missing its value);
+//  - MIGRATE_DATABASE_URL unset → `apply` needs an explicit `--local` (the npm scripts pass it) and uses DATABASE_URL;
+//  - `reset` never runs against a remote host;
+//  - the target host/database (never the password) is printed before anything runs.
+const cmd = process.argv[2];
+const localFlag = process.argv.includes("--local");
+const migrateUrlRaw = process.env.MIGRATE_DATABASE_URL;
+if (migrateUrlRaw !== undefined && migrateUrlRaw.trim() === "") {
+  console.error("MIGRATE_DATABASE_URL je postavljen, ali prazan — upišite connection string između navodnika. Ništa nije pokrenuto.");
+  process.exit(1);
+}
+if (migrateUrlRaw === undefined && cmd === "apply" && !localFlag) {
+  console.error(
+    "MIGRATE_DATABASE_URL nije postavljen. Za produkciju: MIGRATE_DATABASE_URL=\"postgresql://…\" node scripts/migrate.mjs apply\n" +
+      "Za lokalnu bazu (DATABASE_URL): npm run db:migrate (ili dodajte --local). Ništa nije pokrenuto."
+  );
+  process.exit(1);
+}
+const url = migrateUrlRaw ?? process.env.DATABASE_URL;
 if (!url) {
   console.error("DATABASE_URL is not set");
   process.exit(1);
+}
+let target;
+try {
+  const u = new URL(url);
+  target = { host: u.hostname, port: u.port || "5432", db: u.pathname.replace(/^\//, "") };
+} catch {
+  console.error("Connection string nije ispravan URL. Ništa nije pokrenuto.");
+  process.exit(1);
+}
+// "Local" = loopback or a single-label host (a docker-compose service name such as `db`).
+const isLocalHost = ["localhost", "127.0.0.1", "::1", "[::1]"].includes(target.host) || !target.host.includes(".");
+if (cmd === "reset" && !isLocalHost) {
+  console.error(`reset briše cijelu šemu i dozvoljen je samo na lokalnoj bazi (cilj: ${target.host}). Ništa nije pokrenuto.`);
+  process.exit(1);
+}
+if (cmd === "apply" || cmd === "reset" || cmd === "create") {
+  console.log(`Cilj: ${target.host}:${target.port}/${target.db}${isLocalHost ? " (lokalno)" : ""}`);
 }
 
 const { SchemaEngine } = await import("@prisma/schema-engine-wasm");
@@ -98,8 +136,6 @@ const engine = await SchemaEngine.new(
   () => 0,
   adapter
 );
-
-const cmd = process.argv[2];
 
 try {
   if (cmd === "create") {

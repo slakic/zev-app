@@ -105,8 +105,8 @@ migracije moraju biti unazad kompatibilne sa **prethodnom** verzijom koda tokom 
 ova dva koraka:
 
 ```bash
-# 1. lokalno ili u CI, protiv produkcione baze
-npm run db:migrate
+# 1. lokalno ili u CI, protiv produkcione baze (connection string obavezno između navodnika)
+MIGRATE_DATABASE_URL="postgresql://…" node scripts/migrate.mjs apply
 
 # 2. deploy aplikacije (npr. `vercel deploy --prod`, ili push na repo povezan sa Vercel-om)
 ```
@@ -124,7 +124,7 @@ Pun spisak sa objašnjenjima je u `.env.example`; sljedeće su posebno bitne van
 | Varijabla | Obavezno? | Napomena |
 |---|---|---|
 | `DATABASE_URL` | da | Pooled connection string (npr. preko platforminog PgBouncer-a/Neon/Supabase poolera) |
-| `MIGRATE_DATABASE_URL` | ne | Direktan (unpooled) connection string za `npm run db:migrate` — pooler u transaction modu ne podržava DDL/advisory lock-ove koje migracioni engine koristi. Bez ovoga koristi se `DATABASE_URL`. |
+| `MIGRATE_DATABASE_URL` | ne | Direktan (unpooled) connection string za migraciju produkcije — pooler u transaction modu ne podržava DDL/advisory lock-ove koje migracioni engine koristi. Od 2.54.1: prazna vrijednost se odbija; bez nje `apply` radi samo uz `--local` (to rade `npm run db:migrate` i `db:setup`) protiv `DATABASE_URL`; `reset` radi samo na lokalnoj bazi; skripta prije rada ispisuje cilj (host i bazu, bez lozinke). |
 | `DB_POOL_MAX` | ne | Ograničava veličinu `pg` connection pool-a po instanci (podrazumijevano 10). Bitno na serverless-u, gdje više istovremenih instanci × neograničenih 10 konekcija svaka može iscrpiti limit baze — ako `DATABASE_URL` već ide preko poolera (gornji red), ovo obično nije potrebno. |
 | `SESSION_SECRET` | da | `openssl rand -hex 32` |
 | `APP_URL` | **da, u produkciji** | Javan URL aplikacije (linkovi, QR kodovi, e-mailovi) — startup sada puca sa jasnom greškom ako nedostaje, umjesto da tiho generiše neispravne linkove |

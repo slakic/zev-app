@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.54.1] - 2026-10-26
+
+Zaštita migracione skripte poslije incidenta sa 2.54.0: migracija za produkciju je pokrenuta sa praznim
+`MIGRATE_DATABASE_URL=`, skripta je tiho prešla na lokalni `DATABASE_URL` i javila „Database is up to date”,
+a produkcija je ostala bez tabele `MeetingNote` — prijava je padala dok migracija nije primijenjena ručno.
+**Bez migracije.**
+
+### Izmijenjeno
+
+- **`scripts/migrate.mjs`:**
+  - `MIGRATE_DATABASE_URL` postavljen, a prazan → skripta odbija rad i ništa ne pokreće.
+  - Bez `MIGRATE_DATABASE_URL`, `apply` radi samo uz izričit `--local` (protiv `DATABASE_URL`); `npm run db:migrate`
+    i `npm run db:setup` ga prosljeđuju, pa se lokalni tok ne mijenja.
+  - `reset` (briše šemu) radi samo na lokalnoj bazi (localhost ili docker servis bez tačke u imenu).
+  - Prije svakog `apply`/`reset`/`create` ispisuje se cilj: host, port i baza, bez lozinke.
+- README: tačna komanda za migraciju produkcije, sa connection stringom između navodnika.
+
 ## [2.54.0] - 2026-10-26
 
 Bilješke i zaključci sa sjednice: osoba koja vodi sjednicu zapisuje u trenutku, na telefonu, ono što je zaključeno i važno — uz tačku dnevnog reda (i uz „Razno”) ili kao temu van dnevnog reda — a to bez prepisivanja ulazi u nacrt i konačni zapisnik. Plan: `Plans/sjednica-uzivo-biljeske-i-zapisnik-plan.md`.
