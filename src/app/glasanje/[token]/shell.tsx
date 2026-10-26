@@ -2,7 +2,7 @@
 import { AuthBrandHeader } from "@/components/auth-shell";
 import { t } from "@/lib/i18n";
 
-export function Shell({ zevName, children }: { zevName?: string; children: React.ReactNode }) {
+export function Shell({ zevName, presidentName, children }: { zevName?: string; presidentName?: string | null; children: React.ReactNode }) {
   return (
     <main className="mx-auto min-h-screen max-w-2xl p-4 md:py-10">
       <div className="mb-6 flex justify-center md:justify-start">
@@ -15,8 +15,9 @@ export function Shell({ zevName, children }: { zevName?: string; children: React
         </p>
         <p>
           {zevName ? `Ovo izjašnjavanje je za ${zevName}. ` : ""}
-          Ako vaš kod ne radi, link je istekao, ili imate bilo koje pitanje, obratite se
-          predsjedniku vaše zajednice etažnih vlasnika.
+          {presidentName
+            ? `Ako vaš kod ne radi, link je istekao, ili imate bilo koje pitanje, obratite se predsjedniku ZEV-a ${presidentName}.`
+            : "Ako vaš kod ne radi, link je istekao, ili imate bilo koje pitanje, obratite se predsjedniku vaše zajednice etažnih vlasnika."}
         </p>
       </div>
     </main>

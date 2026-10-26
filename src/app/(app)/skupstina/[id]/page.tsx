@@ -1,18 +1,20 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor, isManagement } from "@/server/actor";
-import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, queueMeetingInvitations, linkProposalToAgendaItem, getMeetingBallotSummary, dispatchMeetingEmails, reissueBallot, revokeBallot, getMeetingNextStepInput, getLiveMeetingState } from "@/server/services/meetings";
+import { getMeeting, addAgendaItem, createProposal, advanceMeetingStatus, listVotingRules, queueMeetingInvitations, linkProposalToAgendaItem, getMeetingBallotSummary, dispatchMeetingEmails, reissueBallot, revokeBallot, getMeetingNextStepInput, getLiveMeetingState, ownerVoteStates, getVotingContact, type OwnerVoteState } from "@/server/services/meetings";
 import { generateMeetingInvitationPdf, generateMinutesPdf, listMeetingDocuments } from "@/server/services/documents";
 import { partyDisplayName } from "@/server/services/ownership";
 import { listBuildings } from "@/server/services/property";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Td, StatusBadge, StatusTimeline, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
 import { MinutesOverview } from "@/components/minutes-overview";
 import { getMinutesContent, listMinutesTakerCandidates } from "@/server/services/meetingNotes";
 import { setMinutesTakerAction } from "@/app/meeting-notes-actions";
 import { MeetingNextStepPanel, MeetingTimeline } from "@/components/meeting-next-step-panel";
 import { meetingNextStep } from "@/lib/meetingNextStep";
+import { ownerMeetingStage, OWNER_MEETING_STAGES } from "@/lib/ownerMeetingStage";
+import { ownerStateChip, needsContact, VotingContactLine } from "@/components/owner-vote-state";
 import type { DispatchResult } from "@/server/notifications/dailyBudget";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
@@ -29,6 +31,15 @@ const proposalsHeaders: ColumnSpec[] = [
   { label: t("meetingPage.cols.voted"), priority: "secondary" },
   { label: "Status", priority: "primary" },
   { label: "Verzija", align: "right", priority: "detail" },
+];
+
+/** Vlasnik ne vidi „Glasalo X od Y” ni verziju, nego gdje on stoji (F4.5). */
+const ownerProposalsHeaders: ColumnSpec[] = [
+  { label: "Šifra", priority: "primary" },
+  { label: "Naziv", priority: "primary" },
+  { label: t("meetingPage.cols.deadline"), priority: "secondary" },
+  { label: t("ownerVoting.meeting.yourStatus"), priority: "primary" },
+  { label: "Status", priority: "secondary" },
 ];
 
 const ballotHeaders: ColumnSpec[] = [
@@ -215,6 +226,10 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
   // Proposals without an agenda item that can still be tied to one (linkProposalToAgendaItem).
   const unlinkedProposals = meeting.proposals.filter((p) => !p.agendaItemId && (p.status === "DRAFT" || p.status === "VOTING_OPEN"));
   const preselectedAgendaItem = meeting.agendaItems.some((a) => a.id === tacka) ? tacka : undefined;
+  // F4.5: the owner's own view of the session — three stages, his role, his status per proposal, and who to call.
+  const ownerView = !canRunLive;
+  const ownerStates = ownerView ? await ownerVoteStates(actor, meeting.proposals.map((p) => p.id)) : null;
+  const ownerContact = ownerStates && [...ownerStates.values()].some(needsContact) ? await getVotingContact(actor) : null;
   const proposalsToAutoClose = step?.to === "VOTING_CLOSED" ? meeting.proposals.filter((p) => p.status === "VOTING_OPEN") : [];
   return (
     <div>
@@ -240,6 +255,12 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
           statusAction={statusAction}
           sessionOpen={nextStepData.sessionOpenPreview}
           proposalsToAutoClose={proposalsToAutoClose}
+        />
+      ) : ownerStates ? (
+        <OwnerSessionCard
+          meeting={meeting}
+          states={[...ownerStates.values()]}
+          contact={ownerContact}
         />
       ) : (
         <MeetingTimeline status={meeting.status} />
@@ -304,7 +325,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
           <Table
             id="proposals-table"
             caption="Prijedlozi"
-            headers={proposalsHeaders}
+            headers={ownerView ? ownerProposalsHeaders : proposalsHeaders}
             empty={meeting.proposals.length === 0}
             emptyTitle={t("empty.proposals.title")}
             emptyHint={isPresident ? t("empty.proposals.hint") : undefined}
@@ -314,13 +335,22 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                 <Td><RowLink href={`/skupstina/prijedlog/${p.id}`}>{p.code}</RowLink></Td>
                 <Td>{p.title}</Td>
                 <Td>{p.votingClosesAt ? formatDateTime(p.votingClosesAt) : "—"}</Td>
-                <Td>
-                  {["VOTING_OPEN", "VOTING_CLOSED", "ACCEPTED", "REJECTED"].includes(p.status)
-                    ? tf("meetingPage.votedOf", { glasalo: p.votedCount, ukupno: p.votersCount })
-                    : "—"}
-                </Td>
+                {ownerStates ? (
+                  <Td>
+                    {(() => {
+                      const chip = ownerStateChip(ownerStates.get(p.id) ?? { kind: "notInBase" });
+                      return <StatusBadge status={chip.status} label={chip.label} />;
+                    })()}
+                  </Td>
+                ) : (
+                  <Td>
+                    {["VOTING_OPEN", "VOTING_CLOSED", "ACCEPTED", "REJECTED"].includes(p.status)
+                      ? tf("meetingPage.votedOf", { glasalo: p.votedCount, ukupno: p.votersCount })
+                      : "—"}
+                  </Td>
+                )}
                 <Td><StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} /></Td>
-                <Td>v{p.version}</Td>
+                {!ownerView && <Td>v{p.version}</Td>}
               </tr>
             ))}
           </Table>
@@ -550,5 +580,54 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         )}
       </div>
     </div>
+  );
+}
+
+/** „Sjednica” očima vlasnika (F4.5): tri koraka umjesto deset, termin i mjesto, njegova uloga i kontakt predsjednika. */
+function OwnerSessionCard({
+  meeting, states, contact,
+}: {
+  meeting: { status: MeetingStatus; scheduledAt: Date | null; location: string | null; body: string; proposals: { votingClosesAt: Date | null }[] };
+  states: OwnerVoteState[];
+  contact: Awaited<ReturnType<typeof getVotingContact>>;
+}) {
+  const stage = ownerMeetingStage(meeting.status);
+  const closes = meeting.proposals.map((p) => p.votingClosesAt).filter((d): d is Date => d !== null).sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
+  const right = states.filter((s) => s.kind === "canVote" || s.kind === "voted").length;
+  const voted = states.filter((s) => s.kind === "voted").length;
+  const rep = states.find((s) => s.kind === "viaRepresentative");
+  const allDraft = states.length === 0 || states.every((s) => s.kind === "draft");
+  const role =
+    allDraft ? null
+    : right > 0 ? tf("ownerVoting.meeting.right", { broj: right, izjasnjeno: voted })
+    : rep && rep.kind === "viaRepresentative" ? tf("ownerVoting.meeting.viaRepresentative", { units: rep.units, name: rep.representativeName })
+    : meeting.body === "BOARD" ? t("ownerVoting.meeting.board")
+    : t("ownerVoting.meeting.none");
+  return (
+    <Card title={t("ownerVoting.stage.title")} className="mb-4">
+      <StatusTimeline
+        steps={OWNER_MEETING_STAGES.map((k) => ({ key: k, label: t(`ownerVoting.stage.${k}`) }))}
+        activeKey={stage.activeKey}
+      />
+      <p className="text-[15px] font-medium text-slate-800">
+        {stage.sentenceKey === "votingOpen" && closes
+          ? tf("ownerVoting.stage.votingOpen", { rok: formatDateTime(closes) })
+          : stage.sentenceKey === "votingOpen"
+            ? t("ownerVoting.stage.votingOpenNoDate")
+            : t(`ownerVoting.stage.${stage.sentenceKey}`)}
+      </p>
+      <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-1 text-[15px] sm:grid-cols-[auto_1fr]">
+        <dt className="text-slate-600">{t("ownerVoting.meeting.when")}</dt>
+        <dd className="mb-2 text-slate-900 sm:mb-0">{formatDateTime(meeting.scheduledAt)}</dd>
+        <dt className="text-slate-600">{t("ownerVoting.meeting.where")}</dt>
+        <dd className="text-slate-900">{meeting.location ?? "—"}</dd>
+      </dl>
+      {role && <p className="mt-3 max-w-[68ch] text-[15px] text-slate-700">{role}</p>}
+      {states.some(needsContact) && (
+        <div className="mt-3 max-w-[68ch]">
+          <VotingContactLine contact={contact} noEmail={states.some((s) => s.kind === "canVote" && s.link === "none" && !s.proxyName)} />
+        </div>
+      )}
+    </Card>
   );
 }

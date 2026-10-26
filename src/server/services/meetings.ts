@@ -13,6 +13,7 @@ import { generateToken, generateVerificationCode, sha256 } from "@/server/auth/t
 import { computeVoterWeight, computeVotingResult, presenceQuorum, serializeResult, type RuleSnapshot, type CountedVote } from "@/server/engines/voting";
 import { assemblyVotingSubjects, boardVotingBasis, unitOwnershipWarnings, activeProxyFor, activeProxiesFor, partyDisplayName, listOfficeHolders, type VotingSubject } from "./ownership";
 import { unitsInScope } from "./property";
+import { loadAttachmentBuffer } from "./attachments";
 import { queueNotification, enqueueNotification } from "@/server/notifications/service";
 import { dispatchQueued, requeueFailed, remainingToday, dailyLimit, SENT_STATUSES, type DispatchResult } from "@/server/notifications/dailyBudget";
 import { dec, ZERO, formatWeight, type Decimal } from "@/lib/money";
@@ -30,7 +31,7 @@ const MEETING_FLOW: MeetingStatus[] = [
 
 export const ACK_TEXT =
   "Potvrđujem da sam lično izvršio/la ovo izjašnjavanje kao vlasnik ili ovlašćeni punomoćnik, " +
-  "da sam pročitao/la prijedlog u cijelosti i da je moj izbor konačan. " +
+  "da sam pročitao/la prijedlog i njegove priloge (ako ih ima) u cijelosti i da je moj izbor konačan. " +
   "Ovo elektronsko izjašnjavanje se evidentira kao izraz moje volje i koristi za pripremu dokumentacije sjednice; nije kvalifikovani elektronski potpis.";
 
 // ---- Meetings ----
@@ -1451,7 +1452,7 @@ export async function openVoting(
           (d.subjectNote ? `${d.subjectNote}\n` : "") + `\n` +
           `Vaš lični link za izjašnjavanje: ${d.link}\n` +
           `Vaš verifikacioni kod: ${d.verificationCode}\n\n` +
-          `Link je ličan i ne smije se prosljeđivati. Za potvrdu identiteta biće potreban verifikacioni kod.\n`,
+          `${t("ballot.mail.personal")}\n`,
         relatedType: "Proposal",
         relatedId: proposalId,
       });
@@ -1717,10 +1718,27 @@ function verifyKey(tokenPlain: string, ipHash?: string | null): string {
   return ipHash ?? `tok:${sha256(tokenPlain).slice(0, 16)}`;
 }
 
+/** Display name of the ZEV's current president (null when none is on record) — the "who do I call" of the public voting
+ *  screens. Public: keyed by the zevId of the record the secret token already resolved. Name only, never a contact. */
+async function presidentNameOf(zevId: string): Promise<string | null> {
+  const now = new Date();
+  const term = await prisma.officeTerm.findFirst({
+    where: { zevId, role: "PRESIDENT", validFrom: { lte: now }, OR: [{ validTo: null }, { validTo: { gt: now } }] },
+    include: { party: true },
+    orderBy: { validFrom: "desc" },
+  });
+  return term ? partyDisplayName(term.party) : null;
+}
+
+/** Labels of the units a voting subject votes for, from `EligibleVoter.basis` (empty for the board). */
+function basisUnitLabels(basis: unknown): string[] {
+  return ((basis as { units?: { label: string }[] } | null)?.units ?? []).map((u) => u.label);
+}
+
 /** Look up a token by plaintext value. Never returns the token itself. */
 export async function inspectApprovalToken(tokenPlain: string, ipHash?: string | null) {
   if (!rateLimitVerify(verifyKey(tokenPlain, ipHash))) {
-    return { ok: false as const, error: "rate_limited" as const };
+    return { ok: false as const, error: "rate_limited" as const, presidentName: null };
   }
   const tokenHash = sha256(tokenPlain);
   const t = await prisma.approvalToken.findUnique({
@@ -1738,30 +1756,31 @@ export async function inspectApprovalToken(tokenPlain: string, ipHash?: string |
   });
   if (!t) {
     await audit(null, { action: "approval_token.lookup.unknown", targetType: "ApprovalToken", ipHash });
-    return { ok: false as const, error: "not_found" as const };
+    return { ok: false as const, error: "not_found" as const, presidentName: null };
   }
-  if (t.ballotId) return { ok: false as const, error: "use_ballot" as const };
+  const presidentName = await presidentNameOf(t.eligibleVoter.proposal.zevId);
+  if (t.ballotId) return { ok: false as const, error: "use_ballot" as const, presidentName };
   if (t.status === "REVOKED" || t.status === "SUPERSEDED") {
     await audit(null, { action: "approval_token.lookup.revoked", targetType: "ApprovalToken", targetId: t.id, ipHash });
-    return { ok: false as const, error: "revoked" as const };
+    return { ok: false as const, error: "revoked" as const, presidentName };
   }
   if (t.status === "USED" || t.vote) {
     await audit(null, { action: "approval_token.lookup.used", targetType: "ApprovalToken", targetId: t.id, ipHash });
-    return { ok: false as const, error: "used" as const };
+    return { ok: false as const, error: "used" as const, presidentName };
   }
   if (t.expiresAt < new Date()) {
     if (t.status !== "EXPIRED") {
       await prisma.approvalToken.update({ where: { id: t.id }, data: { status: "EXPIRED" } });
     }
     await audit(null, { action: "approval_token.lookup.expired", targetType: "ApprovalToken", targetId: t.id, ipHash });
-    return { ok: false as const, error: "expired" as const };
+    return { ok: false as const, error: "expired" as const, presidentName };
   }
   const p = t.eligibleVoter.proposal;
   if (p.status !== "VOTING_OPEN") {
-    return { ok: false as const, error: "voting_closed" as const };
+    return { ok: false as const, error: "voting_closed" as const, presidentName };
   }
   if (p.votingClosesAt && p.votingClosesAt < new Date()) {
-    return { ok: false as const, error: "voting_closed" as const };
+    return { ok: false as const, error: "voting_closed" as const, presidentName };
   }
   if (!t.openedAt) {
     await prisma.approvalToken.update({ where: { id: t.id }, data: { openedAt: new Date() } });
@@ -1780,8 +1799,12 @@ export async function inspectApprovalToken(tokenPlain: string, ipHash?: string |
       votingClosesAt: p.votingClosesAt,
       meetingTitle: p.meeting.title,
       zevName: p.zev.shortName ?? p.zev.legalName,
+      body: p.meeting.body,
+      attachments: p.attachments.map((a) => ({ id: a.id, filename: a.filename, mime: a.mime, size: a.size, sha256: a.sha256 })),
     },
+    presidentName,
     voter: {
+      units: basisUnitLabels(t.eligibleVoter.basis),
       ownerName: partyDisplayName(t.eligibleVoter.owner),
       /** Set for a co-owner community ("A i B") — the link holder votes in the name of all of them. */
       subjectName: t.eligibleVoter.memberPartyIds.length > 1
@@ -1862,7 +1885,7 @@ export async function submitVote(input: {
         });
         await audit(null, { action: "approval_token.revoke.auto", targetType: "ApprovalToken", targetId: e.tokenId, reason: "failed verification attempts" });
       }
-      return { ok: false as const, error: "bad_code" as const };
+      return { ok: false as const, error: "bad_code" as const, attemptsLeft: Math.max(0, 5 - updated.failedAttempts) };
     }
     if (e instanceof VoteError) return { ok: false as const, error: e.code };
     throw e;
@@ -2389,7 +2412,7 @@ export async function isBallotLink(tokenPlain: string): Promise<boolean> {
 /** Look up a ballot by its plaintext link token and show what the holder may vote on. Never returns the token. */
 export async function inspectBallot(tokenPlain: string, ipHash?: string | null) {
   if (!rateLimitVerify(verifyKey(tokenPlain, ipHash))) {
-    return { ok: false as const, error: "rate_limited" as const };
+    return { ok: false as const, error: "rate_limited" as const, presidentName: null };
   }
   const b = await prisma.ballot.findUnique({
     where: { tokenHash: sha256(tokenPlain) },
@@ -2400,11 +2423,12 @@ export async function inspectBallot(tokenPlain: string, ipHash?: string | null) 
       tokens: { include: BALLOT_TOKEN_INCLUDE, orderBy: { issuedAt: "asc" } },
     },
   });
-  if (!b) return { ok: false as const, error: "not_found" as const };
-  if (b.status === "REVOKED" || b.status === "SUPERSEDED") return { ok: false as const, error: "revoked" as const };
-  if (b.status === "USED") return { ok: false as const, error: "used" as const };
+  if (!b) return { ok: false as const, error: "not_found" as const, presidentName: null };
+  const presidentName = await presidentNameOf(b.zevId);
+  if (b.status === "REVOKED" || b.status === "SUPERSEDED") return { ok: false as const, error: "revoked" as const, presidentName };
+  if (b.status === "USED") return { ok: false as const, error: "used" as const, presidentName };
   const now = new Date();
-  if (b.expiresAt < now) return { ok: false as const, error: "expired" as const };
+  if (b.expiresAt < now) return { ok: false as const, error: "expired" as const, presidentName };
 
   const proposals = b.tokens
     .map((tok) => {
@@ -2419,7 +2443,7 @@ export async function inspectBallot(tokenPlain: string, ipHash?: string | null) 
         rationale: p.rationale,
         contentHash: p.contentHash,
         votingClosesAt: p.votingClosesAt,
-        attachments: p.attachments.map((a) => ({ id: a.id, filename: a.filename, size: a.size, sha256: a.sha256 })),
+        attachments: p.attachments.map((a) => ({ id: a.id, filename: a.filename, mime: a.mime, size: a.size, sha256: a.sha256 })),
         state: ballotTokenState(tok, now),
         ownerName: partyDisplayName(tok.eligibleVoter.owner),
         proxyName: tok.eligibleVoter.proxy ? partyDisplayName(tok.eligibleVoter.proxy) : null,
@@ -2430,7 +2454,7 @@ export async function inspectBallot(tokenPlain: string, ipHash?: string | null) 
       };
     })
     .sort((x, y) => x.code.localeCompare(y.code));
-  if (!proposals.some((p) => p.state === "open")) return { ok: false as const, error: "voting_closed" as const };
+  if (!proposals.some((p) => p.state === "open")) return { ok: false as const, error: "voting_closed" as const, presidentName };
 
   if (!b.openedAt) {
     await prisma.ballot.update({ where: { id: b.id }, data: { openedAt: now } });
@@ -2446,6 +2470,10 @@ export async function inspectBallot(tokenPlain: string, ipHash?: string | null) 
     zevName: b.zev.shortName ?? b.zev.legalName,
     recipientName: partyDisplayName(b.recipient),
     expiresAt: b.expiresAt,
+    body: b.meeting.body,
+    /** Units the recipient votes for in their own name, over all proposals ("Glasate jednom, kao etažni vlasnik: …"). */
+    units: [...new Set(b.tokens.filter((tok) => !tok.eligibleVoter.proxy).flatMap((tok) => basisUnitLabels(tok.eligibleVoter.basis)))],
+    presidentName,
     proposals,
     ackText: ACK_TEXT,
   };
@@ -2566,12 +2594,153 @@ export async function submitBallot(input: {
         });
         await audit(null, { action: "ballot.revoke.auto", targetType: "Ballot", targetId: e.ballotId, reason: "failed verification attempts" });
       }
-      return { ok: false as const, error: "bad_code" as const };
+      return { ok: false as const, error: "bad_code" as const, attemptsLeft: Math.max(0, 5 - updated.failedAttempts) };
     }
     if (e instanceof BallotChoiceError) return { ok: false as const, error: e.code, proposals: e.proposals };
     if (e instanceof VoteError) return { ok: false as const, error: e.code };
     throw e;
   }
+}
+
+export type VoteReceiptData = {
+  /** `Ballot.id` for a session ballot, `Vote.id` for a single-proposal link. */
+  receiptId: string;
+  meetingTitle: string;
+  voterName: string;
+  submittedAt: Date;
+  closesAt: Date | null;
+  items: { code: string; title: string; voteId: string; choice: VoteChoice }[];
+  skipped: { code: string; title: string; reason: "closed" | "voted" }[];
+};
+
+/**
+ * The receipt of an already cast vote, openable again from `?potvrda={receiptId}` (V-Q3). Public: the "guard" is the
+ * secret link token in the path (like `inspectBallot`) PLUS the receipt id, which is only seen after sending — a
+ * forwarded e-mail alone does not reveal a choice. The choice is read server-side from `Vote`; it never travels in a URL.
+ * Every miss (unknown token, wrong id, a ballot not yet spent, a revoked one) is the same `not_found`.
+ */
+export async function getVoteReceipt(input: { tokenPlain: string; receiptId: string; ipHash?: string | null }) {
+  if (!rateLimitVerify(verifyKey(input.tokenPlain, input.ipHash))) return { ok: false as const, error: "rate_limited" as const };
+  const notFound = { ok: false as const, error: "not_found" as const };
+  const tokenHash = sha256(input.tokenPlain);
+
+  const b = await prisma.ballot.findUnique({
+    where: { tokenHash },
+    include: {
+      recipient: true,
+      meeting: { select: { title: true } },
+      tokens: {
+        include: {
+          vote: true,
+          eligibleVoter: {
+            include: {
+              proposal: { select: { code: true, title: true } },
+              votes: { where: { invalid: false, correctedBy: null }, select: { id: true } },
+            },
+          },
+        },
+        orderBy: { issuedAt: "asc" },
+      },
+    },
+  });
+  if (b) {
+    if (b.status !== "USED" || b.id !== input.receiptId) return notFound;
+    const items = b.tokens
+      .filter((tok) => tok.vote)
+      .map((tok) => ({ code: tok.eligibleVoter.proposal.code, title: tok.eligibleVoter.proposal.title, voteId: tok.vote!.id, choice: tok.vote!.choice }))
+      .sort((x, y) => x.code.localeCompare(y.code));
+    if (items.length === 0) return notFound;
+    const skipped = b.tokens
+      .filter((tok) => !tok.vote)
+      .map((tok) => ({
+        code: tok.eligibleVoter.proposal.code,
+        title: tok.eligibleVoter.proposal.title,
+        reason: (tok.eligibleVoter.votes.length > 0 ? "voted" : "closed") as "closed" | "voted",
+      }))
+      .sort((x, y) => x.code.localeCompare(y.code));
+    await audit(null, {
+      action: "vote.receipt.view", targetType: "Ballot", targetId: b.id, zevId: b.zevId, subjectPartyId: b.recipientPartyId, ipHash: input.ipHash,
+    });
+    return {
+      ok: true as const,
+      receipt: {
+        receiptId: b.id,
+        meetingTitle: b.meeting.title,
+        voterName: partyDisplayName(b.recipient),
+        submittedAt: b.usedAt ?? b.tokens.find((tok) => tok.vote)!.vote!.submittedAt,
+        closesAt: b.expiresAt,
+        items,
+        skipped,
+      } satisfies VoteReceiptData,
+    };
+  }
+
+  const tok = await prisma.approvalToken.findUnique({
+    where: { tokenHash },
+    include: { vote: true, eligibleVoter: { include: { owner: true, proxy: true, proposal: { include: { meeting: { select: { title: true } } } } } } },
+  });
+  if (!tok || tok.ballotId || tok.status !== "USED" || !tok.vote || tok.vote.id !== input.receiptId) return notFound;
+  const p = tok.eligibleVoter.proposal;
+  const voter = tok.eligibleVoter.proxy ?? tok.eligibleVoter.owner;
+  await audit(null, {
+    action: "vote.receipt.view", targetType: "Vote", targetId: tok.vote.id, zevId: p.zevId, subjectPartyId: voter.id, ipHash: input.ipHash,
+  });
+  return {
+    ok: true as const,
+    receipt: {
+      receiptId: tok.vote.id,
+      meetingTitle: p.meeting.title,
+      voterName: partyDisplayName(voter),
+      submittedAt: tok.vote.submittedAt,
+      closesAt: p.votingClosesAt,
+      items: [{ code: p.code, title: p.title, voteId: tok.vote.id, choice: tok.vote.choice }],
+      skipped: [],
+    } satisfies VoteReceiptData,
+  };
+}
+
+/**
+ * A proposal attachment read through a voting link (V-N05), so the voter can read what the acknowledgement says he read.
+ * Public: the secret link token is the guard. Works while the link is usable (ACTIVE and not expired) and after it was
+ * spent (USED) — a revoked, replaced or expired link opens nothing. Only attachments of proposals on THIS link.
+ */
+export async function readVotingAttachment(input: { tokenPlain: string; attachmentId: string; ipHash?: string | null }) {
+  if (!rateLimitVerify(verifyKey(input.tokenPlain, input.ipHash))) return { ok: false as const, error: "rate_limited" as const };
+  const notFound = { ok: false as const, error: "not_found" as const };
+  const tokenHash = sha256(input.tokenPlain);
+  const now = new Date();
+
+  let zevId: string;
+  let subjectPartyId: string;
+  let proposalIds: string[];
+  const b = await prisma.ballot.findUnique({
+    where: { tokenHash },
+    include: { tokens: { select: { eligibleVoter: { select: { proposalId: true } } } } },
+  });
+  if (b) {
+    if (!(b.status === "USED" || (b.status === "ACTIVE" && b.expiresAt > now))) return notFound;
+    zevId = b.zevId;
+    subjectPartyId = b.recipientPartyId;
+    proposalIds = b.tokens.map((tok) => tok.eligibleVoter.proposalId);
+  } else {
+    const tok = await prisma.approvalToken.findUnique({
+      where: { tokenHash },
+      include: { eligibleVoter: { include: { proposal: { select: { zevId: true } } } } },
+    });
+    if (!tok || tok.ballotId) return notFound;
+    if (!(tok.status === "USED" || (tok.status === "ACTIVE" && tok.expiresAt > now))) return notFound;
+    zevId = tok.eligibleVoter.proposal.zevId;
+    subjectPartyId = tok.eligibleVoter.proxyId ?? tok.eligibleVoter.ownerId;
+    proposalIds = [tok.eligibleVoter.proposalId];
+  }
+  const a = await prisma.attachment.findFirst({
+    where: { id: input.attachmentId, zevId, proposals: { some: { id: { in: proposalIds } } } },
+  });
+  if (!a) return notFound;
+  await audit(null, {
+    action: "voting.attachment.download", targetType: "Attachment", targetId: a.id, zevId, subjectPartyId, ipHash: input.ipHash,
+  });
+  return { ok: true as const, attachment: { filename: a.filename, mime: a.mime }, buffer: await loadAttachmentBuffer(a) };
 }
 
 /**
@@ -2770,4 +2939,135 @@ export async function ownVotes(actor: Actor, partyId: string) {
     include: { proposal: true },
     orderBy: { submittedAt: "desc" },
   });
+}
+
+// ---- The owner's view of voting (F4.5) ----
+
+/** Where one owner stands on one proposal. Never carries the choice of a community voted through a representative (K-03a). */
+export type OwnerVoteState =
+  | { kind: "draft" } | { kind: "boardOnly" } | { kind: "notInBase" }
+  | {
+      kind: "canVote"; closesAt: Date | null; link: "ballot" | "single" | "none"; linkActive: boolean;
+      /** The link went to the owner's proxy holder. */
+      proxyName: string | null;
+      /** The viewer is the proxy holder and votes in the name of this owner. */
+      forOwnerName: string | null;
+    }
+  | {
+      kind: "voted"; at: Date; choice: VoteChoice | null; receiptNo: string; channel: VoteChannel;
+      viaProxyName: string | null; forOwnerName: string | null;
+    }
+  | { kind: "viaRepresentative"; units: string; representativeName: string; communityVoted: boolean; at: Date | null }
+  | { kind: "closedNotVoted" };
+
+const OWNER_STATE_ORDER: OwnerVoteState["kind"][] = ["canVote", "voted", "closedNotVoted", "viaRepresentative", "boardOnly", "notInBase", "draft"];
+
+/** The viewer's voting subject(s) on each proposal, in one query for proposals and one for voters (no N+1). */
+async function ownerParticipations(actor: Actor, proposalIds: string[]): Promise<Map<string, OwnerVoteState[]>> {
+  const zevId = requireZev(actor);
+  const me = actor.partyId ?? null;
+  const out = new Map<string, OwnerVoteState[]>();
+  if (proposalIds.length === 0) return out;
+  const proposals = await prisma.proposal.findMany({
+    where: { id: { in: proposalIds }, zevId },
+    select: { id: true, status: true, votingClosesAt: true, meeting: { select: { body: true } } },
+  });
+  const evs = me
+    ? await prisma.eligibleVoter.findMany({
+        where: {
+          proposalId: { in: proposals.map((p) => p.id) },
+          OR: [{ ownerId: me }, { proxyId: me }, { memberPartyIds: { has: me } }],
+        },
+        include: {
+          owner: true,
+          proxy: true,
+          tokens: { select: { status: true, expiresAt: true, ballotId: true, deliveredVia: true }, orderBy: { issuedAt: "desc" } },
+          votes: { where: { invalid: false, correctedBy: null }, select: { id: true, choice: true, channel: true, submittedAt: true }, orderBy: { submittedAt: "desc" } },
+        },
+      })
+    : [];
+  const now = new Date();
+  for (const p of proposals) {
+    const mine = evs.filter((ev) => ev.proposalId === p.id);
+    if (mine.length === 0) {
+      out.set(p.id, [p.meeting.body === "BOARD" ? { kind: "boardOnly" } : p.status === "DRAFT" ? { kind: "draft" } : { kind: "notInBase" }]);
+      continue;
+    }
+    out.set(
+      p.id,
+      mine.map((ev): OwnerVoteState => {
+        const vote = ev.votes[0] ?? null;
+        // A co-owner who is not the representative holds no link: the community votes through the representative.
+        if (ev.ownerId !== me && ev.proxyId !== me && ev.memberPartyIds.includes(me!)) {
+          return {
+            kind: "viaRepresentative",
+            units: basisUnitLabels(ev.basis).join(", "),
+            representativeName: partyDisplayName(ev.owner),
+            communityVoted: vote !== null,
+            at: vote?.submittedAt ?? null,
+          };
+        }
+        const viaProxyName = ev.proxy && ev.ownerId === me ? partyDisplayName(ev.proxy) : null;
+        const forOwnerName = ev.proxyId === me && ev.ownerId !== me ? partyDisplayName(ev.owner) : null;
+        if (vote) {
+          return { kind: "voted", at: vote.submittedAt, choice: vote.choice, receiptNo: vote.id, channel: vote.channel, viaProxyName, forOwnerName };
+        }
+        const open = p.status === "VOTING_OPEN" && !(p.votingClosesAt && p.votingClosesAt < now);
+        if (!open) return { kind: p.status === "DRAFT" ? "draft" : "closedNotVoted" };
+        const tok = ev.tokens[0] ?? null;
+        // A voter without an e-mail address keeps a token but never got a ballot or a message: no link.
+        const link: "ballot" | "single" | "none" = !tok ? "none" : tok.ballotId ? "ballot" : tok.deliveredVia === "EMAIL" ? "single" : "none";
+        return {
+          kind: "canVote",
+          closesAt: p.votingClosesAt,
+          link,
+          linkActive: !!tok && tok.status === "ACTIVE" && tok.expiresAt > now,
+          proxyName: viaProxyName,
+          forOwnerName,
+        };
+      })
+    );
+  }
+  return out;
+}
+
+/** One state per proposal for the viewer — the one that needs attention first (a pending vote, then a cast one). */
+export async function ownerVoteStates(actor: Actor, proposalIds: string[]): Promise<Map<string, OwnerVoteState>> {
+  requireAnyUser(actor);
+  const all = await ownerParticipations(actor, proposalIds);
+  const out = new Map<string, OwnerVoteState>();
+  for (const [id, states] of all) {
+    out.set(id, [...states].sort((x, y) => OWNER_STATE_ORDER.indexOf(x.kind) - OWNER_STATE_ORDER.indexOf(y.kind))[0]);
+  }
+  return out;
+}
+
+/** Current president's name and contact — what an owner needs when the personal link did not arrive (V-Q2). */
+export async function getVotingContact(actor: Actor): Promise<{ name: string; email: string | null; phone: string | null } | null> {
+  requireAnyUser(actor);
+  const { president } = await listOfficeHolders(actor);
+  return president ? { name: partyDisplayName(president.party), email: president.party.email, phone: president.party.phone } : null;
+}
+
+/**
+ * A proposal as its owner sees it: the proposal itself, its attachments (once it is out of DRAFT) and the viewer's own
+ * participation. Unlike `getProposal` it never loads other voters or votes.
+ */
+export async function getOwnerProposalView(actor: Actor, proposalId: string) {
+  requireAnyUser(actor);
+  const zevId = requireZev(actor);
+  const p = await prisma.proposal.findUniqueOrThrow({
+    where: { id: proposalId, zevId },
+    select: {
+      id: true, code: true, title: true, text: true, rationale: true, version: true, status: true, meetingId: true, votingClosesAt: true,
+      meeting: { select: { id: true, title: true, body: true } },
+      attachments: { select: { id: true, filename: true, mime: true, size: true }, orderBy: { createdAt: "asc" } },
+    },
+  });
+  const participations = (await ownerParticipations(actor, [p.id])).get(p.id) ?? [];
+  return {
+    proposal: { ...p, attachments: p.status === "DRAFT" ? [] : p.attachments },
+    participations,
+    contact: await getVotingContact(actor),
+  };
 }

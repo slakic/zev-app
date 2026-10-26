@@ -5,7 +5,7 @@ import {
   submitVote, reissueToken, revokeToken, closeVoting, recordManualVote,
   createProposalRevision, updateDraftProposal, computeProposalResult, createVotingRule,
   openVoting, advanceMeetingStatus, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
-  previewVotingDelivery, openProposalsForOwner, getMeeting, correctVote,
+  previewVotingDelivery, openProposalsForOwner, getMeeting, correctVote, inspectApprovalToken,
 } from "@/server/services/meetings";
 import { computeVotingResult, quorumRequirement, presenceQuorum, type RuleSnapshot } from "@/server/engines/voting";
 import { dec } from "@/lib/money";
@@ -609,5 +609,37 @@ describe("F6.2 — getMeeting: voted X of Y per proposal", () => {
     await correctVote(f.president, { voteId: original.id, choice: "REJECT", reason: "Greška u evidenciji", authority: "Odluka skupštine" });
     row = (await getMeeting(f.president, meeting.id)).proposals.find((p) => p.id === proposal.id)!;
     expect(row.votedCount).toBe(2); // original + correction still one vote
+  });
+});
+
+describe("F4: single-link page data", () => {
+  it("inspectApprovalToken returns the proposal's attachments, the body and the president's name", async () => {
+    const f = await createFixture("vote-f4");
+    await setOfficeTerm(f.president, { role: "PRESIDENT", partyId: f.presidentParty.id, validFrom: new Date("2020-01-01") });
+    const { proposal } = await createProposalFixture(f);
+    const att = await prisma.attachment.create({ data: { zevId: f.zev.id, filename: "ponuda.pdf", mime: "application/pdf", size: 2048, category: "OTHER", sha256: "ff00" } });
+    await prisma.proposal.update({ where: { id: proposal.id }, data: { attachments: { connect: { id: att.id } } } });
+    const links = await openVotingWithLinks(f, proposal.id);
+    const l = links.find((x) => x.toAddress === f.ownerA.email)!;
+    const info = await inspectApprovalToken(l.token);
+    expect(info.ok).toBe(true);
+    if (!info.ok) return;
+    expect(info.proposal.attachments).toEqual([{ id: att.id, filename: "ponuda.pdf", mime: "application/pdf", size: 2048, sha256: "ff00" }]);
+    expect(info.proposal.body).toBe("ASSEMBLY");
+    expect(info.voter.units.length).toBeGreaterThan(0);
+    expect(info.presidentName).toContain("Predsjednik");
+  });
+
+  it("submitVote reports attemptsLeft on a wrong code; the acknowledgement text names the attachments for new votes", async () => {
+    const f = await createFixture("vote-f4b");
+    const { proposal } = await createProposalFixture(f);
+    const links = await openVotingWithLinks(f, proposal.id);
+    const l = links.find((x) => x.toAddress === f.ownerA.email)!;
+    const miss = await submitVote({ tokenPlain: l.token, verificationCode: "999999", choice: "APPROVE" });
+    expect(miss).toMatchObject({ ok: false, error: "bad_code", attemptsLeft: 4 });
+    const ok = await submitVote({ tokenPlain: l.token, verificationCode: l.code, choice: "APPROVE" });
+    expect(ok.ok).toBe(true);
+    const vote = await prisma.vote.findFirstOrThrow({ where: { proposalId: proposal.id, voterId: f.ownerA.id } });
+    expect(vote.acknowledgementText).toContain("njegove priloge");
   });
 });

@@ -137,6 +137,14 @@ Mockupi su u [`design-review/mockups/`](design-review/mockups/). To su samostaln
   - Alternativa: samostalno vlasništvo „upija” lice, pa Nikola ima jedan glas, a zajednica Stana 3 glasa preko Sare.
   - **Preporuka:** dva subjekta, jer su to dva različita etažna vlasnika u smislu zakona. Potvrditi sa pravnikom. U seed podacima ovaj slučaj ne postoji, pa ne blokira ništa.
 
+- **K-04 (2026-10-26) — Odgovori na pitanja vlasnika V-Q1–V-Q6** (`design-review/02-vlasnik.md` §Pitanja):
+  - **V-Q1 — (b):** glasanje ostaje samo preko ličnog linka. Aplikacija pokazuje status izjašnjenja i put do novog linka (V-R04). Glasanje direktno u aplikaciji nije u ovom krugu.
+  - **V-Q2 — (b):** novi lični link izdaje samo predsjednik. Ekran vlasniku jasno kaže koga i kako da kontaktira. Bez samoposluge „Pošalji mi link ponovo”.
+  - **V-Q3 — potvrda prikazuje izbor (Za/Protiv/Uzdržan).** Vlasnik dobija čitljiv dokaz svog glasa. *Napomena za implementaciju:* izbor se ne stavlja u URL potvrde (ne kao query parametar), ali stranica potvrde ga prikazuje; korisnik je prihvatio da onaj ko dobije proslijeđen link potvrde vidi i izbor.
+  - **V-Q4 — ne postoji** bankarski standard QR/uplatnice koji banke prihvataju. Opcija C iz V-R01 (bankarski QR) otpada; format poziva na broj se ne mijenja.
+  - **V-Q5 — (a) smije:** vlasnik smije vidjeti imena drugih vlasnika i zakupaca (Zgrade → Posebni dijelovi), jer ime i prezime ionako stoje na vratima i sandučićima. V-N22 više nije nalaz o privatnosti; ostaje samo dio o upotrebljivosti (istaći „Moje jedinice”, odsječeni tabovi na 375).
+  - **V-Q6 — ne:** verifikacioni kod za sada ide samo e-poštom. Tekst na ekranu se mijenja da bude iskren (V-R09): kod štiti od slučajno proslijeđenog linka, ne od pristupa sandučetu.
+
 Faze su namjerno male i, gdje je moguće, nezavisne. **F1 ne traži nijednu odluku o dizajn sistemu i rješava 4 od 7 kritičnih nalaza.** Ona je preporučeni prvi korak bez obzira na ostatak.
 
 ---
@@ -404,6 +412,8 @@ F3, F5, F6 i F7 su međusobno nezavisne, mogu ići bilo kojim redom i nijedna ne
 
 ### F4 — Vlasnik: glasanje *(M · D6 · traži pravne odgovore)*
 
+**Status: ISPORUČENO u v2.55.0 (nije commitovano):** [`f4-vlasnik-glasanje-plan.md`](f4-vlasnik-glasanje-plan.md). V-R03, V-R04 i V-R09 pokriveni.
+
 - **Svrha:** pravno obavezujuće izjašnjenje je potpuno, nedvosmisleno i ima čitljiv dokaz. Rješava K6, V11 (ostatak), V12, V13 i V-N07–V-N10, V-N27.
 - **Šta se mijenja** (V-R03, V-R04, V-R09):
   - **Prilozi:** prikazani na listiću. *(v2.44.0: V-R03 djelimično pokriven na listiću po sjednici — prilozi navedeni po nazivu/veličini/otisku, greška čuva izbor i izjavu, otisak pod „Tehnički detalji”, potvrda sa brojem po prijedlogu i „Odštampaj”; preuzimanje priloga i klasična stranica jednog prijedloga ostaju za F4.)*
@@ -414,11 +424,7 @@ F3, F5, F6 i F7 su međusobno nezavisne, mogu ići bilo kojim redom i nijedna ne
   - **Prijedlog u aplikaciji:** vlasnik vidi „Imate pravo glasa · do … · Niste se izjasnili / Izjasnili ste se …” i šta da uradi ako link nije stigao.
   - **Sjednica:** vlasnik vidi termin, mjesto i 3 koraka relevantna za njega umjesto 10 internih.
 - **Mockup:** V-M03.
-- **Pitanja koja traže odgovor prije implementacionog plana:**
-  - **V-Q1:** glasanje direktno u aplikaciji. Preporuka: ne u ovom krugu.
-  - **V-Q2:** ko izdaje novi link. Preporuka: predsjednik, a ekran kaže kako ga kontaktirati.
-  - **V-Q3:** da li potvrda prikazuje izbor. Preporuka: samo odmah nakon slanja, ne u URL-u.
-  - **V-Q6:** verifikacioni kod drugim kanalom. Preporuka: kratkoročno iskren tekst.
+- **Pitanja — odlučeno (K-04, 2026-10-26):** V-Q1 (b) samo lični link; V-Q2 (b) novi link izdaje predsjednik, ekran kaže kako ga kontaktirati; V-Q3 potvrda **prikazuje izbor** (ne u URL-u); V-Q6 kod samo e-poštom, uz iskren tekst. F4 je spremna za implementacioni plan.
 - **Rizik:** srednji do visok, jer je tok pravno osjetljiv. Jednokratnost glasa i ograničenje pokušaja moraju ostati netaknuti. Tekst neka pregleda predsjednik ili pravnik.
 - **Provjera:** svježe, pogrešan kod, bez izjave, istekao, iskorišten i potvrda, na 375 i 1440; cijeli tok tastaturom; VoiceOver čita izbor u panelu.
 - **Izlazni kriterijum:** tačno jedno `primary`; prilozi dostupni; greška ne briše izbor; potvrda navodi prijedlog i vrijeme; vlasnik u aplikaciji vidi „izjasnili ste se”.
@@ -684,8 +690,8 @@ Uz to se predlaže jednostavna CI provjera koja pada ako broj `text-xs` raste (h
 | P-Q3 — ukinuti P10 (stara kartica prisustva) | 04 | da: kartica postaje sažetak + link; ne: preimenuje se u „Naknadni unos” | ukinuti | F6b |
 | P-Q2 — odobrenje prijave bez usvojene odluke | 04 | tvrda kapija vs. veza + upozorenje vs. slobodan tekst | veza + upozorenje | F6b (P-R04) |
 | P-Q5 — pravni rokovi u panelu „Sljedeći korak” | 04 | bez izvora panel ne tvrdi zakonske rokove | prva verzija bez rokova | F6b |
-| V-Q1, V-Q2, V-Q3, V-Q6 — glasanje u aplikaciji, novi link, izbor na potvrdi, drugi kanal koda | 02 | pravni model izjašnjenja | vidi F4 | F4 |
-| V-Q4 — bankarski QR i format poziva na broj | 02 | zavisi od banke | provjeriti sa bankom ZEV-a | D7 C |
+| V-Q1, V-Q2, V-Q3, V-Q6 — glasanje u aplikaciji, novi link, izbor na potvrdi, drugi kanal koda | 02 | pravni model izjašnjenja | **odlučeno (K-04):** (b), (b), izbor se prikazuje, samo e-pošta | — |
+| V-Q4 — bankarski QR i format poziva na broj | 02 | zavisi od banke | **zatvoreno (K-04):** standard ne postoji; bez bankarskog QR-a, format se ne mijenja | — |
 | K-01b — glasanje kad jedinica ima zbir udjela iznad 100% (preformulisano K-03: prethodni vlasnik u glasačkoj bazi) | §Odluke korisnika | A: glasanje se ne otvara dok se ne ispravi; B i C otpadaju (nema težine po udjelu) | A | FR |
 | K-01c — nepotpun upis vlasnika | §Odluke korisnika | posebni dio bez vlasnika: broj etažnih vlasnika nepoznat | **riješeno kroz K-03 / FR:** bez vlasnika = preduslov glasanja; ispod 100% = upozorenje | FR |
 | FR-Q1 — pravo glasa po vrsti ili po jedinici | §6 FR | — | **zatvoreno (K-03):** svi posebni dijelovi, uključujući garaže | — |
@@ -695,7 +701,7 @@ Uz to se predlaže jednostavna CI provjera koja pada ako broj `text-xs` raste (h
 | FR-Q3 — izmjena utvrđenog registra | §6 FR | — | **odlučeno:** predsjednik uz razlog i dokument; ne tokom glasanja | — |
 | FR-Q4 — postojeći ZEV-ovi | §6 FR | — | **odlučeno:** prelazni režim „Za provjeru” | — |
 | FR-Q5 — 100% za sve jedinice ili samo za one sa pravom glasa | §6 FR | — | **zatvoreno (K-03):** 100% samo kao osnova troškova; glasanje ne koristi procente | — |
-| V-Q5 — vlasnik vidi imena drugih vlasnika i zakupaca | 02 | zaštita ličnih podataka | ne, dok se ne potvrdi osnov | F8 |
+| V-Q5 — vlasnik vidi imena drugih vlasnika i zakupaca | 02 | zaštita ličnih podataka | **odlučeno (K-04): smije** (imena su na vratima i sandučićima) | — |
 | R-Q1 — uplate: tab ili stavka menija | 03 | vidljivost vs. dužina menija | stavka menija | F5 / F9 |
 | R-Q3 — najčešći kanal priliva | 03 | redoslijed na stranici uplata | pitati računovođu ili brojati uvoze | F5b |
 | R-Q4, R-Q5, R-Q6 — avans, dospijeće u prošlosti, djelimično plaćanje troška | 03 | računovodstvena pravila, ne dizajn | upozoriti; ostalo zasebno | F1 (opciono) |

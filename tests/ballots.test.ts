@@ -11,7 +11,7 @@ import {
   closeVoting, getProposal,
 } from "@/server/services/meetings";
 import { serializeResult } from "@/server/engines/voting";
-import { grantProxy } from "@/server/services/ownership";
+import { grantProxy, setOfficeTerm } from "@/server/services/ownership";
 import { extractApprovalSecrets } from "@/server/notifications/testOutbox";
 import { enqueueNotification } from "@/server/notifications/service";
 import { ForbiddenError } from "@/server/auth/guards";
@@ -546,5 +546,48 @@ describe("proposal page data", () => {
     await openSession(f, meeting.id);
     const p = await getProposal(f.president, proposals[0].id);
     expect(p.eligibleVoters.flatMap((ev) => ev.tokens).every((tk) => tk.ballotId !== null)).toBe(true);
+  });
+});
+
+describe("F4: attemptsLeft, president name, body and units on the ballot page data", () => {
+  it("bad_code reports 4, 3, 2, 1, 0 attempts left and the fifth miss still revokes the ballot", async () => {
+    const f = await createFixture("bal-left");
+    const { meeting, proposals } = await session(f, 1);
+    const a = linkFor(await openSession(f, meeting.id), f.ownerA.email!);
+    const wrong = a.code === "000000" ? "111111" : "000000";
+    const choices = choicesFor(proposals, () => "APPROVE");
+    const left: (number | undefined)[] = [];
+    for (let i = 0; i < 5; i++) {
+      const res = await submitBallot({ tokenPlain: a.token, verificationCode: wrong, ack: true, choices, ipHash: `ip-left-${a.ballotId}-${i}` });
+      expect(res).toMatchObject({ ok: false, error: "bad_code" });
+      left.push("attemptsLeft" in res ? res.attemptsLeft : undefined);
+    }
+    expect(left).toEqual([4, 3, 2, 1, 0]);
+    expect((await prisma.ballot.findUniqueOrThrow({ where: { id: a.ballotId } })).status).toBe("REVOKED");
+  });
+
+  it("inspectBallot returns the body, the units the recipient votes for, attachment mime and the president's name; errors carry the name too", async () => {
+    const f = await createFixture("bal-inspect");
+    await prisma.party.update({ where: { id: f.presidentParty.id }, data: { firstName: "Petar", lastName: "Predsjednik" } });
+    await setOfficeTerm(f.president, { role: "PRESIDENT", partyId: f.presidentParty.id, validFrom: new Date("2020-01-01") });
+    const { meeting, proposals } = await session(f, 1);
+    const att = await prisma.attachment.create({ data: { zevId: f.zev.id, filename: "ponuda.pdf", mime: "application/pdf", size: 10, category: "OTHER", sha256: "abc" } });
+    await prisma.proposal.update({ where: { id: proposals[0].id }, data: { attachments: { connect: { id: att.id } } } });
+    const links = await openSession(f, meeting.id);
+    const a = linkFor(links, f.ownerA.email!);
+    const info = await inspectBallot(a.token);
+    expect(info.ok).toBe(true);
+    if (!info.ok) return;
+    expect(info.body).toBe("ASSEMBLY");
+    expect(info.units.sort()).toEqual([f.u1.label, f.u4.label].sort());
+    expect(info.proposals[0].attachments[0]).toMatchObject({ id: att.id, mime: "application/pdf" });
+    expect(info.presidentName).toContain("Predsjednik");
+
+    await revokeBallot(f.president, a.ballotId, "test");
+    const revoked = await inspectBallot(a.token);
+    expect(revoked).toMatchObject({ ok: false, error: "revoked" });
+    if (!revoked.ok) expect(revoked.presidentName).toContain("Predsjednik");
+    const unknown = await inspectBallot("no-such-token");
+    expect(unknown).toMatchObject({ ok: false, error: "not_found", presidentName: null });
   });
 });

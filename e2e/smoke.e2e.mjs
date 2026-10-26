@@ -83,9 +83,11 @@ try {
   await p3.check('input[value="APPROVE"]');
   await p3.fill('input[name="code"]', codeArg);
   await p3.check('input[name="ack"]');
-  await p3.click('button[type="submit"]');
-  await p3.waitForURL(/receipt=/, { timeout: 15000 });
-  console.log("vote receipt:", (await p3.textContent("body")).includes("Izjašnjavanje je evidentirano") ? "OK" : "FAIL");
+  // F4: both links open the same form — "Pregledaj i potvrdi" opens the review panel, "Da, pošalji" sends.
+  await p3.click("text=Pregledaj i potvrdi");
+  await p3.click("text=Da, pošalji izjašnjenje");
+  await p3.waitForURL(/potvrda=/, { timeout: 15000 });
+  console.log("vote receipt:", (await p3.textContent("body")).includes("Vaše izjašnjenje je evidentirano") ? "OK" : "FAIL");
   // reuse fails
   await p3.goto(`http://localhost:3000/${linkArg}`);
   console.log("reuse blocked:", (await p3.textContent("body")).includes("već izvršeno") ? "OK" : "FAIL");

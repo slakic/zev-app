@@ -247,3 +247,55 @@ export async function seedShapedZev(tag: string) {
   return { f, nikola, sara, firma, u5, u6, u7, u8 };
 }
 
+
+const DAY_MS = 86_400_000;
+
+/** F4 tests: a session with `n` draft proposals (same deadline, scope = the fixture's four units, or only u1 for "A"). */
+export async function createSessionFixture(f: Fixture, n = 2, scopes?: ("ALL" | "A")[]) {
+  const closes = new Date(Date.now() + 7 * DAY_MS);
+  const meeting = await meetings.createMeeting(f.president, { title: `Sjednica ${f.t}`, type: "REGULAR", eVoteClosesAt: closes });
+  const proposals = [];
+  for (let i = 0; i < n; i++) {
+    proposals.push(
+      await meetings.createProposal(f.president, {
+        meetingId: meeting.id,
+        code: uid(`P${i + 1}`),
+        title: `Prijedlog ${i + 1} ${f.t}`,
+        text: `Tekst prijedloga ${i + 1}.`,
+        scopeType: "UNITS",
+        unitIds: scopes?.[i] === "A" ? [f.u1.id] : [f.u1.id, f.u2.id, f.u3.id, f.u4.id],
+        votingRuleId: f.rule.id,
+        votingClosesAt: closes,
+      })
+    );
+  }
+  return { meeting, proposals };
+}
+
+/** Attaches a stored file to a proposal (draft or not) the way an upload + link does; returns the attachment row. */
+export async function attachToProposal(f: Fixture, proposalId: string, content: string, filename = "ponuda.pdf") {
+  const buffer = Buffer.from(content);
+  const a = await prisma.attachment.create({
+    data: { zevId: f.zev.id, filename, mime: "application/pdf", size: buffer.length, category: "OTHER", sha256: `${uid("h")}` },
+  });
+  await prisma.attachmentBlob.create({ data: { attachmentId: a.id, data: new Uint8Array(buffer) } });
+  await prisma.proposal.update({ where: { id: proposalId }, data: { attachments: { connect: { id: a.id } } } });
+  return a;
+}
+
+/** Opens the session's voting like the desktop button and returns each ballot's link/code from the outbox. */
+export async function openSessionBallots(f: Fixture, meetingId: string) {
+  await meetings.advanceMeetingStatus(f.president, meetingId, "VOTING_OPEN", undefined, { openDraftProposals: true });
+  const ballots = await prisma.ballot.findMany({ where: { meetingId }, orderBy: { createdAt: "asc" } });
+  const messages = await prisma.notificationMessage.findMany({
+    where: { relatedType: "Ballot", relatedId: { in: ballots.map((b) => b.id) }, template: { in: ["ballot-link", "ballot-link-reissue"] } },
+    orderBy: { createdAt: "asc" },
+  });
+  return messages.map((m) => ({ ballotId: m.relatedId!, toAddress: m.toAddress, ...extractApprovalSecrets(m.body) }));
+}
+
+export const ballotFor = (links: Awaited<ReturnType<typeof openSessionBallots>>, email: string) => {
+  const l = links.find((x) => x.toAddress === email);
+  if (!l) throw new Error(`no ballot message for ${email}`);
+  return { token: l.token!, code: l.code!, ballotId: l.ballotId };
+};

@@ -43,6 +43,34 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.55.0] - 2026-10-26
+
+Vlasnik i glasanje (faza F4 pregleda dizajna): glasački link je potpun i nedvosmislen, potvrda se može ponovo otvoriti, a vlasnik u aplikaciji vidi da li se izjasnio i koga da zove ako link nije stigao. Plan: `Plans/f4-vlasnik-glasanje-plan.md`.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.** Povlačenje je običan povratak na prethodni deployment (nove šifre aktivnosti stari kod prikazuje kao sirovu šifru).
+
+### Dodato
+
+- **Potvrda se može ponovo otvoriti:** poslije slanja adresa postaje `/glasanje/{link}?potvrda={broj potvrde}`; osvježavanje stranice ili zabilježena adresa vode na istu potvrdu (prijedlog, ime, vrijeme, izbor, broj potvrde, „Odštampaj”). Izbor se čita na serveru po tajnom linku i broju potvrde i nikad ne ide u adresu. Potvrda radi dok postoji zapis glasa; ko dobije adresu potvrde vidi i izbor (upozorenje je na ekranu). Svako otvaranje se bilježi u evidenciji aktivnosti (`vote.receipt.view`, bez izbora). Ponovno otvaranje linka poslije glasanja kaže gdje je potvrda i da se izjašnjenje vidi u aplikaciji.
+- **Prilozi prijedloga na glasačkom linku:** uz svaki prilog stoji naziv, vrsta i veličina i „Otvori” (nova kartica, da izbori ostanu); otisak priloga je pod „Tehnički detalji”. Nova javna ruta `/glasanje/{link}/prilog/{id}` radi samo za priloge prijedloga sa tog linka, dok je link važeći ili iskorišten (opozvan, zamijenjen ili istekao link ne otvara ništa); preuzimanje se bilježi (`voting.attachment.download`).
+- **Vlasnik u aplikaciji — prijedlog:** „Vaše učešće” je prva kartica: „Niste se izjasnili / Izjasnili ste se”, rok, kanal, „Vaš izbor” (za sopstveni glas i glas punomoćnika u Vaše ime; nikad za glas zajednice preko predstavnika), broj potvrde, ko je dobio link (punomoćnik) i, ako link nije stigao, ime, telefon i e-adresa predsjednika koji izdaje novi. Kartica „Prilozi” sa otvaranjem u novoj kartici.
+- **Vlasnik u aplikaciji — sjednica:** tri koraka (Zakazana · Glasanje · Odluke) umjesto deset, termin i mjesto, rečenica o ulozi („Prijedlozi o kojima imate pravo glasa: …”) i kolona „Vaš status” u tabeli prijedloga (bez „Glasalo X od Y” i verzije). Predsjednik i računovođa vide isto što i prije.
+- **Pogrešan verifikacioni kod** kaže „Preostalo pokušaja: N” (iz servisa; peti promašaj i dalje opoziva link, uz ime predsjednika kome se obratiti).
+
+### Izmijenjeno
+
+- **Klasični link (jedan prijedlog) koristi isti obrazac kao listić sjednice:** greška više ne briše izbor, kod i izjavu; „Pregledaj i potvrdi” je `secondary`, a jedino `primary` je „Da, pošalji izjašnjenje” u panelu potvrde (D6: `ConfirmPanel` dobija `formless`, vidi `Plans/design-system.md`). Fokus ide na panel potvrde i na poruke o grešci; izjava je kartica kao opcije izbora; verzija prijedloga se ne ponavlja u naslovu dok je prva; „Glasate jednom, kao etažni vlasnik: …” / „Glasate kao član upravnog odbora”.
+- **Stare adrese `?receipt=`** (klasični glas prije ove verzije) sada pokazuju punu potvrdu, sa izborom, umjesto samo broja.
+- **Prilozi prijedloga vidljivi vlasnicima u aplikaciji:** vlasnik može otvoriti priloge prijedloga koji nije nacrt (dosad samo dokaz vlasništva i saglasnost). Napomena predsjedniku: povjerljive ponude izvođača ne treba prilagati prijedlogu, jer ih vide svi vlasnici ZEV-a.
+- **Tekst izjave** sada glasi „pročitao/la prijedlog i njegove priloge (ako ih ima) u cijelosti”, a prefiks na listiću „…sve prijedloge i njihove priloge…”; važi samo za nove glasove — stari glasovi čuvaju tekst koji je tada bio prikazan. Tekst neka pregleda predsjednik ili pravnik.
+- **Iskren tekst o kodu:** kod štiti od slučajno proslijeđenog linka, ne od nekoga ko ima pristup e-sandučetu; poruka kaže da se ne prosljeđuje, jer link i kod zajedno omogućavaju izjašnjavanje u Vaše ime. Red „Vaš verifikacioni kod: NNNNNN” u poruci je nepromijenjen.
+- **Greške linka** (nepoznat, opozvan, istekao) kažu kome se obratiti za novi link; podnožje imenuje predsjednika ZEV-a.
+
+### Ispravljeno
+
+- Vlasnik koji je dao punomoć više ne čita da je lični link dobio on: stranica kaže da se izjašnjava punomoćnik.
+- Vlasnik više ne učitava tuđe birače i glasove na stranici prijedloga (servis vraća samo njegovo učešće).
+
 ## [2.54.1] - 2026-10-26
 
 Zaštita migracione skripte poslije incidenta sa 2.54.0: migracija za produkciju je pokrenuta sa praznim

@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import {
-  getProposal, openVoting, closeVoting, recordManualVote, correctVote, recordDecision,
+  getProposal, getOwnerProposalView, openVoting, closeVoting, recordManualVote, correctVote, recordDecision,
   reissueToken, revokeToken, computeProposalResult, createProposalRevision,
   updateDraftProposal, withdrawProposal, deleteDraftProposal, canDeleteDraftProposal,
   listVotingRules, getMeeting, previewVotingDelivery,
@@ -15,6 +15,7 @@ import { formatWeight, parseMoneyInput } from "@/lib/money";
 import { formatDateTime, formatDateTimeLocalInput, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, ToggleBtn, BtnLink, RowLink, type ColumnSpec } from "@/components/ui";
 import { PreconditionList } from "@/components/precondition-list";
+import { OwnerVoteStateBlock, VotingContactLine, needsContact } from "@/components/owner-vote-state";
 
 // One row per voting SUBJECT (FR, K-03a). The weight column exists only for pre-FR snapshots and the board.
 const voterHeaders = (showWeight: boolean): ColumnSpec[] => [
@@ -206,57 +207,59 @@ export default async function ProposalPage({ params, searchParams }: { params: P
   const { err, msg } = await searchParams;
   const actor = await requireActor();
   const isPresident = actor.roles.includes("PRESIDENT");
-  const p = await getProposal(actor, id);
 
-  // Owners see only their own participation, not others' voting evidence.
+  // Owners see only their own participation, not others' voting evidence — and the service never loads it for them (F4.5).
   if (!isPresident && !actor.roles.includes("ACCOUNTANT")) {
-    const myPartyId = actor.partyId ?? "";
-    const mine = p.eligibleVoters.some((ev) => ev.ownerId === myPartyId || ev.proxyId === myPartyId || ev.memberPartyIds.includes(myPartyId));
-    // A co-owner who is not the representative holds no link: the community votes through the representative (K-03a).
-    const viaRepresentative = p.eligibleVoters.find(
-      (ev) => ev.ownerId !== myPartyId && ev.proxyId !== myPartyId && ev.memberPartyIds.includes(myPartyId),
-    );
-    const ownEv = p.eligibleVoters.find((ev) => ev.ownerId === myPartyId || ev.proxyId === myPartyId);
+    const view = await getOwnerProposalView(actor, id);
+    const op = view.proposal;
+    const needContact = view.participations.some(needsContact);
+    const noLink = view.participations.some((s) => s.kind === "canVote" && s.link === "none" && !s.proxyName);
     return (
       <div>
         <PageHeader
-          title={`${p.code} — ${p.title}`}
-          subtitle={`Verzija ${p.version} · ${p.meeting.title}`}
-          backHref={`/skupstina/${p.meetingId}`}
-          backLabel={shortTitle(p.meeting.title)}
+          title={`${op.code} — ${op.title}`}
+          subtitle={[
+            op.votingClosesAt
+              ? tf("ownerVoting.subtitle", { sjednica: op.meeting.title, rok: formatDateTime(op.votingClosesAt) })
+              : tf("ownerVoting.subtitleNoDate", { sjednica: op.meeting.title }),
+            op.version > 1 ? tf("ownerVoting.version", { verzija: op.version }) : null,
+          ].filter(Boolean).join(" · ")}
+          backHref={`/skupstina/${op.meetingId}`}
+          backLabel={shortTitle(op.meeting.title)}
         />
-        <div className="mb-4"><StatusBadge status={p.status} label={tEnum("proposalStatus", p.status)} /></div>
-        <Card title="Tekst prijedloga"><p className="whitespace-pre-wrap text-sm">{p.text}</p></Card>
-        {p.rationale && <div className="mt-4"><Card title="Obrazloženje"><p className="whitespace-pre-wrap text-sm">{p.rationale}</p></Card></div>}
+        <div className="mb-4"><StatusBadge status={op.status} label={tEnum("proposalStatus", op.status)} /></div>
+        <Card title={t("ownerVoting.participationTitle")}>
+          <div className="space-y-4">
+            {view.participations.map((s, i) => <OwnerVoteStateBlock key={i} state={s} />)}
+            {needContact && <VotingContactLine contact={view.contact} noEmail={noLink} />}
+          </div>
+        </Card>
         <div className="mt-4">
-          <Card title="Vaše učešće">
-            <p className="text-sm text-slate-600">
-              {ownEv
-                ? ownEv.tokens.some((tk) => tk.ballotId)
-                  ? `Imate pravo glasa o ovom prijedlogu. ${t("ballot.owner.oneEmail")}`
-                  : "Imate pravo glasa o ovom prijedlogu. Lični link i verifikacioni kod dobili ste e-poštom — glasa se isključivo putem ličnog linka."
-                : viaRepresentative
-                  ? tf(
-                      viaRepresentative.votes.some((v) => !v.invalid) ? "votingSubject.owner.viaRepresentativeVoted" : "votingSubject.owner.viaRepresentative",
-                      {
-                        units: ((viaRepresentative.basis as EvBasis)?.units ?? []).map((u) => u.label).join(", "),
-                        name: partyDisplayName(viaRepresentative.owner),
-                      },
-                    )
-                  : mine
-                    ? "Imate pravo glasa o ovom prijedlogu."
-                    : p.meeting.body === "BOARD"
-                      ? t("confirm.participation.board")
-                      : p.status === "DRAFT"
-                        ? t("confirm.participation.draft")
-                        : t("confirm.participation.notInBase")}
-            </p>
-          </Card>
+          <Card title="Tekst prijedloga"><p className="max-w-[68ch] whitespace-pre-wrap text-[15px] leading-relaxed">{op.text}</p></Card>
         </div>
+        {op.rationale && <div className="mt-4"><Card title="Obrazloženje"><p className="max-w-[68ch] whitespace-pre-wrap text-[15px] leading-relaxed">{op.rationale}</p></Card></div>}
+        {op.attachments.length > 0 && (
+          <div className="mt-4">
+            <Card title={t("ownerVoting.attachmentsTitle")}>
+              <ul className="space-y-1 text-[15px] text-slate-700">
+                {op.attachments.map((a) => (
+                  <li key={a.id} className="flex flex-wrap items-baseline gap-x-3">
+                    <span>{tf("ownerVoting.attachmentRow", { naziv: a.filename, velicina: Math.max(1, Math.round(a.size / 1024)) })}</span>
+                    <RowLink href={`/api/prilozi/${a.id}`} newTab>
+                      {t("ownerVoting.open")}
+                      <span className="sr-only"> {a.filename} {t("ownerVoting.newTab")}</span>
+                    </RowLink>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+        )}
       </div>
     );
   }
 
+  const p = await getProposal(actor, id);
   const result = p.ruleSnapshot ? serializeResult(await computeProposalResult(p.zevId, p.id)) : null;
   const rule = p.ruleSnapshot as {
     ruleName?: string; quorumType?: string; quorumPercent?: string; majorityType?: string; majorityPercent?: string;

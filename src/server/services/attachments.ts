@@ -181,12 +181,24 @@ export async function readAttachmentFile(actor: Actor, id: string): Promise<{ at
     if (a.category === "CONSENT" && a.linkedType === "Party" && a.linkedId) {
       allowed = a.linkedId === actor.partyId;
     }
+    // F4.4: a proposal's attachment is read by every owner of the ZEV once the proposal is out of DRAFT — the same
+    // audience that already reads the proposal text. A draft's attachment stays with management.
+    if (!allowed) {
+      allowed =
+        (await prisma.proposal.count({
+          where: { zevId, status: { not: "DRAFT" }, attachments: { some: { id: a.id } } },
+        })) > 0;
+    }
     if (!allowed) throw new ForbiddenError();
   }
   await audit(actor, { action: "attachment.download", targetType: "Attachment", targetId: a.id });
+  return { attachment: { filename: a.filename, mime: a.mime }, buffer: await loadAttachmentBuffer(a) };
+}
+
+/** Bytes of an attachment: the DB blob, or (legacy Docker rows) the file on disk. No access check — callers guard. */
+export async function loadAttachmentBuffer(a: { id: string; filePath: string | null }): Promise<Buffer> {
   const blob = await prisma.attachmentBlob.findUnique({ where: { attachmentId: a.id } });
   // Legacy Docker rows (pre-DB-storage, Plans/deployment-portability-plan.md §3.3) have no
   // blob and instead carry an absolute on-disk filePath — read that as a fallback.
-  const buffer = blob ? Buffer.from(blob.data) : fs.readFileSync(a.filePath!);
-  return { attachment: { filename: a.filename, mime: a.mime }, buffer };
+  return blob ? Buffer.from(blob.data) : fs.readFileSync(a.filePath!);
 }

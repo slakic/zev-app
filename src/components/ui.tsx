@@ -94,6 +94,8 @@ const statusTone: Record<string, string> = {
   // (bili PAID/UNPAID).
   SAFETY_RISK: "amber", EMERGENCY: "red", OVERDUE: "amber", BATCH_WARNING: "amber", ZEV_SUSPENDED: "red",
   DIRECTION_IN: "green", DIRECTION_OUT: "amber",
+  // F4.5: gdje vlasnik stoji na prijedlogu (Niste se izjasnili / Izjasnili ste se / Glasa predstavnik / ostalo).
+  VOTE_PENDING: "amber", VOTE_DONE: "green", VOTE_REPRESENTATIVE: "blue", VOTE_CLOSED: "slate", VOTE_NONE: "slate",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */
@@ -425,9 +427,9 @@ export function BtnLink({ href, children, variant }: { href: string; children: R
   );
 }
 
-export function SubmitBtn({ children, variant, name, value }: { children: ReactNode; variant?: BtnVariant; name?: string; value?: string }) {
+export function SubmitBtn({ children, variant, name, value, disabled }: { children: ReactNode; variant?: BtnVariant; name?: string; value?: string; disabled?: boolean }) {
   return (
-    <button type="submit" name={name} value={value} className={`${btnBase} ${btnVariantCls[variant ?? "primary"]}`}>
+    <button type="submit" name={name} value={value} disabled={disabled} className={`${btnBase} ${btnVariantCls[variant ?? "primary"]}`}>
       {children}
     </button>
   );
@@ -546,36 +548,70 @@ export function ConfirmAction({
   );
 }
 
-type ConfirmPanelProps = {
+type ConfirmPanelBase = {
   title: string;
   body?: ReactNode;
   confirmLabel: string;
   confirmVariant?: BtnVariant;
-  action: (formData: FormData) => void | Promise<void>;
-  hiddenFields?: Record<string, string>;
-  /** `id` of the confirm form, so fields rendered ABOVE the trigger (a change form with its own
-   *  before/after table and file) can join it through the HTML `form="…"` attribute. */
-  formId?: string;
   /** Pored dugmeta potvrde (npr. „Otkaži” kad panel otvara klijentski red tabele). */
   footer?: ReactNode;
   children?: ReactNode;
+  /** Onemogućava dugme potvrde (npr. dok se klijentska forma šalje). */
+  confirmDisabled?: boolean;
 };
+
+type ConfirmPanelProps = ConfirmPanelBase &
+  (
+    | {
+        action: (formData: FormData) => void | Promise<void>;
+        formless?: false;
+        hiddenFields?: Record<string, string>;
+        /** `id` of the confirm form, so fields rendered ABOVE the trigger (a change form with its own
+         *  before/after table and file) can join it through the HTML `form="…"` attribute. */
+        formId?: string;
+        titleId?: undefined;
+      }
+    | {
+        /** D6 (Plans/design-system.md §4.2): panel bez sopstvene forme; dugme potvrde je `type="submit"` i predaje
+         *  OKOLNU formu (klijentska forma izjašnjavanja koja svoje stanje drži u Reactu). */
+        formless: true;
+        action?: undefined;
+        hiddenFields?: undefined;
+        formId?: undefined;
+        /** `id` naslova, na koji upire `aria-labelledby` grupe (bez njega grupa dobija `aria-label` = naslov). */
+        titleId?: string;
+      }
+  );
 
 /** Amber panel potvrde iz `ConfirmAction`, izdvojen da ga red tabele (client, `colSpan` red ispod
  *  reda — F9/X-R15) može otvoriti preko cijele širine umjesto u uskoj ćeliji. Isti izgled i ista
- *  pravila: `title` + `body` koje korisnik mora vidjeti, polja, pa dugme potvrde. */
+ *  pravila: `title` + `body` koje korisnik mora vidjeti, polja, pa dugme potvrde. Uz `formless` je
+ *  `div role="group"` umjesto `form`-e (vidi `ConfirmPanelProps`). */
 export function ConfirmPanel({
-  title, body, confirmLabel, confirmVariant, action, hiddenFields, formId, footer, children, className,
+  title, body, confirmLabel, confirmVariant, confirmDisabled, action, hiddenFields, formId, formless, titleId, footer, children, className,
 }: ConfirmPanelProps & { className?: string }) {
-  const submit = <SubmitBtn variant={confirmVariant ?? "caution"}>{confirmLabel}</SubmitBtn>;
-  return (
-    <form id={formId} action={action} className={`${className ? `${className} ` : ""}space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3`}>
-      <p className="text-sm font-semibold text-amber-900">{title}</p>
+  const submit = <SubmitBtn variant={confirmVariant ?? "caution"} disabled={confirmDisabled}>{confirmLabel}</SubmitBtn>;
+  const cls = `${className ? `${className} ` : ""}space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3`;
+  const content = (
+    <>
+      <p id={titleId} className="text-sm font-semibold text-amber-900">{title}</p>
       {body}
       {hiddenFields &&
         Object.entries(hiddenFields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
       {children}
       {footer ? <div className="flex flex-wrap items-center gap-2">{submit}{footer}</div> : submit}
+    </>
+  );
+  if (formless) {
+    return (
+      <div role="group" aria-labelledby={titleId} aria-label={titleId ? undefined : title} className={cls}>
+        {content}
+      </div>
+    );
+  }
+  return (
+    <form id={formId} action={action} className={cls}>
+      {content}
     </form>
   );
 }

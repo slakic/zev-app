@@ -187,6 +187,9 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "user.deactivate": "SYSTEM",
   "user.update_roles": "SYSTEM",
   "vote.verify.failed": "SYSTEM",
+  "vote.receipt.view": "SYSTEM",
+  // Ime `voting.*` (ne `attachment.download.*`) da `attachment.download` ne postane prefiks i traži `auditActionExact`.
+  "voting.attachment.download": "SYSTEM",
   "voting_rule.create": "SYSTEM",
   "voting_rule.convert": "SYSTEM",
 };
