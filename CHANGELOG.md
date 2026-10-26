@@ -43,6 +43,28 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.52.0] - 2026-10-26
+
+Faza F9 pregleda dizajna: meni je preuređen po poslovima uloge, sa naslovima grupa, a platformski admin je pregledniji i bezbjedniji. **Bez migracije** — deploy ne traži ručni korak.
+
+**Napomena za postojeće korisnike: redoslijed stavki u meniju se promijenio.** Iste stranice su i dalje dostupne, samo na drugom mjestu i pod naslovom grupe.
+
+### Promijenjeno
+
+- **Meni po ulozi (D8, opcija B):** stavke su poredane po ulozi i razvrstane u grupe sa malim naslovom (13px; u suženom meniju naslov zamjenjuje tanka linija).
+  - **Vlasnik:** *Moje* — Početna · Fakture i uplate · Skupština i glasanje · Održavanje · Dokumenti. *Zajednica* — Zgrade i jedinice · Organi ZEV · Planovi.
+  - **Predsjednik:** *Svakodnevno* — Početna · Fakture i naknade · Uplate · Troškovi · Skupština i odluke · Održavanje. *Zajednica* — Vlasnici i korisnici · Zgrade i jedinice · Organi ZEV · Planovi · Dokumenti. *Uprava* — Izvještaji · Evidencije · Podešavanja ZEV-a.
+  - **Računovođa:** *Finansije* — Početna · Fakture i naknade · Uplate · Troškovi · Izvještaji. *Zajednica* — Vlasnici i korisnici · Zgrade i jedinice · Planovi · Održavanje · Skupština i odluke · Organi ZEV · Dokumenti. *Uprava* — Evidencije · Podešavanja ZEV-a.
+  - **Super admin** koji ima i članstvo u ZEV-u vidi dodatnu grupu *Platforma* sa stavkom „Super admin” (sada kroz rječnik).
+- **Vlasnik: „Podešavanja” su u meniju naloga kao „Moji podaci”** (avatar u gornjem desnom uglu). Stranica i adresa `/podesavanja` su iste. Uprava ima „Podešavanja ZEV-a” u grupi *Uprava*.
+- **Uplate (R-Q1):** „Uplate” su zasebna stavka menija za predsjednika i računovođu, odmah ispod Faktura. SMS i usklađivanje ostaju njene podstranice, a aktivna stavka se bira po prefiksu (`/fakture/uplate/…` označava „Uplate”, `/fakture/123` „Fakture i naknade”). Za upravu se stavka faktura zato zove „Fakture i naknade” (naslov stranice i povratni linkovi isto); vlasnik i dalje vidi „Fakture i uplate”. Stranica uplata za upravu nema povratni link, jer je sama stavka menija.
+- **„Evidencije”** su prešle sa kraja liste u grupu *Uprava*.
+- **Admin › ZEV nalozi:** lista je u punoj širini; `primary` „Novi ZEV nalog” je u zaglavlju i vodi na novu stranicu `/admin/novi` (forma je ista). Podnaslov je broj naloga („1 ZEV nalog · 1 aktivan”), a dupli link na aktivnosti je uklonjen.
+- **Admin › Podešavanja platforme:** nova stavka menija i stranica `/admin/podesavanja` sa e-mail podešavanjima platforme i probnom porukom (ranije na listi naloga).
+- **Admin › ZEV detalj:** potvrda „Ukloni pristup” (i „Ukloni moj pristup” u svom redu) otvara se preko cijele širine ispod reda tabele, pa više nije odsječena; upozorenje „nema aktivnog predsjednika” je žuti `Flash` (ne crveni), bez sjenke unutar kartice; kolona „Nalog” prikazuje „Aktivan” / „Deaktiviran”. Uklanjanje pristupa je i dalje iza potvrde sa obaveznim razlogom.
+- Korisničko uputstvo (`public/korisnicko-uputstvo.html`) opisuje novi meni, „Moji podaci” i platformske stavke.
+- `ConfirmPanel` je izdvojen iz `ConfirmAction` (isti izgled) da bi ga red tabele mogao otvoriti preko cijele širine.
+
 ## [2.51.0] - 2026-10-25
 
 Faza F7 pregleda dizajna: podešavanja ne dozvoljavaju pogrešan unos parametara, uloge bez prava vide prikaz samo za čitanje umjesto polja koja ne reaguju, svaka radnja daje poruku, a dnevnici su na jednom mjestu i upotrebljivi na telefonu. **Bez migracije** — deploy ne traži ručni korak.

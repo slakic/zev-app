@@ -4,6 +4,7 @@ import { maybeActor, requireActor } from "@/server/actor";
 import { destroySession } from "@/server/auth/session";
 import { listMyTenants, switchActiveZev } from "@/server/services/memberships";
 import { NavShell } from "@/components/nav-shell";
+import { buildTenantNav, settingsInAccountMenu, type NavRole } from "@/lib/nav-structure";
 
 async function logoutAction() {
   "use server";
@@ -23,23 +24,6 @@ async function switchZevAction(formData: FormData) {
   redirect("/");
 }
 
-const NAV: { href: string; key: string; roles?: string[] }[] = [
-  { href: "/", key: "nav.home" },
-  { href: "/zgrade", key: "nav.buildings" },
-  { href: "/vlasnici", key: "nav.owners", roles: ["PRESIDENT", "ACCOUNTANT"] },
-  { href: "/organi", key: "nav.organs" },
-  { href: "/skupstina", key: "nav.assembly" },
-  { href: "/fakture", key: "nav.invoices" },
-  { href: "/troskovi", key: "nav.expenses", roles: ["PRESIDENT", "ACCOUNTANT"] },
-  { href: "/planovi", key: "nav.plans" },
-  { href: "/odrzavanje", key: "nav.maintenance" },
-  { href: "/dokumenti", key: "nav.documents" },
-  { href: "/izvjestaji", key: "nav.reports", roles: ["PRESIDENT", "ACCOUNTANT"] },
-  { href: "/podesavanja", key: "nav.settings" },
-  // F7 (X-Q5): dnevnici na jednom mjestu, privremeno na kraju liste dok F9 ne preuredi navigaciju.
-  { href: "/evidencije", key: "nav.records", roles: ["PRESIDENT", "ACCOUNTANT"] },
-];
-
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const actor = await maybeActor();
   if (!actor) redirect("/login");
@@ -48,13 +32,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // hit a ForbiddenError deep in a page. A super admin who *also* holds a Membership
   // somewhere falls through normally — they're acting as a member there by choice.
   if (actor.isSuperAdmin && !actor.zevId) redirect("/admin");
-  const links = NAV.filter((n) => !n.roles || n.roles.some((r) => actor.roles.includes(r as never))).map((n) => ({
-    href: n.href,
-    label: t(n.key),
+  // Redoslijed i grupe po ulozi (F9, D8) su čista funkcija u `nav-structure.ts`; meni je samo
+  // prikaz — svaka stranica i servis i dalje sami provjeravaju ulogu i zevId.
+  const navRoles = actor.roles as NavRole[];
+  const groups = buildTenantNav(navRoles, { isSuperAdmin: actor.isSuperAdmin }).map((g) => ({
+    label: g.labelKey ? t(g.labelKey) : undefined,
+    links: g.items.map((i) => ({ href: i.href, label: t(i.labelKey) })),
   }));
-  // A super admin who also manages their own ZEV (e.g. its president) needs a way back
-  // to the platform-level /admin area without typing the URL by hand.
-  if (actor.isSuperAdmin) links.push({ href: "/admin", label: "Super admin" });
   const myTenants = await listMyTenants(actor);
   const tenantOptions = myTenants.map((mt) => ({
     zevId: mt.zevId,
@@ -68,7 +52,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       appName={t("app.name")}
       displayName={actor.displayName}
       rolesText={actor.roles.map((r) => t(`roles.${r}`)).join(", ")}
-      links={links}
+      groups={groups}
+      accountLink={settingsInAccountMenu(navRoles) ? { href: "/podesavanja", label: t("nav.myData") } : undefined}
       logoutLabel={t("nav.logout")}
       logoutAction={logoutAction}
       tenants={tenantOptions}

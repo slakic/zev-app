@@ -622,6 +622,8 @@ Dijeli se na dvije isporuke:
 
 ### F9 — Informaciona arhitektura po ulogama i platformski admin *(M · D8, D4 · X-Q6, R-Q1)*
 
+**Status: ISPORUČENO u v2.52.0 (nije commitovano).** Implementirano bez posebnog implementacionog plana, po izboru korisnika. Odluke korisnika 2026-10-26: D8 opcija B; X-Q6 (vlasnik: „Moji podaci” u meniju naloga); R-Q1 („Uplate” kao stavka menija za upravu). Struktura menija je čista funkcija `src/lib/nav-structure.ts` (testirana), a redoslijed i grupe po ulozi su u DS §4.5.
+
 - **Svrha:** meni odgovara poslovima uloge; admin je pregledan i siguran. Rješava X-N03, X-N04, X-N20–X-N22.
 - **Šta se mijenja** (X-R03, X-R15, X-R16):
   - **Meni:** redoslijed i grupe po ulozi (D8).

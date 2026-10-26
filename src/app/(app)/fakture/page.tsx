@@ -143,8 +143,8 @@ export default async function InvoicesPage({
   return (
     <div>
       <PageHeader
-        title={t("nav.invoices")}
-        subtitle={management ? "Stavke naknada, serije faktura, uplate i salda" : "Vaše fakture i uplate"}
+        title={t(management ? "nav.invoicesManagement" : "nav.invoices")}
+        subtitle={management ? "Stavke naknada, serije faktura i salda" : "Vaše fakture i uplate"}
         actions={management ? <BtnLink href="/fakture/uplate" variant="secondary">Uplate i uparivanje</BtnLink> : <BtnLink href="/fakture/uplate" variant="secondary">Moje uplate</BtnLink>}
       />
       <Flash err={err} msg={msg} />

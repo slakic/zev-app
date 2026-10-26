@@ -26,7 +26,7 @@ export async function adminSendTestEmailAction(input: TestEmailInput): Promise<S
   try {
     const actor = await requireSuperAdminActor();
     const result = await adminSendTestEmail(actor, input);
-    revalidatePath("/admin");
+    revalidatePath("/admin/podesavanja");
     return { ok: true, result };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Greška pri slanju." };
@@ -43,7 +43,7 @@ export async function saveEmailSettingsAction(input: {
   try {
     const actor = await requireSuperAdminActor();
     await adminUpdateEmailSettings(actor, input);
-    revalidatePath("/admin");
+    revalidatePath("/admin/podesavanja");
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Greška pri čuvanju." };

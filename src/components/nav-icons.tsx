@@ -62,6 +62,16 @@ export function IconLandmark(props: IconProps) {
   );
 }
 
+export function IconPayments(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="2.5" y="5" width="15" height="10" rx="1.5" />
+      <circle cx="10" cy="10" r="2.3" />
+      <path d="M5.2 8v.01M14.8 12v.01" />
+    </IconBase>
+  );
+}
+
 export function IconBallot(props: IconProps) {
   return (
     <IconBase {...props}>
@@ -242,6 +252,7 @@ export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/organi": IconLandmark,
   "/skupstina": IconBallot,
   "/fakture": IconReceipt,
+  "/fakture/uplate": IconPayments,
   "/troskovi": IconWallet,
   "/planovi": IconCalendar,
   "/odrzavanje": IconWrench,
@@ -252,4 +263,5 @@ export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/admin": IconShield,
   "/admin/aktivnosti": IconActivity,
   "/admin/sesije": IconMonitor,
+  "/admin/podesavanja": IconSliders,
 };

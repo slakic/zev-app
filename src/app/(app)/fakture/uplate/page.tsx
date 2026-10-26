@@ -111,8 +111,8 @@ export default async function PaymentsPage({
       <PageHeader
         title={management ? "Uplate i uparivanje" : t("paymentsPage.ownerTitle")}
         subtitle={management ? t("paymentsPage.subtitle") : undefined}
-        backHref="/fakture"
-        backLabel={t("nav.invoices")}
+        backHref={management ? undefined : "/fakture"}
+        backLabel={management ? undefined : t("nav.invoices")}
       />
       <Flash err={err} msg={msg} />
 

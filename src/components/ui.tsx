@@ -529,17 +529,20 @@ export function ToggleBtn({ children, variant }: { children: ReactNode; variant?
 export function ConfirmAction({
   trigger,
   triggerVariant,
-  title,
-  body,
-  confirmLabel,
-  confirmVariant,
-  action,
-  hiddenFields,
-  formId,
-  children,
+  ...panel
 }: {
   trigger: ReactNode;
   triggerVariant?: BtnVariant;
+} & ConfirmPanelProps) {
+  return (
+    <details className="group">
+      <ToggleBtn variant={triggerVariant ?? "caution"}>{trigger}</ToggleBtn>
+      <ConfirmPanel {...panel} className="mt-2" />
+    </details>
+  );
+}
+
+type ConfirmPanelProps = {
   title: string;
   body?: ReactNode;
   confirmLabel: string;
@@ -549,20 +552,27 @@ export function ConfirmAction({
   /** `id` of the confirm form, so fields rendered ABOVE the trigger (a change form with its own
    *  before/after table and file) can join it through the HTML `form="…"` attribute. */
   formId?: string;
+  /** Pored dugmeta potvrde (npr. „Otkaži” kad panel otvara klijentski red tabele). */
+  footer?: ReactNode;
   children?: ReactNode;
-}) {
+};
+
+/** Amber panel potvrde iz `ConfirmAction`, izdvojen da ga red tabele (client, `colSpan` red ispod
+ *  reda — F9/X-R15) može otvoriti preko cijele širine umjesto u uskoj ćeliji. Isti izgled i ista
+ *  pravila: `title` + `body` koje korisnik mora vidjeti, polja, pa dugme potvrde. */
+export function ConfirmPanel({
+  title, body, confirmLabel, confirmVariant, action, hiddenFields, formId, footer, children, className,
+}: ConfirmPanelProps & { className?: string }) {
+  const submit = <SubmitBtn variant={confirmVariant ?? "caution"}>{confirmLabel}</SubmitBtn>;
   return (
-    <details className="group">
-      <ToggleBtn variant={triggerVariant ?? "caution"}>{trigger}</ToggleBtn>
-      <form id={formId} action={action} className="mt-2 space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
-        <p className="text-sm font-semibold text-amber-900">{title}</p>
-        {body}
-        {hiddenFields &&
-          Object.entries(hiddenFields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
-        {children}
-        <SubmitBtn variant={confirmVariant ?? "caution"}>{confirmLabel}</SubmitBtn>
-      </form>
-    </details>
+    <form id={formId} action={action} className={`${className ? `${className} ` : ""}space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3`}>
+      <p className="text-sm font-semibold text-amber-900">{title}</p>
+      {body}
+      {hiddenFields &&
+        Object.entries(hiddenFields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
+      {children}
+      {footer ? <div className="flex flex-wrap items-center gap-2">{submit}{footer}</div> : submit}
+    </form>
   );
 }
 

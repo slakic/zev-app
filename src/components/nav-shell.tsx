@@ -24,6 +24,8 @@ import { activeHref } from "@/components/nav-active";
 import { t } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
+/** Grupa stavki menija (F9, D8): `label` izostavljen = ravna lista bez naslova. */
+export type NavGroup = { label?: string; links: NavLink[] };
 export type TenantOption = {
   zevId: string;
   label: string;
@@ -54,11 +56,10 @@ export function NavShell({
   appName,
   displayName,
   rolesText,
-  links,
+  groups,
   logoutLabel,
   logoutAction,
-  settingsHref = "/podesavanja",
-  settingsLabel = "Podešavanja",
+  accountLink,
   tenants,
   activeZevId,
   switchZevAction,
@@ -68,11 +69,11 @@ export function NavShell({
   appName: string;
   displayName: string;
   rolesText: string;
-  links: NavLink[];
+  groups: NavGroup[];
   logoutLabel: string;
   logoutAction: () => void | Promise<void>;
-  settingsHref?: string;
-  settingsLabel?: string;
+  /** Stavka u meniju naloga (vlasnik: „Moji podaci” → /podesavanja, X-Q6). Izostavljena = nema je. */
+  accountLink?: NavLink;
   /** Every ZEV the signed-in user holds a Membership in. The active ZEV's name is always
    * shown under the app name (D9, Plans/design-review-plan.md §5); the switcher (below) and
    * the active-ZEV chip in the top bar only render when there's more than one. */
@@ -119,6 +120,7 @@ export function NavShell({
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLButtonElement>(null);
   const menuId = useId();
+  const navId = useId();
   const drawerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -212,7 +214,7 @@ export function NavShell({
     setDrawerOpen(false);
   }, [pathname]);
 
-  const current = activeHref(pathname, links.map((n) => n.href));
+  const current = activeHref(pathname, groups.flatMap((g) => g.links.map((n) => n.href)));
   const linkCls = (href: string) =>
     `flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
       collapsed ? "md:mx-auto md:w-11 md:justify-center md:gap-0 md:rounded-xl md:px-0" : ""
@@ -292,20 +294,46 @@ export function NavShell({
             <IconClose />
           </button>
         </div>
-        <nav className="space-y-0.5 px-2 pb-4">
-          {links.map((n) => {
-            const Icon = NAV_ICONS[n.href] ?? IconDot;
+        <nav className="px-2 pb-4">
+          {groups.map((g, gi) => {
+            const headingId = `${navId}-g${gi}`;
             return (
-              <Link
-                key={n.href}
-                href={n.href}
-                title={n.label}
-                aria-current={current === n.href ? "page" : undefined}
-                className={linkCls(n.href)}
+              <div
+                key={g.label ?? gi}
+                role={g.label ? "group" : undefined}
+                aria-labelledby={g.label ? headingId : undefined}
+                className="space-y-0.5"
               >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span className={collapsed ? "md:hidden" : ""}>{n.label}</span>
-              </Link>
+                {g.label && gi > 0 && (
+                  // Suženi icon-rail nema mjesta za naslov: zamjenjuje ga tanka linija (D8).
+                  <div aria-hidden="true" className={`hidden ${collapsed ? "md:mx-3 md:mt-3 md:mb-2 md:block md:border-t md:border-slate-200" : ""}`} />
+                )}
+                {g.label && (
+                  <div
+                    id={headingId}
+                    className={`px-3.5 pb-1 text-[13px] font-medium text-slate-500 ${gi > 0 ? "pt-4" : "pt-1"} ${
+                      collapsed ? "md:hidden" : ""
+                    }`}
+                  >
+                    {g.label}
+                  </div>
+                )}
+                {g.links.map((n) => {
+                  const Icon = NAV_ICONS[n.href] ?? IconDot;
+                  return (
+                    <Link
+                      key={n.href}
+                      href={n.href}
+                      title={n.label}
+                      aria-current={current === n.href ? "page" : undefined}
+                      className={linkCls(n.href)}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <span className={collapsed ? "md:hidden" : ""}>{n.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
             );
           })}
         </nav>
@@ -418,14 +446,14 @@ export function NavShell({
                   </div>
                 )}
                 <div className="py-1">
-                  {!platform && (
+                  {!platform && accountLink && (
                     <Link
-                      href={settingsHref}
+                      href={accountLink.href}
                       onClick={() => setMenuOpen(false)}
                       className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
                     >
                       <IconSliders className="h-4 w-4 shrink-0 text-slate-400" />
-                      {settingsLabel}
+                      {accountLink.label}
                     </Link>
                   )}
                   <a

@@ -1,15 +1,10 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { requireSuperAdminActor } from "@/server/actor";
-import { listTenants, createTenant } from "@/server/services/admin";
+import { listTenants } from "@/server/services/admin";
 import { switchActiveZev } from "@/server/services/memberships";
-import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, RowAction, RowActionLink, RowLink, type ColumnSpec } from "@/components/ui";
-import { PasswordField } from "@/components/password-field";
-import { EmailSettingsCard } from "@/components/email-settings-card";
-import { TestEmailCard } from "@/components/test-email-card";
-import { adminGetEmailSettings } from "@/server/services/platformSettings";
-import { adminGetTestEmailStatus } from "@/server/services/emailTest";
-import { t } from "@/lib/i18n";
+import { PageHeader, Card, Table, Td, StatusBadge, Flash, RowAction, RowActionLink, RowLink, BtnLink, type ColumnSpec } from "@/components/ui";
+import { t, tf } from "@/lib/i18n";
+import { isFewForm, isOneForm } from "@/lib/plural";
 
 const tenantHeaders: ColumnSpec[] = [
   { label: "Naziv", priority: "primary" },
@@ -27,31 +22,6 @@ const TIER_LABELS: Record<string, string> = {
   FULL: "Full (+ e-glasanje)",
 };
 
-async function createTenantAction(formData: FormData) {
-  "use server";
-  const actor = await requireSuperAdminActor();
-  let zev;
-  try {
-    zev = await createTenant(actor, {
-      legalName: String(formData.get("legalName") ?? ""),
-      shortName: (formData.get("shortName") as string) || null,
-      jib: (formData.get("jib") as string) || null,
-      registeredAddress: (formData.get("registeredAddress") as string) || null,
-      city: (formData.get("city") as string) || null,
-      municipality: (formData.get("municipality") as string) || null,
-      tier: formData.get("tier") as never,
-      presidentFirstName: String(formData.get("presidentFirstName") ?? ""),
-      presidentLastName: String(formData.get("presidentLastName") ?? ""),
-      presidentEmail: String(formData.get("presidentEmail") ?? ""),
-      presidentPhone: (formData.get("presidentPhone") as string) || null,
-      presidentPassword: String(formData.get("presidentPassword") ?? ""),
-    });
-  } catch (e) {
-    redirect(`/admin?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
-  }
-  redirect(`/admin/${zev.id}`);
-}
-
 async function enterZevAction(formData: FormData) {
   "use server";
   const actor = await requireSuperAdminActor();
@@ -64,122 +34,64 @@ async function enterZevAction(formData: FormData) {
   redirect("/");
 }
 
+function countLabel(group: string, n: number): string {
+  const form = isOneForm(n) ? "one" : isFewForm(n) ? "few" : "other";
+  return tf(`${group}.${form}`, { broj: n });
+}
+
 export default async function AdminHomePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const actor = await requireSuperAdminActor();
   const { err } = await searchParams;
-  const [tenants, emailSettings, testEmailStatus] = await Promise.all([
-    listTenants(actor),
-    adminGetEmailSettings(actor),
-    adminGetTestEmailStatus(actor),
-  ]);
+  const tenants = await listTenants(actor);
+  const activeCount = tenants.filter((z) => z.active).length;
   return (
     <div>
-      <PageHeader title="ZEV nalozi" subtitle={`Prijavljeni kao ${actor.email}`} />
+      <PageHeader
+        title={t("admin.list.title")}
+        subtitle={`${countLabel("admin.list.count", tenants.length)} · ${countLabel("admin.list.active", activeCount)}`}
+        actions={<BtnLink href="/admin/novi" variant="primary">{t("admin.list.newTenant")}</BtnLink>}
+      />
       <Flash err={err} />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card title="Svi ZEV nalozi" className="lg:col-span-2">
-          <div className="mb-3 flex justify-end">
-            <Link href="/admin/aktivnosti" className="text-sm font-medium text-blue-700 hover:underline">
-              Aktivnosti preko svih ZEV naloga
-            </Link>
-          </div>
-          <Table
-            id="tenants-table"
-            caption="Svi ZEV nalozi"
-            headers={tenantHeaders}
-            empty={tenants.length === 0}
-            emptyTitle={t("empty.tenants.title")}
-            emptyHint={t("empty.tenants.hint")}
-          >
-            {tenants.map((z) => {
-              const president = z.memberships[0]?.user;
-              return (
-                <tr key={z.id}>
-                  <Td>
-                    <RowLink href={`/admin/${z.id}`}>{z.legalName}</RowLink>
-                    {z.shortName && <div className="text-xs text-slate-500">{z.shortName}</div>}
-                  </Td>
-                  <Td>{TIER_LABELS[z.tier] ?? z.tier}</Td>
-                  <Td>{president?.email ?? "—"}</Td>
-                  <Td>{z._count.buildings}</Td>
-                  <Td>{z._count.parties}</Td>
-                  <Td>
-                    <StatusBadge status={z.active ? "ACTIVE" : "SUSPENDED"} label={z.active ? "Aktivan" : "Suspendovan"} />
-                  </Td>
-                  <Td>
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <RowActionLink href={`/admin/${z.id}`}>Detalji</RowActionLink>
-                      {z.hasMyMembership && (
-                        <form action={enterZevAction}>
-                          <input type="hidden" name="zevId" value={z.id} />
-                          <RowAction type="submit">{t("tenant.enter")}</RowAction>
-                        </form>
-                      )}
-                    </div>
-                  </Td>
-                </tr>
-              );
-            })}
-          </Table>
-        </Card>
-
-        <Card title="Novi ZEV nalog">
-          <form action={createTenantAction} className="space-y-3">
-            <Field label="Naziv ZEV-a">
-              <input name="legalName" required className={inputCls} placeholder="Zajednica etažnih vlasnika..." />
-            </Field>
-            <Field label="Skraćeni naziv" hint="opciono">
-              <input name="shortName" className={inputCls} />
-            </Field>
-            <Field label="Paket">
-              <select name="tier" className={inputCls} defaultValue="FULL">
-                <option value="BASIC">Basic</option>
-                <option value="BASIC_FINANCE">Basic + finansije</option>
-                <option value="FULL">Full (+ e-glasanje)</option>
-              </select>
-            </Field>
-            <Field label="JIB" hint="opciono">
-              <input name="jib" className={inputCls} />
-            </Field>
-            <Field label="Adresa sjedišta" hint="opciono">
-              <input name="registeredAddress" className={inputCls} />
-            </Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Grad" hint="opciono">
-                <input name="city" className={inputCls} />
-              </Field>
-              <Field label="Opština" hint="opciono">
-                <input name="municipality" className={inputCls} />
-              </Field>
-            </div>
-            <hr className="border-slate-200" />
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Predsjednik</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Ime">
-                <input name="presidentFirstName" required className={inputCls} />
-              </Field>
-              <Field label="Prezime">
-                <input name="presidentLastName" required className={inputCls} />
-              </Field>
-            </div>
-            <Field label="E-mail">
-              <input name="presidentEmail" type="email" required className={inputCls} />
-            </Field>
-            <Field label="Telefon" hint="opciono">
-              <input name="presidentPhone" className={inputCls} />
-            </Field>
-            <Field label="Početna lozinka" hint="bar 8 znakova — saopštite je predsjedniku odvojenim putem">
-              <PasswordField name="presidentPassword" required />
-            </Field>
-            <SubmitBtn>Kreiraj ZEV nalog</SubmitBtn>
-          </form>
-        </Card>
-
-        <div className="grid grid-cols-1 gap-4 lg:col-span-3 lg:grid-cols-2">
-          <EmailSettingsCard settings={emailSettings} />
-          <TestEmailCard status={testEmailStatus} scope="admin" />
-        </div>
-      </div>
+      <Card>
+        <Table
+          id="tenants-table"
+          caption={t("admin.list.title")}
+          headers={tenantHeaders}
+          empty={tenants.length === 0}
+          emptyTitle={t("empty.tenants.title")}
+          emptyHint={t("empty.tenants.hint")}
+        >
+          {tenants.map((z) => {
+            const president = z.memberships[0]?.user;
+            return (
+              <tr key={z.id}>
+                <Td>
+                  <RowLink href={`/admin/${z.id}`}>{z.legalName}</RowLink>
+                  {z.shortName && <div className="text-xs text-slate-500">{z.shortName}</div>}
+                </Td>
+                <Td>{TIER_LABELS[z.tier] ?? z.tier}</Td>
+                <Td>{president?.email ?? "—"}</Td>
+                <Td>{z._count.buildings}</Td>
+                <Td>{z._count.parties}</Td>
+                <Td>
+                  <StatusBadge status={z.active ? "ACTIVE" : "SUSPENDED"} label={z.active ? "Aktivan" : "Suspendovan"} />
+                </Td>
+                <Td>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <RowActionLink href={`/admin/${z.id}`}>Detalji</RowActionLink>
+                    {z.hasMyMembership && (
+                      <form action={enterZevAction}>
+                        <input type="hidden" name="zevId" value={z.id} />
+                        <RowAction type="submit">{t("tenant.enter")}</RowAction>
+                      </form>
+                    )}
+                  </div>
+                </Td>
+              </tr>
+            );
+          })}
+        </Table>
+      </Card>
     </div>
   );
 }

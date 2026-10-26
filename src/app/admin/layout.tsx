@@ -3,6 +3,7 @@ import { requireSuperAdminActor } from "@/server/actor";
 import { destroySession } from "@/server/auth/session";
 import { t } from "@/lib/i18n";
 import { NavShell } from "@/components/nav-shell";
+import { buildPlatformNav } from "@/lib/nav-structure";
 
 // Not nested under (app): a super admin acts at the platform level, outside any single
 // ZEV, so the tenant NAVIGATION (zevId-scoped pages) doesn't apply here — see
@@ -18,19 +19,17 @@ async function logoutAction() {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const actor = await requireSuperAdminActor();
-  const links = [
-    { href: "/admin", label: t("admin.accounts") },
-    { href: "/admin/aktivnosti", label: t("admin.activity") },
-    { href: "/admin/sesije", label: t("admin.sessions") },
-  ];
-  if (actor.zevId) links.push({ href: "/", label: t("admin.myZev") });
+  const groups = buildPlatformNav({ hasZev: Boolean(actor.zevId) }).map((g) => ({
+    label: g.labelKey ? t(g.labelKey) : undefined,
+    links: g.items.map((i) => ({ href: i.href, label: t(i.labelKey) })),
+  }));
   return (
     <NavShell
       variant="platform"
       appName={t("app.name")}
       displayName={actor.displayName}
       rolesText={t("tenant.platformAdmin")}
-      links={links}
+      groups={groups}
       logoutLabel={t("nav.logout")}
       logoutAction={logoutAction}
     >

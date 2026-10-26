@@ -4,14 +4,15 @@ import { requireSuperAdminActor } from "@/server/actor";
 import { getTenant, setTenantActive, createTenantAccount, grantMembership, revokeMembership } from "@/server/services/admin";
 import { switchActiveZev } from "@/server/services/memberships";
 import { formatDate, t, tf } from "@/lib/i18n";
+import { MembershipRow } from "@/components/membership-row";
 import { PasswordField } from "@/components/password-field";
-import { PageHeader, Card, Table, Td, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, Flash, type ColumnSpec } from "@/components/ui";
+import { PageHeader, Card, Table, Stat, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, Flash, type ColumnSpec } from "@/components/ui";
 import type { Role } from "@/generated/prisma/client";
 
 const membershipHeaders: ColumnSpec[] = [
   { label: "Korisnik" },
   { label: "Rola" },
-  { label: "Nalog aktivan" },
+  { label: "Nalog" },
   { label: "Član od" },
   { label: "Radnje", actions: true },
 ];
@@ -156,7 +157,42 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
         <Stat label="Vlasnici/stranke" value={String(zev._count.parties)} />
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="mt-4 space-y-4">
+        <Card title="Nalozi u ovom ZEV-u">
+          {!hasNonAdminActivePresident && (
+            <div className="mb-3">
+              <Flash warn={t("tenant.noActivePresidentWarning")} inset />
+            </div>
+          )}
+          <Table
+            id="memberships-table"
+            caption="Nalozi u ovom ZEV-u"
+            headers={membershipHeaders}
+            empty={zev.memberships.length === 0}
+            emptyTitle={t("empty.memberships.title")}
+          >
+            {zev.memberships.map((m) => (
+              <MembershipRow
+                key={m.id}
+                zevId={zev.id}
+                zevName={zev.shortName ?? zev.legalName}
+                isMe={m.userId === actor.userId}
+                colSpan={membershipHeaders.length}
+                membership={{
+                  userId: m.userId,
+                  role: m.role,
+                  roleLabel: ROLE_LABELS[m.role],
+                  email: m.user.email,
+                  isPlatformAdmin: m.user.isSuperAdmin,
+                  accountActive: m.user.active,
+                  since: formatDate(m.createdAt),
+                }}
+                revokeAction={revokeAction}
+                enterAction={enterZevAction}
+              />
+            ))}
+          </Table>
+        </Card>
         <Card title="Matični podaci">
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between gap-4">
@@ -180,62 +216,6 @@ export default async function AdminTenantDetailPage({ params, searchParams }: { 
               <dd>{formatDate(zev.createdAt)}</dd>
             </div>
           </dl>
-        </Card>
-
-        <Card title="Nalozi u ovom ZEV-u">
-          {!hasNonAdminActivePresident && (
-            <div className="mb-3">
-              <Flash err={t("tenant.noActivePresidentWarning")} />
-            </div>
-          )}
-          <Table
-            id="memberships-table"
-            caption="Nalozi u ovom ZEV-u"
-            headers={membershipHeaders}
-            empty={zev.memberships.length === 0}
-            emptyTitle={t("empty.memberships.title")}
-          >
-            {zev.memberships.map((m) => (
-              <tr key={m.id}>
-                <Td>
-                  {m.user.email}
-                  {m.user.isSuperAdmin && (
-                    <span className="ml-2">
-                      <StatusBadge status="PLATFORM_ADMIN" label={t("tenant.platformAdmin")} />
-                    </span>
-                  )}
-                </Td>
-                <Td>{ROLE_LABELS[m.role]}</Td>
-                <Td>
-                  <StatusBadge status={m.user.active ? "ACTIVE" : "SUSPENDED"} label={m.user.active ? "Da" : "Ne"} />
-                </Td>
-                <Td>{formatDate(m.createdAt)}</Td>
-                <Td>
-                  <div className="flex flex-wrap items-center gap-3">
-                    {m.userId === actor.userId && (
-                      <form action={enterZevAction}>
-                        <input type="hidden" name="zevId" value={zev.id} />
-                        <RowAction type="submit">{t("tenant.enterThisZev")}</RowAction>
-                      </form>
-                    )}
-                    <ConfirmAction
-                      trigger={t("tenant.revokeAccess")}
-                      triggerVariant="caution"
-                      title="Uklanjanje pristupa je nepovratno"
-                      confirmLabel={t("tenant.revokeAccess")}
-                      confirmVariant="caution"
-                      action={revokeAction}
-                      hiddenFields={{ zevId: zev.id, userId: m.userId, role: m.role }}
-                    >
-                      <Field label={t("tenant.revokeReasonPlaceholder")}>
-                        <input name="reason" required className={inputCls} />
-                      </Field>
-                    </ConfirmAction>
-                  </div>
-                </Td>
-              </tr>
-            ))}
-          </Table>
         </Card>
       </div>
 
