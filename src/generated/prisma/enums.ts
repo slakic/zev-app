@@ -150,6 +150,14 @@ export const MeetingBody = {
 export type MeetingBody = (typeof MeetingBody)[keyof typeof MeetingBody]
 
 
+export const MeetingNoteKind = {
+  NOTE: 'NOTE',
+  CONCLUSION: 'CONCLUSION'
+} as const
+
+export type MeetingNoteKind = (typeof MeetingNoteKind)[keyof typeof MeetingNoteKind]
+
+
 export const ProposalStatus = {
   DRAFT: 'DRAFT',
   VOTING_OPEN: 'VOTING_OPEN',

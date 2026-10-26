@@ -218,6 +218,7 @@ export type AgendaItemWhereInput = {
   note?: Prisma.StringNullableFilter<"AgendaItem"> | string | null
   meeting?: Prisma.XOR<Prisma.MeetingScalarRelationFilter, Prisma.MeetingWhereInput>
   proposals?: Prisma.ProposalListRelationFilter
+  notes?: Prisma.MeetingNoteListRelationFilter
 }
 
 export type AgendaItemOrderByWithRelationInput = {
@@ -228,6 +229,7 @@ export type AgendaItemOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   meeting?: Prisma.MeetingOrderByWithRelationInput
   proposals?: Prisma.ProposalOrderByRelationAggregateInput
+  notes?: Prisma.MeetingNoteOrderByRelationAggregateInput
 }
 
 export type AgendaItemWhereUniqueInput = Prisma.AtLeast<{
@@ -242,6 +244,7 @@ export type AgendaItemWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"AgendaItem"> | string | null
   meeting?: Prisma.XOR<Prisma.MeetingScalarRelationFilter, Prisma.MeetingWhereInput>
   proposals?: Prisma.ProposalListRelationFilter
+  notes?: Prisma.MeetingNoteListRelationFilter
 }, "id" | "meetingId_order">
 
 export type AgendaItemOrderByWithAggregationInput = {
@@ -275,6 +278,7 @@ export type AgendaItemCreateInput = {
   note?: string | null
   meeting: Prisma.MeetingCreateNestedOneWithoutAgendaItemsInput
   proposals?: Prisma.ProposalCreateNestedManyWithoutAgendaItemInput
+  notes?: Prisma.MeetingNoteCreateNestedManyWithoutAgendaItemInput
 }
 
 export type AgendaItemUncheckedCreateInput = {
@@ -284,6 +288,7 @@ export type AgendaItemUncheckedCreateInput = {
   title: string
   note?: string | null
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutAgendaItemInput
+  notes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutAgendaItemInput
 }
 
 export type AgendaItemUpdateInput = {
@@ -293,6 +298,7 @@ export type AgendaItemUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutAgendaItemsNestedInput
   proposals?: Prisma.ProposalUpdateManyWithoutAgendaItemNestedInput
+  notes?: Prisma.MeetingNoteUpdateManyWithoutAgendaItemNestedInput
 }
 
 export type AgendaItemUncheckedUpdateInput = {
@@ -302,6 +308,7 @@ export type AgendaItemUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutAgendaItemNestedInput
+  notes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutAgendaItemNestedInput
 }
 
 export type AgendaItemCreateManyInput = {
@@ -421,6 +428,22 @@ export type AgendaItemUncheckedUpdateManyWithoutMeetingNestedInput = {
   deleteMany?: Prisma.AgendaItemScalarWhereInput | Prisma.AgendaItemScalarWhereInput[]
 }
 
+export type AgendaItemCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<Prisma.AgendaItemCreateWithoutNotesInput, Prisma.AgendaItemUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.AgendaItemCreateOrConnectWithoutNotesInput
+  connect?: Prisma.AgendaItemWhereUniqueInput
+}
+
+export type AgendaItemUpdateOneWithoutNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.AgendaItemCreateWithoutNotesInput, Prisma.AgendaItemUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.AgendaItemCreateOrConnectWithoutNotesInput
+  upsert?: Prisma.AgendaItemUpsertWithoutNotesInput
+  disconnect?: Prisma.AgendaItemWhereInput | boolean
+  delete?: Prisma.AgendaItemWhereInput | boolean
+  connect?: Prisma.AgendaItemWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AgendaItemUpdateToOneWithWhereWithoutNotesInput, Prisma.AgendaItemUpdateWithoutNotesInput>, Prisma.AgendaItemUncheckedUpdateWithoutNotesInput>
+}
+
 export type AgendaItemCreateNestedOneWithoutProposalsInput = {
   create?: Prisma.XOR<Prisma.AgendaItemCreateWithoutProposalsInput, Prisma.AgendaItemUncheckedCreateWithoutProposalsInput>
   connectOrCreate?: Prisma.AgendaItemCreateOrConnectWithoutProposalsInput
@@ -443,6 +466,7 @@ export type AgendaItemCreateWithoutMeetingInput = {
   title: string
   note?: string | null
   proposals?: Prisma.ProposalCreateNestedManyWithoutAgendaItemInput
+  notes?: Prisma.MeetingNoteCreateNestedManyWithoutAgendaItemInput
 }
 
 export type AgendaItemUncheckedCreateWithoutMeetingInput = {
@@ -451,6 +475,7 @@ export type AgendaItemUncheckedCreateWithoutMeetingInput = {
   title: string
   note?: string | null
   proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutAgendaItemInput
+  notes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutAgendaItemInput
 }
 
 export type AgendaItemCreateOrConnectWithoutMeetingInput = {
@@ -490,12 +515,65 @@ export type AgendaItemScalarWhereInput = {
   note?: Prisma.StringNullableFilter<"AgendaItem"> | string | null
 }
 
+export type AgendaItemCreateWithoutNotesInput = {
+  id?: string
+  order: number
+  title: string
+  note?: string | null
+  meeting: Prisma.MeetingCreateNestedOneWithoutAgendaItemsInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutAgendaItemInput
+}
+
+export type AgendaItemUncheckedCreateWithoutNotesInput = {
+  id?: string
+  meetingId: string
+  order: number
+  title: string
+  note?: string | null
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutAgendaItemInput
+}
+
+export type AgendaItemCreateOrConnectWithoutNotesInput = {
+  where: Prisma.AgendaItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgendaItemCreateWithoutNotesInput, Prisma.AgendaItemUncheckedCreateWithoutNotesInput>
+}
+
+export type AgendaItemUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.AgendaItemUpdateWithoutNotesInput, Prisma.AgendaItemUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.AgendaItemCreateWithoutNotesInput, Prisma.AgendaItemUncheckedCreateWithoutNotesInput>
+  where?: Prisma.AgendaItemWhereInput
+}
+
+export type AgendaItemUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.AgendaItemWhereInput
+  data: Prisma.XOR<Prisma.AgendaItemUpdateWithoutNotesInput, Prisma.AgendaItemUncheckedUpdateWithoutNotesInput>
+}
+
+export type AgendaItemUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meeting?: Prisma.MeetingUpdateOneRequiredWithoutAgendaItemsNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutAgendaItemNestedInput
+}
+
+export type AgendaItemUncheckedUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  meetingId?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutAgendaItemNestedInput
+}
+
 export type AgendaItemCreateWithoutProposalsInput = {
   id?: string
   order: number
   title: string
   note?: string | null
   meeting: Prisma.MeetingCreateNestedOneWithoutAgendaItemsInput
+  notes?: Prisma.MeetingNoteCreateNestedManyWithoutAgendaItemInput
 }
 
 export type AgendaItemUncheckedCreateWithoutProposalsInput = {
@@ -504,6 +582,7 @@ export type AgendaItemUncheckedCreateWithoutProposalsInput = {
   order: number
   title: string
   note?: string | null
+  notes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutAgendaItemInput
 }
 
 export type AgendaItemCreateOrConnectWithoutProposalsInput = {
@@ -528,6 +607,7 @@ export type AgendaItemUpdateWithoutProposalsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meeting?: Prisma.MeetingUpdateOneRequiredWithoutAgendaItemsNestedInput
+  notes?: Prisma.MeetingNoteUpdateManyWithoutAgendaItemNestedInput
 }
 
 export type AgendaItemUncheckedUpdateWithoutProposalsInput = {
@@ -536,6 +616,7 @@ export type AgendaItemUncheckedUpdateWithoutProposalsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutAgendaItemNestedInput
 }
 
 export type AgendaItemCreateManyMeetingInput = {
@@ -551,6 +632,7 @@ export type AgendaItemUpdateWithoutMeetingInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   proposals?: Prisma.ProposalUpdateManyWithoutAgendaItemNestedInput
+  notes?: Prisma.MeetingNoteUpdateManyWithoutAgendaItemNestedInput
 }
 
 export type AgendaItemUncheckedUpdateWithoutMeetingInput = {
@@ -559,6 +641,7 @@ export type AgendaItemUncheckedUpdateWithoutMeetingInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   proposals?: Prisma.ProposalUncheckedUpdateManyWithoutAgendaItemNestedInput
+  notes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutAgendaItemNestedInput
 }
 
 export type AgendaItemUncheckedUpdateManyWithoutMeetingInput = {
@@ -575,10 +658,12 @@ export type AgendaItemUncheckedUpdateManyWithoutMeetingInput = {
 
 export type AgendaItemCountOutputType = {
   proposals: number
+  notes: number
 }
 
 export type AgendaItemCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   proposals?: boolean | AgendaItemCountOutputTypeCountProposalsArgs
+  notes?: boolean | AgendaItemCountOutputTypeCountNotesArgs
 }
 
 /**
@@ -598,6 +683,13 @@ export type AgendaItemCountOutputTypeCountProposalsArgs<ExtArgs extends runtime.
   where?: Prisma.ProposalWhereInput
 }
 
+/**
+ * AgendaItemCountOutputType without action
+ */
+export type AgendaItemCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MeetingNoteWhereInput
+}
+
 
 export type AgendaItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -607,6 +699,7 @@ export type AgendaItemSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   note?: boolean
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   proposals?: boolean | Prisma.AgendaItem$proposalsArgs<ExtArgs>
+  notes?: boolean | Prisma.AgendaItem$notesArgs<ExtArgs>
   _count?: boolean | Prisma.AgendaItemCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agendaItem"]>
 
@@ -640,6 +733,7 @@ export type AgendaItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type AgendaItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   meeting?: boolean | Prisma.MeetingDefaultArgs<ExtArgs>
   proposals?: boolean | Prisma.AgendaItem$proposalsArgs<ExtArgs>
+  notes?: boolean | Prisma.AgendaItem$notesArgs<ExtArgs>
   _count?: boolean | Prisma.AgendaItemCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AgendaItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -654,6 +748,7 @@ export type $AgendaItemPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     meeting: Prisma.$MeetingPayload<ExtArgs>
     proposals: Prisma.$ProposalPayload<ExtArgs>[]
+    notes: Prisma.$MeetingNotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1057,6 +1152,7 @@ export interface Prisma__AgendaItemClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   meeting<T extends Prisma.MeetingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MeetingDefaultArgs<ExtArgs>>): Prisma.Prisma__MeetingClient<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   proposals<T extends Prisma.AgendaItem$proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AgendaItem$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notes<T extends Prisma.AgendaItem$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AgendaItem$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1513,6 +1609,30 @@ export type AgendaItem$proposalsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ProposalScalarFieldEnum | Prisma.ProposalScalarFieldEnum[]
+}
+
+/**
+ * AgendaItem.notes
+ */
+export type AgendaItem$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MeetingNote
+   */
+  select?: Prisma.MeetingNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MeetingNote
+   */
+  omit?: Prisma.MeetingNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingNoteInclude<ExtArgs> | null
+  where?: Prisma.MeetingNoteWhereInput
+  orderBy?: Prisma.MeetingNoteOrderByWithRelationInput | Prisma.MeetingNoteOrderByWithRelationInput[]
+  cursor?: Prisma.MeetingNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MeetingNoteScalarFieldEnum | Prisma.MeetingNoteScalarFieldEnum[]
 }
 
 /**

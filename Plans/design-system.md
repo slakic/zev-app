@@ -246,7 +246,7 @@ Nosioci:
 | `ToggleBtn` | `:504` | `<summary>` za `<details>` sekciju „otkrij formu", sa rotirajućim chevronom. Bez JS-a. Obavezno `className="group"` na `<details>`. |
 | `RowAction` | `:397` | Radnja u koloni „Radnje" — **glagol**, ne identitet. Kompaktna geometrija, `type="submit"` ili `onClick`. |
 | `RowActionLink` | `:409` | Isto, ali navigira. |
-| `SegmentedAction` | `:513` | Red od 2-3 uzajamno isključive radnje veličine prsta (min. 44px), od kojih je najviše jedna „trenutna" (neaktivna `secondary`, aktivna `tonal`, ili `caution` po izboru — nikad `danger`). Svaka opcija je pravi `type="submit"` sa `name`/`value`, pa ga je dovoljno umotati u `<form action>`. Dodato u režimu uživo (prozivka, „Za / Protiv / Uzdržan"; odluka P11 u `Plans/live-meeting-mode-plan.md`). |
+| `SegmentedAction` | `:513` | Red od 2-3 uzajamno isključive radnje veličine prsta (min. 44px), od kojih je najviše jedna „trenutna" (neaktivna `secondary`, aktivna `tonal`, ili `caution` po izboru — nikad `danger`). Svaka opcija je pravi `type="submit"` sa `name`/`value`, pa ga je dovoljno umotati u `<form action>`. Dodato u režimu uživo (prozivka, „Za / Protiv / Uzdržan"; odluka P11 u `Plans/live-meeting-mode-plan.md`). Od v2.54.0 prima i `onSelect`: tada su opcije `type="button"` i primitiv služi kao izbor vrste unosa u klijentskoj formi (Bilješka / Zaključak) uz zasebno `tonal` dugme „Sačuvaj"; bez `onSelect` ponašanje je nepromijenjeno. |
 | `RowLink` | `:423` | **Identitet reda** (broj fakture, ime osobe) — podvučeni tekst, ne pilula: mora da čita kao podatak reda, ne kao kontrola koja se takmiči sa pravim radnjama. |
 | `btnBase`, `btnVariantCls` | `:436, :453` | Izvezeni za client komponente koje moraju da sastave dugme same. Uvoziti ih, ne prepisivati klase. |
 

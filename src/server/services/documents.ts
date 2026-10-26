@@ -6,7 +6,8 @@ import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, type Actor 
 import { formatMoney, formatWeight, dec } from "@/lib/money";
 import { paymentQrPayload } from "@/lib/paymentInstructions";
 import { getPaymentInstructions } from "./paymentInstructions";
-import { formatDate, formatDateTime, tEnum } from "@/lib/i18n";
+import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { loadMinutesContent, type MinutesProposal } from "./meetingNotes";
 import { partyDisplayName } from "./ownership";
 import {
   cashFlowReport,
@@ -622,46 +623,143 @@ export async function generateMeetingInvitationPdf(actor: Actor, meetingId: stri
   return row;
 }
 
+/** Statusi prijedloga čiji rezultat ulazi u zapisnik (isto kao i prije v2.54.0). */
+const MINUTES_RESULT_STATUSES = ["ACCEPTED", "REJECTED", "VOTING_CLOSED"];
+
+/** Prelom strane prije zaglavlja/bloka koji ne smije ostati sam na dnu strane. */
+function pdfEnsureSpace(doc: PDFKit.PDFDocument, needed: number) {
+  if (doc.y + needed > 760) doc.addPage();
+}
+
 export async function generateMinutesPdf(actor: Actor, meetingId: string, opts?: { finalize?: boolean }) {
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
-  const meeting = await prisma.meeting.findUniqueOrThrow({
-    where: { id: meetingId, zevId },
-    include: {
-      agendaItems: { orderBy: { order: "asc" } },
-      attendances: { include: { party: true } },
-      proposals: { where: { status: { in: ["ACCEPTED", "REJECTED", "VOTING_CLOSED"] } } },
-    },
-  });
+  // Isti sadržaj (tačke, rezultati, zaključci, teme van dnevnog reda, zapisničar) koji vidi pregled na ekranu.
+  const content = await loadMinutesContent(zevId, meetingId);
+  const meeting = content.meeting;
+  const attendances = await prisma.attendance.findMany({ where: { meetingId, meeting: { zevId } }, include: { party: true } });
   const buffer = await renderPdf(async (doc) => {
-    await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "MINUTES"), title: "ZAPISNIK SA SJEDNICE SKUPŠTINE", issueDate: new Date() });
-    doc.text(`Sjednica: ${meeting.title}`);
-    doc.text(`Vrijeme: ${formatDateTime(meeting.scheduledAt)}   Mjesto: ${meeting.location ?? "—"}`);
-    doc.moveDown().font("bold").text("Prisutni:").font("reg");
-    const present = meeting.attendances.filter((a) => a.present);
-    present.forEach((a) => doc.text(`• ${partyDisplayName(a.party)}${a.viaProxyId ? " (putem punomoćnika)" : ""}`));
-    if (present.length === 0) doc.text("— (pismeno/elektronsko izjašnjavanje)");
-    doc.moveDown().font("bold").text("Dnevni red:").font("reg");
-    meeting.agendaItems.forEach((item, i) => doc.text(`${i + 1}. ${item.title}`));
-    doc.moveDown().font("bold").text("Rezultati izjašnjavanja:").font("reg");
-    for (const p of meeting.proposals) {
-      const r = p.resultSummary as { approveWeight?: string; rejectWeight?: string; abstainWeight?: string; quorumReached?: boolean; accepted?: boolean } | null;
-      doc.moveDown(0.3).font("bold").text(`${p.code} v${p.version}: ${p.title}`).font("reg");
-      doc.fontSize(9).text(p.text, { indent: 10 }).fontSize(10);
-      if (r) {
-        doc.text(
-          `Za: ${formatWeight(r.approveWeight ?? "0")} · Protiv: ${formatWeight(r.rejectWeight ?? "0")} · Uzdržani: ${formatWeight(r.abstainWeight ?? "0")} · ` +
-          `Kvorum: ${r.quorumReached ? "postignut" : "nije postignut"} · Ishod: ${r.accepted ? "USVOJENO" : "NIJE USVOJENO"}` +
-          (p.decisionNumber ? ` · Odluka br. ${p.decisionNumber}` : "")
-        );
+    await zevHeader(doc, zevId, { number: await nextDocNumber(zevId, "MINUTES"), title: t(`minutes.title.${meeting.body}`), issueDate: new Date() });
+    const section = (title: string) => {
+      doc.moveDown(0.5);
+      pdfSection(doc, title);
+      doc.font("reg").fontSize(10);
+    };
+    const bullets = (rows: string[], indent = 60) => {
+      for (const row of rows) {
+        doc.text(`• ${row}`, indent, doc.y, { width: 545 - indent });
+        doc.moveDown(0.15);
+      }
+    };
+    const notesBlock = (conclusions: { text: string }[], notes: { text: string }[]) => {
+      if (conclusions.length > 0) {
+        pdfEnsureSpace(doc, 40);
+        doc.font("bold").fontSize(9.5).text(t("minutes.conclusions"), 60, doc.y, { width: 485 });
+        doc.font("reg").fontSize(10);
+        conclusions.forEach((c, i) => {
+          doc.font("bold").text(`${tf("minutes.conclusionN", { broj: i + 1 })} `, 60, doc.y, { width: 485, continued: true });
+          doc.font("reg").text(c.text);
+          doc.moveDown(0.2);
+        });
+        doc.moveDown(0.3);
+      }
+      if (notes.length > 0) {
+        pdfEnsureSpace(doc, 40);
+        doc.font("bold").fontSize(9.5).text(t("minutes.notes"), 60, doc.y, { width: 485 });
+        doc.font("reg").fontSize(10);
+        bullets(notes.map((n) => n.text));
+        doc.moveDown(0.3);
+      }
+      doc.x = 50;
+    };
+    const resultTable = (proposals: MinutesProposal[]) => {
+      const cols: PdfCol[] = [
+        { label: t("minutes.resultCols.proposal"), x: 50, width: 170 },
+        { label: t("minutes.resultCols.for"), x: 225, width: 50, right: true },
+        { label: t("minutes.resultCols.against"), x: 280, width: 50, right: true },
+        { label: t("minutes.resultCols.abstain"), x: 335, width: 55, right: true },
+        { label: t("minutes.resultCols.quorum"), x: 395, width: 70 },
+        { label: t("minutes.resultCols.outcome"), x: 470, width: 75 },
+      ];
+      const rows = proposals.map((p) => {
+        const name = `${p.code} v${p.version}: ${p.title}${p.decisionNumber ? `\n${tf("minutes.decisionNo", { broj: p.decisionNumber })}` : ""}`;
+        const r = p.result;
+        return r
+          ? [name, formatWeight(r.approveWeight), formatWeight(r.rejectWeight), formatWeight(r.abstainWeight),
+             t(r.quorumReached ? "minutes.quorumYes" : "minutes.quorumNo"), t(r.accepted ? "minutes.accepted" : "minutes.notAccepted")]
+          : [name, "—", "—", "—", "—", t("minutes.noResult")];
+      });
+      pdfTable(doc, cols, rows, "");
+      for (const p of proposals) {
+        doc.fontSize(9).fillColor("#333").text(`${p.code}: ${p.text}`, 60, doc.y, { width: 485 });
+        doc.moveDown(0.3);
+      }
+      doc.fontSize(10).fillColor("#000");
+      doc.x = 50;
+    };
+
+    doc.text(tf("minutes.session", { naslov: meeting.title }));
+    doc.text(tf("minutes.timePlace", { vrijeme: formatDateTime(meeting.scheduledAt), mjesto: meeting.location ?? "—" }));
+
+    section(t("minutes.present"));
+    const present = attendances.filter((a) => a.present);
+    bullets(present.map((a) => `${partyDisplayName(a.party)}${a.viaProxyId ? ` (${t("minutes.viaProxy")})` : ""}`), 50);
+    if (present.length === 0) doc.text(t("minutes.noneRollCall"), 50, doc.y, { width: 495 });
+
+    section(t("minutes.agenda"));
+    content.items.forEach((item) => doc.text(`${item.order}. ${item.title}`, 50, doc.y, { width: 495 }));
+
+    section(t("minutes.flow"));
+    for (const it of content.items) {
+      const decided = it.proposals.filter((p) => MINUTES_RESULT_STATUSES.includes(p.status));
+      pdfEnsureSpace(doc, 90);
+      doc.font("bold").fontSize(10.5).text(`${it.order}. ${it.title}`, 50, doc.y, { width: 495 });
+      doc.font("reg").fontSize(10).moveDown(0.2);
+      if (decided.length > 0) resultTable(decided);
+      notesBlock(it.conclusions, it.notes);
+      if (decided.length === 0 && it.conclusions.length === 0 && it.notes.length === 0) {
+        doc.fillColor("#777").text(t("minutes.noConclusions"), 60, doc.y, { width: 485 }).fillColor("#000");
+        doc.moveDown(0.5);
+      }
+      doc.x = 50;
+    }
+    const otherDecided = content.unlinkedProposals.filter((p) => MINUTES_RESULT_STATUSES.includes(p.status));
+    if (otherDecided.length > 0) {
+      section(t("minutes.otherProposals"));
+      resultTable(otherDecided);
+    }
+
+    if (content.topics.length > 0) {
+      section(t("minutes.offAgenda"));
+      doc.fontSize(9).fillColor("#555").text(t("minutes.offAgendaSentence"), 50, doc.y, { width: 495 }).fillColor("#000").fontSize(10);
+      doc.moveDown(0.4);
+      for (const topic of content.topics) {
+        pdfEnsureSpace(doc, 70);
+        doc.font("bold").fontSize(10.5).text(topic.topic || t("minutes.unnamed"), 50, doc.y, { width: 495 });
+        doc.font("reg").fontSize(10).moveDown(0.2);
+        notesBlock(topic.conclusions, topic.notes);
       }
     }
+
+    // Stari, slobodan tekst iz doba prije bilješki po tačkama — štampa se samo ako postoji.
     if (meeting.discussionNotes) {
-      doc.moveDown().font("bold").text("Tok rasprave:").font("reg").text(meeting.discussionNotes);
+      section(t("minutes.legacyDiscussion"));
+      doc.text(meeting.discussionNotes, 50, doc.y, { width: 495 });
     }
+
+    pdfEnsureSpace(doc, 130);
     doc.moveDown(2);
-    doc.text("Predsjednik ZEV: ______________________", 50);
-    doc.text("Zapisničar: ______________________", 300, doc.y - 12);
+    const top = doc.y;
+    const takerLabel = meeting.minutesTaker ? `${t("minutes.taker")}: ${meeting.minutesTaker.name}` : `${t("minutes.taker")}:`;
+    const chairLabel = `${t("minutes.chair")}:`;
+    const labelHeight = Math.max(doc.heightOfString(chairLabel, { width: 230 }), doc.heightOfString(takerLabel, { width: 215 }));
+    doc.text(chairLabel, 50, top, { width: 230 });
+    doc.text(takerLabel, 300, top, { width: 215 });
+    const lineY = top + labelHeight + 22;
+    doc.text("______________________", 50, lineY, { width: 230 });
+    doc.text("______________________", 300, lineY, { width: 215 });
+    doc.x = 50;
+    doc.y = lineY + 16;
     docFooter(doc, { sourceRef: `Meeting ${meeting.id}`, version: 1, status: opts?.finalize ? "FINAL" : "DRAFT" });
   });
   const { row } = await storeDocument(actor, {

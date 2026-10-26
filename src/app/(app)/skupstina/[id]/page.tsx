@@ -8,6 +8,9 @@ import { listBuildings } from "@/server/services/property";
 import { parseMoneyInput } from "@/lib/money";
 import { formatDateTime, parseZonedDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, BtnLink, Flash, ToggleBtn, RowLink, RowAction, RowActionLink, ConfirmAction, type ColumnSpec } from "@/components/ui";
+import { MinutesOverview } from "@/components/minutes-overview";
+import { getMinutesContent, listMinutesTakerCandidates } from "@/server/services/meetingNotes";
+import { setMinutesTakerAction } from "@/app/meeting-notes-actions";
 import { MeetingNextStepPanel, MeetingTimeline } from "@/components/meeting-next-step-panel";
 import { meetingNextStep } from "@/lib/meetingNextStep";
 import type { DispatchResult } from "@/server/notifications/dailyBudget";
@@ -199,6 +202,9 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
   // P-L2: the ballot is a locked set of proposals — once voting is open (or ballots exist) a new item goes to a new session.
   const proposalsLocked =
     (ballotSummary?.total ?? 0) > 0; // P-L2: only once ballots were issued (live mode without ballots may still add)
+  // Bilješke i zaključci (v2.54.0): uprava vidi i ispravlja ih do finalizacije zapisnika.
+  const minutes = canRunLive ? await getMinutesContent(actor, id) : null;
+  const takerCandidates = minutes?.state === "writable" ? await listMinutesTakerCandidates(actor) : [];
   // F6.1/F6.2: the next step, its consequence and its preconditions — one model (src/lib/meetingNextStep.ts) for the
   // panel below and for the president's home. Only the president acts, so only he loads it.
   const nextStepData = isPresident ? await getMeetingNextStepInput(actor, id) : null;
@@ -365,6 +371,35 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             </details>
           )}
         </Card>
+
+        {minutes && (
+          <div id="biljeske" className="scroll-mt-20 lg:col-span-2">
+            <Card title={t("meetingNotes.title")}>
+              {minutes.state === "locked" && <p className="mb-4 text-[15px] text-slate-700">{t("meetingNotes.locked")}</p>}
+              {minutes.state === "early" && <p className="mb-4 text-[15px] text-slate-700">{t("meetingNotes.early")}</p>}
+              {minutes.state === "writable" ? (
+                <form action={setMinutesTakerAction} className="mb-4 flex flex-wrap items-end gap-3 border-b border-slate-100 pb-4">
+                  <input type="hidden" name="meetingId" value={meeting.id} />
+                  <input type="hidden" name="returnTo" value={`/skupstina/${meeting.id}#biljeske`} />
+                  <div className="min-w-[14rem] flex-1">
+                    <Field label={t("meetingNotes.minutesTaker.label")} hint={t("meetingNotes.minutesTaker.hint")}>
+                      <select name="partyId" defaultValue={minutes.meeting.minutesTaker?.id ?? ""} className={inputCls}>
+                        <option value="">{t("meetingNotes.minutesTaker.none")}</option>
+                        {takerCandidates.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      </select>
+                    </Field>
+                  </div>
+                  <SubmitBtn variant="tonal">{t("meetingNotes.minutesTaker.save")}</SubmitBtn>
+                </form>
+              ) : (
+                <p className="mb-4 text-[15px] text-slate-700">
+                  {t("meetingNotes.minutesTaker.label")}: {minutes.meeting.minutesTaker?.name ?? t("meetingNotes.minutesTaker.none")}
+                </p>
+              )}
+              <MinutesOverview content={minutes} editable={minutes.state === "writable"} returnTo={`/skupstina/${meeting.id}#biljeske`} />
+            </Card>
+          </div>
+        )}
 
         {isPresident && ballotSummary && (ballotSummary.total > 0 || ballotSummary.invitationsQueued > 0) && (
           <div id="listici" className="scroll-mt-20 lg:col-span-2">

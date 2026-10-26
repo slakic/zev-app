@@ -7,6 +7,7 @@ import { Card, ConfirmAction, ToggleBtn, SegmentedAction, StatusBadge, RowAction
 import { PreconditionList } from "@/components/precondition-list";
 import { formatWeight } from "@/lib/money";
 import { tEnum, t, tf } from "@/lib/i18n";
+import { OFF_AGENDA_ID } from "@/lib/meetingNotes";
 
 export type AgendaItemData = {
   id: string;
@@ -64,6 +65,8 @@ const NOTIFY_STATUS_KEY: Record<string, string> = {
 export function AgendaTabs({
   meetingId, items, activeId,
 }: { meetingId: string; items: { id: string; order: number; title: string }[]; activeId: string | null }) {
+  // Posljednji čip: teme van dnevnog reda (OFF_AGENDA_ID u `t=`), samo se zapisuju (P-B3).
+  const offActive = activeId === OFF_AGENDA_ID;
   return (
     <nav aria-label={t("live.tabAgenda")} className="mb-4 flex gap-2 overflow-x-auto pb-1">
       {items.map((a) => {
@@ -82,6 +85,16 @@ export function AgendaTabs({
           </Link>
         );
       })}
+      <Link
+        href={`/uzivo/${meetingId}?tab=dnevni-red&t=${OFF_AGENDA_ID}`}
+        scroll={false}
+        aria-current={offActive ? "page" : undefined}
+        className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors ${
+          offActive ? "bg-blue-50 text-blue-700" : "border border-slate-300 text-slate-600 hover:bg-slate-50"
+        }`}
+      >
+        {t("live.offAgenda")}
+      </Link>
     </nav>
   );
 }

@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.54.0] - 2026-10-26
+
+Bilješke i zaključci sa sjednice: osoba koja vodi sjednicu zapisuje u trenutku, na telefonu, ono što je zaključeno i važno — uz tačku dnevnog reda (i uz „Razno”) ili kao temu van dnevnog reda — a to bez prepisivanja ulazi u nacrt i konačni zapisnik. Plan: `Plans/sjednica-uzivo-biljeske-i-zapisnik-plan.md`.
+
+**Migracija: da — pokrenuti na produkciji prije deploy-a** (`MIGRATE_DATABASE_URL=… node scripts/migrate.mjs apply`). Migracija: `20261026105435_meeting_notes` (aditivna: nova tabela `MeetingNote` + enum `MeetingNoteKind`, nullable kolona `Meeting.minutesTakerId`; stari kod ih ignoriše, povlačenje je samo naprijed).
+
+### Dodato
+
+- **Režim uživo (`/uzivo`):** kartica „Bilješke i zaključci” uz svaku tačku dnevnog reda (i sa prijedlogom i „samo diskusija”, pa i „Razno”): izbor Bilješka / Zaključak, polje za tekst i „Sačuvaj”. Tekst koji se kuca preživljava automatsko osvježavanje ekrana, a nacrt se čuva i na uređaju (po sjednici i tački), pa ga ne briše ni zatvoren tab; na grešku (npr. izmjena sa drugog uređaja) tekst ostaje u polju. Uređivanje, brisanje (iza potvrde) i pomjeranje gore/dolje. Posljednji čip „Van dnevnog reda” za teme koje se samo zapisuju (bez glasanja). Novi tab „Zapisnik”: pregled svega što ulazi u zapisnik po tačkama, ime zapisničara i „Nacrt zapisnika (PDF)”.
+- **Detalj sjednice:** kartica „Bilješke i zaključci” (uprava): ispravke do finalizacije zapisnika, poslije toga samo čitanje; izbor zapisničara sjednice (ime se štampa uz potpis). Preduslov na koraku „Finalizuj zapisnik”: broj zaključaka i bilješki i upozorenje za tačku bez prijedloga i bez zaključka (samo upozorenje, ne blokira).
+- **Servis `meetingNotes`:** pišu predsjednik i računovođa, od zakazane sjednice do „Odluke evidentirane”; `zevId` u svakom upitu; izmjena nosi `version` — zastarjela izmjena dobija poruku „Bilješku je u međuvremenu promijenio/la …” umjesto da tiho prepiše tuđi tekst; poslije finalizacije sve se odbija. Audit: `meeting.note.create|update|delete|move` (sa tekstom prije i poslije) i `meeting.minutes_taker.set`.
+
+### Promijenjeno
+
+- **Zapisnik (PDF):** naslov prema organu („…SKUPŠTINE” / „…UPRAVNOG ODBORA” — ranije je uvijek pisalo skupštine); „Tok sjednice po tačkama” — rezultat glasanja je ispod svoje tačke (ranije jedan zajednički blok), zatim numerisani zaključci i bilješke; zasebna sekcija „Van dnevnog reda” sa rečenicom da se o tim temama nije odlučivalo; stari „Tok rasprave” samo ako postoji; potpis „Zapisničar: {ime}” kad je zapisničar određen. Paginacija preko `pdfSection`/`pdfTable`.
+- **`SegmentedAction`** prima opcioni `onSelect` (opcije kao izbor, ne kao slanje obrasca); bez njega ponašanje je isto.
+
 ## [2.53.0] - 2026-10-26
 
 Pravne odluke korisnika od 2026-10-26 unesene u aplikaciju: jedno lice daje najviše jedan glas ukupno (K-03b), e-glasanje je opisano kao alat za vođenje glasanja i pripremu dokumentacije, upozorenja o zakonskom minimumu održavanja i o roku poziva, te uklonjeni parametri koji su bili samo pretpostavke. **Bez migracije** — deploy ne traži ručni korak; sukobi predstavnika se rješavaju u radu (preduslov i upozorenje).

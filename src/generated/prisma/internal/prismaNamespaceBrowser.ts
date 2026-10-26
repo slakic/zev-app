@@ -69,6 +69,7 @@ export const ModelName = {
   CommonAsset: 'CommonAsset',
   Meeting: 'Meeting',
   AgendaItem: 'AgendaItem',
+  MeetingNote: 'MeetingNote',
   Attendance: 'Attendance',
   VotingRule: 'VotingRule',
   Proposal: 'Proposal',
@@ -412,6 +413,7 @@ export const MeetingScalarFieldEnum = {
   eVoteOpensAt: 'eVoteOpensAt',
   eVoteClosesAt: 'eVoteClosesAt',
   discussionNotes: 'discussionNotes',
+  minutesTakerId: 'minutesTakerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -428,6 +430,25 @@ export const AgendaItemScalarFieldEnum = {
 } as const
 
 export type AgendaItemScalarFieldEnum = (typeof AgendaItemScalarFieldEnum)[keyof typeof AgendaItemScalarFieldEnum]
+
+
+export const MeetingNoteScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  meetingId: 'meetingId',
+  agendaItemId: 'agendaItemId',
+  topic: 'topic',
+  kind: 'kind',
+  text: 'text',
+  position: 'position',
+  version: 'version',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MeetingNoteScalarFieldEnum = (typeof MeetingNoteScalarFieldEnum)[keyof typeof MeetingNoteScalarFieldEnum]
 
 
 export const AttendanceScalarFieldEnum = {

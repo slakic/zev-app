@@ -501,6 +501,23 @@ export type EnumMeetingStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMeetingStatusFilter<$PrismaModel>
 }
 
+export type EnumMeetingNoteKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingNoteKind | Prisma.EnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingNoteKindFilter<$PrismaModel> | $Enums.MeetingNoteKind
+}
+
+export type EnumMeetingNoteKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingNoteKind | Prisma.EnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingNoteKindWithAggregatesFilter<$PrismaModel> | $Enums.MeetingNoteKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeetingNoteKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeetingNoteKindFilter<$PrismaModel>
+}
+
 export type EnumQuorumTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.QuorumType | Prisma.EnumQuorumTypeFieldRefInput<$PrismaModel>
   in?: $Enums.QuorumType[] | Prisma.ListEnumQuorumTypeFieldRefInput<$PrismaModel>
@@ -1560,6 +1577,23 @@ export type NestedEnumMeetingStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMeetingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMeetingStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumMeetingNoteKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingNoteKind | Prisma.EnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingNoteKindFilter<$PrismaModel> | $Enums.MeetingNoteKind
+}
+
+export type NestedEnumMeetingNoteKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeetingNoteKind | Prisma.EnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  in?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeetingNoteKind[] | Prisma.ListEnumMeetingNoteKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeetingNoteKindWithAggregatesFilter<$PrismaModel> | $Enums.MeetingNoteKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeetingNoteKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeetingNoteKindFilter<$PrismaModel>
 }
 
 export type NestedEnumQuorumTypeFilter<$PrismaModel = never> = {

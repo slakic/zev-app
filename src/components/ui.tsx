@@ -452,11 +452,14 @@ function SegmentCheckIcon() {
  *  active = `tonal` by default, overridable per option (e.g. an active "Protiv" choice
  *  uses `caution`, never `danger` — rejecting a proposal isn't destroying data). */
 export function SegmentedAction({
-  name, options, active,
+  name, options, active, onSelect,
 }: {
   name: string;
   options: { value: string; label: string; activeVariant?: BtnVariant }[];
   active?: string;
+  /** Kad je zadat, opcije su izbor (`type="button"`, bez slanja obrasca): klijentska forma čuva izbor u stanju
+   *  (npr. Bilješka / Zaključak) i šalje ga zasebnim dugmetom „Sačuvaj”. */
+  onSelect?: (value: string) => void;
 }) {
   return (
     <div role="group" className="flex gap-2">
@@ -466,9 +469,10 @@ export function SegmentedAction({
         return (
           <button
             key={opt.value}
-            type="submit"
-            name={name}
+            type={onSelect ? "button" : "submit"}
+            name={onSelect ? undefined : name}
             value={opt.value}
+            onClick={onSelect ? () => onSelect(opt.value) : undefined}
             aria-pressed={isActive}
             className={`inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${btnVariantCls[variant]}`}
           >

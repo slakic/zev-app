@@ -316,6 +316,7 @@ export type PartyWhereInput = {
   ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
   occupancies?: Prisma.OccupancyListRelationFilter
   proxiesGiven?: Prisma.ProxyListRelationFilter
+  minutesTakerOf?: Prisma.MeetingListRelationFilter
   proxiesHeld?: Prisma.ProxyListRelationFilter
   officeTerms?: Prisma.OfficeTermListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
@@ -364,6 +365,7 @@ export type PartyOrderByWithRelationInput = {
   ownershipStakes?: Prisma.OwnershipStakeOrderByRelationAggregateInput
   occupancies?: Prisma.OccupancyOrderByRelationAggregateInput
   proxiesGiven?: Prisma.ProxyOrderByRelationAggregateInput
+  minutesTakerOf?: Prisma.MeetingOrderByRelationAggregateInput
   proxiesHeld?: Prisma.ProxyOrderByRelationAggregateInput
   officeTerms?: Prisma.OfficeTermOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
@@ -416,6 +418,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   ownershipStakes?: Prisma.OwnershipStakeListRelationFilter
   occupancies?: Prisma.OccupancyListRelationFilter
   proxiesGiven?: Prisma.ProxyListRelationFilter
+  minutesTakerOf?: Prisma.MeetingListRelationFilter
   proxiesHeld?: Prisma.ProxyListRelationFilter
   officeTerms?: Prisma.OfficeTermListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
@@ -516,6 +519,7 @@ export type PartyCreateInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -562,6 +566,7 @@ export type PartyUncheckedCreateInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -608,6 +613,7 @@ export type PartyUpdateInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -654,6 +660,7 @@ export type PartyUncheckedUpdateInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -1063,6 +1070,22 @@ export type PartyUpdateOneRequiredWithoutOfficeTermsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutOfficeTermsInput, Prisma.PartyUpdateWithoutOfficeTermsInput>, Prisma.PartyUncheckedUpdateWithoutOfficeTermsInput>
 }
 
+export type PartyCreateNestedOneWithoutMinutesTakerOfInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutMinutesTakerOfInput, Prisma.PartyUncheckedCreateWithoutMinutesTakerOfInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutMinutesTakerOfInput
+  connect?: Prisma.PartyWhereUniqueInput
+}
+
+export type PartyUpdateOneWithoutMinutesTakerOfNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutMinutesTakerOfInput, Prisma.PartyUncheckedCreateWithoutMinutesTakerOfInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutMinutesTakerOfInput
+  upsert?: Prisma.PartyUpsertWithoutMinutesTakerOfInput
+  disconnect?: Prisma.PartyWhereInput | boolean
+  delete?: Prisma.PartyWhereInput | boolean
+  connect?: Prisma.PartyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutMinutesTakerOfInput, Prisma.PartyUpdateWithoutMinutesTakerOfInput>, Prisma.PartyUncheckedUpdateWithoutMinutesTakerOfInput>
+}
+
 export type PartyCreateNestedOneWithoutAttendancesInput = {
   create?: Prisma.XOR<Prisma.PartyCreateWithoutAttendancesInput, Prisma.PartyUncheckedCreateWithoutAttendancesInput>
   connectOrCreate?: Prisma.PartyCreateOrConnectWithoutAttendancesInput
@@ -1280,6 +1303,7 @@ export type PartyCreateWithoutLegacyUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -1325,6 +1349,7 @@ export type PartyUncheckedCreateWithoutLegacyUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -1375,6 +1400,7 @@ export type PartyCreateWithoutUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -1420,6 +1446,7 @@ export type PartyUncheckedCreateWithoutUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -1486,6 +1513,7 @@ export type PartyUpdateWithoutLegacyUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -1531,6 +1559,7 @@ export type PartyUncheckedUpdateWithoutLegacyUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -1619,6 +1648,7 @@ export type PartyCreateWithoutZevInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -1664,6 +1694,7 @@ export type PartyUncheckedCreateWithoutZevInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -1736,6 +1767,7 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -1781,6 +1813,7 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -1831,6 +1864,7 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -1876,6 +1910,7 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -1926,6 +1961,7 @@ export type PartyCreateWithoutVotingRepresentativeForInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -1971,6 +2007,7 @@ export type PartyUncheckedCreateWithoutVotingRepresentativeForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -2032,6 +2069,7 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -2077,6 +2115,7 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -2133,6 +2172,7 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -2178,6 +2218,7 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -2234,6 +2275,7 @@ export type PartyUpdateWithoutVotingRepresentativeForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -2279,6 +2321,7 @@ export type PartyUncheckedUpdateWithoutVotingRepresentativeForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -2323,6 +2366,7 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -2368,6 +2412,7 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -2429,6 +2474,7 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -2474,6 +2520,7 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -2519,6 +2566,7 @@ export type PartyCreateWithoutOccupanciesInput = {
   legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -2564,6 +2612,7 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -2625,6 +2674,7 @@ export type PartyUpdateWithoutOccupanciesInput = {
   legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -2670,6 +2720,7 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -2715,6 +2766,7 @@ export type PartyCreateWithoutProxiesGivenInput = {
   legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -2760,6 +2812,7 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -2811,6 +2864,7 @@ export type PartyCreateWithoutProxiesHeldInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
@@ -2856,6 +2910,7 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
@@ -2916,6 +2971,7 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -2961,6 +3017,7 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -3018,6 +3075,7 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
@@ -3063,6 +3121,7 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
@@ -3108,6 +3167,7 @@ export type PartyCreateWithoutOfficeTermsInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
@@ -3153,6 +3213,7 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
@@ -3214,6 +3275,7 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
@@ -3259,7 +3321,208 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyCreateWithoutMinutesTakerOfInput = {
+  id?: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
+  reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+}
+
+export type PartyUncheckedCreateWithoutMinutesTakerOfInput = {
+  id?: string
+  zevId: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+}
+
+export type PartyCreateOrConnectWithoutMinutesTakerOfInput = {
+  where: Prisma.PartyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartyCreateWithoutMinutesTakerOfInput, Prisma.PartyUncheckedCreateWithoutMinutesTakerOfInput>
+}
+
+export type PartyUpsertWithoutMinutesTakerOfInput = {
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutMinutesTakerOfInput, Prisma.PartyUncheckedUpdateWithoutMinutesTakerOfInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutMinutesTakerOfInput, Prisma.PartyUncheckedCreateWithoutMinutesTakerOfInput>
+  where?: Prisma.PartyWhereInput
+}
+
+export type PartyUpdateToOneWithWhereWithoutMinutesTakerOfInput = {
+  where?: Prisma.PartyWhereInput
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutMinutesTakerOfInput, Prisma.PartyUncheckedUpdateWithoutMinutesTakerOfInput>
+}
+
+export type PartyUpdateWithoutMinutesTakerOfInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateWithoutMinutesTakerOfInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
   correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
@@ -3304,6 +3567,7 @@ export type PartyCreateWithoutAttendancesInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -3349,6 +3613,7 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -3410,6 +3675,7 @@ export type PartyUpdateWithoutAttendancesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -3455,6 +3721,7 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -3500,6 +3767,7 @@ export type PartyCreateWithoutEligibleVotersInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -3545,6 +3813,7 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -3595,6 +3864,7 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -3640,6 +3910,7 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -3701,6 +3972,7 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -3746,6 +4018,7 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -3802,6 +4075,7 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -3847,6 +4121,7 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -3892,6 +4167,7 @@ export type PartyCreateWithoutBallotsReceivedInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -3937,6 +4213,7 @@ export type PartyUncheckedCreateWithoutBallotsReceivedInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -3998,6 +4275,7 @@ export type PartyUpdateWithoutBallotsReceivedInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -4043,6 +4321,7 @@ export type PartyUncheckedUpdateWithoutBallotsReceivedInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -4088,6 +4367,7 @@ export type PartyCreateWithoutVotesCastInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -4133,6 +4413,7 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -4183,6 +4464,7 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -4228,6 +4510,7 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -4289,6 +4572,7 @@ export type PartyUpdateWithoutVotesCastInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -4334,6 +4618,7 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -4390,6 +4675,7 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -4435,6 +4721,7 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -4480,6 +4767,7 @@ export type PartyCreateWithoutInvoicesInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
@@ -4525,6 +4813,7 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
@@ -4586,6 +4875,7 @@ export type PartyUpdateWithoutInvoicesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
@@ -4631,6 +4921,7 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
@@ -4676,6 +4967,7 @@ export type PartyCreateWithoutPaymentsInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -4721,6 +5013,7 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -4782,6 +5075,7 @@ export type PartyUpdateWithoutPaymentsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -4827,6 +5121,7 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -4872,6 +5167,7 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -4917,6 +5213,7 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -4978,6 +5275,7 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -5023,6 +5321,7 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -5068,6 +5367,7 @@ export type PartyCreateWithoutReportedIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -5113,6 +5413,7 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -5163,6 +5464,7 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -5208,6 +5510,7 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -5269,6 +5572,7 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -5314,6 +5618,7 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -5370,6 +5675,7 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -5415,6 +5721,7 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -5460,6 +5767,7 @@ export type PartyCreateWithoutNotificationsInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -5505,6 +5813,7 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -5566,6 +5875,7 @@ export type PartyUpdateWithoutNotificationsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -5611,6 +5921,7 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -5656,6 +5967,7 @@ export type PartyCreateWithoutViberSubscriberInput = {
   ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
@@ -5701,6 +6013,7 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
   occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
   proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
   proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
   officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
@@ -5762,6 +6075,7 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -5807,6 +6121,7 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -5874,6 +6189,7 @@ export type PartyUpdateWithoutUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -5919,6 +6235,7 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -6010,6 +6327,7 @@ export type PartyUpdateWithoutZevInput = {
   ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
@@ -6055,6 +6373,7 @@ export type PartyUncheckedUpdateWithoutZevInput = {
   ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
   occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
   proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
   proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
   officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
@@ -6107,6 +6426,7 @@ export type PartyCountOutputType = {
   ownershipStakes: number
   occupancies: number
   proxiesGiven: number
+  minutesTakerOf: number
   proxiesHeld: number
   officeTerms: number
   invoices: number
@@ -6130,6 +6450,7 @@ export type PartyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   ownershipStakes?: boolean | PartyCountOutputTypeCountOwnershipStakesArgs
   occupancies?: boolean | PartyCountOutputTypeCountOccupanciesArgs
   proxiesGiven?: boolean | PartyCountOutputTypeCountProxiesGivenArgs
+  minutesTakerOf?: boolean | PartyCountOutputTypeCountMinutesTakerOfArgs
   proxiesHeld?: boolean | PartyCountOutputTypeCountProxiesHeldArgs
   officeTerms?: boolean | PartyCountOutputTypeCountOfficeTermsArgs
   invoices?: boolean | PartyCountOutputTypeCountInvoicesArgs
@@ -6178,6 +6499,13 @@ export type PartyCountOutputTypeCountOccupanciesArgs<ExtArgs extends runtime.Typ
  */
 export type PartyCountOutputTypeCountProxiesGivenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ProxyWhereInput
+}
+
+/**
+ * PartyCountOutputType without action
+ */
+export type PartyCountOutputTypeCountMinutesTakerOfArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MeetingWhereInput
 }
 
 /**
@@ -6328,6 +6656,7 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   ownershipStakes?: boolean | Prisma.Party$ownershipStakesArgs<ExtArgs>
   occupancies?: boolean | Prisma.Party$occupanciesArgs<ExtArgs>
   proxiesGiven?: boolean | Prisma.Party$proxiesGivenArgs<ExtArgs>
+  minutesTakerOf?: boolean | Prisma.Party$minutesTakerOfArgs<ExtArgs>
   proxiesHeld?: boolean | Prisma.Party$proxiesHeldArgs<ExtArgs>
   officeTerms?: boolean | Prisma.Party$officeTermsArgs<ExtArgs>
   invoices?: boolean | Prisma.Party$invoicesArgs<ExtArgs>
@@ -6433,6 +6762,7 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   ownershipStakes?: boolean | Prisma.Party$ownershipStakesArgs<ExtArgs>
   occupancies?: boolean | Prisma.Party$occupanciesArgs<ExtArgs>
   proxiesGiven?: boolean | Prisma.Party$proxiesGivenArgs<ExtArgs>
+  minutesTakerOf?: boolean | Prisma.Party$minutesTakerOfArgs<ExtArgs>
   proxiesHeld?: boolean | Prisma.Party$proxiesHeldArgs<ExtArgs>
   officeTerms?: boolean | Prisma.Party$officeTermsArgs<ExtArgs>
   invoices?: boolean | Prisma.Party$invoicesArgs<ExtArgs>
@@ -6482,6 +6812,7 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     ownershipStakes: Prisma.$OwnershipStakePayload<ExtArgs>[]
     occupancies: Prisma.$OccupancyPayload<ExtArgs>[]
     proxiesGiven: Prisma.$ProxyPayload<ExtArgs>[]
+    minutesTakerOf: Prisma.$MeetingPayload<ExtArgs>[]
     proxiesHeld: Prisma.$ProxyPayload<ExtArgs>[]
     officeTerms: Prisma.$OfficeTermPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
@@ -6933,6 +7264,7 @@ export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Ty
   ownershipStakes<T extends Prisma.Party$ownershipStakesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$ownershipStakesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OwnershipStakePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   occupancies<T extends Prisma.Party$occupanciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$occupanciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OccupancyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proxiesGiven<T extends Prisma.Party$proxiesGivenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$proxiesGivenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProxyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  minutesTakerOf<T extends Prisma.Party$minutesTakerOfArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$minutesTakerOfArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   proxiesHeld<T extends Prisma.Party$proxiesHeldArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$proxiesHeldArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProxyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   officeTerms<T extends Prisma.Party$officeTermsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$officeTermsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OfficeTermPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Party$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7509,6 +7841,30 @@ export type Party$proxiesGivenArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ProxyScalarFieldEnum | Prisma.ProxyScalarFieldEnum[]
+}
+
+/**
+ * Party.minutesTakerOf
+ */
+export type Party$minutesTakerOfArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Meeting
+   */
+  select?: Prisma.MeetingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Meeting
+   */
+  omit?: Prisma.MeetingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingInclude<ExtArgs> | null
+  where?: Prisma.MeetingWhereInput
+  orderBy?: Prisma.MeetingOrderByWithRelationInput | Prisma.MeetingOrderByWithRelationInput[]
+  cursor?: Prisma.MeetingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MeetingScalarFieldEnum | Prisma.MeetingScalarFieldEnum[]
 }
 
 /**

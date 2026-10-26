@@ -10,8 +10,13 @@ import { LiveRefresh } from "@/components/live-refresh";
 import { RollCall } from "@/components/roll-call";
 import { LiveQuorumBar } from "@/components/live-quorum-bar";
 import { AgendaTabs, AgendaItemPanel } from "@/components/agenda-voting";
-import { Tabs, Flash, SubmitBtn, BtnLink } from "@/components/ui";
-import { t } from "@/lib/i18n";
+import { Tabs, Flash, SubmitBtn, BtnLink, Card } from "@/components/ui";
+import { NotesBlock, OffAgendaNotes, type NoteView } from "@/components/meeting-notes";
+import { MinutesOverview } from "@/components/minutes-overview";
+import { getMinutesContent, type MeetingNoteRow } from "@/server/services/meetingNotes";
+import { draftMinutesPdfAction } from "@/app/meeting-notes-actions";
+import { OFF_AGENDA_ID } from "@/lib/meetingNotes";
+import { t, tf } from "@/lib/i18n";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 // Outside (app): no NavShell, no maybeActor() from that layout — every entry point here
@@ -147,6 +152,8 @@ async function linkProposalAction(formData: FormData) {
   redirect(`/uzivo/${meetingId}?tab=dnevni-red&t=${agendaItemId}`);
 }
 
+const noteView = (n: MeetingNoteRow): NoteView => ({ id: n.id, kind: n.kind, text: n.text, version: n.version, position: n.position });
+
 const PRE_VOTING_STATUSES: MeetingStatus[] = ["SCHEDULED", "INVITATIONS_PREPARED", "INVITATIONS_SENT"];
 
 export default async function LiveMeetingPage({
@@ -158,12 +165,17 @@ export default async function LiveMeetingPage({
   const { meetingId } = await params;
   const sp = await searchParams;
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
-  const tab = sp.tab === "dnevni-red" ? "dnevni-red" : "prozivka";
+  const tab = sp.tab === "dnevni-red" ? "dnevni-red" : sp.tab === "zapisnik" ? "zapisnik" : "prozivka";
 
   const base = await getLiveMeetingState(actor, meetingId);
 
   const activeAgendaItemId = tab === "dnevni-red" ? (sp.t ?? base.agendaItems[0]?.id ?? null) : null;
+  const offAgenda = activeAgendaItemId === OFF_AGENDA_ID;
   const activeItem = base.agendaItems.find((a) => a.id === activeAgendaItemId) ?? null;
+  // Bilješke i zaključci (v2.54.0): isti sadržaj kao zapisnik, učitan samo na tabovima koji ga prikazuju.
+  const minutes = tab === "prozivka" ? null : await getMinutesContent(actor, meetingId);
+  const canWrite = minutes?.state === "writable";
+  const isPresident = actor.roles.includes("PRESIDENT");
   // An agenda item's linked proposal: prefer one that's still the live version (not
   // withdrawn/replaced) — an agenda item can carry old versions too (§3.4).
   const activeProposal =
@@ -186,6 +198,7 @@ export default async function LiveMeetingPage({
         tabs={[
           { key: "prozivka", label: t("live.tabRollCall") },
           { key: "dnevni-red", label: t("live.tabAgenda") },
+          { key: "zapisnik", label: t("live.tabMinutes") },
         ]}
         active={tab}
         hrefFor={(key) => `/uzivo/${meetingId}?tab=${key}`}
@@ -204,6 +217,30 @@ export default async function LiveMeetingPage({
           action={markAttendanceAction}
           bulkAbsentAction={bulkAbsentAction}
         />
+      ) : tab === "zapisnik" && minutes ? (
+        <Card title={t("live.tabMinutes")} hint={t("live.minutes.intro")}>
+          <div className="mb-4 space-y-3 border-b border-slate-100 pb-4">
+            <p className="text-[13px] text-slate-600">
+              {minutes.meeting.minutesTaker ? tf("live.minutes.takerLine", { ime: minutes.meeting.minutesTaker.name }) : t("live.minutes.takerNone")}
+              {" · "}
+              {tf("meetingNotes.countsLine", { zakljucaka: minutes.counts.conclusions, biljeski: minutes.counts.notes })}
+            </p>
+            {isPresident ? (
+              <form action={draftMinutesPdfAction}>
+                <input type="hidden" name="meetingId" value={meetingId} />
+                <SubmitBtn variant="secondary">{t("live.minutes.draftPdf")}</SubmitBtn>
+              </form>
+            ) : (
+              <p className="text-[13px] text-slate-500">{t("live.minutes.draftPdfHint")}</p>
+            )}
+          </div>
+          <MinutesOverview
+            content={minutes}
+            editable={false}
+            returnTo={`/uzivo/${meetingId}?tab=zapisnik`}
+            itemHref={(id) => `/uzivo/${meetingId}?tab=dnevni-red&t=${id}`}
+          />
+        </Card>
       ) : (
         <>
           <LiveQuorumBar
@@ -223,7 +260,18 @@ export default async function LiveMeetingPage({
             </div>
           )}
           <AgendaTabs meetingId={meetingId} items={base.agendaItems} activeId={activeAgendaItemId} />
-          {activeItem ? (
+          {offAgenda && minutes ? (
+            <Card title={`${t("live.offAgenda")} — ${t("meetingNotes.title")}`} hint={t("live.offAgendaNote")}>
+              <OffAgendaNotes
+                meetingId={meetingId}
+                topics={minutes.topics.map((tp) => ({ topic: tp.topic, conclusions: tp.conclusions.map(noteView), notes: tp.notes.map(noteView) }))}
+                writable={canWrite}
+                returnTo={`/uzivo/${meetingId}?tab=dnevni-red&t=${OFF_AGENDA_ID}`}
+              />
+              {!canWrite && <p className="mt-3 text-[13px] text-slate-500">{t("live.notesLocked")}</p>}
+            </Card>
+          ) : activeItem ? (
+            <div className="space-y-4">
             <AgendaItemPanel
               meetingId={meetingId}
               item={activeItem}
@@ -239,6 +287,21 @@ export default async function LiveMeetingPage({
               canLink={actor.roles.includes("PRESIDENT")}
               linkProposalAction={linkProposalAction}
             />
+            {minutes && (
+              <Card title={t("meetingNotes.title")}>
+                <NotesBlock
+                  meetingId={meetingId}
+                  agendaItemId={activeItem.id}
+                  conclusions={(minutes.items.find((i) => i.id === activeItem.id)?.conclusions ?? []).map(noteView)}
+                  notes={(minutes.items.find((i) => i.id === activeItem.id)?.notes ?? []).map(noteView)}
+                  writable={canWrite}
+                  returnTo={`/uzivo/${meetingId}?tab=dnevni-red&t=${activeItem.id}`}
+                  scope={activeItem.id}
+                />
+                {!canWrite && <p className="mt-3 text-[13px] text-slate-500">{t("live.notesLocked")}</p>}
+              </Card>
+            )}
+            </div>
           ) : (
             <p className="py-8 text-center text-[15px] text-slate-500">
               <BtnLink href={`/skupstina/${meetingId}`} variant="secondary">

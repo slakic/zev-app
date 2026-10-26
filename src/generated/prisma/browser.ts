@@ -114,6 +114,13 @@ export type Meeting = Prisma.MeetingModel
  */
 export type AgendaItem = Prisma.AgendaItemModel
 /**
+ * Model MeetingNote
+ * Bilješka ili zaključak zapisan na sjednici (Plans/sjednica-uzivo-biljeske-i-zapisnik-plan.md).
+ * `agendaItemId` null = tema van dnevnog reda (tada je `topic` obavezan). Mijenja se do finalizacije zapisnika;
+ * svaka promjena ide u audit (meeting.note.*), pa tabela nije append-only. `version` štiti od istovremenog uređivanja.
+ */
+export type MeetingNote = Prisma.MeetingNoteModel
+/**
  * Model Attendance
  * 
  */

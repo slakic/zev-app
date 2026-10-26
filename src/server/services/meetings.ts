@@ -117,6 +117,15 @@ export async function getMeetingNextStepInput(actor: Actor, meetingId: string, n
   }
   const sessionOpen = meeting.status === "INVITATIONS_SENT" ? await previewSessionVotingOpen(actor, meetingId) : null;
   const minutesDraftExists = meeting.status === "DECISION_RECORDED" ? (await prisma.document.count({ where: { ...sourceWhere, type: "MINUTES" } })) > 0 : null;
+  let minutesNotes: MeetingNextStepInput["minutesNotes"] = null;
+  if (meeting.status === "DECISION_RECORDED") {
+    const rows = await prisma.meetingNote.findMany({ where: { zevId, meetingId }, select: { kind: true, agendaItemId: true } });
+    minutesNotes = {
+      conclusions: rows.filter((n) => n.kind === "CONCLUSION").length,
+      notes: rows.filter((n) => n.kind === "NOTE").length,
+      conclusionItemIds: [...new Set(rows.filter((n) => n.kind === "CONCLUSION" && n.agendaItemId).map((n) => n.agendaItemId!))],
+    };
+  }
   const input: MeetingNextStepInput = {
     meetingId,
     status: meeting.status,
@@ -145,6 +154,7 @@ export async function getMeetingNextStepInput(actor: Actor, meetingId: string, n
       ? { blocked: sessionOpen.blocked, sessionErrors: sessionOpen.sessionErrors, proposals: sessionOpen.proposals.map((p) => ({ id: p.id, code: p.code, errors: p.errors })) }
       : null,
     minutesDraftExists,
+    minutesNotes,
   };
   // `sessionOpenPreview`: the full preview the confirmation panel needs (ballots, daily limit), loaded once.
   return { input, sessionOpenPreview: sessionOpen };

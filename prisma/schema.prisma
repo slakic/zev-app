@@ -137,6 +137,7 @@ model Party {
   ownershipStakes       OwnershipStake[]
   occupancies           Occupancy[]
   proxiesGiven          Proxy[]    @relation("ProxyGrantor")
+  minutesTakerOf        Meeting[]  @relation("MeetingMinutesTaker")
   proxiesHeld           Proxy[]    @relation("ProxyHolder")
   officeTerms           OfficeTerm[]
   invoices              Invoice[]  @relation("InvoiceDebtor")
@@ -220,6 +221,7 @@ model Zev {
   allocationGroups      AllocationGroup[]
   commonAssets          CommonAsset[]
   meetings              Meeting[]
+  meetingNotes          MeetingNote[]
   ballots               Ballot[]
   votingRules           VotingRule[]
   proposals             Proposal[]
@@ -619,7 +621,11 @@ model Meeting {
   eVoteOpensAt   DateTime?
   eVoteClosesAt  DateTime?
   discussionNotes String?
+  /// Zapisničar sjednice (Plans/sjednica-uzivo-biljeske-i-zapisnik-plan.md, P-B4): lice iz evidencije; ime ide uz potpis u zapisniku.
+  minutesTaker   Party?        @relation("MeetingMinutesTaker", fields: [minutesTakerId], references: [id])
+  minutesTakerId String?
   agendaItems    AgendaItem[]
+  notes          MeetingNote[]
   proposals      Proposal[]
   attendances    Attendance[]
   proxies        Proxy[]
@@ -636,8 +642,39 @@ model AgendaItem {
   title     String
   note      String?
   proposals Proposal[]
+  notes     MeetingNote[]
 
   @@unique([meetingId, order])
+}
+
+enum MeetingNoteKind {
+  NOTE
+  CONCLUSION
+}
+
+/// Bilješka ili zaključak zapisan na sjednici (Plans/sjednica-uzivo-biljeske-i-zapisnik-plan.md).
+/// `agendaItemId` null = tema van dnevnog reda (tada je `topic` obavezan). Mijenja se do finalizacije zapisnika;
+/// svaka promjena ide u audit (meeting.note.*), pa tabela nije append-only. `version` štiti od istovremenog uređivanja.
+model MeetingNote {
+  id           String          @id @default(cuid())
+  zev          Zev             @relation(fields: [zevId], references: [id])
+  zevId        String
+  meeting      Meeting         @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meetingId    String
+  agendaItem   AgendaItem?     @relation(fields: [agendaItemId], references: [id], onDelete: Cascade)
+  agendaItemId String?
+  topic        String?
+  kind         MeetingNoteKind
+  text         String
+  position     Int
+  version      Int             @default(1)
+  createdById  String
+  updatedById  String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([meetingId, agendaItemId, position])
+  @@index([zevId])
 }
 
 model Attendance {

@@ -415,6 +415,7 @@ export const ModelName = {
   CommonAsset: 'CommonAsset',
   Meeting: 'Meeting',
   AgendaItem: 'AgendaItem',
+  MeetingNote: 'MeetingNote',
   Attendance: 'Attendance',
   VotingRule: 'VotingRule',
   Proposal: 'Proposal',
@@ -473,7 +474,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1806,6 +1807,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AgendaItemCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AgendaItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    MeetingNote: {
+      payload: Prisma.$MeetingNotePayload<ExtArgs>
+      fields: Prisma.MeetingNoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MeetingNoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MeetingNoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>
+        }
+        findFirst: {
+          args: Prisma.MeetingNoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MeetingNoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>
+        }
+        findMany: {
+          args: Prisma.MeetingNoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>[]
+        }
+        create: {
+          args: Prisma.MeetingNoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>
+        }
+        createMany: {
+          args: Prisma.MeetingNoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MeetingNoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>[]
+        }
+        delete: {
+          args: Prisma.MeetingNoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>
+        }
+        update: {
+          args: Prisma.MeetingNoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>
+        }
+        deleteMany: {
+          args: Prisma.MeetingNoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MeetingNoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MeetingNoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>[]
+        }
+        upsert: {
+          args: Prisma.MeetingNoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingNotePayload>
+        }
+        aggregate: {
+          args: Prisma.MeetingNoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMeetingNote>
+        }
+        groupBy: {
+          args: Prisma.MeetingNoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MeetingNoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MeetingNoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MeetingNoteCountAggregateOutputType> | number
         }
       }
     }
@@ -5312,6 +5387,7 @@ export const MeetingScalarFieldEnum = {
   eVoteOpensAt: 'eVoteOpensAt',
   eVoteClosesAt: 'eVoteClosesAt',
   discussionNotes: 'discussionNotes',
+  minutesTakerId: 'minutesTakerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -5328,6 +5404,25 @@ export const AgendaItemScalarFieldEnum = {
 } as const
 
 export type AgendaItemScalarFieldEnum = (typeof AgendaItemScalarFieldEnum)[keyof typeof AgendaItemScalarFieldEnum]
+
+
+export const MeetingNoteScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  meetingId: 'meetingId',
+  agendaItemId: 'agendaItemId',
+  topic: 'topic',
+  kind: 'kind',
+  text: 'text',
+  position: 'position',
+  version: 'version',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MeetingNoteScalarFieldEnum = (typeof MeetingNoteScalarFieldEnum)[keyof typeof MeetingNoteScalarFieldEnum]
 
 
 export const AttendanceScalarFieldEnum = {
@@ -6420,6 +6515,20 @@ export type ListEnumMeetingStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'MeetingNoteKind'
+ */
+export type EnumMeetingNoteKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingNoteKind'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingNoteKind[]'
+ */
+export type ListEnumMeetingNoteKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingNoteKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'QuorumType'
  */
 export type EnumQuorumTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QuorumType'>
@@ -7007,6 +7116,7 @@ export type GlobalOmitConfig = {
   commonAsset?: Prisma.CommonAssetOmit
   meeting?: Prisma.MeetingOmit
   agendaItem?: Prisma.AgendaItemOmit
+  meetingNote?: Prisma.MeetingNoteOmit
   attendance?: Prisma.AttendanceOmit
   votingRule?: Prisma.VotingRuleOmit
   proposal?: Prisma.ProposalOmit

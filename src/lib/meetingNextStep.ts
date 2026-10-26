@@ -50,6 +50,8 @@ export type MeetingNextStepInput = {
   } | null;
   /** Samo za status "Odluke evidentirane": postoji li nacrt zapisnika. */
   minutesDraftExists?: boolean | null;
+  /** Samo za status "Odluke evidentirane": bilješke sa sjednice (`conclusionItemIds` = tačke sa bar jednim zaključkom). */
+  minutesNotes?: { conclusions: number; notes: number; conclusionItemIds: string[] } | null;
 };
 
 const NEXT_TO: Partial<Record<MeetingStatus, MeetingStatus>> = {
@@ -178,6 +180,15 @@ export function meetingNextStep(input: MeetingNextStepInput): MeetingNextStep | 
     case "MINUTES_FINALIZED": {
       if (input.minutesDraftExists === true) pre.push({ ok: true, text: t("meetingStep.pre.minutesDraftOk") });
       else if (input.minutesDraftExists === false) pre.push({ ok: false, text: t("meetingStep.pre.minutesDraftMissing"), href: `/skupstina/${input.meetingId}#dokumenti` });
+      if (input.minutesNotes) {
+        const n = input.minutesNotes;
+        const notesHref = `/skupstina/${input.meetingId}#biljeske`;
+        pre.push({ ok: true, text: tf("meetingStep.pre.notesTotals", { zakljucaka: n.conclusions, biljeski: n.notes }), href: notesHref });
+        // Samo upozorenje: tačka bez prijedloga i bez ijednog zaključka (diskusija bez zaključka je dozvoljena).
+        for (const a of input.agendaItems.filter((x) => x.proposalCount === 0 && !n.conclusionItemIds.includes(x.id))) {
+          pre.push({ ok: false, text: tf("meetingStep.pre.itemNoConclusion", { broj: a.order, naslov: a.title }), href: notesHref });
+        }
+      }
       break;
     }
     case "ARCHIVED":
