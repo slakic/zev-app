@@ -234,7 +234,7 @@ komentar u `.env.example` i `src/server/notifications/testOutbox.ts`).
        Migracija `20261023100000_add_invoice_email_delivery` se na produkciji pokreće ručno prije deploy-a.
 * Elektronsko odobravanje je **evidentirano elektronsko izjašnjavanje sa dokazima**, ne
   kvalifikovani elektronski potpis (tako je i označeno korisnicima).
-* Nema obračuna zatezne kamate (parametar postoji, isključen — čeka pravnu potvrdu).
+* Zatezna kamata ne postoji (odluka 2026-10-26) — aplikacija je ne obračunava.
 * Nije zakonsko knjigovodstvo: bez dvojnog knjigovodstva, kontnog plana, glavne knjige,
   bilansa — operativna evidencija + CSV izvoz za eksternog računovođu.
 * Prilozi (fotografije uz prijave kvarova itd.) imaju model (`Attachment`), ali upload UI

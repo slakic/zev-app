@@ -150,3 +150,34 @@ describe("meetingNextStep — preconditions are facts from the data", () => {
     expect(meetingNextStep(base("MINUTES_FINALIZED"))!.preconditions).toEqual([]);
   });
 });
+
+describe("meetingNextStep — invitations at least 7 calendar days before the meeting (warns, never blocks)", () => {
+  // NOW = 2026-10-25 (Europe/Sarajevo); the meeting date is compared as a calendar day.
+  const lead = (p: { text: string }) => p.text.includes("7");
+
+  it("Zakazana → Pripremi pozive: a meeting 6 days away carries a ⚠, 7 days away does not", () => {
+    const soon = meetingNextStep(base("SCHEDULED", { proposals: [prop()], scheduledAt: day("2026-10-31") }))!;
+    expect(soon.preconditions.filter(lead).map((p) => p.ok)).toEqual([false]);
+    expect(soon.kind).toBe("plain"); // never blocks
+    const ok = meetingNextStep(base("SCHEDULED", { proposals: [prop()], scheduledAt: day("2026-11-01") }))!;
+    expect(ok.preconditions.filter(lead)).toHaveLength(0);
+  });
+
+  it("Pozivi pripremljeni → Pošalji pozive: the same ⚠; the confirmation stays a confirm", () => {
+    const inv = { withEmail: 3, withoutEmail: 0, pdfExists: true };
+    const soon = meetingNextStep(base("INVITATIONS_PREPARED", { invitations: inv, scheduledAt: day("2026-10-26") }))!;
+    expect(soon.preconditions.filter(lead).map((p) => p.ok)).toEqual([false]);
+    expect(soon.kind).toBe("confirm");
+    const far = meetingNextStep(base("INVITATIONS_PREPARED", { invitations: inv }))!;
+    expect(far.preconditions.filter(lead)).toHaveLength(0);
+    // a meeting without a date, and other steps, have no such warning
+    expect(meetingNextStep(base("INVITATIONS_PREPARED", { invitations: inv, scheduledAt: null }))!.preconditions.filter(lead)).toHaveLength(0);
+    expect(meetingNextStep(base("INVITATIONS_SENT", { scheduledAt: day("2026-10-26") }))!.preconditions.filter(lead)).toHaveLength(0);
+  });
+
+  it("is counted by Europe/Sarajevo calendar days: late evening UTC on the 24th is already the 25th locally", () => {
+    // meeting 2026-11-01 locally, "now" 2026-10-25T23:30Z = 2026-10-26 00:30 local -> only 6 days
+    const s = meetingNextStep(base("SCHEDULED", { proposals: [prop()], scheduledAt: day("2026-11-01"), now: new Date("2026-10-25T23:30:00Z") }))!;
+    expect(s.preconditions.filter(lead).map((p) => p.ok)).toEqual([false]);
+  });
+});

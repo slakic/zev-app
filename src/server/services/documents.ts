@@ -472,8 +472,8 @@ export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Pr
       `vlasnika ${zev?.legalName ?? "[NAZIV ZEV-a]"} (u daljem tekstu: ZEV), ovom izjavom dobrovoljno i saglasno ` +
       `pristajem da se moje izjašnjenje o prijedlozima odluka i glasanje na sjednicama skupštine i upravnog odbora ` +
       `ZEV-a, kao i u svakom drugom postupku izjašnjavanja, glasanja ili prikupljanja saglasnosti koji ZEV objavi ` +
-      `elektronskim putem (u daljem tekstu zajednički: elektronsko izjašnjavanje), dato u skladu sa odredbama ove ` +
-      `izjave, smatra pravno valjanim i da ima istu pravnu težinu kao moje lično, fizičko izjašnjenje/potpis.`,
+      `elektronskim putem (u daljem tekstu zajednički: elektronsko izjašnjavanje), evidentira u aplikaciji kao moj ` +
+      `izraz volje i koristi za vođenje glasanja i pripremu dokumentacije sjednice, u skladu sa odredbama ove izjave.`,
       { align: "justify" }
     );
     doc.moveDown(0.6);
@@ -516,18 +516,16 @@ export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Pr
       "ankete i slično) pristigla isključivo sa gore navedene e-mail adrese, putem sistema za elektronsko " +
       "izjašnjavanje koji ZEV koristi (jedinstveni vremenski ograničen link i verifikacioni kod dostavljeni na " +
       "navedenu adresu za svaku sjednicu, prijedlog ili drugi postupak izjašnjavanja), smatra njegovim ličnim " +
-      "identitetom i ličnom izjavom volje, bez potrebe za dodatnom fizičkom potvrdom. Ova saglasnost pokriva " +
+      "identitetom i ličnim izrazom volje u svrhu iz tačke 2. Ova saglasnost pokriva " +
       "sjednice skupštine, sjednice upravnog odbora, kao i svaki drugi postupak elektronskog izjašnjavanja koji " +
       "ZEV objavi vlasnicima."
     );
     clause(
-      "2. Pravno dejstvo elektronskog izjašnjenja",
-      "Elektronsko izjašnjenje dato u skladu sa ovom izjavom uračunava se u kvorum i većinu potrebnu za donošenje " +
-      "odluke organa ZEV-a (skupštine, odnosno upravnog odbora) na isti način kao fizičko prisustvo i glasanje na " +
-      "sjednici. U slučaju drugih postupaka izjašnjavanja koje ZEV objavi van sjednice (npr. prikupljanje " +
-      "saglasnosti ili mišljenja vlasnika), elektronsko izjašnjenje smatra se punovažnim izjašnjenjem vlasnika u " +
-      "tom postupku — sve u skladu sa Pravilima o međusobnim odnosima etažnih vlasnika ZEV-a te opštim odredbama " +
-      "Zakona o obligacionim odnosima o slobodi ugovaranja i Zakona o elektronskom potpisu Republike Srpske."
+      "2. Svrha elektronskog izjašnjenja",
+      "Elektronsko izjašnjenje dato u skladu sa ovom izjavom evidentira se u aplikaciji kao izražena volja vlasnika " +
+      "i koristi se za vođenje glasanja i pripremu dokumentacije sjednice (dnevni red, zapisnik, nacrti odluka). " +
+      "Ono nije kvalifikovani elektronski potpis i samo po sebi ne zamjenjuje izjašnjenje na sjednici ili pismeno " +
+      "izjašnjenje tamo gdje ga zahtijevaju propisi ili Pravila ZEV-a."
     );
     clause(
       "3. Odgovornost vlasnika",
@@ -548,7 +546,7 @@ export async function generateEVoteConsentPdf(actor: Actor, partyId: string): Pr
     );
     clause(
       "6. Trajanje",
-      "Ova izjava proizvodi pravno dejstvo od dana potpisivanja i važi za sve naredne sjednice organa ZEV-a i " +
+      "Ova izjava važi od dana potpisivanja i važi za sve naredne sjednice organa ZEV-a i " +
       "druge postupke elektronskog izjašnjavanja koje ZEV objavi, do eventualnog opoziva u skladu sa tačkom 5., " +
       "odnosno do promjene e-mail adrese."
     );

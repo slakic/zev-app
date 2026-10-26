@@ -289,6 +289,7 @@ export default async function SettingsPage({
     <Card key="evote" title={t("settingsPage.evote.title")}>
       <div className="space-y-3 text-sm">
         <StatusBadge status={myParty.eVoteConsentStatus} label={tEnum("eVoteConsentStatus", myParty.eVoteConsentStatus)} />
+        <p className="text-slate-600">{t("settingsPage.evote.purpose")}</p>
         {consentActive ? (
           <p className="text-slate-600">{t("settingsPage.evote.active")}</p>
         ) : (

@@ -13,6 +13,7 @@ import { PreconditionList } from "@/components/precondition-list";
 import { ProofFileField } from "@/components/proof-file-field";
 import { shareSumChip, sumShares } from "@/lib/shareSum";
 import { RepresentativeChange } from "@/components/representative-change";
+import { registerWarningTexts } from "@/lib/registerWarnings";
 import { PasswordField } from "@/components/password-field";
 import { redirect } from "next/navigation";
 
@@ -187,6 +188,7 @@ export default async function OwnersPage({
   const reg = ownershipTab && registerStatus !== "DRAFT" ? await getUnitRegister(actor) : null;
   const now = new Date();
   const shareWarningByUnit = new Map((reg?.warnings ?? []).map((w) => [w.unitId, w]));
+  const registerWarnings = reg ? registerWarningTexts(reg) : [];
   const communities = (reg?.subjects ?? []).filter((sub) => sub.memberPartyIds.length > 1);
   const proxies =
     isPresident && activeTab === "punomoci"
@@ -295,7 +297,7 @@ export default async function OwnersPage({
             <div className="mt-4"><BtnLink href="/zgrade?tab=posebni" variant="tonal">{t("register.review.link")}</BtnLink></div>
           </Card>
         )}
-        {reg && (communities.length > 0 || reg.warnings.length > 0) && (
+        {reg && (communities.length > 0 || registerWarnings.length > 0) && (
           <Card title={t("register.rep.cardTitle")} hint={t("register.rep.cardHint")}>
             {communities.length > 0 && (
               <ul className="divide-y divide-slate-100">
@@ -312,6 +314,7 @@ export default async function OwnersPage({
                       unitId={sub.units[0].unitId}
                       unitLabels={sub.units.map((u) => u.label)}
                       members={sub.members}
+                      soleIds={sub.members.map((m) => m.partyId).filter((id) => !sub.actingPartyIds.includes(id))}
                       currentId={sub.ownerId}
                       returnTo="vlasnici"
                     />
@@ -319,19 +322,9 @@ export default async function OwnersPage({
                 ))}
               </ul>
             )}
-            {reg.warnings.length > 0 && (
+            {registerWarnings.length > 0 && (
               <div className={communities.length > 0 ? "mt-4" : ""}>
-                <PreconditionList
-                  items={reg.warnings.map((w) => ({
-                    ok: false,
-                    text:
-                      w.kind === "OVER"
-                        ? tf("register.owners.warnOver", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
-                        : w.kind === "UNDER"
-                          ? tf("register.owners.warnUnder", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
-                          : tf("register.owners.warnNone", { unit: w.label }),
-                  }))}
-                />
+                <PreconditionList items={registerWarnings.map((text) => ({ ok: false, text }))} />
               </div>
             )}
           </Card>

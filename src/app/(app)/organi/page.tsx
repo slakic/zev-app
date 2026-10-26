@@ -92,6 +92,10 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
   const parties = isPresident && activeTab === "aktuelni" ? await listParties(actor) : [];
   const boardSize = settings["board.size"];
   const termYears = settings["board.termYears"];
+  // Predsjednik vodi odbor i u njemu je jedan od jednakih: broji se jednom, čak i ako ima i mandat člana.
+  const boardPartyIds = new Set(holders.boardMembers.map((m) => m.partyId));
+  if (holders.president) boardPartyIds.add(holders.president.partyId);
+  const boardCount = boardPartyIds.size;
 
   return (
     <div className="space-y-6">
@@ -114,11 +118,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
       <>
       <Card>
         <p className="text-sm text-slate-600">
-          Prema Zakonu o održavanju zgrada Republike Srpske organi ZEV su <b>skupština</b> (svi vlasnici) i{" "}
-          <b>upravni odbor</b> (kolegijalno tijelo koje skupština bira). Tačan broj članova upravnog odbora,
-          trajanje mandata i pretpostavka da je predsjednik ZEV ujedno i predsjednik upravnog odbora su{" "}
-          <b>podesivi</b> (vidi <i>Podešavanja</i>). Preporučeni broj članova upravnog odbora
-          trenutno je <b>{boardSize}</b>, trajanje mandata <b>{termYears}</b> godina.
+          {tf("organi.intro", { velicina: boardSize, mandat: termYears })}
         </p>
       </Card>
 
@@ -174,7 +174,12 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
         </Card>
       )}
 
-      <Card title={`Upravni odbor (${holders.boardMembers.length} ${holders.boardMembers.length === 1 ? "član" : "člana"})`}>
+      <Card title={`Upravni odbor (${boardCount} ${memberWord(boardCount)}, uključujući predsjednika)`}>
+        {boardCount < Number(boardSize) && (
+          <p className="mb-3 text-[13px] text-amber-800">
+            {tf("organi.boardSizeWarn", { broj: boardCount, rijec: memberWord(boardCount), preporuka: boardSize })}
+          </p>
+        )}
         <Table
           id="board-table"
           caption="Upravni odbor"

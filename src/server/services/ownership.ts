@@ -510,6 +510,8 @@ export async function boardVotingBasis(zevId: string, asOf: Date = new Date()): 
       units: [],
       representativeConfirmed: true,
       representativeConflict: false,
+      representativeSoleName: null,
+      actingPartyIds: [t.partyId],
     });
   }
   return [...seen.values()];
@@ -537,14 +539,31 @@ export type VotingSubject = {
   representativeConfirmed: boolean;
   /** Jedinice istog skupa vlasnika imaju razlicite predstavnike (preduslov: upozorenje). */
   representativeConflict: boolean;
+  /**
+   * K-03b: ime izricito odredjenog predstavnika zajednice koji VEC glasa kao samostalni vlasnik drugog
+   * posebnog dijela (jedno lice — najvise jedan glas). Nije null => otvaranje glasanja je blokirano.
+   */
+  representativeSoleName: string | null;
+  /**
+   * K-03b: lica koja mogu djelovati za ovaj subjekt (prisustvo, link). Za samostalnog vlasnika to je on;
+   * za zajednicu su to clanovi koji NE glasaju vec kao samostalni vlasnici.
+   */
+  actingPartyIds: string[];
 };
+
+/**
+ * K-03b: suvlasnicka zajednica ciji clanovi SVI vec glasaju kao samostalni vlasnici — nije poseban
+ * glasacki subjekt (nema dodatnog glasa). Registar prikazuje informativno upozorenje.
+ */
+export type AbsorbedCommunity = { subjectKey: string; names: string; units: string[] };
 
 /**
  * K-03b: JEDINO mjesto koje odlucuje u koji glasacki subjekt spada skup vlasnika jedne jedinice.
  * Jedan vlasnik jedinice = samostalni subjekt "P:<id>" (sve takve jedinice istog lica su jedan subjekt);
  * vise vlasnika = zajednica "G:<sortirani ids>" (jedinice sa istim skupom su jedan subjekt).
- * Isto lice moze biti i u "P:" i u "G:" subjektu (dva glasa) — preporuka pregleda; ako pravnik
- * odgovori "jedan glas po licu", mijenja se samo ova funkcija.
+ * K-03b (odluka korisnika, 2026-10-26): lice daje NAJVISE JEDAN glas ukupno. Kljuc zajednice se i dalje
+ * gradi od svih vlasnika; ko od clanova stvarno glasa za nju odredjuje `assemblyVotingBasis` (clan koji vec
+ * glasa kao samostalni vlasnik ne moze biti predstavnik, a zajednica kojoj su svi clanovi takvi nije subjekt).
  */
 export function subjectKeyFor(ownerIds: string[]): string {
   const ids = [...new Set(ownerIds)].sort();
@@ -572,11 +591,19 @@ function joinNames(names: string[]): string {
 }
 
 /**
- * Glasacki subjekti skupstine (K-03, K-03a): jedan etazni vlasnik = jedan glas, bez obzira na broj
- * posebnih dijelova; suvlasnici istog posebnog dijela glasaju zajedno preko predstavnika.
- * Jedino mjesto koje odlucuje "ko je u bazi" za prozivku, pregled dostave i otvaranje glasanja.
+ * Glasacki subjekti skupstine (K-03, K-03a, K-03b): jedan etazni vlasnik = jedan glas, bez obzira na broj
+ * posebnih dijelova; suvlasnici istog posebnog dijela glasaju zajedno preko predstavnika, a lice koje vec
+ * glasa kao samostalni vlasnik ne glasa i za zajednicu. Jedino mjesto koje odlucuje "ko je u bazi" za
+ * prozivku, pregled dostave i otvaranje glasanja.
  */
 export async function assemblyVotingSubjects(zevId: string, unitIds?: string[], asOf: Date = new Date()): Promise<VotingSubject[]> {
+  return (await assemblyVotingBasis(zevId, unitIds, asOf)).subjects;
+}
+
+/** Isto kao `assemblyVotingSubjects`, uz zajednice koje nisu poseban subjekt (K-03b) — za registar. */
+export async function assemblyVotingBasis(
+  zevId: string, unitIds?: string[], asOf: Date = new Date()
+): Promise<{ subjects: VotingSubject[]; absorbed: AbsorbedCommunity[] }> {
   const stakes = await prisma.ownershipStake.findMany({
     where: {
       zevId,
@@ -590,6 +617,13 @@ export async function assemblyVotingSubjects(zevId: string, unitIds?: string[], 
   const byUnit = new Map<string, StakeWithRefs[]>();
   for (const s of stakes) byUnit.set(s.unitId, [...(byUnit.get(s.unitId) ?? []), s]);
 
+  // K-03b: lica koja glase kao samostalni vlasnici (bar jedan posebni dio u kojem su jedini vlasnik).
+  const soleIds = new Set<string>();
+  for (const us of byUnit.values()) {
+    const owners = new Set(us.map((s) => s.ownerId));
+    if (owners.size === 1) soleIds.add([...owners][0]);
+  }
+
   type Acc = { key: string; unitStakes: StakeWithRefs[][] };
   const subjects = new Map<string, Acc>();
   for (const unitStakes of byUnit.values()) {
@@ -600,6 +634,7 @@ export async function assemblyVotingSubjects(zevId: string, unitIds?: string[], 
   }
 
   const out: VotingSubject[] = [];
+  const absorbed: AbsorbedCommunity[] = [];
   for (const { key, unitStakes } of subjects.values()) {
     const sortedUnits = [...unitStakes].sort((a, b) => a[0].unit.label.localeCompare(b[0].unit.label, "sr"));
     const memberIds = key.slice(2).split(",");
@@ -609,23 +644,47 @@ export async function assemblyVotingSubjects(zevId: string, unitIds?: string[], 
       .map((id) => ({ partyId: id, name: partyDisplayName(partyById.get(id)!) }))
       .sort((a, b) => a.name.localeCompare(b.name, "sr"));
 
+    const isSole = key.startsWith("P:");
+    const actingIds = isSole ? memberIds : memberIds.filter((id) => !soleIds.has(id));
+    if (actingIds.length === 0) {
+      // K-03b: svi clanovi zajednice vec glasaju kao samostalni vlasnici — nema dodatnog glasa.
+      absorbed.push({
+        subjectKey: key,
+        names: joinNames(members.map((m) => m.name)),
+        units: sortedUnits.map((us) => us[0].unit.label),
+      });
+      continue;
+    }
+
     let repId: string;
     let confirmed: boolean;
     let conflict = false;
-    if (key.startsWith("P:")) {
+    let soleName: string | null = null;
+    if (isSole) {
       repId = memberIds[0];
       confirmed = true;
     } else {
       // Predstavnik zajednice sa vise posebnih dijelova: uzima se jedinica sa najmanjom oznakom; ako se
-      // predstavnici jedinica razlikuju, to je upozorenje u preduslovima (§3.3).
+      // predstavnici jedinica razlikuju, to je upozorenje u preduslovima (§3.3). K-03b: podrazumijevani
+      // predstavnik preskace clanove koji vec glase kao samostalni vlasnici; izricito odredjen takav
+      // predstavnik je konflikt koji blokira otvaranje glasanja.
       const perUnit = sortedUnits.map((us) => {
-        const explicit = us[0].unit.votingRepresentativeId;
-        const valid = explicit && us.some((s) => s.ownerId === explicit) ? explicit : null;
-        return { repId: valid ?? defaultRepresentative(us).ownerId, explicit: valid !== null };
+        const explicitRaw = us[0].unit.votingRepresentativeId;
+        const valid = explicitRaw && us.some((s) => s.ownerId === explicitRaw) ? explicitRaw : null;
+        const explicitSole = valid !== null && soleIds.has(valid);
+        const explicitOk = valid !== null && !explicitSole;
+        const candidates = us.filter((s) => !soleIds.has(s.ownerId));
+        return {
+          repId: explicitOk ? valid : defaultRepresentative(candidates.length > 0 ? candidates : us).ownerId,
+          explicit: explicitOk,
+          soleId: explicitSole ? valid : null,
+        };
       });
       repId = perUnit[0].repId;
       confirmed = perUnit.every((p) => p.explicit) && perUnit.every((p) => p.repId === repId);
       conflict = perUnit.some((p) => p.repId !== repId);
+      const soleRepId = perUnit.find((p) => p.soleId)?.soleId ?? null;
+      if (soleRepId) soleName = partyDisplayName(partyById.get(soleRepId)!);
     }
     const rep = partyById.get(repId)!;
 
@@ -647,16 +706,21 @@ export async function assemblyVotingSubjects(zevId: string, unitIds?: string[], 
       ownerId: repId,
       ownerName: joinNames(members.map((m) => m.name)),
       email: rep.email,
-      memberPartyIds: key.startsWith("P:") ? [repId] : [...memberIds].sort(),
+      memberPartyIds: isSole ? [repId] : [...memberIds].sort(),
       members,
       units,
       ownershipShareSum: shareSum,
       areaSum,
       representativeConfirmed: confirmed,
       representativeConflict: conflict,
+      representativeSoleName: soleName,
+      actingPartyIds: [...actingIds].sort(),
     });
   }
-  return out.sort((a, b) => a.ownerName.localeCompare(b.ownerName, "sr") || a.subjectKey.localeCompare(b.subjectKey));
+  return {
+    subjects: out.sort((a, b) => a.ownerName.localeCompare(b.ownerName, "sr") || a.subjectKey.localeCompare(b.subjectKey)),
+    absorbed: absorbed.sort((a, b) => a.names.localeCompare(b.names, "sr")),
+  };
 }
 
 export type UnitOwnershipWarning = {
@@ -770,8 +834,8 @@ export async function setVotingRepresentative(
 export async function votingRoleByUnit(actor: Actor, partyId: string) {
   requireSelfOrRole(actor, partyId, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
-  const subjects = await assemblyVotingSubjects(zevId);
-  const out = new Map<string, { sole: boolean; representativeName: string | null; isRepresentative: boolean; confirmed: boolean }>();
+  const { subjects, absorbed } = await assemblyVotingBasis(zevId);
+  const out = new Map<string, { sole: boolean; representativeName: string | null; isRepresentative: boolean; confirmed: boolean; noExtraVote: boolean }>();
   for (const sub of subjects) {
     if (!sub.memberPartyIds.includes(partyId)) continue;
     const sole = sub.memberPartyIds.length === 1;
@@ -781,7 +845,21 @@ export async function votingRoleByUnit(actor: Actor, partyId: string) {
         representativeName: sole ? null : sub.members.find((m) => m.partyId === sub.ownerId)?.name ?? null,
         isRepresentative: sub.ownerId === partyId,
         confirmed: sub.representativeConfirmed,
+        noExtraVote: false,
       });
+    }
+  }
+  // K-03b: zajednica ciji svi clanovi glasaju kao samostalni vlasnici — taj posebni dio nema dodatni glas.
+  if (absorbed.length > 0) {
+    const stakes = await prisma.ownershipStake.findMany({
+      where: { zevId, ownerId: partyId, validFrom: { lte: new Date() }, OR: [{ validTo: null }, { validTo: { gt: new Date() } }], unit: { active: true } },
+      include: { unit: true },
+    });
+    const absorbedLabels = new Set(absorbed.flatMap((a) => a.units));
+    for (const st of stakes) {
+      if (absorbedLabels.has(st.unit.label) && !out.has(st.unitId)) {
+        out.set(st.unitId, { sole: false, representativeName: null, isRepresentative: false, confirmed: true, noExtraVote: true });
+      }
     }
   }
   return out;

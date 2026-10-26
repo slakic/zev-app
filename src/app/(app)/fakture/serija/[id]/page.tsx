@@ -119,7 +119,19 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
   const debtorIds = [...new Set(preview.map((c) => c.debtorId).filter((d): d is string => Boolean(d)))];
   const draftOptedIn = batch.status === "DRAFT" ? await countOptedInDebtors(actor, debtorIds) : 0;
   const emailSummary = batch.status === "ISSUED" ? await getBatchEmailSummary(actor, id) : null;
-  const warnings = batch.status === "DRAFT" ? batchWarnings(preview, dueDate, new Date()) : null;
+  // Zakonski minimum održavanja (samo upozorenje): vrsta lica dužnika + stavke označene kao fond održavanja.
+  const [debtorParties, reserveItems] = batch.status === "DRAFT"
+    ? await Promise.all([
+        prisma.party.findMany({ where: { zevId, id: { in: debtorIds } }, select: { id: true, kind: true } }),
+        prisma.chargeItem.findMany({ where: { zevId, isReserveFund: true }, select: { id: true } }),
+      ])
+    : [[], []];
+  const warnings = batch.status === "DRAFT"
+    ? batchWarnings(preview, dueDate, new Date(), {
+        debtorKinds: new Map(debtorParties.map((p) => [p.id, p.kind])),
+        reserveFundItemIds: new Set(reserveItems.map((i) => i.id)),
+      })
+    : null;
   const flagged = new Set(warnings?.flaggedUnitIds ?? []);
 
   return (
@@ -228,6 +240,7 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
                     {warnings.noDebtor.length > 0 && <WarningGroup text={tf("batchWarnings.noDebtor", { broj: warnings.noDebtor.length })} entries={warnings.noDebtor} />}
                     {warnings.zeroLines.length > 0 && <WarningGroup text={tf("batchWarnings.zeroLines", { broj: warnings.zeroLines.length })} entries={warnings.zeroLines} />}
                     {warnings.zeroUnits.length > 0 && <WarningGroup text={tf("batchWarnings.zeroUnits", { broj: warnings.zeroUnits.length })} entries={warnings.zeroUnits} />}
+                    {warnings.belowMinimum.length > 0 && <WarningGroup text={tf("batchWarnings.belowMinimum", { broj: warnings.belowMinimum.length })} entries={warnings.belowMinimum} />}
                   </ul>
                 </div>
               }

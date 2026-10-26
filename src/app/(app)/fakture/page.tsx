@@ -44,6 +44,7 @@ function invoiceHeadersFor(management: boolean): ColumnSpec[] {
   ];
 }
 import { ChargeItemRow } from "@/components/charge-item-row";
+import { maintenanceRateBelowMinimum } from "@/lib/legalMinimum";
 
 async function addChargeItemAction(formData: FormData) {
   "use server";
@@ -188,6 +189,9 @@ export default async function InvoicesPage({
                     isReserveFund: c.isReserveFund,
                     displayOrder: c.displayOrder,
                     active: c.active,
+                    minWarning: maintenanceRateBelowMinimum({ method: c.method, name: c.name, isReserveFund: c.isReserveFund, rate: c.rate?.toString() ?? null })
+                      ? t("legalMinimum.itemWarn")
+                      : null,
                   }}
                   buildings={buildings}
                   action={updateChargeItemAction}
@@ -228,7 +232,7 @@ export default async function InvoicesPage({
                 </fieldset>
                 <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <legend className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Obračun</legend>
-                  <Field label="Stopa / iznos (KM)" hint="Za raspodjele: ukupan iznos; za m²/udio/korisnika: cijena po jedinici mjere.">
+                  <Field label="Stopa / iznos (KM)" hint={`Za raspodjele: ukupan iznos; za m²/udio/korisnika: cijena po jedinici mjere. ${t("legalMinimum.formHint")}`}>
                     <input name="rate" className={inputCls} placeholder="0.35" />
                   </Field>
                   <Field label="Zaokruživanje">

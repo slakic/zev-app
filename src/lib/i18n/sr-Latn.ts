@@ -390,7 +390,7 @@ const srLatn = {
       none: "Kvorum: nije potreban za ovaj prijedlog",
       noProposal: "Nema prijedloga za glasanje",
       forProposal: "Prijedlog {sifra}",
-      eVotes: "Elektronski glasovi se računaju u kvorum glasanja i kad osoba nije u sali.",
+      eVotes: "Evidentirani elektronski glasovi ulaze u obračun kvoruma u aplikaciji i kad osoba nije u sali.",
     },
     searchPlaceholder: "Traži ime…",
     filterAll: "Svi",
@@ -759,6 +759,7 @@ const srLatn = {
       title: "Elektronsko glasanje",
       intro:
         "Da biste se elektronskim putem izjašnjavali na sjednicama skupštine i upravnog odbora, kao i u drugim postupcima izjašnjavanja koje ZEV objavi, potrebna je potpisana izjava o saglasnosti. Postupak ima tri koraka:",
+      purpose: "Elektronsko glasanje je alat za vođenje glasanja i pripremu dokumentacije sjednice (dnevni red, zapisnik, odluke). Evidentira se kao izraz Vaše volje; nije kvalifikovani elektronski potpis.",
       step1: "Preuzmite izjavu (PDF).",
       step2: "Odštampajte je i potpišite.",
       step3: "Predajte potpisanu izjavu predsjedniku ZEV-a.",
@@ -843,19 +844,13 @@ const srLatn = {
         },
         voteIpDays: {
           name: "Čuvanje IP podataka glasanja",
-          hint: "Toliko dana se čuvaju IP podaci uz glasove.",
+          hint: "Podaci o glasanju se čuvaju 5 godina (najmanje 1826 dana). Glasovi, listići i revizorski trag se ne brišu.",
         },
       },
       emergency: {
         costThreshold: {
           name: "Prag za hitne radove bez skupštine",
           hint: "Hitni radovi iznad ovog iznosa traže odluku skupštine.",
-        },
-      },
-      interest: {
-        enabled: {
-          name: "Zatezna kamata",
-          hint: "Ostaje isključena dok pravnik ne potvrdi obračun.",
         },
       },
       invoice: {
@@ -867,15 +862,11 @@ const srLatn = {
       board: {
         size: {
           name: "Broj članova upravnog odbora",
-          hint: "Uključujući predsjednika. Prikazuje se kao preporuka na stranici Organi ZEV.",
+          hint: "Preporučeno je 3, ali to nije obavezno. Uključujući predsjednika; na stranici Organi ZEV se prikazuje upozorenje kad je članova manje.",
         },
         termYears: {
           name: "Trajanje mandata organa",
           hint: "Mandat organa ZEV traje toliko godina.",
-        },
-        presidentIsBoardPresident: {
-          name: "Predsjednik ZEV-a vodi i upravni odbor",
-          hint: "Pretpostavka — pravna provjera je u toku.",
         },
       },
     },
@@ -1201,7 +1192,7 @@ const srLatn = {
     add: { trigger: "Dodaj posebni dio", submit: "Dodaj posebni dio", share: "Udio u troškovima (%)" },
     owners: {
       title: "Etažni vlasnici · {votes} glasova · {persons} lica",
-      hint: "Samostalni vlasnik ima jedan glas bez obzira na broj posebnih dijelova; suvlasnici istog posebnog dijela zajedno imaju jedan glas, koji daje zajednički predstavnik. Broj glasova je osnova kvoruma i većine.",
+      hint: "Samostalni vlasnik ima jedan glas bez obzira na broj posebnih dijelova; suvlasnici istog posebnog dijela zajedno imaju jedan glas, koji daje zajednički predstavnik. Lice daje najviše jedan glas ukupno: ko glasa kao samostalni vlasnik, ne glasa i za zajednicu u kojoj je suvlasnik — za nju glasa drugi suvlasnik. Broj glasova je osnova kvoruma i većine.",
       caption: "Etažni vlasnici i glasovi",
       col: { owner: "Etažni vlasnik", units: "Posebni dijelovi", voter: "Ko glasa", votes: "Glasova" },
       community: "suvlasnička zajednica",
@@ -1214,6 +1205,8 @@ const srLatn = {
       warnOver: "{unit} ima zbir vlasničkih udjela {sum} % — vjerovatno nije zatvoren udio prethodnog vlasnika. Novo glasanje se ne otvara dok se to ne razriješi, jer bi prethodni vlasnik dobio glas.",
       warnUnder: "{unit} ima upisano {sum} % — možda nedostaje suvlasnik, a time i jedan etažni vlasnik. Ne blokira glasanje.",
       warnNone: "{unit} nema upisanog vlasnika. Novo glasanje se ne otvara dok se vlasnik ne upiše.",
+      warnRepSole: "Predstavnik zajednice {community} ({rep}) već glasa kao samostalni vlasnik, a lice ima najviše jedan glas. Odredite drugog predstavnika. Novo glasanje se ne otvara dok se to ne razriješi.",
+      infoAbsorbed: "Zajednica {community} ({units}) nema poseban glas: svi njeni članovi već glasaju kao samostalni vlasnici.",
       lockedCardTitle: "Vlasnički udjeli",
       lockedTitle: "Prvo utvrdite registar posebnih dijelova",
       lockedHint: "Vlasnici se upisuju na utvrđene posebne dijelove, da bi udio i pravo glasa svakog vlasnika bili poznati od početka.",
@@ -1233,6 +1226,7 @@ const srLatn = {
       cardTitle: "Suvlasničke zajednice i predstavnici",
       cardHint: "Suvlasnici istog posebnog dijela zajedno imaju jedan glas, koji daje zajednički predstavnik.",
       default: "— podrazumijevano (najveći udio) —",
+      soleOption: "{name} (već glasa kao samostalni vlasnik)",
       formHint: "Popunite samo kad posebni dio dobija drugog suvlasnika; inače se predstavnik određuje po najvećem udjelu.",
     },
     msg: {
@@ -1285,6 +1279,7 @@ const srLatn = {
       sole: "samostalni vlasnik",
       coOwner: "suvlasnik — glasa {name}",
       youRepresent: "suvlasnik — Vi glasate za zajednicu",
+      noExtraVote: "suvlasnik — bez dodatnog glasa (svi suvlasnici već glasaju kao samostalni vlasnici)",
     },
     home: {
       todo: "Provjerite i utvrdite registar posebnih dijelova — potrebno prije sljedećeg glasanja.",
@@ -1298,6 +1293,7 @@ const srLatn = {
       unitWithoutOwner: "Posebni dijelovi bez upisanog vlasnika: {units}. Upišite vlasnika u Vlasnici i korisnici › Vlasništvo.",
       unitOverShare: "Zbir udjela vlasnika je iznad 100 % za: {units}. Zatvorite udio prethodnog vlasnika (njegov profil › Zatvori udio) da on ne bi dobio glas.",
       representativeConflict: "Suvlasnici istog skupa posebnih dijelova imaju različite predstavnike: {subjects}. Glasa predstavnik posebnog dijela sa najmanjom oznakom.",
+      representativeVotesAsSole: "Predstavnik zajednice {community} ({rep}) već glasa kao samostalni vlasnik, a lice ima najviše jedan glas. Predsjednik treba odrediti drugog predstavnika (Vlasnici i korisnici › Vlasništvo i korištenje).",
       cardTitle: "Glasanje se ne može otvoriti",
       cardHint: "Ispravite sljedeće, pa pokušajte ponovo.",
       linkRegister: "Registar posebnih dijelova",
@@ -1335,6 +1331,7 @@ const srLatn = {
   },
   /** Glasački listić po sjednici (v2.44.0): jedan e-mail, jedan link i jedan kod za sve prijedloge sjednice. */
   ballot: {
+    footerNotice: "Ovo izjašnjavanje se evidentira kao izraz Vaše volje i koristi se za pripremu dokumentacije sjednice (zapisnik, odluke). Nije kvalifikovani elektronski potpis.",
     err: {
       proposalLocked: "Za ovu sjednicu su poslati glasački listići — novi prijedlog ide na novu sjednicu.",
       tokenInBallot: "Ovaj lični link pripada glasačkom listiću sjednice — ponovno izdavanje i opoziv rade se na listiću (kartica „Glasački listići” na stranici sjednice).",
@@ -1557,6 +1554,16 @@ const srLatn = {
       text: "Uplate platilaca koji nemaju otvorenih faktura vode se kao avans ({iznos}) i čekaju sljedeću fakturu.",
     },
   },
+  /** Stranica „Organi ZEV”. */
+  organi: {
+    boardSizeWarn: "⚠ Upravni odbor ima {broj} {rijec}; preporučeno je {preporuka} (nije obavezno).",
+    intro: "Prema Zakonu o održavanju zgrada Republike Srpske organi ZEV su skupština (svi vlasnici) i upravni odbor (kolegijalno tijelo koje skupština bira). Predsjednik ZEV vodi i upravni odbor, a u odboru je jedan od jednakih. Preporučeni broj članova odbora je {velicina} (nije obavezan), a trajanje mandata {mandat} godina — vidi Podešavanja.",
+  },
+  /** Zakonski minimum naknade za održavanje (odluka 2026-10-26) — samo upozorenje. */
+  legalMinimum: {
+    itemWarn: "⚠ Ispod zakonskog minimuma održavanja (0,20 KM/m² fizička, 0,40 KM/m² pravna lica).",
+    formHint: "Redovno održavanje po m²: zakonski minimum je 0,20 KM/m² za fizička i 0,40 KM/m² za pravna lica (upozorenje, ne blokira).",
+  },
   /** Upozorenja prije izdavanja serije (F5a.3). */
   batchWarnings: {
     title: "Upozorenja prije izdavanja",
@@ -1565,6 +1572,7 @@ const srLatn = {
     noDebtor: "Jedinice bez primaoca fakture ({broj}): ovaj nacrt se ne može izdati. Evidentirajte vlasnika ili primaoca fakture za te jedinice, pa napravite novi nacrt serije za isti period.",
     zeroLines: "Stavke od 0,00 KM ({broj}):",
     zeroUnits: "Jedinice sa ukupnim iznosom 0,00 KM ({broj}): faktura bi bila prazna.",
+    belowMinimum: "Redovno održavanje po m² je ispod zakonskog minimuma (0,20 KM/m² za fizička, 0,40 KM/m² za pravna lica) za jedinice ({broj}). Ne sprečava izdavanje:",
     more: "… i još {broj}",
     chip: "Provjerite",
     reason: {
@@ -1861,6 +1869,7 @@ const srLatn = {
       datePassed: "Datum sjednice ({datum}) je prošao.",
       dateOk: "Sjednica je zakazana za {datum}",
       discussionItems: "Tačke bez prijedloga biće diskusija, bez glasanja: {tacke}.",
+      invitationLead: "Do sjednice ({datum}) je manje od {broj} dana — pozivi se šalju najmanje {broj} dana prije sjednice. Upozorenje ne blokira slanje.",
       allItemsHaveProposal: "Svaka tačka dnevnog reda ima prijedlog.",
       unlinkedProposal: "Prijedlog {kod} nije vezan za tačku dnevnog reda — vežite ga u dnevnom redu.",
       invitationPdfOk: "PDF poziva postoji u Dokumentima.",

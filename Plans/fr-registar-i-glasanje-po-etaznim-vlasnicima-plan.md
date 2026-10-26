@@ -16,7 +16,7 @@ Plan je nastao čitanjem stvarnog koda (v2.42.0); tvrdnje su vezane za fajl i li
   - dodavanje vlasnika i dalje radi;
   - predsjednik dobija zadatak da registar provjeri i utvrdi;
   - novo glasanje se ne otvara dok registar nije utvrđen.
-- **Otvoreno, ne blokira — K-03b (pravnik):** lice koje je samostalni vlasnik jednog posebnog dijela i suvlasnik drugog. Plan implementira preporuku iz pregleda: **to su dva glasačka subjekta**. Model podataka (§2.3) podržava i suprotan odgovor bez nove migracije.
+- **K-03b — ODLUČENO (korisnik, 2026-10-26):** lice daje **najviše jedan glas ukupno**. Ko je samostalni vlasnik jednog posebnog dijela, ne glasa i za zajednicu u kojoj je suvlasnik: zajednica zadržava svoj glas, ali ga daje predstavnik koji već ne glasa kao samostalni vlasnik (primjer: Nikola — Garaža 4 sam i Stan 3 sa Sarom → Nikola 1 glas, zajednica Stana 3 preko Sare). Podrazumijevani predstavnik preskače takve članove; izričito određen takav predstavnik blokira otvaranje glasanja (preduslov, poruka imenuje zajednicu); zajednica čiji su svi članovi samostalni vlasnici nije poseban subjekt (registar to prikazuje kao informaciju). Zamrznuti snimci se ne preračunavaju. Bez migracije; implementirano u `assemblyVotingSubjects` (v2.53.0). Raniji prijedlog („dva glasačka subjekta”) je time zamijenjen.
 
 Mockup: `Plans/design-review/mockups/X-M04-registar-posebnih-dijelova.html`.
 
@@ -129,7 +129,7 @@ model EligibleVoter {
 
 **Pravilo ostaje:** `ownerId` je **lice koje glasa**, tj. samostalni vlasnik ili predstavnik zajednice. Zato tokeni, `Vote.voterId` / `representedId`, punomoć (`activeProxyFor(…, ownerId)`) i glasačka lista ostaju semantički isti.
 
-**K-03b:** ako pravnik odgovori „jedan glas po licu”, mijenja se samo funkcija koja gradi subjekte (§3.3), ne model.
+**K-03b (odlučeno 2026-10-26):** „jedan glas po licu” je primijenjeno u funkciji koja gradi subjekte (§3.3), model se nije mijenjao.
 
 ### 2.4 Zajednički predstavnik i garažno mjesto
 
@@ -204,7 +204,7 @@ model Unit {
 4. **Jedinica sa više vlasnika:** subjekt `G:<id1>,<id2>,…`. Jedinice sa istim skupom su jedan subjekt.
    - Glasa `votingRepresentativeId` jedinice, ili podrazumijevani suvlasnik iz §2.4.
    - Ako jedinice istog skupa imaju različite predstavnike, uzima se predstavnik jedinice sa najmanjom oznakom, uz upozorenje u preduslovima.
-5. **K-03b:** isto lice može biti u `P:` i u `G:` subjektu, pa ima dva glasa. Pravilo je izdvojeno u jednu funkciju (`subjectKeyFor`), da se odgovor pravnika primijeni na jednom mjestu.
+5. **K-03b (odlučeno 2026-10-26):** isto lice može biti član `P:` i `G:` subjekta, ali glasa samo u jednom: u zajednici ne može biti predstavnik ako već glasa kao samostalni vlasnik (§3.3 pravilo u `assemblyVotingBasis`).
 6. Odbor ostaje `boardVotingBasis` (`ownership.ts:444`), sa `subjectKey = "B:<partyId>"` i `memberPartyIds = [partyId]`.
 
 **`ownersVotingBasis`** koriste samo `meetings.ts:133` (prozivka) i `:813` (`loadVotingBasis`) — provjereno pretragom. Obje upotrebe prelaze na `assemblyVotingSubjects`, pa se `ownersVotingBasis` uklanja, da ne ostane drugi izvor istine.
@@ -392,7 +392,7 @@ Implementacija kao u F1: Sonnet po planu, Opus pregleda (posebno §3.3, §3.4 i 
   - ne-preračunavanjem zamrznutih snimaka.
 - **Kapija u `addOwnershipStake`** pogađa seed, helper i sve testove sa vlasnicima. Zato ide u FR-a zajedno sa izmjenom seed-a i helpera.
 - **Prisustvo po licu, glas po subjektu:** v1 ne bilježi koji je suvlasnik fizički prisutan (§13).
-- **K-03b:** ako pravnik odgovori drugačije, mijenja se samo `subjectKeyFor` i test.
+- **K-03b:** odlučeno 2026-10-26 (jedan glas po licu); vidi odluke na početku dokumenta.
 - **Produkcijski ZEV-ovi** ne mogu otvoriti novo glasanje dok predsjednik ne utvrdi registar. To je namjerno (FR-Q4), ali treba ga najaviti.
 
 ## 12. Šta FR namjerno ne radi
@@ -405,6 +405,6 @@ Implementacija kao u F1: Sonnet po planu, Opus pregleda (posebno §3.3, §3.4 i 
 ## 13. Otvoreno
 
 - **Verzija:** prijedlog je minor → 2.43.0.
-- **K-03b (pravnik):** podrazumijevano su dva subjekta.
+- ~~**K-03b (pravnik):** podrazumijevano su dva subjekta.~~ Odlučeno 2026-10-26 (korisnik): jedno lice, najviše jedan glas.
 - **Prozivka:** treba li bilježiti koji je suvlasnik fizički prisutan, kad zajednicu u sali predstavlja suvlasnik koji nije određeni predstavnik? Prijedlog za v1: predsjednik u sali može promijeniti predstavnika samo prije otvaranja glasanja (§3.2). Bilježenje konkretnog lica ide u kasniju fazu.
 - **`en.ts`:** dopuniti grupu `confirm` iz v2.42.0 zajedno sa novim grupama (§4.7).

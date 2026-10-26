@@ -5,11 +5,13 @@ import { setVotingRepresentativeAction } from "@/server/actions/votingRepresenta
 import { t, tf } from "@/lib/i18n";
 
 export function RepresentativeChange({
-  unitId, unitLabels, members, currentId, returnTo,
+  unitId, unitLabels, members, soleIds = [], currentId, returnTo,
 }: {
   unitId: string;
   unitLabels: string[];
   members: { partyId: string; name: string }[];
+  /** K-03b: clanovi koji vec glasaju kao samostalni vlasnici — ne mogu biti predstavnik zajednice. */
+  soleIds?: string[];
   currentId: string;
   returnTo: "zgrade" | "vlasnici";
 }) {
@@ -24,7 +26,14 @@ export function RepresentativeChange({
     >
       <Field label={t("register.rep.label")}>
         <select name="partyId" defaultValue={currentId} className={inputCls}>
-          {members.map((m) => <option key={m.partyId} value={m.partyId}>{m.name}</option>)}
+          {members.map((m) => {
+            const sole = soleIds.includes(m.partyId);
+            return (
+              <option key={m.partyId} value={m.partyId} disabled={sole && m.partyId !== currentId}>
+                {sole ? tf("register.rep.soleOption", { name: m.name }) : m.name}
+              </option>
+            );
+          })}
         </select>
       </Field>
     </ConfirmAction>

@@ -70,6 +70,16 @@ const CONFIRM_TARGETS: MeetingStatus[] = ["INVITATIONS_SENT", "VOTING_OPEN", "VO
 const proposalHref = (id: string) => `/skupstina/prijedlog/${id}`;
 const isLive = (status: string) => status !== "WITHDRAWN" && status !== "SUPERSEDED";
 
+/** Pozivi se šalju najmanje ovoliko kalendarskih dana prije sjednice (odluka korisnika 2026-10-26). */
+export const MIN_INVITATION_LEAD_DAYS = 7;
+
+/** ⚠ rečenica kad je sjednica bliže od 7 kalendarskih dana (Europe/Sarajevo); `null` kad je datum nepoznat ili je rok ispoštovan. Ne blokira. */
+export function invitationLeadWarning(scheduledAt: Date | null, now: Date): string | null {
+  if (!scheduledAt) return null;
+  if (calendarDaysBetween(now, scheduledAt) >= MIN_INVITATION_LEAD_DAYS) return null;
+  return tf("meetingStep.pre.invitationLead", { broj: MIN_INVITATION_LEAD_DAYS, datum: formatDate(scheduledAt) });
+}
+
 /** Sljedeći korak sjednice, ili `null` za arhiviranu sjednicu. */
 export function meetingNextStep(input: MeetingNextStepInput): MeetingNextStep | null {
   const to = NEXT_TO[input.status];
@@ -89,6 +99,8 @@ export function meetingNextStep(input: MeetingNextStepInput): MeetingNextStep | 
       break;
     }
     case "INVITATIONS_PREPARED": {
+      const lead = invitationLeadWarning(input.scheduledAt, input.now);
+      if (lead) pre.push({ ok: false, text: lead });
       const discussion = input.agendaItems.filter((a) => a.proposalCount === 0);
       if (discussion.length > 0) {
         pre.push({ ok: false, text: tf("meetingStep.pre.discussionItems", { tacke: discussion.map((a) => a.order).join(", ") }), href: agendaHref });
@@ -101,6 +113,8 @@ export function meetingNextStep(input: MeetingNextStepInput): MeetingNextStep | 
       break;
     }
     case "INVITATIONS_SENT": {
+      const lead = invitationLeadWarning(input.scheduledAt, input.now);
+      if (lead) pre.push({ ok: false, text: lead });
       if (input.invitations) {
         pre.push(
           input.invitations.pdfExists

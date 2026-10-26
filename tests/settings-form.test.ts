@@ -1,7 +1,7 @@
 // Parsiranje i poređenje parametara (F7, X-R10): parametri utiču na obračun i pravila glasanja, pa se granični unosi
 // (decimalni zarez, prazno polje, dvosmislena tačka, tekst umjesto broja) testiraju do detalja.
 import { describe, it, expect } from "vitest";
-import { SETTING_DEFINITIONS, DEFAULT_SETTINGS, type SettingKey } from "@/lib/settings-defaults";
+import { SETTING_DEFINITIONS, DEFAULT_SETTINGS, type SettingDefinition, type SettingKey } from "@/lib/settings-defaults";
 import { diffSettings, parseSettingValue, canonicalSettingValue } from "@/lib/settings-form";
 import {
   decodeSettingChanges,
@@ -15,7 +15,9 @@ import {
 const def = (key: SettingKey) => SETTING_DEFINITIONS.find((d) => d.key === key)!;
 const money = def("emergency.costThreshold");
 const int = def("invoice.dueDay");
-const bool = def("interest.enabled");
+// Od 2026-10-26 nijedan stvarni parametar nije bulov (zatezna kamata i "predsjednik vodi odbor" su uklonjeni),
+// ali forma i dalje podržava taj tip — provjerava se sintetičkom definicijom.
+const bool: SettingDefinition = { key: "board.size", def: "false", type: "boolean", boolLabels: "yesNo" };
 
 describe("parseSettingValue", () => {
   it("boolean: samo true/false, ništa drugo", () => {
@@ -80,7 +82,6 @@ describe("diffSettings", () => {
     const r = diffSettings(current, {
       "retention.financialYears": "11", // isto
       "emergency.costThreshold": "600,00", // promijenjeno
-      "interest.enabled": "false", // isto
       "board.size": "5", // promijenjeno
     });
     expect(r).toEqual({
@@ -114,12 +115,13 @@ describe("diffSettings", () => {
     expect(diffSettings(current, { "board.size": "" }).ok).toBe(false);
   });
 
-  it("bulov parametar se mijenja samo izborom true/false", () => {
-    expect(diffSettings(current, { "interest.enabled": "true" })).toEqual({
-      ok: true,
-      changes: [{ key: "interest.enabled", before: "false", after: "true" }],
-    });
-    expect(diffSettings(current, { "interest.enabled": "uključeno" }).ok).toBe(false);
+  it("uklonjeni parametri (zatezna kamata, predsjednik vodi odbor) više ne postoje; rok čuvanja glasanja je najmanje 5 godina", () => {
+    const keys = SETTING_DEFINITIONS.map((d) => d.key as string);
+    expect(keys).not.toContain("interest.enabled");
+    expect(keys).not.toContain("board.presidentIsBoardPresident");
+    expect(DEFAULT_SETTINGS["retention.voteIpDays"]).toBe("1826");
+    expect(parseSettingValue(def("retention.voteIpDays"), "1825")).toEqual({ ok: false, error: "range" });
+    expect(parseSettingValue(def("retention.voteIpDays"), "1826")).toEqual({ ok: true, value: "1826" });
   });
 });
 
@@ -127,14 +129,12 @@ describe("prikaz i prenos izmjena", () => {
   it("poruka navodi naziv: staro → novo, sa jedinicom i oblikom množine", () => {
     const text = describeSettingChanges([
       { key: "emergency.costThreshold", before: "500", after: "600" },
-      { key: "interest.enabled", before: "false", after: "true" },
       { key: "retention.financialYears", before: "11", after: "12" },
       { key: "board.termYears", before: "4", after: "2" },
       { key: "invoice.dueDay", before: "15", after: "1" },
     ]);
     expect(text).toBe(
       "Prag za hitne radove bez skupštine: 500,00 KM → 600,00 KM; " +
-        "Zatezna kamata: Isključeno → Uključeno; " +
         "Čuvanje finansijskih dokumenata: 11 godina → 12 godina; " +
         "Trajanje mandata organa: 4 godine → 2 godine; " +
         "Podrazumijevani dan dospijeća fakture: 15. → 1.",
@@ -142,7 +142,7 @@ describe("prikaz i prenos izmjena", () => {
   });
 
   it("Da/Ne za parametar koji to traži; neispravna stara vrijednost se prikazuje kakva jeste", () => {
-    expect(formatSettingValue(def("board.presidentIsBoardPresident"), "true")).toBe("Da");
+    expect(formatSettingValue(bool, "true")).toBe("Da");
     expect(formatSettingValue(money, "oko 500")).toBe("oko 500");
   });
 

@@ -1,5 +1,6 @@
 // Shared page frame of the public voting screens (single proposal and session ballot).
 import { AuthBrandHeader } from "@/components/auth-shell";
+import { t } from "@/lib/i18n";
 
 export function Shell({ zevName, children }: { zevName?: string; children: React.ReactNode }) {
   return (
@@ -10,8 +11,7 @@ export function Shell({ zevName, children }: { zevName?: string; children: React
       {children}
       <div className="mt-6 space-y-2 text-center text-[13px] text-slate-500 md:text-left">
         <p>
-          Ovaj postupak predstavlja evidentirano elektronsko odobravanje, a ne kvalifikovani
-          elektronski potpis.
+          {t("ballot.footerNotice")}
         </p>
         <p>
           {zevName ? `Ovo izjašnjavanje je za ${zevName}. ` : ""}

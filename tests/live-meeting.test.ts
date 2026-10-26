@@ -504,8 +504,10 @@ describe("live meeting — voting subjects (FR)", () => {
     await grantProxy(f.president, { grantorId: f.ownerA.id, holderId: f.ownerB.id, scope: "ALL", validFrom: new Date("2020-01-01") });
     await recordAttendance(f.president, { meetingId: meeting.id, partyId: f.ownerB.id, present: true });
     const preview = await previewLiveDelivery(f.president, proposal.id);
-    // B is a member of two subjects (own u2 + the u3 community), and A is represented by B: all three are "present"
-    expect(preview.presentCount).toBe(3);
+    // K-03b (2026-10-26): B votes in the room as the sole owner of u2 and A is represented by B -> 2 subjects present.
+    // B is also a member of the u3 community, but its vote is cast by C (B already votes as a sole owner), so B's
+    // presence does not make the community present.
+    expect(preview.presentCount).toBe(2);
   });
 
   it("the preview shows the register preconditions instead of numbers that cannot be acted on", async () => {

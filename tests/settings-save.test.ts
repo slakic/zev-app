@@ -15,19 +15,19 @@ describe("saveSettings", () => {
     const r = await saveSettings(f.president, {
       "retention.financialYears": "11", // nepromijenjeno
       "emergency.costThreshold": "600,00",
-      "interest.enabled": "true",
+      "invoice.dueDay": "20",
       "board.size": "3", // nepromijenjeno
     });
     expect(r).toEqual({
       ok: true,
       changes: [
         { key: "emergency.costThreshold", before: "500", after: "600" },
-        { key: "interest.enabled", before: "false", after: "true" },
+        { key: "invoice.dueDay", before: "15", after: "20" },
       ],
     });
     const s = await getSettings(f.president);
     expect(s["emergency.costThreshold"]).toBe("600");
-    expect(s["interest.enabled"]).toBe("true");
+    expect(s["invoice.dueDay"]).toBe("20");
     expect(s["board.size"]).toBe("3");
     expect(await auditCount(zevId)).toBe(before + 2);
     const ev = await prisma.auditEvent.findFirstOrThrow({ where: { zevId, action: "setting.update", targetId: "emergency.costThreshold" } });
@@ -39,7 +39,7 @@ describe("saveSettings", () => {
     const f = await createFixture("set-save-none");
     const zevId = f.president.zevId!;
     const before = await auditCount(zevId);
-    const r = await saveSettings(f.president, { "emergency.costThreshold": "500,00", "interest.enabled": "false" });
+    const r = await saveSettings(f.president, { "emergency.costThreshold": "500,00", "invoice.dueDay": "15" });
     expect(r).toEqual({ ok: true, changes: [] });
     expect(await auditCount(zevId)).toBe(before);
   });

@@ -9,7 +9,7 @@ import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, type Decimal } from "@/lib/money";
 import { formatDate, tf } from "@/lib/i18n";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
-import { assemblyVotingSubjects, unitOwnershipWarnings } from "@/server/services/ownership";
+import { assemblyVotingBasis, unitOwnershipWarnings } from "@/server/services/ownership";
 import type { Prisma, UnitType, UnitRegisterChangeKind, UnitRegisterStatus } from "@/generated/prisma/client";
 
 /** Dozvoljena odstupanja zbira udjela jedinica od 100% (zaokruzivanje unosa). */
@@ -113,13 +113,14 @@ export function registerPreconditions(units: UnitRow[]): RegisterPrecondition[] 
 export async function getUnitRegister(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
   const zevId = requireZev(actor);
-  const [zev, units, history, subjects, warnings] = await Promise.all([
+  const [zev, units, history, basis, warnings] = await Promise.all([
     prisma.zev.findUniqueOrThrow({ where: { id: zevId } }),
     prisma.unit.findMany({ where: { zevId }, orderBy: { label: "asc" } }),
     prisma.unitRegisterChange.findMany({ where: { zevId }, orderBy: { version: "desc" } }),
-    assemblyVotingSubjects(zevId),
+    assemblyVotingBasis(zevId),
     unitOwnershipWarnings(zevId),
   ]);
+  const { subjects, absorbed } = basis;
   const active = units.filter((u) => u.active);
   const byType: Record<string, number> = {};
   for (const u of active) byType[u.type] = (byType[u.type] ?? 0) + 1;
@@ -132,7 +133,7 @@ export async function getUnitRegister(actor: Actor) {
       byType,
       shareSum: sharesSum(active.map((u) => u.ownershipShare)).toFixed(2),
       areaSum: sharesSum(active.map((u) => u.usableArea)).toFixed(2),
-      /** Broj glasova = glasackih subjekata (samostalni vlasnici + suvlasnicke zajednice). */
+      /** Broj glasova = glasackih subjekata (samostalni vlasnici + suvlasnicke zajednice koje nisu K-03b "upijene"). */
       votes: subjects.length,
       /** Broj razlicitih lica u svim subjektima. */
       persons: new Set(subjects.flatMap((s) => s.memberPartyIds)).size,
@@ -140,6 +141,8 @@ export async function getUnitRegister(actor: Actor) {
     },
     preconditions: registerPreconditions(units),
     subjects,
+    /** K-03b: zajednice ciji svi clanovi vec glasaju kao samostalni vlasnici (bez dodatnog glasa). */
+    absorbed,
     warnings,
     history,
   };

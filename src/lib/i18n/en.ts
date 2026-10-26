@@ -82,6 +82,7 @@ const en: DeepPartial<typeof srLatn> = {
       title: "Electronic voting",
       intro:
         "To take part electronically in assembly and board meetings and other votes the ZEV publishes, a signed consent form is needed. There are three steps:",
+      purpose: "Electronic voting is a tool for running the vote and preparing the meeting's documentation (agenda, minutes, decisions). It is recorded as an expression of your will; it is not a qualified electronic signature.",
       step1: "Download the form (PDF).",
       step2: "Print it and sign it.",
       step3: "Hand the signed form to the ZEV president.",
@@ -159,21 +160,17 @@ const en: DeepPartial<typeof srLatn> = {
     param: {
       retention: {
         financialYears: { name: "Retention of financial documents", hint: "Financial documents are kept for at least this many years." },
-        voteIpDays: { name: "Retention of voting IP data", hint: "IP data stored with votes is kept for this many days." },
+        voteIpDays: { name: "Retention of voting IP data", hint: "Voting data is kept for 5 years (at least 1826 days). Votes, ballots and the audit trail are never deleted." },
       },
       emergency: {
         costThreshold: { name: "Emergency works limit without assembly", hint: "Emergency works above this amount need an assembly decision." },
-      },
-      interest: {
-        enabled: { name: "Late-payment interest", hint: "Stays off until a lawyer confirms the calculation." },
       },
       invoice: {
         dueDay: { name: "Default invoice due day", hint: "An invoice falls due on this day of the month unless set otherwise." },
       },
       board: {
-        size: { name: "Number of board members", hint: "Including the president. Shown as a recommendation on the ZEV organs page." },
+        size: { name: "Number of board members", hint: "3 is recommended, but it is not mandatory. Including the president; the ZEV organs page shows a warning when there are fewer members." },
         termYears: { name: "Term of ZEV bodies", hint: "A ZEV body's term lasts this many years." },
-        presidentIsBoardPresident: { name: "The ZEV president also chairs the board", hint: "An assumption — legal review is in progress." },
       },
     },
   },
@@ -285,6 +282,7 @@ const en: DeepPartial<typeof srLatn> = {
   },
   /** Confirmation steps (v2.42.0) — `{name}` placeholders are the same as in sr-Latn. */
   ballot: {
+    footerNotice: "This vote is recorded as an expression of your will and is used to prepare the meeting's documentation (minutes, decisions). It is not a qualified electronic signature.",
     err: {
       proposalLocked: "Ballots have been sent for this session — a new proposal goes to a new session.",
       tokenInBallot: "This personal link belongs to the session ballot — reissue and revoke are done on the ballot (the “Ballots” card on the session page).",
@@ -531,7 +529,7 @@ const en: DeepPartial<typeof srLatn> = {
     add: { trigger: "Add a special part", submit: "Add a special part", share: "Cost share (%)" },
     owners: {
       title: "Unit owners · {votes} votes · {persons} persons",
-      hint: "A sole owner has one vote regardless of the number of special parts; co-owners of the same special part have one vote together, cast by a common representative. The number of votes is the basis of quorum and majority.",
+      hint: "A sole owner has one vote regardless of the number of special parts; co-owners of the same special part have one vote together, cast by a common representative. A person casts at most one vote in total: whoever votes as a sole owner does not also vote for a community they co-own — another co-owner votes for it. The number of votes is the basis of quorum and majority.",
       caption: "Unit owners and votes",
       col: { owner: "Unit owner", units: "Special parts", voter: "Who votes", votes: "Votes" },
       community: "co-ownership community",
@@ -544,6 +542,8 @@ const en: DeepPartial<typeof srLatn> = {
       warnOver: "{unit} has an owners' share sum of {sum} % — the previous owner's share was probably not closed. A new vote is not opened until this is resolved, because the previous owner would get a vote.",
       warnUnder: "{unit} has {sum} % entered — a co-owner, and so one unit owner, may be missing. Does not block voting.",
       warnNone: "{unit} has no owner entered. A new vote is not opened until an owner is entered.",
+      warnRepSole: "The representative of the community {community} ({rep}) already votes as a sole owner, and a person has at most one vote. Choose another representative. A new vote is not opened until this is resolved.",
+      infoAbsorbed: "The community {community} ({units}) has no vote of its own: all its members already vote as sole owners.",
       lockedCardTitle: "Ownership shares",
       lockedTitle: "First establish the register of special parts",
       lockedHint: "Owners are entered on established special parts, so that every owner's share and vote are known from the start.",
@@ -563,6 +563,7 @@ const en: DeepPartial<typeof srLatn> = {
       cardTitle: "Co-ownership communities and representatives",
       cardHint: "Co-owners of the same special part have one vote together, cast by a common representative.",
       default: "— default (largest share) —",
+      soleOption: "{name} (already votes as a sole owner)",
       formHint: "Fill in only when the special part gets another co-owner; otherwise the representative is the one with the largest share.",
     },
     msg: {
@@ -611,7 +612,7 @@ const en: DeepPartial<typeof srLatn> = {
       addedLine: "New special part {label}: {share} %",
       retiredLine: "{label} is retired",
     },
-    vote: { sole: "sole owner", coOwner: "co-owner — {name} votes", youRepresent: "co-owner — you vote for the community" },
+    vote: { sole: "sole owner", coOwner: "co-owner — {name} votes", youRepresent: "co-owner — you vote for the community", noExtraVote: "co-owner — no extra vote (all co-owners already vote as sole owners)" },
     home: {
       todo: "Check and establish the register of special parts — needed before the next vote.",
       link: "Open the register",
@@ -624,6 +625,7 @@ const en: DeepPartial<typeof srLatn> = {
       unitWithoutOwner: "Special parts without an owner entered: {units}. Enter an owner under Owners and users › Ownership.",
       unitOverShare: "The owners' share sum is above 100 % for: {units}. Close the previous owner's share (their profile › Close share) so they do not get a vote.",
       representativeConflict: "Co-owners of the same set of special parts have different representatives: {subjects}. The representative of the special part with the smallest label votes.",
+      representativeVotesAsSole: "The representative of the community {community} ({rep}) already votes as a sole owner, and a person has at most one vote. The president must choose another representative (Owners and users › Ownership and use).",
       cardTitle: "Voting cannot be opened",
       cardHint: "Fix the following, then try again.",
       linkRegister: "Register of special parts",
@@ -783,6 +785,7 @@ const en: DeepPartial<typeof srLatn> = {
       datePassed: "The meeting date ({datum}) has passed.",
       dateOk: "The meeting is scheduled for {datum}",
       discussionItems: "Items without a proposal will be discussion only, without a vote: {tacke}.",
+      invitationLead: "The meeting ({datum}) is less than {broj} days away — invitations are sent at least {broj} days before the meeting. This warning does not block sending.",
       allItemsHaveProposal: "Every agenda item has a proposal.",
       unlinkedProposal: "Proposal {kod} is not linked to an agenda item — link it in the agenda.",
       invitationPdfOk: "The invitation PDF exists in Documents.",
@@ -939,12 +942,21 @@ const en: DeepPartial<typeof srLatn> = {
       text: "Payments from payers with no open invoices are kept as an advance ({iznos}) until the next invoice.",
     },
   },
+  organi: {
+    boardSizeWarn: "⚠ The board has {broj} {rijec}; {preporuka} is recommended (not mandatory).",
+    intro: "Under the Law on Building Maintenance of Republika Srpska the ZEV bodies are the assembly (all owners) and the board (a collegial body elected by the assembly). The ZEV president also leads the board and is one of its equal members. The recommended board size is {velicina} (not mandatory) and the term is {mandat} years — see Settings.",
+  },
+  legalMinimum: {
+    itemWarn: "⚠ Below the legal maintenance minimum (0.20 KM/m² natural, 0.40 KM/m² legal persons).",
+    formHint: "Regular maintenance per m²: the legal minimum is 0.20 KM/m² for natural persons and 0.40 KM/m² for legal persons (a warning, not a block).",
+  },
   batchWarnings: {
     title: "Warnings before issuing",
     intro: "Warnings do not prevent issuing, except that a batch cannot be issued while a unit has no invoice recipient.",
     duePast: "The due date ({datum}) has already passed — every invoice will be overdue immediately.",
     noDebtor: "Units without an invoice recipient ({broj}): this draft cannot be issued. Record an owner or invoice recipient for those units, then create a new draft batch for the same period.",
     zeroLines: "Lines of 0.00 KM ({broj}):",
+    belowMinimum: "Regular maintenance per m² is below the legal minimum (0.20 KM/m² for natural persons, 0.40 KM/m² for legal persons) for units ({broj}). It does not prevent issuing:",
     zeroUnits: "Units with a total of 0.00 KM ({broj}): the invoice would be empty.",
     more: "… and {broj} more",
     chip: "Check",

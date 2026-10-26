@@ -11,6 +11,7 @@ import { t, tf, tEnum, formatDate, formatDateTime } from "@/lib/i18n";
 import { PageHeader, Card, Stat, Table, Td, Field, inputCls, SubmitBtn, Flash, ToggleBtn, Tabs, FilterBar, BtnLink, StatusBadge, ConfirmAction, RowLink, type ColumnSpec } from "@/components/ui";
 import { PreconditionList } from "@/components/precondition-list";
 import { RepresentativeChange } from "@/components/representative-change";
+import { registerWarningTexts } from "@/lib/registerWarnings";
 import { BuildingRow } from "@/components/building-row";
 import { UnitRow } from "@/components/unit-row";
 
@@ -520,6 +521,7 @@ export default async function BuildingsPage({
                                 unitId={sub.units[0].unitId}
                                 unitLabels={sub.units.map((u) => u.label)}
                                 members={sub.members}
+                                soleIds={sub.members.map((m) => m.partyId).filter((id) => !sub.actingPartyIds.includes(id))}
                                 currentId={sub.ownerId}
                                 returnTo="zgrade"
                               />
@@ -537,17 +539,9 @@ export default async function BuildingsPage({
               <div className="mt-4">
                 <PreconditionList
                   items={
-                    reg.warnings.length === 0
+                    registerWarningTexts(reg).length === 0
                       ? [{ ok: true, text: t("register.owners.warningsOk") }]
-                      : reg.warnings.map((w) => ({
-                          ok: false,
-                          text:
-                            w.kind === "OVER"
-                              ? tf("register.owners.warnOver", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
-                              : w.kind === "UNDER"
-                                ? tf("register.owners.warnUnder", { unit: w.label, sum: formatMoney(w.sum.toString(), "").trim() })
-                                : tf("register.owners.warnNone", { unit: w.label }),
-                        }))
+                      : registerWarningTexts(reg).map((text) => ({ ok: false, text }))
                   }
                 />
               </div>

@@ -21,7 +21,12 @@ export async function getSettings(actor: Actor): Promise<Record<SettingKey, stri
   const result: Record<SettingKey, string> = { ...DEFAULT_SETTINGS };
   for (const row of rows) {
     if (isSettingKey(row.key)) result[row.key] = String(row.value);
+    // Redovi uklonjenih parametara (npr. zatezna kamata) se ignorišu — ostaju u bazi, bez posljedica.
   }
+  // Vrijednost ispod novog minimuma (npr. stari rok čuvanja od 30 dana) čita se kao minimum.
+  const retention = SETTING_DEFINITIONS.find((d) => d.key === "retention.voteIpDays");
+  const n = Number(result["retention.voteIpDays"]);
+  if (retention?.min != null && Number.isInteger(n) && n < retention.min) result["retention.voteIpDays"] = String(retention.min);
   return result;
 }
 

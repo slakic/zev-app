@@ -43,6 +43,31 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.53.0] - 2026-10-26
+
+Pravne odluke korisnika od 2026-10-26 unesene u aplikaciju: jedno lice daje najviše jedan glas ukupno (K-03b), e-glasanje je opisano kao alat za vođenje glasanja i pripremu dokumentacije, upozorenja o zakonskom minimumu održavanja i o roku poziva, te uklonjeni parametri koji su bili samo pretpostavke. **Bez migracije** — deploy ne traži ručni korak; sukobi predstavnika se rješavaju u radu (preduslov i upozorenje).
+
+**Šta K-03b znači za postojeće ZEV-ove (broj glasova):** ako je neko samostalni vlasnik jednog posebnog dijela i suvlasnik drugog, ima jedan glas — za suvlasničku zajednicu glasa drugi suvlasnik. Zajednica i dalje ima svoj glas, osim kad su svi njeni članovi već samostalni vlasnici (tada nema dodatnog glasa). Broj glasova se zato ne mijenja zbog ovog pravila, osim u tom drugom slučaju (smanjuje se za zajednicu bez „slobodnog” člana). Seed podaci (Nikola i Sara zajedno na Stanu 3, bez samostalnog dijela) ostaju na **5 glasova**. Ako je postojeći predstavnik zajednice ujedno samostalni vlasnik, **novo glasanje se ne otvara** dok predsjednik ne odredi drugog predstavnika; već otvorena i zatvorena glasanja se ne diraju (zamrznuti snimak pravila i spisak birača ostaju kakvi jesu).
+
+### Promijenjeno
+
+- **K-03b — jedno lice, najviše jedan glas (`assemblyVotingSubjects`):** podrazumijevani predstavnik zajednice preskače članove koji već glasaju kao samostalni vlasnici; zajednica kojoj su svi članovi samostalni vlasnici nije poseban glasački subjekt. Prisustvo i dostava linka za zajednicu gledaju samo članove koji mogu glasati za nju. Zbir „N glasova · M lica” u registru prati novo pravilo.
+- **Preduslov otvaranja glasanja:** izričito određen predstavnik zajednice koji već glasa kao samostalni vlasnik blokira otvaranje; poruka imenuje zajednicu i predstavnika i traži od predsjednika drugog predstavnika. Isto se vidi u potvrdi i u panelu „Sljedeći korak”.
+- **Registar i tab „Vlasništvo”:** upozorenje za takvog predstavnika, informacija za zajednicu bez dodatnog glasa, i oznaka na stranici vlasnika. U izboru predstavnika članovi koji već glase kao samostalni vlasnici su onemogućeni.
+- **E-glasanje (tekst, mehanika neizmijenjena):** listić, izjava na ekranu, kartica saglasnosti u „Moji podaci”, PDF izjave o saglasnosti i podnožje glasačkih stranica više ne tvrde pravnu valjanost; opisuju elektronsko izjašnjavanje kao evidentirani izraz volje koji služi za vođenje glasanja i pripremu dokumentacije sjednice (zapisnik, odluke). Nije kvalifikovani elektronski potpis.
+- **Parametri:** uklonjeni „Zatezna kamata” (nema obračuna kamate) i „Predsjednik ZEV-a vodi i upravni odbor” (utvrđena činjenica); stari redovi u bazi se ignorišu. Rok čuvanja podataka o glasanju je podrazumijevano 5 godina (1826 dana) i ne može biti manji; stariji upisi od 30 dana čitaju se kao 1826. Glasovi, listići i revizorski trag se i dalje nikad ne brišu.
+- **Organi ZEV:** preporučena veličina odbora (3) nije obavezna; kad odbor (uz predsjednika) ima manje članova, prikazuje se upozorenje. Tekst o predsjedniku kao jednom od jednakih članova odbora.
+
+### Dodato
+
+- **Zakonski minimum naknade za održavanje (samo upozorenje):** 0,20 KM/m² za fizička i 0,40 KM/m² za pravna lica. U listi stavki naknada stoji upozorenje uz stopu ispod 0,20 KM/m²; u „Upozorenjima prije izdavanja” nacrta serije stoje jedinice čiji je dužnik ispod minimuma za svoju vrstu lica. Računa se zbir stopa po m² stavki koje su obračunate **po m²** i označene kao fond održavanja ili sa „održavanje” u nazivu; jedinica bez takve stavke se ne ocjenjuje. Ništa se ne blokira.
+- **Rok poziva (samo upozorenje):** u „Sljedeći korak” (Zakazana → pripremi pozive i Pozivi pripremljeni → Pošalji pozive) ⚠ kad je sjednica bliže od 7 kalendarskih dana (Europe/Sarajevo); ista rečenica je u potvrdi slanja poziva.
+- Testovi: K-03b (Nikola/Sara, zajednica bez slobodnog člana, blokada otvaranja, zamrznut snimak, punomoćnik predstavnika), minimum održavanja, rok poziva, uklonjeni parametri, dug ostaje na vlasniku.
+
+### Pravni dokument
+
+- `LEGAL_AND_FINANCIAL_ASSUMPTIONS.md`: odluke 2026-10-26 su označene kao donesene; oznake [PRAVNA PROVJERA] za riješene tačke uklonjene. Dug ostaje na vlasniku, a ne na jedinici (potvrđeno u kodu: faktura čuva `debtorId`). Obrasci za registraciju ZEV dodaju se kasnije.
+
 ## [2.52.0] - 2026-10-26
 
 Faza F9 pregleda dizajna: meni je preuređen po poslovima uloge, sa naslovima grupa, a platformski admin je pregledniji i bezbjedniji. **Bez migracije** — deploy ne traži ručni korak.

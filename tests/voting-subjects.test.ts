@@ -3,8 +3,9 @@ import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, openVotingWithLinks, seedShapedZev, type Fixture } from "./helpers";
 import {
-  assemblyVotingSubjects, setVotingRepresentative, unitOwnershipWarnings, addOwnershipStake, subjectKeyFor,
+  assemblyVotingSubjects, assemblyVotingBasis, setVotingRepresentative, unitOwnershipWarnings, addOwnershipStake, subjectKeyFor, grantProxy,
 } from "@/server/services/ownership";
+import { openVoting } from "@/server/services/meetings";
 import { ForbiddenError } from "@/server/auth/guards";
 
 const PROOF = { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" };
@@ -96,14 +97,17 @@ describe("assemblyVotingSubjects — one etazni vlasnik, one vote (K-03)", () =>
     expect(community.ownerId).toBe(sara.id);
   });
 
-  it("K-03b: a person who solely owns one unit and co-owns another is in two subjects with different keys", async () => {
+  it("K-03b: B solely owns u2 and co-owns u3 — the community keeps its own vote, but B cannot cast it (C does)", async () => {
     const f = await createFixture("subj-k03b");
     const subjects = await assemblyVotingSubjects(f.zev.id);
-    // fixture: A (u1+u4), B (u2) and the u3 community B + C — B is in both P:B and G:B,C
+    // fixture: A (u1+u4), B (u2) and the u3 community B + C — B is a member of both subjects, votes in only one
     expect(subjects).toHaveLength(3);
     const withB = subjects.filter((s) => s.memberPartyIds.includes(f.ownerB.id));
     expect(withB).toHaveLength(2);
     expect(new Set(withB.map((s) => s.subjectKey)).size).toBe(2);
+    const community = subjects.find((s) => s.memberPartyIds.length === 2)!;
+    expect(community.actingPartyIds).toEqual([f.ownerC.id]);
+    expect(community.ownerId).toBe(f.ownerC.id);
     expect(subjectKeyFor([f.ownerC.id, f.ownerB.id])).toBe(subjectKeyFor([f.ownerB.id, f.ownerC.id]));
   });
 
@@ -181,5 +185,91 @@ describe("EligibleVoter (propagation / rollback safety, plan §10.6)", () => {
     await expect(
       prisma.eligibleVoter.create({ data: { ...legacy, subjectKey: `G:${f.ownerA.id},${f.ownerB.id}`, memberPartyIds: [f.ownerA.id, f.ownerB.id] } }),
     ).resolves.toBeTruthy();
+  });
+});
+
+
+// K-03b (odluka korisnika, 2026-10-26): lice daje najvise JEDAN glas ukupno.
+describe("K-03b — a person casts at most one vote in total", () => {
+  async function nikolaGarage(f: Fixture, nikolaId: string, tag = "Garaza4") {
+    const garage = await prisma.unit.create({
+      data: { zevId: f.zev.id, buildingId: f.b2.id, type: "GARAGE", label: `${tag}-${f.t}`, usableArea: "15", ownershipShare: "1" },
+    });
+    await addOwnershipStake(f.president, { unitId: garage.id, ownerId: nikolaId, sharePercent: "100", validFrom: PAST }, PROOF);
+    return garage;
+  }
+
+  it("Nikola owns Garaza 4 alone and Stan 3 with Sara: Nikola has 1 vote, the Stan 3 community votes through Sara", async () => {
+    const { f, nikola, sara } = await seedShapedZev("k03b-nikola");
+    await nikolaGarage(f, nikola.id);
+    const subjects = await assemblyVotingSubjects(f.zev.id);
+    expect(subjects).toHaveLength(6); // 5 + Nikola's own vote
+    expect(subjects.filter((s) => s.ownerId === nikola.id)).toHaveLength(1); // exactly one vote cast by Nikola
+    const community = subjects.find((s) => s.memberPartyIds.length === 2)!;
+    expect(community.ownerId).toBe(sara.id); // although Nikola has the larger share (60 %)
+    expect(community.actingPartyIds).toEqual([sara.id]);
+    expect(community.representativeSoleName).toBeNull();
+    // every person is the representative of at most one subject
+    const reps = subjects.map((s) => s.ownerId);
+    expect(new Set(reps).size).toBe(reps.length);
+  });
+
+  it("a community whose every member already votes as a sole owner is not a voting subject (informational)", async () => {
+    const { f, nikola, sara } = await seedShapedZev("k03b-absorbed");
+    await nikolaGarage(f, nikola.id);
+    await nikolaGarage(f, sara.id, "Garaza5");
+    const { subjects, absorbed } = await assemblyVotingBasis(f.zev.id);
+    expect(subjects.some((s) => s.memberPartyIds.length === 2)).toBe(false);
+    expect(subjects).toHaveLength(6); // Ana, Marko, firma, president, Nikola, Sara — community adds nothing
+    expect(absorbed).toHaveLength(1);
+    expect(absorbed[0].names).toContain("Nikola");
+    expect(absorbed[0].names).toContain("Sara");
+  });
+
+  it("a stored representative who also votes as a sole owner is flagged, and openVoting is blocked naming the community", async () => {
+    const { f, nikola, sara } = await seedShapedZev("k03b-block");
+    await nikolaGarage(f, nikola.id);
+    await setVotingRepresentative(f.president, f.u3.id, nikola.id);
+    const community = (await assemblyVotingSubjects(f.zev.id)).find((s) => s.memberPartyIds.length === 2)!;
+    expect(community.representativeSoleName).toContain("Nikola");
+    expect(community.ownerId).toBe(sara.id); // meanwhile the vote is Sara's
+
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await expect(openVoting(f.president, proposal.id)).rejects.toThrow(/već glasa kao samostalni vlasnik/);
+    await expect(openVoting(f.president, proposal.id)).rejects.toThrow(/Nikola/);
+    expect((await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } })).status).toBe("DRAFT");
+
+    // the president picks the other co-owner: voting can open
+    await setVotingRepresentative(f.president, f.u3.id, sara.id);
+    await expect(openVoting(f.president, proposal.id)).resolves.toBeTruthy();
+  });
+
+  it("an already opened proposal keeps its frozen snapshot and eligible voters when ownership later changes", async () => {
+    const { f, nikola } = await seedShapedZev("k03b-frozen");
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await openVoting(f.president, proposal.id);
+    const before = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
+    const votersBefore = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id }, orderBy: { subjectKey: "asc" } });
+    expect((before.ruleSnapshot as { totalEligibleOwners: number }).totalEligibleOwners).toBe(5);
+
+    await nikolaGarage(f, nikola.id); // today's base would now be 6
+    expect(await assemblyVotingSubjects(f.zev.id)).toHaveLength(6);
+
+    const after = await prisma.proposal.findUniqueOrThrow({ where: { id: proposal.id } });
+    expect(after.ruleSnapshot).toEqual(before.ruleSnapshot);
+    const votersAfter = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id }, orderBy: { subjectKey: "asc" } });
+    expect(votersAfter.map((v) => [v.subjectKey, v.ownerId])).toEqual(votersBefore.map((v) => [v.subjectKey, v.ownerId]));
+  });
+
+  it("a proxy granted by the community's representative still receives the vote link", async () => {
+    const { f, nikola, sara, firma } = await seedShapedZev("k03b-proxy");
+    await nikolaGarage(f, nikola.id);
+    await grantProxy(f.president, { grantorId: sara.id, holderId: firma.id, scope: "ALL", validFrom: PAST });
+    const { proposal } = await createProposalFixture(f, { scope: "ZEV" });
+    await openVoting(f.president, proposal.id);
+    const ev = await prisma.eligibleVoter.findMany({ where: { proposalId: proposal.id, memberPartyIds: { has: sara.id } } });
+    expect(ev).toHaveLength(1);
+    expect(ev[0].ownerId).toBe(sara.id);
+    expect(ev[0].proxyId).toBe(firma.id);
   });
 });

@@ -7,7 +7,7 @@ import {
   createChargeItem, createDraftBatch, issueBatch, previewBatch, listInvoices,
   correctInvoice, cancelInvoice, enterMeterReading, defaultBatchDueDate,
 } from "@/server/services/billing";
-import { enterPayment, allocatePayment } from "@/server/services/payments";
+import { enterPayment, allocatePayment, ownerBalance } from "@/server/services/payments";
 import { transferOwnership } from "@/server/services/ownership";
 
 const U = (id: string, over?: Partial<Parameters<typeof calculateCharge>[1][number]>) => ({
@@ -185,6 +185,9 @@ describe("invoice batches (integration)", () => {
     }, { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" });
     const invAfter = await prisma.invoice.findUniqueOrThrow({ where: { id: invBefore.id } });
     expect(invAfter.debtorId).toBe(f.ownerA.id); // historical debtor unchanged
+    // 2026-10-26 decision: debt stays with the owner, not the unit — the old owner still owes the old invoice, the new one owes nothing
+    expect(Number((await ownerBalance(f.president, f.ownerA.id)).balance)).toBeGreaterThan(0);
+    expect((await ownerBalance(f.president, f.ownerC.id)).balance).toBe("0.00");
     // old stake closed, not deleted
     const oldStake = await prisma.ownershipStake.findFirst({
       where: { unitId: f.u1.id, ownerId: f.ownerA.id },

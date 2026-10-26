@@ -228,7 +228,9 @@ export default async function PartyDetailPage({
                       if (!r) return "—";
                       return r.sole
                         ? t("register.vote.sole")
-                        : r.isRepresentative
+                        : r.noExtraVote
+                          ? t("register.vote.noExtraVote")
+                          : r.isRepresentative
                           ? t("register.vote.youRepresent")
                           : tf("register.vote.coOwner", { name: r.representativeName ?? "—" });
                     })()}

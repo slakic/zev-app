@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 import { Card, StatusTimeline, SubmitBtn, ConfirmAction, RowLink } from "@/components/ui";
 import { PreconditionList } from "@/components/precondition-list";
 import { formatDateTime, tEnum, t, tf } from "@/lib/i18n";
-import type { MeetingNextStep, MeetingNextStepInput } from "@/lib/meetingNextStep";
+import { invitationLeadWarning, type MeetingNextStep, type MeetingNextStepInput } from "@/lib/meetingNextStep";
 import type { MeetingStatus } from "@/generated/prisma/client";
 
 export const MEETING_STATUS_ORDER: MeetingStatus[] = [
@@ -42,6 +42,7 @@ export function MeetingNextStepPanel({
 }) {
   const hidden: Record<string, string> = { meetingId: meeting.id, to: step?.to ?? "" };
   let button: ReactNode = null;
+  const leadWarning = invitationLeadWarning(input.scheduledAt, input.now);
 
   if (step && step.kind === "plain") {
     button = (
@@ -96,6 +97,7 @@ export function MeetingNextStepPanel({
                   primaoci: meeting.body === "BOARD" ? t("confirm.invitations.board") : t("confirm.invitations.owners"),
                 })}
               </p>
+              {leadWarning && <p className="font-medium">⚠ {leadWarning}</p>}
               {input.invitations.withoutEmail > 0 && <p>{tf("confirm.invitations.noEmail", { broj: input.invitations.withoutEmail })}</p>}
               <p>{t("confirm.invitations.irreversible")}</p>
             </div>

@@ -1,4 +1,4 @@
-// Single source of truth for the 8 configurable legal/financial parameters (Setting
+// Single source of truth for the 6 configurable legal/financial parameters (Setting
 // model) and their default values. Previously duplicated as LEGAL_SETTINGS in
 // podesavanja/page.tsx and again as inline `?? "3"` / `?? "4"` fallbacks in
 // organi/page.tsx — consolidated here so both places (and settings.ts's seeding/read
@@ -8,11 +8,9 @@ export type SettingKey =
   | "retention.financialYears"
   | "retention.voteIpDays"
   | "emergency.costThreshold"
-  | "interest.enabled"
   | "invoice.dueDay"
   | "board.size"
-  | "board.termYears"
-  | "board.presidentIsBoardPresident";
+  | "board.termYears";
 
 /** Tip vrijednosti parametra: odlučuje o polju u formi (izbor / cijeli broj / iznos) i o pravilima unosa
  *  (`src/lib/settings-form.ts`). Vrijednost se i dalje čuva kao tekst u `Setting.value`. */
@@ -35,13 +33,12 @@ export type SettingDefinition = {
 // Naziv i posljedica svakog parametra su u rječniku: `settingsPage.param.<ključ>.name` / `.hint`.
 export const SETTING_DEFINITIONS: readonly SettingDefinition[] = [
   { key: "retention.financialYears", def: "11", type: "integer", unit: "years", min: 1, max: 50 },
-  { key: "retention.voteIpDays", def: "30", type: "integer", unit: "days", min: 1, max: 365 },
+  // Odluka 2026-10-26: podaci o glasanju se čuvaju 5 godina (1826 dana); to je i najmanja dozvoljena vrijednost.
+  { key: "retention.voteIpDays", def: "1826", type: "integer", unit: "days", min: 1826, max: 3650 },
   { key: "emergency.costThreshold", def: "500", type: "money", unit: "km", min: 0, max: 10_000_000 },
-  { key: "interest.enabled", def: "false", type: "boolean", boolLabels: "onOff" },
   { key: "invoice.dueDay", def: "15", type: "integer", unit: "dayOfMonth", min: 1, max: 28 },
   { key: "board.size", def: "3", type: "integer", min: 1, max: 15 },
   { key: "board.termYears", def: "4", type: "integer", unit: "years", min: 1, max: 10 },
-  { key: "board.presidentIsBoardPresident", def: "true", type: "boolean", boolLabels: "yesNo" },
 ] as const;
 
 export const SETTING_KEYS: readonly SettingKey[] = SETTING_DEFINITIONS.map((d) => d.key);
