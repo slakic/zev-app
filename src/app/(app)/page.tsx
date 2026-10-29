@@ -21,10 +21,12 @@ import { getZev } from "@/server/services/property";
 import { computeProposalResult, getMeetingNextStepInput } from "@/server/services/meetings";
 import type { IssueStatus } from "@/generated/prisma/client";
 
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string }> }) {
   const actor = await requireActor();
-  const { err } = await searchParams;
-  const flash = err === "forbidden" ? <Flash err="Nemate pravo pristupa toj stranici." /> : null;
+  const { err, msg } = await searchParams;
+  const flash = err === "forbidden" ? <Flash err="Nemate pravo pristupa toj stranici." />
+    : msg === "onboarding_published" ? <Flash msg={t("onboarding.publish.done")} />
+    : null;
   // F6.5: the president gets "Za Vas sada" before the balance (merged with the accountant's list when he is both, F5-Q2);
   // F5a: the accountant-only user gets his own "Za Vas sada".
   if (actor.roles.includes("PRESIDENT")) {

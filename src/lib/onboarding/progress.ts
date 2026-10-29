@@ -5,6 +5,7 @@ import { isValidBankAccount, isValidJib } from "@/lib/identifiers";
 import { formatDate, t, tf } from "@/lib/i18n";
 import { asRegisterUnit, type OnboardingDraftData } from "@/lib/onboarding/draft";
 import { registerPreconditions } from "@/lib/registerRules";
+import { classifyShareSum, sumShares } from "@/lib/shareSum";
 
 export const ONBOARDING_STEPS = [
   { key: "account", slug: "nalog" },
@@ -37,8 +38,8 @@ export type StepProgress = {
 
 export type OnboardingProgress = { steps: StepProgress[]; currentStep: OnboardingStepKey };
 
-/** Koraci čiji ekran još nije isporučen (Faze B i C): nikad kompletni, pa je čarobnjak zaustavljen prije njih. */
-const NOT_YET_AVAILABLE: OnboardingStepKey[] = ["owners", "offices"];
+/** Koraci čiji ekran još nije isporučen: nikad kompletni, pa je čarobnjak zaustavljen prije njih (od Faze C nijedan). */
+const NOT_YET_AVAILABLE: OnboardingStepKey[] = [];
 
 const filled = (s: string | null | undefined) => Boolean(s && s.trim());
 
@@ -94,6 +95,33 @@ function checksFor(key: OnboardingStepKey, data: OnboardingDraftData, tier: Onbo
     case "register": {
       const ok = Boolean(data.registerConfirmedAt);
       return [{ ok, issueKey: "confirmed", text: ok ? tf("onboarding.check.registerOk", { datum: formatDate(data.registerConfirmedAt) }) : t("onboarding.check.registerMissing") }];
+    }
+    case "owners": {
+      // Strože od K-01a u aplikaciji (§4.2): svaki posebni dio ima tačno 100 % ili je označen kao sporan (D6a).
+      const bad = data.units.filter((u) => {
+        if (data.disputedUnits.includes(u.key)) return false;
+        const shares = data.stakes.filter((s) => s.unitKey === u.key).map((s) => s.sharePercent);
+        return classifyShareSum(sumShares(shares), shares.length) !== "OK";
+      });
+      const done = data.units.length - bad.length;
+      const checks: { ok: boolean; text: string; issueKey: string }[] = [];
+      if (done > 0) checks.push({ ok: true, issueKey: "done", text: tf("onboarding.check.ownersOk", { broj: done, ukupno: data.units.length }) });
+      for (const u of bad) {
+        const shares = data.stakes.filter((s) => s.unitKey === u.key).map((s) => s.sharePercent);
+        const sum = sumShares(shares);
+        checks.push({
+          ok: false, issueKey: `unit.${u.key}`,
+          text: shares.length === 0
+            ? tf("onboarding.check.ownersNone", { oznaka: u.label })
+            : tf("onboarding.check.ownersSum", { oznaka: u.label, zbir: sum.toFixed(2).replace(".", ",") }),
+        });
+      }
+      return checks;
+    }
+    case "offices": {
+      const acc = data.offices.accountant;
+      const ok = acc !== null;
+      return [{ ok, issueKey: "accountant", text: acc === "LATER" ? t("onboarding.check.accountantLater") : ok ? t("onboarding.check.accountantOk") : t("onboarding.check.accountantMissing") }];
     }
     case "review":
       return [];

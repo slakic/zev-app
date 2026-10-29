@@ -52,7 +52,8 @@ function maxUploadBytes(): number {
   return getEnv().MAX_UPLOAD_MB * 1024 * 1024;
 }
 
-function assertUploadable(input: { buffer: Buffer; mime: string; category: string }) {
+/** Format i veličina priloga — i za fajlove nacrta onboardinga (dokazi prije nego što ZEV postoji). */
+export function assertUploadable(input: { buffer: Buffer; mime: string; category: string }) {
   if (!input.buffer || input.buffer.length === 0) {
     throw new Error("Fajl je obavezan.");
   }

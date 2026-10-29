@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.59.0] - 2026-10-29
+
+ZEV onboarding, Faza C: čarobnjak za novi ZEV je kompletan. Klijent upisuje vlasnike sa dokazima, računovođu i upravni odbor, i objavom pravi ZEV. Poziv ostaje iza `ONBOARDING_INVITES_ENABLED` (podrazumijevano `false`) dok ga ne uključite na okruženju. Plan: `Plans/zev-onboarding-wizard-plan.md`.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Dodato
+
+- **Korak „Vlasnici”:** po posebnom dijelu se upisuje lice (novo, već upisano ili „Vi”), udio, datum od kad je vlasnik i dokaz o vlasništvu. Dokaz je obavezan za svaki udio, sa istim formatima i veličinom kao u aplikaciji. Korak je završen kad svaki posebni dio ima tačno 100 % ili je označen kao „vlasništvo u sporu”. Sporan posebni dio nema glas dok se vlasnici ne upišu u aplikaciji.
+- **Korak „Organi i nalozi”:** predsjednik je pozvani. Računovođa se upisuje sa nalogom i početnom lozinkom ili bez naloga, ili uz izbor „Računovođu dodajem kasnije”. Članovi upravnog odbora nisu obavezni.
+- **Korak „Pregled i objava”:** sažetak svih podataka sa vezama „Izmijeni” i „Objavi ZEV” iza potvrde. Objava u jednoj transakciji pravi:
+  - ZEV, račune, zgrade, ulaze, posebne i zajedničke dijelove;
+  - utvrđen registar (verzija 1);
+  - lica i udjele sa dokazima u prilozima;
+  - mandate, članstva i nalog računovođe.
+
+  Posle objave korisnik je predsjednik i odmah radi u svom novom ZEV-u.
+- **Admin › Pozivi i nacrti › „Pregled nacrta”:** samo za čitanje, sa stanjem koraka i sažetkom. „Odbaci nacrt” (sa razlogom, iza potvrde) briše nacrt i priložene dokaze. Nalog klijenta ostaje, a posle prijave vidi poruku da je nacrt odbačen.
+
+### Izmijenjeno
+
+- Provjera formata i veličine priloga (`assertUploadable`) je izvezena, pa je koristi i nacrt onboardinga.
+
 ## [2.58.0] - 2026-10-29
 
 ZEV onboarding, Faza B: čarobnjak za novi ZEV dobija korake Posebni dijelovi, Zajednički dijelovi i Utvrđivanje registra. Poziv je i dalje iza `ONBOARDING_INVITES_ENABLED`, jer objava ZEV-a dolazi u Fazi C. Plan: `Plans/zev-onboarding-wizard-plan.md`.

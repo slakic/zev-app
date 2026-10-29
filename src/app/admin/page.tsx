@@ -64,7 +64,7 @@ function inviteRowData(r: InviteListRow, newValidUntil: string): InviteRowData {
   }
   return {
     id: r.id, email: r.email, workingName: r.workingName, tierLabel: TIER_LABELS[r.tier] ?? r.tier, state: r.state,
-    progress, progressMeta, updated: formatDateTime(r.updatedAt), newValidUntil,
+    progress, progressMeta, updated: formatDateTime(r.updatedAt), newValidUntil, draftId: r.draftId,
   };
 }
 

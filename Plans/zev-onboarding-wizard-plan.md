@@ -456,9 +456,23 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom, po `zev-app-guidel
   `registerPreconditions` izdvojen u `src/lib/registerRules.ts`. Veza „Nastavite podešavanje" za
   postojećeg korisnika je poruka (`Flash`) iznad sadržaja aplikacije dok nacrt postoji, a ne stavka
   u izborniku ZEV-ova (§5.3), jer taj izbornik prikazuje samo ZEV-ove u kojima korisnik ima članstvo.
-- **Faza C — vlasnici, uloge, objava.** `…InTx` jezgra iz §5.2 (prvi korak faze, uz testove pariteta
-  servis ↔ objava), koraci 8–10, fajlovi nacrta, `publishOnboardingDraft`, pregled i odbacivanje
-  nacrta u adminu.
+- **Faza C — vlasnici, uloge, objava. ✅ Isporučeno (2026-10-29, v2.59.0).** Koraci 8–10, fajlovi
+  nacrta, `publishOnboardingDraft`, pregled (`/admin/nacrti/[id]`) i odbacivanje nacrta u adminu,
+  stranica `/onboarding/odbacen`. Poziv ostaje iza `ONBOARDING_INVITES_ENABLED=false` (odluka
+  korisnika, 2026-10-29); uključuje se po okruženju.
+  Svjesna odstupanja od plana:
+  - **`…InTx` jezgra nisu izdvojena.** Objava piše direktno kroz `tx`, ali sa istim pomoćnim
+    funkcijama kao aplikacija: `createLinkedAttachmentTx`, `snapshotUnit`, `seedDefaultSettings`,
+    iste audit akcije. Pravila nacrta su ista kao pravila aplikacije (`registerRules`,
+    `shareSum`, `identifiers`). Izdvajanje šest servisa samo radi objave bilo je širi zahvat od
+    koristi; paritet čuva test objave (`tests/onboarding-publish.test.ts`), koji poredi snimak
+    registra sa `snapshotUnit` i preduslove sa `registerPreconditions`.
+  - **Nalozi vlasnika (§2.4 `ownerLogins`) nisu u čarobnjaku.** Otvaraju se posle objave u aplikaciji
+    (`/vlasnici`), gdje već postoje.
+  - **Predsjednik se u koracima 8 i 9 bira kao „Vi”** (`PRESIDENT_PARTY_KEY`), da ista osoba ne
+    dobije dva lica.
+  - Objava je jedna transakcija sa `timeout: 120 s`. Pozadinski posao (§9) nije bio potreban za
+    veličine iz testova; mjerenje na stvarno velikoj zgradi ostaje otvoreno.
 - **Faza D (opciono).** CSV uvoz jedinica i vlasnika; potvrda e-maila i slanje poziva kad postoji
   stvarni mail provajder.
 

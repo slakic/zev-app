@@ -7,7 +7,15 @@ import { requireActor } from "@/server/actor";
 import { getMyDraft, landingPath, reachableStepOrCurrent, stepSlug, type MyDraft } from "@/server/services/onboarding";
 import {
   addAccountAction,
+  addBoardMemberAction,
   addBuildingAction,
+  addStakeAction,
+  publishAction,
+  removeBoardMemberAction,
+  removeStakeAction,
+  setAccountantAction,
+  setAccountantLaterAction,
+  setDisputedAction,
   addCommonAssetAction,
   addEntranceAction,
   addUnitAction,
@@ -29,7 +37,11 @@ import { PreconditionList } from "@/components/precondition-list";
 import { PageHeader, Card, Field, Flash, Table, Td, RowAction, RowActionLink, SubmitBtn, BtnLink, Btn, ConfirmAction, StatusBadge, inputCls, type ColumnSpec } from "@/components/ui";
 import { dec, formatMoney } from "@/lib/money";
 import { sharesSum, sumIsHundred } from "@/lib/registerRules";
-import type { DraftUnit } from "@/lib/onboarding/draft";
+import { draftPartyName, PRESIDENT_PARTY_KEY, type DraftUnit } from "@/lib/onboarding/draft";
+import { shareSumChip, sumShares } from "@/lib/shareSum";
+import { OnboardingSummary } from "@/components/onboarding-summary";
+import { ProofFileField } from "@/components/proof-file-field";
+import { PasswordField } from "@/components/password-field";
 import { formatDate, t, tEnum, tf } from "@/lib/i18n";
 
 function Version({ draft }: { draft: MyDraft }) {
@@ -54,6 +66,8 @@ function NextStepCard({ draft, stepKey }: { draft: MyDraft; stepKey: OnboardingS
   const step = draft.progress.steps[idx];
   const prev = draft.progress.steps[idx - 1];
   const next = draft.progress.steps[idx + 1];
+  // Pregled nema sljedeći korak ni svoje preduslove (objava ima svoju karticu) — samo „Nazad”.
+  if (!next) return prev ? <div><BtnLink href={`/onboarding/${prev.slug}`}>{tf("onboarding.back", { korak: prev.label })}</BtnLink></div> : null;
   return (
     <Card title={t("onboarding.beforeNext")}>
       {step.checks.length > 0 && <PreconditionList items={step.checks} />}
@@ -538,12 +552,261 @@ function RegisterStep({ draft }: { draft: MyDraft }) {
   );
 }
 
-function ReviewStep({ draft }: { draft: MyDraft }) {
-  const items = draft.progress.steps.filter((s) => s.key !== "review").map((s) => ({ ok: s.complete, text: s.label }));
+/** Izbor lica (postojeće u nacrtu, predsjednik ili novo) — isti za vlasnika, računovođu i člana odbora. */
+function PartyChoiceFields({ draft, legend }: { draft: MyDraft; legend: string }) {
+  const parties = draft.data.parties;
   return (
-    <Card>
-      <PreconditionList items={items} />
+    <fieldset className="col-span-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-4">
+      <legend className="sr-only">{legend}</legend>
+      <div className="md:col-span-4">
+        <Field label={t("onboarding.party.choose")} hint={t("onboarding.party.chooseHint")}>
+          <select name="partyKey" defaultValue="new" className={inputCls}>
+            <option value="new">{t("onboarding.party.new")}</option>
+            <option value={PRESIDENT_PARTY_KEY}>{tf("onboarding.party.me", { ime: draftPartyName(draft.data, PRESIDENT_PARTY_KEY) })}</option>
+            {parties.map((p) => <option key={p.key} value={p.key}>{draftPartyName(draft.data, p.key)}</option>)}
+          </select>
+        </Field>
+      </div>
+      <Field label={t("onboarding.party.kind")}>
+        <select name="kind" defaultValue="PERSON" className={inputCls}>
+          <option value="PERSON">{t("onboarding.party.person")}</option>
+          <option value="ORGANIZATION">{t("onboarding.party.organization")}</option>
+        </select>
+      </Field>
+      <Field label={t("onboarding.party.firstName")}><input name="firstName" className={inputCls} /></Field>
+      <Field label={t("onboarding.party.lastName")}><input name="lastName" className={inputCls} /></Field>
+      <Field label={t("onboarding.party.email")}><input name="email" type="email" className={inputCls} /></Field>
+      <Field label={t("onboarding.party.orgName")}><input name="orgName" className={inputCls} /></Field>
+      <Field label={t("onboarding.party.orgIdNumber")}><input name="orgIdNumber" className={inputCls} /></Field>
+      <Field label={t("onboarding.party.phone")}><input name="phone" className={inputCls} /></Field>
+    </fieldset>
+  );
+}
+
+const ownerHeaders: ColumnSpec[] = [
+  { label: t("onboarding.owners.unit"), priority: "primary" },
+  { label: t("onboarding.owners.owners") },
+  { label: t("onboarding.owners.sum") },
+  { label: "", actions: true },
+];
+
+function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
+  const stakes = draft.data.stakes.filter((s) => s.unitKey === unit.key);
+  const disputed = draft.data.disputedUnits.includes(unit.key);
+  return (
+    <tr className="bg-slate-50">
+      <td colSpan={ownerHeaders.length} className="border-t border-slate-100 px-4 pb-5 pt-3">
+        <p className="text-sm font-semibold text-slate-700">{tf("onboarding.owners.panelTitle", { oznaka: unit.label })}</p>
+        {stakes.length > 0 && (
+          <ul className="mt-2 divide-y divide-slate-200 border-y border-slate-200">
+            {stakes.map((st) => (
+              <li key={st.key} className="flex flex-wrap items-center gap-x-6 gap-y-1 py-2 text-sm">
+                <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, st.partyKey)}</span>
+                <span className="tabular-nums">{st.sharePercent.replace(".", ",")} %</span>
+                <span className="text-slate-600">{tf("onboarding.owners.since", { datum: formatDate(st.validFrom) })}</span>
+                {st.proofFilename && <span className="text-[13px] text-slate-600">{st.proofFilename}</span>}
+                <form action={removeStakeAction} className="ml-auto">
+                  <Version draft={draft} />
+                  <input type="hidden" name="key" value={st.key} />
+                  <input type="hidden" name="unitKey" value={unit.key} />
+                  <RowAction type="submit" variant="caution">{t("onboarding.owners.remove")}</RowAction>
+                </form>
+              </li>
+            ))}
+          </ul>
+        )}
+        <form action={addStakeAction} className="mt-4 grid grid-cols-1 items-start gap-x-4 gap-y-3 md:grid-cols-4">
+          <Version draft={draft} />
+          <input type="hidden" name="unitKey" value={unit.key} />
+          <p className="col-span-full text-sm font-medium text-slate-700">{t("onboarding.owners.addTitle")}</p>
+          <PartyChoiceFields draft={draft} legend={t("onboarding.owners.addTitle")} />
+          <Field label={t("onboarding.owners.share")}><input name="sharePercent" required inputMode="decimal" className={`${inputCls} text-right tabular-nums`} /></Field>
+          <Field label={t("onboarding.owners.validFrom")}><input name="validFrom" type="date" required className={inputCls} /></Field>
+          <div className="md:col-span-2">
+            <ProofFileField
+              name="proofFile"
+              label={t("onboarding.owners.proof")}
+              buttonLabel={t("onboarding.owners.proofButton")}
+              hint={t("onboarding.owners.proofHint")}
+              accept="application/pdf,image/jpeg,image/png,image/webp"
+              required
+            />
+          </div>
+          <div className="col-span-full"><SubmitBtn variant="tonal">{t("onboarding.owners.add")}</SubmitBtn></div>
+        </form>
+        <form action={setDisputedAction} className="mt-5 border-t border-slate-200 pt-4">
+          <Version draft={draft} />
+          <input type="hidden" name="unitKey" value={unit.key} />
+          <input type="hidden" name="value" value={disputed ? "false" : "true"} />
+          <p className="max-w-[68ch] text-sm text-slate-700">{disputed ? t("onboarding.owners.disputedOn") : t("onboarding.owners.disputedExplain")}</p>
+          <div className="mt-2"><RowAction type="submit">{disputed ? t("onboarding.owners.undispute") : t("onboarding.owners.dispute")}</RowAction></div>
+        </form>
+      </td>
+    </tr>
+  );
+}
+
+function OwnersStep({ draft, openUnit }: { draft: MyDraft; openUnit?: string }) {
+  const units = draft.data.units;
+  const complete = units.filter((u) => {
+    const sh = draft.data.stakes.filter((s) => s.unitKey === u.key).map((s) => s.sharePercent);
+    return draft.data.disputedUnits.includes(u.key) || shareSumChip(sumShares(sh), sh.length).ok;
+  }).length;
+  return (
+    <Card title={tf("onboarding.owners.listTitle", { broj: units.length })} hint={tf("onboarding.owners.progress", { broj: complete, ukupno: units.length })}>
+      <Table id="onboarding-owners" caption={tf("onboarding.owners.listTitle", { broj: units.length })} headers={ownerHeaders}>
+        {units.map((u) => {
+          const stakes = draft.data.stakes.filter((s) => s.unitKey === u.key);
+          const disputed = draft.data.disputedUnits.includes(u.key);
+          const chip = shareSumChip(sumShares(stakes.map((s) => s.sharePercent)), stakes.length);
+          const open = openUnit === u.key;
+          return [
+            <tr key={u.key} className={open ? "bg-slate-50" : undefined}>
+              <Td>
+                {u.label}
+                <div className="text-[13px] text-slate-500">{placeOf(draft, u)} · {fmtDec(u.usableArea)} m²</div>
+              </Td>
+              <Td>{stakes.length > 0 ? stakes.map((s) => draftPartyName(draft.data, s.partyKey)).join(", ") : "—"}</Td>
+              <Td>{disputed ? <StatusBadge status="OWNER_DISPUTED" label={t("onboarding.owners.disputedChip")} /> : <StatusBadge status={chip.status} label={chip.label} />}</Td>
+              <Td>
+                <RowActionLink href={open ? "/onboarding/vlasnici" : `/onboarding/vlasnici?jedinica=${u.key}`} variant={open ? "tonal" : undefined}>
+                  {open ? t("onboarding.owners.close") : stakes.length > 0 ? t("onboarding.owners.edit") : t("onboarding.owners.addOwners")}
+                </RowActionLink>
+              </Td>
+            </tr>,
+            open ? <OwnersPanel key={`${u.key}-panel`} draft={draft} unit={u} /> : null,
+          ];
+        })}
+      </Table>
     </Card>
+  );
+}
+
+const boardHeaders: ColumnSpec[] = [
+  { label: t("onboarding.offices.member"), priority: "primary" },
+  { label: t("onboarding.offices.validFrom") },
+  { label: "", actions: true },
+];
+
+function OfficesStep({ draft }: { draft: MyDraft }) {
+  const acc = draft.data.offices.accountant;
+  const board = draft.data.offices.board;
+  return (
+    <>
+      <Card title={t("onboarding.offices.president")}>
+        <p className="text-sm text-slate-700">{tf("onboarding.offices.presidentIs", { ime: draftPartyName(draft.data, PRESIDENT_PARTY_KEY) })}</p>
+      </Card>
+      <Card title={t("onboarding.offices.accountant")}>
+        {acc && acc !== "LATER" ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm text-slate-700">
+              {draftPartyName(draft.data, acc.partyKey)} · {tf("onboarding.owners.since", { datum: formatDate(acc.validFrom) })}
+              {acc.loginEmail && <span className="block text-[13px] text-slate-600">{tf("onboarding.offices.loginFor", { email: acc.loginEmail })}</span>}
+            </p>
+            <form action={setAccountantLaterAction} className="ml-auto">
+              <Version draft={draft} />
+              <input type="hidden" name="value" value="false" />
+              <RowAction type="submit" variant="caution">{t("onboarding.offices.removeAccountant")}</RowAction>
+            </form>
+          </div>
+        ) : acc === "LATER" ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm text-slate-700">{t("onboarding.check.accountantLater")}</p>
+            <form action={setAccountantLaterAction} className="ml-auto">
+              <Version draft={draft} />
+              <input type="hidden" name="value" value="false" />
+              <RowAction type="submit">{t("onboarding.offices.accountantNow")}</RowAction>
+            </form>
+          </div>
+        ) : (
+          <>
+            <form action={setAccountantAction} className="grid grid-cols-1 items-start gap-x-4 gap-y-3 md:grid-cols-4">
+              <Version draft={draft} />
+              <PartyChoiceFields draft={draft} legend={t("onboarding.offices.accountant")} />
+              <Field label={t("onboarding.offices.validFrom")}><input name="validFrom" type="date" required className={inputCls} /></Field>
+              <div className="md:col-span-3">
+                <label className="flex items-center gap-2 pt-7 text-sm text-slate-700">
+                  <input type="checkbox" name="withLogin" className="h-4 w-4" />
+                  {t("onboarding.offices.withLogin")}
+                </label>
+              </div>
+              <Field label={t("onboarding.offices.loginEmail")} hint={t("onboarding.offices.loginEmailHint")}><input name="loginEmail" type="email" className={inputCls} /></Field>
+              <div className="md:col-span-3">
+                <Field label={t("onboarding.offices.password")} hint={t("onboarding.offices.passwordHint")}><PasswordField name="password" /></Field>
+              </div>
+              <div className="col-span-full"><SubmitBtn variant="tonal">{t("onboarding.offices.saveAccountant")}</SubmitBtn></div>
+            </form>
+            <form action={setAccountantLaterAction} className="mt-4 border-t border-slate-100 pt-4">
+              <Version draft={draft} />
+              <input type="hidden" name="value" value="true" />
+              <SubmitBtn variant="secondary">{t("onboarding.offices.accountantLater")}</SubmitBtn>
+            </form>
+          </>
+        )}
+      </Card>
+      <Card title={t("onboarding.offices.board")} hint={t("onboarding.offices.boardHint")}>
+        <Table id="onboarding-board" caption={t("onboarding.offices.board")} headers={boardHeaders} empty={board.length === 0} emptyTitle={t("onboarding.offices.boardEmpty")}>
+          {board.map((b) => (
+            <tr key={b.key}>
+              <Td>{draftPartyName(draft.data, b.partyKey)}</Td>
+              <Td>{formatDate(b.validFrom)}</Td>
+              <Td>
+                <form action={removeBoardMemberAction}>
+                  <Version draft={draft} />
+                  <input type="hidden" name="key" value={b.key} />
+                  <RowAction type="submit" variant="caution">{t("onboarding.offices.removeMember")}</RowAction>
+                </form>
+              </Td>
+            </tr>
+          ))}
+        </Table>
+        <form action={addBoardMemberAction} className="mt-4 grid grid-cols-1 items-start gap-x-4 gap-y-3 border-t border-slate-100 pt-4 md:grid-cols-4">
+          <Version draft={draft} />
+          <p className="col-span-full text-sm font-medium text-slate-700">{t("onboarding.offices.addMember")}</p>
+          <PartyChoiceFields draft={draft} legend={t("onboarding.offices.addMember")} />
+          <Field label={t("onboarding.offices.validFrom")}><input name="validFrom" type="date" required className={inputCls} /></Field>
+          <div className="col-span-full"><SubmitBtn variant="tonal">{t("onboarding.offices.addMember")}</SubmitBtn></div>
+        </form>
+      </Card>
+    </>
+  );
+}
+
+/** Korak 10 (mockup O-M04): sažetak + obrazac „Sljedeći korak” sa caution okidačem i primary potvrdom. */
+function ReviewStep({ draft }: { draft: MyDraft }) {
+  const steps = draft.progress.steps.filter((s) => s.key !== "review");
+  const ready = steps.every((s) => s.complete);
+  const d = draft.data;
+  const logins = 1 + (d.offices.accountant && d.offices.accountant !== "LATER" && d.offices.accountant.loginEmail ? 1 : 0);
+  return (
+    <>
+      <OnboardingSummary data={d} editable />
+      <Card title={t("onboarding.publish.title")}>
+        <PreconditionList items={steps.map((s) => ({ ok: s.complete, text: s.label }))} />
+        {ready && (
+          <>
+            <p className="mt-4 max-w-[68ch] text-sm text-slate-700">{t("onboarding.publish.consequence")}</p>
+            <div className="mt-4">
+              <ConfirmAction
+                trigger={t("onboarding.publish.trigger")}
+                title={tf("onboarding.publish.confirmTitle", { naziv: d.zev.legalName })}
+                body={
+                  <ul className="list-disc space-y-1 pl-5 text-sm text-amber-900">
+                    <li>{tf("onboarding.publish.bodyCounts", { zgrade: d.buildings.length, dijelovi: d.units.length, vlasnici: new Set(d.stakes.map((s) => s.partyKey)).size, racuni: d.accounts.length, nalozi: logins })}</li>
+                    <li>{t("onboarding.publish.bodyRegister")}</li>
+                    <li>{t("onboarding.publish.bodyFinal")}</li>
+                  </ul>
+                }
+                confirmLabel={t("onboarding.publish.confirmLabel")}
+                confirmVariant="primary"
+                action={publishAction}
+                hiddenFields={{ version: String(draft.version) }}
+              />
+            </div>
+          </>
+        )}
+      </Card>
+    </>
   );
 }
 
@@ -556,6 +819,8 @@ function introFor(draft: MyDraft, key: OnboardingStepKey): string {
     case "units": return t("onboarding.intro.units");
     case "commonAssets": return t("onboarding.intro.commonAssets");
     case "register": return t("onboarding.intro.register");
+    case "owners": return t("onboarding.intro.owners");
+    case "offices": return t("onboarding.intro.offices");
     case "review": return t("onboarding.intro.review");
     default: return t("onboarding.intro.soon");
   }
@@ -566,7 +831,7 @@ export default async function OnboardingStepPage({
   searchParams,
 }: {
   params: Promise<{ step: string }>;
-  searchParams: Promise<{ err?: string; msg?: string; uredi?: string; mjesto?: string; vrsta?: string }>;
+  searchParams: Promise<{ err?: string; msg?: string; uredi?: string; mjesto?: string; vrsta?: string; jedinica?: string }>;
 }) {
   const actor = await requireActor();
   const draft = await getMyDraft(actor);
@@ -576,7 +841,7 @@ export default async function OnboardingStepPage({
   if (!meta) notFound();
   const key = reachableStepOrCurrent(draft, meta.key);
   if (key !== meta.key) redirect(`/onboarding/${stepSlug(key)}`);
-  const { err, msg, uredi, mjesto, vrsta } = await searchParams;
+  const { err, msg, uredi, mjesto, vrsta, jedinica } = await searchParams;
   const step = draft.progress.steps.find((s) => s.key === key)!;
 
   return (
@@ -596,6 +861,8 @@ export default async function OnboardingStepPage({
             {key === "units" && <UnitsStep draft={draft} editKey={uredi} keepPlace={mjesto} keepType={vrsta} />}
             {key === "commonAssets" && <CommonAssetsStep draft={draft} />}
             {key === "register" && <RegisterStep draft={draft} />}
+            {key === "owners" && <OwnersStep draft={draft} openUnit={jedinica} />}
+            {key === "offices" && <OfficesStep draft={draft} />}
             {key === "review" && <ReviewStep draft={draft} />}
             <NextStepCard draft={draft} stepKey={key} />
           </div>

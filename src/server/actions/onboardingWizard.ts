@@ -8,7 +8,15 @@ import { requireActor } from "@/server/actor";
 import {
   addDraftAccount,
   addDraftBuilding,
+  addDraftBoardMember,
   addDraftCommonAsset,
+  addDraftStake,
+  publishOnboardingDraft,
+  removeDraftBoardMember,
+  removeDraftStake,
+  setAccountantLater,
+  setDraftAccountant,
+  setUnitDisputed,
   addDraftUnit,
   confirmDraftRegister,
   removeDraftCommonAsset,
@@ -24,6 +32,7 @@ import {
   setNoAccounts,
 } from "@/server/services/onboarding";
 import { t } from "@/lib/i18n";
+import { setSessionActiveZev } from "@/server/auth/session";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "");
 
@@ -142,4 +151,72 @@ export async function confirmRegisterAction(fd: FormData) {
 
 export async function unlockRegisterAction(fd: FormData) {
   await run("utvrdjivanje-registra", fd, (a, v) => unlockDraftRegister(a, v));
+}
+
+function partyChoice(fd: FormData) {
+  return {
+    partyKey: str(fd, "partyKey"),
+    newParty: {
+      kind: str(fd, "kind"), firstName: str(fd, "firstName"), lastName: str(fd, "lastName"),
+      orgName: str(fd, "orgName"), orgIdNumber: str(fd, "orgIdNumber"), email: str(fd, "email"), phone: str(fd, "phone"),
+    },
+  };
+}
+
+/** Dokaz o vlasništvu iz forme (isto kao readProofFile na /vlasnici). */
+async function readProof(fd: FormData) {
+  const file = fd.get("proofFile") as File | null;
+  if (!file || file.size === 0) return null;
+  return { buffer: Buffer.from(await file.arrayBuffer()), filename: file.name, mime: file.type };
+}
+
+export async function addStakeAction(fd: FormData) {
+  const unitKey = str(fd, "unitKey");
+  const proof = await readProof(fd);
+  const keep = `&jedinica=${encodeURIComponent(unitKey)}`;
+  await run("vlasnici", fd, (a, v) => addDraftStake(a, v, { ...partyChoice(fd), unitKey, sharePercent: str(fd, "sharePercent"), validFrom: str(fd, "validFrom") }, proof), undefined, keep);
+}
+
+export async function removeStakeAction(fd: FormData) {
+  await run("vlasnici", fd, (a, v) => removeDraftStake(a, v, str(fd, "key")), undefined, `&jedinica=${encodeURIComponent(str(fd, "unitKey"))}`);
+}
+
+export async function setDisputedAction(fd: FormData) {
+  await run("vlasnici", fd, (a, v) => setUnitDisputed(a, v, str(fd, "unitKey"), str(fd, "value") === "true"));
+}
+
+export async function setAccountantAction(fd: FormData) {
+  await run("organi-i-nalozi", fd, (a, v) =>
+    setDraftAccountant(a, v, {
+      ...partyChoice(fd), validFrom: str(fd, "validFrom"),
+      loginEmail: fd.get("withLogin") === "on" ? str(fd, "loginEmail") : null,
+      password: str(fd, "password"),
+    })
+  );
+}
+
+export async function setAccountantLaterAction(fd: FormData) {
+  await run("organi-i-nalozi", fd, (a, v) => setAccountantLater(a, v, str(fd, "value") === "true"));
+}
+
+export async function addBoardMemberAction(fd: FormData) {
+  await run("organi-i-nalozi", fd, (a, v) => addDraftBoardMember(a, v, { ...partyChoice(fd), validFrom: str(fd, "validFrom") }));
+}
+
+export async function removeBoardMemberAction(fd: FormData) {
+  await run("organi-i-nalozi", fd, (a, v) => removeDraftBoardMember(a, v, str(fd, "key")));
+}
+
+/** Objava: nastaje ZEV, sesija prelazi na njega, korisnik ide na početnu svog novog ZEV-a. */
+export async function publishAction(fd: FormData) {
+  const actor = await requireActor();
+  let zevId: string;
+  try {
+    ({ zevId } = await publishOnboardingDraft(actor, Number(fd.get("version"))));
+  } catch (e) {
+    redirect(`/onboarding/pregled?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
+  }
+  if (actor.sessionId) await setSessionActiveZev(actor.sessionId, zevId);
+  revalidatePath("/", "layout");
+  redirect("/?msg=onboarding_published");
 }

@@ -3,7 +3,7 @@
 // poziv" se otvaraju u punoj širini ispod reda (obrazac membership-row.tsx). Novi link se prikazuje
 // jednom, u istom panelu, iz stanja akcije — nikad kroz adresu stranice.
 import { useActionState, useState } from "react";
-import { ConfirmPanel, Field, Flash, RowAction, StatusBadge, Td, inputCls } from "@/components/ui";
+import { ConfirmPanel, Field, Flash, RowAction, RowActionLink, StatusBadge, Td, inputCls } from "@/components/ui";
 import { InviteLink } from "@/components/invite-link";
 import { reissueInviteAction, revokeInviteAction, type InviteLinkState } from "@/server/actions/onboarding";
 import { t, tf } from "@/lib/i18n";
@@ -19,6 +19,8 @@ export type InviteRowData = {
   updated: string;
   /** Rok novog linka, za tekst potvrde. */
   newValidUntil: string;
+  /** Nacrt (u toku ili zatvoren) — „Pregled nacrta”. */
+  draftId: string | null;
 };
 
 const STATE_CHIP: Record<InviteRowData["state"], { status: string; labelKey: string }> = {
@@ -53,6 +55,7 @@ export function InviteRow({ row, colSpan }: { row: InviteRowData; colSpan: numbe
         <Td>{row.updated}</Td>
         <Td>
           <div className="flex flex-wrap items-center gap-1.5">
+            {row.draftId && <RowActionLink href={`/admin/nacrti/${row.draftId}`}>{t("onboarding.adminDraft.view")}</RowActionLink>}
             {canReissue && (
               <RowAction type="button" variant="caution" aria-expanded={open === "reissue"} onClick={() => toggle("reissue")}>
                 {open === "reissue" ? t("onboarding.list.close") : t("onboarding.list.reissue")}

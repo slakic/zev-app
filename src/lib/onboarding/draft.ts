@@ -46,6 +46,39 @@ const commonAssetSchema = z.object({
   description: z.string().nullable().default(null),
 });
 
+/** Ključ lica „predsjednik” (pozvani): njegovo lice nastaje pri objavi iz `president`, pa ga koraci 8 i 9
+ *  biraju ovim ključem umjesto da prave drugo lice za istu osobu. */
+export const PRESIDENT_PARTY_KEY = "president";
+
+const partySchema = z.object({
+  key: z.string(),
+  kind: z.enum(["PERSON", "ORGANIZATION"]),
+  firstName: z.string().default(""),
+  lastName: z.string().default(""),
+  orgName: z.string().default(""),
+  orgIdNumber: z.string().default(""),
+  email: z.string().default(""),
+  phone: z.string().default(""),
+});
+
+const stakeSchema = z.object({
+  key: z.string(),
+  unitKey: z.string(),
+  partyKey: z.string(),
+  sharePercent: z.string(),
+  validFrom: z.string(), // yyyy-mm-dd
+  proofFileId: z.string(), // OnboardingDraftFile.id
+  proofFilename: z.string().default(""),
+});
+
+const officeTermSchema = z.object({ key: z.string(), partyKey: z.string(), validFrom: z.string() });
+
+const accountantSchema = officeTermSchema.extend({
+  /** Nalog računovođe (nije obavezan): e-adresa za prijavu i hash početne lozinke — nikad otvoren tekst. */
+  loginEmail: z.string().nullable().default(null),
+  passwordHash: z.string().nullable().default(null),
+});
+
 export const draftDataSchema = z.object({
   zev: z
     .object({
@@ -68,6 +101,17 @@ export const draftDataSchema = z.object({
   units: z.array(unitSchema).default([]),
   commonAssets: z.array(commonAssetSchema).default([]),
   registerConfirmedAt: z.string().nullable().default(null),
+  parties: z.array(partySchema).default([]),
+  stakes: z.array(stakeSchema).default([]),
+  /** Posebni dijelovi sa potvrdom „vlasništvo u sporu — unijeću kasnije” (D6a). */
+  disputedUnits: z.array(z.string()).default([]),
+  offices: z
+    .object({
+      /** null = još nije odlučeno; "LATER" = računovođu dodajem kasnije. */
+      accountant: z.union([accountantSchema, z.literal("LATER")]).nullable().default(null),
+      board: z.array(officeTermSchema).default([]),
+    })
+    .prefault({}),
   acks: z.object({ noAccounts: z.boolean().default(false) }).prefault({}),
 });
 
@@ -76,6 +120,17 @@ export type DraftAccount = OnboardingDraftData["accounts"][number];
 export type DraftBuilding = OnboardingDraftData["buildings"][number];
 export type DraftUnit = OnboardingDraftData["units"][number];
 export type DraftCommonAsset = OnboardingDraftData["commonAssets"][number];
+
+export type DraftParty = OnboardingDraftData["parties"][number];
+export type DraftStake = OnboardingDraftData["stakes"][number];
+
+/** Ime lica za prikaz (isto pravilo kao partyDisplayName u aplikaciji); predsjednik je „ime prezime”. */
+export function draftPartyName(data: OnboardingDraftData, partyKey: string): string {
+  if (partyKey === PRESIDENT_PARTY_KEY) return `${data.president.firstName} ${data.president.lastName}`.trim();
+  const p = data.parties.find((x) => x.key === partyKey);
+  if (!p) return "?";
+  return p.kind === "PERSON" ? `${p.firstName} ${p.lastName}`.trim() : p.orgName;
+}
 
 /** Jedinica iz nacrta u obliku koji traži registerPreconditions (sve jedinice nacrta su aktivne). */
 export function asRegisterUnit(u: DraftUnit) {
