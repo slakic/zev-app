@@ -44,7 +44,7 @@ describe("onboardingProgress", () => {
     expect(onboardingProgress(noBank, "BASIC").steps.find((s) => s.key === "accounts")!.optional).toBe(true);
   });
 
-  it("with steps 1–4 complete the wizard stops at step 5, which is not available yet (Faza A)", () => {
+  it("with steps 1–4 complete the wizard stops at step 5", () => {
     const p = onboardingProgress(filled(), "FULL");
     expect(p.steps.slice(0, 4).every((s) => s.complete)).toBe(true);
     expect(p.currentStep).toBe("units");
@@ -52,6 +52,23 @@ describe("onboardingProgress", () => {
     expect(isStepReachable(p, "units")).toBe(true);
     expect(isStepReachable(p, "commonAssets")).toBe(false);
     expect(isStepReachable(p, "review")).toBe(false);
+  });
+
+  it("step 5 uses the register preconditions; step 6 needs an AREA per building; step 7 the confirmation", () => {
+    const unit = (key: string, share: string) => ({ key, buildingKey: "b1", type: "APARTMENT", label: `Stan ${key}`, usableArea: "50.00", ownershipShare: share });
+    const half = filled({ units: [unit("1", "50"), unit("2", "40")] as never });
+    const p1 = onboardingProgress(half, "FULL");
+    expect(p1.currentStep).toBe("units");
+    expect(p1.steps[4].issues.map((i) => i.key)).toEqual(["units.share_sum"]);
+
+    const full = filled({ units: [unit("1", "50"), unit("2", "50")] as never });
+    expect(onboardingProgress(full, "FULL").currentStep).toBe("commonAssets");
+    const system = filled({ units: [unit("1", "50"), unit("2", "50")] as never, commonAssets: [{ key: "c", buildingKey: "b1", kind: "SYSTEM", name: "Lift" }] as never });
+    expect(onboardingProgress(system, "FULL").currentStep).toBe("commonAssets");
+    const area = filled({ units: [unit("1", "50"), unit("2", "50")] as never, commonAssets: [{ key: "c", buildingKey: "b1", kind: "AREA", name: "Stubište" }] as never });
+    expect(onboardingProgress(area, "FULL").currentStep).toBe("register");
+    const confirmed = { ...area, registerConfirmedAt: "2026-10-29T10:00:00.000Z" };
+    expect(onboardingProgress(confirmed, "FULL").currentStep).toBe("owners"); // Faza C
   });
 
   it("removing data from a finished step moves the current step back to it", () => {

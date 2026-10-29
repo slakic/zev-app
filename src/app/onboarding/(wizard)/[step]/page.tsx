@@ -8,7 +8,14 @@ import { getMyDraft, landingPath, reachableStepOrCurrent, stepSlug, type MyDraft
 import {
   addAccountAction,
   addBuildingAction,
+  addCommonAssetAction,
   addEntranceAction,
+  addUnitAction,
+  confirmRegisterAction,
+  removeCommonAssetAction,
+  removeUnitAction,
+  unlockRegisterAction,
+  updateUnitAction,
   removeAccountAction,
   removeBuildingAction,
   removeEntranceAction,
@@ -19,9 +26,11 @@ import {
 import { ONBOARDING_STEPS, stepBySlug, isStepReachable, type OnboardingStepKey } from "@/lib/onboarding/progress";
 import { StepNav, type StepNavItem } from "@/components/step-nav";
 import { PreconditionList } from "@/components/precondition-list";
-import { PageHeader, Card, Field, Flash, Table, Td, RowAction, SubmitBtn, BtnLink, Btn, inputCls, type ColumnSpec } from "@/components/ui";
-import { formatMoney } from "@/lib/money";
-import { formatDate, t, tf } from "@/lib/i18n";
+import { PageHeader, Card, Field, Flash, Table, Td, RowAction, RowActionLink, SubmitBtn, BtnLink, Btn, ConfirmAction, StatusBadge, inputCls, type ColumnSpec } from "@/components/ui";
+import { dec, formatMoney } from "@/lib/money";
+import { sharesSum, sumIsHundred } from "@/lib/registerRules";
+import type { DraftUnit } from "@/lib/onboarding/draft";
+import { formatDate, t, tEnum, tf } from "@/lib/i18n";
 
 function Version({ draft }: { draft: MyDraft }) {
   return <input type="hidden" name="version" value={draft.version} />;
@@ -189,12 +198,18 @@ const entranceHeaders: ColumnSpec[] = [
   { label: "", actions: true },
 ];
 
+function LockedNote() {
+  return <Flash warn={t("onboarding.units.locked")} />;
+}
+
 function BuildingsStep({ draft }: { draft: MyDraft }) {
   const buildings = draft.data.buildings;
   const entrances = buildings.flatMap((b) => b.entrances.map((e) => ({ ...e, building: b })));
+  const locked = Boolean(draft.data.registerConfirmedAt);
   return (
     <>
-      <Card title={t("onboarding.buildings.addTitle")}>
+      {locked && <LockedNote />}
+      {!locked && <Card title={t("onboarding.buildings.addTitle")}>
         <form action={addBuildingAction} className="grid grid-cols-1 items-start gap-x-4 gap-y-3 md:grid-cols-3">
           <Version draft={draft} />
           <Field label={t("onboarding.buildings.name")}><input name="name" required placeholder={t("onboarding.buildings.namePlaceholder")} className={inputCls} /></Field>
@@ -204,7 +219,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
           <Field label={t("onboarding.buildings.floorsCount")}><input name="floorsCount" inputMode="numeric" className={inputCls} /></Field>
           <div className="md:col-span-3"><SubmitBtn variant="tonal">{t("onboarding.buildings.add")}</SubmitBtn></div>
         </form>
-      </Card>
+      </Card>}
       <Card title={t("onboarding.steps.buildings")}>
         <Table
           id="onboarding-buildings"
@@ -222,11 +237,13 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
               <Td>{b.yearBuilt ?? "—"}</Td>
               <Td>{b.floorsCount ?? "—"}</Td>
               <Td>
-                <form action={removeBuildingAction}>
-                  <Version draft={draft} />
-                  <input type="hidden" name="key" value={b.key} />
-                  <RowAction type="submit" variant="caution">{t("onboarding.buildings.remove")}</RowAction>
-                </form>
+                {!locked && (
+                  <form action={removeBuildingAction}>
+                    <Version draft={draft} />
+                    <input type="hidden" name="key" value={b.key} />
+                    <RowAction type="submit" variant="caution">{t("onboarding.buildings.remove")}</RowAction>
+                  </form>
+                )}
               </Td>
             </tr>
           ))}
@@ -234,7 +251,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
       </Card>
       {buildings.length > 0 && (
         <Card title={t("onboarding.buildings.entrances")}>
-          <form action={addEntranceAction} className="mb-4 grid grid-cols-1 items-end gap-x-4 gap-y-3 md:grid-cols-[1fr_1fr_auto]">
+          {!locked && <form action={addEntranceAction} className="mb-4 grid grid-cols-1 items-end gap-x-4 gap-y-3 md:grid-cols-[1fr_1fr_auto]">
             <Version draft={draft} />
             <Field label={t("onboarding.buildings.building")}>
               <select name="buildingKey" className={inputCls}>
@@ -243,7 +260,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
             </Field>
             <Field label={t("onboarding.buildings.entranceName")}><input name="name" required placeholder="A" className={inputCls} /></Field>
             <SubmitBtn variant="tonal">{t("onboarding.buildings.addEntrance")}</SubmitBtn>
-          </form>
+          </form>}
           <Table
             id="onboarding-entrances"
             caption={t("onboarding.buildings.entrances")}
@@ -256,18 +273,267 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
                 <Td>{e.name}</Td>
                 <Td>{e.building.name}</Td>
                 <Td>
-                  <form action={removeEntranceAction}>
-                    <Version draft={draft} />
-                    <input type="hidden" name="buildingKey" value={e.building.key} />
-                    <input type="hidden" name="entranceKey" value={e.key} />
-                    <RowAction type="submit" variant="caution">{t("onboarding.buildings.removeEntrance")}</RowAction>
-                  </form>
+                  {!locked && (
+                    <form action={removeEntranceAction}>
+                      <Version draft={draft} />
+                      <input type="hidden" name="buildingKey" value={e.building.key} />
+                      <input type="hidden" name="entranceKey" value={e.key} />
+                      <RowAction type="submit" variant="caution">{t("onboarding.buildings.removeEntrance")}</RowAction>
+                    </form>
+                  )}
                 </Td>
               </tr>
             ))}
           </Table>
         </Card>
       )}
+    </>
+  );
+}
+
+const UNIT_TYPE_OPTIONS = ["APARTMENT", "BUSINESS", "GARAGE", "GARAGE_SPACE", "OTHER"] as const;
+const fmtDec = (v: string) => dec(v).toFixed(2).replace(".", ",");
+
+function placeOf(draft: MyDraft, u: { buildingKey: string; entranceKey: string | null }): string {
+  const b = draft.data.buildings.find((x) => x.key === u.buildingKey);
+  const e = b?.entrances.find((x) => x.key === u.entranceKey);
+  return `${b?.name ?? "?"} · ${e ? `${t("onboarding.units.entrance")} ${e.name}` : t("onboarding.units.noEntrance")}`;
+}
+
+function placeOptions(draft: MyDraft) {
+  return draft.data.buildings.flatMap((b) => [
+    { value: b.key, label: placeOf(draft, { buildingKey: b.key, entranceKey: null }) },
+    ...b.entrances.map((e) => ({ value: `${b.key}|${e.key}`, label: placeOf(draft, { buildingKey: b.key, entranceKey: e.key }) })),
+  ]);
+}
+
+/** Zbir udjela uživo (mockup O-M02 ④): isti prag kao utvrđivanje registra (sumIsHundred). */
+function ShareSum({ units }: { units: DraftUnit[] }) {
+  const sum = sharesSum(units.map((u) => u.ownershipShare));
+  const ok = units.length > 0 && sumIsHundred(sum);
+  const diff = dec(100).minus(sum);
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3 text-sm text-slate-700">
+      <span className="font-medium">{t("onboarding.units.sum")}</span>
+      <StatusBadge status={ok ? "OWNER_SUM_OK" : "OWNER_SUM_WARN"} label={`${fmtDec(sum.toString())} %`} />
+      {!ok && units.length > 0 && (
+        <span className="text-[13px] text-slate-600">
+          {diff.greaterThan(0)
+            ? tf("onboarding.units.sumMissing", { razlika: fmtDec(diff.toString()) })
+            : tf("onboarding.units.sumOver", { razlika: fmtDec(diff.abs().toString()) })}
+        </span>
+      )}
+    </div>
+  );
+}
+
+const unitHeaders: ColumnSpec[] = [
+  { label: t("onboarding.units.label"), priority: "primary" },
+  { label: t("onboarding.units.type") },
+  { label: t("onboarding.units.building"), priority: "detail" },
+  { label: t("onboarding.units.floor"), align: "right", priority: "detail" },
+  { label: t("onboarding.units.usableArea"), align: "right" },
+  { label: t("onboarding.units.ownershipShare"), align: "right" },
+  { label: "", actions: true },
+];
+
+function UnitForm({ draft, editing, keepPlace, keepType }: { draft: MyDraft; editing: DraftUnit | null; keepPlace?: string; keepType?: string }) {
+  const place = editing ? (editing.entranceKey ? `${editing.buildingKey}|${editing.entranceKey}` : editing.buildingKey) : keepPlace;
+  return (
+    <Card
+      title={editing ? tf("onboarding.units.editTitle", { oznaka: editing.label }) : t("onboarding.units.addTitle")}
+      hint={t("onboarding.units.addHint")}
+    >
+      <form action={editing ? updateUnitAction : addUnitAction} className="grid grid-cols-2 items-start gap-x-4 gap-y-3 md:grid-cols-8">
+        <Version draft={draft} />
+        {editing && <input type="hidden" name="key" value={editing.key} />}
+        <div className="col-span-2">
+          <Field label={t("onboarding.units.building")}>
+            <select name="place" defaultValue={place} className={inputCls}>
+              {placeOptions(draft).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          </Field>
+        </div>
+        <Field label={t("onboarding.units.type")}>
+          <select name="type" defaultValue={editing?.type ?? keepType ?? "APARTMENT"} className={inputCls}>
+            {UNIT_TYPE_OPTIONS.map((v) => <option key={v} value={v}>{tEnum("unitType", v)}</option>)}
+          </select>
+        </Field>
+        <Field label={t("onboarding.units.label")}>
+          <input name="label" required autoFocus={!editing && Boolean(keepPlace)} defaultValue={editing?.label} placeholder={t("onboarding.units.labelPlaceholder")} className={inputCls} />
+        </Field>
+        <Field label={t("onboarding.units.floor")}>
+          <input name="floor" inputMode="numeric" defaultValue={editing?.floor ?? ""} className={inputCls} />
+        </Field>
+        <Field label={t("onboarding.units.usableArea")}>
+          <input name="usableArea" required inputMode="decimal" defaultValue={editing ? fmtDec(editing.usableArea) : ""} className={`${inputCls} text-right tabular-nums`} />
+        </Field>
+        <Field label={t("onboarding.units.ownershipShare")}>
+          <input name="ownershipShare" required inputMode="decimal" defaultValue={editing ? editing.ownershipShare.replace(".", ",") : ""} className={`${inputCls} text-right tabular-nums`} />
+        </Field>
+        <div className="col-span-2 flex flex-wrap items-center gap-2 md:col-span-1 md:pt-6">
+          <SubmitBtn variant="tonal">{editing ? t("onboarding.units.save") : t("onboarding.units.add")}</SubmitBtn>
+          {editing && <BtnLink href="/onboarding/posebni-dijelovi">{t("onboarding.units.cancel")}</BtnLink>}
+        </div>
+      </form>
+    </Card>
+  );
+}
+
+function UnitsTable({ draft, editable }: { draft: MyDraft; editable: boolean }) {
+  const units = draft.data.units;
+  return (
+    <Card title={tf("onboarding.units.listTitle", { broj: units.length })}>
+      <Table
+        id="onboarding-units"
+        caption={tf("onboarding.units.listTitle", { broj: units.length })}
+        headers={editable ? unitHeaders : unitHeaders.slice(0, -1)}
+        empty={units.length === 0}
+        emptyTitle={t("onboarding.units.empty")}
+        emptyHint={t("onboarding.units.emptyHint")}
+      >
+        {units.map((u) => (
+          <tr key={u.key}>
+            <Td>{u.label}</Td>
+            <Td>{tEnum("unitType", u.type)}</Td>
+            <Td>{placeOf(draft, u)}</Td>
+            <Td>{u.floor ?? "—"}</Td>
+            <Td><span className="tabular-nums">{fmtDec(u.usableArea)} m²</span></Td>
+            <Td><span className="tabular-nums">{u.ownershipShare.replace(".", ",")} %</span></Td>
+            {editable && (
+              <Td>
+                <div className="flex flex-wrap gap-1.5">
+                  <RowActionLink href={`/onboarding/posebni-dijelovi?uredi=${u.key}`}>{t("onboarding.units.edit")}</RowActionLink>
+                  <form action={removeUnitAction}>
+                    <Version draft={draft} />
+                    <input type="hidden" name="key" value={u.key} />
+                    <RowAction type="submit" variant="caution">{t("onboarding.units.remove")}</RowAction>
+                  </form>
+                </div>
+              </Td>
+            )}
+          </tr>
+        ))}
+      </Table>
+      <ShareSum units={units} />
+    </Card>
+  );
+}
+
+function UnitsStep({ draft, editKey, keepPlace, keepType }: { draft: MyDraft; editKey?: string; keepPlace?: string; keepType?: string }) {
+  const locked = Boolean(draft.data.registerConfirmedAt);
+  const editing = editKey ? draft.data.units.find((u) => u.key === editKey) ?? null : null;
+  return (
+    <>
+      {locked && <LockedNote />}
+      {!locked && <UnitForm draft={draft} editing={editing} keepPlace={keepPlace} keepType={keepType} />}
+      <UnitsTable draft={draft} editable={!locked && !editing} />
+    </>
+  );
+}
+
+const assetHeaders: ColumnSpec[] = [
+  { label: t("onboarding.commonAssets.name"), priority: "primary" },
+  { label: t("onboarding.commonAssets.kind") },
+  { label: t("onboarding.commonAssets.building") },
+  { label: t("onboarding.commonAssets.description"), priority: "detail" },
+  { label: "", actions: true },
+];
+
+function CommonAssetsStep({ draft }: { draft: MyDraft }) {
+  const locked = Boolean(draft.data.registerConfirmedAt);
+  const assets = draft.data.commonAssets;
+  const buildingName = (k: string) => draft.data.buildings.find((b) => b.key === k)?.name ?? "?";
+  return (
+    <>
+      {locked && <LockedNote />}
+      {!locked && (
+        <Card title={t("onboarding.commonAssets.addTitle")}>
+          <form action={addCommonAssetAction} className="grid grid-cols-1 items-start gap-x-4 gap-y-3 md:grid-cols-4">
+            <Version draft={draft} />
+            <Field label={t("onboarding.commonAssets.building")}>
+              <select name="buildingKey" className={inputCls}>
+                {draft.data.buildings.map((b) => <option key={b.key} value={b.key}>{b.name}</option>)}
+              </select>
+            </Field>
+            <Field label={t("onboarding.commonAssets.kind")}>
+              <select name="kind" defaultValue="AREA" className={inputCls}>
+                {(["AREA", "SYSTEM", "EQUIPMENT"] as const).map((k) => <option key={k} value={k}>{t(`onboarding.commonAssets.kind${k}`)}</option>)}
+              </select>
+            </Field>
+            <div className="md:col-span-2">
+              <Field label={t("onboarding.commonAssets.name")}><input name="name" required placeholder={t("onboarding.commonAssets.namePlaceholder")} className={inputCls} /></Field>
+            </div>
+            <div className="md:col-span-4">
+              <Field label={t("onboarding.commonAssets.description")}><input name="description" className={inputCls} /></Field>
+            </div>
+            <div className="md:col-span-4"><SubmitBtn variant="tonal">{t("onboarding.commonAssets.add")}</SubmitBtn></div>
+          </form>
+        </Card>
+      )}
+      <Card title={t("onboarding.commonAssets.listTitle")}>
+        <Table
+          id="onboarding-common-assets"
+          caption={t("onboarding.commonAssets.listTitle")}
+          headers={locked ? assetHeaders.slice(0, -1) : assetHeaders}
+          empty={assets.length === 0}
+          emptyTitle={t("onboarding.commonAssets.empty")}
+          emptyHint={t("onboarding.commonAssets.emptyHint")}
+        >
+          {assets.map((a) => (
+            <tr key={a.key}>
+              <Td>{a.name}</Td>
+              <Td>{t(`onboarding.commonAssets.kind${a.kind}`)}</Td>
+              <Td>{buildingName(a.buildingKey)}</Td>
+              <Td>{a.description ?? "—"}</Td>
+              {!locked && (
+                <Td>
+                  <form action={removeCommonAssetAction}>
+                    <Version draft={draft} />
+                    <input type="hidden" name="key" value={a.key} />
+                    <RowAction type="submit" variant="caution">{t("onboarding.commonAssets.remove")}</RowAction>
+                  </form>
+                </Td>
+              )}
+            </tr>
+          ))}
+        </Table>
+      </Card>
+    </>
+  );
+}
+
+/** Korak 7 (mockup O-M04 obrazac potvrde): pregled registra + caution okidač i primary potvrda (§4.2 DS). */
+function RegisterStep({ draft }: { draft: MyDraft }) {
+  const confirmedAt = draft.data.registerConfirmedAt;
+  return (
+    <>
+      <UnitsTable draft={draft} editable={false} />
+      <Card title={t("onboarding.register.summaryTitle")}>
+        {confirmedAt ? (
+          <div className="space-y-3">
+            <p className="text-sm text-slate-700">{tf("onboarding.register.confirmed", { datum: formatDate(confirmedAt) })}</p>
+            <ConfirmAction
+              trigger={t("onboarding.register.unlock")}
+              title={t("onboarding.register.unlockTitle")}
+              body={<p className="text-sm text-amber-900">{t("onboarding.register.unlockBody")}</p>}
+              confirmLabel={t("onboarding.register.unlockLabel")}
+              action={unlockRegisterAction}
+              hiddenFields={{ version: String(draft.version) }}
+            />
+          </div>
+        ) : (
+          <ConfirmAction
+            trigger={t("onboarding.register.confirm")}
+            title={t("onboarding.register.confirmTitle")}
+            body={<p className="text-sm text-amber-900">{tf("onboarding.register.confirmBody", { broj: draft.data.units.length })}</p>}
+            confirmLabel={t("onboarding.register.confirmLabel")}
+            confirmVariant="primary"
+            action={confirmRegisterAction}
+            hiddenFields={{ version: String(draft.version) }}
+          />
+        )}
+      </Card>
     </>
   );
 }
@@ -287,6 +553,9 @@ function introFor(draft: MyDraft, key: OnboardingStepKey): string {
     case "zev": return t("onboarding.intro.zev");
     case "accounts": return draft.tier === "BASIC" ? t("onboarding.intro.accountsBasic") : t("onboarding.intro.accounts");
     case "buildings": return t("onboarding.intro.buildings");
+    case "units": return t("onboarding.intro.units");
+    case "commonAssets": return t("onboarding.intro.commonAssets");
+    case "register": return t("onboarding.intro.register");
     case "review": return t("onboarding.intro.review");
     default: return t("onboarding.intro.soon");
   }
@@ -297,7 +566,7 @@ export default async function OnboardingStepPage({
   searchParams,
 }: {
   params: Promise<{ step: string }>;
-  searchParams: Promise<{ err?: string; msg?: string }>;
+  searchParams: Promise<{ err?: string; msg?: string; uredi?: string; mjesto?: string; vrsta?: string }>;
 }) {
   const actor = await requireActor();
   const draft = await getMyDraft(actor);
@@ -307,7 +576,7 @@ export default async function OnboardingStepPage({
   if (!meta) notFound();
   const key = reachableStepOrCurrent(draft, meta.key);
   if (key !== meta.key) redirect(`/onboarding/${stepSlug(key)}`);
-  const { err, msg } = await searchParams;
+  const { err, msg, uredi, mjesto, vrsta } = await searchParams;
   const step = draft.progress.steps.find((s) => s.key === key)!;
 
   return (
@@ -324,6 +593,9 @@ export default async function OnboardingStepPage({
             {key === "zev" && <ZevStep draft={draft} />}
             {key === "accounts" && <AccountsStep draft={draft} />}
             {key === "buildings" && <BuildingsStep draft={draft} />}
+            {key === "units" && <UnitsStep draft={draft} editKey={uredi} keepPlace={mjesto} keepType={vrsta} />}
+            {key === "commonAssets" && <CommonAssetsStep draft={draft} />}
+            {key === "register" && <RegisterStep draft={draft} />}
             {key === "review" && <ReviewStep draft={draft} />}
             <NextStepCard draft={draft} stepKey={key} />
           </div>

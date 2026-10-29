@@ -25,6 +25,27 @@ const buildingSchema = z.object({
   entrances: z.array(entranceSchema).default([]),
 });
 
+/** Posebni dio u nacrtu: ista polja koja registar provjerava (RegisterPreconditionUnit) + položaj u zgradi.
+ *  `usableArea` i `ownershipShare` su decimalni stringovi ("62.40", "12.5"). */
+const unitSchema = z.object({
+  key: z.string(),
+  buildingKey: z.string(),
+  entranceKey: z.string().nullable().default(null),
+  type: z.enum(["APARTMENT", "BUSINESS", "GARAGE", "GARAGE_SPACE", "OTHER"]),
+  label: z.string(),
+  floor: z.number().int().nullable().default(null),
+  usableArea: z.string(),
+  ownershipShare: z.string(),
+});
+
+const commonAssetSchema = z.object({
+  key: z.string(),
+  buildingKey: z.string(),
+  kind: z.enum(["AREA", "SYSTEM", "EQUIPMENT"]),
+  name: z.string(),
+  description: z.string().nullable().default(null),
+});
+
 export const draftDataSchema = z.object({
   zev: z
     .object({
@@ -44,9 +65,8 @@ export const draftDataSchema = z.object({
     .prefault({}),
   accounts: z.array(accountSchema).default([]),
   buildings: z.array(buildingSchema).default([]),
-  // Koraci 5–9 (Faze B i C) — oblik se dopunjava kad koraci dobiju ekrane.
-  units: z.array(z.record(z.string(), z.unknown())).default([]),
-  commonAssets: z.array(z.record(z.string(), z.unknown())).default([]),
+  units: z.array(unitSchema).default([]),
+  commonAssets: z.array(commonAssetSchema).default([]),
   registerConfirmedAt: z.string().nullable().default(null),
   acks: z.object({ noAccounts: z.boolean().default(false) }).prefault({}),
 });
@@ -54,6 +74,13 @@ export const draftDataSchema = z.object({
 export type OnboardingDraftData = z.infer<typeof draftDataSchema>;
 export type DraftAccount = OnboardingDraftData["accounts"][number];
 export type DraftBuilding = OnboardingDraftData["buildings"][number];
+export type DraftUnit = OnboardingDraftData["units"][number];
+export type DraftCommonAsset = OnboardingDraftData["commonAssets"][number];
+
+/** Jedinica iz nacrta u obliku koji traži registerPreconditions (sve jedinice nacrta su aktivne). */
+export function asRegisterUnit(u: DraftUnit) {
+  return { label: u.label, type: u.type, usableArea: u.usableArea, ownershipShare: u.ownershipShare, active: true };
+}
 
 /** Čita `data` iz baze; nepoznata ili stara polja ne ruše čitanje, nedostajuća dobijaju podrazumijevanu vrijednost. */
 export function parseDraftData(raw: unknown): OnboardingDraftData {

@@ -493,3 +493,120 @@ export async function removeDraftEntrance(actor: Pick<Actor, "userId">, version:
     return { ...d, units: d.units.map((u) => (u.entranceKey === entranceKey ? { ...u, entranceKey: null } : u)) };
   });
 }
+
+// Korak 5 — Posebni dijelovi. Ista pravila polja kao createUnit/registar (oznaka, vrsta, površina > 0,
+// udio u (0, 100]); oznaka je jedinstvena u zgradi (kao @@unique([buildingId, label])).
+const UNIT_TYPES = ["APARTMENT", "BUSINESS", "GARAGE", "GARAGE_SPACE", "OTHER"] as const;
+type DraftUnitType = (typeof UNIT_TYPES)[number];
+
+export type DraftUnitInput = {
+  buildingKey: string;
+  entranceKey?: string | null;
+  type: string;
+  label: string;
+  floor?: string | null;
+  usableArea: string;
+  ownershipShare: string;
+};
+
+function positiveDecimal(raw: string | null | undefined, label: string): string {
+  const s = parseMoneyInput(raw ?? "");
+  if (!s || !/^\d+(\.\d+)?$/.test(s) || Number(s) <= 0) throw new Error(`${label}: unesite broj veći od nule.`);
+  return s;
+}
+
+function assertRegisterOpen(d: OnboardingDraftData) {
+  if (d.registerConfirmedAt) throw new Error(t("onboarding.units.locked"));
+}
+
+function validUnit(d: OnboardingDraftData, input: DraftUnitInput, selfKey: string | null) {
+  const building = d.buildings.find((b) => b.key === input.buildingKey);
+  if (!building) throw new Error("Zgrada nije pronađena u nacrtu.");
+  const entranceKey = trimOr(input.entranceKey) || null;
+  if (entranceKey && !building.entrances.some((e) => e.key === entranceKey)) throw new Error("Ulaz ne pripada izabranoj zgradi.");
+  if (!(UNIT_TYPES as readonly string[]).includes(input.type)) throw new Error("Izaberite vrstu posebnog dijela.");
+  const label = trimOr(input.label);
+  if (!label) throw new Error("Oznaka posebnog dijela je obavezna.");
+  if (d.units.some((u) => u.key !== selfKey && u.buildingKey === building.key && u.label.toLowerCase() === label.toLowerCase())) {
+    throw new Error(tf("onboarding.units.duplicateLabel", { oznaka: label, zgrada: building.name }));
+  }
+  const usableArea = positiveDecimal(input.usableArea, t("onboarding.units.usableArea"));
+  const ownershipShare = positiveDecimal(input.ownershipShare, t("onboarding.units.ownershipShare"));
+  if (Number(ownershipShare) > 100) throw new Error(`${t("onboarding.units.ownershipShare")}: najviše 100 %.`);
+  return {
+    buildingKey: building.key, entranceKey, type: input.type as DraftUnitType, label,
+    floor: optionalInt(input.floor, t("onboarding.units.floor")), usableArea, ownershipShare,
+  };
+}
+
+export async function addDraftUnit(actor: Pick<Actor, "userId">, version: number, input: DraftUnitInput) {
+  return updateDraft(actor, "units", version, (d) => {
+    assertRegisterOpen(d);
+    return { ...d, units: [...d.units, { key: randomUUID(), ...validUnit(d, input, null) }] };
+  });
+}
+
+export async function updateDraftUnit(actor: Pick<Actor, "userId">, version: number, key: string, input: DraftUnitInput) {
+  return updateDraft(actor, "units", version, (d) => {
+    assertRegisterOpen(d);
+    if (!d.units.some((u) => u.key === key)) throw new Error("Posebni dio nije pronađen u nacrtu.");
+    const next = validUnit(d, input, key);
+    return { ...d, units: d.units.map((u) => (u.key === key ? { key, ...next } : u)) };
+  });
+}
+
+export async function removeDraftUnit(actor: Pick<Actor, "userId">, version: number, key: string) {
+  return updateDraft(actor, "units", version, (d) => {
+    assertRegisterOpen(d);
+    return { ...d, units: d.units.filter((u) => u.key !== key) };
+  });
+}
+
+// Korak 6 — Zajednički dijelovi (D4: bar jedan zajednički prostor po zgradi).
+const ASSET_KINDS = ["AREA", "SYSTEM", "EQUIPMENT"] as const;
+
+export async function addDraftCommonAsset(
+  actor: Pick<Actor, "userId">,
+  version: number,
+  input: { buildingKey: string; kind: string; name: string; description?: string | null }
+) {
+  const name = trimOr(input.name);
+  if (!name) throw new Error("Naziv zajedničkog dijela je obavezan.");
+  if (!(ASSET_KINDS as readonly string[]).includes(input.kind)) throw new Error("Izaberite vrstu zajedničkog dijela.");
+  return updateDraft(actor, "commonAssets", version, (d) => {
+    assertRegisterOpen(d);
+    if (!d.buildings.some((b) => b.key === input.buildingKey)) throw new Error("Zgrada nije pronađena u nacrtu.");
+    return {
+      ...d,
+      commonAssets: [
+        ...d.commonAssets,
+        { key: randomUUID(), buildingKey: input.buildingKey, kind: input.kind as (typeof ASSET_KINDS)[number], name, description: trimOr(input.description) || null },
+      ],
+    };
+  });
+}
+
+export async function removeDraftCommonAsset(actor: Pick<Actor, "userId">, version: number, key: string) {
+  return updateDraft(actor, "commonAssets", version, (d) => {
+    assertRegisterOpen(d);
+    return { ...d, commonAssets: d.commonAssets.filter((c) => c.key !== key) };
+  });
+}
+
+// Korak 7 — Utvrđivanje registra. U nacrtu je to potvrda koja zaključava korake 4–6; pravo
+// utvrđivanje (UnitRegisterChange ESTABLISH, verzija 1) radi objava u Fazi C. Korak 7 je dostupan
+// samo kad su koraci 5 i 6 kompletni, pa su preduslovi registra tada već ispunjeni.
+export async function confirmDraftRegister(actor: Pick<Actor, "userId">, version: number) {
+  return updateDraft(actor, "register", version, (d) => {
+    if (d.registerConfirmedAt) throw new Error("Registar je već potvrđen.");
+    return { ...d, registerConfirmedAt: new Date().toISOString() };
+  });
+}
+
+/** „Otključaj registar” (§4.1): u nacrtu nema pravne posljedice, pa se potvrda može povući. */
+export async function unlockDraftRegister(actor: Pick<Actor, "userId">, version: number) {
+  return updateDraft(actor, "register", version, (d) => {
+    if (!d.registerConfirmedAt) throw new Error("Registar nije potvrđen.");
+    return { ...d, registerConfirmedAt: null };
+  });
+}

@@ -452,7 +452,10 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom, po `zev-app-guidel
     postojećim nalogom ide kroz `authenticate`, koji već ima svoj limit.
   - Postojeći korisnik koji osniva drugi ZEV (D3) ima svoj aktivni ZEV, pa u čarobnjak ulazi kroz
     link poziva. Veza „Nastavite podešavanje novog ZEV-a” u izborniku ZEV-ova (§5.3) prelazi u Fazu B.
-- **Faza B — registar.** Koraci 5–7, uključujući otključavanje.
+- **Faza B — registar. ✅ Isporučeno (2026-10-29, v2.58.0).** Koraci 5–7, uključujući otključavanje;
+  `registerPreconditions` izdvojen u `src/lib/registerRules.ts`. Veza „Nastavite podešavanje" za
+  postojećeg korisnika je poruka (`Flash`) iznad sadržaja aplikacije dok nacrt postoji, a ne stavka
+  u izborniku ZEV-ova (§5.3), jer taj izbornik prikazuje samo ZEV-ove u kojima korisnik ima članstvo.
 - **Faza C — vlasnici, uloge, objava.** `…InTx` jezgra iz §5.2 (prvi korak faze, uz testove pariteta
   servis ↔ objava), koraci 8–10, fajlovi nacrta, `publishOnboardingDraft`, pregled i odbacivanje
   nacrta u adminu.

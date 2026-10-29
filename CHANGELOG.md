@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.58.0] - 2026-10-29
+
+ZEV onboarding, Faza B: čarobnjak za novi ZEV dobija korake Posebni dijelovi, Zajednički dijelovi i Utvrđivanje registra. Poziv je i dalje iza `ONBOARDING_INVITES_ENABLED`, jer objava ZEV-a dolazi u Fazi C. Plan: `Plans/zev-onboarding-wizard-plan.md`.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Dodato
+
+- **Korak „Posebni dijelovi”:** unos stana, poslovnog prostora, garaže i drugih vrsta, sa zgradom i ulazom, spratom, površinom i udjelom. Zbir udjela se prikazuje uživo („Nedostaje 12,50 %”). Važe isti preduslovi kao za utvrđivanje registra u aplikaciji, a oznaka mora biti jedinstvena u zgradi. Posle dodavanja forma zadržava zgradu, ulaz i vrstu, a fokus je na oznaci. Svaki posebni dio se može urediti ili ukloniti.
+- **Korak „Zajednički dijelovi”:** prostori, sistemi i oprema po zgradi. Za svaku zgradu je obavezan bar jedan zajednički prostor.
+- **Korak „Utvrđivanje registra”:** pregled svih posebnih dijelova i „Potvrdi registar” iza potvrde. Posle potvrde koraci Zgrade, Posebni dijelovi i Zajednički dijelovi su samo za pregled, sa bravom u listi koraka. Potvrda se u nacrtu može povući („Otključaj registar”). Registar postaje stvarno utvrđen tek objavom ZEV-a.
+- **Nastavak za postojeće korisnike:** korisnik koji već ima svoj ZEV, a popunjava nacrt novog, vidi u aplikaciji poruku sa vezom „Nastavite podešavanje”.
+
+### Izmijenjeno
+
+- Preduslovi registra posebnih dijelova su izdvojeni u `src/lib/registerRules.ts`, pa ih koriste i registar u aplikaciji i čarobnjak. Ponašanje registra je nepromijenjeno.
+
 ## [2.57.0] - 2026-10-29
 
 ZEV onboarding, Faza A: platformski admin može poslati poziv klijentu, a klijent otvara nalog i kroz čarobnjak unosi prve podatke o novom ZEV-u. ZEV još ne nastaje (objava je u Fazi C), pa je poziv za sada skriven iza `ONBOARDING_INVITES_ENABLED`. Plan: `Plans/zev-onboarding-wizard-plan.md`, mockupi `Plans/design-review/mockups/O-M01`–`O-M04`.

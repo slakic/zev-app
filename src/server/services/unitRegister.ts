@@ -6,14 +6,13 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
-import { dec, ZERO, type Decimal } from "@/lib/money";
-import { formatDate, tf } from "@/lib/i18n";
+import { dec } from "@/lib/money";
+import { formatDate } from "@/lib/i18n";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
 import { assemblyVotingBasis, unitOwnershipWarnings } from "@/server/services/ownership";
+import { registerPreconditions, sharesSum, sumIsHundred } from "@/lib/registerRules";
 import type { Prisma, UnitType, UnitRegisterChangeKind, UnitRegisterStatus } from "@/generated/prisma/client";
 
-/** Dozvoljena odstupanja zbira udjela jedinica od 100% (zaokruzivanje unosa). */
-const SHARE_TOLERANCE = dec("0.01");
 
 export type UnitSnapshot = {
   id: string;
@@ -67,51 +66,8 @@ export type RegisterChangeInput =
 
 export type RegisterDocumentInput = Pick<UploadInput, "buffer" | "filename" | "mime">;
 
-function sharesSum(shares: Iterable<Prisma.Decimal | string>): Decimal {
-  let sum = ZERO;
-  for (const s of shares) sum = sum.plus(dec(s.toString()));
-  return sum;
-}
-
-function sumIsHundred(sum: Decimal): boolean {
-  return sum.minus(100).abs().lessThanOrEqualTo(SHARE_TOLERANCE);
-}
-
-export type RegisterPrecondition = { key: "UNITS" | "FIELDS" | "SHARE_SUM"; ok: boolean; text: string };
-
-/** Polja jedinice od kojih zavise preduslovi — zadovoljava ih i `Unit` i jedinica iz nacrta onboardinga. */
-export type RegisterPreconditionUnit = Pick<UnitRow, "label" | "type" | "usableArea" | "ownershipShare" | "active">;
-
-/** Preduslovi utvrdjivanja registra (✓/⚠ lista u panelu "Sljedeci korak"). Ista funkcija provjerava i
- *  nacrt onboardinga (Plans/zev-onboarding-wizard-plan.md §5.1). */
-export function registerPreconditions(units: RegisterPreconditionUnit[]): RegisterPrecondition[] {
-  const active = units.filter((u) => u.active);
-  const badFields = active.filter((u) => !u.label.trim() || !u.type || dec(u.usableArea.toString()).lessThanOrEqualTo(0));
-  const sum = sharesSum(active.map((u) => u.ownershipShare));
-  return [
-    {
-      key: "UNITS",
-      ok: active.length > 0,
-      text: active.length > 0
-        ? tf("register.pre.unitsOk", { count: active.length })
-        : tf("register.pre.unitsMissing", {}),
-    },
-    {
-      key: "FIELDS",
-      ok: active.length > 0 && badFields.length === 0,
-      text: badFields.length === 0
-        ? tf("register.pre.fieldsOk", {})
-        : tf("register.pre.fieldsMissing", { labels: badFields.map((u) => u.label || "?").join(", ") }),
-    },
-    {
-      key: "SHARE_SUM",
-      ok: active.length > 0 && sumIsHundred(sum),
-      text: sumIsHundred(sum) && active.length > 0
-        ? tf("register.pre.shareOk", {})
-        : tf("register.pre.shareBad", { sum: sum.toFixed(2).replace(".", ",") }),
-    },
-  ];
-}
+// Pravila registra su čiste funkcije u src/lib/registerRules.ts (dijele ih servis i nacrt onboardinga).
+export { registerPreconditions, type RegisterPrecondition, type RegisterPreconditionUnit } from "@/lib/registerRules";
 
 /** Stanje, verzija, sazetak, preduslovi, glasacki subjekti, upozorenja o udjelima i istorija registra. */
 export async function getUnitRegister(actor: Actor) {

@@ -7,7 +7,14 @@ import {
   acceptOnboardingInvite,
   addDraftAccount,
   addDraftBuilding,
+  addDraftCommonAsset,
   addDraftEntrance,
+  addDraftUnit,
+  confirmDraftRegister,
+  removeDraftCommonAsset,
+  removeDraftUnit,
+  unlockDraftRegister,
+  updateDraftUnit,
   createOnboardingInvite,
   getMyDraft,
   inspectOnboardingInvite,
@@ -206,5 +213,67 @@ describe("listOnboardingInvites", () => {
     expect(by(progressing.inviteId)).toMatchObject({ state: "IN_PROGRESS", currentStep: { number: 2 } });
     const f = await createFixture("ob-list-guard");
     await expect(listOnboardingInvites(f.president)).rejects.toThrow(ForbiddenError);
+  });
+});
+
+describe("units, common assets and the register (Faza B)", () => {
+  async function throughBuildings(tag: string) {
+    const { actor } = await accepted(tag);
+    let v = (await saveZevStep(actor, (await getMyDraft(actor))!.version, ZEV)).version;
+    v = await addDraftAccount(actor, v, { type: "BANK", name: "Glavni", number: "0060000123456758", openingBalance: "0", openingDate: "2026-01-01" });
+    v = await addDraftBuilding(actor, v, { name: "Kralja Petra I 45", address: "Kralja Petra I 45" });
+    const b = (await getMyDraft(actor))!.data.buildings[0];
+    v = await addDraftEntrance(actor, v, b.key, "A");
+    const e = (await getMyDraft(actor))!.data.buildings[0].entrances[0];
+    return { actor, v, b, e };
+  }
+  const unit = (buildingKey: string, label: string, share: string, entranceKey: string | null = null) => ({
+    buildingKey, entranceKey, type: "APARTMENT", label, floor: "1", usableArea: "62,40", ownershipShare: share,
+  });
+
+  it("validates fields like the register, keeps labels unique per building and sums shares to 100 %", async () => {
+    const { actor, b, e } = await throughBuildings("units");
+    let v = (await getMyDraft(actor))!.version;
+    await expect(addDraftUnit(actor, v, { ...unit(b.key, "Stan 1", "50"), usableArea: "0" })).rejects.toThrow(/veći od nule/);
+    await expect(addDraftUnit(actor, v, unit(b.key, "Stan 1", "120"))).rejects.toThrow(/najviše 100/);
+    await expect(addDraftUnit(actor, v, { ...unit(b.key, "Stan 1", "50"), type: "VILA" })).rejects.toThrow(/vrstu/);
+    await expect(addDraftUnit(actor, v, unit(b.key, "Stan 1", "50", "tudji-ulaz"))).rejects.toThrow(/Ulaz ne pripada/);
+    v = await addDraftUnit(actor, v, unit(b.key, "Stan 1", "50", e.key));
+    await expect(addDraftUnit(actor, v, unit(b.key, "stan 1", "50"))).rejects.toThrow(/već postoji/);
+    v = await addDraftUnit(actor, v, unit(b.key, "Stan 2", "40"));
+    let d = (await getMyDraft(actor))!;
+    expect(d.data.units[0]).toMatchObject({ entranceKey: e.key, usableArea: "62.40", ownershipShare: "50", floor: 1 });
+    expect(d.progress.currentStep).toBe("units");
+    // Izmjena: oznaka sme ostati ista, udio se ispravlja na 50.
+    v = await updateDraftUnit(actor, v, d.data.units[1].key, unit(b.key, "Stan 2", "50"));
+    d = (await getMyDraft(actor))!;
+    expect(d.progress.currentStep).toBe("commonAssets");
+    await expect(confirmDraftRegister(actor, v)).rejects.toThrow(/Prvo završite korak/);
+    v = await removeDraftUnit(actor, v, d.data.units[1].key);
+    expect((await getMyDraft(actor))!.progress.currentStep).toBe("units");
+  });
+
+  it("confirming the register locks steps 4–6; unlocking opens them again", async () => {
+    const { actor, b } = await throughBuildings("register");
+    let v = await addDraftUnit(actor, (await getMyDraft(actor))!.version, unit(b.key, "Stan 1", "100"));
+    await expect(addDraftCommonAsset(actor, v, { buildingKey: b.key, kind: "AREA", name: " " })).rejects.toThrow(/obavezan/);
+    v = await addDraftCommonAsset(actor, v, { buildingKey: b.key, kind: "SYSTEM", name: "Lift" });
+    expect((await getMyDraft(actor))!.progress.currentStep).toBe("commonAssets");
+    v = await addDraftCommonAsset(actor, v, { buildingKey: b.key, kind: "AREA", name: "Stubište" });
+    expect((await getMyDraft(actor))!.progress.currentStep).toBe("register");
+
+    v = await confirmDraftRegister(actor, v);
+    const d = (await getMyDraft(actor))!;
+    expect(d.data.registerConfirmedAt).not.toBeNull();
+    expect(d.progress.currentStep).toBe("owners");
+    await expect(confirmDraftRegister(actor, v)).rejects.toThrow(/već potvrđen/);
+    await expect(addDraftUnit(actor, v, unit(b.key, "Stan 2", "10"))).rejects.toThrow(/Registar je potvrđen/);
+    await expect(removeDraftCommonAsset(actor, v, d.data.commonAssets[0].key)).rejects.toThrow(/Registar je potvrđen/);
+    await expect(addDraftBuilding(actor, v, { name: "Druga", address: "X" })).rejects.toThrow(/Registar je potvrđen/);
+
+    v = await unlockDraftRegister(actor, v);
+    expect((await getMyDraft(actor))!.progress.currentStep).toBe("register");
+    v = await removeDraftCommonAsset(actor, v, d.data.commonAssets[0].key);
+    expect((await getMyDraft(actor))!.data.commonAssets).toHaveLength(1);
   });
 });

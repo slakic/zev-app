@@ -2,8 +2,9 @@
 // za svaki korak kaže da li je kompletan i šta nedostaje. Koriste je stranice koraka, guard koji
 // odbija korak iza trenutnog, StepNav i admin lista poziva — pa svi vide isto.
 import { isValidBankAccount, isValidJib } from "@/lib/identifiers";
-import { t, tf } from "@/lib/i18n";
-import type { OnboardingDraftData } from "@/lib/onboarding/draft";
+import { formatDate, t, tf } from "@/lib/i18n";
+import { asRegisterUnit, type OnboardingDraftData } from "@/lib/onboarding/draft";
+import { registerPreconditions } from "@/lib/registerRules";
 
 export const ONBOARDING_STEPS = [
   { key: "account", slug: "nalog" },
@@ -37,7 +38,7 @@ export type StepProgress = {
 export type OnboardingProgress = { steps: StepProgress[]; currentStep: OnboardingStepKey };
 
 /** Koraci čiji ekran još nije isporučen (Faze B i C): nikad kompletni, pa je čarobnjak zaustavljen prije njih. */
-const NOT_YET_AVAILABLE: OnboardingStepKey[] = ["units", "commonAssets", "register", "owners", "offices"];
+const NOT_YET_AVAILABLE: OnboardingStepKey[] = ["owners", "offices"];
 
 const filled = (s: string | null | undefined) => Boolean(s && s.trim());
 
@@ -77,6 +78,22 @@ function checksFor(key: OnboardingStepKey, data: OnboardingDraftData, tier: Onbo
           text: valid.length > 0 ? tf("onboarding.check.buildingsOk", { broj: valid.length }) : t("onboarding.check.buildingsMissing"),
         },
       ];
+    }
+    case "units":
+      // Isti preduslovi kao utvrđivanje registra u aplikaciji (registerPreconditions, K-02).
+      return registerPreconditions(data.units.map(asRegisterUnit)).map((p) => ({ ok: p.ok, text: p.text, issueKey: p.key.toLowerCase() }));
+    case "commonAssets": {
+      const missing = data.buildings.filter((b) => !data.commonAssets.some((c) => c.buildingKey === b.key && c.kind === "AREA"));
+      return [
+        {
+          ok: data.buildings.length > 0 && missing.length === 0, issueKey: "area",
+          text: missing.length === 0 ? t("onboarding.check.areasOk") : tf("onboarding.check.areasMissing", { zgrade: missing.map((b) => b.name).join(", ") }),
+        },
+      ];
+    }
+    case "register": {
+      const ok = Boolean(data.registerConfirmedAt);
+      return [{ ok, issueKey: "confirmed", text: ok ? tf("onboarding.check.registerOk", { datum: formatDate(data.registerConfirmedAt) }) : t("onboarding.check.registerMissing") }];
     }
     case "review":
       return [];

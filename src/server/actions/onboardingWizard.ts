@@ -8,6 +8,13 @@ import { requireActor } from "@/server/actor";
 import {
   addDraftAccount,
   addDraftBuilding,
+  addDraftCommonAsset,
+  addDraftUnit,
+  confirmDraftRegister,
+  removeDraftCommonAsset,
+  removeDraftUnit,
+  unlockDraftRegister,
+  updateDraftUnit,
   addDraftEntrance,
   removeDraftAccount,
   removeDraftBuilding,
@@ -25,7 +32,9 @@ async function run(
   fd: FormData,
   fn: (actor: Awaited<ReturnType<typeof requireActor>>, version: number) => Promise<unknown>,
   /** Sačuvano, ali sa upozorenjem koje korisnik mora vidjeti (npr. neispravan JIB). */
-  warnAfter?: () => string | null
+  warnAfter?: () => string | null,
+  /** Dodatni parametri adrese posle uspjeha (npr. zadržan izbor u formi). */
+  keepQuery = ""
 ) {
   const actor = await requireActor();
   const version = Number(fd.get("version"));
@@ -36,7 +45,7 @@ async function run(
   }
   revalidatePath("/onboarding", "layout");
   const warn = warnAfter?.();
-  redirect(warn ? `/onboarding/${slug}?err=${encodeURIComponent(warn)}` : `/onboarding/${slug}?msg=saved`);
+  redirect(warn ? `/onboarding/${slug}?err=${encodeURIComponent(warn)}` : `/onboarding/${slug}?msg=saved${keepQuery}`);
 }
 
 export async function saveAccountStepAction(fd: FormData) {
@@ -92,4 +101,45 @@ export async function addEntranceAction(fd: FormData) {
 
 export async function removeEntranceAction(fd: FormData) {
   await run("zgrade", fd, (a, v) => removeDraftEntrance(a, v, str(fd, "buildingKey"), str(fd, "entranceKey")));
+}
+
+function unitInput(fd: FormData) {
+  // Jedno polje „Zgrada i ulaz”: vrijednost je "zgrada" ili "zgrada|ulaz".
+  const [buildingKey, entranceKey] = str(fd, "place").split("|");
+  return {
+    buildingKey, entranceKey: entranceKey || null, type: str(fd, "type"), label: str(fd, "label"),
+    floor: str(fd, "floor"), usableArea: str(fd, "usableArea"), ownershipShare: str(fd, "ownershipShare"),
+  };
+}
+
+export async function addUnitAction(fd: FormData) {
+  // Posle dodavanja forma ostaje otvorena sa istom zgradom/ulazom i vrstom (§6, mockup O-M02 ③).
+  const keep = `&mjesto=${encodeURIComponent(str(fd, "place"))}&vrsta=${encodeURIComponent(str(fd, "type"))}`;
+  await run("posebni-dijelovi", fd, (a, v) => addDraftUnit(a, v, unitInput(fd)), undefined, keep);
+}
+
+export async function updateUnitAction(fd: FormData) {
+  await run("posebni-dijelovi", fd, (a, v) => updateDraftUnit(a, v, str(fd, "key"), unitInput(fd)));
+}
+
+export async function removeUnitAction(fd: FormData) {
+  await run("posebni-dijelovi", fd, (a, v) => removeDraftUnit(a, v, str(fd, "key")));
+}
+
+export async function addCommonAssetAction(fd: FormData) {
+  await run("zajednicki-dijelovi", fd, (a, v) =>
+    addDraftCommonAsset(a, v, { buildingKey: str(fd, "buildingKey"), kind: str(fd, "kind"), name: str(fd, "name"), description: str(fd, "description") })
+  );
+}
+
+export async function removeCommonAssetAction(fd: FormData) {
+  await run("zajednicki-dijelovi", fd, (a, v) => removeDraftCommonAsset(a, v, str(fd, "key")));
+}
+
+export async function confirmRegisterAction(fd: FormData) {
+  await run("utvrdjivanje-registra", fd, (a, v) => confirmDraftRegister(a, v));
+}
+
+export async function unlockRegisterAction(fd: FormData) {
+  await run("utvrdjivanje-registra", fd, (a, v) => unlockDraftRegister(a, v));
 }

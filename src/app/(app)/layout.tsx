@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { maybeActor, requireActor } from "@/server/actor";
 import { destroySession } from "@/server/auth/session";
 import { listMyTenants, switchActiveZev } from "@/server/services/memberships";
-import { landingPath } from "@/server/services/onboarding";
+import { getMyDraft, landingPath } from "@/server/services/onboarding";
+import Link from "next/link";
+import { Flash } from "@/components/ui";
 import { NavShell } from "@/components/nav-shell";
 import { buildTenantNav, settingsInAccountMenu, type NavRole } from "@/lib/nav-structure";
 
@@ -44,7 +46,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     label: g.labelKey ? t(g.labelKey) : undefined,
     links: g.items.map((i) => ({ href: i.href, label: t(i.labelKey) })),
   }));
-  const myTenants = await listMyTenants(actor);
+  const [myTenants, draft] = await Promise.all([listMyTenants(actor), getMyDraft(actor)]);
   const tenantOptions = myTenants.map((mt) => ({
     zevId: mt.zevId,
     label: mt.shortName ?? mt.legalName,
@@ -65,6 +67,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       activeZevId={actor.zevId}
       switchZevAction={switchZevAction}
     >
+      {/* Postojeći korisnik koji osniva još jedan ZEV (D3) ima svoj aktivni ZEV, pa ne dolazi u čarobnjak
+          sam od sebe: ova poruka je ulaz dok nacrt ne bude objavljen ili odbačen. */}
+      {draft && (
+        <Flash
+          msg={
+            <>
+              {tf("onboarding.resume.text", { naziv: draft.data.zev.legalName })}{" "}
+              <Link href="/onboarding" className="font-medium underline underline-offset-2">{t("onboarding.resume.link")}</Link>
+            </>
+          }
+        />
+      )}
       {children}
     </NavShell>
   );
