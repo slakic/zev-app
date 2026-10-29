@@ -43,6 +43,24 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.57.0] - 2026-10-29
+
+ZEV onboarding, Faza A: platformski admin može poslati poziv klijentu, a klijent otvara nalog i kroz čarobnjak unosi prve podatke o novom ZEV-u. ZEV još ne nastaje (objava je u Fazi C), pa je poziv za sada skriven iza `ONBOARDING_INVITES_ENABLED`. Plan: `Plans/zev-onboarding-wizard-plan.md`, mockupi `Plans/design-review/mockups/O-M01`–`O-M04`.
+
+**Migracija: da — aditivna (`20261029102145_onboarding_invite_draft`: tri nove tabele, bez izmjena postojećih).** Pokrenuti je prije deploy-a. Stari kod nove tabele ignoriše. Za uključivanje poziva postavite `ONBOARDING_INVITES_ENABLED="true"`.
+
+### Dodato
+
+- **Poziv klijentu** (`/admin/novi`, kartica „Pošalji poziv klijentu”): radni naziv, paket i e-mail klijenta. Link važi 14 dana i prikazuje se **samo jednom**, uz „Kopiraj link”. Aplikacija ga ne šalje i ne čuva, samo njegov hash. Asistirano kreiranje ZEV-a sa predsjednikom je nepromijenjeno, u drugoj kartici.
+- **Kartica „Pozivi i nacrti”** na `/admin`: stanje poziva (Čeka klijenta, Istekao, Opozvan, Unos u toku), korak na kojem je klijent, „Izdaj novi link” (stari prestaje da važi) i „Opozovi poziv” (sa razlogom), obje iza potvrde.
+- **Stranica poziva** (`/onboarding/poziv/{link}`): klijent otvara nalog sa adresom iz poziva, ili se prijavljuje postojećim nalogom. Nalog nema pristup nijednom ZEV-u dok se nacrt ne objavi. Posle prijave korisnik sa nacrtom u toku ide pravo u čarobnjak.
+- **Čarobnjak za novi ZEV** (`/onboarding`): koraci Vaš nalog, Podaci o ZEV-u, Računi i Zgrade i ulazi. Svaki unos se odmah čuva u nacrtu. „Nastavi” je dostupno tek kad je korak kompletan, a lista iznad dugmeta kaže šta nedostaje. Server odbija i korak iza trenutnog. Isti JIB i broj računa se provjeravaju kao u ostatku aplikacije. Uz paket Basic račun nije obavezan („Nastavi bez računa”). Koraci 5–10 su vidljivi, ali još nisu dostupni.
+- **Dizajn sistem:** primitiv `StepNav`, školjka čarobnjaka, pojašnjenje obrasca „Sljedeći korak” za onemogućeno „Nastavi” i novi ključevi statusa poziva (`Plans/design-system.md`).
+
+### Izmijenjeno
+
+- Stranice sa tajnim linkom (poziv, glasački link `/glasanje/…`) šalju `Referrer-Policy: no-referrer`, pa se link ne prenosi spoljnim stranicama.
+
 ## [2.56.0] - 2026-10-29
 
 ZEV onboarding, Faza 0: pravila koja će čarobnjak za novi ZEV provjeravati izdvojena su u čiste funkcije, a provjera formata JIB-a i broja računa važi odmah u cijeloj aplikaciji. Plan: `Plans/zev-onboarding-wizard-plan.md`.

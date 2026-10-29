@@ -1839,3 +1839,77 @@ model PlatformSetting {
   updatedAt   DateTime @updatedAt
   updatedById String?
 }
+
+// ---------------------------------------------------------------------------
+// Onboarding novog ZEV-a (Plans/zev-onboarding-wizard-plan.md §2). Ništa od ovoga nije
+// tenant-scoped: ZEV nastaje tek pri objavi nacrta. Tabele NISU append-only — nacrt i
+// njegovi fajlovi se smiju obrisati; trajni trag je audit (onboarding.*).
+// ---------------------------------------------------------------------------
+
+enum OnboardingInviteStatus {
+  ACTIVE   // čeka korak 1
+  ACCEPTED // pozvani je otvorio nalog / prijavio se; nastao je nacrt
+  REVOKED  // opozvan
+}
+
+/// Pozivni link za klijenta. Token se nikad ne čuva, samo sha256 (kao ApprovalToken).
+/// „Izdaj novi link" mijenja tokenHash i rok na istom redu — stari link time prestaje da važi.
+model OnboardingInvite {
+  id            String                 @id @default(cuid())
+  email         String                 // korak 1 radi samo sa ovom adresom (D3)
+  workingName   String                 // radni naziv ZEV-a (super admin); klijent ga mijenja u koraku 2
+  tier          ZevTier
+  note          String?
+  tokenHash     String                 @unique
+  status        OnboardingInviteStatus @default(ACTIVE)
+  expiresAt     DateTime
+  createdById   String                 // super admin (User.id)
+  createdAt     DateTime               @default(now())
+  openedAt      DateTime?
+  acceptedAt    DateTime?
+  revokedAt     DateTime?
+  revokedReason String?
+  draft         OnboardingDraft?
+
+  @@index([email])
+}
+
+enum OnboardingDraftStatus {
+  IN_PROGRESS
+  PUBLISHED   // publishedZevId postavljen; nacrt ostaje samo za čitanje kao trag
+  DISCARDED   // super admin ga je odbacio; fajlovi obrisani
+}
+
+/// Nacrt ZEV-a koji klijent puni kroz čarobnjak. `data` je OnboardingDraftData
+/// (src/lib/onboarding/draft.ts); `version` je optimistička brava (svaki upis je version+1).
+model OnboardingDraft {
+  id             String                @id @default(cuid())
+  invite         OnboardingInvite      @relation(fields: [inviteId], references: [id])
+  inviteId       String                @unique
+  ownerUserId    String                // nalog iz koraka 1 (User.id)
+  status         OnboardingDraftStatus @default(IN_PROGRESS)
+  data           Json
+  version        Int                   @default(0)
+  publishedZevId String?               @unique
+  publishedAt    DateTime?
+  files          OnboardingDraftFile[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  @@index([ownerUserId, status])
+}
+
+/// Fajl priložen u nacrtu (dokaz o vlasništvu) prije nego što ZEV postoji (D2b);
+/// pri objavi prelazi u Attachment, pri odbacivanju se briše.
+model OnboardingDraftFile {
+  id        String          @id @default(cuid())
+  draft     OnboardingDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  draftId   String
+  filename  String
+  mime      String
+  size      Int
+  bytes     Bytes
+  createdAt DateTime        @default(now())
+
+  @@index([draftId])
+}

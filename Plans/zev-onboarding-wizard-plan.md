@@ -385,8 +385,17 @@ samo kad servis zaista odbija korak, a ⚠ lista razloga stoji odmah iznad. U č
 red tabele je jedinica, a otvara se panel (po uzoru na `building-row.tsx` / `ConfirmPanel`) sa
 udjelima i dokazima te jedinice. CSV uvoz je Faza D.
 
-**Mockupi** u `Plans/design-review/mockups/` (1440 i 375): `/admin/novi` sa dvije kartice; korak 5;
-korak 8 sa otvorenim panelom jedinice; korak 10. Pregled mockupa prethodi Fazi A.
+**Mockupi** u `Plans/design-review/mockups/` (1440 i 375; izrađeni 2026-10-29, čekaju pregled prije Faze A):
+
+- [O-M01-admin-novi-zev-poziv.html](design-review/mockups/O-M01-admin-novi-zev-poziv.html) — `/admin/novi` sa dvije kartice, jednokratni prikaz linka, kartica „Pozivi i nacrti" na `/admin` sa potvrdom „Izdaj novi link".
+- [O-M02-carobnjak-posebni-dijelovi.html](design-review/mockups/O-M02-carobnjak-posebni-dijelovi.html) — korak 5, `StepNav` (desktop i sklopljen/otvoren na telefonu), zaključano „Nastavi".
+- [O-M03-carobnjak-vlasnici.html](design-review/mockups/O-M03-carobnjak-vlasnici.html) — korak 8, panel jedinice sa dokazom po udjelu i „Označi vlasništvo kao sporno".
+- [O-M04-carobnjak-pregled-objava.html](design-review/mockups/O-M04-carobnjak-pregled-objava.html) — korak 10, sažetak i otvorena potvrda „Objavi ZEV".
+
+Dopune dizajn sistema koje mockupi traže (sve bez nove boje, veličine teksta ili razmaka):
+1. primitiv `StepNav` (O-M02 ②, ⑥);
+2. pojašnjenje obrasca „Sljedeći korak": zaključano `primary` kad server odbija korak, sa razlogom odmah iznad (O-M02 ⑤);
+3. novi ključevi u `statusTone`: `INVITE_ACTIVE`, `DRAFT_IN_PROGRESS` (blue), `INVITE_EXPIRED`, `OWNER_DISPUTED` (slate), `DRAFT_PUBLISHED` (green) (O-M01 ⑤, O-M03 ⑤).
 
 Sve ostalo koristi postojeće primitive: `Card`, `Field`, `PreconditionList`, `Table`, `Flash`,
 `ConfirmAction`, `SubmitBtn`, `BtnLink`, `Tabs`. Najviše jedno `primary` po koraku. Nijedno `danger`.
@@ -428,8 +437,21 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom, po `zev-app-guidel
   brojem (`5620990000123490`). `…InTx` jezgra su **premještena u Fazu C**, jer tek tamo imaju prvog
   korisnika (`publishOnboardingDraft`), pa se tamo i testiraju pod stvarnim opterećenjem.
 - **Mockupi + `StepNav`** u dizajn sistemu (pregled prije Faze A).
-- **Faza A — kostur.** Migracija (§2), `/admin/novi` sa dvije kartice, lista „Pozivi i nacrti“,
-  `/onboarding/poziv`, korak 1, preusmjeravanje (§5.3), koraci 2–4.
+- **Faza A — kostur. ✅ Isporučeno (2026-10-29, v2.57.0).** Migracija (§2), `/admin/novi` sa dvije
+  kartice, kartica „Pozivi i nacrti” na `/admin` (novi link, opoziv), `/onboarding/poziv/[token]`,
+  korak 1, preusmjeravanje posle prijave (§5.3), koraci 2–4, `StepNav` i `OnboardingShell`. Koraci
+  5–9 su u `StepNav`-u, ali zaustavljaju čarobnjak („još nije dostupan”); pregled je samo lista
+  koraka. Poziv je iza `ONBOARDING_INVITES_ENABLED` (podrazumijevano `false`).
+  Svjesna odstupanja od plana:
+  - „Izdaj novi link” mijenja `tokenHash` i rok **na istom redu**, umjesto da stari poziv prebaci u
+    `REVOKED` i napravi novi (§2.1). Ostaje jedan red po klijentu, a stari link prestaje da važi isto.
+  - Neispravan JIB u koraku 2 se **čuva** (uz poruku) umjesto da se odbije, jer je odbijanje brisalo
+    sve ostale unesene podatke iz forme. Korak ostaje nekompletan po istom pravilu (`isValidJib`), pa
+    objava i dalje traži ispravan JIB.
+  - Stranica poziva nema poseban rate limit po `ipHash` (§5.4). Token ima 256 bita, a prijava
+    postojećim nalogom ide kroz `authenticate`, koji već ima svoj limit.
+  - Postojeći korisnik koji osniva drugi ZEV (D3) ima svoj aktivni ZEV, pa u čarobnjak ulazi kroz
+    link poziva. Veza „Nastavite podešavanje novog ZEV-a” u izborniku ZEV-ova (§5.3) prelazi u Fazu B.
 - **Faza B — registar.** Koraci 5–7, uključujući otključavanje.
 - **Faza C — vlasnici, uloge, objava.** `…InTx` jezgra iz §5.2 (prvi korak faze, uz testove pariteta
   servis ↔ objava), koraci 8–10, fajlovi nacrta, `publishOnboardingDraft`, pregled i odbacivanje

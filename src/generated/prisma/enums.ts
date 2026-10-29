@@ -448,3 +448,21 @@ export const NotifStatus = {
 } as const
 
 export type NotifStatus = (typeof NotifStatus)[keyof typeof NotifStatus]
+
+
+export const OnboardingInviteStatus = {
+  ACTIVE: 'ACTIVE',
+  ACCEPTED: 'ACCEPTED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type OnboardingInviteStatus = (typeof OnboardingInviteStatus)[keyof typeof OnboardingInviteStatus]
+
+
+export const OnboardingDraftStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  PUBLISHED: 'PUBLISHED',
+  DISCARDED: 'DISCARDED'
+} as const
+
+export type OnboardingDraftStatus = (typeof OnboardingDraftStatus)[keyof typeof OnboardingDraftStatus]

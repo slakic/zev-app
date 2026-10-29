@@ -34,6 +34,10 @@ const schema = z.object({
     .number("MAX_UPLOAD_MB mora biti broj.")
     .positive("MAX_UPLOAD_MB mora biti pozitivan broj.")
     .default(4),
+  // Onboarding novog ZEV-a (Plans/zev-onboarding-wizard-plan.md §8): kartica „Pošalji poziv
+  // klijentu" na /admin/novi je skrivena dok čarobnjak ne može da objavi ZEV (Faza C). Lokalno i
+  // na test okruženju se uključuje sa "true".
+  ONBOARDING_INVITES_ENABLED: z.enum(["true", "false"]).default("false"),
 });
 
 export type Env = z.infer<typeof schema> & { APP_URL: string };

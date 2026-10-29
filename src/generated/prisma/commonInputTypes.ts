@@ -1106,6 +1106,40 @@ export type EnumNotifStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumNotifStatusFilter<$PrismaModel>
 }
 
+export type EnumOnboardingInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingInviteStatusFilter<$PrismaModel> | $Enums.OnboardingInviteStatus
+}
+
+export type EnumOnboardingInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnboardingInviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOnboardingInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOnboardingInviteStatusFilter<$PrismaModel>
+}
+
+export type EnumOnboardingDraftStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingDraftStatus | Prisma.EnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingDraftStatusFilter<$PrismaModel> | $Enums.OnboardingDraftStatus
+}
+
+export type EnumOnboardingDraftStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingDraftStatus | Prisma.EnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingDraftStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnboardingDraftStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOnboardingDraftStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOnboardingDraftStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2155,6 +2189,40 @@ export type NestedEnumNotifStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotifStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotifStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumOnboardingInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingInviteStatusFilter<$PrismaModel> | $Enums.OnboardingInviteStatus
+}
+
+export type NestedEnumOnboardingInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnboardingInviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOnboardingInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOnboardingInviteStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumOnboardingDraftStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingDraftStatus | Prisma.EnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingDraftStatusFilter<$PrismaModel> | $Enums.OnboardingDraftStatus
+}
+
+export type NestedEnumOnboardingDraftStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnboardingDraftStatus | Prisma.EnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OnboardingDraftStatus[] | Prisma.ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOnboardingDraftStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnboardingDraftStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOnboardingDraftStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOnboardingDraftStatusFilter<$PrismaModel>
 }
 
 

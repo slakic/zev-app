@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O-M01 Novi ZEV i pozivi</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  .cards tbody tr{display:block;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;background:#fff}
+  .cards thead{display:none}
+  .cards tbody td{display:grid;grid-template-columns:40% 1fr;gap:.5rem;align-items:baseline;padding:.375rem 0}
+  .cards tbody td::before{content:attr(data-label);font-weight:500;font-size:.8125rem;color:#64748b}
+  .cards tbody td.primary{display:block;font-weight:600;font-size:.9375rem;color:#0f172a}
+  .cards tbody td.primary::before,.cards tbody td.actions::before{content:none}
+  .cards tbody td.actions{display:block}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">O-M01</span>
+    <h1 class="text-lg font-semibold">Platformski admin — novi ZEV: poziv klijentu ili kreiranje sa predsjednikom, i lista poziva</h1>
+    <span class="text-[13px] text-slate-600">Plan: Plans/zev-onboarding-wizard-plan.md §3, odluke D1, D8</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Dvije kartice, po jedna rečenica šta svaka radi i šta nastaje. Dok je sve zatvoreno, na stranici nema nijednog <code>primary</code> (D8).</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Otvorena forma poziva: <code>ToggleBtn</code> + <code>Field</code>; jedino <code>primary</code> je „Kreiraj poziv". Asistirani put je nepromijenjena današnja forma.</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Link se prikazuje <b>samo jednom</b> (čuva se samo hash). <code>Flash</code> uspjeha + polje samo za čitanje + <code>tonal</code> „Kopiraj link" (D1: dostava ručno).</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span>Nova kartica <code>Tabs</code> „Pozivi i nacrti" na <code>/admin</code>: napredak „Korak N od 10" iz iste funkcije koju vidi klijent (§3.2).</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>Novi ključevi u <code>statusTone</code>, bez novog tona: <code>INVITE_ACTIVE</code> (blue), <code>DRAFT_IN_PROGRESS</code> (blue), <code>INVITE_EXPIRED</code> (slate), <code>DRAFT_PUBLISHED</code> (green). <b class="text-orange-700">DOPUNA DS-a</b>.</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>„Izdaj novi link" i „Odbaci nacrt" su <code>caution</code> iza <code>ConfirmAction</code> (korektivne radnje, ne <code>danger</code> — §3.2).</span></li>
+    <li class="flex gap-2"><span class="ann">7</span><span>375px: kartice jedna ispod druge; lista poziva kao kartice (kolona radnji → card-transform).</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz. Super admin = Marko Jovanović. Klijent = Dragana Savić, ZEV „Kralja Petra I 45", Banja Luka. Primjeri e-adresa su izmišljeni.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ============ DESKTOP: /admin/novi, otvorena forma poziva ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /admin/novi, otvorena forma „Pošalji poziv klijentu"</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4 text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</div>
+        <nav class="space-y-0.5 px-2 pb-4">
+          <a aria-current="page" class="flex items-center gap-3 rounded-full bg-slate-800 px-3.5 py-2 text-sm font-medium text-white"><i data-icon="shield" class="h-5 w-5"></i>ZEV nalozi</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="activity" class="h-5 w-5"></i>Aktivnosti</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="monitor" class="h-5 w-5"></i>Sesije</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja platforme</a>
+        </nav>
+      </aside>
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <div class="flex-1"></div>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white"><i data-icon="shield" class="h-3.5 w-3.5"></i>Super admin</span>
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold text-white">MJ</span>
+        </header>
+        <main class="p-8">
+          <div class="space-y-6">
+            <div>
+              <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ ZEV nalozi</a>
+              <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Novi ZEV</h1>
+              <p class="mt-1 text-[15px] text-slate-500">Izaberite ko unosi podatke o ZEV-u.</p>
+            </div>
+            <div class="grid items-start gap-6 lg:grid-cols-2">
+              <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <span class="ann absolute -left-3 -top-3">1</span>
+                <h2 class="text-sm font-semibold text-slate-700">Pošalji poziv klijentu</h2>
+                <p class="mt-1 max-w-[68ch] text-sm text-slate-700">Klijent dobija link i sam unosi podatke o ZEV-u, računima, zgradama, posebnim dijelovima i vlasnicima. ZEV nastaje tek kad klijent objavi unesene podatke.</p>
+                <details open class="group mt-4">
+                  <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Pripremi poziv<i data-icon="chevron" class="h-4 w-4 rotate-180"></i></summary>
+                  <form class="relative mt-4 space-y-4">
+                    <span class="ann absolute -left-8 top-0">2</span>
+                    <label class="block"><span class="text-sm font-medium text-slate-700">Radni naziv ZEV-a</span>
+                      <input value="ZEV Kralja Petra I 45, Banja Luka" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm">
+                      <span class="mt-1 block text-[13px] text-slate-500">Klijent ga može promijeniti u koraku „Podaci o ZEV-u".</span></label>
+                    <label class="block"><span class="text-sm font-medium text-slate-700">Paket</span>
+                      <select class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm"><option>Osnovni + finansije</option></select></label>
+                    <label class="block"><span class="text-sm font-medium text-slate-700">E-mail klijenta</span>
+                      <input value="dragana.savic@primjer.ba" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm">
+                      <span class="mt-1 block text-[13px] text-slate-500">Klijent otvara nalog samo sa ovom adresom i postaje predsjednik novog ZEV-a.</span></label>
+                    <label class="block"><span class="text-sm font-medium text-slate-700">Napomena (nije obavezno)</span>
+                      <textarea rows="2" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm">Preporuka od upravnika zgrade u Ulici Kralja Petra I 43.</textarea>
+                      <span class="mt-1 block text-[13px] text-slate-500">Vidi je samo administrator platforme.</span></label>
+                    <button class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm">Kreiraj poziv</button>
+                  </form>
+                </details>
+              </section>
+              <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <h2 class="text-sm font-semibold text-slate-700">Kreiraj ZEV sa predsjednikom</h2>
+                <p class="mt-1 max-w-[68ch] text-sm text-slate-700">Vi unosite naziv, JIB i nalog predsjednika sa početnom lozinkom. ZEV nastaje odmah, prazan, a predsjednik dalje unosi podatke u aplikaciji.</p>
+                <details class="group mt-4">
+                  <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Otvori formu<i data-icon="chevron" class="h-4 w-4"></i></summary>
+                </details>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ DESKTOP: poziv kreiran ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /admin/novi poslije „Kreiraj poziv": link se prikazuje jednom</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4 text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</div>
+        <nav class="space-y-0.5 px-2 pb-4">
+          <a aria-current="page" class="flex items-center gap-3 rounded-full bg-slate-800 px-3.5 py-2 text-sm font-medium text-white"><i data-icon="shield" class="h-5 w-5"></i>ZEV nalozi</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="activity" class="h-5 w-5"></i>Aktivnosti</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="monitor" class="h-5 w-5"></i>Sesije</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja platforme</a>
+        </nav>
+      </aside>
+      <main class="min-w-0 flex-1 p-8">
+        <div class="space-y-6">
+          <div>
+            <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ ZEV nalozi</a>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Poziv za ZEV Kralja Petra I 45, Banja Luka</h1>
+            <p class="mt-1 text-[15px] text-slate-500">Za dragana.savic@primjer.ba · Osnovni + finansije</p>
+          </div>
+          <div role="status" class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 shadow-sm">Poziv je kreiran. Link važi do 12. 11. 2026.</div>
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -left-3 -top-3">3</span>
+            <h2 class="text-sm font-semibold text-slate-700">Link za klijenta</h2>
+            <p class="mt-1 max-w-[68ch] text-sm text-slate-700">Kopirajte link sada i pošaljite ga klijentu e-poštom ili porukom. Aplikacija ga ne šalje i ne čuva, pa ga kasnije ne možete ponovo vidjeti. Ako se izgubi, na listi poziva izdajte novi link.</p>
+            <div class="mt-4 flex max-w-3xl flex-wrap items-center gap-2">
+              <label class="min-w-0 flex-1"><span class="sr-only">Link za klijenta</span>
+                <input readonly value="https://zev.app/onboarding/poziv/q7Vd3kP0x2LmN8sRtY5wZaB1cE4fG6hJ9iK0lM2nO3p" class="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 font-mono text-[13px] text-slate-700 shadow-sm"></label>
+              <button class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700"><i data-icon="copy" class="h-4 w-4"></i>Kopiraj link</button>
+            </div>
+            <p class="mt-3 text-[13px] text-slate-500">Ko ima link, može otvoriti nalog sa adresom dragana.savic@primjer.ba. Ne objavljujte ga javno.</p>
+          </section>
+          <a class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Na listu poziva</a>
+        </div>
+      </main>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ DESKTOP: /admin, kartica Pozivi i nacrti ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /admin, kartica „Pozivi i nacrti", otvorena potvrda „Izdaj novi link"</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4 text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</div>
+        <nav class="space-y-0.5 px-2 pb-4">
+          <a aria-current="page" class="flex items-center gap-3 rounded-full bg-slate-800 px-3.5 py-2 text-sm font-medium text-white"><i data-icon="shield" class="h-5 w-5"></i>ZEV nalozi</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="activity" class="h-5 w-5"></i>Aktivnosti</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="monitor" class="h-5 w-5"></i>Sesije</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium text-slate-700"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja platforme</a>
+        </nav>
+      </aside>
+      <main class="min-w-0 flex-1 p-8">
+        <div class="space-y-6">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h1 class="text-2xl font-semibold tracking-tight text-slate-900">ZEV nalozi</h1>
+              <p class="mt-1 text-[15px] text-slate-500">1 ZEV nalog · 3 poziva</p>
+            </div>
+            <a class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm">Novi ZEV</a>
+          </div>
+          <div class="relative mb-4 flex gap-1 border-b border-slate-200" role="tablist">
+            <span class="ann absolute -left-8 top-2">4</span>
+            <a role="tab" class="inline-flex min-h-[44px] items-center gap-2 px-4 text-sm font-medium text-slate-600">ZEV nalozi <span class="rounded-full bg-slate-100 px-2 text-[13px] text-slate-600">1</span></a>
+            <a role="tab" aria-selected="true" class="-mb-px inline-flex min-h-[44px] items-center gap-2 border-b-2 border-blue-600 px-4 text-sm font-semibold text-blue-700">Pozivi i nacrti <span class="rounded-full bg-blue-50 px-2 text-[13px] text-blue-700">3</span></a>
+          </div>
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <table class="w-full text-sm">
+              <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Klijent</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Paket</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Stanje</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Napredak</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Zadnja izmjena</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+              </tr></thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="px-3 py-1.5"><span class="font-medium text-slate-900">ZEV Kralja Petra I 45, Banja Luka</span><div class="text-[13px] text-slate-500">dragana.savic@primjer.ba</div></td>
+                  <td class="px-3 py-1.5">Osnovni + finansije</td>
+                  <td class="relative px-3 py-1.5"><span class="ann absolute -left-3 top-1">5</span><span class="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-[13px] font-medium text-blue-800 ring-1 ring-inset ring-blue-600/20">Unos u toku</span></td>
+                  <td class="px-3 py-1.5">Korak 8 od 10 · Vlasnici<div class="text-[13px] text-slate-500">Prihvaćen 29. 10. 2026. u 10:12</div></td>
+                  <td class="px-3 py-1.5 tabular-nums">29. 10. 2026. 14:40</td>
+                  <td class="px-3 py-1.5"><div class="flex flex-wrap gap-1.5"><a class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Pregled nacrta</a><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Odbaci nacrt</button></div></td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-1.5"><span class="font-medium text-slate-900">ZEV Bulevar 12, Bijeljina</span><div class="text-[13px] text-slate-500">stevan.lukic@primjer.ba</div></td>
+                  <td class="px-3 py-1.5">Puni (+ e-glasanje)</td>
+                  <td class="px-3 py-1.5"><span class="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-[13px] font-medium text-blue-800 ring-1 ring-inset ring-blue-600/20">Čeka klijenta</span></td>
+                  <td class="px-3 py-1.5">Link nije otvoren<div class="text-[13px] text-slate-500">Važi do 9. 11. 2026.</div></td>
+                  <td class="px-3 py-1.5 tabular-nums">26. 10. 2026. 09:05</td>
+                  <td class="px-3 py-1.5"><div class="flex flex-wrap gap-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-100 px-2.5 py-1 text-[13px] font-medium text-amber-900 ring-2 ring-amber-500/30">Izdaj novi link</button><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Opozovi poziv</button></div></td>
+                </tr>
+                <tr>
+                  <td colspan="6" class="relative bg-white px-3 pb-3 pt-1">
+                    <span class="ann absolute -left-3 top-3">6</span>
+                    <div class="space-y-3 rounded-lg border border-amber-600/40 bg-amber-50/70 p-3">
+                      <p class="text-sm font-semibold text-amber-900">Izdavanje novog linka za stevan.lukic@primjer.ba</p>
+                      <p class="text-sm text-amber-900">Stari link prestaje da važi odmah. Novi link važi 14 dana, do 12. 11. 2026., i prikazuje se samo jednom, na sljedećem ekranu.</p>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <button class="inline-flex items-center justify-center gap-1.5 rounded-full border border-amber-600/40 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-900">Da, izdaj novi link</button>
+                        <button class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Otkaži</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-1.5"><span class="font-medium text-slate-900">ZEV Gundulićeva 3, Doboj</span><div class="text-[13px] text-slate-500">ana.tesic@primjer.ba</div></td>
+                  <td class="px-3 py-1.5">Osnovni</td>
+                  <td class="px-3 py-1.5"><span class="inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-[13px] font-medium text-slate-700 ring-1 ring-inset ring-slate-500/20">Istekao</span></td>
+                  <td class="px-3 py-1.5">Link nije otvoren<div class="text-[13px] text-slate-500">Istekao 20. 10. 2026.</div></td>
+                  <td class="px-3 py-1.5 tabular-nums">6. 10. 2026. 11:30</td>
+                  <td class="px-3 py-1.5"><div class="flex flex-wrap gap-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Izdaj novi link</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ MOBILNI ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — /admin/novi (zatvoreno) i /admin „Pozivi i nacrti" kao kartice</h2>
+  <div class="flex flex-wrap items-start gap-8">
+    <div class="frame" style="width:375px">
+      <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-2 py-1.5 shadow-sm">
+        <button class="inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-slate-700"><i data-icon="menu" class="h-5 w-5"></i>Meni</button>
+        <div class="flex-1"></div>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white"><i data-icon="shield" class="h-3.5 w-3.5"></i>Super admin</span>
+      </header>
+      <div class="relative space-y-6 p-4">
+        <span class="ann absolute right-2 top-2">7</span>
+        <div>
+          <a class="mb-2 -ml-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-blue-700">‹ ZEV nalozi</a>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Novi ZEV</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Izaberite ko unosi podatke o ZEV-u.</p>
+        </div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="text-sm font-semibold text-slate-700">Pošalji poziv klijentu</h2>
+          <p class="mt-1 text-sm text-slate-700">Klijent dobija link i sam unosi podatke o ZEV-u, računima, zgradama, posebnim dijelovima i vlasnicima. ZEV nastaje tek kad klijent objavi unesene podatke.</p>
+          <button class="mt-4 inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Pripremi poziv<i data-icon="chevron" class="h-4 w-4"></i></button>
+        </section>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="text-sm font-semibold text-slate-700">Kreiraj ZEV sa predsjednikom</h2>
+          <p class="mt-1 text-sm text-slate-700">Vi unosite naziv, JIB i nalog predsjednika sa početnom lozinkom. ZEV nastaje odmah, prazan, a predsjednik dalje unosi podatke u aplikaciji.</p>
+          <button class="mt-4 inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Otvori formu<i data-icon="chevron" class="h-4 w-4"></i></button>
+        </section>
+      </div>
+    </div>
+
+    <div class="frame" style="width:375px">
+      <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-2 py-1.5 shadow-sm">
+        <button class="inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-slate-700"><i data-icon="menu" class="h-5 w-5"></i>Meni</button>
+        <div class="flex-1"></div>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white"><i data-icon="shield" class="h-3.5 w-3.5"></i>Super admin</span>
+      </header>
+      <div class="space-y-4 p-4">
+        <div class="flex items-start justify-between gap-3">
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">ZEV nalozi</h1>
+          <a class="inline-flex min-h-[44px] items-center justify-center rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm">Novi ZEV</a>
+        </div>
+        <div class="flex gap-1 overflow-x-auto border-b border-slate-200" role="tablist">
+          <a role="tab" class="inline-flex min-h-[44px] shrink-0 items-center gap-2 px-3 text-sm font-medium text-slate-600">ZEV nalozi <span class="rounded-full bg-slate-100 px-2 text-[13px]">1</span></a>
+          <a role="tab" aria-selected="true" class="-mb-px inline-flex min-h-[44px] shrink-0 items-center gap-2 border-b-2 border-blue-600 px-3 text-sm font-semibold text-blue-700">Pozivi i nacrti <span class="rounded-full bg-blue-50 px-2 text-[13px]">3</span></a>
+        </div>
+        <table class="cards w-full text-sm">
+          <thead><tr><th>Klijent</th><th>Paket</th><th>Stanje</th><th>Napredak</th><th>Radnje</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="primary">ZEV Kralja Petra I 45, Banja Luka<div class="text-[13px] font-normal text-slate-500">dragana.savic@primjer.ba</div></td>
+              <td data-label="Paket">Osnovni + finansije</td>
+              <td data-label="Stanje"><span><span class="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-[13px] font-medium text-blue-800 ring-1 ring-inset ring-blue-600/20">Unos u toku</span></span></td>
+              <td data-label="Napredak">Korak 8 od 10 · Vlasnici</td>
+              <td class="actions pt-2"><div class="flex flex-wrap gap-2"><a class="inline-flex min-h-[44px] items-center rounded-full border border-slate-300 bg-white px-3 text-[13px] font-medium text-slate-700">Pregled nacrta</a><button class="inline-flex min-h-[44px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-3 text-[13px] font-medium text-amber-900">Odbaci nacrt</button></div></td>
+            </tr>
+            <tr>
+              <td class="primary">ZEV Bulevar 12, Bijeljina<div class="text-[13px] font-normal text-slate-500">stevan.lukic@primjer.ba</div></td>
+              <td data-label="Paket">Puni (+ e-glasanje)</td>
+              <td data-label="Stanje"><span><span class="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-[13px] font-medium text-blue-800 ring-1 ring-inset ring-blue-600/20">Čeka klijenta</span></span></td>
+              <td data-label="Napredak">Link nije otvoren, važi do 9. 11. 2026.</td>
+              <td class="actions pt-2"><div class="flex flex-wrap gap-2"><button class="inline-flex min-h-[44px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-3 text-[13px] font-medium text-amber-900">Izdaj novi link</button><button class="inline-flex min-h-[44px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-3 text-[13px] font-medium text-amber-900">Opozovi poziv</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const P={
+ shield:'<path d="M10 3.2 15.5 5.3v4.4c0 4-2.4 6.6-5.5 7.9-3.1-1.3-5.5-3.9-5.5-7.9V5.3L10 3.2Z"/><path d="M7.4 10 9.2 11.8 13 7.8"/>',
+ activity:'<path d="M3 12h3l2-6 4 12 2-8 1.5 2H17"/>',
+ monitor:'<rect x="3" y="4" width="14" height="9.5" rx="1"/><path d="M7.5 17h5M10 13.5V17"/>',
+ sliders:'<path d="M4 6h7M4 10h4M4 14h9"/><circle cx="13" cy="6" r="1.4"/><circle cx="8" cy="10" r="1.4"/><circle cx="15" cy="14" r="1.4"/>',
+ menu:'<path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"/>',
+ chevron:'<path d="m6 8 4 4 4-4"/>',
+ copy:'<rect x="7" y="7" width="9" height="9" rx="1.5"/><path d="M13 7V5.5A1.5 1.5 0 0 0 11.5 4h-6A1.5 1.5 0 0 0 4 5.5v6A1.5 1.5 0 0 0 5.5 13H7"/>'
+};
+document.querySelectorAll('i[data-icon]').forEach(el=>{
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 20 20');s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');
+  s.setAttribute('stroke-width','1.6');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');
+  s.setAttribute('aria-hidden','true');s.setAttribute('class',el.getAttribute('class')||'h-5 w-5');
+  s.innerHTML=P[el.dataset.icon]||'';el.replaceWith(s);
+});
+</script>
+</body>
+</html>

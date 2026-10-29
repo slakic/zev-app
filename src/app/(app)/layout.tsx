@@ -3,6 +3,7 @@ import { t } from "@/lib/i18n";
 import { maybeActor, requireActor } from "@/server/actor";
 import { destroySession } from "@/server/auth/session";
 import { listMyTenants, switchActiveZev } from "@/server/services/memberships";
+import { landingPath } from "@/server/services/onboarding";
 import { NavShell } from "@/components/nav-shell";
 import { buildTenantNav, settingsInAccountMenu, type NavRole } from "@/lib/nav-structure";
 
@@ -31,7 +32,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // call below is zevId-scoped) — send them to their own area instead of letting them
   // hit a ForbiddenError deep in a page. A super admin who *also* holds a Membership
   // somewhere falls through normally — they're acting as a member there by choice.
-  if (actor.isSuperAdmin && !actor.zevId) redirect("/admin");
+  // Isto za pozvanog klijenta koji još popunjava nacrt novog ZEV-a (nema članstvo dok ga ne objavi).
+  if (!actor.zevId) {
+    const path = await landingPath(actor);
+    if (path !== "/") redirect(path);
+  }
   // Redoslijed i grupe po ulozi (F9, D8) su čista funkcija u `nav-structure.ts`; meni je samo
   // prikaz — svaka stranica i servis i dalje sami provjeravaju ulogu i zevId.
   const navRoles = actor.roles as NavRole[];

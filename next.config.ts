@@ -27,6 +27,14 @@ const nextConfig: NextConfig = {
   // the default (1 MB) was smaller than either, which is the bug this closes (§8.1).
   // F7 (X-Q5): dnevnici su jedno mjesto, „Evidencije”. Stare adrese ostaju u upotrebi (obilježivači, linkovi u
   // porukama) i vode na odgovarajući tab; query parametri (filteri, `str`) Next prosljeđuje na odredište.
+  // Stranice sa tajnim tokenom u adresi (poziv za novi ZEV, glasački link) ne šalju adresu dalje kao
+  // Referer kad korisnik otvori spoljni link sa njih (Plans/zev-onboarding-wizard-plan.md §5.4).
+  async headers() {
+    return [
+      { source: "/onboarding/poziv/:token*", headers: [{ key: "Referrer-Policy", value: "no-referrer" }] },
+      { source: "/glasanje/:path*", headers: [{ key: "Referrer-Policy", value: "no-referrer" }] },
+    ];
+  },
   async redirects() {
     return [
       { source: "/aktivnosti", destination: "/evidencije?tab=aktivnosti", permanent: false },

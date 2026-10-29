@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O-M03 Čarobnjak vlasnici</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  .inp{width:100%;border-radius:.5rem;border:1px solid #cbd5e1;background:#fff;padding:.375rem .75rem;font-size:.875rem;box-shadow:0 1px 2px rgb(0 0 0 / .05)}
+  .chip{display:inline-block;border-radius:9999px;padding:.125rem .625rem;font-size:13px;font-weight:500;box-shadow:inset 0 0 0 1px var(--r)}
+  .chip-ok{background:#f1f5f9;color:#334155;--r:rgb(100 116 139 / .2)}
+  .chip-warn{background:#fffbeb;color:#92400e;--r:rgb(217 119 6 / .2)}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">O-M03</span>
+    <h1 class="text-lg font-semibold">Čarobnjak za novi ZEV — korak 8 „Vlasnici", otvoren panel jedinice Stan 3</h1>
+    <span class="text-[13px] text-slate-600">Plan: Plans/zev-onboarding-wizard-plan.md §4 (korak 8), §4.2, odluke D6, D6a</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Registar je potvrđen u koraku 7, pa su koraci 4–6 u <code>StepNav</code>-u ✓ sa bravom „samo pregled" (§4.1). „Otključaj registar" je u koraku 7.</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Red tabele = posebni dio. Chip zbira je postojeći <code>shareSumChip</code> („100 %" / „Upisano 50,00 %" / „Bez vlasnika").</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Panel jedinice se otvara u punoj širini ispod reda (<code>colSpan</code>, obrazac <code>building-row.tsx</code>). Pozadina <code>surface-sunken</code>, bez okvira i sjenke — nema ugniježđene elevacije.</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span>Dokaz o vlasništvu je obavezan <b>po udjelu</b> (D6). Ograničenje fajla je stvarno (<code>MAX_UPLOAD_MB</code>, 4 MB).</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>„Vlasništvo u sporu" (D6a): <code>secondary</code> radnja po jedinici, sa posljedicom u jednoj rečenici; jedinica tada dobija chip <code>OWNER_DISPUTED</code> (slate, „U sporu"). <b class="text-orange-700">DOPUNA DS-a: novi ključ u <code>statusTone</code></b>.</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>Za razliku od K-01a u aplikaciji, ovdje zbir ≠ 100 % <b>zaustavlja</b> korak (§4.2). ⚠ redovi imenuju jedinicu.</span></li>
+    <li class="flex gap-2"><span class="ann">7</span><span>375px: jedinice kao lista redova sa chipom; panel jedinice ide na punu širinu, polja jedno ispod drugog.</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz. 8 posebnih dijelova, 6 lica. Stan 3 je zajednički (Nikola i Sara Ilić), Nikolin udio je već upisan, Sarin se upisuje.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /onboarding/vlasnici</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-6 py-3 shadow-sm">
+      <span class="text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</span>
+      <span class="text-sm text-slate-500">Podešavanje novog ZEV-a</span>
+      <div class="flex-1"></div>
+      <span class="inline-flex items-center gap-1.5 text-[13px] text-slate-600"><i data-icon="saved" class="h-4 w-4 text-emerald-600"></i>Sve izmjene su sačuvane</span>
+      <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">DS</span>
+    </header>
+    <div class="flex">
+      <aside class="relative w-64 shrink-0 border-r border-slate-200 bg-white py-5 pl-3 pr-3">
+        <span class="ann absolute right-2 top-36">1</span>
+        <nav aria-label="Koraci podešavanja" data-stepnav="8" data-readonly="4,5,6" data-name="ZEV Kralja Petra I 45"></nav>
+      </aside>
+      <main class="min-w-0 flex-1 p-8">
+        <div class="max-w-5xl space-y-6">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Vlasnici</h1>
+            <p class="mt-1 max-w-[68ch] text-[15px] text-slate-500">Za svaki posebni dio upišite vlasnike, njihov udio i dokaz o vlasništvu. Zbir udjela na svakom posebnom dijelu mora biti 100 %.</p>
+          </div>
+
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -left-3 -top-3">2</span>
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 class="text-sm font-semibold text-slate-700">Posebni dijelovi (8)</h2>
+              <p class="text-[13px] text-slate-500">6 od 8 ima upisane sve vlasnike</p>
+            </div>
+            <table class="mt-3 w-full text-sm">
+              <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Posebni dio</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Vlasnici</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Zbir udjela</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+              </tr></thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Stan 1<div class="text-[13px] font-normal text-slate-500">Ulaz A · 62,40 m²</div></td><td class="px-3 py-1.5">Ana Marković</td><td class="px-3 py-1.5"><span class="chip chip-ok">100 %</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi vlasnike</button></td></tr>
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Stan 2<div class="text-[13px] font-normal text-slate-500">Ulaz A · 55,10 m²</div></td><td class="px-3 py-1.5">Marko Petrović</td><td class="px-3 py-1.5"><span class="chip chip-ok">100 %</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi vlasnike</button></td></tr>
+                <tr class="bg-slate-50"><td class="px-3 py-1.5 font-medium text-slate-900">Stan 3<div class="text-[13px] font-normal text-slate-500">Ulaz A · 62,40 m²</div></td><td class="px-3 py-1.5">Nikola Ilić</td><td class="px-3 py-1.5"><span class="chip chip-warn">Upisano 50,00 %</span></td><td class="px-3 py-1.5"><button aria-expanded="true" class="inline-flex min-h-[28px] items-center rounded-full bg-blue-50 px-2.5 py-1 text-[13px] font-medium text-blue-700">Zatvori</button></td></tr>
+                <tr>
+                  <td colspan="4" class="relative bg-slate-50 px-4 pb-5 pt-2">
+                    <span class="ann absolute -left-3 top-3">3</span>
+                    <p class="text-sm font-semibold text-slate-700">Vlasnici posebnog dijela Stan 3</p>
+                    <ul class="mt-2 divide-y divide-slate-200 border-y border-slate-200">
+                      <li class="flex flex-wrap items-center gap-x-6 gap-y-1 py-2 text-sm">
+                        <span class="min-w-[12rem] font-medium text-slate-900">Nikola Ilić</span>
+                        <span class="tabular-nums">50,00 %</span>
+                        <span class="text-slate-600">od 15. 3. 2019.</span>
+                        <span class="inline-flex items-center gap-1 text-[13px] text-slate-600"><i data-icon="file" class="h-4 w-4"></i>kupoprodajni-ugovor-stan-3.pdf · 412 KB</span>
+                        <button class="ml-auto inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Ukloni</button>
+                      </li>
+                    </ul>
+                    <form class="mt-4 space-y-3">
+                      <p class="text-sm font-medium text-slate-700">Dodaj vlasnika</p>
+                      <div class="grid grid-cols-6 items-start gap-3">
+                        <label class="col-span-2 block"><span class="text-sm font-medium text-slate-700">Lice</span>
+                          <select class="inp mt-1"><option>Novo lice…</option></select>
+                          <span class="mt-1 block text-[13px] text-slate-500">Ili izaberite nekog od 5 već upisanih lica.</span></label>
+                        <label class="block"><span class="text-sm font-medium text-slate-700">Vrsta</span><select class="inp mt-1"><option>Fizičko lice</option></select></label>
+                        <label class="block"><span class="text-sm font-medium text-slate-700">Ime</span><input class="inp mt-1" value="Sara"></label>
+                        <label class="block"><span class="text-sm font-medium text-slate-700">Prezime</span><input class="inp mt-1" value="Ilić"></label>
+                        <label class="block"><span class="text-sm font-medium text-slate-700">E-mail (nije obavezno)</span><input class="inp mt-1" value=""></label>
+                        <label class="block"><span class="text-sm font-medium text-slate-700">Udio (%)</span><input class="inp mt-1 text-right tabular-nums" value="50,00"></label>
+                        <label class="block"><span class="text-sm font-medium text-slate-700">Vlasnik od</span><input class="inp mt-1" value="15. 3. 2019."></label>
+                        <label class="relative col-span-4 block"><span class="ann absolute -left-7 top-6">4</span><span class="text-sm font-medium text-slate-700">Dokaz o vlasništvu</span>
+                          <span class="mt-1 flex items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"><span class="inline-flex items-center rounded-full border border-slate-300 bg-white px-3 py-1 text-[13px] font-medium">Izaberite fajl</span><span class="text-slate-500">kupoprodajni-ugovor-stan-3.pdf</span></span>
+                          <span class="mt-1 block text-[13px] text-slate-500">Ugovor, rješenje o nasljeđivanju ili izvod iz katastra. PDF ili slika, najviše 4 MB.</span></label>
+                      </div>
+                      <button type="button" class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700">Dodaj vlasnika</button>
+                    </form>
+                    <div class="relative mt-5 border-t border-slate-200 pt-4">
+                      <span class="ann absolute -left-7 top-4">5</span>
+                      <p class="max-w-[68ch] text-sm text-slate-700">Ako je vlasništvo ovog posebnog dijela sporno ili dokumenti još nisu sređeni, možete ga označiti i nastaviti. Vlasnike ćete upisati kasnije u aplikaciji, a do tada ovaj posebni dio nema glas.</p>
+                      <button class="mt-2 inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Označi vlasništvo kao sporno</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Stan 4<div class="text-[13px] font-normal text-slate-500">Ulaz A · 55,10 m²</div></td><td class="px-3 py-1.5">Marko Petrović</td><td class="px-3 py-1.5"><span class="chip chip-ok">100 %</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi vlasnike</button></td></tr>
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Stan 5<div class="text-[13px] font-normal text-slate-500">Ulaz B · 74,80 m²</div></td><td class="px-3 py-1.5">Milan Jovanović</td><td class="px-3 py-1.5"><span class="chip chip-ok">100 %</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi vlasnike</button></td></tr>
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Poslovni prostor 1<div class="text-[13px] font-normal text-slate-500">Ulaz B · 88,00 m²</div></td><td class="px-3 py-1.5">Apoteka „Zdravlje" d.o.o.</td><td class="px-3 py-1.5"><span class="chip chip-ok">100 %</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi vlasnike</button></td></tr>
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Garaža 1<div class="text-[13px] font-normal text-slate-500">14,00 m²</div></td><td class="px-3 py-1.5">Ana Marković</td><td class="px-3 py-1.5"><span class="chip chip-ok">100 %</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Uredi vlasnike</button></td></tr>
+                <tr><td class="px-3 py-1.5 font-medium text-slate-900">Garaža 2<div class="text-[13px] font-normal text-slate-500">14,00 m²</div></td><td class="px-3 py-1.5 text-slate-500">—</td><td class="px-3 py-1.5"><span class="chip chip-warn">Bez vlasnika</span></td><td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[13px] font-medium text-slate-700">Dodaj vlasnike</button></td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -left-3 -top-3">6</span>
+            <h2 class="text-sm font-semibold text-slate-700">Prije sljedećeg koraka</h2>
+            <ul class="mt-3 space-y-2" data-pre></ul>
+            <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+              <a class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Nazad na utvrđivanje registra</a>
+              <button disabled class="inline-flex cursor-not-allowed items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white opacity-50 shadow-sm">Nastavi na organe i naloge</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — lista posebnih dijelova i otvoren panel Stan 3</h2>
+  <div class="flex flex-wrap items-start gap-8">
+    <div class="frame relative" style="width:375px">
+      <span class="ann absolute right-2 top-14 z-10">7</span>
+      <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 shadow-sm">
+        <span class="text-base font-bold tracking-tight text-slate-800">ZEV upravnik</span>
+        <div class="flex-1"></div>
+        <span class="inline-flex items-center gap-1 text-[13px] text-slate-600"><i data-icon="saved" class="h-4 w-4 text-emerald-600"></i>Sačuvano</span>
+        <span class="flex h-11 w-11 items-center justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">DS</span></span>
+      </header>
+      <div class="space-y-6 p-4">
+        <nav aria-label="Koraci podešavanja" data-stepnav="8" data-readonly="4,5,6" data-mode="mobile"></nav>
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Vlasnici</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Za svaki posebni dio upišite vlasnike, njihov udio i dokaz o vlasništvu. Zbir udjela na svakom posebnom dijelu mora biti 100 %.</p>
+        </div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="text-sm font-semibold text-slate-700">Posebni dijelovi (8)</h2>
+          <p class="text-[13px] text-slate-500">6 od 8 ima upisane sve vlasnike</p>
+          <ul class="mt-3 divide-y divide-slate-100">
+            <li class="flex min-h-[44px] cursor-pointer items-center gap-2 py-2" role="button" aria-expanded="false"><span class="flex-1"><span class="block text-sm font-medium text-slate-900">Stan 1</span><span class="text-[13px] text-slate-500">Ana Marković</span></span><span class="chip chip-ok">100 %</span><i data-icon="chevron" class="h-4 w-4 -rotate-90 text-slate-500"></i></li>
+            <li class="flex min-h-[44px] cursor-pointer items-center gap-2 py-2" role="button" aria-expanded="false"><span class="flex-1"><span class="block text-sm font-medium text-slate-900">Stan 2</span><span class="text-[13px] text-slate-500">Marko Petrović</span></span><span class="chip chip-ok">100 %</span><i data-icon="chevron" class="h-4 w-4 -rotate-90 text-slate-500"></i></li>
+            <li class="py-2">
+              <div class="flex min-h-[44px] items-center gap-2"><span class="flex-1"><span class="block text-sm font-medium text-slate-900">Stan 3</span><span class="text-[13px] text-slate-500">Nikola Ilić</span></span><span class="chip chip-warn">Upisano 50,00 %</span></div>
+              <div class="-mx-5 mt-2 space-y-3 bg-slate-50 px-5 py-4">
+                <p class="text-sm font-semibold text-slate-700">Vlasnici posebnog dijela Stan 3</p>
+                <div class="border-y border-slate-200 py-2 text-sm"><span class="font-medium text-slate-900">Nikola Ilić</span> · <span class="tabular-nums">50,00 %</span><div class="text-[13px] text-slate-600">od 15. 3. 2019. · kupoprodajni-ugovor-stan-3.pdf</div></div>
+                <p class="text-sm font-medium text-slate-700">Dodaj vlasnika</p>
+                <label class="block"><span class="text-sm font-medium text-slate-700">Lice</span><select class="inp mt-1"><option>Novo lice…</option></select></label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="block"><span class="text-sm font-medium text-slate-700">Ime</span><input class="inp mt-1" value="Sara"></label>
+                  <label class="block"><span class="text-sm font-medium text-slate-700">Prezime</span><input class="inp mt-1" value="Ilić"></label>
+                  <label class="block"><span class="text-sm font-medium text-slate-700">Udio (%)</span><input class="inp mt-1 text-right" value="50,00"></label>
+                  <label class="block"><span class="text-sm font-medium text-slate-700">Vlasnik od</span><input class="inp mt-1" value="15. 3. 2019."></label>
+                </div>
+                <label class="block"><span class="text-sm font-medium text-slate-700">Dokaz o vlasništvu</span>
+                  <span class="mt-1 flex min-h-[44px] items-center rounded-lg border border-dashed border-slate-300 bg-white px-3 text-[13px] font-medium text-slate-700">Izaberite fajl</span>
+                  <span class="mt-1 block text-[13px] text-slate-500">PDF ili slika, najviše 4 MB.</span></label>
+                <button type="button" class="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-blue-50 px-4 text-sm font-medium text-blue-700">Dodaj vlasnika</button>
+                <button class="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-slate-300 bg-white px-4 text-[13px] font-medium text-slate-700">Označi vlasništvo kao sporno</button>
+              </div>
+            </li>
+            <li class="flex min-h-[44px] cursor-pointer items-center gap-2 py-2" role="button" aria-expanded="false"><span class="flex-1"><span class="block text-sm font-medium text-slate-900">Garaža 2</span><span class="text-[13px] text-slate-500">—</span></span><span class="chip chip-warn">Bez vlasnika</span><i data-icon="chevron" class="h-4 w-4 -rotate-90 text-slate-500"></i></li>
+            <li class="py-2 text-[13px] text-slate-500">… još 4 posebna dijela sa 100 %</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const ok='<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true"><path d="M5 10.5 8.5 14 15 7"/></svg></span><span class="sr-only">U redu:</span>';
+const warn='<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-[13px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-600/20" aria-hidden="true">!</span><span class="sr-only">Nedostaje:</span>';
+const PRE=[[ok,"6 posebnih dijelova ima tačno 100 %, svaki udio sa dokazom."],[warn,"Stan 3: upisano 50,00 %. Dodajte ostale vlasnike ili ispravite udio."],[warn,"Garaža 2: nema vlasnika. Dodajte vlasnike ili označite vlasništvo kao sporno."]];
+document.querySelectorAll("[data-pre]").forEach(el=>el.innerHTML=PRE.map(p=>`<li class="flex items-start gap-2 text-sm text-slate-700">${p[0]}<span>${p[1]}</span></li>`).join(""));
+</script>
+<script>
+// Zajednički crtež primitiva StepNav i ikona za mockupe O-M02..O-M04 (Plans/zev-onboarding-wizard-plan.md §6).
+// U aplikaciji je StepNav server komponenta bez client JS-a; ovdje JS samo štedi ponavljanje markupa.
+const STEPS = [
+  "Vaš nalog", "Podaci o ZEV-u", "Računi", "Zgrade i ulazi", "Posebni dijelovi",
+  "Zajednički dijelovi", "Utvrđivanje registra", "Vlasnici", "Organi i nalozi", "Pregled i objava",
+];
+const ICONS = {
+  check: '<path d="M5 10.5 8.5 14 15 7"/>',
+  chevron: '<path d="m6 8 4 4 4-4"/>',
+  lock: '<rect x="5" y="9" width="10" height="7.5" rx="1.2"/><path d="M7.5 9V7a2.5 2.5 0 0 1 5 0v2"/>',
+  file: '<path d="M6 3h5.5L15 6.5V17H6z"/><path d="M11 3v4h4"/>',
+  saved: '<circle cx="10" cy="10" r="6.5"/><path d="M7.3 10.2 9.2 12l3.5-3.8"/>',
+};
+function svg(name, cls) {
+  return `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="${cls}">${ICONS[name]}</svg>`;
+}
+function stepItems(cur, opts) {
+  return STEPS.map((label, i) => {
+    const n = i + 1;
+    const optional = (opts.optional || []).includes(n) ? '<span class="ml-auto text-[13px] font-normal text-slate-500">opciono</span>' : "";
+    const readOnly = (opts.readOnly || []).includes(n) ? `<span class="ml-auto text-slate-500" title="Samo pregled">${svg("lock", "h-4 w-4")}<span class="sr-only">samo pregled</span></span>` : "";
+    if (n < cur) {
+      return `<li><a href="#" class="flex items-center gap-3 rounded-full px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">${svg("check", "h-3.5 w-3.5")}</span>
+        <span class="sr-only">Završeno: </span>${label}${optional}${readOnly}</a></li>`;
+    }
+    if (n === cur) {
+      return `<li><span aria-current="step" class="flex items-center gap-3 rounded-full bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-600 text-[13px] font-semibold text-blue-700">${n}</span>
+        ${label}${optional}</span></li>`;
+    }
+    return `<li><span class="flex items-center gap-3 px-3 py-2 text-sm text-slate-500">
+      <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[13px] text-slate-500">${n}</span>
+      <span class="sr-only">Još nije dostupno: </span>${label}${optional}</span></li>`;
+  }).join("");
+}
+document.querySelectorAll("[data-stepnav]").forEach((el) => {
+  const cur = Number(el.dataset.stepnav);
+  const opts = {
+    optional: (el.dataset.optional || "").split(",").filter(Boolean).map(Number),
+    readOnly: (el.dataset.readonly || "").split(",").filter(Boolean).map(Number),
+  };
+  const name = el.dataset.name || "";
+  if (el.dataset.mode === "mobile") {
+    el.innerHTML = `<details class="group rounded-xl border border-slate-200 bg-white">
+      <summary class="flex min-h-[44px] cursor-pointer list-none items-center gap-2 px-4 py-2 text-sm text-slate-700">
+        <span>Korak ${cur} od ${STEPS.length} · <b class="font-semibold text-slate-900">${STEPS[cur - 1]}</b></span>
+        <span class="ml-auto inline-flex items-center gap-1 text-[13px] font-medium text-blue-700">Svi koraci${svg("chevron", "h-4 w-4 transition-transform group-open:rotate-180")}</span>
+      </summary>
+      <ol class="space-y-0.5 border-t border-slate-200 p-2">${stepItems(cur, opts)}</ol>
+    </details>`;
+    if (el.dataset.open === "true") el.querySelector("details").open = true;
+  } else {
+    el.innerHTML = `<div class="px-3 pb-3">
+        <p class="text-sm font-semibold text-slate-800">${name}</p>
+        <p class="text-[13px] text-slate-500">Korak ${cur} od ${STEPS.length}</p>
+      </div>
+      <ol class="space-y-0.5">${stepItems(cur, opts)}</ol>`;
+  }
+});
+document.querySelectorAll("i[data-icon]").forEach((el) => {
+  el.outerHTML = svg(el.dataset.icon, el.getAttribute("class") || "h-5 w-5");
+});
+</script>
+</body>
+</html>

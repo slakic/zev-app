@@ -112,7 +112,10 @@ export const ModelName = {
   ViberSubscriber: 'ViberSubscriber',
   AuditEvent: 'AuditEvent',
   Setting: 'Setting',
-  PlatformSetting: 'PlatformSetting'
+  PlatformSetting: 'PlatformSetting',
+  OnboardingInvite: 'OnboardingInvite',
+  OnboardingDraft: 'OnboardingDraft',
+  OnboardingDraftFile: 'OnboardingDraftFile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1225,6 +1228,55 @@ export const PlatformSettingScalarFieldEnum = {
 } as const
 
 export type PlatformSettingScalarFieldEnum = (typeof PlatformSettingScalarFieldEnum)[keyof typeof PlatformSettingScalarFieldEnum]
+
+
+export const OnboardingInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  workingName: 'workingName',
+  tier: 'tier',
+  note: 'note',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  openedAt: 'openedAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason'
+} as const
+
+export type OnboardingInviteScalarFieldEnum = (typeof OnboardingInviteScalarFieldEnum)[keyof typeof OnboardingInviteScalarFieldEnum]
+
+
+export const OnboardingDraftScalarFieldEnum = {
+  id: 'id',
+  inviteId: 'inviteId',
+  ownerUserId: 'ownerUserId',
+  status: 'status',
+  data: 'data',
+  version: 'version',
+  publishedZevId: 'publishedZevId',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OnboardingDraftScalarFieldEnum = (typeof OnboardingDraftScalarFieldEnum)[keyof typeof OnboardingDraftScalarFieldEnum]
+
+
+export const OnboardingDraftFileScalarFieldEnum = {
+  id: 'id',
+  draftId: 'draftId',
+  filename: 'filename',
+  mime: 'mime',
+  size: 'size',
+  bytes: 'bytes',
+  createdAt: 'createdAt'
+} as const
+
+export type OnboardingDraftFileScalarFieldEnum = (typeof OnboardingDraftFileScalarFieldEnum)[keyof typeof OnboardingDraftFileScalarFieldEnum]
 
 
 export const SortOrder = {

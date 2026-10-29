@@ -96,6 +96,9 @@ const statusTone: Record<string, string> = {
   DIRECTION_IN: "green", DIRECTION_OUT: "amber",
   // F4.5: gdje vlasnik stoji na prijedlogu (Niste se izjasnili / Izjasnili ste se / Glasa predstavnik / ostalo).
   VOTE_PENDING: "amber", VOTE_DONE: "green", VOTE_REPRESENTATIVE: "blue", VOTE_CLOSED: "slate", VOTE_NONE: "slate",
+  // Onboarding novog ZEV-a (v2.57.0, mockupi O-M01/O-M03): stanje poziva i nacrta, sporno vlasništvo.
+  INVITE_ACTIVE: "blue", DRAFT_IN_PROGRESS: "blue", INVITE_EXPIRED: "slate", INVITE_REVOKED: "slate",
+  DRAFT_PUBLISHED: "green", OWNER_DISPUTED: "slate",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */

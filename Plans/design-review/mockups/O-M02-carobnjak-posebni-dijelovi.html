@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O-M02 Čarobnjak posebni dijelovi</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  .cards tbody tr{display:block;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;background:#fff}
+  .cards thead{display:none}
+  .cards tbody td{display:grid;grid-template-columns:40% 1fr;gap:.5rem;align-items:baseline;padding:.375rem 0}
+  .cards tbody td::before{content:attr(data-label);font-weight:500;font-size:.8125rem;color:#64748b}
+  .cards tbody td.primary{display:block;font-weight:600;font-size:.9375rem;color:#0f172a}
+  .cards tbody td.primary::before,.cards tbody td.actions::before{content:none}
+  .cards tbody td.actions{display:block}
+  .inp{width:100%;border-radius:.5rem;border:1px solid #cbd5e1;background:#fff;padding:.375rem .75rem;font-size:.875rem;box-shadow:0 1px 2px rgb(0 0 0 / .05)}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">O-M02</span>
+    <h1 class="text-lg font-semibold">Čarobnjak za novi ZEV — korak 5 „Posebni dijelovi", zbir udjela još nije 100 %</h1>
+    <span class="text-[13px] text-slate-600">Plan: Plans/zev-onboarding-wizard-plan.md §4 (korak 5), §6, odluka D8</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Školjka čarobnjaka bez bočne navigacije aplikacije (ZEV još ne postoji). Desno: „Sve izmjene su sačuvane" — svaki unos se odmah čuva u nacrtu.</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span><b class="text-orange-700">NOVI PRIMITIV <code>StepNav</code> (D8).</b> Završeni koraci su veze (✓), tekući je <code>aria-current="step"</code>, budući koraci nisu veze. Bez nivoa elevacije (nav, kao sidebar). Labele 14px.</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>Forma ostaje otvorena poslije „Dodaj": fokus se vraća na oznaku; zgrada, ulaz i vrsta se zadržavaju (§6). Dugme je <code>tonal</code>, jer forma u kartici nije glavni korak stranice.</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span><code>Table</code> u <code>Card</code>-u; zbir udjela uživo u podnožju, sa istim rječnikom kao registar („Zbir 87,50 %").</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>Obrazac „Sljedeći korak": <code>PreconditionList</code> iz <code>registerPreconditions</code> + jedno <code>primary</code>. ⚠ <b class="text-orange-700">Pojašnjenje DS-a:</b> „Nastavi" je onemogućeno jer server odbija korak (<code>requireOnboardingStep</code>); razlog je odmah iznad dugmeta.</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>375px: <code>StepNav</code> se sklapa u jednu liniju „Korak 5 od 10 · Posebni dijelovi" + <code>&lt;details&gt;</code>; desni okvir prikazuje otvorenu listu.</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz. Klijentkinja Dragana Savić unosi ZEV „Kralja Petra I 45", Banja Luka: jedna zgrada, ulazi A i B, 7 od 8 posebnih dijelova uneseno.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ============ DESKTOP ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — /onboarding/posebni-dijelovi</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <header class="relative flex items-center gap-4 border-b border-slate-200 bg-white px-6 py-3 shadow-sm">
+      <span class="ann absolute -left-3 top-3">1</span>
+      <span class="text-lg font-bold tracking-tight text-slate-800">ZEV upravnik</span>
+      <span class="text-sm text-slate-500">Podešavanje novog ZEV-a</span>
+      <div class="flex-1"></div>
+      <span class="inline-flex items-center gap-1.5 text-[13px] text-slate-600"><i data-icon="saved" class="h-4 w-4 text-emerald-600"></i>Sve izmjene su sačuvane</span>
+      <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">DS</span>
+    </header>
+    <div class="flex">
+      <aside class="ds-add w-64 shrink-0 border-r border-slate-200 bg-white py-5 pl-3 pr-3">
+        <span class="ds-add-tag">NOVI PRIMITIV StepNav ②</span>
+        <nav aria-label="Koraci podešavanja" data-stepnav="5" data-optional="" data-name="ZEV Kralja Petra I 45"></nav>
+      </aside>
+      <main class="min-w-0 flex-1 p-8">
+        <div class="max-w-5xl space-y-6">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Posebni dijelovi</h1>
+            <p class="mt-1 max-w-[68ch] text-[15px] text-slate-500">Unesite svaki stan, poslovni prostor i garažu iz zgrade. Zbir udjela u zajedničkoj imovini mora biti tačno 100 %.</p>
+          </div>
+
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -left-3 -top-3">3</span>
+            <h2 class="text-sm font-semibold text-slate-700">Dodaj posebni dio</h2>
+            <p class="mt-0.5 text-[13px] text-slate-500">Podatke prepišite iz etažnog elaborata ili odluke o utvrđivanju udjela.</p>
+            <form class="mt-4 grid grid-cols-8 items-end gap-3">
+              <label class="col-span-2 block"><span class="text-sm font-medium text-slate-700">Zgrada i ulaz</span>
+                <select class="inp mt-1"><option>Kralja Petra I 45 · bez ulaza</option></select></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Vrsta</span>
+                <select class="inp mt-1"><option>Garaža</option></select></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Oznaka</span>
+                <input class="inp mt-1 ring-2 ring-blue-500/20" style="border-color:#3b82f6" value="Garaža 2"></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Sprat</span>
+                <input class="inp mt-1" value="-1"></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Površina (m²)</span>
+                <input class="inp mt-1 text-right tabular-nums" value="14,00"></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Udio (%)</span>
+                <input class="inp mt-1 text-right tabular-nums" value="12,50"></label>
+              <button type="button" class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700">Dodaj</button>
+            </form>
+          </section>
+
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -left-3 -top-3">4</span>
+            <h2 class="text-sm font-semibold text-slate-700">Uneseni posebni dijelovi (7)</h2>
+            <table class="mt-3 w-full text-sm">
+              <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Oznaka</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Vrsta</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Ulaz</th>
+                <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Sprat</th>
+                <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Površina</th>
+                <th class="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Udio</th>
+                <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+              </tr></thead>
+              <tbody class="divide-y divide-slate-100" id="units-desktop"></tbody>
+              <tfoot><tr class="border-t border-slate-200 bg-slate-50/80">
+                <td colspan="5" class="px-3 py-2 text-sm font-medium text-slate-700">Zbir udjela</td>
+                <td class="px-3 py-2 text-right"><span class="inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[13px] font-medium text-amber-800 ring-1 ring-inset ring-amber-600/20 tabular-nums">Zbir 87,50 %</span></td>
+                <td class="px-3 py-2 text-[13px] text-slate-600">Nedostaje 12,50 %</td>
+              </tr></tfoot>
+            </table>
+          </section>
+
+          <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+            <span class="ann absolute -left-3 -top-3">5</span>
+            <h2 class="text-sm font-semibold text-slate-700">Prije sljedećeg koraka</h2>
+            <ul class="mt-3 space-y-2" id="pre-desktop"></ul>
+            <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+              <a class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Nazad na zgrade i ulaze</a>
+              <button disabled class="inline-flex cursor-not-allowed items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white opacity-50 shadow-sm">Nastavi na zajedničke dijelove</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ MOBILNI ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — isti korak; desno: otvorena lista koraka</h2>
+  <div class="flex flex-wrap items-start gap-8">
+    <div class="frame" style="width:375px">
+      <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 shadow-sm">
+        <span class="text-base font-bold tracking-tight text-slate-800">ZEV upravnik</span>
+        <div class="flex-1"></div>
+        <span class="inline-flex items-center gap-1 text-[13px] text-slate-600"><i data-icon="saved" class="h-4 w-4 text-emerald-600"></i>Sačuvano</span>
+        <span class="flex h-11 w-11 items-center justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">DS</span></span>
+      </header>
+      <div class="space-y-6 p-4">
+        <div class="relative ds-add"><span class="ds-add-tag">StepNav ⑥</span><nav aria-label="Koraci podešavanja" data-stepnav="5" data-mode="mobile"></nav></div>
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Posebni dijelovi</h1>
+          <p class="mt-1 text-[15px] text-slate-500">Unesite svaki stan, poslovni prostor i garažu iz zgrade. Zbir udjela u zajedničkoj imovini mora biti tačno 100 %.</p>
+        </div>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="text-sm font-semibold text-slate-700">Dodaj posebni dio</h2>
+          <form class="mt-4 space-y-3">
+            <label class="block"><span class="text-sm font-medium text-slate-700">Zgrada i ulaz</span><select class="inp mt-1"><option>Kralja Petra I 45 · bez ulaza</option></select></label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="block"><span class="text-sm font-medium text-slate-700">Vrsta</span><select class="inp mt-1"><option>Garaža</option></select></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Oznaka</span><input class="inp mt-1" value="Garaža 2"></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Sprat</span><input class="inp mt-1" value="-1"></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Površina (m²)</span><input class="inp mt-1 text-right" value="14,00"></label>
+              <label class="block"><span class="text-sm font-medium text-slate-700">Udio (%)</span><input class="inp mt-1 text-right" value="12,50"></label>
+            </div>
+            <button type="button" class="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700">Dodaj</button>
+          </form>
+        </section>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <div class="flex items-baseline justify-between gap-2">
+            <h2 class="text-sm font-semibold text-slate-700">Uneseni posebni dijelovi (7)</h2>
+            <span class="inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[13px] font-medium text-amber-800 ring-1 ring-inset ring-amber-600/20">Zbir 87,50 %</span>
+          </div>
+          <table class="cards mt-3 w-full text-sm"><tbody id="units-mobile"></tbody></table>
+        </section>
+        <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 class="text-sm font-semibold text-slate-700">Prije sljedećeg koraka</h2>
+          <ul class="mt-3 space-y-2" id="pre-mobile"></ul>
+          <div class="mt-5 flex flex-col gap-2 border-t border-slate-100 pt-4">
+            <button disabled class="inline-flex min-h-[44px] cursor-not-allowed items-center justify-center rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white opacity-50 shadow-sm">Nastavi na zajedničke dijelove</button>
+            <a class="inline-flex min-h-[44px] items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Nazad na zgrade i ulaze</a>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="frame" style="width:375px">
+      <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 shadow-sm">
+        <span class="text-base font-bold tracking-tight text-slate-800">ZEV upravnik</span>
+        <div class="flex-1"></div>
+        <span class="inline-flex items-center gap-1 text-[13px] text-slate-600"><i data-icon="saved" class="h-4 w-4 text-emerald-600"></i>Sačuvano</span>
+        <span class="flex h-11 w-11 items-center justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">DS</span></span>
+      </header>
+      <div class="space-y-6 p-4">
+        <nav aria-label="Koraci podešavanja" data-stepnav="5" data-mode="mobile" data-open="true"></nav>
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Posebni dijelovi</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const UNITS=[
+  ["Stan 1","Stan","A","1","62,40","12,50"],["Stan 2","Stan","A","1","55,10","11,00"],
+  ["Stan 3","Stan","A","2","62,40","12,50"],["Stan 4","Stan","A","2","55,10","11,00"],
+  ["Stan 5","Stan","B","1","74,80","15,00"],["Poslovni prostor 1","Poslovni prostor","B","0","88,00","17,50"],
+  ["Garaža 1","Garaža","—","-1","14,00","8,00"]];
+const ra=(t,amber)=>`<button class="inline-flex min-h-[28px] items-center rounded-full border ${amber?'border-amber-600/40 bg-amber-50 text-amber-900':'border-slate-300 bg-white text-slate-700'} px-2.5 py-1 text-[13px] font-medium">${t}</button>`;
+document.getElementById("units-desktop").innerHTML=UNITS.map(u=>`<tr>
+  <td class="px-3 py-1.5 font-medium text-slate-900">${u[0]}</td><td class="px-3 py-1.5">${u[1]}</td><td class="px-3 py-1.5">${u[2]}</td>
+  <td class="px-3 py-1.5 text-right tabular-nums">${u[3]}</td><td class="px-3 py-1.5 text-right tabular-nums">${u[4]} m²</td>
+  <td class="px-3 py-1.5 text-right tabular-nums">${u[5]} %</td>
+  <td class="px-3 py-1.5"><div class="flex gap-1.5">${ra("Uredi")}${ra("Ukloni",true)}</div></td></tr>`).join("");
+document.getElementById("units-mobile").innerHTML=UNITS.slice(0,3).map(u=>`<tr>
+  <td class="primary">${u[0]}</td><td data-label="Vrsta">${u[1]}</td><td data-label="Ulaz, sprat">${u[2]}, ${u[3]}</td>
+  <td data-label="Površina">${u[4]} m²</td><td data-label="Udio">${u[5]} %</td>
+  <td class="actions pt-2"><div class="flex gap-2">${ra("Uredi").replace("min-h-[28px]","min-h-[44px]")}${ra("Ukloni",true).replace("min-h-[28px]","min-h-[44px]")}</div></td></tr>`).join("")
+  +`<tr><td class="primary text-[13px] font-normal text-slate-500">… još 4 posebna dijela</td></tr>`;
+const ok='<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-600/20"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true"><path d="M5 10.5 8.5 14 15 7"/></svg></span><span class="sr-only">U redu:</span>';
+const warn='<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-[13px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-600/20" aria-hidden="true">!</span><span class="sr-only">Nedostaje:</span>';
+const PRE=[[ok,"Uneseno je 7 posebnih dijelova."],[ok,"Svaki posebni dio ima oznaku, vrstu i površinu."],[warn,"Zbir udjela je 87,50 %. Treba tačno 100 % — dodajte posebne dijelove koji nedostaju ili ispravite udjele."]];
+const pre=PRE.map(p=>`<li class="flex items-start gap-2 text-sm text-slate-700">${p[0]}<span>${p[1]}</span></li>`).join("");
+document.getElementById("pre-desktop").innerHTML=pre;document.getElementById("pre-mobile").innerHTML=pre;
+</script>
+<script>
+// Zajednički crtež primitiva StepNav i ikona za mockupe O-M02..O-M04 (Plans/zev-onboarding-wizard-plan.md §6).
+// U aplikaciji je StepNav server komponenta bez client JS-a; ovdje JS samo štedi ponavljanje markupa.
+const STEPS = [
+  "Vaš nalog", "Podaci o ZEV-u", "Računi", "Zgrade i ulazi", "Posebni dijelovi",
+  "Zajednički dijelovi", "Utvrđivanje registra", "Vlasnici", "Organi i nalozi", "Pregled i objava",
+];
+const ICONS = {
+  check: '<path d="M5 10.5 8.5 14 15 7"/>',
+  chevron: '<path d="m6 8 4 4 4-4"/>',
+  lock: '<rect x="5" y="9" width="10" height="7.5" rx="1.2"/><path d="M7.5 9V7a2.5 2.5 0 0 1 5 0v2"/>',
+  file: '<path d="M6 3h5.5L15 6.5V17H6z"/><path d="M11 3v4h4"/>',
+  saved: '<circle cx="10" cy="10" r="6.5"/><path d="M7.3 10.2 9.2 12l3.5-3.8"/>',
+};
+function svg(name, cls) {
+  return `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="${cls}">${ICONS[name]}</svg>`;
+}
+function stepItems(cur, opts) {
+  return STEPS.map((label, i) => {
+    const n = i + 1;
+    const optional = (opts.optional || []).includes(n) ? '<span class="ml-auto text-[13px] font-normal text-slate-500">opciono</span>' : "";
+    const readOnly = (opts.readOnly || []).includes(n) ? `<span class="ml-auto text-slate-500" title="Samo pregled">${svg("lock", "h-4 w-4")}<span class="sr-only">samo pregled</span></span>` : "";
+    if (n < cur) {
+      return `<li><a href="#" class="flex items-center gap-3 rounded-full px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">${svg("check", "h-3.5 w-3.5")}</span>
+        <span class="sr-only">Završeno: </span>${label}${optional}${readOnly}</a></li>`;
+    }
+    if (n === cur) {
+      return `<li><span aria-current="step" class="flex items-center gap-3 rounded-full bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-600 text-[13px] font-semibold text-blue-700">${n}</span>
+        ${label}${optional}</span></li>`;
+    }
+    return `<li><span class="flex items-center gap-3 px-3 py-2 text-sm text-slate-500">
+      <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[13px] text-slate-500">${n}</span>
+      <span class="sr-only">Još nije dostupno: </span>${label}${optional}</span></li>`;
+  }).join("");
+}
+document.querySelectorAll("[data-stepnav]").forEach((el) => {
+  const cur = Number(el.dataset.stepnav);
+  const opts = {
+    optional: (el.dataset.optional || "").split(",").filter(Boolean).map(Number),
+    readOnly: (el.dataset.readonly || "").split(",").filter(Boolean).map(Number),
+  };
+  const name = el.dataset.name || "";
+  if (el.dataset.mode === "mobile") {
+    el.innerHTML = `<details class="group rounded-xl border border-slate-200 bg-white">
+      <summary class="flex min-h-[44px] cursor-pointer list-none items-center gap-2 px-4 py-2 text-sm text-slate-700">
+        <span>Korak ${cur} od ${STEPS.length} · <b class="font-semibold text-slate-900">${STEPS[cur - 1]}</b></span>
+        <span class="ml-auto inline-flex items-center gap-1 text-[13px] font-medium text-blue-700">Svi koraci${svg("chevron", "h-4 w-4 transition-transform group-open:rotate-180")}</span>
+      </summary>
+      <ol class="space-y-0.5 border-t border-slate-200 p-2">${stepItems(cur, opts)}</ol>
+    </details>`;
+    if (el.dataset.open === "true") el.querySelector("details").open = true;
+  } else {
+    el.innerHTML = `<div class="px-3 pb-3">
+        <p class="text-sm font-semibold text-slate-800">${name}</p>
+        <p class="text-[13px] text-slate-500">Korak ${cur} od ${STEPS.length}</p>
+      </div>
+      <ol class="space-y-0.5">${stepItems(cur, opts)}</ol>`;
+  }
+});
+document.querySelectorAll("i[data-icon]").forEach((el) => {
+  el.outerHTML = svg(el.dataset.icon, el.getAttribute("class") || "h-5 w-5");
+});
+</script>
+</body>
+</html>

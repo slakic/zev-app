@@ -350,3 +350,21 @@ export type Setting = Prisma.SettingModel
  * `email.recipientAllowlist`. Every change is audited (`platform.email_settings.update`).
  */
 export type PlatformSetting = Prisma.PlatformSettingModel
+/**
+ * Model OnboardingInvite
+ * Pozivni link za klijenta. Token se nikad ne čuva, samo sha256 (kao ApprovalToken).
+ * „Izdaj novi link" mijenja tokenHash i rok na istom redu — stari link time prestaje da važi.
+ */
+export type OnboardingInvite = Prisma.OnboardingInviteModel
+/**
+ * Model OnboardingDraft
+ * Nacrt ZEV-a koji klijent puni kroz čarobnjak. `data` je OnboardingDraftData
+ * (src/lib/onboarding/draft.ts); `version` je optimistička brava (svaki upis je version+1).
+ */
+export type OnboardingDraft = Prisma.OnboardingDraftModel
+/**
+ * Model OnboardingDraftFile
+ * Fajl priložen u nacrtu (dokaz o vlasništvu) prije nego što ZEV postoji (D2b);
+ * pri objavi prelazi u Attachment, pri odbacivanju se briše.
+ */
+export type OnboardingDraftFile = Prisma.OnboardingDraftFileModel

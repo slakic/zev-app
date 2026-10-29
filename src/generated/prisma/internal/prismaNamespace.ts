@@ -458,7 +458,10 @@ export const ModelName = {
   ViberSubscriber: 'ViberSubscriber',
   AuditEvent: 'AuditEvent',
   Setting: 'Setting',
-  PlatformSetting: 'PlatformSetting'
+  PlatformSetting: 'PlatformSetting',
+  OnboardingInvite: 'OnboardingInvite',
+  OnboardingDraft: 'OnboardingDraft',
+  OnboardingDraftFile: 'OnboardingDraftFile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -474,7 +477,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftFile"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5066,6 +5069,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OnboardingInvite: {
+      payload: Prisma.$OnboardingInvitePayload<ExtArgs>
+      fields: Prisma.OnboardingInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OnboardingInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OnboardingInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.OnboardingInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OnboardingInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>
+        }
+        findMany: {
+          args: Prisma.OnboardingInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>[]
+        }
+        create: {
+          args: Prisma.OnboardingInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>
+        }
+        createMany: {
+          args: Prisma.OnboardingInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OnboardingInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.OnboardingInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>
+        }
+        update: {
+          args: Prisma.OnboardingInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.OnboardingInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OnboardingInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OnboardingInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.OnboardingInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.OnboardingInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOnboardingInvite>
+        }
+        groupBy: {
+          args: Prisma.OnboardingInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OnboardingInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingInviteCountAggregateOutputType> | number
+        }
+      }
+    }
+    OnboardingDraft: {
+      payload: Prisma.$OnboardingDraftPayload<ExtArgs>
+      fields: Prisma.OnboardingDraftFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OnboardingDraftFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OnboardingDraftFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>
+        }
+        findFirst: {
+          args: Prisma.OnboardingDraftFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OnboardingDraftFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>
+        }
+        findMany: {
+          args: Prisma.OnboardingDraftFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>[]
+        }
+        create: {
+          args: Prisma.OnboardingDraftCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>
+        }
+        createMany: {
+          args: Prisma.OnboardingDraftCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OnboardingDraftCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>[]
+        }
+        delete: {
+          args: Prisma.OnboardingDraftDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>
+        }
+        update: {
+          args: Prisma.OnboardingDraftUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>
+        }
+        deleteMany: {
+          args: Prisma.OnboardingDraftDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OnboardingDraftUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OnboardingDraftUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>[]
+        }
+        upsert: {
+          args: Prisma.OnboardingDraftUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftPayload>
+        }
+        aggregate: {
+          args: Prisma.OnboardingDraftAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOnboardingDraft>
+        }
+        groupBy: {
+          args: Prisma.OnboardingDraftGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingDraftGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OnboardingDraftCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingDraftCountAggregateOutputType> | number
+        }
+      }
+    }
+    OnboardingDraftFile: {
+      payload: Prisma.$OnboardingDraftFilePayload<ExtArgs>
+      fields: Prisma.OnboardingDraftFileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OnboardingDraftFileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OnboardingDraftFileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>
+        }
+        findFirst: {
+          args: Prisma.OnboardingDraftFileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OnboardingDraftFileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>
+        }
+        findMany: {
+          args: Prisma.OnboardingDraftFileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>[]
+        }
+        create: {
+          args: Prisma.OnboardingDraftFileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>
+        }
+        createMany: {
+          args: Prisma.OnboardingDraftFileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OnboardingDraftFileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>[]
+        }
+        delete: {
+          args: Prisma.OnboardingDraftFileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>
+        }
+        update: {
+          args: Prisma.OnboardingDraftFileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>
+        }
+        deleteMany: {
+          args: Prisma.OnboardingDraftFileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OnboardingDraftFileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OnboardingDraftFileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>[]
+        }
+        upsert: {
+          args: Prisma.OnboardingDraftFileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftFilePayload>
+        }
+        aggregate: {
+          args: Prisma.OnboardingDraftFileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOnboardingDraftFile>
+        }
+        groupBy: {
+          args: Prisma.OnboardingDraftFileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingDraftFileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OnboardingDraftFileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingDraftFileCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -6201,6 +6426,55 @@ export const PlatformSettingScalarFieldEnum = {
 export type PlatformSettingScalarFieldEnum = (typeof PlatformSettingScalarFieldEnum)[keyof typeof PlatformSettingScalarFieldEnum]
 
 
+export const OnboardingInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  workingName: 'workingName',
+  tier: 'tier',
+  note: 'note',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  openedAt: 'openedAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason'
+} as const
+
+export type OnboardingInviteScalarFieldEnum = (typeof OnboardingInviteScalarFieldEnum)[keyof typeof OnboardingInviteScalarFieldEnum]
+
+
+export const OnboardingDraftScalarFieldEnum = {
+  id: 'id',
+  inviteId: 'inviteId',
+  ownerUserId: 'ownerUserId',
+  status: 'status',
+  data: 'data',
+  version: 'version',
+  publishedZevId: 'publishedZevId',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OnboardingDraftScalarFieldEnum = (typeof OnboardingDraftScalarFieldEnum)[keyof typeof OnboardingDraftScalarFieldEnum]
+
+
+export const OnboardingDraftFileScalarFieldEnum = {
+  id: 'id',
+  draftId: 'draftId',
+  filename: 'filename',
+  mime: 'mime',
+  size: 'size',
+  bytes: 'bytes',
+  createdAt: 'createdAt'
+} as const
+
+export type OnboardingDraftFileScalarFieldEnum = (typeof OnboardingDraftFileScalarFieldEnum)[keyof typeof OnboardingDraftFileScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -6935,6 +7209,34 @@ export type ListEnumNotifStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'OnboardingInviteStatus'
+ */
+export type EnumOnboardingInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingInviteStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OnboardingInviteStatus[]'
+ */
+export type ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingInviteStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OnboardingDraftStatus'
+ */
+export type EnumOnboardingDraftStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingDraftStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OnboardingDraftStatus[]'
+ */
+export type ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingDraftStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -7160,6 +7462,9 @@ export type GlobalOmitConfig = {
   auditEvent?: Prisma.AuditEventOmit
   setting?: Prisma.SettingOmit
   platformSetting?: Prisma.PlatformSettingOmit
+  onboardingInvite?: Prisma.OnboardingInviteOmit
+  onboardingDraft?: Prisma.OnboardingDraftOmit
+  onboardingDraftFile?: Prisma.OnboardingDraftFileOmit
 }
 
 /* Types for Logging */
