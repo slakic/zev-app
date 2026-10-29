@@ -20,6 +20,7 @@ revizija 2026-07-28 (izvori na kraju).
 | M5 | Grupni upis | **Sve ili ništa, do 200 stavki**; greške po rednom broju; jedna verzija nacrta po pozivu |
 | M6 | Trag | **Audit bez sadržaja + oznaka na stavkama** („Upisao asistent“ / „Upisao asistent administratora“) |
 | M7 | Rok tokena | **7 dana**; jedan aktivan token po nacrtu i izdavaču; gasi se opozivom, objavom ili odbacivanjem nacrta |
+| M8 | Ciljni klijenti | **Claude i ChatGPT ravnopravno** (dopuna, 2026-10-29). Prije Faze M-A ide provjera šta svaki traži (Faza M-0, §8); ako oba za ciljne korisnike traže OAuth, M-D se pomjera odmah iza M-A (§2.1) |
 
 ---
 
@@ -30,8 +31,8 @@ revizija 2026-07-28 (izvori na kraju).
 - izvodi iz katastra i ugovori (vlasnici i udjeli);
 - rješenje o registraciji (JIB, registarski broj, adresa).
 
-Klijent (ili super admin koji mu pomaže) da te dokumente svom asistentu (Claude Desktop, Claude Code
-ili drugi MCP klijent). Asistent ih pročita i kroz MCP alate popuni nacrt, a klijent u čarobnjaku
+Klijent (ili super admin koji mu pomaže) da te dokumente svom asistentu (Claude ili ChatGPT, kroz
+konektor; ili Claude Desktop / Claude Code). Asistent ih pročita i kroz MCP alate popuni nacrt, a klijent u čarobnjaku
 pregleda, ispravi i **sam objavi**.
 
 **Zašto baš ovdje.**
@@ -95,6 +96,31 @@ svaku. Prekid administratorove veze se bilježi u audit, a admin na pregledu nac
 prekinuta.
 
 **Kraj veze:** „Prekini vezu“, istek roka (7 dana), objava ili odbacivanje nacrta.
+
+### 2.1 Klijenti: Claude i ChatGPT (M8)
+
+MCP je otvoren standard, pa jedan server radi sa svakim klijentom koji podržava udaljene MCP servere
+preko Streamable HTTP. Razlika je u tome **kako klijent dolazi do pristupa** i **na kojem planu** to
+može. Stanje prema javnoj dokumentaciji i vodičima (oktobar 2026, izvori na kraju; provjerava se
+ponovo u Fazi M-0):
+
+| Klijent | Kako se dodaje | Autentifikacija | Planovi |
+|---|---|---|---|
+| Claude Code, Claude Desktop (lokalna konfiguracija) | Adresa servera + zaglavlje u podešavanjima | **Token** u `Authorization` zaglavlju | Svi |
+| claude.ai (web i aplikacija), sopstveni konektor | „Dodaj konektor“ → adresa servera | Uglavnom **OAuth**. Fiksni token u zaglavlju dokumentovan je za konektore koje u Team/Enterprise podešava administrator | Pro/Max sami, Team/Enterprise preko administratora |
+| ChatGPT, sopstveni konektor | Developer mode → „Create connector“ → adresa servera | **OAuth**, API ključ ili bez prijave (vodiči se ne slažu oko detalja) | Novi izvori: uglavnom Business/Enterprise/Edu; Plus/Pro nejasno |
+
+**Posljedica za plan:**
+- **Token (M1) pokriva Claude Code, Claude Desktop i Team/Enterprise konektore u claude.ai.** To je
+  dovoljno za pilot sa super adminom (M2) i tehnički pismenim klijentom.
+- **Netehnički klijent sa ličnim planom (Claude Pro/Max ili ChatGPT) praktično traži OAuth.** Zato je
+  OAuth (Faza M-D) uslov da „klijent sam doda konektor“ radi za većinu klijenata.
+- **ChatGPT ima dodatno ograničenje van naše kontrole:** ako su sopstveni konektori samo na poslovnim
+  planovima, klijent sa ličnim planom ih neće moći dodati. To treba reći u uputstvu na stranici
+  „Asistent“ i ne obećavati u prodaji.
+- **OAuth server mora raditi sa oba klijenta.** Claude koristi Dynamic Client Registration i ima svoju
+  callback adresu; ChatGPT ima svoju. Obje callback adrese idu na listu dozvoljenih, a registracija
+  klijenta mora podržati oba toka.
 
 ---
 
@@ -266,7 +292,9 @@ Sve iz postojećih primitiva; mockup ide u `Plans/design-review/mockups/` (1440 
 - **Trag:** audit `onboarding.mcp.write` (alat, broj stavki, izdavač) bez sadržaja i bez tokena; oznaka
   `source` na stavkama; ručna izmjena briše oznaku.
 - **Vidljivost:** klijent vidi i prekida vezu administratora; prekid je u auditu.
-- **Ručno:** povezivanje sa Claude Desktop ili Claude Code i popunjavanje nacrta iz probnog elaborata.
+- **Ručno, za svaki klijent iz §2.1:** povezivanje (Claude Code, Claude Desktop, claude.ai, ChatGPT),
+  popunjavanje nacrta iz probnog elaborata, prekid veze iz aplikacije i provjera da sljedeći poziv
+  klijenta dobija 401.
 
 ---
 
@@ -274,6 +302,14 @@ Sve iz postojećih primitiva; mockup ide u `Plans/design-review/mockups/` (1440 
 
 Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom.
 
+- **Faza M-0 — provjera klijenata (bez koda u aplikaciji).** Minimalan probni MCP server (jedan alat
+  `ping`, na preview okruženju) povezuje se sa Claude Code, Claude Desktop, claude.ai i ChatGPT, na
+  planovima koje klijenti stvarno koriste. Bilježi se šta koji klijent prihvata (token u zaglavlju,
+  OAuth, bez prijave), na kojem planu i sa kojim callback adresama. Rezultat se upisuje u §2.1 i
+  određuje redoslijed:
+  - ako ciljni klijenti prihvataju token → redoslijed ispod ostaje;
+  - ako i Claude i ChatGPT za ciljne korisnike traže OAuth → **M-D ide odmah iza M-A**, a M-B i M-C
+    posle nje.
 - **Mockupi** stranice „Asistent“, kartice u adminu i oznake na stavkama (pregled prije Faze M-A).
 - **Faza M-A — pristup i čitanje.** `DraftAccess` u servisu (§4.2, bez promjene ponašanja čarobnjaka),
   `OnboardingAgentToken` (migracija), stranica „Asistent“ i kartica u adminu (izdavanje, prikaz
@@ -283,7 +319,8 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom.
 - **Faza M-C — vlasnici.** `add_owner_stake` sa dokazom, `remove_owner_stake`, `set_unit_disputed`.
 - **Faza M-D — OAuth 2.1** (M1): aplikacija kao authorization server (RFC 9728 Protected Resource
   Metadata, RFC 8414, registracija klijenta, PKCE, kratkotrajni tokeni sa opsegom „jedan nacrt“),
-  konektor za claude.ai, spoljni sigurnosni pregled.
+  konektor za claude.ai i ChatGPT (obje callback adrese, Dynamic Client Registration), spoljni
+  sigurnosni pregled. Prema rezultatu Faze M-0 može doći odmah iza M-A.
 
 ---
 
@@ -294,9 +331,12 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom.
 - **Veličina zahtjeva i timeout na Vercelu** za grupni upis i base64 dokaze treba izmjeriti.
 - **Zrelost biblioteka.** `mcp-handler` i MCP SDK se brzo mijenjaju (prelaz SDK 1.x → 2.x). Verzije se
   zaključavaju tačno, a nadogradnja ide kao zaseban zadatak.
-- **Podrška klijenata.** Koji MCP klijenti podržavaju udaljene servere sa Bearer tokenom, a koji traže
-  OAuth, treba provjeriti u trenutku implementacije. Ako se pokaže da ciljni klijenti traže OAuth,
-  Faza M-D se pomjera ispred M-B.
+- **Podrška klijenata se mijenja brzo i van naše kontrole.** Planovi i načini autentifikacije za
+  sopstvene konektore u claude.ai i ChatGPT mijenjali su se tokom 2026, a izvori se međusobno ne
+  slažu (§2.1). Faza M-0 to provjerava prije koda; uputstvo na stranici „Asistent“ mora navesti za
+  koje klijente i planove je provjereno.
+- **ChatGPT na ličnim planovima** možda neće moći dodati sopstveni konektor (§2.1). To je ograničenje
+  OpenAI-ja; aplikacija ga ne može zaobići.
 - **Pravna strana.** Dokumenti klijenta (lični podaci vlasnika) prolaze kroz asistenta koga bira klijent
   ili administrator. Uputstvo na stranici „Asistent“ mora to jasno reći, a za vezu administratora
   treba provjeriti da li je potrebna izričita saglasnost klijenta. Tekst neka pregleda pravnik.
@@ -320,3 +360,9 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom.
 - [MCP — Understanding Authorization](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization)
 - [vercel/mcp-handler](https://github.com/vercel/mcp-handler)
 - [Vercel — Deploy MCP servers to Vercel](https://vercel.com/docs/mcp/deploy-mcp-servers-to-vercel)
+- [Claude — Get started with custom connectors using remote MCP](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp)
+- [Claude — Building custom connectors via remote MCP servers](https://support.anthropic.com/en/articles/11503834-building-custom-connectors-via-remote-mcp-servers)
+- [anthropics/claude-ai-mcp #112 — Bearer zaglavlje u web konektoru](https://github.com/anthropics/claude-ai-mcp/issues/112)
+- [Auth0 — Integrate your MCP server in ChatGPT (OAuth)](https://auth0.com/blog/add-remote-mcp-server-chatgpt/)
+- [Peliqan — ChatGPT MCP: plans, setup and what breaks in 2026](https://peliqan.io/blog/chatgpt-mcp/)
+- [ChatGPT Developer mode: add a custom MCP server](https://mailmcp.io/en/guides/connect-chatgpt)
