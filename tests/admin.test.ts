@@ -69,6 +69,13 @@ describe("createTenant (super admin, cross-tenant onboarding)", () => {
     expect(existing).toBeNull();
   });
 
+  it("rejects a JIB that is not 13 digits, before anything is created", async () => {
+    const admin = await createSuperAdminActor("ct-jib");
+    const t = uid("ct-jib");
+    await expect(createTenant(admin, tenantInput(t, { jib: "12345" }))).rejects.toThrow(/13 cifara/);
+    expect(await prisma.zev.findFirst({ where: { legalName: `ZEV Admin Test ${t}` } })).toBeNull();
+  });
+
   it("rejects a duplicate president e-mail", async () => {
     const admin = await createSuperAdminActor("ct-dup");
     const t = uid("ct-dup");

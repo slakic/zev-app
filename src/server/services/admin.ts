@@ -4,6 +4,7 @@
 // layer — these functions deliberately operate ACROSS tenants, which is exactly what
 // the rest of the app's zevId-scoping (Faza 0) is built to prevent everywhere else.
 import { prisma } from "@/lib/prisma";
+import { assertJib } from "@/lib/identifiers";
 import { requireSuperAdmin, type Actor } from "@/server/auth/guards";
 import { hashPassword, assertPasswordStrong } from "@/server/auth/password";
 import { setSessionActiveZev } from "@/server/auth/session";
@@ -142,6 +143,7 @@ export async function createTenant(
   const lastName = data.presidentLastName.trim();
   if (!firstName || !lastName) throw new Error("Ime i prezime predsjednika su obavezni.");
   assertPasswordStrong(data.presidentPassword);
+  if (data.jib?.trim()) assertJib(data.jib);
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new Error(`Nalog sa e-mail adresom "${email}" već postoji.`);

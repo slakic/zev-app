@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.56.0] - 2026-10-29
+
+ZEV onboarding, Faza 0: pravila koja će čarobnjak za novi ZEV provjeravati izdvojena su u čiste funkcije, a provjera formata JIB-a i broja računa važi odmah u cijeloj aplikaciji. Plan: `Plans/zev-onboarding-wizard-plan.md`.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Dodato
+
+- **Provjera broja računa:** pri dodavanju računa i pri izmjeni broja postojećeg (Podešavanja › ZEV) broj mora imati 16 cifara sa ispravnim kontrolnim brojem po algoritmu Centralne banke BiH (ISO 7064 MOD 97-10). Razmaci i crtice su dozvoljeni, a prihvata se i IBAN `BA…`.
+- **Provjera JIB-a:** pri čuvanju podataka o ZEV-u i pri kreiranju ZEV-a iz platformskog admina JIB mora imati tačno 13 cifara. Kontrolna cifra se ne provjerava, jer zvanični algoritam nije javno objavljen.
+- Postojeći računi i JIB-ovi se ne provjeravaju retroaktivno: provjera se radi samo kad se broj unosi ili mijenja, pa ZEV sa starim zapisom može nesmetano mijenjati ostala polja.
+
+### Izmijenjeno
+
+- Upozorenja o zbiru vlasničkih udjela po jedinici i chip „Zbir jedinice” sada koriste isto pravilo (`src/lib/shareSum.ts`), umjesto dvije kopije iste provjere.
+- Demo podaci (seed): broj glavnog računa zamijenjen ispravnim (`5620990000123490`).
+
 ## [2.55.0] - 2026-10-26
 
 Vlasnik i glasanje (faza F4 pregleda dizajna): glasački link je potpun i nedvosmislen, potvrda se može ponovo otvoriti, a vlasnik u aplikaciji vidi da li se izjasnio i koga da zove ako link nije stigao. Plan: `Plans/f4-vlasnik-glasanje-plan.md`.

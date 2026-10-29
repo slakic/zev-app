@@ -6,6 +6,7 @@ import { audit } from "@/server/audit";
 import { emailAddressSchema } from "@/lib/emailAddress";
 import { requireRole, requireSelfOrRole, requireAnyUser, requireZev, ForbiddenError, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, type Decimal } from "@/lib/money";
+import { assertSharePercent, classifyShareSum, sumShares } from "@/lib/shareSum";
 import { createLinkedAttachmentTx, type UploadInput } from "@/server/services/attachments";
 import { unitsInScope } from "@/server/services/property";
 import type { PartyKind, OccupancyType, ProxyScope, Prisma } from "@/generated/prisma/client";
@@ -136,10 +137,7 @@ export async function addOwnershipStake(
   await assertRegisterOpenForOwners(zevId);
   await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
   await prisma.party.findUniqueOrThrow({ where: { id: data.ownerId, zevId } });
-  const share = dec(data.sharePercent);
-  if (share.lessThanOrEqualTo(0) || share.greaterThan(100)) {
-    throw new Error("Udio mora biti u rasponu (0, 100].");
-  }
+  const share = assertSharePercent(data.sharePercent);
   // K-01a: zbir udjela na jedinici (ispod ili iznad 100%) ne blokira upis — vraca se kao upozorenje
   // (unitShareSum), a iznad 100% blokira tek otvaranje glasanja (K-01b).
   const existing = await currentStakesForUnit(zevId, data.unitId, data.validFrom);
@@ -751,18 +749,14 @@ export async function unitOwnershipWarnings(zevId: string, unitIds?: string[], a
     },
     select: { unitId: true, sharePercent: true },
   });
-  const sums = new Map<string, Decimal>();
-  const counts = new Map<string, number>();
-  for (const s of stakes) {
-    sums.set(s.unitId, (sums.get(s.unitId) ?? ZERO).plus(dec(s.sharePercent.toString())));
-    counts.set(s.unitId, (counts.get(s.unitId) ?? 0) + 1);
-  }
+  const sharesByUnit = new Map<string, Prisma.Decimal[]>();
+  for (const s of stakes) sharesByUnit.set(s.unitId, [...(sharesByUnit.get(s.unitId) ?? []), s.sharePercent]);
   const out: UnitOwnershipWarning[] = [];
   for (const u of units) {
-    const sum = sums.get(u.id) ?? ZERO;
-    if (!counts.get(u.id)) out.push({ unitId: u.id, label: u.label, kind: "NONE", sum });
-    else if (sum.greaterThan(dec(100).plus("0.0001"))) out.push({ unitId: u.id, label: u.label, kind: "OVER", sum });
-    else if (sum.lessThan(dec(100).minus("0.0001"))) out.push({ unitId: u.id, label: u.label, kind: "UNDER", sum });
+    const shares = sharesByUnit.get(u.id) ?? [];
+    const sum = sumShares(shares);
+    const kind = classifyShareSum(sum, shares.length);
+    if (kind !== "OK") out.push({ unitId: u.id, label: u.label, kind, sum });
   }
   return out;
 }

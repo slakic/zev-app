@@ -4,12 +4,32 @@ import { prisma } from "@/lib/prisma";
 import { createFixture, createProposalFixture, openVotingWithLinks } from "./helpers";
 import * as property from "@/server/services/property";
 import * as ownership from "@/server/services/ownership";
-import { establishUnitRegister, changeUnitRegister, getUnitRegister } from "@/server/services/unitRegister";
+import { establishUnitRegister, changeUnitRegister, getUnitRegister, registerPreconditions } from "@/server/services/unitRegister";
 import { closeVoting } from "@/server/services/meetings";
 import { ForbiddenError } from "@/server/auth/guards";
 
 const DOC = { buffer: Buffer.from("odluka o izmjeni"), filename: "izmjena.pdf", mime: "application/pdf" };
 const PROOF = { buffer: Buffer.from("test proof"), filename: "dokaz.pdf", mime: "application/pdf" };
+
+describe("registerPreconditions on plain (draft-shaped) units", () => {
+  // Nacrt onboardinga nema Prisma redove — samo polja iz RegisterPreconditionUnit, sa stringovima umjesto Decimal.
+  const unit = (over: Partial<{ label: string; usableArea: string; ownershipShare: string; active: boolean }> = {}) => ({
+    label: "Stan 1", type: "APARTMENT" as const, usableArea: "50.00", ownershipShare: "50.00", active: true, ...over,
+  });
+  const failed = (units: ReturnType<typeof unit>[]) => registerPreconditions(units).filter((p) => !p.ok).map((p) => p.key);
+
+  it("passes for complete units that sum to 100%", () => {
+    expect(failed([unit(), unit({ label: "Stan 2" })])).toEqual([]);
+  });
+  it("reports missing units, missing fields and a wrong sum", () => {
+    expect(failed([])).toEqual(["UNITS", "FIELDS", "SHARE_SUM"]);
+    expect(failed([unit(), unit({ label: " ", usableArea: "0" })])).toEqual(["FIELDS"]);
+    expect(failed([unit(), unit({ label: "Stan 2", ownershipShare: "49.00" })])).toEqual(["SHARE_SUM"]);
+  });
+  it("ignores inactive units", () => {
+    expect(failed([unit({ ownershipShare: "100.00" }), unit({ label: "Stara", active: false, usableArea: "0" })])).toEqual([]);
+  });
+});
 
 describe("establishUnitRegister", () => {
   it("refuses without units, without area, and with a share sum different from 100%", async () => {
@@ -236,5 +256,17 @@ describe("changeUnitRegister", () => {
     const row = await prisma.unitRegisterChange.findFirstOrThrow({ where: { zevId: f.zev.id } });
     await expect(prisma.unitRegisterChange.update({ where: { id: row.id }, data: { reason: "prepravljeno" } })).rejects.toThrow();
     await expect(prisma.unitRegisterChange.delete({ where: { id: row.id } })).rejects.toThrow();
+  });
+});
+
+describe("upsertZev JIB format (Plans/zev-onboarding-wizard-plan.md D5)", () => {
+  it("refuses a new invalid JIB but keeps an unchanged older one editable", async () => {
+    const f = await createFixture("zev-jib");
+    const base = { legalName: f.zev.legalName };
+    await expect(property.upsertZev(f.president, { ...base, jib: "12345" })).rejects.toThrow(/13 cifara/);
+    await expect(property.upsertZev(f.president, { ...base, jib: "4400 0000 00009" })).resolves.toMatchObject({ jib: "4400 0000 00009" });
+
+    await prisma.zev.update({ where: { id: f.zev.id }, data: { jib: "123" } });
+    await expect(property.upsertZev(f.president, { ...base, jib: "123", city: "Banja Luka" })).resolves.toMatchObject({ city: "Banja Luka" });
   });
 });

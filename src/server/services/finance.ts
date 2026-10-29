@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, sumDecimals } from "@/lib/money";
+import { assertBankAccount, compactIdentifier } from "@/lib/identifiers";
 import type { AccountType, TxType } from "@/generated/prisma/client";
 
 export async function listAccounts(actor: Actor) {
@@ -16,6 +17,7 @@ export async function createAccount(
 ) {
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
   const zevId = requireZev(actor);
+  if (data.iban?.trim()) assertBankAccount(data.iban);
   const a = await prisma.moneyAccount.create({ data: { ...data, zevId } });
   await audit(actor, { action: "account.create", targetType: "MoneyAccount", targetId: a.id, after: { name: a.name, type: a.type } });
   return a;
@@ -35,6 +37,9 @@ export async function updateAccount(
   const name = data.name.trim();
   if (!name) throw new Error("Naziv računa je obavezan.");
   const before = await prisma.moneyAccount.findUniqueOrThrow({ where: { id, zevId } });
+  // Only a changed number is checked — accounts entered before the rule keep working.
+  const iban = data.iban?.trim();
+  if (iban && compactIdentifier(iban) !== compactIdentifier(before.iban ?? "")) assertBankAccount(iban);
   const a = await prisma.moneyAccount.update({
     where: { id, zevId },
     data: { name, bankName: data.bankName?.trim() || null, iban: data.iban?.trim() || null },

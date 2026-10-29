@@ -187,7 +187,7 @@ async function main() {
   // --- Money accounts -------------------------------------------------------
   const bankAcc = await finance.createAccount(accountant, {
     type: "BANK", name: "Glavni račun — NLB banka", bankName: "NLB Banka a.d. Banja Luka",
-    iban: "5620990000123456", openingBalance: "2450.00", openingDate: yearStart,
+    iban: "5620990000123490", openingBalance: "2450.00", openingDate: yearStart,
   });
   await finance.createAccount(accountant, {
     type: "CASH", name: "Blagajna", openingBalance: "150.00", openingDate: yearStart,

@@ -24,7 +24,7 @@ lozinka, članstvo super admina) i `Plans/fr-registar-i-glasanje-po-etaznim-vlas
 | D2b | Fajlovi prije nego što ZEV postoji | **Tabela fajlova nacrta** (bajtovi u bazi, kao `AttachmentBlob`); pri objavi se prebacuju u `Attachment` u istoj transakciji |
 | D3 | Ko je pozvani | Postaje **PRESIDENT**; e-mail zaključan na adresu iz poziva; postojeći nalog se prijavljuje; dokaz ovlašćenja **nije** obavezan |
 | D4 | Zajednički dijelovi | **≥1 zapis vrste `AREA` po zgradi**; korak se ne preskače |
-| D5 | Formati | **BiH:** JIB 13 cifara, račun 16 cifara, oba sa kontrolnom cifrom; jedan modul `src/lib/identifiers.ts` koji važi i van čarobnjaka |
+| D5 | Formati | **BiH:** JIB 13 cifara, račun 16 cifara sa kontrolnim brojem; jedan modul `src/lib/identifiers.ts` koji važi i van čarobnjaka. *Isporučeno u Fazi 0:* račun po ISO 7064 MOD 97-10 (CBBiH, Instrukcija o strukturi računa, čl. 2; prihvata i IBAN `BA…`); za JIB samo 13 cifara, jer zvanični algoritam kontrolne cifre nije javno objavljen |
 | D6 | Dokaz o vlasništvu | **Dokument po udjelu** (kao danas) |
 | D6a | Jedinica bez 100% vlasništva | Dozvoljeno **samo uz potvrdu po jedinici** „vlasništvo u sporu — unijeću kasnije“; sve ostale jedinice moraju imati tačno 100% |
 | D7 | Paket `BASIC` i korak „Računi“ | Korak se **prikazuje kao opcioni**: može se preskočiti uz potvrdu |
@@ -290,10 +290,10 @@ prepreka za klijenta. Korak 8 zato traži 100%, osim za jedinice koje su izriči
 
 | Pravilo | Danas | Postaje |
 |---|---|---|
-| Preduslovi registra | `registerPreconditions(units: UnitRow[])` | Ostaje gdje je, ali prima uži tip `{ label, type, usableArea, ownershipShare, active }`, koji zadovoljavaju i `Unit` i jedinica iz nacrta |
+| Preduslovi registra | `registerPreconditions(units: UnitRow[])` | Ostaje gdje je, ali prima uži tip `RegisterPreconditionUnit` (`label`, `type`, `usableArea`, `ownershipShare`, `active`), koji zadovoljavaju i `Unit` i jedinica iz nacrta |
 | JIB, broj računa | ne postoji | `src/lib/identifiers.ts`: `validateJib`, `validateBankAccount` (D5); pozivaju ih i `upsertZev` i `createAccount` |
-| Zbir udjela po jedinici | unutar `addOwnershipStake` / `unitOwnershipWarnings` | `unitShareSum(stakes)` u `src/lib/ownershipRules.ts` |
-| Udio u rasponu (0, 100] | inline u `addOwnershipStake` | `assertSharePercent` u istom modulu |
+| Zbir udjela po jedinici | već postojeći `classifyShareSum` / `sumShares` u `src/lib/shareSum.ts` (chip „Zbir jedinice“), a `unitOwnershipWarnings` je imao svoju kopiju | `unitOwnershipWarnings` koristi `shareSum.ts` — jedno pravilo |
+| Udio u rasponu (0, 100] | inline u `addOwnershipStake` | `assertSharePercent` u `src/lib/shareSum.ts` |
 | Jačina lozinke | `assertPasswordStrong` | Bez promjene, već dijeljeno |
 
 Uz D5 i postojeće ZEV-ove: `upsertZev` i `createAccount` počinju da odbijaju neispravan JIB ili broj
@@ -421,15 +421,19 @@ Sve ostalo koristi postojeće primitive: `Card`, `Field`, `PreconditionList`, `T
 
 Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom, po `zev-app-guidelines`.
 
-- **Faza 0 — izdvajanje (bez vidljive promjene).** §5.1: čiste funkcije, `identifiers.ts` (D5 važi
-  odmah i u `upsertZev`/`createAccount`), `…InTx` jezgra, testovi pariteta. Ovo je patch ili minor
-  zavisno od toga da li D5 mijenja ponašanje postojećih formi.
+- **Faza 0 — izdvajanje pravila. ✅ Isporučeno (2026-10-29).** §5.1: `identifiers.ts` (D5 važi odmah
+  u `upsertZev`, `createTenant`, `createAccount` i `updateAccount`, samo za nov ili promijenjen broj),
+  `assertSharePercent` i jedno pravilo zbira udjela u `shareSum.ts`, uži ulazni tip
+  `registerPreconditions`, testovi nad objektima oblika iz nacrta. Seed račun zamijenjen ispravnim
+  brojem (`5620990000123490`). `…InTx` jezgra su **premještena u Fazu C**, jer tek tamo imaju prvog
+  korisnika (`publishOnboardingDraft`), pa se tamo i testiraju pod stvarnim opterećenjem.
 - **Mockupi + `StepNav`** u dizajn sistemu (pregled prije Faze A).
 - **Faza A — kostur.** Migracija (§2), `/admin/novi` sa dvije kartice, lista „Pozivi i nacrti“,
   `/onboarding/poziv`, korak 1, preusmjeravanje (§5.3), koraci 2–4.
 - **Faza B — registar.** Koraci 5–7, uključujući otključavanje.
-- **Faza C — vlasnici, uloge, objava.** Koraci 8–10, fajlovi nacrta, `publishOnboardingDraft`,
-  pregled i odbacivanje nacrta u adminu.
+- **Faza C — vlasnici, uloge, objava.** `…InTx` jezgra iz §5.2 (prvi korak faze, uz testove pariteta
+  servis ↔ objava), koraci 8–10, fajlovi nacrta, `publishOnboardingDraft`, pregled i odbacivanje
+  nacrta u adminu.
 - **Faza D (opciono).** CSV uvoz jedinica i vlasnika; potvrda e-maila i slanje poziva kad postoji
   stvarni mail provajder.
 
@@ -450,14 +454,15 @@ jer se do tada nacrt ne može objaviti.
   objavi ili odbacivanju.
 - **Napušteni `User` nalozi bez članstva** posle odbačenog nacrta. Bezopasni su (nemaju pristup
   ničemu), ali ih admin lista korisnika treba moći prikazati.
-- **Kontrolni algoritmi JIB-a i broja računa (D5)** moraju se potvrditi iz zvaničnog izvora prije
-  Faze 0. Pogrešan algoritam bi odbijao ispravne podatke svuda u aplikaciji, ne samo u čarobnjaku.
+- **Pravila formata (D5) važe u cijeloj aplikaciji.** Broj računa se provjerava po zvaničnom
+  algoritmu CBBiH; JIB namjerno samo po dužini, da nepotvrđen algoritam ne bi odbijao ispravne
+  brojeve. Postojeći zapisi se ne provjeravaju retroaktivno, samo nov ili promijenjen broj.
 
 ---
 
 ## 10. Otvoreno (manje, može se riješiti tokom implementacije)
 
-- Tačan izvor i algoritam kontrolne cifre za JIB (13) i broj računa (16) — D5.
+- Algoritam kontrolne cifre JIB-a (13): ako ga UIO ili poreska uprava objavi, dodaje se u `isValidJib`. Broj računa je riješen (MOD 97-10, CBBiH).
 - Treba li `Odbaci nacrt` ipak biti `danger` (§3.2)?
 - Ukupan limit fajlova po nacrtu (prijedlog 200 MB).
 - Da li i super admin dobija mail ili obavještenje kad klijent objavi ZEV (danas: vidi u listi).

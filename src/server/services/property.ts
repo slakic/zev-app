@@ -1,6 +1,7 @@
 // ZEV, buildings, entrances, units, allocation groups, common assets.
 import { prisma } from "@/lib/prisma";
 import { dec } from "@/lib/money";
+import { assertJib, compactIdentifier } from "@/lib/identifiers";
 import { audit } from "@/server/audit";
 import { requireRole, requireAnyUser, requireZev, type Actor } from "@/server/auth/guards";
 import type { Prisma, UnitType, CommonAssetKind } from "@/generated/prisma/client";
@@ -28,6 +29,10 @@ export async function upsertZev(
   requireRole(actor, "PRESIDENT");
   const zevId = requireZev(actor);
   const existing = await prisma.zev.findUnique({ where: { id: zevId } });
+  // Format is checked only when the JIB actually changes, so a ZEV saved before the rule
+  // existed can still edit its other fields (Plans/zev-onboarding-wizard-plan.md §5.1).
+  const jib = data.jib?.trim() || null;
+  if (jib && compactIdentifier(jib) !== compactIdentifier(existing?.jib ?? "")) assertJib(jib);
   // The create() branch is a defensive fallback only (today's session invariants mean
   // actor.zevId is never populated without an existing Zev row — see docs/multitenancy-plan.md
   // §5) — but if it's ever reached, create the row AT the actor's own zevId rather than a

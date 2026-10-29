@@ -41,3 +41,13 @@ export function shareSumChip(sum: DecimalValue, stakeCount: number): ShareSumChi
 export function sumShares(shares: DecimalValue[]): Decimal {
   return shares.reduce<Decimal>((a, s) => a.plus(dec(s)), dec(0));
 }
+
+/** Udio jednog vlasnika na jedinici mora biti u rasponu (0, 100] — `addOwnershipStake` i nacrt onboardinga
+ *  (Plans/zev-onboarding-wizard-plan.md §5.1). */
+export function assertSharePercent(sharePercent: DecimalValue): Decimal {
+  const share = dec(sharePercent);
+  if (share.lessThanOrEqualTo(0) || share.greaterThan(100)) {
+    throw new Error("Udio mora biti u rasponu (0, 100].");
+  }
+  return share;
+}

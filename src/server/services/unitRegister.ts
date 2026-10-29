@@ -79,8 +79,12 @@ function sumIsHundred(sum: Decimal): boolean {
 
 export type RegisterPrecondition = { key: "UNITS" | "FIELDS" | "SHARE_SUM"; ok: boolean; text: string };
 
-/** Preduslovi utvrdjivanja registra (✓/⚠ lista u panelu "Sljedeci korak"). */
-export function registerPreconditions(units: UnitRow[]): RegisterPrecondition[] {
+/** Polja jedinice od kojih zavise preduslovi — zadovoljava ih i `Unit` i jedinica iz nacrta onboardinga. */
+export type RegisterPreconditionUnit = Pick<UnitRow, "label" | "type" | "usableArea" | "ownershipShare" | "active">;
+
+/** Preduslovi utvrdjivanja registra (✓/⚠ lista u panelu "Sljedeci korak"). Ista funkcija provjerava i
+ *  nacrt onboardinga (Plans/zev-onboarding-wizard-plan.md §5.1). */
+export function registerPreconditions(units: RegisterPreconditionUnit[]): RegisterPrecondition[] {
   const active = units.filter((u) => u.active);
   const badFields = active.filter((u) => !u.label.trim() || !u.type || dec(u.usableArea.toString()).lessThanOrEqualTo(0));
   const sum = sharesSum(active.map((u) => u.ownershipShare));
