@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-M05 Povezani asistenti</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;}
+  :focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .ann{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:9999px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;vertical-align:middle}
+  .ds-add{outline:2px dashed #ea580c;outline-offset:4px;position:relative}
+  .ds-add-tag{position:absolute;top:-12px;right:6px;background:#fff7ed;color:#9a3412;border:1px dashed #ea580c;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px;white-space:nowrap;z-index:5}
+  .frame{border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;background:#f8fafc}
+  .inp{width:100%;border-radius:.5rem;border:1px solid #cbd5e1;background:#fff;padding:.375rem .75rem;font-size:.875rem;box-shadow:0 1px 2px rgb(0 0 0 / .05)}
+</style>
+</head>
+<body class="bg-slate-200 text-slate-900">
+
+<header class="border-b border-slate-300 bg-white px-6 py-4 shadow-sm">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <span class="rounded bg-slate-900 px-2 py-0.5 text-[13px] font-bold text-white">X-M05</span>
+    <h1 class="text-lg font-semibold">Povezani asistenti — forma za novu vezu (token), jednokratni prikaz i lista veza</h1>
+    <span class="text-[13px] text-slate-600">Prijedlog za plan „MCP platforma“ (nastavak Plans/mcp-onboarding-asistent-plan.md)</span>
+  </div>
+  <ol class="mt-2 grid gap-x-6 gap-y-1 text-[13px] text-slate-700 md:grid-cols-2 xl:grid-cols-3">
+    <li class="flex gap-2"><span class="ann">1</span><span>Ulaz iz <b>menija naloga</b>, u sve tri ljuske. <code>NavShell</code> danas ima mjesto za jednu stavku (<code>accountLink</code>); treba lista stavki. <b class="text-orange-700">DOPUNA DS-a</b>.</span></li>
+    <li class="flex gap-2"><span class="ann">2</span><span>Stranica je na nivou <b>naloga</b> (<code>/nalog/asistenti</code>), ne ZEV-a: radi i za klijenta u onboardingu koji još nema ZEV.</span></li>
+    <li class="flex gap-2"><span class="ann">3</span><span>„Asistent“ mijenja samo uputstvo posle kreiranja; server je isti za sve klijente.</span></li>
+    <li class="flex gap-2"><span class="ann">4</span><span><b>Opseg</b>: izbor sa jednom rečenicom „smije / ne smije“ po opciji. Ponuđeni su samo opsezi koje korisnik ima (članstva, nacrti). „Samo čitanje“ je primjer budućeg opsega. Izbor sa opisom (radio kartica) <b class="text-orange-700">DOPUNA DS-a</b>.</span></li>
+    <li class="flex gap-2"><span class="ann">5</span><span>Jedno <code>primary</code> u kartici. Rok je izbor, ne slobodan unos.</span></li>
+    <li class="flex gap-2"><span class="ann">6</span><span>Token se prikazuje <b>jednom</b> (isti obrazac kao link poziva, <code>InviteLink</code>); čuva se samo hash.</span></li>
+    <li class="flex gap-2"><span class="ann">7</span><span>Uputstvo po asistentu; komanda za Claude Code je <code>font-mono text-[13px]</code> (postojeći <code>reviewMono</code>).</span></li>
+    <li class="flex gap-2"><span class="ann">8</span><span>Lista veza: naziv, opseg, rok, zadnje korišćenje; „Prekini vezu“ je <code>caution</code> iza potvrde (korektivna radnja).</span></li>
+    <li class="flex gap-2"><span class="ann">9</span><span>375px: forma u jednoj koloni; lista veza kao kartice.</span></li>
+  </ol>
+  <p class="mt-2 text-[13px] text-slate-500">Statičan prikaz. Korisnik: Milan Petrović, predsjednik ZEV VM 10-12, koji usput popunjava nacrt novog ZEV-a „Bulevar 12, Bijeljina“. Token i adresa su izmišljeni.</p>
+</header>
+
+<main class="space-y-10 p-6">
+
+<!-- ============ DESKTOP: forma ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — meni naloga otvoren i forma „Poveži asistenta“</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4">
+          <div class="text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div>
+          <div class="text-[13px] text-slate-500">ZEV VM 10-12</div>
+        </div>
+        <nav class="space-y-0.5 px-2 pb-4 text-sm font-medium text-slate-700">
+          <div class="px-3.5 pb-1 pt-1 text-[13px] font-medium text-slate-500">Svakodnevno</div>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="home" class="h-5 w-5"></i>Početna</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="doc" class="h-5 w-5"></i>Fakture i naknade</a>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="doc" class="h-5 w-5"></i>Skupština i odluke</a>
+          <div class="px-3.5 pb-1 pt-4 text-[13px] font-medium text-slate-500">Uprava</div>
+          <a class="flex items-center gap-3 rounded-full px-3.5 py-2"><i data-icon="sliders" class="h-5 w-5"></i>Podešavanja ZEV-a</a>
+        </nav>
+      </aside>
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="relative flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <div class="flex-1"></div>
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white ring-2 ring-blue-500/40">MP</span>
+          <div class="ds-add absolute right-4 top-14 z-30 w-64 rounded-2xl border border-slate-200/80 bg-white py-1.5 shadow-xl ring-1 ring-slate-900/5">
+            <span class="ds-add-tag">① lista stavki</span>
+            <div class="flex items-center gap-3 border-b border-slate-100 px-3.5 py-3">
+              <div class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">MP</div>
+              <div><div class="text-sm font-medium text-slate-800">Milan Petrović</div><div class="text-[13px] text-slate-500">Predsjednik</div></div>
+            </div>
+            <div class="py-1 text-sm text-slate-700">
+              <a class="flex items-center gap-2.5 px-3.5 py-2"><i data-icon="sliders" class="h-4 w-4 text-slate-400"></i>Moji podaci</a>
+              <a aria-current="page" class="flex items-center gap-2.5 bg-blue-50 px-3.5 py-2 font-medium text-blue-700"><i data-icon="plug" class="h-4 w-4"></i>Povezani asistenti</a>
+              <a class="flex items-center gap-2.5 px-3.5 py-2"><i data-icon="help" class="h-4 w-4 text-slate-400"></i>Korisničko uputstvo</a>
+              <a class="flex items-center gap-2.5 px-3.5 py-2"><i data-icon="logout" class="h-4 w-4 text-slate-400"></i>Odjava</a>
+            </div>
+          </div>
+        </header>
+        <main class="p-8">
+          <div class="max-w-4xl space-y-6">
+            <div class="relative">
+              <span class="ann absolute -left-8 top-1">2</span>
+              <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Povezani asistenti</h1>
+              <p class="mt-1 max-w-[68ch] text-[15px] text-slate-500">Asistent (npr. Claude ili ChatGPT) može uz Vašu dozvolu da čita i upisuje podatke u aplikaciju. Svaka veza ima svoj opseg i rok, i možete je prekinuti u svakom trenutku.</p>
+            </div>
+
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="text-sm font-semibold text-slate-700">Poveži asistenta</h2>
+              <form class="mt-4 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <label class="block"><span class="text-sm font-medium text-slate-700">Naziv veze</span>
+                    <input class="inp mt-1" value="Moj Claude na laptopu">
+                    <span class="mt-1 block text-[13px] text-slate-500">Da prepoznate vezu u listi ispod.</span></label>
+                  <label class="relative block"><span class="ann absolute -right-7 top-6">3</span><span class="text-sm font-medium text-slate-700">Asistent</span>
+                    <select class="inp mt-1"><option>Claude (claude.ai, Claude Desktop, Claude Code)</option><option>ChatGPT</option><option>Drugi MCP klijent</option></select>
+                    <span class="mt-1 block text-[13px] text-slate-500">Određuje samo uputstvo koje dobijate posle povezivanja.</span></label>
+                </div>
+
+                <fieldset class="ds-add relative">
+                  <span class="ds-add-tag">④ izbor sa opisom</span>
+                  <legend class="text-sm font-medium text-slate-700">Šta asistent smije</legend>
+                  <div class="mt-2 space-y-2">
+                    <label class="flex cursor-pointer items-start gap-3 rounded-lg border-2 border-blue-600 bg-blue-50/40 p-3">
+                      <input type="radio" name="scope" checked class="mt-1 h-4 w-4 accent-blue-600">
+                      <span>
+                        <span class="block text-sm font-semibold text-slate-900">Onboarding: ZEV Bulevar 12, Bijeljina (nacrt u toku)</span>
+                        <span class="mt-0.5 block text-[13px] text-slate-600">Smije da čita i popunjava nacrt: podatke o ZEV-u, račune, zgrade, posebne i zajedničke dijelove, vlasnike sa dokazima i organe.</span>
+                        <span class="mt-0.5 block text-[13px] text-slate-600">Ne smije: potvrditi registar, objaviti ZEV, otvarati naloge niti vidjeti druge ZEV-ove.</span>
+                      </span>
+                    </label>
+                    <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                      <input type="radio" name="scope" class="mt-1 h-4 w-4 accent-blue-600">
+                      <span>
+                        <span class="block text-sm font-semibold text-slate-900">Samo čitanje: ZEV VM 10-12</span>
+                        <span class="mt-0.5 block text-[13px] text-slate-600">Smije da čita podatke ZEV-a koje i Vi vidite kao predsjednik.</span>
+                        <span class="mt-0.5 block text-[13px] text-slate-600">Ne smije ništa da upiše, izmijeni ili pošalje.</span>
+                      </span>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <div class="relative grid grid-cols-2 gap-4">
+                  <span class="ann absolute -left-8 top-6">5</span>
+                  <label class="block"><span class="text-sm font-medium text-slate-700">Važi</span>
+                    <select class="inp mt-1"><option>7 dana</option><option>30 dana</option><option>90 dana</option></select>
+                    <span class="mt-1 block text-[13px] text-slate-500">Veza za onboarding prestaje i kad objavite ZEV.</span></label>
+                </div>
+                <div class="border-t border-slate-100 pt-4">
+                  <button type="button" class="inline-flex items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm">Napravi vezu</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <span class="ann absolute -left-3 -top-3">8</span>
+              <h2 class="text-sm font-semibold text-slate-700">Aktivne veze (1)</h2>
+              <table class="mt-3 w-full text-sm">
+                <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Naziv</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Opseg</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Važi do</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Zadnje korišćenje</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+                </tr></thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr>
+                    <td class="px-3 py-1.5"><span class="font-medium text-slate-900">ChatGPT u kancelariji</span><div class="text-[13px] text-slate-500">ChatGPT</div></td>
+                    <td class="px-3 py-1.5">Samo čitanje: ZEV VM 10-12</td>
+                    <td class="px-3 py-1.5 tabular-nums">27. 11. 2026.</td>
+                    <td class="px-3 py-1.5 tabular-nums">28. 10. 2026. 16:05</td>
+                    <td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Prekini vezu</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ DESKTOP: posle kreiranja ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Desktop 1440 — posle „Napravi vezu“: token se prikazuje jednom</h2>
+  <div class="overflow-x-auto">
+  <div class="frame" style="width:1440px">
+    <div class="flex">
+      <aside class="w-60 shrink-0 border-r border-slate-200 bg-white">
+        <div class="p-4"><div class="text-lg font-bold tracking-tight text-blue-700">ZEV upravnik</div><div class="text-[13px] text-slate-500">ZEV VM 10-12</div></div>
+      </aside>
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"><div class="flex-1"></div><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">MP</span></header>
+        <main class="p-8">
+          <div class="max-w-4xl space-y-6">
+            <div>
+              <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Povezani asistenti</h1>
+            </div>
+            <div role="status" class="flex items-start gap-2 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800 shadow-sm">Veza „Moj Claude na laptopu“ je napravljena. Važi do 5. 11. 2026.</div>
+
+            <section class="relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <span class="ann absolute -left-3 -top-3">6</span>
+              <h2 class="text-sm font-semibold text-slate-700">Podaci za povezivanje</h2>
+              <p class="mt-1 max-w-[68ch] text-sm text-slate-700">Kopirajte ih sada. Token se prikazuje samo jednom i ne možete ga kasnije ponovo vidjeti; ako se izgubi, prekinite ovu vezu i napravite novu.</p>
+              <div class="mt-4 space-y-3">
+                <div>
+                  <span class="text-sm font-medium text-slate-700">Adresa servera</span>
+                  <div class="mt-1 flex max-w-3xl items-center gap-2">
+                    <input readonly value="https://zev.app/api/mcp" class="inp bg-slate-50 font-mono text-[13px]">
+                    <button class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700"><i data-icon="copy" class="h-4 w-4"></i>Kopiraj</button>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-slate-700">Token</span>
+                  <div class="mt-1 flex max-w-3xl items-center gap-2">
+                    <input readonly value="zev_mcp_Q7vd3kP0x2LmN8sRtY5wZaB1cE4fG6hJ9iK0lM2n" class="inp bg-slate-50 font-mono text-[13px]">
+                    <button class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700"><i data-icon="copy" class="h-4 w-4"></i>Kopiraj</button>
+                  </div>
+                  <p class="mt-1 text-[13px] text-slate-500">Token je kao lozinka: ko ga ima, radi u Vaše ime u okviru izabranog opsega. Ne šaljite ga drugima.</p>
+                </div>
+              </div>
+
+              <div class="relative mt-5 border-t border-slate-100 pt-4">
+                <span class="ann absolute -left-8 top-4">7</span>
+                <p class="text-sm font-semibold text-slate-700">Kako povezati Claude</p>
+                <div class="mt-2 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p class="text-sm font-medium text-slate-700">Claude Desktop i claude.ai</p>
+                    <ol class="mt-1 list-decimal space-y-1 pl-5 text-sm text-slate-700">
+                      <li>Otvorite Podešavanja → Konektori → Dodaj sopstveni konektor.</li>
+                      <li>Upišite adresu servera iznad.</li>
+                      <li>Kao zaglavlje dodajte <span class="font-mono text-[13px]">Authorization: Bearer</span> i token.</li>
+                    </ol>
+                    <p class="mt-1 text-[13px] text-slate-500">Ako Vaš plan ne nudi polje za zaglavlje, koristite Claude Code ili sačekajte prijavu bez tokena (OAuth).</p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-slate-700">Claude Code</p>
+                    <p class="mt-1 text-sm text-slate-700">Pokrenite u terminalu:</p>
+                    <pre class="mt-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-[13px] text-slate-800">claude mcp add --transport http zev-upravnik \
+  https://zev.app/api/mcp \
+  --header "Authorization: Bearer zev_mcp_Q7vd…"</pre>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-5 border-t border-slate-100 pt-4">
+                <a class="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Gotovo, sakrij token</a>
+              </div>
+            </section>
+
+            <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+              <h2 class="text-sm font-semibold text-slate-700">Aktivne veze (2)</h2>
+              <table class="mt-3 w-full text-sm">
+                <thead><tr class="border-b border-slate-200 bg-slate-50/80 text-left">
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Naziv</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Opseg</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Važi do</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Zadnje korišćenje</th>
+                  <th class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Radnje</th>
+                </tr></thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr>
+                    <td class="px-3 py-1.5"><span class="font-medium text-slate-900">Moj Claude na laptopu</span><div class="text-[13px] text-slate-500">Claude</div></td>
+                    <td class="px-3 py-1.5">Onboarding: ZEV Bulevar 12, Bijeljina</td>
+                    <td class="px-3 py-1.5 tabular-nums">5. 11. 2026.</td>
+                    <td class="px-3 py-1.5 text-slate-500">Još nije korišćena</td>
+                    <td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Prekini vezu</button></td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-1.5"><span class="font-medium text-slate-900">ChatGPT u kancelariji</span><div class="text-[13px] text-slate-500">ChatGPT</div></td>
+                    <td class="px-3 py-1.5">Samo čitanje: ZEV VM 10-12</td>
+                    <td class="px-3 py-1.5 tabular-nums">27. 11. 2026.</td>
+                    <td class="px-3 py-1.5 tabular-nums">28. 10. 2026. 16:05</td>
+                    <td class="px-3 py-1.5"><button class="inline-flex min-h-[28px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-900">Prekini vezu</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ MOBILNI ============ -->
+<section>
+  <h2 class="mb-3 text-base font-semibold text-slate-800">Mobilni 375 — forma i lista veza</h2>
+  <div class="frame relative" style="width:375px">
+    <span class="ann absolute right-2 top-14 z-10">9</span>
+    <header class="flex items-center gap-2 border-b border-slate-200 bg-white px-2 py-1.5 shadow-sm">
+      <button class="inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-slate-700"><i data-icon="menu" class="h-5 w-5"></i>Meni</button>
+      <div class="flex-1"></div>
+      <span class="flex h-11 w-11 items-center justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">MP</span></span>
+    </header>
+    <div class="space-y-6 p-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Povezani asistenti</h1>
+        <p class="mt-1 text-[15px] text-slate-500">Asistent (npr. Claude ili ChatGPT) može uz Vašu dozvolu da čita i upisuje podatke u aplikaciju.</p>
+      </div>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="text-sm font-semibold text-slate-700">Poveži asistenta</h2>
+        <div class="mt-4 space-y-4">
+          <label class="block"><span class="text-sm font-medium text-slate-700">Naziv veze</span><input class="inp mt-1" value="Moj Claude na telefonu"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-700">Asistent</span><select class="inp mt-1"><option>Claude</option></select></label>
+          <fieldset>
+            <legend class="text-sm font-medium text-slate-700">Šta asistent smije</legend>
+            <div class="mt-2 space-y-2">
+              <label class="flex items-start gap-3 rounded-lg border-2 border-blue-600 bg-blue-50/40 p-3">
+                <input type="radio" checked class="mt-1 h-4 w-4 accent-blue-600">
+                <span><span class="block text-sm font-semibold text-slate-900">Onboarding: ZEV Bulevar 12</span><span class="mt-0.5 block text-[13px] text-slate-600">Čita i popunjava nacrt. Ne potvrđuje registar i ne objavljuje ZEV.</span></span>
+              </label>
+              <label class="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
+                <input type="radio" class="mt-1 h-4 w-4 accent-blue-600">
+                <span><span class="block text-sm font-semibold text-slate-900">Samo čitanje: ZEV VM 10-12</span><span class="mt-0.5 block text-[13px] text-slate-600">Ne upisuje i ne mijenja ništa.</span></span>
+              </label>
+            </div>
+          </fieldset>
+          <label class="block"><span class="text-sm font-medium text-slate-700">Važi</span><select class="inp mt-1"><option>7 dana</option></select></label>
+          <button class="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-blue-600 px-4 text-sm font-medium text-white shadow-sm">Napravi vezu</button>
+        </div>
+      </section>
+      <section class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <h2 class="text-sm font-semibold text-slate-700">Aktivne veze (1)</h2>
+        <div class="mt-3 rounded-xl border border-slate-200 p-4">
+          <p class="text-[15px] font-semibold text-slate-900">ChatGPT u kancelariji</p>
+          <dl class="mt-2 grid grid-cols-[40%_1fr] gap-x-2 gap-y-1.5 text-sm">
+            <dt class="text-[13px] font-medium text-slate-500">Opseg</dt><dd>Samo čitanje: ZEV VM 10-12</dd>
+            <dt class="text-[13px] font-medium text-slate-500">Važi do</dt><dd>27. 11. 2026.</dd>
+            <dt class="text-[13px] font-medium text-slate-500">Zadnje korišćenje</dt><dd>28. 10. 2026. 16:05</dd>
+          </dl>
+          <button class="mt-3 inline-flex min-h-[44px] items-center rounded-full border border-amber-600/40 bg-amber-50 px-3 text-[13px] font-medium text-amber-900">Prekini vezu</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const P={
+ home:'<path d="M3 9.5 10 3l7 6.5"/><path d="M5 8v8.5h10V8"/><path d="M8 16.5v-4.5h4v4.5"/>',
+ doc:'<path d="M6 3h5.5L15 6.5V17H6z"/><path d="M11 3v4h4"/>',
+ sliders:'<path d="M4 6h7M4 10h4M4 14h9"/><circle cx="13" cy="6" r="1.4"/><circle cx="8" cy="10" r="1.4"/><circle cx="15" cy="14" r="1.4"/>',
+ plug:'<path d="M7 3v4M13 3v4"/><path d="M5 7h10v3a5 5 0 0 1-10 0z"/><path d="M10 15v2.5"/>',
+ help:'<circle cx="10" cy="10" r="7"/><path d="M8 8a2 2 0 1 1 2.8 1.8c-.5.3-.8.7-.8 1.2v.5"/><path d="M10 14h.01"/>',
+ logout:'<path d="M8 4H5v12h3"/><path d="M12 7l3 3-3 3M15 10H8"/>',
+ copy:'<rect x="7" y="7" width="9" height="9" rx="1.5"/><path d="M13 7V5.5A1.5 1.5 0 0 0 11.5 4h-6A1.5 1.5 0 0 0 4 5.5v6A1.5 1.5 0 0 0 5.5 13H7"/>',
+ menu:'<path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"/>'
+};
+document.querySelectorAll('i[data-icon]').forEach(el=>{
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 20 20');s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');
+  s.setAttribute('stroke-width','1.6');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');
+  s.setAttribute('aria-hidden','true');s.setAttribute('class',el.getAttribute('class')||'h-5 w-5');
+  s.innerHTML=P[el.dataset.icon]||'';el.replaceWith(s);
+});
+</script>
+</body>
+</html>
