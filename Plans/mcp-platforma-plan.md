@@ -18,6 +18,7 @@ Zasnovano na kodu v2.59.0 i na MCP specifikaciji, revizija 2026-07-28 (izvori na
 | P5 | Rok tokena | **7, 30 ili 90 dana**; onboarding opseg se gasi i objavom ili odbacivanjem nacrta |
 | P6 | Super admin i nacrt klijenta | Super admin svom tokenu **dodaje pristup** nacrtu sa stranice nacrta; klijent taj pristup vidi i može ga ukloniti |
 | P7 | Ciljni klijenti | **Claude Pro i ChatGPT Plus.** Na tim planovima sopstveni konektor praktično traži OAuth, pa **OAuth ide odmah iza osnove platforme** (§8) |
+| M-0 | Provjera klijenata (2026-10-31) | **Urađena** ([`mcp-m0-provjera-klijenata.md`](mcp-m0-provjera-klijenata.md)): Claude Pro traži OAuth sa Dynamic Client Registration (nema polja za token); OpenAI aplikacija sa „Add MCP server“ (vjerovatno Codex) prihvata token u zaglavlju; ChatGPT web nije provjeren |
 
 ---
 
@@ -157,11 +158,13 @@ Alat koji traži opseg koji veza nema vraća jasnu grešku („Ova veza nema pri
 ## 5. OAuth 2.1 (Faza P-B, odmah iza osnove — P7)
 
 Za Claude Pro i ChatGPT Plus korisnik dodaje konektor sam, a sopstveni konektor na tim planovima
-praktično traži OAuth. Aplikacija je istovremeno **authorization server** i **resource server**:
+praktično traži OAuth. **M-0 je to potvrdio za Claude Pro:** na 401 claude.ai odmah traži OAuth
+metapodatke i pokušava Dynamic Client Registration; polja za token nema. Aplikacija je istovremeno **authorization server** i **resource server**:
 
 - **Protected Resource Metadata** (RFC 9728) na `/.well-known/oauth-protected-resource`.
 - **Authorization Server Metadata** (RFC 8414) na `/.well-known/oauth-authorization-server`.
-- **Registracija klijenta:** Dynamic Client Registration (Claude ga koristi) i Client ID Metadata
+- **Registracija klijenta:** Dynamic Client Registration (Claude ga koristi automatski — potvrđeno u
+  M-0; bez njega Claude Pro traži ručni „OAuth Client ID“) i Client ID Metadata
   Documents prema reviziji specifikacije; callback adrese Claude-a i ChatGPT-ja na listi dozvoljenih.
 - **`/oauth/authorize`:** korisnik se prijavi postojećom prijavom aplikacije, vidi **isti izbor opsega
   kao u formi X-M05** i klikne „Dozvoli“. PKCE je obavezan.
@@ -213,7 +216,8 @@ Faze P-B, prema rezultatu Faze M-0.
 
 Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom. Redoslijed sa planom onboardinga:
 
-1. **Faza M-0 — provjera klijenata (bez koda u aplikaciji).** Probni MCP server (jedan alat `ping`) na
+1. **Faza M-0 — provjera klijenata (bez koda u aplikaciji). ✅ Urađena 2026-10-31**, rezultati u
+   [`mcp-m0-provjera-klijenata.md`](mcp-m0-provjera-klijenata.md). Probni MCP server (jedan alat `ping`) na
    preview okruženju. **Korisnik ga dodaje kao konektor u svom Claude Pro i ChatGPT Plus nalogu**; ja
    pripremam server, preview i uputstvo. Bilježi se šta koji klijent prihvata (token u zaglavlju,
    OAuth, bez prijave) i da li ChatGPT Plus uopšte dozvoljava sopstveni konektor. Rezultat se upisuje
@@ -226,15 +230,18 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom. Redoslijed sa plan
    potvrdi) mogu sami dodati konektor.
 5. **Onboarding O-B i O-C:** upis, grupni unos, vlasnici sa dokazima.
 
-Ako M-0 pokaže da Claude Pro prihvata token u zaglavlju, P-B se može pomjeriti iza O-C.
+M-0 je pokazao da Claude Pro **ne** prihvata token u zaglavlju, pa redoslijed ostaje ovakav: P-B
+(OAuth) ide prije faza upisa. Token iz P-A se koristi od početka u klijentima koji ga prihvataju
+(OpenAI aplikacija sa „Add MCP server“, Claude Code).
 
 ---
 
 ## 9. Rizici i otvoreno
 
-- **ChatGPT Plus:** noviji izvori kažu da su sopstveni konektori uglavnom na poslovnim planovima.
-  Ako M-0 to potvrdi, ChatGPT Plus klijenti ne mogu dodati konektor bez obzira na našu implementaciju;
-  uputstvo i prodaja to moraju reći.
+- **ChatGPT:** u M-0 je provjerena OpenAI aplikacija sa „Plugins → Add MCP server“ (vjerovatno Codex,
+  alat za programere) — radi sa tokenom. **ChatGPT web (chatgpt.com) na Plus planu nije provjeren**
+  (odluka korisnika); noviji izvori kažu da su sopstveni konektori tamo uglavnom na poslovnim
+  planovima. Dok se ne provjeri, uputstvo i prodaja ne obećavaju ChatGPT web.
 - **Promjenljivost klijenata i biblioteka:** konektori u claude.ai i ChatGPT i `mcp-handler`/SDK se
   mijenjaju brzo. Verzije se zaključavaju; M-0 se ponavlja prije svakog većeg izdanja.
 - **OAuth je najveći i najrizičniji dio posla;** spoljni pregled je uslov za produkciju.
