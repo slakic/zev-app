@@ -173,17 +173,16 @@ admin karticu ide mali mockup prije Faze O-A.
 
 ## 7. Redoslijed isporuke
 
-Usklađeno sa planom platforme (§8 tamo):
+Usklađeno sa planom platforme (§8 tamo; redoslijed potvrđen 2026-10-31):
 
-1. **M-0** (platforma) — provjera Claude Pro i ChatGPT Plus.
-2. **P-A** (platforma) — veze, stranica, ruta, opsezi.
-3. **Faza O-A — pristup i čitanje.** `DraftAccess` (§3.1), pristup administratora (§3.4), alati
+1. **M-0** (platforma) — ✅ urađena: Claude Pro traži OAuth, OpenAI aplikacija sa „Add MCP server“
+   prihvata token.
+2. **P-A** (platforma) — veze, stranica „Povezani asistenti“, ruta, opsezi, alat `whoami`.
+3. **P-B** (platforma) — OAuth 2.1, odmah iza P-A; od tada se svaka faza ispod provjerava u Claude Pro.
+4. **Faza O-A — pristup i čitanje.** `DraftAccess` (§3.1), pristup administratora (§3.4), alati
    `get_onboarding_status` i `get_draft`, veza „Asistent“ u čarobnjaku.
-4. **P-B** (platforma) — OAuth 2.1.
 5. **Faza O-B — upis.** Alati za korake 2–6 i 9, grupni upis (§3.2), oznaka izvora (§3.3).
 6. **Faza O-C — vlasnici.** `add_owner_stake` sa dokazom, `remove_owner_stake`, `set_unit_disputed`.
-
----
 
 ## 8. Rizici i otvoreno
 

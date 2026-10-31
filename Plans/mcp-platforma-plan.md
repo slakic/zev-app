@@ -225,13 +225,14 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom. Redoslijed sa plan
 2. **Faza P-A — osnova platforme.** `McpConnection`, `/nalog/asistenti` (forma, jednokratni prikaz,
    lista, prekid), meni naloga u sve tri ljuske, ruta `/api/mcp` sa `withMcpAuth`, provjera opsega,
    audit, flag `MCP_ENABLED`. Bez ijednog alata osim `whoami` (ko sam i koje opsege imam).
-3. **Onboarding O-A** (plan onboardinga): pristup nacrtu, čitanje, pristup administratora (P6).
-4. **Faza P-B — OAuth 2.1** (§5). Od ovog trenutka klijenti sa Claude Pro (i ChatGPT Plus, ako M-0
-   potvrdi) mogu sami dodati konektor.
+3. **Faza P-B — OAuth 2.1** (§5), **odmah iza P-A** (odluka 2026-10-31): posle P-A i P-B korisnik u
+   svom Claude Pro dodaje pravi konektor, klikne „Dozvoli“ i pozove `whoami`, pa se svaka kasnija faza
+   onboardinga odmah provjerava u Claude Pro, kao kod klijenata.
+4. **Onboarding O-A** (plan onboardinga): pristup nacrtu, čitanje, pristup administratora (P6).
 5. **Onboarding O-B i O-C:** upis, grupni unos, vlasnici sa dokazima.
 
-M-0 je pokazao da Claude Pro **ne** prihvata token u zaglavlju, pa redoslijed ostaje ovakav: P-B
-(OAuth) ide prije faza upisa. Token iz P-A se koristi od početka u klijentima koji ga prihvataju
+M-0 je pokazao da Claude Pro **ne** prihvata token u zaglavlju, pa P-B (OAuth) ide odmah iza P-A,
+prije svih faza onboardinga. Token iz P-A se koristi od početka u klijentima koji ga prihvataju
 (OpenAI aplikacija sa „Add MCP server“, Claude Code).
 
 ---
