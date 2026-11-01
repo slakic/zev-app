@@ -483,3 +483,19 @@ export const McpClient = {
 } as const
 
 export type McpClient = (typeof McpClient)[keyof typeof McpClient]
+
+
+export const McpOAuthClientKind = {
+  DCR: 'DCR',
+  CIMD: 'CIMD'
+} as const
+
+export type McpOAuthClientKind = (typeof McpOAuthClientKind)[keyof typeof McpOAuthClientKind]
+
+
+export const McpOAuthTokenKind = {
+  ACCESS: 'ACCESS',
+  REFRESH: 'REFRESH'
+} as const
+
+export type McpOAuthTokenKind = (typeof McpOAuthTokenKind)[keyof typeof McpOAuthTokenKind]

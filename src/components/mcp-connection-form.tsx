@@ -7,9 +7,10 @@ import { ChoiceCards, Field, Flash, SubmitBtn, inputCls } from "@/components/ui"
 import { McpConnectionSecret } from "@/components/mcp-connection-secret";
 import { createMcpConnectionAction, type McpConnectionState } from "@/server/actions/mcpConnections";
 import { MCP_EXPIRY_DAYS } from "@/lib/mcp/scopes";
+import { buildScopeOptions, defaultScopeKey } from "@/components/mcp-scope-options";
 import { t, tf } from "@/lib/i18n";
 
-export function McpConnectionForm({ offered }: { offered: { key: string; label: string }[] }) {
+export function McpConnectionForm({ offered, oauthEnabled = false }: { offered: { key: string; label: string }[]; oauthEnabled?: boolean }) {
   const [state, formAction, pending] = useActionState<McpConnectionState, FormData>(createMcpConnectionAction, { status: "idle" });
   // „Gotovo, sakrij token" ne smije biti link na istu adresu: soft navigacija čuva stanje klijentske
   // komponente, pa bi token ostao na ekranu. Zato se sakriveni token pamti po vrijednosti.
@@ -18,27 +19,11 @@ export function McpConnectionForm({ offered }: { offered: { key: string; label: 
     return (
       <div className="space-y-4">
         <Flash msg={tf("assistants.created", { naziv: state.name, datum: state.validUntil })} inset />
-        <McpConnectionSecret serverUrl={state.serverUrl} token={state.token} client={state.client} onDone={() => setHiddenToken(state.token)} />
+        <McpConnectionSecret serverUrl={state.serverUrl} token={state.token} client={state.client} oauthEnabled={oauthEnabled} onDone={() => setHiddenToken(state.token)} />
       </div>
     );
   }
-  // „Samo provjera veze" je uvijek posljednja opcija i unaprijed izabrana tek kad nema nacrta koji se nudi.
-  const options = [
-    ...offered.map((o) => ({
-      value: o.key,
-      title: tf("assistants.scope.draft.title", { naziv: o.label }),
-      allowed: t("assistants.scope.draft.allowed"),
-      denied: t("assistants.scope.draft.denied"),
-      note: t("assistants.scope.draft.note"),
-    })),
-    {
-      value: "none",
-      title: t("assistants.scope.none.title"),
-      allowed: t("assistants.scope.none.allowed"),
-      denied: t("assistants.scope.none.denied"),
-      note: undefined,
-    },
-  ];
+  const options = buildScopeOptions(offered);
   return (
     <form action={formAction} className="space-y-4">
       {state.status === "error" && <Flash err={state.error} inset />}
@@ -49,12 +34,12 @@ export function McpConnectionForm({ offered }: { offered: { key: string; label: 
         <Field label={t("assistants.form.client")} hint={t("assistants.form.clientHint")}>
           <select name="client" className={inputCls} defaultValue="CLAUDE">
             {(["CLAUDE", "OPENAI", "OTHER"] as const).map((c) => (
-              <option key={c} value={c}>{t(`assistants.form.clients.${c}`)}</option>
+              <option key={c} value={c}>{t(`assistants.form.clients.${oauthEnabled && c === "CLAUDE" ? "CLAUDE_TOKEN" : c}`)}</option>
             ))}
           </select>
         </Field>
       </div>
-      <ChoiceCards name="scopeKey" legend={t("assistants.form.scope")} options={options} defaultValue={offered[0]?.key ?? "none"} />
+      <ChoiceCards name="scopeKey" legend={t("assistants.form.scope")} options={options} defaultValue={defaultScopeKey(offered)} />
       <div className="grid gap-4 md:grid-cols-2">
         <Field label={t("assistants.form.days")} hint={t("assistants.form.daysHint")}>
           <select name="days" className={inputCls} defaultValue="30">

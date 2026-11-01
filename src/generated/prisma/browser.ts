@@ -374,3 +374,19 @@ export type OnboardingDraftFile = Prisma.OnboardingDraftFileModel
  * tokena; token se prikazuje jednom. Opseg se provjerava na svakom pozivu (§3).
  */
 export type McpConnection = Prisma.McpConnectionModel
+/**
+ * Model McpOAuthClient
+ * OAuth klijent MCP servera (Plans/mcp-platforma-plan.md §5): DCR (RFC 7591) ili CIMD (metapodaci na https adresi).
+ * Svi podaci o klijentu su samoprijavljeni i nepouzdani; stvarna ovlašćenja daje samo korisnik na ekranu saglasnosti.
+ */
+export type McpOAuthClient = Prisma.McpOAuthClientModel
+/**
+ * Model McpOAuthCode
+ * Jednokratni kod autorizacije (5 minuta). Čuva se samo sha256 koda.
+ */
+export type McpOAuthCode = Prisma.McpOAuthCodeModel
+/**
+ * Model McpOAuthToken
+ * Access/refresh token veze tipa OAUTH. Čuva se samo sha256; refresh se rotira pri svakoj upotrebi.
+ */
+export type McpOAuthToken = Prisma.McpOAuthTokenModel

@@ -1174,6 +1174,40 @@ export type EnumMcpConnectionKindWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMcpConnectionKindFilter<$PrismaModel>
 }
 
+export type EnumMcpOAuthClientKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthClientKind | Prisma.EnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthClientKindFilter<$PrismaModel> | $Enums.McpOAuthClientKind
+}
+
+export type EnumMcpOAuthClientKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthClientKind | Prisma.EnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthClientKindWithAggregatesFilter<$PrismaModel> | $Enums.McpOAuthClientKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMcpOAuthClientKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMcpOAuthClientKindFilter<$PrismaModel>
+}
+
+export type EnumMcpOAuthTokenKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthTokenKind | Prisma.EnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthTokenKindFilter<$PrismaModel> | $Enums.McpOAuthTokenKind
+}
+
+export type EnumMcpOAuthTokenKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthTokenKind | Prisma.EnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthTokenKindWithAggregatesFilter<$PrismaModel> | $Enums.McpOAuthTokenKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMcpOAuthTokenKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMcpOAuthTokenKindFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2291,6 +2325,40 @@ export type NestedEnumMcpConnectionKindWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMcpConnectionKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMcpConnectionKindFilter<$PrismaModel>
+}
+
+export type NestedEnumMcpOAuthClientKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthClientKind | Prisma.EnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthClientKindFilter<$PrismaModel> | $Enums.McpOAuthClientKind
+}
+
+export type NestedEnumMcpOAuthClientKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthClientKind | Prisma.EnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthClientKind[] | Prisma.ListEnumMcpOAuthClientKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthClientKindWithAggregatesFilter<$PrismaModel> | $Enums.McpOAuthClientKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMcpOAuthClientKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMcpOAuthClientKindFilter<$PrismaModel>
+}
+
+export type NestedEnumMcpOAuthTokenKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthTokenKind | Prisma.EnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthTokenKindFilter<$PrismaModel> | $Enums.McpOAuthTokenKind
+}
+
+export type NestedEnumMcpOAuthTokenKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.McpOAuthTokenKind | Prisma.EnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  in?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.McpOAuthTokenKind[] | Prisma.ListEnumMcpOAuthTokenKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMcpOAuthTokenKindWithAggregatesFilter<$PrismaModel> | $Enums.McpOAuthTokenKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMcpOAuthTokenKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMcpOAuthTokenKindFilter<$PrismaModel>
 }
 
 

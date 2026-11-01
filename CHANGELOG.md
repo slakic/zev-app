@@ -43,6 +43,27 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.61.0] - 2026-11-01
+
+MCP platforma, Faza P-B: OAuth 2.1, pa se asistent povezuje bez tokena („Poveži → prijava → Dozvoli”), kako to traže claude.ai i Claude Desktop. Sve je iza novog flaga `MCP_OAUTH_ENABLED` (podrazumijevano `false`, radi samo uz `MCP_ENABLED=true`); u produkciji se uključuje tek posle spoljnog sigurnosnog pregleda. Plan: `Plans/mcp-platforma-plan.md` §5.
+
+**Migracija: da — nove tabele `McpOAuthClient`, `McpOAuthCode`, `McpOAuthToken` (i enumi) i kolona `McpConnection.oauthClientId`; samo dodavanje. Primijeniti prije deploya (`MIGRATE_DATABASE_URL="…" node scripts/migrate.mjs apply`).**
+
+### Dodato
+
+- **Otkrivanje:** `/.well-known/oauth-protected-resource` (i `/api/mcp` varijanta) i `/.well-known/oauth-authorization-server`. Odgovor 401 na `/api/mcp` upućuje na metapodatke (`resource_metadata`).
+- **Registracija klijenta (DCR)** na `/oauth/register`. Povratne adrese su samo sa strogog spiska (claude.ai, claude.com, chatgpt.com) ili na računaru korisnika (localhost, za Claude Code). CIMD je napravljen, ali se ne oglašava dok se ne provjeri sa pravim klijentom.
+- **Ekran saglasnosti „Povezivanje asistenta”** (`/oauth/authorize`): prijava postojećim nalogom, jasno prikazano kuda se vraća, isti izbor opsega i roka kao u formi za token, „Dozvoli” / „Odbij”. PKCE (S256) je obavezan; stranica se ne može prikazati u okviru (zaštita od clickjackinga).
+- **Tokeni** na `/oauth/token`: pristupni token od 1 sata i refresh token do isteka veze, rotacija pri svakom osvježavanju; ponovna upotreba starog koda ili refresh tokena prekida vezu. Opoziv na `/oauth/revoke`. U bazi se čuva samo sha256.
+- Svaka OAuth dozvola je jedna veza na „Povezani asistenti” (oznaka OAuth i ime klijenta), pa se prekida isto kao veza sa tokenom. Nova kartica sa uputstvom za claude.ai i adresom servera.
+- Audit: `mcp.oauth.client_register`, `mcp.oauth.token_reuse`.
+- Dizajn sistem: `AuthShell width="wide"` za ekran saglasnosti.
+
+### Izmijenjeno
+
+- Prijava prihvata `next`, ali samo za povratak na `/oauth/authorize` ove aplikacije.
+- Ograničenje neuspjelih prijava na `/api/mcp` broji samo zahtjeve sa pogrešnim tokenom, ne one bez tokena: Claude šalje sve zahtjeve iz istog opsega adresa, pa bi se korisnici inače međusobno blokirali.
+
 ## [2.60.0] - 2026-11-01
 
 MCP platforma, Faza P-A: osnova za povezivanje asistenata (Claude, OpenAI aplikacija i drugi MCP klijenti) sa nalogom korisnika. Sve je iza `MCP_ENABLED` (podrazumijevano `false`): dok je isključen, ruta `/api/mcp` vraća 404, a stavka „Povezani asistenti” se ne prikazuje. Plan: `Plans/mcp-platforma-plan.md`.

@@ -169,6 +169,34 @@ Alat koji traži opseg koji veza nema vraća jasnu grešku („Ova veza nema pri
 
 ## 5. OAuth 2.1 (Faza P-B, odmah iza osnove — P7)
 
+> **Implementirano u Fazi P-B (uz flag `MCP_OAUTH_ENABLED`, podrazumijevano isključen).** Stvarna rješenja i odluke
+> korisnika (2026-11-01) su ispod; tekst iza ovog okvira je izvorni plan. Cijela OAuth površina je u
+> `src/lib/mcp/oauth.ts` (čista pravila) i `src/server/mcp/oauth/*` (HTTP, klijenti, autorizacija, tokeni, čišćenje),
+> sa rutama u `src/app/.well-known/*` i `src/app/oauth/*`.
+>
+> - **D1.** DCR prvi, CIMD napravljen ali ne oglašen: `CIMD_ADVERTISED = false` u `oauth.ts` (promijeniti nakon provjere
+>   na pravom Claude klijentu); CIMD se prihvata samo za domaćine claude.ai, claude.com, chatgpt.com, openai.com.
+> - **D2.** Povratne adrese: `https://claude.ai/api/mcp/auth_callback`, `https://claude.com/api/mcp/auth_callback`,
+>   `https://chatgpt.com/connector_platform_oauth_redirect`, `https://chatgpt.com/connector/oauth/<id>` i
+>   `http://localhost|127.0.0.1|[::1]` (bilo koji port i putanja; port se pri poređenju ignoriše). Bez fragmenta.
+> - **D3.** `MCP_OAUTH_ENABLED` (samo uz `MCP_ENABLED`): isključen → `/.well-known/*` i `/oauth/*` su 404, a 401 na
+>   `/api/mcp` ostaje kao u P-A.
+> - **D4.** Neprozirni tokeni (`zev_mcp_at_…`, `zev_mcp_rt_…`), u bazi samo sha256. Access 1 h (ne duže od veze), refresh
+>   ističe s vezom (bez produžavanja), rotira se pri svakoj upotrebi. Ponovljen stari refresh unutar 60 s → samo
+>   `invalid_grant`; poslije 60 s → veza i svi tokeni se prekidaju i piše se `mcp.oauth.token_reuse`.
+> - **D5.** `McpConnection` (kind OAUTH) nastaje pri razmjeni koda, ne pri saglasnosti. Ponovna upotreba koda prekida vezu.
+> - **D6.** Ekran saglasnosti u `AuthShell` sa novim `width="wide"` (jedina dopuna dizajn sistema u ovoj fazi).
+> - **D7.** Nema `/.well-known/openid-configuration`.
+> - **D8.** `/oauth/revoke` (RFC 7009) postoji; opoziv refresh tokena prekida cijelu vezu.
+> - **D9.** `recordMcpAuthFailure` samo kad je Authorization zaglavlje poslato; `/oauth/token` 120 / 10 min po IP,
+>   `/oauth/register` 60 / sat po IP, uz plafon od 500 neiskorišćenih DCR klijenata u 24 h (503).
+>
+> **Odstupanja od plana pri izradi:** metapodaci se grade ručno (bez SDK pomoćnika) radi čitljivosti; `redirect_uri` na
+> token endpointu mora biti identičan onom iz zahtjeva autorizacije (RFC 6749), uključujući port na lokalnom računaru;
+> greške odluke na ekranu saglasnosti vraćaju se kao kratak kod (`err=scope|name|days|request|other`), ne kao tekst u
+> adresi; dodata je akcija „Nisam ja, odjavi me" koja vraća na isti zahtjev; zaglavlja `/oauth/:path*` (DENY okviri,
+> `no-referrer`, `no-store`) su u `next.config.ts`. **Spoljni sigurnosni pregled i dalje prethodi uključivanju u produkciji.**
+
 Za Claude Pro i ChatGPT Plus korisnik dodaje konektor sam, a sopstveni konektor na tim planovima
 praktično traži OAuth. **M-0 je to potvrdio za Claude Pro:** na 401 claude.ai odmah traži OAuth
 metapodatke i pokušava Dynamic Client Registration; polja za token nema. Aplikacija je istovremeno **authorization server** i **resource server**:

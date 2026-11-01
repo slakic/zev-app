@@ -35,10 +35,13 @@ export async function handleMcpRequest(req: Request, ipHash: string | null): Pro
   const maxBytes = getEnv().MAX_UPLOAD_MB * 1024 * 1024;
   if (Number(req.headers.get("content-length") ?? 0) > maxBytes) return json(413, { error: "too_large" });
 
-  const ctx = await verifyMcpToken(req.headers.get("authorization"));
+  const authorization = req.headers.get("authorization");
+  const ctx = await verifyMcpToken(authorization);
   if (!ctx) {
-    recordMcpAuthFailure(ipKey);
-    return unauthorizedResponse();
+    // Zahtjev bez Authorization zaglavlja je samo početak OAuth otkrivanja (klijent još nema token), ne pogrešan
+    // pokušaj: ne računa se u ograničenje po IP adresi, inače bi zajednički izlazni IP Claudea brzo ostao zaključan.
+    if (authorization) recordMcpAuthFailure(ipKey);
+    return unauthorizedResponse({ tokenPresented: !!authorization });
   }
   if (!consumeMcpCall(ctx.connectionId)) return json(429, { error: "rate_limited" });
 

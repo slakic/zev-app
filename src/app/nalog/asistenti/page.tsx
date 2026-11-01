@@ -9,6 +9,7 @@ import { listMyMcpConnections, listOfferedScopes } from "@/server/services/mcpCo
 import { revokeMcpConnectionAction } from "@/server/actions/mcpConnections";
 import { PageHeader, Card, Table, Td, Flash, ConfirmAction, type ColumnSpec } from "@/components/ui";
 import { McpConnectionForm } from "@/components/mcp-connection-form";
+import { CopyField } from "@/components/mcp-connection-secret";
 
 const headers: ColumnSpec[] = [
   { label: t("assistants.list.name"), priority: "primary" },
@@ -21,6 +22,7 @@ const headers: ColumnSpec[] = [
 export default async function AssistantsPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string; naziv?: string }> }) {
   if (getEnv().MCP_ENABLED !== "true") notFound();
   const actor = await requireActor();
+  const oauthEnabled = getEnv().MCP_OAUTH_ENABLED === "true";
   const { err, msg, naziv } = await searchParams;
   const [offered, connections] = await Promise.all([listOfferedScopes(actor), listMyMcpConnections(actor)]);
   // Klijent bez ZEV-a koji nije super admin dolazi iz čarobnjaka i vraća se u njega.
@@ -37,8 +39,25 @@ export default async function AssistantsPage({ searchParams }: { searchParams: P
         msg={msg === "revoked" ? tf("assistants.revoke.done", { naziv: naziv ?? "" }) : undefined}
       />
       <div className="space-y-6">
+      {oauthEnabled && (
+        <Card title={t("assistants.oauthCard.title")}>
+          <div className="space-y-4">
+            <p className="max-w-[68ch] text-sm text-slate-700">{t("assistants.oauthCard.intro")}</p>
+            <div>
+              <p className="text-sm font-medium text-slate-700">{t("assistants.oauthCard.stepsTitle")}</p>
+              <ol className="mt-1 list-decimal space-y-0.5 pl-5 text-sm text-slate-700">
+                {(["one", "two", "three", "four", "five"] as const).map((k) => (
+                  <li key={k}>{t(`assistants.oauthCard.steps.${k}`)}</li>
+                ))}
+              </ol>
+            </div>
+            <CopyField label={t("assistants.oauthCard.urlLabel")} value={`${getEnv().APP_URL.replace(/\/+$/, "")}/api/mcp`} />
+          </div>
+        </Card>
+      )}
+
       <Card title={t("assistants.form.title")}>
-        <McpConnectionForm offered={offered.map((o) => ({ key: o.key, label: o.label }))} />
+        <McpConnectionForm offered={offered.map((o) => ({ key: o.key, label: o.label }))} oauthEnabled={oauthEnabled} />
       </Card>
 
       <Card title={tf("assistants.list.title", { n: connections.length })}>
@@ -54,7 +73,10 @@ export default async function AssistantsPage({ searchParams }: { searchParams: P
             <tr key={c.id}>
               <Td>
                 <span className="font-medium text-slate-900">{c.name}</span>
-                <div className="text-[13px] text-slate-500">{t(`assistants.form.clients.${c.client}`)}</div>
+                <div className="text-[13px] text-slate-500">
+                  {t(`assistants.clientShort.${c.client}`)} · {t(`assistants.kind.${c.kind}`)}
+                  {c.kind === "OAUTH" && c.oauthClientName ? ` · ${c.oauthClientName}` : ""}
+                </div>
               </Td>
               <Td>
                 {c.scopes.length === 0 ? (

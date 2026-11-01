@@ -37,6 +37,7 @@ export type McpConnectionMinAggregateOutputType = {
   lastUsedAt: Date | null
   revokedAt: Date | null
   revokedById: string | null
+  oauthClientId: string | null
 }
 
 export type McpConnectionMaxAggregateOutputType = {
@@ -51,6 +52,7 @@ export type McpConnectionMaxAggregateOutputType = {
   lastUsedAt: Date | null
   revokedAt: Date | null
   revokedById: string | null
+  oauthClientId: string | null
 }
 
 export type McpConnectionCountAggregateOutputType = {
@@ -66,6 +68,7 @@ export type McpConnectionCountAggregateOutputType = {
   lastUsedAt: number
   revokedAt: number
   revokedById: number
+  oauthClientId: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type McpConnectionMinAggregateInputType = {
   lastUsedAt?: true
   revokedAt?: true
   revokedById?: true
+  oauthClientId?: true
 }
 
 export type McpConnectionMaxAggregateInputType = {
@@ -96,6 +100,7 @@ export type McpConnectionMaxAggregateInputType = {
   lastUsedAt?: true
   revokedAt?: true
   revokedById?: true
+  oauthClientId?: true
 }
 
 export type McpConnectionCountAggregateInputType = {
@@ -111,6 +116,7 @@ export type McpConnectionCountAggregateInputType = {
   lastUsedAt?: true
   revokedAt?: true
   revokedById?: true
+  oauthClientId?: true
   _all?: true
 }
 
@@ -199,6 +205,7 @@ export type McpConnectionGroupByOutputType = {
   lastUsedAt: Date | null
   revokedAt: Date | null
   revokedById: string | null
+  oauthClientId: string | null
   _count: McpConnectionCountAggregateOutputType | null
   _min: McpConnectionMinAggregateOutputType | null
   _max: McpConnectionMaxAggregateOutputType | null
@@ -235,7 +242,10 @@ export type McpConnectionWhereInput = {
   lastUsedAt?: Prisma.DateTimeNullableFilter<"McpConnection"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"McpConnection"> | Date | string | null
   revokedById?: Prisma.StringNullableFilter<"McpConnection"> | string | null
+  oauthClientId?: Prisma.StringNullableFilter<"McpConnection"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  oauthClient?: Prisma.XOR<Prisma.McpOAuthClientNullableScalarRelationFilter, Prisma.McpOAuthClientWhereInput> | null
+  oauthTokens?: Prisma.McpOAuthTokenListRelationFilter
 }
 
 export type McpConnectionOrderByWithRelationInput = {
@@ -251,7 +261,10 @@ export type McpConnectionOrderByWithRelationInput = {
   lastUsedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  oauthClientId?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  oauthClient?: Prisma.McpOAuthClientOrderByWithRelationInput
+  oauthTokens?: Prisma.McpOAuthTokenOrderByRelationAggregateInput
 }
 
 export type McpConnectionWhereUniqueInput = Prisma.AtLeast<{
@@ -270,7 +283,10 @@ export type McpConnectionWhereUniqueInput = Prisma.AtLeast<{
   lastUsedAt?: Prisma.DateTimeNullableFilter<"McpConnection"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"McpConnection"> | Date | string | null
   revokedById?: Prisma.StringNullableFilter<"McpConnection"> | string | null
+  oauthClientId?: Prisma.StringNullableFilter<"McpConnection"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  oauthClient?: Prisma.XOR<Prisma.McpOAuthClientNullableScalarRelationFilter, Prisma.McpOAuthClientWhereInput> | null
+  oauthTokens?: Prisma.McpOAuthTokenListRelationFilter
 }, "id" | "tokenHash">
 
 export type McpConnectionOrderByWithAggregationInput = {
@@ -286,6 +302,7 @@ export type McpConnectionOrderByWithAggregationInput = {
   lastUsedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  oauthClientId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.McpConnectionCountOrderByAggregateInput
   _max?: Prisma.McpConnectionMaxOrderByAggregateInput
   _min?: Prisma.McpConnectionMinOrderByAggregateInput
@@ -307,6 +324,7 @@ export type McpConnectionScalarWhereWithAggregatesInput = {
   lastUsedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"McpConnection"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"McpConnection"> | Date | string | null
   revokedById?: Prisma.StringNullableWithAggregatesFilter<"McpConnection"> | string | null
+  oauthClientId?: Prisma.StringNullableWithAggregatesFilter<"McpConnection"> | string | null
 }
 
 export type McpConnectionCreateInput = {
@@ -322,6 +340,8 @@ export type McpConnectionCreateInput = {
   revokedAt?: Date | string | null
   revokedById?: string | null
   user: Prisma.UserCreateNestedOneWithoutMcpConnectionsInput
+  oauthClient?: Prisma.McpOAuthClientCreateNestedOneWithoutConnectionsInput
+  oauthTokens?: Prisma.McpOAuthTokenCreateNestedManyWithoutConnectionInput
 }
 
 export type McpConnectionUncheckedCreateInput = {
@@ -337,6 +357,8 @@ export type McpConnectionUncheckedCreateInput = {
   lastUsedAt?: Date | string | null
   revokedAt?: Date | string | null
   revokedById?: string | null
+  oauthClientId?: string | null
+  oauthTokens?: Prisma.McpOAuthTokenUncheckedCreateNestedManyWithoutConnectionInput
 }
 
 export type McpConnectionUpdateInput = {
@@ -352,6 +374,8 @@ export type McpConnectionUpdateInput = {
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutMcpConnectionsNestedInput
+  oauthClient?: Prisma.McpOAuthClientUpdateOneWithoutConnectionsNestedInput
+  oauthTokens?: Prisma.McpOAuthTokenUpdateManyWithoutConnectionNestedInput
 }
 
 export type McpConnectionUncheckedUpdateInput = {
@@ -367,6 +391,8 @@ export type McpConnectionUncheckedUpdateInput = {
   lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthClientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthTokens?: Prisma.McpOAuthTokenUncheckedUpdateManyWithoutConnectionNestedInput
 }
 
 export type McpConnectionCreateManyInput = {
@@ -382,6 +408,7 @@ export type McpConnectionCreateManyInput = {
   lastUsedAt?: Date | string | null
   revokedAt?: Date | string | null
   revokedById?: string | null
+  oauthClientId?: string | null
 }
 
 export type McpConnectionUpdateManyMutationInput = {
@@ -411,6 +438,7 @@ export type McpConnectionUncheckedUpdateManyInput = {
   lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthClientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type McpConnectionListRelationFilter = {
@@ -436,6 +464,7 @@ export type McpConnectionCountOrderByAggregateInput = {
   lastUsedAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   revokedById?: Prisma.SortOrder
+  oauthClientId?: Prisma.SortOrder
 }
 
 export type McpConnectionMaxOrderByAggregateInput = {
@@ -450,6 +479,7 @@ export type McpConnectionMaxOrderByAggregateInput = {
   lastUsedAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   revokedById?: Prisma.SortOrder
+  oauthClientId?: Prisma.SortOrder
 }
 
 export type McpConnectionMinOrderByAggregateInput = {
@@ -464,6 +494,12 @@ export type McpConnectionMinOrderByAggregateInput = {
   lastUsedAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   revokedById?: Prisma.SortOrder
+  oauthClientId?: Prisma.SortOrder
+}
+
+export type McpConnectionScalarRelationFilter = {
+  is?: Prisma.McpConnectionWhereInput
+  isNot?: Prisma.McpConnectionWhereInput
 }
 
 export type McpConnectionCreateNestedManyWithoutUserInput = {
@@ -516,6 +552,62 @@ export type EnumMcpConnectionKindFieldUpdateOperationsInput = {
   set?: $Enums.McpConnectionKind
 }
 
+export type McpConnectionCreateNestedManyWithoutOauthClientInput = {
+  create?: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthClientInput, Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput> | Prisma.McpConnectionCreateWithoutOauthClientInput[] | Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput[]
+  connectOrCreate?: Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput | Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput[]
+  createMany?: Prisma.McpConnectionCreateManyOauthClientInputEnvelope
+  connect?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+}
+
+export type McpConnectionUncheckedCreateNestedManyWithoutOauthClientInput = {
+  create?: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthClientInput, Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput> | Prisma.McpConnectionCreateWithoutOauthClientInput[] | Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput[]
+  connectOrCreate?: Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput | Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput[]
+  createMany?: Prisma.McpConnectionCreateManyOauthClientInputEnvelope
+  connect?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+}
+
+export type McpConnectionUpdateManyWithoutOauthClientNestedInput = {
+  create?: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthClientInput, Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput> | Prisma.McpConnectionCreateWithoutOauthClientInput[] | Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput[]
+  connectOrCreate?: Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput | Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput[]
+  upsert?: Prisma.McpConnectionUpsertWithWhereUniqueWithoutOauthClientInput | Prisma.McpConnectionUpsertWithWhereUniqueWithoutOauthClientInput[]
+  createMany?: Prisma.McpConnectionCreateManyOauthClientInputEnvelope
+  set?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  disconnect?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  delete?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  connect?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  update?: Prisma.McpConnectionUpdateWithWhereUniqueWithoutOauthClientInput | Prisma.McpConnectionUpdateWithWhereUniqueWithoutOauthClientInput[]
+  updateMany?: Prisma.McpConnectionUpdateManyWithWhereWithoutOauthClientInput | Prisma.McpConnectionUpdateManyWithWhereWithoutOauthClientInput[]
+  deleteMany?: Prisma.McpConnectionScalarWhereInput | Prisma.McpConnectionScalarWhereInput[]
+}
+
+export type McpConnectionUncheckedUpdateManyWithoutOauthClientNestedInput = {
+  create?: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthClientInput, Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput> | Prisma.McpConnectionCreateWithoutOauthClientInput[] | Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput[]
+  connectOrCreate?: Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput | Prisma.McpConnectionCreateOrConnectWithoutOauthClientInput[]
+  upsert?: Prisma.McpConnectionUpsertWithWhereUniqueWithoutOauthClientInput | Prisma.McpConnectionUpsertWithWhereUniqueWithoutOauthClientInput[]
+  createMany?: Prisma.McpConnectionCreateManyOauthClientInputEnvelope
+  set?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  disconnect?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  delete?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  connect?: Prisma.McpConnectionWhereUniqueInput | Prisma.McpConnectionWhereUniqueInput[]
+  update?: Prisma.McpConnectionUpdateWithWhereUniqueWithoutOauthClientInput | Prisma.McpConnectionUpdateWithWhereUniqueWithoutOauthClientInput[]
+  updateMany?: Prisma.McpConnectionUpdateManyWithWhereWithoutOauthClientInput | Prisma.McpConnectionUpdateManyWithWhereWithoutOauthClientInput[]
+  deleteMany?: Prisma.McpConnectionScalarWhereInput | Prisma.McpConnectionScalarWhereInput[]
+}
+
+export type McpConnectionCreateNestedOneWithoutOauthTokensInput = {
+  create?: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthTokensInput, Prisma.McpConnectionUncheckedCreateWithoutOauthTokensInput>
+  connectOrCreate?: Prisma.McpConnectionCreateOrConnectWithoutOauthTokensInput
+  connect?: Prisma.McpConnectionWhereUniqueInput
+}
+
+export type McpConnectionUpdateOneRequiredWithoutOauthTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthTokensInput, Prisma.McpConnectionUncheckedCreateWithoutOauthTokensInput>
+  connectOrCreate?: Prisma.McpConnectionCreateOrConnectWithoutOauthTokensInput
+  upsert?: Prisma.McpConnectionUpsertWithoutOauthTokensInput
+  connect?: Prisma.McpConnectionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.McpConnectionUpdateToOneWithWhereWithoutOauthTokensInput, Prisma.McpConnectionUpdateWithoutOauthTokensInput>, Prisma.McpConnectionUncheckedUpdateWithoutOauthTokensInput>
+}
+
 export type McpConnectionCreateWithoutUserInput = {
   id?: string
   name: string
@@ -528,6 +620,8 @@ export type McpConnectionCreateWithoutUserInput = {
   lastUsedAt?: Date | string | null
   revokedAt?: Date | string | null
   revokedById?: string | null
+  oauthClient?: Prisma.McpOAuthClientCreateNestedOneWithoutConnectionsInput
+  oauthTokens?: Prisma.McpOAuthTokenCreateNestedManyWithoutConnectionInput
 }
 
 export type McpConnectionUncheckedCreateWithoutUserInput = {
@@ -542,6 +636,8 @@ export type McpConnectionUncheckedCreateWithoutUserInput = {
   lastUsedAt?: Date | string | null
   revokedAt?: Date | string | null
   revokedById?: string | null
+  oauthClientId?: string | null
+  oauthTokens?: Prisma.McpOAuthTokenUncheckedCreateNestedManyWithoutConnectionInput
 }
 
 export type McpConnectionCreateOrConnectWithoutUserInput = {
@@ -586,6 +682,145 @@ export type McpConnectionScalarWhereInput = {
   lastUsedAt?: Prisma.DateTimeNullableFilter<"McpConnection"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"McpConnection"> | Date | string | null
   revokedById?: Prisma.StringNullableFilter<"McpConnection"> | string | null
+  oauthClientId?: Prisma.StringNullableFilter<"McpConnection"> | string | null
+}
+
+export type McpConnectionCreateWithoutOauthClientInput = {
+  id?: string
+  name: string
+  client: $Enums.McpClient
+  kind?: $Enums.McpConnectionKind
+  scopes: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: string | null
+  createdAt?: Date | string
+  expiresAt: Date | string
+  lastUsedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedById?: string | null
+  user: Prisma.UserCreateNestedOneWithoutMcpConnectionsInput
+  oauthTokens?: Prisma.McpOAuthTokenCreateNestedManyWithoutConnectionInput
+}
+
+export type McpConnectionUncheckedCreateWithoutOauthClientInput = {
+  id?: string
+  userId: string
+  name: string
+  client: $Enums.McpClient
+  kind?: $Enums.McpConnectionKind
+  scopes: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: string | null
+  createdAt?: Date | string
+  expiresAt: Date | string
+  lastUsedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedById?: string | null
+  oauthTokens?: Prisma.McpOAuthTokenUncheckedCreateNestedManyWithoutConnectionInput
+}
+
+export type McpConnectionCreateOrConnectWithoutOauthClientInput = {
+  where: Prisma.McpConnectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthClientInput, Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput>
+}
+
+export type McpConnectionCreateManyOauthClientInputEnvelope = {
+  data: Prisma.McpConnectionCreateManyOauthClientInput | Prisma.McpConnectionCreateManyOauthClientInput[]
+  skipDuplicates?: boolean
+}
+
+export type McpConnectionUpsertWithWhereUniqueWithoutOauthClientInput = {
+  where: Prisma.McpConnectionWhereUniqueInput
+  update: Prisma.XOR<Prisma.McpConnectionUpdateWithoutOauthClientInput, Prisma.McpConnectionUncheckedUpdateWithoutOauthClientInput>
+  create: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthClientInput, Prisma.McpConnectionUncheckedCreateWithoutOauthClientInput>
+}
+
+export type McpConnectionUpdateWithWhereUniqueWithoutOauthClientInput = {
+  where: Prisma.McpConnectionWhereUniqueInput
+  data: Prisma.XOR<Prisma.McpConnectionUpdateWithoutOauthClientInput, Prisma.McpConnectionUncheckedUpdateWithoutOauthClientInput>
+}
+
+export type McpConnectionUpdateManyWithWhereWithoutOauthClientInput = {
+  where: Prisma.McpConnectionScalarWhereInput
+  data: Prisma.XOR<Prisma.McpConnectionUpdateManyMutationInput, Prisma.McpConnectionUncheckedUpdateManyWithoutOauthClientInput>
+}
+
+export type McpConnectionCreateWithoutOauthTokensInput = {
+  id?: string
+  name: string
+  client: $Enums.McpClient
+  kind?: $Enums.McpConnectionKind
+  scopes: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: string | null
+  createdAt?: Date | string
+  expiresAt: Date | string
+  lastUsedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedById?: string | null
+  user: Prisma.UserCreateNestedOneWithoutMcpConnectionsInput
+  oauthClient?: Prisma.McpOAuthClientCreateNestedOneWithoutConnectionsInput
+}
+
+export type McpConnectionUncheckedCreateWithoutOauthTokensInput = {
+  id?: string
+  userId: string
+  name: string
+  client: $Enums.McpClient
+  kind?: $Enums.McpConnectionKind
+  scopes: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: string | null
+  createdAt?: Date | string
+  expiresAt: Date | string
+  lastUsedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedById?: string | null
+  oauthClientId?: string | null
+}
+
+export type McpConnectionCreateOrConnectWithoutOauthTokensInput = {
+  where: Prisma.McpConnectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthTokensInput, Prisma.McpConnectionUncheckedCreateWithoutOauthTokensInput>
+}
+
+export type McpConnectionUpsertWithoutOauthTokensInput = {
+  update: Prisma.XOR<Prisma.McpConnectionUpdateWithoutOauthTokensInput, Prisma.McpConnectionUncheckedUpdateWithoutOauthTokensInput>
+  create: Prisma.XOR<Prisma.McpConnectionCreateWithoutOauthTokensInput, Prisma.McpConnectionUncheckedCreateWithoutOauthTokensInput>
+  where?: Prisma.McpConnectionWhereInput
+}
+
+export type McpConnectionUpdateToOneWithWhereWithoutOauthTokensInput = {
+  where?: Prisma.McpConnectionWhereInput
+  data: Prisma.XOR<Prisma.McpConnectionUpdateWithoutOauthTokensInput, Prisma.McpConnectionUncheckedUpdateWithoutOauthTokensInput>
+}
+
+export type McpConnectionUpdateWithoutOauthTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  client?: Prisma.EnumMcpClientFieldUpdateOperationsInput | $Enums.McpClient
+  kind?: Prisma.EnumMcpConnectionKindFieldUpdateOperationsInput | $Enums.McpConnectionKind
+  scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutMcpConnectionsNestedInput
+  oauthClient?: Prisma.McpOAuthClientUpdateOneWithoutConnectionsNestedInput
+}
+
+export type McpConnectionUncheckedUpdateWithoutOauthTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  client?: Prisma.EnumMcpClientFieldUpdateOperationsInput | $Enums.McpClient
+  kind?: Prisma.EnumMcpConnectionKindFieldUpdateOperationsInput | $Enums.McpConnectionKind
+  scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthClientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type McpConnectionCreateManyUserInput = {
@@ -600,6 +835,7 @@ export type McpConnectionCreateManyUserInput = {
   lastUsedAt?: Date | string | null
   revokedAt?: Date | string | null
   revokedById?: string | null
+  oauthClientId?: string | null
 }
 
 export type McpConnectionUpdateWithoutUserInput = {
@@ -614,6 +850,8 @@ export type McpConnectionUpdateWithoutUserInput = {
   lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthClient?: Prisma.McpOAuthClientUpdateOneWithoutConnectionsNestedInput
+  oauthTokens?: Prisma.McpOAuthTokenUpdateManyWithoutConnectionNestedInput
 }
 
 export type McpConnectionUncheckedUpdateWithoutUserInput = {
@@ -628,6 +866,8 @@ export type McpConnectionUncheckedUpdateWithoutUserInput = {
   lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthClientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthTokens?: Prisma.McpOAuthTokenUncheckedUpdateManyWithoutConnectionNestedInput
 }
 
 export type McpConnectionUncheckedUpdateManyWithoutUserInput = {
@@ -642,8 +882,100 @@ export type McpConnectionUncheckedUpdateManyWithoutUserInput = {
   lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthClientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type McpConnectionCreateManyOauthClientInput = {
+  id?: string
+  userId: string
+  name: string
+  client: $Enums.McpClient
+  kind?: $Enums.McpConnectionKind
+  scopes: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: string | null
+  createdAt?: Date | string
+  expiresAt: Date | string
+  lastUsedAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedById?: string | null
+}
+
+export type McpConnectionUpdateWithoutOauthClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  client?: Prisma.EnumMcpClientFieldUpdateOperationsInput | $Enums.McpClient
+  kind?: Prisma.EnumMcpConnectionKindFieldUpdateOperationsInput | $Enums.McpConnectionKind
+  scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutMcpConnectionsNestedInput
+  oauthTokens?: Prisma.McpOAuthTokenUpdateManyWithoutConnectionNestedInput
+}
+
+export type McpConnectionUncheckedUpdateWithoutOauthClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  client?: Prisma.EnumMcpClientFieldUpdateOperationsInput | $Enums.McpClient
+  kind?: Prisma.EnumMcpConnectionKindFieldUpdateOperationsInput | $Enums.McpConnectionKind
+  scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthTokens?: Prisma.McpOAuthTokenUncheckedUpdateManyWithoutConnectionNestedInput
+}
+
+export type McpConnectionUncheckedUpdateManyWithoutOauthClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  client?: Prisma.EnumMcpClientFieldUpdateOperationsInput | $Enums.McpClient
+  kind?: Prisma.EnumMcpConnectionKindFieldUpdateOperationsInput | $Enums.McpConnectionKind
+  scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+
+/**
+ * Count Type McpConnectionCountOutputType
+ */
+
+export type McpConnectionCountOutputType = {
+  oauthTokens: number
+}
+
+export type McpConnectionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  oauthTokens?: boolean | McpConnectionCountOutputTypeCountOauthTokensArgs
+}
+
+/**
+ * McpConnectionCountOutputType without action
+ */
+export type McpConnectionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the McpConnectionCountOutputType
+   */
+  select?: Prisma.McpConnectionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * McpConnectionCountOutputType without action
+ */
+export type McpConnectionCountOutputTypeCountOauthTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.McpOAuthTokenWhereInput
+}
 
 
 export type McpConnectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -659,7 +991,11 @@ export type McpConnectionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   lastUsedAt?: boolean
   revokedAt?: boolean
   revokedById?: boolean
+  oauthClientId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  oauthClient?: boolean | Prisma.McpConnection$oauthClientArgs<ExtArgs>
+  oauthTokens?: boolean | Prisma.McpConnection$oauthTokensArgs<ExtArgs>
+  _count?: boolean | Prisma.McpConnectionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mcpConnection"]>
 
 export type McpConnectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -675,7 +1011,9 @@ export type McpConnectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   lastUsedAt?: boolean
   revokedAt?: boolean
   revokedById?: boolean
+  oauthClientId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  oauthClient?: boolean | Prisma.McpConnection$oauthClientArgs<ExtArgs>
 }, ExtArgs["result"]["mcpConnection"]>
 
 export type McpConnectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -691,7 +1029,9 @@ export type McpConnectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   lastUsedAt?: boolean
   revokedAt?: boolean
   revokedById?: boolean
+  oauthClientId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  oauthClient?: boolean | Prisma.McpConnection$oauthClientArgs<ExtArgs>
 }, ExtArgs["result"]["mcpConnection"]>
 
 export type McpConnectionSelectScalar = {
@@ -707,23 +1047,34 @@ export type McpConnectionSelectScalar = {
   lastUsedAt?: boolean
   revokedAt?: boolean
   revokedById?: boolean
+  oauthClientId?: boolean
 }
 
-export type McpConnectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "client" | "kind" | "scopes" | "tokenHash" | "createdAt" | "expiresAt" | "lastUsedAt" | "revokedAt" | "revokedById", ExtArgs["result"]["mcpConnection"]>
+export type McpConnectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "client" | "kind" | "scopes" | "tokenHash" | "createdAt" | "expiresAt" | "lastUsedAt" | "revokedAt" | "revokedById" | "oauthClientId", ExtArgs["result"]["mcpConnection"]>
 export type McpConnectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  oauthClient?: boolean | Prisma.McpConnection$oauthClientArgs<ExtArgs>
+  oauthTokens?: boolean | Prisma.McpConnection$oauthTokensArgs<ExtArgs>
+  _count?: boolean | Prisma.McpConnectionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type McpConnectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  oauthClient?: boolean | Prisma.McpConnection$oauthClientArgs<ExtArgs>
 }
 export type McpConnectionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  oauthClient?: boolean | Prisma.McpConnection$oauthClientArgs<ExtArgs>
 }
 
 export type $McpConnectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "McpConnection"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    /**
+     * Samo za kind OAUTH: klijent koji je vezu dobio (OAuth 2.1, Plans/mcp-platforma-plan.md §5). tokenHash je tada null.
+     */
+    oauthClient: Prisma.$McpOAuthClientPayload<ExtArgs> | null
+    oauthTokens: Prisma.$McpOAuthTokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -738,6 +1089,7 @@ export type $McpConnectionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     lastUsedAt: Date | null
     revokedAt: Date | null
     revokedById: string | null
+    oauthClientId: string | null
   }, ExtArgs["result"]["mcpConnection"]>
   composites: {}
 }
@@ -1133,6 +1485,8 @@ readonly fields: McpConnectionFieldRefs;
 export interface Prisma__McpConnectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  oauthClient<T extends Prisma.McpConnection$oauthClientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.McpConnection$oauthClientArgs<ExtArgs>>): Prisma.Prisma__McpOAuthClientClient<runtime.Types.Result.GetResult<Prisma.$McpOAuthClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  oauthTokens<T extends Prisma.McpConnection$oauthTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.McpConnection$oauthTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$McpOAuthTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1174,6 +1528,7 @@ export interface McpConnectionFieldRefs {
   readonly lastUsedAt: Prisma.FieldRef<"McpConnection", 'DateTime'>
   readonly revokedAt: Prisma.FieldRef<"McpConnection", 'DateTime'>
   readonly revokedById: Prisma.FieldRef<"McpConnection", 'String'>
+  readonly oauthClientId: Prisma.FieldRef<"McpConnection", 'String'>
 }
     
 
@@ -1572,6 +1927,49 @@ export type McpConnectionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many McpConnections to delete.
    */
   limit?: number
+}
+
+/**
+ * McpConnection.oauthClient
+ */
+export type McpConnection$oauthClientArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the McpOAuthClient
+   */
+  select?: Prisma.McpOAuthClientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the McpOAuthClient
+   */
+  omit?: Prisma.McpOAuthClientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.McpOAuthClientInclude<ExtArgs> | null
+  where?: Prisma.McpOAuthClientWhereInput
+}
+
+/**
+ * McpConnection.oauthTokens
+ */
+export type McpConnection$oauthTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the McpOAuthToken
+   */
+  select?: Prisma.McpOAuthTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the McpOAuthToken
+   */
+  omit?: Prisma.McpOAuthTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.McpOAuthTokenInclude<ExtArgs> | null
+  where?: Prisma.McpOAuthTokenWhereInput
+  orderBy?: Prisma.McpOAuthTokenOrderByWithRelationInput | Prisma.McpOAuthTokenOrderByWithRelationInput[]
+  cursor?: Prisma.McpOAuthTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.McpOAuthTokenScalarFieldEnum | Prisma.McpOAuthTokenScalarFieldEnum[]
 }
 
 /**

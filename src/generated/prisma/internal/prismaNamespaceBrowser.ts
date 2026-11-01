@@ -116,7 +116,10 @@ export const ModelName = {
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftFile: 'OnboardingDraftFile',
-  McpConnection: 'McpConnection'
+  McpConnection: 'McpConnection',
+  McpOAuthClient: 'McpOAuthClient',
+  McpOAuthCode: 'McpOAuthCode',
+  McpOAuthToken: 'McpOAuthToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1292,10 +1295,65 @@ export const McpConnectionScalarFieldEnum = {
   expiresAt: 'expiresAt',
   lastUsedAt: 'lastUsedAt',
   revokedAt: 'revokedAt',
-  revokedById: 'revokedById'
+  revokedById: 'revokedById',
+  oauthClientId: 'oauthClientId'
 } as const
 
 export type McpConnectionScalarFieldEnum = (typeof McpConnectionScalarFieldEnum)[keyof typeof McpConnectionScalarFieldEnum]
+
+
+export const McpOAuthClientScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  kind: 'kind',
+  clientName: 'clientName',
+  clientUri: 'clientUri',
+  redirectUris: 'redirectUris',
+  softwareId: 'softwareId',
+  softwareVersion: 'softwareVersion',
+  registeredIpHash: 'registeredIpHash',
+  metadataExpiresAt: 'metadataExpiresAt',
+  createdAt: 'createdAt',
+  lastUsedAt: 'lastUsedAt'
+} as const
+
+export type McpOAuthClientScalarFieldEnum = (typeof McpOAuthClientScalarFieldEnum)[keyof typeof McpOAuthClientScalarFieldEnum]
+
+
+export const McpOAuthCodeScalarFieldEnum = {
+  id: 'id',
+  codeHash: 'codeHash',
+  clientId: 'clientId',
+  userId: 'userId',
+  redirectUri: 'redirectUri',
+  codeChallenge: 'codeChallenge',
+  resource: 'resource',
+  scopes: 'scopes',
+  connectionName: 'connectionName',
+  days: 'days',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  connectionId: 'connectionId',
+  createdAt: 'createdAt'
+} as const
+
+export type McpOAuthCodeScalarFieldEnum = (typeof McpOAuthCodeScalarFieldEnum)[keyof typeof McpOAuthCodeScalarFieldEnum]
+
+
+export const McpOAuthTokenScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  kind: 'kind',
+  connectionId: 'connectionId',
+  clientId: 'clientId',
+  resource: 'resource',
+  expiresAt: 'expiresAt',
+  rotatedAt: 'rotatedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type McpOAuthTokenScalarFieldEnum = (typeof McpOAuthTokenScalarFieldEnum)[keyof typeof McpOAuthTokenScalarFieldEnum]
 
 
 export const SortOrder = {

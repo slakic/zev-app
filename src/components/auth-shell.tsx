@@ -26,19 +26,22 @@ export function AuthBrandHeader() {
  *  Flash is elevation 1 and so is the card, and nesting them is the "box in a box" the design
  *  system forbids (Plans/f2-orijentacija-u-skoljci-plan.md F2.6). */
 export function AuthShell({
-  pageTitle, children, footnote, flash,
-}: { pageTitle: string; children: ReactNode; footnote?: ReactNode; flash?: { err?: string; msg?: string } }) {
+  pageTitle, children, footnote, flash, width = "narrow",
+}: { pageTitle: string; children: ReactNode; footnote?: ReactNode; flash?: { err?: string; msg?: string }; width?: "narrow" | "wide" }) {
+  // `wide` (max-w-lg) je samo za ekran saglasnosti OAuth-a (/oauth/authorize), koji nosi izbor opsega; sve ostale
+  // javne stranice ostaju `narrow` (max-w-sm).
+  const max = width === "wide" ? "max-w-lg" : "max-w-sm";
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
       <AuthBrandHeader />
-      <div className="w-full max-w-sm">
+      <div className={`w-full ${max}`}>
         {flash && <Flash err={flash.err} msg={flash.msg} />}
         <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
           <h1 className="mb-4 text-base font-semibold text-slate-900">{pageTitle}</h1>
           {children}
         </div>
       </div>
-      {footnote && <p className="max-w-sm text-center text-[13px] text-slate-500">{footnote}</p>}
+      {footnote && <p className={`${max} text-center text-[13px] text-slate-500`}>{footnote}</p>}
     </main>
   );
 }

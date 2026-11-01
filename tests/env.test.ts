@@ -87,4 +87,22 @@ describe("env.ts", () => {
     const { getEnv } = await import("@/lib/env");
     expect(() => getEnv()).toThrow(/MCP_ENABLED/);
   });
+
+  it("keeps MCP OAuth off unless MCP_OAUTH_ENABLED is exactly \"true\"", async () => {
+    const saved = process.env.MCP_OAUTH_ENABLED;
+    try {
+      delete process.env.MCP_OAUTH_ENABLED;
+      expect((await import("@/lib/env")).getEnv().MCP_OAUTH_ENABLED).toBe("false");
+      vi.resetModules();
+      process.env.MCP_OAUTH_ENABLED = "true";
+      expect((await import("@/lib/env")).getEnv().MCP_OAUTH_ENABLED).toBe("true");
+      vi.resetModules();
+      process.env.MCP_OAUTH_ENABLED = "1";
+      const { getEnv } = await import("@/lib/env");
+      expect(() => getEnv()).toThrow(/MCP_OAUTH_ENABLED/);
+    } finally {
+      if (saved === undefined) delete process.env.MCP_OAUTH_ENABLED;
+      else process.env.MCP_OAUTH_ENABLED = saved;
+    }
+  });
 });

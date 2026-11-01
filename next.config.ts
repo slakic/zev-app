@@ -33,6 +33,17 @@ const nextConfig: NextConfig = {
     return [
       { source: "/onboarding/poziv/:token*", headers: [{ key: "Referrer-Policy", value: "no-referrer" }] },
       { source: "/glasanje/:path*", headers: [{ key: "Referrer-Policy", value: "no-referrer" }] },
+      // MCP OAuth (Faza P-B): ekran saglasnosti se ne smije uramiti (clickjacking), a parametri zahtjeva (state,
+      // code_challenge) ne idu dalje kao Referer. Odgovori sa kodovima i tokenima nikad u keš.
+      {
+        source: "/oauth/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "Cache-Control", value: "no-store" },
+        ],
+      },
     ];
   },
   async redirects() {

@@ -9,16 +9,24 @@ import { Field, inputCls, SubmitBtn } from "@/components/ui";
 import { AuthShell } from "@/components/auth-shell";
 import { PasswordInput } from "@/components/password-input";
 import { headers } from "next/headers";
+import { getEnv } from "@/lib/env";
+import { isSafeOAuthNext } from "@/lib/mcp/oauth";
+
+/** `next` se poštuje samo ako vodi na /oauth/authorize ove aplikacije (povratak na ekran saglasnosti MCP OAuth-a). */
+function safeNext(raw: unknown): string | undefined {
+  return isSafeOAuthNext(raw, getEnv().APP_URL) ? raw : undefined;
+}
 
 async function loginAction(formData: FormData) {
   "use server";
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const next = safeNext(formData.get("next"));
   const ip = await clientIp();
   const h = await headers();
   const result = await authenticate(email, password, ip ? sha256(ip) : null);
   if (!result.ok) {
-    redirect(`/login?err=${result.error}`);
+    redirect(`/login?err=${result.error}${next ? `&next=${encodeURIComponent(next)}` : ""}`);
   }
   await createSession(result.user.id, ip, h.get("user-agent"));
   // A super admin who also has a Membership (e.g. president of their own ZEV, per
@@ -27,13 +35,14 @@ async function loginAction(formData: FormData) {
   // no tenant at all has nowhere else useful to land, so goes to /admin.
   // Pozvani klijent koji još popunjava nacrt novog ZEV-a (nema nijedno članstvo) ide na čarobnjak.
   const ctx = await getAuthContext();
-  redirect(ctx ? await landingPath(ctx) : "/");
+  redirect(next ?? (ctx ? await landingPath(ctx) : "/"));
 }
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string; next?: string }> }) {
+  const { err, msg, next: rawNext } = await searchParams;
+  const next = safeNext(rawNext);
   const ctx = await getAuthContext();
-  if (ctx) redirect(await landingPath(ctx));
-  const { err, msg } = await searchParams;
+  if (ctx) redirect(next ?? (await landingPath(ctx)));
   const errMsg =
     err === "invalid" ? t("auth.invalidCredentials")
     : err === "deactivated" ? t("auth.accountDisabled")
@@ -44,10 +53,11 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <AuthShell
       pageTitle={t("auth.loginTitle")}
-      footnote={t("auth.login.footnote")}
+      footnote={next ? t("oauth.loginFootnote") : t("auth.login.footnote")}
       flash={{ err: errMsg, msg: okMsg }}
     >
       <form action={loginAction} className="space-y-4">
+        {next && <input type="hidden" name="next" value={next} />}
         <Field label={t("auth.email")}>
           <input name="email" type="email" required autoComplete="username" className={inputCls} />
         </Field>

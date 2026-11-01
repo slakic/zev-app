@@ -388,6 +388,8 @@ const srLatn = {
       clientHint: "Određuje samo uputstvo koje dobijate posle povezivanja.",
       clients: {
         CLAUDE: "Claude (Claude Code; claude.ai uskoro)",
+        // Kad je OAuth uključen, claude.ai i Desktop se povezuju bez tokena; ručni token ostaje za Claude Code.
+        CLAUDE_TOKEN: "Claude Code (token)",
         OPENAI: "OpenAI aplikacija (Add MCP server)",
         OTHER: "Drugi MCP klijent",
       },
@@ -433,10 +435,27 @@ const srLatn = {
       claudeCodeIntro: "Pokrenite u terminalu:",
       claudeApps: "claude.ai i Claude Desktop",
       claudeAppsBody: "Traže prijavu bez tokena (OAuth), koja stiže uskoro. Do tada koristite Claude Code.",
+      claudeAppsBodyOAuth: "Ne trebaju token: koristite karticu „Poveži Claude bez tokena” iznad ove liste.",
       openai: "OpenAI aplikacija",
       openaiBody: "U „Plugins → Add MCP server” upišite adresu servera, a u polje Headers: Authorization: Bearer i token.",
       other: "Drugi MCP klijent",
       otherBody: "Adresa servera i zaglavlje Authorization: Bearer <token> (Streamable HTTP).",
+    },
+    // Kratki nazivi asistenta u listi veza (ne zavise od načina povezivanja).
+    clientShort: { CLAUDE: "Claude", OPENAI: "OpenAI", OTHER: "Drugi klijent" },
+    kind: { TOKEN: "Token", OAUTH: "OAuth" },
+    oauthCard: {
+      title: "Poveži Claude bez tokena",
+      intro: "Za claude.ai, Claude Desktop i Claude na telefonu. Ne kopirate nikakav token: Claude Vas šalje na prijavu u ovu aplikaciju, a Vi birate šta smije.",
+      stepsTitle: "Koraci u Claude-u",
+      steps: {
+        one: "Otvorite Podešavanja, pa Konektori.",
+        two: "Izaberite „Dodaj sopstveni konektor”.",
+        three: "Upišite adresu servera sa polja ispod.",
+        four: "Kliknite „Poveži” i prijavite se u ovu aplikaciju.",
+        five: "Na ekranu saglasnosti izaberite šta asistent smije i kliknite „Dozvoli”.",
+      },
+      urlLabel: "Adresa servera",
     },
     list: {
       title: "Aktivne veze ({n})",
@@ -467,6 +486,34 @@ const srLatn = {
       noScope: "Ova veza nema pristup {naziv}.",
       draftClosed: "Nacrt „{naziv}” više nije u toku.",
     },
+  },
+  oauth: {
+    consent: {
+      title: "Povezivanje asistenta",
+      intro: "„{klijent}” traži da se poveže sa Vašim nalogom u aplikaciji ZEV upravnik.",
+      returnTo: "Nakon Vaše odluke vraćate se na:",
+      signedIn: "Prijavljeni ste kao {email}.",
+      switchAccount: "Nisam ja, odjavi me",
+      allow: "Dozvoli",
+      deny: "Odbij",
+      localhost:
+        "Ovaj klijent se vraća na Vaš računar (localhost). Dozvolite samo ako ste Vi pokrenuli program koji traži povezivanje.",
+      note: "Asistent radi u Vaše ime, samo u okviru izabranog opsega. Vezu možete prekinuti u svakom trenutku u Povezanim asistentima.",
+      errors: {
+        scope: "Izabrani nacrt više nije dostupan. Izaberite ponovo.",
+        name: "Upišite naziv veze (najviše 80 znakova).",
+        days: "Izaberite rok važenja veze.",
+        request: "Zahtjev za povezivanje više nije važeći. Pokušajte ponovo iz asistenta.",
+        other: "Povezivanje nije uspjelo. Pokušajte ponovo.",
+      },
+    },
+    error: {
+      title: "Povezivanje nije moguće",
+      invalid_client: "Aplikacija koja traži povezivanje nije prepoznata.",
+      invalid_redirect_uri: "Adresa na koju bi se vratili nije dozvoljena za ovu aplikaciju.",
+      hint: "Ništa nije povezano. Zatvorite ovu stranicu i pokušajte ponovo iz asistenta.",
+    },
+    loginFootnote: "Prijavite se da biste povezali asistenta.",
   },
   onboarding: {
     shellTitle: "Podešavanje novog ZEV-a",
@@ -1122,6 +1169,10 @@ const srLatn = {
       connection: {
         create: "Napravljena veza sa asistentom",
         revoke: "Prekinuta veza sa asistentom",
+      },
+      oauth: {
+        client_register: "Registrovan OAuth klijent asistenta",
+        token_reuse: "Otkrivena ponovna upotreba OAuth koda ili tokena; veza prekinuta",
       },
     },
     notification: {

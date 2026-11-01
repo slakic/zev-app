@@ -41,6 +41,9 @@ const schema = z.object({
   // MCP platforma (Plans/mcp-platforma-plan.md): ruta /api/mcp i stranica „Povezani asistenti" su
   // isključene (404) dok se ne uključe sa "true". Lokalno i na test okruženju se uključuje po potrebi.
   MCP_ENABLED: z.enum(["true", "false"]).default("false"),
+  // OAuth 2.1 za MCP (Plans/mcp-platforma-plan.md §5, Faza P-B): /.well-known/* i /oauth/* postoje (inače 404) samo
+  // kad su uključeni i MCP_ENABLED i ovaj flag. Isključen: 401 na /api/mcp ostaje bez `resource_metadata`.
+  MCP_OAUTH_ENABLED: z.enum(["true", "false"]).default("false"),
 });
 
 export type Env = z.infer<typeof schema> & { APP_URL: string };

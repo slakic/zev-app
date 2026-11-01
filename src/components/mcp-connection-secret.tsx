@@ -9,7 +9,7 @@ import { t } from "@/lib/i18n";
 
 type Client = "CLAUDE" | "OPENAI" | "OTHER";
 
-function CopyField({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function CopyField({ label, value, hint }: { label: string; value: string; hint?: string }) {
   const [copied, setCopied] = useState(false);
   async function copy() {
     try {
@@ -39,8 +39,8 @@ function CopyField({ label, value, hint }: { label: string; value: string; hint?
 const pre = "mt-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-[13px] text-slate-800";
 
 export function McpConnectionSecret({
-  serverUrl, token, client, onDone,
-}: { serverUrl: string; token: string; client: Client; onDone: () => void }) {
+  serverUrl, token, client, oauthEnabled = false, onDone,
+}: { serverUrl: string; token: string; client: Client; oauthEnabled?: boolean; onDone: () => void }) {
   return (
     <div className="space-y-5">
       <div>
@@ -63,7 +63,7 @@ export function McpConnectionSecret({
             </div>
             <div>
               <p className="text-sm font-medium text-slate-700">{t("assistants.howTo.claudeApps")}</p>
-              <p className="mt-1 text-sm text-slate-700">{t("assistants.howTo.claudeAppsBody")}</p>
+              <p className="mt-1 text-sm text-slate-700">{t(oauthEnabled ? "assistants.howTo.claudeAppsBodyOAuth" : "assistants.howTo.claudeAppsBody")}</p>
             </div>
           </div>
         )}

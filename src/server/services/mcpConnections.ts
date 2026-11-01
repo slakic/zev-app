@@ -37,12 +37,29 @@ export async function listOfferedScopes(actor: Actor): Promise<OfferedScope[]> {
   }));
 }
 
+// Naziv i rok dijele forma „Poveži asistenta" i ekran saglasnosti OAuth-a (Faza P-B).
+export const connectionNameSchema = z.string().trim().min(1, t("assistants.errors.nameRequired")).max(80, t("assistants.errors.nameTooLong"));
+export const connectionDaysSchema = z.coerce
+  .number()
+  .refine((n) => (MCP_EXPIRY_DAYS as readonly number[]).includes(n), t("assistants.errors.daysInvalid"));
+
 const createSchema = z.object({
-  name: z.string().trim().min(1, t("assistants.errors.nameRequired")).max(80, t("assistants.errors.nameTooLong")),
+  name: connectionNameSchema,
   client: z.enum(["CLAUDE", "OPENAI", "OTHER"]),
   scopeKey: z.string().max(100),
-  days: z.coerce.number().refine((n) => (MCP_EXPIRY_DAYS as readonly number[]).includes(n), t("assistants.errors.daysInvalid")),
+  days: connectionDaysSchema,
 });
+
+/**
+ * Opseg za izabrani ključ: "none" je veza bez opsega, inače ključ MORA biti među trenutno ponuđenim opsezima
+ * korisnika. Server ga izvodi iz baze i nikad ne vjeruje draftId-u iz forme (isto za token i OAuth put).
+ */
+export async function resolveScopesForKey(actor: Actor, scopeKey: string): Promise<McpScope[]> {
+  if (scopeKey === "none") return [];
+  const offered = (await listOfferedScopes(actor)).find((o) => o.key === scopeKey);
+  if (!offered) throw new Error(t("assistants.errors.scopeNotOffered"));
+  return [offered.scope];
+}
 
 export type CreateMcpConnectionInput = { name: string; client: McpClient; scopeKey: string; days: number };
 
@@ -56,12 +73,7 @@ export async function createMcpConnection(
   if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? t("assistants.errors.invalid"));
   const { name, client, scopeKey, days } = parsed.data;
 
-  let scopes: McpScope[] = [];
-  if (scopeKey !== "none") {
-    const offered = (await listOfferedScopes(actor)).find((o) => o.key === scopeKey);
-    if (!offered) throw new Error(t("assistants.errors.scopeNotOffered"));
-    scopes = [offered.scope];
-  }
+  const scopes = await resolveScopesForKey(actor, scopeKey);
 
   const token = MCP_TOKEN_PREFIX + generateToken(32);
   const expiresAt = new Date(Date.now() + days * DAY_MS);
@@ -89,6 +101,9 @@ export type McpConnectionListRow = {
   id: string;
   name: string;
   client: McpClient;
+  kind: "TOKEN" | "OAUTH";
+  /** Samoprijavljeno ime OAuth klijenta (nepouzdano, samo za prikaz); null za TOKEN vezu. */
+  oauthClientName: string | null;
   createdAt: Date;
   expiresAt: Date;
   lastUsedAt: Date | null;
@@ -100,11 +115,18 @@ export async function listMyMcpConnections(actor: Actor): Promise<McpConnectionL
   requireAnyUser(actor);
   const rows = await prisma.mcpConnection.findMany({
     where: { userId: actor.userId, revokedAt: null, expiresAt: { gt: new Date() } },
-    select: { id: true, name: true, client: true, createdAt: true, expiresAt: true, lastUsedAt: true, scopes: true },
+    select: {
+      id: true, name: true, client: true, kind: true, createdAt: true, expiresAt: true, lastUsedAt: true, scopes: true,
+      oauthClient: { select: { clientName: true } },
+    },
     orderBy: { createdAt: "desc" },
   });
   return Promise.all(
-    rows.map(async ({ scopes, ...r }) => ({ ...r, scopes: await describeScopes(actor.userId, parseScopes(scopes)) }))
+    rows.map(async ({ scopes, oauthClient, ...r }) => ({
+      ...r,
+      oauthClientName: oauthClient?.clientName ?? null,
+      scopes: await describeScopes(actor.userId, parseScopes(scopes)),
+    }))
   );
 }
 
@@ -120,6 +142,8 @@ export async function revokeMcpConnection(actor: Actor, id: string): Promise<{ n
         })
       : { count: 0 };
     if (!row || res.count === 0) throw new Error(t("assistants.errors.notFound"));
+    // OAuth veza: access i refresh tokeni umiru zajedno sa vezom (TOKEN veza ih nema, pa je ovo bez efekta).
+    await tx.mcpOAuthToken.updateMany({ where: { connectionId: id, revokedAt: null }, data: { revokedAt: new Date() } });
     await audit(
       accountActor(actor),
       { action: "mcp.connection.revoke", targetType: "McpConnection", targetId: id, before: { name: row.name } },

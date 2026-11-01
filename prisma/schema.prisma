@@ -1931,6 +1931,10 @@ model McpConnection {
   lastUsedAt  DateTime?
   revokedAt   DateTime?
   revokedById String?
+  /// Samo za kind OAUTH: klijent koji je vezu dobio (OAuth 2.1, Plans/mcp-platforma-plan.md §5). tokenHash je tada null.
+  oauthClient   McpOAuthClient? @relation(fields: [oauthClientId], references: [id], onDelete: SetNull)
+  oauthClientId String?
+  oauthTokens   McpOAuthToken[]
 
   @@index([userId])
 }
@@ -1944,4 +1948,82 @@ enum McpClient {
   CLAUDE
   OPENAI
   OTHER
+}
+
+enum McpOAuthClientKind {
+  DCR
+  CIMD
+}
+
+enum McpOAuthTokenKind {
+  ACCESS
+  REFRESH
+}
+
+/// OAuth klijent MCP servera (Plans/mcp-platforma-plan.md §5): DCR (RFC 7591) ili CIMD (metapodaci na https adresi).
+/// Svi podaci o klijentu su samoprijavljeni i nepouzdani; stvarna ovlašćenja daje samo korisnik na ekranu saglasnosti.
+model McpOAuthClient {
+  id                String             @id @default(cuid())
+  /// DCR: "zev_cl_" + slučajni dio; CIMD: https adresa dokumenta.
+  clientId          String             @unique
+  kind              McpOAuthClientKind
+  clientName        String
+  clientUri         String?
+  /// string[] (najviše 5), svaka prošla isAllowedRedirectUri.
+  redirectUris      Json
+  softwareId        String?
+  softwareVersion   String?
+  registeredIpHash  String?
+  /// CIMD keš: do kada se dokument ne dohvata ponovo.
+  metadataExpiresAt DateTime?
+  createdAt         DateTime           @default(now())
+  lastUsedAt        DateTime?
+  connections       McpConnection[]
+  codes             McpOAuthCode[]
+  tokens            McpOAuthToken[]
+
+  @@index([createdAt])
+}
+
+/// Jednokratni kod autorizacije (5 minuta). Čuva se samo sha256 koda.
+model McpOAuthCode {
+  id             String         @id @default(cuid())
+  codeHash       String         @unique
+  client         McpOAuthClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId       String
+  userId         String
+  redirectUri    String
+  /// Samo S256.
+  codeChallenge  String
+  resource       String
+  /// McpScope[] izabran na ekranu saglasnosti.
+  scopes         Json
+  connectionName String
+  days           Int
+  expiresAt      DateTime
+  usedAt         DateTime?
+  /// Postavlja se pri razmjeni koda; služi da ponovna upotreba koda prekine nastalu vezu.
+  connectionId   String?
+  createdAt      DateTime       @default(now())
+
+  @@index([expiresAt])
+}
+
+/// Access/refresh token veze tipa OAUTH. Čuva se samo sha256; refresh se rotira pri svakoj upotrebi.
+model McpOAuthToken {
+  id           String            @id @default(cuid())
+  tokenHash    String            @unique
+  kind         McpOAuthTokenKind
+  connection   McpConnection     @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  connectionId String
+  client       McpOAuthClient    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId     String
+  resource     String
+  expiresAt    DateTime
+  rotatedAt    DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime          @default(now())
+
+  @@index([connectionId])
+  @@index([expiresAt])
 }
