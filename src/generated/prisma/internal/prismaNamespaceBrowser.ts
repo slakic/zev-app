@@ -115,7 +115,8 @@ export const ModelName = {
   PlatformSetting: 'PlatformSetting',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
-  OnboardingDraftFile: 'OnboardingDraftFile'
+  OnboardingDraftFile: 'OnboardingDraftFile',
+  McpConnection: 'McpConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1277,6 +1278,24 @@ export const OnboardingDraftFileScalarFieldEnum = {
 } as const
 
 export type OnboardingDraftFileScalarFieldEnum = (typeof OnboardingDraftFileScalarFieldEnum)[keyof typeof OnboardingDraftFileScalarFieldEnum]
+
+
+export const McpConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  client: 'client',
+  kind: 'kind',
+  scopes: 'scopes',
+  tokenHash: 'tokenHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById'
+} as const
+
+export type McpConnectionScalarFieldEnum = (typeof McpConnectionScalarFieldEnum)[keyof typeof McpConnectionScalarFieldEnum]
 
 
 export const SortOrder = {

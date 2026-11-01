@@ -38,6 +38,9 @@ const schema = z.object({
   // klijentu" na /admin/novi je skrivena dok čarobnjak ne može da objavi ZEV (Faza C). Lokalno i
   // na test okruženju se uključuje sa "true".
   ONBOARDING_INVITES_ENABLED: z.enum(["true", "false"]).default("false"),
+  // MCP platforma (Plans/mcp-platforma-plan.md): ruta /api/mcp i stranica „Povezani asistenti" su
+  // isključene (404) dok se ne uključe sa "true". Lokalno i na test okruženju se uključuje po potrebi.
+  MCP_ENABLED: z.enum(["true", "false"]).default("false"),
 });
 
 export type Env = z.infer<typeof schema> & { APP_URL: string };

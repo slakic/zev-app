@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.60.0] - 2026-11-01
+
+MCP platforma, Faza P-A: osnova za povezivanje asistenata (Claude, OpenAI aplikacija i drugi MCP klijenti) sa nalogom korisnika. Sve je iza `MCP_ENABLED` (podrazumijevano `false`): dok je isključen, ruta `/api/mcp` vraća 404, a stavka „Povezani asistenti” se ne prikazuje. Plan: `Plans/mcp-platforma-plan.md`.
+
+**Migracija: da — nova tabela `McpConnection` (i enumi `McpConnectionKind`, `McpClient`); primijeniti uobičajeno (`npm run db:migrate`).**
+
+### Dodato
+
+- **Stranica „Povezani asistenti”** (`/nalog/asistenti`), iz menija naloga u sve tri ljuske (aplikacija ZEV-a, platformski admin, čarobnjak); radi i za korisnika bez ZEV-a. Forma pravi vezu (naziv, asistent, šta asistent smije, rok 7/30/90 dana), token se prikazuje **jednom** sa adresom servera i uputstvom po asistentu, a lista aktivnih veza ima „Prekini vezu” iza potvrde.
+- **Opsezi:** „Onboarding: [nacrt]” (samo nacrt u toku čiji je korisnik vlasnik) i „Samo provjera veze”. Opseg se provjerava na svakom pozivu: kad se nacrt objavi ili odbaci, veza gubi pristup bez diranja tokena.
+- **MCP server na `/api/mcp`** (Streamable HTTP, `@modelcontextprotocol/server` 2.4.0). Prijava je isključivo tokenom `zev_mcp_…` u zaglavlju `Authorization: Bearer`; u bazi se čuva samo sha256. Ograničenje poziva po vezi i neuspjelih prijava po adresi. Jedini alat u ovoj fazi je `whoami` (ko je povezan i koje dozvole veza ima), bez tokena, e-maila i internih ID-jeva u odgovoru.
+- Audit: `mcp.connection.create` i `mcp.connection.revoke` (bez tokena i hasha).
+- Dizajn sistem: primitiv `ChoiceCards` (izbor sa opisom), meni naloga sa listom stavki (`AccountMenu`, `NavShell.accountLinks`) i ikona `IconPlug`; pravilo da nijedan MCP alat nema nepovratnu posljedicu.
+
+### Izmijenjeno
+
+- Meni naloga je izdvojen u `AccountMenu`, a ljuske u zajedničke komponente; ljuska čarobnjaka umjesto samog „Odjava” dobija meni naloga.
+- Odstupanja od plana, upisana u `Plans/mcp-platforma-plan.md`: službeni SDK bez `mcp-handler`, ruta `/api/mcp`, OAuth metapodaci tek u P-B, a pristup administratora nacrtu (`OnboardingDraftAdminAccess`) prelazi u fazu O-A.
+
 ## [2.59.0] - 2026-10-29
 
 ZEV onboarding, Faza C: čarobnjak za novi ZEV je kompletan. Klijent upisuje vlasnike sa dokazima, računovođu i upravni odbor, i objavom pravi ZEV. Poziv ostaje iza `ONBOARDING_INVITES_ENABLED` (podrazumijevano `false`) dok ga ne uključite na okruženju. Plan: `Plans/zev-onboarding-wizard-plan.md`.

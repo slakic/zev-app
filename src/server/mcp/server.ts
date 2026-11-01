@@ -1,0 +1,55 @@
+// MCP server aplikacije (Plans/mcp-platforma-plan.md §3): Streamable HTTP preko web-standardnog
+// `createMcpHandler` (@modelcontextprotocol/server). Ovaj fajl radi sve prije alata — veličinu zahtjeva,
+// ograničenja, provjeru tokena — pa tek onda prosljeđuje zahtjev SDK-u sa podacima o vezi.
+//
+// Nema provjere zaglavlja Origin: pristup je samo kroz Authorization: Bearer, bez kolačića, pa preglednik
+// sa tuđe stranice ne može da pošalje vjerodajnice ove veze (nema CSRF površine).
+import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
+import { getEnv } from "@/lib/env";
+import { verifyMcpToken, unauthorizedResponse, type McpRequestContext } from "@/server/mcp/auth";
+import { consumeMcpCall, mcpAuthFailuresAllowed, recordMcpAuthFailure } from "@/server/mcp/rateLimit";
+import { toolsFor } from "@/server/mcp/tools/registry";
+import pkg from "../../../package.json";
+
+function json(status: number, body: Record<string, unknown>): Response {
+  return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
+}
+
+// Server se pravi po zahtjevu i registruje samo alate koje opseg veze dozvoljava.
+const handler = createMcpHandler(
+  ({ authInfo }) => {
+    const ctx = authInfo?.extra?.mcp as McpRequestContext | undefined;
+    if (!ctx) throw new Error("MCP zahtjev bez provjerene veze.");
+    const server = new McpServer({ name: "zev-upravnik", version: pkg.version });
+    for (const tool of toolsFor(ctx)) tool.register(server, ctx);
+    return server;
+  },
+  // Bez SSE tokova: alati su kratki upiti, a serverless platforme ne vole otvorene veze.
+  { responseMode: "json" }
+);
+
+export async function handleMcpRequest(req: Request, ipHash: string | null): Promise<Response> {
+  const ipKey = ipHash ?? "unknown";
+  if (!mcpAuthFailuresAllowed(ipKey)) return json(429, { error: "rate_limited" });
+
+  const maxBytes = getEnv().MAX_UPLOAD_MB * 1024 * 1024;
+  if (Number(req.headers.get("content-length") ?? 0) > maxBytes) return json(413, { error: "too_large" });
+
+  const ctx = await verifyMcpToken(req.headers.get("authorization"));
+  if (!ctx) {
+    recordMcpAuthFailure(ipKey);
+    return unauthorizedResponse();
+  }
+  if (!consumeMcpCall(ctx.connectionId)) return json(429, { error: "rate_limited" });
+
+  return handler.fetch(req, {
+    authInfo: {
+      // Sirovi token se ne prosljeđuje dalje od provjere.
+      token: "",
+      clientId: ctx.connectionId,
+      scopes: ctx.scopes.map((s) => `${s.kind}:${s.draftId}`),
+      expiresAt: Math.floor(ctx.expiresAt.getTime() / 1000),
+      extra: { mcp: ctx },
+    },
+  });
+}

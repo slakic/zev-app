@@ -8,6 +8,7 @@ import * as meetings from "@/server/services/meetings";
 import * as billing from "@/server/services/billing";
 import * as unitRegister from "@/server/services/unitRegister";
 import { seedDefaultSettings } from "@/server/services/settings";
+import { acceptOnboardingInvite, createOnboardingInvite } from "@/server/services/onboarding";
 import { extractApprovalSecrets } from "@/server/notifications/testOutbox";
 
 let counter = 0;
@@ -299,3 +300,18 @@ export const ballotFor = (links: Awaited<ReturnType<typeof openSessionBallots>>,
   if (!l) throw new Error(`no ballot message for ${email}`);
   return { token: l.token!, code: l.code!, ballotId: l.ballotId };
 };
+
+/** Poziv za novi ZEV (onboarding) koji kreira nov super admin; vraća i token poziva. */
+export async function invite(tag: string, tier: "BASIC" | "BASIC_FINANCE" | "FULL" = "BASIC_FINANCE") {
+  const admin = await createSuperAdminActor(`ob-${tag}`);
+  const email = `${uid(tag)}@klijent.test`;
+  const res = await createOnboardingInvite(admin, { workingName: `ZEV ${tag}`, tier, email });
+  return { admin, email, ...res };
+}
+
+export async function accepted(tag: string, tier?: "BASIC" | "BASIC_FINANCE" | "FULL") {
+  const inv = await invite(tag, tier);
+  const r = await acceptOnboardingInvite(inv.token, { mode: "new", firstName: "Dragana", lastName: "Savić", password: "Lozinka123", confirm: "Lozinka123" });
+  if (!r.ok) throw new Error(`accept failed: ${r.error}`);
+  return { ...inv, actor: { userId: r.userId } };
+}

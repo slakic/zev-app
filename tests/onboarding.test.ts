@@ -28,26 +28,12 @@ import {
   setNoAccounts,
   StaleDraftError,
 } from "@/server/services/onboarding";
-import { createFixture, createSuperAdminActor, uid } from "./helpers";
+import { accepted, createFixture, createSuperAdminActor, invite, uid } from "./helpers";
 
 const ZEV = {
   legalName: "ZEV Kralja Petra I 45", shortName: "", registrationNumber: "1-2345/26", jib: "4404567890002",
   registeredAddress: "Kralja Petra I 45", city: "Banja Luka", municipality: "Banja Luka", foundingDate: "", registrationDate: "",
 };
-
-async function invite(tag: string, tier: "BASIC" | "BASIC_FINANCE" | "FULL" = "BASIC_FINANCE") {
-  const admin = await createSuperAdminActor(`ob-${tag}`);
-  const email = `${uid(tag)}@klijent.test`;
-  const res = await createOnboardingInvite(admin, { workingName: `ZEV ${tag}`, tier, email });
-  return { admin, email, ...res };
-}
-
-async function accepted(tag: string, tier?: "BASIC" | "BASIC_FINANCE" | "FULL") {
-  const inv = await invite(tag, tier);
-  const r = await acceptOnboardingInvite(inv.token, { mode: "new", firstName: "Dragana", lastName: "Savić", password: "Lozinka123", confirm: "Lozinka123" });
-  if (!r.ok) throw new Error(`accept failed: ${r.error}`);
-  return { ...inv, actor: { userId: r.userId } };
-}
 
 describe("createOnboardingInvite", () => {
   it("is super-admin only, stores only the token hash, and audits without a ZEV", async () => {

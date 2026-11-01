@@ -1,6 +1,6 @@
 # MCP platforma — povezani asistenti, tokeni i opsezi — implementacioni plan
 
-**Status: PLAN, odluke usvojene (2026-10-31), implementacija nije počela.** Nastalo iz razgovora o MCP-u
+**Status: PLAN, odluke usvojene (2026-10-31). Faza P-A (osnova platforme) implementirana 2026-11-01; P-B i dalje čekaju.** Nastalo iz razgovora o MCP-u
 za onboarding (2026-10-29/31): MCP se gradi kao **opšta mogućnost aplikacije**, a onboarding je prvi
 skup alata na njoj (`Plans/mcp-onboarding-asistent-plan.md`).
 
@@ -64,9 +64,10 @@ Kad se članstvo ukine ili nacrt objavi, asistent gubi pristup na sljedećem poz
 /// sha256; prikazuje se jednom. Veza napravljena kroz OAuth (§5) ima isti red, sa `kind = OAUTH`.
 model McpConnection {
   id          String            @id @default(cuid())
+  user        User              @relation(fields: [userId], references: [id])
   userId      String            // vlasnik veze (User.id)
   name        String            // „Moj Claude na laptopu“
-  client      String            // "CLAUDE" | "CHATGPT" | "OTHER" — samo za uputstvo i prikaz
+  client      McpClient         // CLAUDE | OPENAI | OTHER — samo za uputstvo i prikaz
   kind        McpConnectionKind @default(TOKEN)
   scopes      Json              // McpScope[] (§3)
   tokenHash   String?           @unique // TOKEN; za OAUTH tokeni su u McpOAuthToken (§5)
@@ -84,6 +85,14 @@ enum McpConnectionKind {
   OAUTH
 }
 
+enum McpClient {
+  CLAUDE
+  OPENAI
+  OTHER
+}
+
+/// **Nastaje u fazi O-A, ne u P-A** (odluka 2026-11-01): P-A nema alata koji čita nacrt, pa model ne bi imao
+/// šta da radi. `resolveMcpAccess` u P-A ima samo oznaku `// O-A:` na mjestu gdje se ovaj pristup uključuje.
 /// Pristup super admina nacrtu klijenta (P6). Dodaje se sa /admin/nacrti/[id]; klijent ga vidi na
 /// „Povezani asistenti“ i može ukloniti. Važi za sve veze super admina koje imaju onboarding opseg
 /// za taj nacrt.
@@ -134,12 +143,15 @@ Alat koji traži opseg koji veza nema vraća jasnu grešku („Ova veza nema pri
 
 ## 4. Ruta, autentifikacija i trag
 
-- **Ruta:** `src/app/api/mcp/[transport]/route.ts`, Streamable HTTP, stateless, biblioteka
-  `mcp-handler` sa zvaničnim MCP SDK-om (verzije se poklapaju: `mcp-handler` 2.x ↔ SDK 2.x, a 1.x ↔
-  `@modelcontextprotocol/sdk` ≥ 1.26.0; tačne verzije se zaključavaju pri instalaciji).
-- **`withMcpAuth`** sa `verifyToken`: prihvata token veze (`TOKEN`) ili OAuth access token (`OAUTH`,
-  §5) i vraća `AuthInfo` sa `userId`, `connectionId` i opsezima. Bez važećeg tokena ruta vraća 401 sa
-  `WWW-Authenticate` zaglavljem koje upućuje na Protected Resource Metadata (RFC 9728).
+- **Ruta (isporučeno u P-A):** `src/app/api/mcp/route.ts`, javni URL `${APP_URL}/api/mcp`, Streamable HTTP,
+  stateless. Biblioteka je **`@modelcontextprotocol/server` 2.4.0 (SDK v2) direktno, bez `mcp-handler`**
+  (odluka 2026-11-01): njegov web-standardni `createMcpHandler(factory, { responseMode: "json" })` vraća
+  `{ fetch }`, a `handler.fetch(request, { authInfo })` prosljeđuje provjerenu vezu fabrici koja po zahtjevu
+  pravi `McpServer` samo sa alatima dozvoljenim opsegom veze.
+- **Provjera tokena (`src/server/mcp/auth.ts`)**: prihvata token veze (`TOKEN`); OAuth access token (`OAUTH`,
+  §5) dolazi u P-B. Bez važećeg tokena ruta vraća 401 sa `WWW-Authenticate: Bearer realm="zev-upravnik"`.
+  **Zaglavlje još NE upućuje na Protected Resource Metadata (RFC 9728)** — nema `/.well-known/oauth-protected-resource`
+  dok P-B ne doda metapodatke i authorization server.
 - **Identitet samo iz tokena;** ruta ne čita kolačiće ni sesiju (isto pravilo kao SMS webhook).
 - **Registar alata:** svaki skup alata (onboarding, kasnije čitanje ZEV-a) se registruje sa opsegom
   koji traži. Lista alata koju klijent vidi zavisi od opsega veze, pa asistent ne vidi alate koje ne
@@ -222,7 +234,7 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom. Redoslijed sa plan
    pripremam server, preview i uputstvo. Bilježi se šta koji klijent prihvata (token u zaglavlju,
    OAuth, bez prijave) i da li ChatGPT Plus uopšte dozvoljava sopstveni konektor. Rezultat se upisuje
    u §5 i u plan onboardinga.
-2. **Faza P-A — osnova platforme.** `McpConnection`, `/nalog/asistenti` (forma, jednokratni prikaz,
+2. **Faza P-A — osnova platforme. ✅ Urađena 2026-11-01** (v2.60.0 uz potvrdu korisnika). `McpConnection`, `/nalog/asistenti` (forma, jednokratni prikaz,
    lista, prekid), meni naloga u sve tri ljuske, ruta `/api/mcp` sa `withMcpAuth`, provjera opsega,
    audit, flag `MCP_ENABLED`. Bez ijednog alata osim `whoami` (ko sam i koje opsege imam).
 3. **Faza P-B — OAuth 2.1** (§5), **odmah iza P-A** (odluka 2026-10-31): posle P-A i P-B korisnik u

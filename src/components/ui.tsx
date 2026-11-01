@@ -717,6 +717,42 @@ export const inputCls =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm transition-shadow " +
   "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20";
 
+/** Izbor jedne opcije sa opisom (X-M05; dopuna DS-a, Plans/design-system.md §4.4): radio kartice sa naslovom i
+ *  jednom rečenicom „smije” / „ne smije” po opciji, za odluku čija posljedica mora biti vidljiva PRIJE izbora (opseg
+ *  dozvole asistentu). Kad nema ovakve posljedice, koristi običan `<select>` u `Field`-u. Čisti CSS, bez client JS-a:
+ *  izabrana kartica dobija okvir i prsten u primarnoj boji (`has-[:checked]`, kao e-listić u ballot-form.tsx), a
+ *  prsten od 1px uz okvir daje debljinu 2px bez pomjeranja rasporeda. Svaka kartica je pravi `<label>` oko radija. */
+export function ChoiceCards({
+  name, legend, options, defaultValue,
+}: {
+  name: string;
+  legend: string;
+  options: { value: string; title: string; allowed?: string; denied?: string; note?: string }[];
+  defaultValue?: string;
+}) {
+  return (
+    <fieldset>
+      <legend className="text-sm font-medium text-slate-700">{legend}</legend>
+      <div className="mt-2 space-y-2">
+        {options.map((o) => (
+          <label
+            key={o.value}
+            className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-soft/40 has-[:checked]:ring-1 has-[:checked]:ring-primary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary"
+          >
+            <input type="radio" name={name} value={o.value} defaultChecked={o.value === defaultValue} className="mt-1 h-4 w-4 shrink-0 accent-primary" />
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold text-slate-900">{o.title}</span>
+              {o.allowed && <span className="mt-0.5 block text-[13px] text-slate-600">{o.allowed}</span>}
+              {o.denied && <span className="mt-0.5 block text-[13px] text-slate-600">{o.denied}</span>}
+              {o.note && <span className="mt-0.5 block text-[13px] text-slate-500">{o.note}</span>}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 const flashIcon = (err?: boolean) => (
   <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-4 w-4 shrink-0">
     {err ? (

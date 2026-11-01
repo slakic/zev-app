@@ -461,7 +461,8 @@ export const ModelName = {
   PlatformSetting: 'PlatformSetting',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
-  OnboardingDraftFile: 'OnboardingDraftFile'
+  OnboardingDraftFile: 'OnboardingDraftFile',
+  McpConnection: 'McpConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -477,7 +478,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftFile"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftFile" | "mcpConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5291,6 +5292,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    McpConnection: {
+      payload: Prisma.$McpConnectionPayload<ExtArgs>
+      fields: Prisma.McpConnectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.McpConnectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.McpConnectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>
+        }
+        findFirst: {
+          args: Prisma.McpConnectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.McpConnectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>
+        }
+        findMany: {
+          args: Prisma.McpConnectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>[]
+        }
+        create: {
+          args: Prisma.McpConnectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>
+        }
+        createMany: {
+          args: Prisma.McpConnectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.McpConnectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>[]
+        }
+        delete: {
+          args: Prisma.McpConnectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>
+        }
+        update: {
+          args: Prisma.McpConnectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.McpConnectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.McpConnectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.McpConnectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.McpConnectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$McpConnectionPayload>
+        }
+        aggregate: {
+          args: Prisma.McpConnectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMcpConnection>
+        }
+        groupBy: {
+          args: Prisma.McpConnectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.McpConnectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.McpConnectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.McpConnectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -6475,6 +6550,24 @@ export const OnboardingDraftFileScalarFieldEnum = {
 export type OnboardingDraftFileScalarFieldEnum = (typeof OnboardingDraftFileScalarFieldEnum)[keyof typeof OnboardingDraftFileScalarFieldEnum]
 
 
+export const McpConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  client: 'client',
+  kind: 'kind',
+  scopes: 'scopes',
+  tokenHash: 'tokenHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById'
+} as const
+
+export type McpConnectionScalarFieldEnum = (typeof McpConnectionScalarFieldEnum)[keyof typeof McpConnectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -7237,6 +7330,34 @@ export type ListEnumOnboardingDraftStatusFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'McpClient'
+ */
+export type EnumMcpClientFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpClient'>
+    
+
+
+/**
+ * Reference to a field of type 'McpClient[]'
+ */
+export type ListEnumMcpClientFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpClient[]'>
+    
+
+
+/**
+ * Reference to a field of type 'McpConnectionKind'
+ */
+export type EnumMcpConnectionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpConnectionKind'>
+    
+
+
+/**
+ * Reference to a field of type 'McpConnectionKind[]'
+ */
+export type ListEnumMcpConnectionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpConnectionKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -7465,6 +7586,7 @@ export type GlobalOmitConfig = {
   onboardingInvite?: Prisma.OnboardingInviteOmit
   onboardingDraft?: Prisma.OnboardingDraftOmit
   onboardingDraftFile?: Prisma.OnboardingDraftFileOmit
+  mcpConnection?: Prisma.McpConnectionOmit
 }
 
 /* Types for Logging */

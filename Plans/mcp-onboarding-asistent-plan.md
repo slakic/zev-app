@@ -123,6 +123,8 @@ type DraftAccess = {
 
 ### 3.4 Pristup administratora nacrtu (M2, platforma P6)
 
+- Model `OnboardingDraftAdminAccess` **nastaje u fazi O-A** (odluka 2026-11-01), ne u P-A: platforma (P-A)
+  nema alata koji čita nacrt, pa ga nema ni zašto da ima. U `resolveMcpAccess` stoji samo oznaka `// O-A:`.
 - Na `/admin/nacrti/[id]`: kartica „Asistent“ sa „Dozvoli mom asistentu pristup ovom nacrtu“ (pravi
   `OnboardingDraftAdminAccess`) i stanjem pristupa.
 - Kod klijenta: veza „Asistent“ u gornjoj traci čarobnjaka vodi na „Povezani asistenti“ sa

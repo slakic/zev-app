@@ -238,6 +238,7 @@ export type UserWhereInput = {
   parties?: Prisma.PartyListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
+  mcpConnections?: Prisma.McpConnectionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -257,6 +258,7 @@ export type UserOrderByWithRelationInput = {
   parties?: Prisma.PartyOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
+  mcpConnections?: Prisma.McpConnectionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -279,6 +281,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   parties?: Prisma.PartyListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
+  mcpConnections?: Prisma.McpConnectionListRelationFilter
 }, "id" | "email" | "partyId">
 
 export type UserOrderByWithAggregationInput = {
@@ -333,6 +336,7 @@ export type UserCreateInput = {
   parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -351,6 +355,7 @@ export type UserUncheckedCreateInput = {
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -369,6 +374,7 @@ export type UserUpdateInput = {
   parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -387,6 +393,7 @@ export type UserUncheckedUpdateInput = {
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -599,6 +606,20 @@ export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMembershipsInput, Prisma.UserUpdateWithoutMembershipsInput>, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
 }
 
+export type UserCreateNestedOneWithoutMcpConnectionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMcpConnectionsInput, Prisma.UserUncheckedCreateWithoutMcpConnectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMcpConnectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMcpConnectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMcpConnectionsInput, Prisma.UserUncheckedCreateWithoutMcpConnectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMcpConnectionsInput
+  upsert?: Prisma.UserUpsertWithoutMcpConnectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMcpConnectionsInput, Prisma.UserUpdateWithoutMcpConnectionsInput>, Prisma.UserUncheckedUpdateWithoutMcpConnectionsInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   email: string
@@ -614,6 +635,7 @@ export type UserCreateWithoutSessionsInput = {
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
   parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -631,6 +653,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -664,6 +687,7 @@ export type UserUpdateWithoutSessionsInput = {
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
   parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -681,6 +705,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPartiesInput = {
@@ -698,6 +723,7 @@ export type UserCreateWithoutPartiesInput = {
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPartiesInput = {
@@ -715,6 +741,7 @@ export type UserUncheckedCreateWithoutPartiesInput = {
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPartiesInput = {
@@ -737,6 +764,7 @@ export type UserCreateWithoutPartyInput = {
   parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPartyInput = {
@@ -754,6 +782,7 @@ export type UserUncheckedCreateWithoutPartyInput = {
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPartyInput = {
@@ -787,6 +816,7 @@ export type UserUpdateWithoutPartiesInput = {
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartiesInput = {
@@ -804,6 +834,7 @@ export type UserUncheckedUpdateWithoutPartiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutPartyInput = {
@@ -832,6 +863,7 @@ export type UserUpdateWithoutPartyInput = {
   parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartyInput = {
@@ -849,6 +881,7 @@ export type UserUncheckedUpdateWithoutPartyInput = {
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -866,6 +899,7 @@ export type UserCreateWithoutMembershipsInput = {
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
   parties?: Prisma.PartyCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -883,6 +917,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  mcpConnections?: Prisma.McpConnectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -916,6 +951,7 @@ export type UserUpdateWithoutMembershipsInput = {
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
   parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -933,6 +969,95 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  mcpConnections?: Prisma.McpConnectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutMcpConnectionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isSuperAdmin?: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  passwordResetTokenHash?: string | null
+  passwordResetExpiresAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
+  parties?: Prisma.PartyCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutMcpConnectionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isSuperAdmin?: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  passwordResetTokenHash?: string | null
+  passwordResetExpiresAt?: Date | string | null
+  partyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutMcpConnectionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMcpConnectionsInput, Prisma.UserUncheckedCreateWithoutMcpConnectionsInput>
+}
+
+export type UserUpsertWithoutMcpConnectionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMcpConnectionsInput, Prisma.UserUncheckedUpdateWithoutMcpConnectionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMcpConnectionsInput, Prisma.UserUncheckedCreateWithoutMcpConnectionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMcpConnectionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMcpConnectionsInput, Prisma.UserUncheckedUpdateWithoutMcpConnectionsInput>
+}
+
+export type UserUpdateWithoutMcpConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isSuperAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMcpConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isSuperAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -944,12 +1069,14 @@ export type UserCountOutputType = {
   parties: number
   sessions: number
   memberships: number
+  mcpConnections: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parties?: boolean | UserCountOutputTypeCountPartiesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+  mcpConnections?: boolean | UserCountOutputTypeCountMcpConnectionsArgs
 }
 
 /**
@@ -983,6 +1110,13 @@ export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends runtime.Type
   where?: Prisma.MembershipWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMcpConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.McpConnectionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1001,6 +1135,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   parties?: boolean | Prisma.User$partiesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  mcpConnections?: boolean | Prisma.User$mcpConnectionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1057,6 +1192,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   parties?: boolean | Prisma.User$partiesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  mcpConnections?: boolean | Prisma.User$mcpConnectionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1087,6 +1223,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     parties: Prisma.$PartyPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     memberships: Prisma.$MembershipPayload<ExtArgs>[]
+    mcpConnections: Prisma.$McpConnectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1503,6 +1640,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   parties<T extends Prisma.User$partiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$partiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  mcpConnections<T extends Prisma.User$mcpConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mcpConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$McpConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2033,6 +2171,30 @@ export type User$membershipsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.MembershipScalarFieldEnum | Prisma.MembershipScalarFieldEnum[]
+}
+
+/**
+ * User.mcpConnections
+ */
+export type User$mcpConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the McpConnection
+   */
+  select?: Prisma.McpConnectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the McpConnection
+   */
+  omit?: Prisma.McpConnectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.McpConnectionInclude<ExtArgs> | null
+  where?: Prisma.McpConnectionWhereInput
+  orderBy?: Prisma.McpConnectionOrderByWithRelationInput | Prisma.McpConnectionOrderByWithRelationInput[]
+  cursor?: Prisma.McpConnectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.McpConnectionScalarFieldEnum | Prisma.McpConnectionScalarFieldEnum[]
 }
 
 /**

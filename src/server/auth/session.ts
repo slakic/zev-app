@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { prisma } from "@/lib/prisma";
 import { sha256 } from "./tokens";
+import { displayNameOf } from "./displayName";
 import type { Role } from "@/generated/prisma/client";
 
 const COOKIE_NAME = "zev_session";
@@ -196,11 +197,7 @@ export async function getAuthContext(): Promise<AuthContext | null> {
   // (nav-shell.tsx, via requireActor), never rendered for anyone else.
   const activeParty = partyId ? u.parties.find((p) => p.id === partyId) : undefined;
   const fallbackParty = activeParty ?? [...u.parties].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[0];
-  const displayName = fallbackParty
-    ? fallbackParty.kind === "PERSON"
-      ? `${fallbackParty.firstName ?? ""} ${fallbackParty.lastName ?? ""}`.trim()
-      : fallbackParty.orgName ?? u.email
-    : u.email;
+  const displayName = displayNameOf(fallbackParty, u.email);
   // activeZev was included using the session's *previous* activeZevId — if
   // resolveActiveContext just picked a different one (first login, or a stale/removed
   // membership), re-check that new Zev's active flag instead of trusting the (now stale)

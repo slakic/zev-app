@@ -154,6 +154,8 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "onboarding.invite.accept": "SYSTEM",
   "onboarding.draft.discard": "SYSTEM",
   "onboarding.publish": "SYSTEM",
+  "mcp.connection.create": "SYSTEM",
+  "mcp.connection.revoke": "SYSTEM",
   "notification.test_email.rate_limited": "SYSTEM",
   "notification.test_email.send": "SYSTEM",
   "platform.email_settings.update": "SYSTEM",

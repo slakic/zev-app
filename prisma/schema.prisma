@@ -50,6 +50,7 @@ model User {
   parties      Party[]   @relation("PartyAccount")
   sessions     Session[]
   memberships  Membership[]
+  mcpConnections McpConnection[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
@@ -1912,4 +1913,35 @@ model OnboardingDraftFile {
   createdAt DateTime        @default(now())
 
   @@index([draftId])
+}
+
+/// Veza asistenta (MCP) sa nalogom korisnika (Plans/mcp-platforma-plan.md §2). Čuva se samo sha256
+/// tokena; token se prikazuje jednom. Opseg se provjerava na svakom pozivu (§3).
+model McpConnection {
+  id          String            @id @default(cuid())
+  user        User              @relation(fields: [userId], references: [id])
+  userId      String
+  name        String
+  client      McpClient
+  kind        McpConnectionKind @default(TOKEN)
+  scopes      Json              // McpScope[] — src/lib/mcp/scopes.ts
+  tokenHash   String?           @unique
+  createdAt   DateTime          @default(now())
+  expiresAt   DateTime
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+  revokedById String?
+
+  @@index([userId])
+}
+
+enum McpConnectionKind {
+  TOKEN
+  OAUTH
+}
+
+enum McpClient {
+  CLAUDE
+  OPENAI
+  OTHER
 }

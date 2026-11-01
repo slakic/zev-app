@@ -234,6 +234,17 @@ export function IconLogout(props: IconProps) {
   );
 }
 
+/** Utikač — „Povezani asistenti” u meniju naloga (X-M05). */
+export function IconPlug(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M7 3v4M13 3v4" />
+      <path d="M5 7h10v3a5 5 0 0 1-10 0z" />
+      <path d="M10 15v2.5" />
+    </IconBase>
+  );
+}
+
 export function IconHelp(props: IconProps) {
   return (
     <IconBase {...props}>

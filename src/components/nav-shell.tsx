@@ -12,45 +12,20 @@ import {
   IconDot,
   IconChevronLeft,
   IconBuilding,
-  IconCheck,
-  IconLogout,
-  IconSliders,
   IconShield,
-  IconHelp,
   IconMenu,
   IconClose,
 } from "@/components/nav-icons";
+import { AccountMenu, tenantTitle, type AccountMenuLink, type TenantOption } from "@/components/account-menu";
 import { activeHref } from "@/components/nav-active";
 import { t } from "@/lib/i18n";
 
 export type NavLink = { href: string; label: string };
 /** Grupa stavki menija (F9, D8): `label` izostavljen = ravna lista bez naslova. */
 export type NavGroup = { label?: string; links: NavLink[] };
-export type TenantOption = {
-  zevId: string;
-  label: string;
-  /** Full legal name, shown as a hover tooltip when it differs from the (often
-   *  abbreviated) `label` — e.g. label "ZEV VM 10-12", fullLabel "Zajednica etažnih
-   *  vlasnika 'Vojvode Mišića 10 i 12'". Omit (or make it equal to `label`) when there's
-   *  no separate short name and no tooltip is needed. */
-  fullLabel?: string;
-};
-
-/** `title` text for a tenant chip/row: the full legal name when there is one and it
- *  actually differs from the short label, otherwise `undefined` (no redundant tooltip
- *  that just repeats what's already on screen). */
-function tenantTitle(tt: TenantOption): string | undefined {
-  return tt.fullLabel && tt.fullLabel !== tt.label ? tt.fullLabel : undefined;
-}
+export type { TenantOption, AccountMenuLink };
 
 const COLLAPSE_STORAGE_KEY = "zev-nav-collapsed";
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 export function NavShell({
   appName,
@@ -59,7 +34,7 @@ export function NavShell({
   groups,
   logoutLabel,
   logoutAction,
-  accountLink,
+  accountLinks,
   tenants,
   activeZevId,
   switchZevAction,
@@ -72,8 +47,9 @@ export function NavShell({
   groups: NavGroup[];
   logoutLabel: string;
   logoutAction: () => void | Promise<void>;
-  /** Stavka u meniju naloga (vlasnik: „Moji podaci” → /podesavanja, X-Q6). Izostavljena = nema je. */
-  accountLink?: NavLink;
+  /** Stavke naloga u padajućem meniju, iznad „Korisničkog uputstva” (X-Q6: „Moji podaci”; MCP: „Povezani
+   *  asistenti”). Izostavljeno = samo uputstvo i odjava. Redoslijed je redoslijed u meniju. */
+  accountLinks?: AccountMenuLink[];
   /** Every ZEV the signed-in user holds a Membership in. The active ZEV's name is always
    * shown under the app name (D9, Plans/design-review-plan.md §5); the switcher (below) and
    * the active-ZEV chip in the top bar only render when there's more than one. */
@@ -89,7 +65,6 @@ export function NavShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
   const showSwitcher = Boolean(tenants && tenants.length > 1 && switchZevAction);
   const activeTenant = tenants?.find((tt) => tt.zevId === activeZevId);
   const platform = variant === "platform";
@@ -117,9 +92,6 @@ export function NavShell({
   // fresh load; a remembered preference (if any) is applied after mount so
   // server and first client render always agree on the expanded default.
   const [collapsed, setCollapsed] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const avatarRef = useRef<HTMLButtonElement>(null);
-  const menuId = useId();
   const navId = useId();
   const drawerRef = useRef<HTMLElement>(null);
 
@@ -142,25 +114,6 @@ export function NavShell({
       return next;
     });
   };
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
-    };
-    const onEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-        avatarRef.current?.focus();
-      }
-    };
-    document.addEventListener("mousedown", onClickOutside);
-    document.addEventListener("keydown", onEscape);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-      document.removeEventListener("keydown", onEscape);
-    };
-  }, [menuOpen]);
 
   // A9 (Plans/ui-ux-redesign-plan.md) — the mobile drawer is a modal overlay (it sits
   // above a backdrop and blocks the page behind it), so it needs the same keyboard
@@ -370,115 +323,17 @@ export function NavShell({
             )
           )}
 
-          <div className="relative" ref={menuRef}>
-            <button
-              type="button"
-              ref={avatarRef}
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-controls={menuOpen ? menuId : undefined}
-              aria-expanded={menuOpen}
-              aria-label={`Nalog: ${displayName}`}
-              className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm transition-shadow hover:shadow ${accent.avatar}`}
-            >
-              {initials(displayName)}
-            </button>
-            {menuOpen && (
-              <div
-                id={menuId}
-                className="dropdown-in absolute right-0 z-30 mt-2 w-64 origin-top-right rounded-2xl border border-slate-200/80 bg-white py-1.5 shadow-xl ring-1 ring-slate-900/5"
-              >
-                <div className="flex items-center gap-3 border-b border-slate-100 px-3.5 py-3">
-                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ${accent.avatarStatic}`}>
-                    {initials(displayName)}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
-                    <div className="truncate text-[13px] text-slate-500">{rolesText}</div>
-                  </div>
-                </div>
-                {showSwitcher && (
-                  <div className="border-b border-slate-100 py-1.5">
-                    <div className="px-3.5 pb-1 text-[13px] font-medium text-slate-500">
-                      {t("tenant.switcherHeading")}
-                    </div>
-                    <div className="px-1.5">
-                      {tenants!.map((tt) => {
-                        const isActive = tt.zevId === activeZevId;
-                        return (
-                          <form key={tt.zevId} action={switchZevAction}>
-                            <input type="hidden" name="zevId" value={tt.zevId} />
-                            <button
-                              type="submit"
-                              aria-current={isActive ? "true" : undefined}
-                              title={tenantTitle(tt)}
-                              disabled={isActive}
-                              // Deliberately NOT closing the menu synchronously here: this is a
-                              // type="submit" button, and unmounting the dropdown (which contains
-                              // this very form) inside its own onClick — before the browser gets to
-                              // run the click's default action — cancels the form submission
-                              // entirely. The click silently "closes the menu" and switchActiveZev
-                              // never runs. Deferring to the next tick lets the native submit fire
-                              // first; the redirect that follows re-renders NavShell with fresh
-                              // props anyway, so the menu ends up reflecting the new active tenant
-                              // regardless of whether it stayed open for one extra frame.
-                              onClick={() => setTimeout(() => setMenuOpen(false), 0)}
-                              className={`mb-0.5 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors last:mb-0 ${
-                                isActive
-                                  ? "cursor-default bg-blue-50 font-medium text-blue-700 ring-1 ring-inset ring-blue-100"
-                                  : "text-slate-700 hover:bg-slate-50"
-                              }`}
-                            >
-                              <IconBuilding
-                                className={`h-4 w-4 shrink-0 ${isActive ? "text-blue-500" : "text-slate-400"}`}
-                              />
-                              <span className="min-w-0 flex-1 truncate">{tt.label}</span>
-                              {isActive && (
-                                <>
-                                  <IconCheck className="h-4 w-4 shrink-0 text-blue-600" />
-                                  <span className="sr-only">({t("tenant.active")})</span>
-                                </>
-                              )}
-                            </button>
-                          </form>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                <div className="py-1">
-                  {!platform && accountLink && (
-                    <Link
-                      href={accountLink.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
-                    >
-                      <IconSliders className="h-4 w-4 shrink-0 text-slate-400" />
-                      {accountLink.label}
-                    </Link>
-                  )}
-                  <a
-                    href="/korisnicko-uputstvo.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
-                  >
-                    <IconHelp className="h-4 w-4 shrink-0 text-slate-400" />
-                    {t("nav.userGuide")}
-                  </a>
-                  <form action={logoutAction}>
-                    <button
-                      type="submit"
-                      className="flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
-                    >
-                      <IconLogout className="h-4 w-4 shrink-0 text-slate-400" />
-                      {logoutLabel}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
-          </div>
+          <AccountMenu
+            displayName={displayName}
+            rolesText={rolesText}
+            accent={{ avatar: accent.avatar, avatarStatic: accent.avatarStatic, activeLink: accent.activeLink }}
+            links={accountLinks}
+            logoutLabel={logoutLabel}
+            logoutAction={logoutAction}
+            tenants={tenants}
+            activeZevId={activeZevId}
+            switchZevAction={switchZevAction}
+          />
         </header>
 
         {/* Capped width so paragraphs/cards don't stretch to unreadable line lengths on

@@ -466,3 +466,20 @@ export const OnboardingDraftStatus = {
 } as const
 
 export type OnboardingDraftStatus = (typeof OnboardingDraftStatus)[keyof typeof OnboardingDraftStatus]
+
+
+export const McpConnectionKind = {
+  TOKEN: 'TOKEN',
+  OAUTH: 'OAUTH'
+} as const
+
+export type McpConnectionKind = (typeof McpConnectionKind)[keyof typeof McpConnectionKind]
+
+
+export const McpClient = {
+  CLAUDE: 'CLAUDE',
+  OPENAI: 'OPENAI',
+  OTHER: 'OTHER'
+} as const
+
+export type McpClient = (typeof McpClient)[keyof typeof McpClient]

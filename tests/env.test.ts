@@ -9,6 +9,7 @@ describe("env.ts", () => {
   const savedAppUrl = process.env.APP_URL;
   const savedNodeEnv = process.env.NODE_ENV;
   const savedMaxUpload = process.env.MAX_UPLOAD_MB;
+  const savedMcp = process.env.MCP_ENABLED;
 
   beforeEach(() => {
     vi.resetModules();
@@ -18,6 +19,8 @@ describe("env.ts", () => {
     process.env.APP_URL = savedAppUrl;
     process.env.NODE_ENV = savedNodeEnv;
     process.env.MAX_UPLOAD_MB = savedMaxUpload;
+    if (savedMcp === undefined) delete process.env.MCP_ENABLED;
+    else process.env.MCP_ENABLED = savedMcp;
     vi.resetModules();
   });
 
@@ -71,5 +74,17 @@ describe("env.ts", () => {
     process.env.MAX_UPLOAD_MB = "-1";
     const { getEnv } = await import("@/lib/env");
     expect(() => getEnv()).toThrow(/MAX_UPLOAD_MB/);
+  });
+
+  it("keeps MCP off unless MCP_ENABLED is exactly \"true\"", async () => {
+    delete process.env.MCP_ENABLED;
+    expect((await import("@/lib/env")).getEnv().MCP_ENABLED).toBe("false");
+    vi.resetModules();
+    process.env.MCP_ENABLED = "true";
+    expect((await import("@/lib/env")).getEnv().MCP_ENABLED).toBe("true");
+    vi.resetModules();
+    process.env.MCP_ENABLED = "yes";
+    const { getEnv } = await import("@/lib/env");
+    expect(() => getEnv()).toThrow(/MCP_ENABLED/);
   });
 });

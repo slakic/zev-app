@@ -1,31 +1,10 @@
 import { redirect } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
-import { maybeActor, requireActor } from "@/server/actor";
-import { destroySession } from "@/server/auth/session";
-import { listMyTenants, switchActiveZev } from "@/server/services/memberships";
+import { maybeActor } from "@/server/actor";
 import { getMyDraft, landingPath } from "@/server/services/onboarding";
 import Link from "next/link";
 import { Flash } from "@/components/ui";
-import { NavShell } from "@/components/nav-shell";
-import { buildTenantNav, settingsInAccountMenu, type NavRole } from "@/lib/nav-structure";
-
-async function logoutAction() {
-  "use server";
-  await destroySession();
-  redirect("/login");
-}
-
-async function switchZevAction(formData: FormData) {
-  "use server";
-  const actor = await requireActor();
-  const zevId = String(formData.get("zevId") ?? "");
-  try {
-    await switchActiveZev(actor, zevId);
-  } catch (e) {
-    redirect(`/?err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`);
-  }
-  redirect("/");
-}
+import { TenantShell } from "@/components/shells";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const actor = await maybeActor();
@@ -39,34 +18,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     const path = await landingPath(actor);
     if (path !== "/") redirect(path);
   }
-  // Redoslijed i grupe po ulozi (F9, D8) su čista funkcija u `nav-structure.ts`; meni je samo
-  // prikaz — svaka stranica i servis i dalje sami provjeravaju ulogu i zevId.
-  const navRoles = actor.roles as NavRole[];
-  const groups = buildTenantNav(navRoles, { isSuperAdmin: actor.isSuperAdmin }).map((g) => ({
-    label: g.labelKey ? t(g.labelKey) : undefined,
-    links: g.items.map((i) => ({ href: i.href, label: t(i.labelKey) })),
-  }));
-  const [myTenants, draft] = await Promise.all([listMyTenants(actor), getMyDraft(actor)]);
-  const tenantOptions = myTenants.map((mt) => ({
-    zevId: mt.zevId,
-    label: mt.shortName ?? mt.legalName,
-    // Shown as a hover tooltip in NavShell when it differs from the (often shortened)
-    // label above — lets you see the full legal name without opening /admin.
-    fullLabel: mt.legalName,
-  }));
+  const draft = await getMyDraft(actor);
   return (
-    <NavShell
-      appName={t("app.name")}
-      displayName={actor.displayName}
-      rolesText={actor.roles.map((r) => t(`roles.${r}`)).join(", ")}
-      groups={groups}
-      accountLink={settingsInAccountMenu(navRoles) ? { href: "/podesavanja", label: t("nav.myData") } : undefined}
-      logoutLabel={t("nav.logout")}
-      logoutAction={logoutAction}
-      tenants={tenantOptions}
-      activeZevId={actor.zevId}
-      switchZevAction={switchZevAction}
-    >
+    <TenantShell actor={actor}>
       {/* Postojeći korisnik koji osniva još jedan ZEV (D3) ima svoj aktivni ZEV, pa ne dolazi u čarobnjak
           sam od sebe: ova poruka je ulaz dok nacrt ne bude objavljen ili odbačen. */}
       {draft && (
@@ -80,6 +34,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         />
       )}
       {children}
-    </NavShell>
+    </TenantShell>
   );
 }

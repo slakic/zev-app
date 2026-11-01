@@ -392,3 +392,9 @@ export type OnboardingDraft = Prisma.OnboardingDraftModel
  * pri objavi prelazi u Attachment, pri odbacivanju se briše.
  */
 export type OnboardingDraftFile = Prisma.OnboardingDraftFileModel
+/**
+ * Model McpConnection
+ * Veza asistenta (MCP) sa nalogom korisnika (Plans/mcp-platforma-plan.md §2). Čuva se samo sha256
+ * tokena; token se prikazuje jednom. Opseg se provjerava na svakom pozivu (§3).
+ */
+export type McpConnection = Prisma.McpConnectionModel
