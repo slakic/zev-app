@@ -461,6 +461,7 @@ export const ModelName = {
   PlatformSetting: 'PlatformSetting',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
+  OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
   OnboardingDraftFile: 'OnboardingDraftFile',
   McpConnection: 'McpConnection',
   McpOAuthClient: 'McpOAuthClient',
@@ -481,7 +482,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5221,6 +5222,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OnboardingDraftAdminAccess: {
+      payload: Prisma.$OnboardingDraftAdminAccessPayload<ExtArgs>
+      fields: Prisma.OnboardingDraftAdminAccessFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OnboardingDraftAdminAccessFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OnboardingDraftAdminAccessFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>
+        }
+        findFirst: {
+          args: Prisma.OnboardingDraftAdminAccessFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OnboardingDraftAdminAccessFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>
+        }
+        findMany: {
+          args: Prisma.OnboardingDraftAdminAccessFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>[]
+        }
+        create: {
+          args: Prisma.OnboardingDraftAdminAccessCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>
+        }
+        createMany: {
+          args: Prisma.OnboardingDraftAdminAccessCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OnboardingDraftAdminAccessCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>[]
+        }
+        delete: {
+          args: Prisma.OnboardingDraftAdminAccessDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>
+        }
+        update: {
+          args: Prisma.OnboardingDraftAdminAccessUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>
+        }
+        deleteMany: {
+          args: Prisma.OnboardingDraftAdminAccessDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OnboardingDraftAdminAccessUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OnboardingDraftAdminAccessUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>[]
+        }
+        upsert: {
+          args: Prisma.OnboardingDraftAdminAccessUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OnboardingDraftAdminAccessPayload>
+        }
+        aggregate: {
+          args: Prisma.OnboardingDraftAdminAccessAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOnboardingDraftAdminAccess>
+        }
+        groupBy: {
+          args: Prisma.OnboardingDraftAdminAccessGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingDraftAdminAccessGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OnboardingDraftAdminAccessCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OnboardingDraftAdminAccessCountAggregateOutputType> | number
+        }
+      }
+    }
     OnboardingDraftFile: {
       payload: Prisma.$OnboardingDraftFilePayload<ExtArgs>
       fields: Prisma.OnboardingDraftFileFieldRefs
@@ -6762,6 +6837,19 @@ export const OnboardingDraftScalarFieldEnum = {
 export type OnboardingDraftScalarFieldEnum = (typeof OnboardingDraftScalarFieldEnum)[keyof typeof OnboardingDraftScalarFieldEnum]
 
 
+export const OnboardingDraftAdminAccessScalarFieldEnum = {
+  id: 'id',
+  draftId: 'draftId',
+  adminUserId: 'adminUserId',
+  grantedAt: 'grantedAt',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById'
+} as const
+
+export type OnboardingDraftAdminAccessScalarFieldEnum = (typeof OnboardingDraftAdminAccessScalarFieldEnum)[keyof typeof OnboardingDraftAdminAccessScalarFieldEnum]
+
+
 export const OnboardingDraftFileScalarFieldEnum = {
   id: 'id',
   draftId: 'draftId',
@@ -7893,6 +7981,7 @@ export type GlobalOmitConfig = {
   platformSetting?: Prisma.PlatformSettingOmit
   onboardingInvite?: Prisma.OnboardingInviteOmit
   onboardingDraft?: Prisma.OnboardingDraftOmit
+  onboardingDraftAdminAccess?: Prisma.OnboardingDraftAdminAccessOmit
   onboardingDraftFile?: Prisma.OnboardingDraftFileOmit
   mcpConnection?: Prisma.McpConnectionOmit
   mcpOAuthClient?: Prisma.McpOAuthClientOmit

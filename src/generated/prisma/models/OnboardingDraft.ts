@@ -255,6 +255,7 @@ export type OnboardingDraftWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"OnboardingDraft"> | Date | string
   invite?: Prisma.XOR<Prisma.OnboardingInviteScalarRelationFilter, Prisma.OnboardingInviteWhereInput>
   files?: Prisma.OnboardingDraftFileListRelationFilter
+  adminAccess?: Prisma.OnboardingDraftAdminAccessListRelationFilter
 }
 
 export type OnboardingDraftOrderByWithRelationInput = {
@@ -270,6 +271,7 @@ export type OnboardingDraftOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   invite?: Prisma.OnboardingInviteOrderByWithRelationInput
   files?: Prisma.OnboardingDraftFileOrderByRelationAggregateInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessOrderByRelationAggregateInput
 }
 
 export type OnboardingDraftWhereUniqueInput = Prisma.AtLeast<{
@@ -288,6 +290,7 @@ export type OnboardingDraftWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"OnboardingDraft"> | Date | string
   invite?: Prisma.XOR<Prisma.OnboardingInviteScalarRelationFilter, Prisma.OnboardingInviteWhereInput>
   files?: Prisma.OnboardingDraftFileListRelationFilter
+  adminAccess?: Prisma.OnboardingDraftAdminAccessListRelationFilter
 }, "id" | "inviteId" | "publishedZevId">
 
 export type OnboardingDraftOrderByWithAggregationInput = {
@@ -336,6 +339,7 @@ export type OnboardingDraftCreateInput = {
   updatedAt?: Date | string
   invite: Prisma.OnboardingInviteCreateNestedOneWithoutDraftInput
   files?: Prisma.OnboardingDraftFileCreateNestedManyWithoutDraftInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessCreateNestedManyWithoutDraftInput
 }
 
 export type OnboardingDraftUncheckedCreateInput = {
@@ -350,6 +354,7 @@ export type OnboardingDraftUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   files?: Prisma.OnboardingDraftFileUncheckedCreateNestedManyWithoutDraftInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUncheckedCreateNestedManyWithoutDraftInput
 }
 
 export type OnboardingDraftUpdateInput = {
@@ -364,6 +369,7 @@ export type OnboardingDraftUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invite?: Prisma.OnboardingInviteUpdateOneRequiredWithoutDraftNestedInput
   files?: Prisma.OnboardingDraftFileUpdateManyWithoutDraftNestedInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUpdateManyWithoutDraftNestedInput
 }
 
 export type OnboardingDraftUncheckedUpdateInput = {
@@ -378,6 +384,7 @@ export type OnboardingDraftUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   files?: Prisma.OnboardingDraftFileUncheckedUpdateManyWithoutDraftNestedInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUncheckedUpdateManyWithoutDraftNestedInput
 }
 
 export type OnboardingDraftCreateManyInput = {
@@ -509,6 +516,20 @@ export type EnumOnboardingDraftStatusFieldUpdateOperationsInput = {
   set?: $Enums.OnboardingDraftStatus
 }
 
+export type OnboardingDraftCreateNestedOneWithoutAdminAccessInput = {
+  create?: Prisma.XOR<Prisma.OnboardingDraftCreateWithoutAdminAccessInput, Prisma.OnboardingDraftUncheckedCreateWithoutAdminAccessInput>
+  connectOrCreate?: Prisma.OnboardingDraftCreateOrConnectWithoutAdminAccessInput
+  connect?: Prisma.OnboardingDraftWhereUniqueInput
+}
+
+export type OnboardingDraftUpdateOneRequiredWithoutAdminAccessNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingDraftCreateWithoutAdminAccessInput, Prisma.OnboardingDraftUncheckedCreateWithoutAdminAccessInput>
+  connectOrCreate?: Prisma.OnboardingDraftCreateOrConnectWithoutAdminAccessInput
+  upsert?: Prisma.OnboardingDraftUpsertWithoutAdminAccessInput
+  connect?: Prisma.OnboardingDraftWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingDraftUpdateToOneWithWhereWithoutAdminAccessInput, Prisma.OnboardingDraftUpdateWithoutAdminAccessInput>, Prisma.OnboardingDraftUncheckedUpdateWithoutAdminAccessInput>
+}
+
 export type OnboardingDraftCreateNestedOneWithoutFilesInput = {
   create?: Prisma.XOR<Prisma.OnboardingDraftCreateWithoutFilesInput, Prisma.OnboardingDraftUncheckedCreateWithoutFilesInput>
   connectOrCreate?: Prisma.OnboardingDraftCreateOrConnectWithoutFilesInput
@@ -534,6 +555,7 @@ export type OnboardingDraftCreateWithoutInviteInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   files?: Prisma.OnboardingDraftFileCreateNestedManyWithoutDraftInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessCreateNestedManyWithoutDraftInput
 }
 
 export type OnboardingDraftUncheckedCreateWithoutInviteInput = {
@@ -547,6 +569,7 @@ export type OnboardingDraftUncheckedCreateWithoutInviteInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   files?: Prisma.OnboardingDraftFileUncheckedCreateNestedManyWithoutDraftInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUncheckedCreateNestedManyWithoutDraftInput
 }
 
 export type OnboardingDraftCreateOrConnectWithoutInviteInput = {
@@ -576,10 +599,84 @@ export type OnboardingDraftUpdateWithoutInviteInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   files?: Prisma.OnboardingDraftFileUpdateManyWithoutDraftNestedInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUpdateManyWithoutDraftNestedInput
 }
 
 export type OnboardingDraftUncheckedUpdateWithoutInviteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOnboardingDraftStatusFieldUpdateOperationsInput | $Enums.OnboardingDraftStatus
+  data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.OnboardingDraftFileUncheckedUpdateManyWithoutDraftNestedInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUncheckedUpdateManyWithoutDraftNestedInput
+}
+
+export type OnboardingDraftCreateWithoutAdminAccessInput = {
+  id?: string
+  ownerUserId: string
+  status?: $Enums.OnboardingDraftStatus
+  data: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  version?: number
+  publishedZevId?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  invite: Prisma.OnboardingInviteCreateNestedOneWithoutDraftInput
+  files?: Prisma.OnboardingDraftFileCreateNestedManyWithoutDraftInput
+}
+
+export type OnboardingDraftUncheckedCreateWithoutAdminAccessInput = {
+  id?: string
+  inviteId: string
+  ownerUserId: string
+  status?: $Enums.OnboardingDraftStatus
+  data: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  version?: number
+  publishedZevId?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  files?: Prisma.OnboardingDraftFileUncheckedCreateNestedManyWithoutDraftInput
+}
+
+export type OnboardingDraftCreateOrConnectWithoutAdminAccessInput = {
+  where: Prisma.OnboardingDraftWhereUniqueInput
+  create: Prisma.XOR<Prisma.OnboardingDraftCreateWithoutAdminAccessInput, Prisma.OnboardingDraftUncheckedCreateWithoutAdminAccessInput>
+}
+
+export type OnboardingDraftUpsertWithoutAdminAccessInput = {
+  update: Prisma.XOR<Prisma.OnboardingDraftUpdateWithoutAdminAccessInput, Prisma.OnboardingDraftUncheckedUpdateWithoutAdminAccessInput>
+  create: Prisma.XOR<Prisma.OnboardingDraftCreateWithoutAdminAccessInput, Prisma.OnboardingDraftUncheckedCreateWithoutAdminAccessInput>
+  where?: Prisma.OnboardingDraftWhereInput
+}
+
+export type OnboardingDraftUpdateToOneWithWhereWithoutAdminAccessInput = {
+  where?: Prisma.OnboardingDraftWhereInput
+  data: Prisma.XOR<Prisma.OnboardingDraftUpdateWithoutAdminAccessInput, Prisma.OnboardingDraftUncheckedUpdateWithoutAdminAccessInput>
+}
+
+export type OnboardingDraftUpdateWithoutAdminAccessInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOnboardingDraftStatusFieldUpdateOperationsInput | $Enums.OnboardingDraftStatus
+  data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedZevId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invite?: Prisma.OnboardingInviteUpdateOneRequiredWithoutDraftNestedInput
+  files?: Prisma.OnboardingDraftFileUpdateManyWithoutDraftNestedInput
+}
+
+export type OnboardingDraftUncheckedUpdateWithoutAdminAccessInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  inviteId?: Prisma.StringFieldUpdateOperationsInput | string
   ownerUserId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOnboardingDraftStatusFieldUpdateOperationsInput | $Enums.OnboardingDraftStatus
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -602,6 +699,7 @@ export type OnboardingDraftCreateWithoutFilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   invite: Prisma.OnboardingInviteCreateNestedOneWithoutDraftInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessCreateNestedManyWithoutDraftInput
 }
 
 export type OnboardingDraftUncheckedCreateWithoutFilesInput = {
@@ -615,6 +713,7 @@ export type OnboardingDraftUncheckedCreateWithoutFilesInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUncheckedCreateNestedManyWithoutDraftInput
 }
 
 export type OnboardingDraftCreateOrConnectWithoutFilesInput = {
@@ -644,6 +743,7 @@ export type OnboardingDraftUpdateWithoutFilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invite?: Prisma.OnboardingInviteUpdateOneRequiredWithoutDraftNestedInput
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUpdateManyWithoutDraftNestedInput
 }
 
 export type OnboardingDraftUncheckedUpdateWithoutFilesInput = {
@@ -657,6 +757,7 @@ export type OnboardingDraftUncheckedUpdateWithoutFilesInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminAccess?: Prisma.OnboardingDraftAdminAccessUncheckedUpdateManyWithoutDraftNestedInput
 }
 
 
@@ -666,10 +767,12 @@ export type OnboardingDraftUncheckedUpdateWithoutFilesInput = {
 
 export type OnboardingDraftCountOutputType = {
   files: number
+  adminAccess: number
 }
 
 export type OnboardingDraftCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   files?: boolean | OnboardingDraftCountOutputTypeCountFilesArgs
+  adminAccess?: boolean | OnboardingDraftCountOutputTypeCountAdminAccessArgs
 }
 
 /**
@@ -689,6 +792,13 @@ export type OnboardingDraftCountOutputTypeCountFilesArgs<ExtArgs extends runtime
   where?: Prisma.OnboardingDraftFileWhereInput
 }
 
+/**
+ * OnboardingDraftCountOutputType without action
+ */
+export type OnboardingDraftCountOutputTypeCountAdminAccessArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OnboardingDraftAdminAccessWhereInput
+}
+
 
 export type OnboardingDraftSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -703,6 +813,7 @@ export type OnboardingDraftSelect<ExtArgs extends runtime.Types.Extensions.Inter
   updatedAt?: boolean
   invite?: boolean | Prisma.OnboardingInviteDefaultArgs<ExtArgs>
   files?: boolean | Prisma.OnboardingDraft$filesArgs<ExtArgs>
+  adminAccess?: boolean | Prisma.OnboardingDraft$adminAccessArgs<ExtArgs>
   _count?: boolean | Prisma.OnboardingDraftCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingDraft"]>
 
@@ -751,6 +862,7 @@ export type OnboardingDraftOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type OnboardingDraftInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   invite?: boolean | Prisma.OnboardingInviteDefaultArgs<ExtArgs>
   files?: boolean | Prisma.OnboardingDraft$filesArgs<ExtArgs>
+  adminAccess?: boolean | Prisma.OnboardingDraft$adminAccessArgs<ExtArgs>
   _count?: boolean | Prisma.OnboardingDraftCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OnboardingDraftIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -765,6 +877,7 @@ export type $OnboardingDraftPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     invite: Prisma.$OnboardingInvitePayload<ExtArgs>
     files: Prisma.$OnboardingDraftFilePayload<ExtArgs>[]
+    adminAccess: Prisma.$OnboardingDraftAdminAccessPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1173,6 +1286,7 @@ export interface Prisma__OnboardingDraftClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   invite<T extends Prisma.OnboardingInviteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingInviteDefaultArgs<ExtArgs>>): Prisma.Prisma__OnboardingInviteClient<runtime.Types.Result.GetResult<Prisma.$OnboardingInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   files<T extends Prisma.OnboardingDraft$filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingDraft$filesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingDraftFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  adminAccess<T extends Prisma.OnboardingDraft$adminAccessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingDraft$adminAccessArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingDraftAdminAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1634,6 +1748,30 @@ export type OnboardingDraft$filesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.OnboardingDraftFileScalarFieldEnum | Prisma.OnboardingDraftFileScalarFieldEnum[]
+}
+
+/**
+ * OnboardingDraft.adminAccess
+ */
+export type OnboardingDraft$adminAccessArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OnboardingDraftAdminAccess
+   */
+  select?: Prisma.OnboardingDraftAdminAccessSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OnboardingDraftAdminAccess
+   */
+  omit?: Prisma.OnboardingDraftAdminAccessOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OnboardingDraftAdminAccessInclude<ExtArgs> | null
+  where?: Prisma.OnboardingDraftAdminAccessWhereInput
+  orderBy?: Prisma.OnboardingDraftAdminAccessOrderByWithRelationInput | Prisma.OnboardingDraftAdminAccessOrderByWithRelationInput[]
+  cursor?: Prisma.OnboardingDraftAdminAccessWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OnboardingDraftAdminAccessScalarFieldEnum | Prisma.OnboardingDraftAdminAccessScalarFieldEnum[]
 }
 
 /**

@@ -91,21 +91,24 @@ enum McpClient {
   OTHER
 }
 
-/// **Nastaje u fazi O-A, ne u P-A** (odluka 2026-11-01): P-A nema alata koji čita nacrt, pa model ne bi imao
-/// šta da radi. `resolveMcpAccess` u P-A ima samo oznaku `// O-A:` na mjestu gdje se ovaj pristup uključuje.
+/// **Nastao u fazi O-A (✅ isporučeno), ne u P-A:** P-A nema alata koji čita nacrt, pa model ne bi imao šta da radi.
 /// Pristup super admina nacrtu klijenta (P6). Dodaje se sa /admin/nacrti/[id]; klijent ga vidi na
 /// „Povezani asistenti“ i može ukloniti. Važi za sve veze super admina koje imaju onboarding opseg
-/// za taj nacrt.
+/// za taj nacrt: red odlučuje, pa uklanjanje pristupa odmah gasi sve te veze, a ponovno dodavanje ih opet
+/// uključuje (Q8). Najviše jedan aktivan red po (nacrt, admin) — parcijalni jedinstveni indeks
+/// `WHERE "revokedAt" IS NULL` dodat ručno u migraciju (Prisma ga ne modelira).
 model OnboardingDraftAdminAccess {
   id          String          @id @default(cuid())
   draft       OnboardingDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
   draftId     String
   adminUserId String
   grantedAt   DateTime        @default(now())
+  lastUsedAt  DateTime?       // posljednji poziv alata kroz pristup; upis najviše jednom u 5 minuta
   revokedAt   DateTime?
   revokedById String?         // klijent ili super admin
 
   @@index([draftId])
+  @@index([adminUserId])
 }
 ```
 
@@ -268,7 +271,7 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom. Redoslijed sa plan
 3. **Faza P-B — OAuth 2.1** (§5), **odmah iza P-A** (odluka 2026-10-31): posle P-A i P-B korisnik u
    svom Claude Pro dodaje pravi konektor, klikne „Dozvoli“ i pozove `whoami`, pa se svaka kasnija faza
    onboardinga odmah provjerava u Claude Pro, kao kod klijenata.
-4. **Onboarding O-A** (plan onboardinga): pristup nacrtu, čitanje, pristup administratora (P6).
+4. **Onboarding O-A** (plan onboardinga): pristup nacrtu, čitanje, pristup administratora (P6). ✅ Urađena 2026-11-01.
 5. **Onboarding O-B i O-C:** upis, grupni unos, vlasnici sa dokazima.
 
 M-0 je pokazao da Claude Pro **ne** prihvata token u zaglavlju, pa P-B (OAuth) ide odmah iza P-A,
@@ -288,6 +291,12 @@ prije svih faza onboardinga. Token iz P-A se koristi od početka u klijentima ko
 - **OAuth je najveći i najrizičniji dio posla;** spoljni pregled je uslov za produkciju.
 - **Pravna strana:** saglasnost klijenta za pristup administratora (P6) i tekst obavještenja na
   stranici „Povezani asistenti“ — pregled pravnika.
+- **O-A (odluke Q1, Q5, 2026-11-01):** pristup administratora je aktivan odmah, bez koraka saglasnosti klijenta;
+  klijent ga vidi (kartica na „Povezani asistenti“ i obavještenje u čarobnjaku) i može ukloniti, a admin ga može
+  ponovo dodati (klijent to opet vidi). `get_draft` asistentu šalje lične podatke vlasnika (imena, e-pošta, telefon,
+  JMBG/ID organizacije), udjele i e-adresu za prijavu računovođe — nikad hash lozinke, bajtove fajlova ni e-poštu
+  iz poziva. **Pravnik pregleda tekst obavještenja i ovu obradu podataka prije uključivanja `MCP_ENABLED` u
+  produkciji.**
 
 ---
 

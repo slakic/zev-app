@@ -199,23 +199,23 @@ describe("scope re-check on every call", () => {
     const { connection } = await createMcpConnection(a.actor, { ...base, scopeKey: `draft:${a.draftId}` });
     const before = await prisma.mcpConnection.findUniqueOrThrow({ where: { id: connection.id } });
 
-    expect(await resolveMcpAccess({ userId: a.actor.userId, scopes: [scope] }, scope)).toEqual({ ok: true, draftId: a.draftId, via: "MCP_OWNER" });
-    expect((await describeScopes(a.actor.userId, [scope]))[0].active).toBe(true);
+    expect(await resolveMcpAccess({ userId: a.actor.userId, isSuperAdmin: false, scopes: [scope] }, scope)).toEqual({ ok: true, draftId: a.draftId, via: "MCP_OWNER" });
+    expect((await describeScopes({ userId: a.actor.userId, isSuperAdmin: false }, [scope]))[0].active).toBe(true);
 
     // Veza bez ovog opsega ne smije ni vlasnik nacrta.
-    expect(await resolveMcpAccess({ userId: a.actor.userId, scopes: [] }, scope)).toMatchObject({ ok: false });
+    expect(await resolveMcpAccess({ userId: a.actor.userId, isSuperAdmin: false, scopes: [] }, scope)).toMatchObject({ ok: false });
     // Tuđi nacrt: opseg postoji u vezi, ali pozivalac nije vlasnik.
     const stranger = await createSuperAdminActor("mcp-recheck-stranger");
-    expect(await resolveMcpAccess({ userId: stranger.userId, scopes: [scope] }, scope)).toMatchObject({ ok: false });
-    expect((await describeScopes(stranger.userId, [scope]))[0].active).toBe(false);
+    expect(await resolveMcpAccess({ userId: stranger.userId, isSuperAdmin: false, scopes: [scope] }, scope)).toMatchObject({ ok: false });
+    expect((await describeScopes({ userId: stranger.userId, isSuperAdmin: false }, [scope]))[0].active).toBe(false);
 
     await discardOnboardingDraft(a.admin, a.draftId, "test");
-    expect(await resolveMcpAccess({ userId: a.actor.userId, scopes: [scope] }, scope)).toMatchObject({ ok: false });
-    expect((await describeScopes(a.actor.userId, [scope]))[0].active).toBe(false);
+    expect(await resolveMcpAccess({ userId: a.actor.userId, isSuperAdmin: false, scopes: [scope] }, scope)).toMatchObject({ ok: false });
+    expect((await describeScopes({ userId: a.actor.userId, isSuperAdmin: false }, [scope]))[0].active).toBe(false);
 
     await prisma.onboardingDraft.update({ where: { id: a.draftId }, data: { status: "PUBLISHED" } });
-    expect(await resolveMcpAccess({ userId: a.actor.userId, scopes: [scope] }, scope)).toMatchObject({ ok: false });
-    expect((await describeScopes(a.actor.userId, [scope]))[0].active).toBe(false);
+    expect(await resolveMcpAccess({ userId: a.actor.userId, isSuperAdmin: false, scopes: [scope] }, scope)).toMatchObject({ ok: false });
+    expect((await describeScopes({ userId: a.actor.userId, isSuperAdmin: false }, [scope]))[0].active).toBe(false);
 
     const after = await prisma.mcpConnection.findUniqueOrThrow({ where: { id: connection.id } });
     expect(after.revokedAt).toBeNull();

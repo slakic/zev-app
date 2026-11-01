@@ -123,8 +123,8 @@ type DraftAccess = {
 
 ### 3.4 Pristup administratora nacrtu (M2, platforma P6)
 
-- Model `OnboardingDraftAdminAccess` **nastaje u fazi O-A** (odluka 2026-11-01), ne u P-A: platforma (P-A)
-  nema alata koji čita nacrt, pa ga nema ni zašto da ima. U `resolveMcpAccess` stoji samo oznaka `// O-A:`.
+- Model `OnboardingDraftAdminAccess` **nastao je u fazi O-A** (odluka 2026-11-01), ne u P-A: platforma (P-A)
+  nema alata koji čita nacrt, pa ga nema ni zašto da ima.
 - Na `/admin/nacrti/[id]`: kartica „Asistent“ sa „Dozvoli mom asistentu pristup ovom nacrtu“ (pravi
   `OnboardingDraftAdminAccess`) i stanjem pristupa.
 - Kod klijenta: veza „Asistent“ u gornjoj traci čarobnjaka vodi na „Povezani asistenti“ sa
@@ -181,8 +181,20 @@ Usklađeno sa planom platforme (§8 tamo; redoslijed potvrđen 2026-10-31):
    prihvata token.
 2. **P-A** (platforma) — veze, stranica „Povezani asistenti“, ruta, opsezi, alat `whoami`.
 3. **P-B** (platforma) — OAuth 2.1, odmah iza P-A; od tada se svaka faza ispod provjerava u Claude Pro.
-4. **Faza O-A — pristup i čitanje.** `DraftAccess` (§3.1), pristup administratora (§3.4), alati
-   `get_onboarding_status` i `get_draft`, veza „Asistent“ u čarobnjaku.
+4. **Faza O-A — pristup i čitanje. ✅ Urađena 2026-11-01.** `DraftAccess` (§3.1), pristup administratora (§3.4), alati
+   `get_onboarding_status` i `get_draft`, veza „Asistent“ u čarobnjaku. Odluke (korisnik, 2026-11-01):
+   - **Q1** pristup administratora je aktivan odmah, bez saglasnosti klijenta; klijent ga vidi (kartica na
+     „Povezani asistenti“, obavještenje u čarobnjaku) i može ukloniti; admin ga može ponovo dodati (klijent to
+     opet vidi). Pravnik pregleda tekst prije `MCP_ENABLED` u produkciji (platforma §9).
+   - **Q2** bez mockupa: ekrani su sastavljeni od postojećih primitiva, pregled uživo.
+   - **Q3** čitanja se ne upisuju u audit; pristup ima `lastUsedAt` (najviše jednom u 5 minuta).
+   - **Q4** `draft_id` je opcion: bez njega se uzima jedini opseg veze, a za više opsega alat vraća grešku sa spiskom.
+   - **Q5** `get_draft` šalje lične podatke vlasnika i e-adresu za prijavu računovođe; nikad hash lozinke
+     (`hasPassword`), bajtove fajlova, `proofFileId`, e-poštu iz poziva ni id vlasnika.
+   - **Q6** minimalan refaktor: `DraftAccess` + dva konstruktora + jedna funkcija čitanja; funkcije upisa u čarobnjaku
+     se ne diraju (O-B).
+   - **Q7** pristup može ukloniti vlasnik nacrta ili bilo koji super admin.
+   - **Q8** ponovno dodavanje pristupa oživljava postojeće admin veze sa tim opsegom (red pristupa odlučuje).
 5. **Faza O-B — upis.** Alati za korake 2–6 i 9, grupni upis (§3.2), oznaka izvora (§3.3).
 6. **Faza O-C — vlasnici.** `add_owner_stake` sa dokazom, `remove_owner_stake`, `set_unit_disputed`.
 

@@ -31,7 +31,7 @@ import {
   saveZevStepAction,
   setNoAccountsAction,
 } from "@/server/actions/onboardingWizard";
-import { ONBOARDING_STEPS, stepBySlug, isStepReachable, type OnboardingStepKey } from "@/lib/onboarding/progress";
+import { ONBOARDING_STEPS, stepBySlug, isStepReachable, isStepReadOnly, type OnboardingStepKey } from "@/lib/onboarding/progress";
 import { StepNav, type StepNavItem } from "@/components/step-nav";
 import { PreconditionList } from "@/components/precondition-list";
 import { PageHeader, Card, Field, Flash, Table, Td, RowAction, RowActionLink, SubmitBtn, BtnLink, Btn, ConfirmAction, StatusBadge, inputCls, type ColumnSpec } from "@/components/ui";
@@ -56,7 +56,7 @@ function navItems(draft: MyDraft, viewing: OnboardingStepKey): StepNavItem[] {
     complete: s.complete,
     viewing: s.key === viewing,
     optional: s.optional,
-    readOnly: Boolean(draft.data.registerConfirmedAt) && ["buildings", "units", "commonAssets"].includes(s.key),
+    readOnly: isStepReadOnly(draft.data, s.key),
   }));
 }
 

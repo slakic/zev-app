@@ -28,7 +28,7 @@ export function McpOAuthConsentForm({
   redirectHost: string;
   localhost: boolean;
   email: string;
-  offered: { key: string; label: string }[];
+  offered: { key: string; label: string; via?: "OWNER" | "ADMIN" }[];
   errCode?: string;
 }) {
   return (

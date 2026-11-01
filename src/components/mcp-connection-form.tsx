@@ -10,7 +10,9 @@ import { MCP_EXPIRY_DAYS } from "@/lib/mcp/scopes";
 import { buildScopeOptions, defaultScopeKey } from "@/components/mcp-scope-options";
 import { t, tf } from "@/lib/i18n";
 
-export function McpConnectionForm({ offered, oauthEnabled = false }: { offered: { key: string; label: string }[]; oauthEnabled?: boolean }) {
+export function McpConnectionForm({
+  offered, preselect, oauthEnabled = false,
+}: { offered: { key: string; label: string; via?: "OWNER" | "ADMIN" }[]; /** Opseg iz adrese (već provjeren da je među ponuđenima). */ preselect?: string; oauthEnabled?: boolean }) {
   const [state, formAction, pending] = useActionState<McpConnectionState, FormData>(createMcpConnectionAction, { status: "idle" });
   // „Gotovo, sakrij token" ne smije biti link na istu adresu: soft navigacija čuva stanje klijentske
   // komponente, pa bi token ostao na ekranu. Zato se sakriveni token pamti po vrijednosti.
@@ -39,7 +41,7 @@ export function McpConnectionForm({ offered, oauthEnabled = false }: { offered: 
           </select>
         </Field>
       </div>
-      <ChoiceCards name="scopeKey" legend={t("assistants.form.scope")} options={options} defaultValue={defaultScopeKey(offered)} />
+      <ChoiceCards name="scopeKey" legend={t("assistants.form.scope")} options={options} defaultValue={defaultScopeKey(offered, preselect)} />
       <div className="grid gap-4 md:grid-cols-2">
         <Field label={t("assistants.form.days")} hint={t("assistants.form.daysHint")}>
           <select name="days" className={inputCls} defaultValue="30">

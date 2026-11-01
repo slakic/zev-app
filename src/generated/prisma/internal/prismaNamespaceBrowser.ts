@@ -115,6 +115,7 @@ export const ModelName = {
   PlatformSetting: 'PlatformSetting',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
+  OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
   OnboardingDraftFile: 'OnboardingDraftFile',
   McpConnection: 'McpConnection',
   McpOAuthClient: 'McpOAuthClient',
@@ -1268,6 +1269,19 @@ export const OnboardingDraftScalarFieldEnum = {
 } as const
 
 export type OnboardingDraftScalarFieldEnum = (typeof OnboardingDraftScalarFieldEnum)[keyof typeof OnboardingDraftScalarFieldEnum]
+
+
+export const OnboardingDraftAdminAccessScalarFieldEnum = {
+  id: 'id',
+  draftId: 'draftId',
+  adminUserId: 'adminUserId',
+  grantedAt: 'grantedAt',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById'
+} as const
+
+export type OnboardingDraftAdminAccessScalarFieldEnum = (typeof OnboardingDraftAdminAccessScalarFieldEnum)[keyof typeof OnboardingDraftAdminAccessScalarFieldEnum]
 
 
 export const OnboardingDraftFileScalarFieldEnum = {

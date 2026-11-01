@@ -406,7 +406,10 @@ const srLatn = {
         allowed:
           "Smije da čita i popunjava nacrt: podatke o ZEV-u, račune, zgrade, posebne i zajedničke dijelove, vlasnike sa dokazima i organe.",
         denied: "Ne smije: potvrditi registar, objaviti ZEV, otvarati naloge niti vidjeti druge ZEV-ove.",
-        note: "U ovoj verziji asistent samo provjerava vezu; čitanje i upis nacrta stižu uskoro.",
+        note: "U ovoj verziji asistent čita nacrt i provjerava šta nedostaje; upis podataka stiže uskoro.",
+      },
+      draftAdmin: {
+        title: "Onboarding: {naziv} (pristup administratora)",
       },
       none: {
         title: "Samo provjera veze",
@@ -485,6 +488,36 @@ const srLatn = {
       notFound: "Veza nije pronađena.",
       noScope: "Ova veza nema pristup {naziv}.",
       draftClosed: "Nacrt „{naziv}” više nije u toku.",
+      draftIdRequired: "Ova veza ima pristup za više nacrta; navedite draft_id: {spisak}.",
+      noDraftScope: "Ova veza nema pristup nijednom nacrtu.",
+      internal: "Došlo je do greške. Pokušajte ponovo.",
+    },
+    tools: {
+      statusNote: "Objavu ZEV-a i potvrdu registra radi klijent u aplikaciji.",
+    },
+    adminAccess: {
+      title: "Pristup administratora Vašem nacrtu",
+      intro:
+        "Administrator platforme može da pomaže u popunjavanju Vašeg nacrta kroz svog asistenta. Asistent administratora ima ista prava kao Vaš: čita i popunjava nacrt, ali ne potvrđuje registar i ne objavljuje ZEV.",
+      admin: "Administrator",
+      draft: "Nacrt",
+      since: "Pristup od",
+      lastUsed: "Posljednje korišćenje",
+      neverUsed: "Još nije korišćen",
+      actions: "Radnje",
+      revoke: {
+        trigger: "Ukloni pristup",
+        title: "Uklanjanje pristupa: {ime}",
+        body: "Asistent administratora odmah gubi pristup ovom nacrtu. Administrator Vam i dalje može pomagati kroz aplikaciju.",
+        confirm: "Da, ukloni pristup",
+        done: "Pristup administratora je uklonjen.",
+      },
+      preselected: "Izabran je opseg za nacrt sa kojeg ste došli.",
+      errors: {
+        draftNotActive: "Pristup se može dodati samo nacrtu koji je u toku.",
+        ownDraft: "Ovo je Vaš nacrt; pristup administratora nije potreban.",
+        disabled: "Povezivanje asistenata nije uključeno.",
+      },
     },
   },
   oauth: {
@@ -530,6 +563,11 @@ const srLatn = {
     beforeNext: "Prije sljedećeg koraka",
     next: "Nastavi na: {korak}",
     back: "Nazad na: {korak}",
+    noDraft: "Nemate nacrt novog ZEV-a u toku.",
+    assistantLink: "Asistent",
+    adminAccessNotice:
+      "Administrator platforme ima pristup Vašem nacrtu kroz svog asistenta. Pristup možete pregledati i ukloniti na stranici Povezani asistenti.",
+    adminAccessNoticeLink: "Povezani asistenti",
     stale: "Nacrt je u međuvremenu izmijenjen (možda u drugoj kartici ili na drugom uređaju). Osvježite stranicu i pokušajte ponovo.",
     stepLocked: "Prvo završite korak „{korak}”.",
     steps: {
@@ -779,6 +817,21 @@ const srLatn = {
       published: "Nacrt je objavljen {datum}; ZEV je nastao.",
       openZev: "Otvori ZEV",
       view: "Pregled nacrta",
+      assistant: {
+        title: "Asistent",
+        intro:
+          "Dozvolite svom asistentu da čita ovaj nacrt i pomaže klijentu u popunjavanju. Klijent vidi pristup na stranici Povezani asistenti i može ga ukloniti.",
+        grant: "Dozvoli mom asistentu pristup ovom nacrtu",
+        active: "Vaš asistent ima pristup ovom nacrtu od {datum}",
+        connect: "Poveži asistenta sa ovim nacrtom",
+        revoke: "Ukloni pristup",
+        revokeTitle: "Uklanjanje pristupa nacrtu „{naziv}”",
+        revokeBody: "Sve Vaše veze sa ovim opsegom odmah gube pristup nacrtu.",
+        revokeConfirm: "Da, ukloni pristup",
+        others: "Pristup imaju i: {imena}.",
+        granted: "Pristup je dodat. Sada povežite asistenta sa ovim nacrtom.",
+        revoked: "Pristup je uklonjen.",
+      },
     },
     check: {
       nameOk: "Ime i prezime su upisani.",
@@ -1169,6 +1222,10 @@ const srLatn = {
       connection: {
         create: "Napravljena veza sa asistentom",
         revoke: "Prekinuta veza sa asistentom",
+      },
+      draft_access: {
+        grant: "Administratoru dodijeljen pristup nacrtu novog ZEV-a kroz asistenta",
+        revoke: "Uklonjen pristup administratora nacrtu novog ZEV-a",
       },
       oauth: {
         client_register: "Registrovan OAuth klijent asistenta",

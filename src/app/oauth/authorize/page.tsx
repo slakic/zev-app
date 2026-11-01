@@ -61,7 +61,7 @@ export default async function OAuthAuthorizePage({ searchParams }: { searchParam
         redirectHost={redirectHost(req.redirectUri)}
         localhost={isLoopbackRedirect(req.redirectUri)}
         email={actor.email}
-        offered={offered.map((o) => ({ key: o.key, label: o.label }))}
+        offered={offered.map((o) => ({ key: o.key, label: o.label, via: o.via }))}
         errCode={err}
       />
     </AuthShell>

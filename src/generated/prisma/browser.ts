@@ -363,6 +363,14 @@ export type OnboardingInvite = Prisma.OnboardingInviteModel
  */
 export type OnboardingDraft = Prisma.OnboardingDraftModel
 /**
+ * Model OnboardingDraftAdminAccess
+ * Pristup super admina (preko njegovog MCP asistenta) tuđem nacrtu novog ZEV-a (Plans/mcp-onboarding-asistent-plan.md,
+ * Faza O-A). Red odlučuje: veza sa opsegom `draft:<id>` radi samo dok postoji aktivan red (revokedAt null) i dok je
+ * korisnik super admin. Najviše jedan aktivan red po (nacrt, admin) — parcijalni jedinstveni indeks u migraciji
+ * (Prisma ga ne modelira). Nacrt koji se odbaci/objavi time prestaje da važi; redovi se brišu zajedno sa nacrtom.
+ */
+export type OnboardingDraftAdminAccess = Prisma.OnboardingDraftAdminAccessModel
+/**
  * Model OnboardingDraftFile
  * Fajl priložen u nacrtu (dokaz o vlasništvu) prije nego što ZEV postoji (D2b);
  * pri objavi prelazi u Attachment, pri odbacivanju se briše.

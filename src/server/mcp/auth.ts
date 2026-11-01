@@ -15,6 +15,8 @@ import type { McpClient } from "@/generated/prisma/client";
 /** Podaci o provjerenoj vezi koji prate jedan MCP poziv. Nikad ne sadrže token ni hash. */
 export type McpRequestContext = {
   userId: string;
+  /** Čita se iz baze na svakom pozivu (ne čuva se uz vezu): oduzet status super admina odmah gasi pristup tuđim nacrtima. */
+  isSuperAdmin: boolean;
   connectionId: string;
   connectionName: string;
   client: McpClient;
@@ -46,7 +48,7 @@ async function verifyOAuthAccessToken(token: string): Promise<McpRequestContext 
   if (!oauthEnabled()) return null;
   const row = await prisma.mcpOAuthToken.findUnique({
     where: { tokenHash: sha256(token) },
-    include: { connection: { include: { user: { select: { active: true } } } } },
+    include: { connection: { include: { user: { select: { active: true, isSuperAdmin: true } } } } },
   });
   const now = new Date();
   if (!row || row.kind !== "ACCESS" || row.revokedAt || row.expiresAt <= now) return null;
@@ -57,6 +59,7 @@ async function verifyOAuthAccessToken(token: string): Promise<McpRequestContext 
   touchConnection(conn, now);
   return {
     userId: conn.userId,
+    isSuperAdmin: conn.user.isSuperAdmin,
     connectionId: conn.id,
     connectionName: conn.name,
     client: conn.client,
@@ -73,13 +76,14 @@ export async function verifyMcpToken(authorization: string | null): Promise<McpR
   if (!m) return null;
   const conn = await prisma.mcpConnection.findUnique({
     where: { tokenHash: sha256(m[1]) },
-    include: { user: { select: { active: true } } },
+    include: { user: { select: { active: true, isSuperAdmin: true } } },
   });
   const now = new Date();
   if (!conn || conn.kind !== "TOKEN" || conn.revokedAt || conn.expiresAt <= now || !conn.user.active) return null;
   touchConnection(conn, now);
   return {
     userId: conn.userId,
+    isSuperAdmin: conn.user.isSuperAdmin,
     connectionId: conn.id,
     connectionName: conn.name,
     client: conn.client,

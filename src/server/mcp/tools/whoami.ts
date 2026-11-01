@@ -17,12 +17,12 @@ export const whoamiTool: McpToolDef = {
         annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       },
       async () => {
-        const [displayName, scopes] = await Promise.all([displayNameFor(ctx.userId, { withEmail: false }), describeScopes(ctx.userId, ctx.scopes)]);
+        const [displayName, scopes] = await Promise.all([displayNameFor(ctx.userId, { withEmail: false }), describeScopes(ctx, ctx.scopes)]);
         const payload = {
           // Bez Party-ja nema imena, a e-pošta se ne daje asistentu.
           user: { displayName: displayName || t("assistants.whoami.unnamed") },
           connection: { name: ctx.connectionName, client: ctx.client, expiresAt: ctx.expiresAt.toISOString() },
-          scopes: scopes.map((s) => ({ kind: s.scope.kind, draftId: s.scope.draftId, label: s.label, active: s.active })),
+          scopes: scopes.map((s) => ({ kind: s.scope.kind, draftId: s.scope.draftId, label: s.label, active: s.active, via: s.via })),
         };
         return { content: [{ type: "text", text: JSON.stringify(payload) }], structuredContent: payload };
       }

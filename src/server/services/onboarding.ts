@@ -22,6 +22,8 @@ import {
   type OnboardingDraftData,
 } from "@/lib/onboarding/draft";
 import { assertSharePercent } from "@/lib/shareSum";
+import { DraftAccessError, type DraftAccess } from "@/server/services/draftAccess";
+import { draftScopeLabel } from "@/server/mcp/access";
 import { assertUploadable, createLinkedAttachmentTx } from "@/server/services/attachments";
 import { seedDefaultSettings } from "@/server/services/settings";
 import { snapshotUnit } from "@/server/services/unitRegister";
@@ -314,6 +316,25 @@ export async function getMyDraft(actor: Pick<Actor, "userId">): Promise<MyDraft 
   return { id: d.id, version: d.version, tier: d.invite.tier, email: d.invite.email, data, progress: onboardingProgress(data, d.invite.tier) };
 }
 
+/**
+ * Nacrt po dokazanom pravu pristupa (draftAccess.ts): čita ga i vlasnik (preko asistenta) i super admin sa odobrenim
+ * pristupom. Vlasnika ne provjerava ponovo — to je posao konstruktora `DraftAccess`. Status se provjerava opet jer
+ * je nacrt između dvije provjere mogao biti objavljen ili odbačen.
+ */
+export async function getDraftByAccess(access: DraftAccess): Promise<MyDraft & { label: string }> {
+  const d = await prisma.onboardingDraft.findFirst({
+    where: { id: access.draftId, status: "IN_PROGRESS" },
+    include: { invite: { select: { tier: true, email: true, workingName: true } } },
+  });
+  if (!d) throw new DraftAccessError(t("onboarding.noDraft"));
+  const data = parseDraftData(d.data);
+  return {
+    id: d.id, version: d.version, tier: d.invite.tier, email: d.invite.email, data,
+    progress: onboardingProgress(data, d.invite.tier),
+    label: draftScopeLabel({ data: d.data, invite: d.invite }),
+  };
+}
+
 export async function hasDraftInProgress(userId: string): Promise<boolean> {
   return (await prisma.onboardingDraft.count({ where: { ownerUserId: userId, status: "IN_PROGRESS" } })) > 0;
 }
@@ -341,7 +362,7 @@ async function updateDraft(
   mutate: (data: OnboardingDraftData) => OnboardingDraftData
 ): Promise<number> {
   const draft = await getMyDraft(actor);
-  if (!draft) throw new Error("Nemate nacrt novog ZEV-a u toku.");
+  if (!draft) throw new Error(t("onboarding.noDraft"));
   if (!isStepReachable(draft.progress, step)) {
     throw new Error(tf("onboarding.stepLocked", { korak: stepLabel(draft.progress.currentStep) }));
   }
@@ -677,7 +698,7 @@ export async function addDraftStake(
   const share = assertSharePercent(parseMoneyInput(input.sharePercent) ?? ""); // isto pravilo kao addOwnershipStake
   const validFrom = assertDate(input.validFrom, t("onboarding.owners.validFrom"));
   const draft = await getMyDraft(actor);
-  if (!draft) throw new Error("Nemate nacrt novog ZEV-a u toku.");
+  if (!draft) throw new Error(t("onboarding.noDraft"));
   const used = await prisma.onboardingDraftFile.aggregate({ where: { draftId: draft.id }, _sum: { size: true } });
   if ((used._sum.size ?? 0) + proof.buffer.length > DRAFT_FILES_MAX_BYTES) throw new Error("Nacrt je dostigao ukupno ograničenje fajlova (200 MB).");
 
@@ -820,7 +841,7 @@ export async function hasDiscardedDraftOnly(userId: string): Promise<boolean> {
  */
 export async function publishOnboardingDraft(actor: Pick<Actor, "userId">, version: number): Promise<{ zevId: string }> {
   const draft = await getMyDraft(actor);
-  if (!draft) throw new Error("Nemate nacrt novog ZEV-a u toku.");
+  if (!draft) throw new Error(t("onboarding.noDraft"));
   if (draft.version !== version) throw new StaleDraftError();
   const notDone = draft.progress.steps.filter((s) => s.key !== "review" && !s.complete);
   if (notDone.length > 0) throw new Error(tf("onboarding.stepLocked", { korak: notDone[0].label }));

@@ -15,26 +15,40 @@ import type { McpClient } from "@/generated/prisma/client";
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Audit veza ne pripada nijednom ZEV-u, i kad korisnik ima aktivan ZEV (nalog je iznad ZEV-a). */
-function accountActor(actor: Actor) {
+export function accountActor(actor: Actor) {
   return { userId: actor.userId, label: actor.label };
 }
 
-export type OfferedScope = { key: string; scope: McpScope; label: string };
+export type OfferedScope = { key: string; scope: McpScope; label: string; via: "OWNER" | "ADMIN" };
 
-/** Opsezi koje korisnik trenutno smije da dodijeli vezi: nacrti novog ZEV-a koje sam popunjava. */
+/**
+ * Opsezi koje korisnik trenutno smije da dodijeli vezi: nacrti novog ZEV-a koje sam popunjava, a za super admina i
+ * tuđi nacrti u toku kojima ima aktivan pristup (OnboardingDraftAdminAccess). Sve se izvodi iz baze.
+ */
 export async function listOfferedScopes(actor: Actor): Promise<OfferedScope[]> {
   requireAnyUser(actor);
-  const drafts = await prisma.onboardingDraft.findMany({
-    where: { ownerUserId: actor.userId, status: "IN_PROGRESS" },
-    select: { id: true, data: true, invite: { select: { workingName: true } } },
-    orderBy: { createdAt: "desc" },
-  });
-  // O-A: nacrti kojima super admin ima odobren pristup (OnboardingDraftAdminAccess).
-  return drafts.map((d) => ({
+  const select = { id: true, data: true, invite: { select: { workingName: true } } } as const;
+  const [own, administered] = await Promise.all([
+    prisma.onboardingDraft.findMany({ where: { ownerUserId: actor.userId, status: "IN_PROGRESS" }, select, orderBy: { createdAt: "desc" } }),
+    actor.isSuperAdmin
+      ? prisma.onboardingDraft.findMany({
+          where: {
+            status: "IN_PROGRESS",
+            ownerUserId: { not: actor.userId },
+            adminAccess: { some: { adminUserId: actor.userId, revokedAt: null } },
+          },
+          select,
+          orderBy: { createdAt: "desc" },
+        })
+      : Promise.resolve([]),
+  ]);
+  const offer = (d: (typeof own)[number], via: OfferedScope["via"]): OfferedScope => ({
     key: `draft:${d.id}`,
     scope: { kind: "ONBOARDING_DRAFT" as const, draftId: d.id },
     label: draftScopeLabel(d),
-  }));
+    via,
+  });
+  return [...own.map((d) => offer(d, "OWNER")), ...administered.map((d) => offer(d, "ADMIN"))];
 }
 
 // Naziv i rok dijele forma „Poveži asistenta" i ekran saglasnosti OAuth-a (Faza P-B).
@@ -125,7 +139,7 @@ export async function listMyMcpConnections(actor: Actor): Promise<McpConnectionL
     rows.map(async ({ scopes, oauthClient, ...r }) => ({
       ...r,
       oauthClientName: oauthClient?.clientName ?? null,
-      scopes: await describeScopes(actor.userId, parseScopes(scopes)),
+      scopes: await describeScopes({ userId: actor.userId, isSuperAdmin: Boolean(actor.isSuperAdmin) }, parseScopes(scopes)),
     }))
   );
 }

@@ -6,10 +6,20 @@ import { requireActor } from "@/server/actor";
 import { getEnv } from "@/lib/env";
 import { t, tf, formatDate, formatDateTime } from "@/lib/i18n";
 import { listMyMcpConnections, listOfferedScopes } from "@/server/services/mcpConnections";
+import { listAdminAccessToMyDrafts } from "@/server/services/mcpDraftAccess";
 import { revokeMcpConnectionAction } from "@/server/actions/mcpConnections";
+import { revokeDraftAdminAccessAction } from "@/server/actions/mcpDraftAccess";
 import { PageHeader, Card, Table, Td, Flash, ConfirmAction, type ColumnSpec } from "@/components/ui";
 import { McpConnectionForm } from "@/components/mcp-connection-form";
 import { CopyField } from "@/components/mcp-connection-secret";
+
+const accessHeaders: ColumnSpec[] = [
+  { label: t("assistants.adminAccess.admin"), priority: "primary" },
+  { label: t("assistants.adminAccess.draft"), priority: "secondary" },
+  { label: t("assistants.adminAccess.since"), priority: "secondary", nowrap: true },
+  { label: t("assistants.adminAccess.lastUsed"), priority: "detail", nowrap: true },
+  { label: t("assistants.adminAccess.actions"), actions: true },
+];
 
 const headers: ColumnSpec[] = [
   { label: t("assistants.list.name"), priority: "primary" },
@@ -19,24 +29,33 @@ const headers: ColumnSpec[] = [
   { label: t("assistants.list.actions"), actions: true },
 ];
 
-export default async function AssistantsPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string; naziv?: string }> }) {
+export default async function AssistantsPage({ searchParams }: { searchParams: Promise<{ err?: string; msg?: string; naziv?: string; opseg?: string }> }) {
   if (getEnv().MCP_ENABLED !== "true") notFound();
   const actor = await requireActor();
   const oauthEnabled = getEnv().MCP_OAUTH_ENABLED === "true";
-  const { err, msg, naziv } = await searchParams;
-  const [offered, connections] = await Promise.all([listOfferedScopes(actor), listMyMcpConnections(actor)]);
+  const { err, msg, naziv, opseg } = await searchParams;
+  const [offered, connections, adminAccess] = await Promise.all([listOfferedScopes(actor), listMyMcpConnections(actor), listAdminAccessToMyDrafts(actor)]);
   // Klijent bez ZEV-a koji nije super admin dolazi iz čarobnjaka i vraća se u njega.
   const fromWizard = !actor.zevId && !actor.isSuperAdmin;
+  // Unaprijed izabran opseg iz adrese važi samo ako je među ponuđenima (server ga ionako ponovo izvodi pri pravljenju veze).
+  const preselected = offered.find((o) => o.key === opseg);
+  // Super admin koji dolazi sa stranice tuđeg nacrta vraća se na nju (id izveden iz ponuđenog opsega, ne iz adrese).
+  const adminDraftId = preselected?.via === "ADMIN" && preselected.scope.kind === "ONBOARDING_DRAFT" ? preselected.scope.draftId : null;
+  const backHref = fromWizard ? "/onboarding" : adminDraftId ? `/admin/nacrti/${adminDraftId}` : undefined;
   return (
     <div>
       <PageHeader
         title={t("assistants.title")}
         subtitle={t("assistants.subtitle")}
-        backHref={fromWizard ? "/onboarding" : undefined}
+        backHref={backHref}
       />
       <Flash
         err={err}
-        msg={msg === "revoked" ? tf("assistants.revoke.done", { naziv: naziv ?? "" }) : undefined}
+        msg={
+          msg === "revoked" ? tf("assistants.revoke.done", { naziv: naziv ?? "" })
+          : msg === "access_revoked" ? t("assistants.adminAccess.revoke.done")
+          : undefined
+        }
       />
       <div className="space-y-6">
       {oauthEnabled && (
@@ -56,8 +75,42 @@ export default async function AssistantsPage({ searchParams }: { searchParams: P
         </Card>
       )}
 
-      <Card title={t("assistants.form.title")}>
-        <McpConnectionForm offered={offered.map((o) => ({ key: o.key, label: o.label }))} oauthEnabled={oauthEnabled} />
+      {adminAccess.length > 0 && (
+        <Card title={t("assistants.adminAccess.title")}>
+          <div className="space-y-4">
+            <p className="max-w-[68ch] text-sm text-slate-700">{t("assistants.adminAccess.intro")}</p>
+            <Table id="mcp-admin-access-table" caption={t("assistants.adminAccess.title")} headers={accessHeaders}>
+              {adminAccess.map((a) => (
+                <tr key={a.id}>
+                  <Td><span className="font-medium text-slate-900">{a.adminName}</span></Td>
+                  <Td>{a.draftLabel}</Td>
+                  <Td className="tabular-nums">{formatDate(a.grantedAt)}</Td>
+                  <Td className={a.lastUsedAt ? "tabular-nums" : "text-slate-500"}>
+                    {a.lastUsedAt ? formatDateTime(a.lastUsedAt) : t("assistants.adminAccess.neverUsed")}
+                  </Td>
+                  <Td>
+                    <ConfirmAction
+                      trigger={t("assistants.adminAccess.revoke.trigger")}
+                      title={tf("assistants.adminAccess.revoke.title", { ime: a.adminName })}
+                      body={<p className="text-sm text-amber-950">{t("assistants.adminAccess.revoke.body")}</p>}
+                      confirmLabel={t("assistants.adminAccess.revoke.confirm")}
+                      action={revokeDraftAdminAccessAction}
+                      hiddenFields={{ id: a.id, back: "assistants", draftId: a.draftId }}
+                    />
+                  </Td>
+                </tr>
+              ))}
+            </Table>
+          </div>
+        </Card>
+      )}
+
+      <Card title={t("assistants.form.title")} hint={preselected ? t("assistants.adminAccess.preselected") : undefined}>
+        <McpConnectionForm
+          offered={offered.map((o) => ({ key: o.key, label: o.label, via: o.via }))}
+          preselect={preselected?.key}
+          oauthEnabled={oauthEnabled}
+        />
       </Card>
 
       <Card title={tf("assistants.list.title", { n: connections.length })}>

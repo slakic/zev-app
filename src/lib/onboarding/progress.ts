@@ -161,3 +161,8 @@ export function isStepReachable(progress: OnboardingProgress, key: OnboardingSte
   const idx = (k: OnboardingStepKey) => ONBOARDING_STEPS.findIndex((s) => s.key === k);
   return idx(key) <= idx(progress.currentStep);
 }
+
+/** Koraci koji su samo za pregled poslije potvrde registra (zgrade, posebni i zajednički dijelovi se više ne mijenjaju). */
+export function isStepReadOnly(data: Pick<OnboardingDraftData, "registerConfirmedAt">, key: OnboardingStepKey): boolean {
+  return Boolean(data.registerConfirmedAt) && (["buildings", "units", "commonAssets"] as OnboardingStepKey[]).includes(key);
+}

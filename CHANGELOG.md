@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.62.0] - 2026-11-01
+
+MCP onboarding, Faza O-A: asistent čita nacrt novog ZEV-a. Klijent (ili super admin kome je klijent vidljivo dao pristup) povezuje asistenta sa nacrtom, a asistent vidi šta je urađeno, šta nedostaje i cio sadržaj nacrta. Upis stiže u O-B. Sve je i dalje iza `MCP_ENABLED`. Plan: `Plans/mcp-onboarding-asistent-plan.md`.
+
+**Migracija: da — nova tabela `OnboardingDraftAdminAccess` (sa parcijalnim jedinstvenim indeksom); samo dodavanje. Primijeniti prije deploya (`MIGRATE_DATABASE_URL="…" node scripts/migrate.mjs apply`).**
+
+### Dodato
+
+- **MCP alati za čitanje** (samo uz opseg „Onboarding: [nacrt]”):
+  - `get_onboarding_status`: koraci čarobnjaka sa ✓/⚠, trenutni korak, verzija nacrta i da li je spreman za objavu;
+  - `get_draft`: sadržaj nacrta po sekcijama (ZEV, računi, zgrade, posebni i zajednički dijelovi, vlasnici, organi). Dokaz o vlasništvu ide samo kao naziv fajla; fajlovi, lozinke i interni ID-jevi se nikad ne šalju.
+- **Pristup administratora nacrtu:** na `/admin/nacrti/[id]` kartica „Asistent”: super admin dozvoljava svom asistentu pristup nacrtu, pa ga povezuje sa preselektovanim opsegom. Pristup važi odmah; klijent ga vidi na „Povezani asistenti” (kartica „Pristup administratora Vašem nacrtu”, sa posljednjim korišćenjem) i u čarobnjaku, i može ga ukloniti. Audit: `mcp.draft_access.grant`, `mcp.draft_access.revoke`.
+- **Čarobnjak:** veza „Asistent” u zaglavlju vodi na „Povezani asistenti” sa već izabranim opsegom za taj nacrt.
+
+### Izmijenjeno
+
+- Pristup nacrtu (`DraftAccess`) je jedan pojam za čarobnjak i asistenta; u ovoj fazi kroz njega idu samo čitanja.
+- Opsezi veze pokazuju da li pristup ide kao vlasnik ili kao administrator.
+
 ## [2.61.0] - 2026-11-01
 
 MCP platforma, Faza P-B: OAuth 2.1, pa se asistent povezuje bez tokena („Poveži → prijava → Dozvoli”), kako to traže claude.ai i Claude Desktop. Sve je iza novog flaga `MCP_OAUTH_ENABLED` (podrazumijevano `false`, radi samo uz `MCP_ENABLED=true`); u produkciji se uključuje tek posle spoljnog sigurnosnog pregleda. Plan: `Plans/mcp-platforma-plan.md` §5.

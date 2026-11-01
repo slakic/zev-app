@@ -2,6 +2,7 @@
 // /nalog (stranice na nivou naloga, izvan ZEV-a): TenantShell (ZEV), PlatformShell (super admin) i
 // OnboardingShell (čarobnjak novog ZEV-a). Layout-i ostaju tanki: pristup i preusmjeravanja su njihovi.
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Actor } from "@/server/auth/guards";
 import { listMyTenants } from "@/server/services/memberships";
@@ -9,6 +10,7 @@ import { logoutAction, switchZevAction } from "@/server/actions/shell";
 import { accountLinksFor } from "@/server/shell";
 import { NavShell } from "@/components/nav-shell";
 import { AccountMenu } from "@/components/account-menu";
+import { BtnLink, Flash } from "@/components/ui";
 import { buildPlatformNav, buildTenantNav, settingsInAccountMenu, type NavRole } from "@/lib/nav-structure";
 
 type ShellActor = Actor & { displayName: string };
@@ -85,8 +87,16 @@ function SavedIcon() {
  * crta stranica. `showSaved` je oznaka „Sve izmjene su sačuvane” (samo u čarobnjaku, ne na /nalog).
  */
 export function OnboardingShell({
-  actor, showSaved, children,
-}: { actor: ShellActor & { email: string }; showSaved: boolean; children: ReactNode }) {
+  actor, showSaved, assistantHref, adminAccessNotice, children,
+}: {
+  actor: ShellActor & { email: string };
+  showSaved: boolean;
+  /** Veza na „Povezani asistenti" sa unaprijed izabranim nacrtom; samo kad su asistenti uključeni (MCP_ENABLED). */
+  assistantHref?: string;
+  /** Administrator platforme ima aktivan pristup nacrtu kroz asistenta: klijent to mora vidjeti. */
+  adminAccessNotice?: boolean;
+  children: ReactNode;
+}) {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-2 shadow-sm md:gap-4 md:px-6 md:py-3">
@@ -100,6 +110,7 @@ export function OnboardingShell({
             <span className="md:hidden">{t("onboarding.savedShort")}</span>
           </span>
         )}
+        {assistantHref && <BtnLink href={assistantHref} variant="ghost">{t("onboarding.assistantLink")}</BtnLink>}
         <span className="hidden text-[13px] text-slate-600 md:inline">{actor.email}</span>
         <AccountMenu
           displayName={actor.displayName}
@@ -110,6 +121,18 @@ export function OnboardingShell({
           logoutAction={logoutAction}
         />
       </header>
+      {adminAccessNotice && (
+        <div className="mx-auto w-full max-w-[1440px] px-4 pt-4 md:px-8 md:pt-6">
+          <Flash
+            warn={
+              <>
+                {t("onboarding.adminAccessNotice")}{" "}
+                <Link href="/nalog/asistenti" className="font-medium underline underline-offset-2">{t("onboarding.adminAccessNoticeLink")}</Link>
+              </>
+            }
+          />
+        </div>
+      )}
       {children}
     </div>
   );
