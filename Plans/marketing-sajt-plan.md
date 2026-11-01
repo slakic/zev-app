@@ -40,7 +40,9 @@ isporučena** — ili se do tada prodaje samo jedan paket (P3, §12).
 promjenljivom širinom. Prikazi aplikacije unutar sajta su, naprotiv, vjerni aplikaciji (Roboto,
 slate, plava `#2563eb`), da korisnik poslije prijave prepozna ono što je vidio (§5).
 
-**5. Jedan CTA kroz cijeli sajt: „Zatražite poziv“.** Odgovara stvarnom toku: administrator
+**5. Jedan CTA kroz cijeli sajt: „Javite se“.** (Ranije „Zatražite poziv“ — dvosmisleno, jer je „poziv“ u
+aplikaciji lični link za otvaranje ZEV-a, a čita se i kao telefonski poziv; izmjena na zahtjev korisnika
+2026-11-01.) Odgovara stvarnom toku: administrator
 platforme šalje lični poziv, klijent sam prolazi čarobnjak i objavljuje ZEV (uputstvo §15). Forma na
 sajtu pravi upit, a ne nalog (§8).
 
@@ -113,7 +115,7 @@ anglicizama („dashboard“, „workflow“, „digitalna transformacija“) i 
 | Početna | `/` | M-M01 | Priča od oglasne table do aplikacije; tri stuba; tri uloge; paketi ukratko; CTA |
 | Funkcije | `/funkcije` | M-M02 | Moduli jedan po jedan, sa oznakom paketa; referenca za upravni odbor |
 | Paketi | `/paketi` | M-M03 | Tri paketa, tabela poređenja, česta pitanja |
-| Zatražite poziv | `/poziv` | M-M04 | Forma za upit + „šta se dešava poslije“ |
+| Javite se | `/kontakt` | M-M04 | Forma za upit + „šta se dešava poslije“ |
 | Pravne napomene | `/privatnost`, `/uslovi` | — | Obrada podataka iz forme, analitika bez kolačića; uslovi korištenja (tekst daje korisnik/pravnik, P9) |
 | Korisničko uputstvo | veza na `zevupravnik.com/korisnicko-uputstvo.html` | — | Postoji; ne duplira se |
 | Prijava | veza na `zevupravnik.com/login` | — | Postoji |
@@ -124,7 +126,7 @@ profesionalne upravnike sa više ZEV-ova.
 
 ### 3.2 Sekcije Početne (M-M01)
 
-1. **Zaglavlje** — logo, Funkcije · Paketi · Kako počinje · Prijava, dugme „Zatražite poziv“.
+1. **Zaglavlje** — logo, Funkcije · Paketi · Kako počinje · Prijava, dugme „Javite se“.
 2. **Hero** — naslov, podnaslov, CTA; desno fasada zgrade čiji se prozori pale kako vlasnici glasaju
    (jedini animirani trenutak na sajtu), uz karticu sa rezultatom glasanja.
 3. **Od oglasne table do aplikacije** — tri papira sa oglasne table naspram onoga što aplikacija radi.
@@ -145,7 +147,7 @@ Sjednica uživo · Fakture i uplate · Izvodi i SMS banke · Troškovi · Planov
 Dokumenti · Izvještaji · Evidencije i trag · Novi ZEV (čarobnjak i uvoz). Svaka sekcija nosi oznaku
 paketa u kojem je dostupna.
 
-### 3.4 Paketi (M-M03) i Zatražite poziv (M-M04)
+### 3.4 Paketi (M-M03) i Javite se (M-M04)
 
 Paketi: tri kolone → tabela poređenja → „Šta je isto u svim paketima“ → česta pitanja → CTA.
 Poziv: forma lijevo, desno „Šta se dešava poslije“ (četiri koraka) i kontakt; stanje „poslato“.
@@ -163,7 +165,7 @@ doslovno. Uglaste zagrade `[…]` su placeholderi koje popunjava korisnik.
 - **Slogan (kratki):** Zgrada u redu.
 - **Opis (meta, ≤155 znakova):** Aplikacija za zajednice etažnih vlasnika: skupština i e-glasanje,
   fakture i uplate, kvarovi i dokumenti — na jednom mjestu, sa tragom svake odluke.
-- **Navigacija:** Funkcije · Paketi · Kako počinje · Prijava · **Zatražite poziv**
+- **Navigacija:** Funkcije · Paketi · Kako počinje · Prijava · **Javite se**
 - **Podnožje:** „ZEV upravnik — aplikacija za upravljanje zajednicom etažnih vlasnika u Republici
   Srpskoj.“ · Korisničko uputstvo · Prijava · Privatnost · Uslovi · Kontakt: [e-adresa],
   [telefon] · © 2026 [pravno lice].
@@ -174,7 +176,7 @@ doslovno. Uglaste zagrade `[…]` su placeholderi koje popunjava korisnik.
 - Naslov: **Zgrada u redu.**
 - Podnaslov: Skupština i glasanje, fakture i uplate, kvarovi i dokumenti zajednice etažnih
   vlasnika — na jednom mjestu, sa telefona i računara. Svaka odluka i svaka uplata ostavljaju trag.
-- CTA: **Zatražite poziv** · sekundarno: Pogledajte funkcije
+- CTA: **Javite se** · sekundarno: Pogledajte funkcije
 - Kartica uz fasadu: „Zamjena krovnog pokrivača — glasalo 18 od 24 · Kvorum postignut · Za 71,4 %“
   (primjer; rezultat kakav aplikacija prikazuje u §6.6).
 - Ispod: „Za zajednice etažnih vlasnika u Republici Srpskoj. Predsjednik, računovođa i vlasnici —
@@ -251,7 +253,7 @@ doslovno. Uglaste zagrade `[…]` su placeholderi koje popunjava korisnik.
 
 **Kako počinje** (§15)
 - Naslov: Vaš ZEV u aplikaciji — bez čekanja na nas.
-- Koraci (stvarni niz): 1. **Zatražite poziv** — dobijate lični link (važi 14 dana). 2. **Unesite
+- Koraci (stvarni niz): 1. **Javite se** — dobijate lični link (važi 14 dana). 2. **Unesite
   podatke u čarobnjaku** — deset koraka, od podataka o ZEV-u do vlasnika; sve se čuva, možete
   nastaviti kasnije. 3. **Imate spisak u tabeli?** Uvezite posebne dijelove i vlasnike iz CSV ili
   JSON fajla — ili zamolite AI asistenta da ga napravi iz etažnog elaborata. 4. **Objavite ZEV** —
@@ -261,9 +263,9 @@ doslovno. Uglaste zagrade `[…]` su placeholderi koje popunjava korisnik.
 
 **Završni CTA**
 - Naslov: Pokažite zgradi kako izgleda uredno.
-- Tekst: Zatražite poziv. Javićemo se, pokazati aplikaciju na primjeru i poslati Vam lični link za
+- Tekst: Ostavite podatke. Javićemo Vam se, pokazati aplikaciju na primjeru i poslati lični link za
   otvaranje ZEV-a.
-- Dugme: Zatražite poziv
+- Dugme: Javite se
 
 ### 4.3 Funkcije — tekst po modulu
 
@@ -316,9 +318,9 @@ dokumenti; e-pošta vlasnicima.
 7. *Računovođa radi za više zgrada?* Jedan nalog, više ZEV-ova; podaci se nikad ne miješaju. (§1.6)
 8. *Koliko košta?* [odgovor kad su cijene poznate, P1]
 
-### 4.5 Zatražite poziv
+### 4.5 Javite se
 
-- Naslov: Zatražite poziv.
+- Naslov: Javite se.
 - Uvod: Ostavite podatke i javićemo Vam se da pokažemo aplikaciju i dogovorimo otvaranje Vašeg ZEV-a.
 - Polja: Ime i prezime* · E-adresa* · Telefon · Naziv ZEV-a ili adresa zgrade* · Broj posebnih
   dijelova (stanova, lokala, garaža) · Vi ste: Predsjednik ZEV-a / Član upravnog odbora / Upravnik
@@ -341,7 +343,7 @@ dokumenti; e-pošta vlasnicima.
 | Početna | ZEV upravnik — zgrada u redu | Zgrada u redu. | Skupština i e-glasanje, fakture i uplate, kvarovi i dokumenti zajednice etažnih vlasnika — na jednom mjestu. | `og-pocetna.png` (fasada) |
 | Funkcije | Funkcije — ZEV upravnik | Šta sve vodi ZEV upravnik | Od registra posebnih dijelova do zapisnika: svi moduli aplikacije za zajednice etažnih vlasnika. | `og-skupstina.png` |
 | Paketi | Paketi — ZEV upravnik | Tri paketa za Vašu zgradu | Basic, Basic + finansije i Full: izaberite koliko ZEV upravnik vodi umjesto sveske i tabele. | `og-paketi.png` |
-| Poziv | Zatražite poziv — ZEV upravnik | Otvorite ZEV u aplikaciji | Ostavite podatke i dobićete lični poziv za otvaranje Vašeg ZEV-a. | `og-pocetna.png` |
+| Kontakt | Javite se — ZEV upravnik | Otvorite ZEV u aplikaciji | Ostavite podatke i dobićete lični poziv za otvaranje Vašeg ZEV-a. | `og-pocetna.png` |
 | Kampanja „glasanje“ | Glasanje bez sale — ZEV upravnik | Vlasnici glasaju sa telefona | Lični link i verifikacioni kod e-poštom, kvorum i većina računaju se sami, zapisnik se ne prepisuje. | `og-skupstina.png` |
 | Kampanja „novac“ | Ko je platio — ZEV upravnik | Ko je platio, vidi se bez izvoda | Uvoz izvoda banke, prijedlozi uparivanja i saldo svakog vlasnika na jednom mjestu. | `og-finansije.png` |
 
@@ -356,7 +358,7 @@ dokumenti; e-pošta vlasnicima.
 
 ### 4.8 Mikrotekst
 
-- Dugmad: „Zatražite poziv“ (primarno, svuda isto), „Pogledajte funkcije“, „Uporedite pakete“,
+- Dugmad: „Javite se“ (primarno, svuda isto), „Pogledajte funkcije“, „Uporedite pakete“,
   „Pošalji upit“, „Prijava“.
 - Oznake paketa na funkcijama: „Svi paketi“, „Od paketa Basic + finansije“, „Paket Full“.
 
@@ -415,6 +417,9 @@ ne prefarbava.
 
 ### 5.4 Ilustracije i prikazi aplikacije
 
+- **Logo na tamnoj podlozi** uvijek stoji na bijeloj zaobljenoj pločici (kao ikona aplikacije): tamnoplave
+  zgrade iz loga se inače stapaju sa `--navy`. Pločica se koristi i na svijetloj podlozi (uz tanak okvir),
+  da logo svuda izgleda isto. Svijetla (inverzna) verzija loga je opcija ako je dizajner napravi (P14).
 - Fasada, prozori, oglasna tabla i ikone: ručno, CSS/inline SVG, u bojama loga; ikone u stilu
   `nav-icons.tsx` (linija 1,75 px, zaobljeni krajevi).
 - Prikazi aplikacije: u mockupima su HTML/CSS rekonstrukcije stvarnih ekrana (podaci iz seeda);
@@ -427,7 +432,7 @@ ne prefarbava.
 `Plans/design-system.md` važi za **aplikaciju**. Sajt namjerno ima bogatiji izraz (vlastita paleta
 iz loga, Archivo, ilustracija, veće razmake i tamne sekcije). Preuzima se:
 - **pravila kvaliteta**: ništa ispod 13 px; najviše jedno primarno dugme po regiji (na sajtu je to
-  uvijek „Zatražite poziv“); vidljiv fokus; mete ≥ 44 px na telefonu; `prefers-reduced-motion`;
+  uvijek „Javite se“); vidljiv fokus; mete ≥ 44 px na telefonu; `prefers-reduced-motion`;
 - **vjernost prikaza**: kad sajt prikazuje aplikaciju, koristi njene tokene, Roboto, chipove
   statusa i tekstove iz `sr-Latn.ts`, da se obećanje i proizvod ne razilaze;
 - **ikone**: konvencija `nav-icons.tsx`.
@@ -481,7 +486,7 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
   `redirect("/login")`. Za tačno `/` (ne podstranice) neprijavljen posjetilac ide na
   `https://www.zevupravnik.com` (307, adresa iz env varijable `MARKETING_URL`; bez nje ponašanje
   ostaje kao danas). Ovo je izmjena aplikacije → CHANGELOG + verzija, kao i svaka druga.
-- Forma „Zatražite poziv“: Vercel funkcija u marketinškom projektu (§8.2).
+- Forma „Javite se“: Vercel funkcija u marketinškom projektu (§8.2).
 - Ako se kasnije pokaže potreba za opcijom C, ova odluka je ne blokira.
 
 ---
@@ -502,9 +507,9 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
   `utm_medium=social|message|newsletter`, `utm_campaign=lansiranje-2026|glasanje|novac`.
 - Bez praćenja pojedinaca, bez Facebook piksela u prvoj fazi (P13).
 
-### 8.2 CTA tok „Zatražite poziv“
+### 8.2 CTA tok „Javite se“
 
-1. Svako „Zatražite poziv“ vodi na `/poziv` (ne modal — link se može podijeliti, a forma radi bez JS-a).
+1. Svako „Javite se“ vodi na `/kontakt` (ne modal — link se može podijeliti, a forma radi bez JS-a).
 2. Forma (§4.5) šalje POST na funkciju `/api/upit` marketinškog projekta: provjera polja, skriveno
    polje protiv botova (honeypot) + ograničenje po IP-u, bez CAPTCHA-e.
 3. Funkcija šalje e-mail na prodajnu adresu (P6) preko istog provajdera e-pošte koji aplikacija već
@@ -521,7 +526,7 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
 |---|---|---|
 | **M0 — odluke** | Odgovori na P1–P13; pravna provjera tvrdnji iz §2 i Privatnosti; potvrda paketa | ovaj plan + mockupi |
 | **M1 — temelj i Početna** | `marketing/` (Astro), tokeni §5.2, Archivo, zaglavlje/podnožje, Početna sa fasadom i animacijom, meta + OG Početne, Vercel projekat na preview adresi | M0 |
-| **M2 — ostale stranice** | Funkcije, Paketi, Zatražite poziv + `/api/upit`, Privatnost/Uslovi, 404 | M1 |
+| **M2 — ostale stranice** | Funkcije, Paketi, Javite se + `/api/upit`, Privatnost/Uslovi, 404 | M1 |
 | **M3 — prikazi i OG** | Pravi screenshotovi iz seeda (računar + telefon), četiri OG slike iz šablona, provjera pregleda na Viberu/WhatsAppu/Facebooku (Sharing Debugger)/LinkedInu (Post Inspector) | M2 |
 | **M4 — puštanje** | `www.zevupravnik.com` na Vercel projekat, izmjena `/` u aplikaciji (`MARKETING_URL`, CHANGELOG + verzija), Vercel Analytics, sitemap, Search Console | M3 |
 | **M5 — kampanje** | Odredišne stranice „glasanje“ i „novac“, UTM, objave iz §4.7 | M4 |
@@ -551,7 +556,7 @@ na računaru i na 375 px. Na vrhu svakog je uska traka „Mockup …“ koja nij
 | `M-M01-pocetna.html` | Početna: hero sa fasadom i animacijom glasanja, oglasna tabla, tri uloge, skupština (koraci + e-listić), novac (uparivanje), održavanje (tok + hitni put), trag, kako počinje, paketi ukratko, završni CTA |
 | `M-M02-funkcije.html` | Funkcije: indeks modula, 15 sekcija sa oznakom paketa i kratkim prikazima |
 | `M-M03-paketi.html` | Paketi: tri kolone sa placeholder cijenama, tabela poređenja, šta je isto, česta pitanja |
-| `M-M04-poziv.html` | Zatražite poziv: forma, „šta se dešava poslije“, stanje „upit je poslat“ (prikazano ispod) |
+| `M-M04-kontakt.html` | Javite se: forma, „šta se dešava poslije“, stanje „upit je poslat“ (prikazano ispod) |
 | `M-M05-og-slike.html` | Četiri OG slike 1200×630 (umanjene) + kako izgledaju u pregledu poruke |
 
 ---
@@ -573,6 +578,7 @@ na računaru i na 375 px. Na vrhu svakog je uska traka „Mockup …“ koja nij
 | **P11** | Koje banke pouzdano rade za PDF izvod i SMS? | Imenovati banke tek kad su testirane; do tada „PDF ili CSV izvod“, a SMS uz napomenu „za sada Nova Banka“ samo na stranici Funkcije |
 | **P12** | `marketing/` u ovom repozitorijumu ili poseban repozitorijum; važi li za njega pravilo CHANGELOG + verzija? | **Ovaj repozitorijum**, folder `marketing/` sa svojim kratkim CHANGELOG-om i **bez** obaveznog podizanja verzije aplikacije; dopuniti CLAUDE.md jednom rečenicom |
 | **P13** | Facebook/Meta piksel za oglase? | Ne u prvoj fazi; UTM + Vercel Analytics su dovoljni dok nema plaćenih kampanja |
+| **P14** | Treba li svijetla (inverzna) verzija loga za tamne podloge? | Do tada bijela pločica (§5.4); inverzna verzija je posao za dizajnera loga |
 
 ---
 
