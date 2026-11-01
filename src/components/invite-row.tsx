@@ -75,7 +75,7 @@ export function InviteRow({ row, colSpan }: { row: InviteRowData; colSpan: numbe
             {state.status === "ok" ? (
               <div className="space-y-3">
                 <Flash msg={tf("onboarding.newPage.reissued", { datum: state.validUntil })} inset />
-                <InviteLink link={state.link} email={state.email} inset />
+                <InviteLink link={state.link} email={state.email} emailStatus={state.emailStatus} emailError={state.emailError} inset />
               </div>
             ) : (
               <>
@@ -87,7 +87,12 @@ export function InviteRow({ row, colSpan }: { row: InviteRowData; colSpan: numbe
                   confirmDisabled={pending}
                   action={reissueAction}
                   hiddenFields={{ inviteId: row.id }}
-                />
+                >
+                  <label className="flex items-start gap-2 text-sm">
+                    <input type="checkbox" name="sendEmail" defaultChecked className="mt-1" />
+                    <span>{t("onboarding.newPage.sendEmail")}</span>
+                  </label>
+                </ConfirmPanel>
               </>
             )}
           </td>

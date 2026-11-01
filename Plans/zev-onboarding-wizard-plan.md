@@ -18,7 +18,7 @@ lozinka, članstvo super admina) i `Plans/fr-registar-i-glasanje-po-etaznim-vlas
 
 | # | Pitanje | Odluka |
 |---|---|---|
-| D1 | Dostava linka i rok | Super admin **ručno** kopira i šalje link; važi **14 dana**; jedan aktivan poziv po e-mailu, novi link poništava stari |
+| D1 | Dostava linka i rok | Super admin kopira link i može ga poslati ručno; nakon v2.63.0 aplikacija ga na zahtjev (podrazumijevano uključeno) šalje i e-poštom na adresu poziva, a neuspjeh slanja ne ruši poziv — ručno kopiranje ostaje rezervna putanja; važi **14 dana**; jedan aktivan poziv po e-mailu, novi link poništava stari |
 | D2 | Gdje žive podaci tokom čarobnjaka | **JSON nacrt.** `Zev` i svi njegovi zapisi nastaju tek pri objavi, u jednoj transakciji |
 | D2a | Nalog pozvanog | `User` nastaje **odmah u koraku 1, bez članstva**. Nacrt pripada tom nalogu, a nastavak ide kroz običnu prijavu. `Party` i `Membership(PRESIDENT)` nastaju pri objavi. Token se troši u koraku 1 |
 | D2b | Fajlovi prije nego što ZEV postoji | **Tabela fajlova nacrta** (bajtovi u bazi, kao `AttachmentBlob`); pri objavi se prebacuju u `Attachment` u istoj transakciji |

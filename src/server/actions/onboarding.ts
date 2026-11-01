@@ -5,17 +5,32 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSuperAdminActor } from "@/server/actor";
-import { createOnboardingInvite, reissueOnboardingInvite, revokeOnboardingInvite } from "@/server/services/onboarding";
-import { getEnv } from "@/lib/env";
+import {
+  createOnboardingInvite,
+  onboardingInviteLink,
+  reissueOnboardingInvite,
+  revokeOnboardingInvite,
+  sendOnboardingInviteEmail,
+} from "@/server/services/onboarding";
 import { formatDate } from "@/lib/i18n";
 
 export type InviteLinkState =
   | { status: "idle" }
   | { status: "error"; error: string }
-  | { status: "ok"; link: string; email: string; validUntil: string };
+  | { status: "ok"; link: string; email: string; validUntil: string; emailStatus: InviteEmailStatus; emailError?: string };
 
-function inviteLink(token: string): string {
-  return `${getEnv().APP_URL.replace(/\/$/, "")}/onboarding/poziv/${token}`;
+/** `skipped` = admin je isključio slanje; link se šalje ručno. */
+export type InviteEmailStatus = "sent" | "queued" | "failed" | "skipped";
+
+/** Slanje e-poštom posle kreiranja/novog linka; greška slanja nikad ne ruši poziv (link se kopira ručno). */
+async function maybeSendEmail(actor: Parameters<typeof sendOnboardingInviteEmail>[0], formData: FormData, inviteId: string, token: string) {
+  if (formData.get("sendEmail") !== "on") return { emailStatus: "skipped" as const };
+  try {
+    const r = await sendOnboardingInviteEmail(actor, { inviteId, token });
+    return { emailStatus: r.status, emailError: r.error };
+  } catch (e) {
+    return { emailStatus: "failed" as const, emailError: e instanceof Error ? e.message : "Greška" };
+  }
 }
 
 export async function createInviteAction(_prev: InviteLinkState, formData: FormData): Promise<InviteLinkState> {
@@ -28,8 +43,9 @@ export async function createInviteAction(_prev: InviteLinkState, formData: FormD
       email,
       note: (formData.get("note") as string) || null,
     });
+    const sent = await maybeSendEmail(actor, formData, res.inviteId, res.token);
     revalidatePath("/admin");
-    return { status: "ok", link: inviteLink(res.token), email: email.trim().toLowerCase(), validUntil: formatDate(res.expiresAt) };
+    return { status: "ok", link: onboardingInviteLink(res.token), email: email.trim().toLowerCase(), validUntil: formatDate(res.expiresAt), ...sent };
   } catch (e) {
     return { status: "error", error: e instanceof Error ? e.message : "Greška" };
   }
@@ -38,9 +54,11 @@ export async function createInviteAction(_prev: InviteLinkState, formData: FormD
 export async function reissueInviteAction(_prev: InviteLinkState, formData: FormData): Promise<InviteLinkState> {
   const actor = await requireSuperAdminActor();
   try {
-    const res = await reissueOnboardingInvite(actor, String(formData.get("inviteId") ?? ""));
+    const inviteId = String(formData.get("inviteId") ?? "");
+    const res = await reissueOnboardingInvite(actor, inviteId);
+    const sent = await maybeSendEmail(actor, formData, inviteId, res.token);
     revalidatePath("/admin");
-    return { status: "ok", link: inviteLink(res.token), email: res.email, validUntil: formatDate(res.expiresAt) };
+    return { status: "ok", link: onboardingInviteLink(res.token), email: res.email, validUntil: formatDate(res.expiresAt), ...sent };
   } catch (e) {
     return { status: "error", error: e instanceof Error ? e.message : "Greška" };
   }

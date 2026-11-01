@@ -1,5 +1,9 @@
 // Onboarding novog ZEV-a, Faza A (Plans/zev-onboarding-wizard-plan.md): poziv, nalog pozvanog i nacrt.
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { queueNotification, ALLOWLIST_BLOCKED_ERROR } from "@/server/notifications/service";
+import { remainingToday } from "@/server/notifications/dailyBudget";
+import { adminUpdateEmailSettings } from "@/server/services/platformSettings";
+import { sendOnboardingInviteEmail } from "@/server/services/onboarding";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/server/auth/password";
 import { ForbiddenError } from "@/server/auth/guards";
@@ -261,5 +265,90 @@ describe("units, common assets and the register (Faza B)", () => {
     expect((await getMyDraft(actor))!.progress.currentStep).toBe("register");
     v = await removeDraftCommonAsset(actor, v, d.data.commonAssets[0].key);
     expect((await getMyDraft(actor))!.data.commonAssets).toHaveLength(1);
+  });
+});
+
+describe("e-mail dostava linka poziva", () => {
+  const ENV_KEYS = ["EMAIL_PROVIDER", "MAILJET_API_KEY", "MAILJET_API_SECRET", "MAILJET_FROM_EMAIL"] as const;
+  const saved = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
+  afterEach(async () => {
+    for (const k of ENV_KEYS) {
+      if (saved[k] === undefined) delete process.env[k];
+      else process.env[k] = saved[k];
+    }
+    vi.restoreAllMocks();
+    await prisma.platformSetting.deleteMany({ where: { key: { startsWith: "email." } } });
+  });
+  const mails = (inviteId: string) => prisma.notificationMessage.findMany({ where: { relatedType: "OnboardingInvite", relatedId: inviteId }, orderBy: { createdAt: "asc" } });
+
+  it("šalje jednu račun-nivo poruku sa linkom, bez ZEV-a; audit je bez tokena", async () => {
+    const inv = await invite("mail-send");
+    const res = await sendOnboardingInviteEmail(inv.admin, { inviteId: inv.inviteId, token: inv.token });
+    expect(res).toEqual({ status: "sent" });
+    const rows = await mails(inv.inviteId);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ channel: "EMAIL", toAddress: inv.email, zevId: null, template: "onboarding.invite", status: "DELIVERED" });
+    expect(rows[0].subject).toBe("Poziv za kreiranje ZEV-a „ZEV mail-send” u aplikaciji ZEV upravnik");
+    expect(rows[0].body).toContain(`/onboarding/poziv/${inv.token}`);
+    const ev = await prisma.auditEvent.findFirstOrThrow({ where: { action: "onboarding.invite.email", targetId: inv.inviteId } });
+    expect(ev.zevId).toBeNull();
+    expect(JSON.stringify(ev)).not.toContain(inv.token);
+    expect(ev.after).toMatchObject({ status: "sent" });
+  });
+
+  it("bez slanja nema poruke; novi link šalje poruku sa NOVIM linkom", async () => {
+    const inv = await invite("mail-reissue");
+    expect(await mails(inv.inviteId)).toHaveLength(0);
+    const fresh = await reissueOnboardingInvite(inv.admin, inv.inviteId);
+    await sendOnboardingInviteEmail(inv.admin, { inviteId: inv.inviteId, token: fresh.token });
+    const rows = await mails(inv.inviteId);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].body).toContain(fresh.token);
+    expect(rows[0].body).not.toContain(inv.token);
+    // stari token više ne odgovara pozivu
+    await expect(sendOnboardingInviteEmail(inv.admin, { inviteId: inv.inviteId, token: inv.token })).rejects.toThrow(/ne odgovara/);
+  });
+
+  it("samo super admin šalje", async () => {
+    const inv = await invite("mail-guard");
+    const f = await createFixture("mail-guard-z");
+    await expect(sendOnboardingInviteEmail(f.president, { inviteId: inv.inviteId, token: inv.token })).rejects.toThrow(ForbiddenError);
+    expect(await mails(inv.inviteId)).toHaveLength(0);
+  });
+
+  it("probni period i neuspjeh provajdera: poziv ostaje važeći, ishod je failed", async () => {
+    process.env.EMAIL_PROVIDER = "mailjet";
+    process.env.MAILJET_API_KEY = "k";
+    process.env.MAILJET_API_SECRET = "s";
+    process.env.MAILJET_FROM_EMAIL = "noreply@zev.test";
+    const inv = await invite("mail-fail");
+    await adminUpdateEmailSettings(inv.admin, { fromName: "", appendZevName: true, recipientAllowlist: "samo-ja@primjer.ba" });
+    const spy = vi.spyOn(globalThis, "fetch");
+    const blocked = await sendOnboardingInviteEmail(inv.admin, { inviteId: inv.inviteId, token: inv.token });
+    expect(blocked).toEqual({ status: "failed", error: ALLOWLIST_BLOCKED_ERROR });
+    expect(spy).not.toHaveBeenCalled();
+
+    await adminUpdateEmailSettings(inv.admin, { fromName: "", appendZevName: true, recipientAllowlist: "" });
+    spy.mockResolvedValue(new Response(JSON.stringify({ ErrorMessage: "sender not validated", StatusCode: 401 }), { status: 401, headers: { "content-type": "application/json" } }));
+    const failed = await sendOnboardingInviteEmail(inv.admin, { inviteId: inv.inviteId, token: inv.token });
+    expect(failed.status).toBe("failed");
+    expect(failed.error).toBeTruthy();
+    expect(await inspectOnboardingInvite(inv.token)).toMatchObject({ ok: true });
+  });
+
+  it("potrošen dnevni limit: poruka se samo upisuje u red (queued)", async () => {
+    const prev = process.env.EMAIL_DAILY_SOFT_LIMIT;
+    process.env.EMAIL_DAILY_SOFT_LIMIT = "1";
+    try {
+      const f = await createFixture("mail-limit");
+      await queueNotification({ zevId: f.zev.id, channel: "EMAIL", toAddress: "a@b.ba", subject: "S", body: "B" });
+      expect(await remainingToday()).toBe(0);
+      const inv = await invite("mail-limit-i");
+      expect(await sendOnboardingInviteEmail(inv.admin, { inviteId: inv.inviteId, token: inv.token })).toEqual({ status: "queued" });
+      expect((await mails(inv.inviteId))[0].status).toBe("QUEUED");
+    } finally {
+      if (prev === undefined) delete process.env.EMAIL_DAILY_SOFT_LIMIT;
+      else process.env.EMAIL_DAILY_SOFT_LIMIT = prev;
+    }
   });
 });

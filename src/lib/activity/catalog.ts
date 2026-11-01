@@ -151,6 +151,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "onboarding.invite.create": "SYSTEM",
   "onboarding.invite.reissue": "SYSTEM",
   "onboarding.invite.revoke": "SYSTEM",
+  "onboarding.invite.email": "SYSTEM",
   "onboarding.invite.accept": "SYSTEM",
   "onboarding.draft.discard": "SYSTEM",
   "onboarding.draft.import": "SYSTEM",

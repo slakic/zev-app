@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.64.0] - 2026-11-01
+
+Poziv za kreiranje novog ZEV-a se sada može poslati klijentu e-mailom, umjesto samo ručnim kopiranjem linka.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Dodato
+
+- **„Pošalji link klijentu e-mailom”** (uključeno podrazumijevano) u formi „Pošalji poziv klijentu” i kod „Izdaj novi link”. E-mail sadrži radni naziv ZEV-a, link, rok važenja i napomenu da link radi samo sa tom adresom i da novi link poništava stari.
+- Ishod se vidi odmah ispod linka: „Link je poslat na …”, ili da e-mail nije poslat (razlog) uz uputstvo da se link pošalje ručno. Neuspjelo slanje ne poništava poziv; ručno kopiranje linka ostaje.
+- Slanje poštuje probni period (dozvoljene adrese) i dnevni limit e-pošte; preko limita poruka čeka u „Poslate poruke”.
+- Audit: `onboarding.invite.email` (adresa i ishod, bez linka).
+
+### Ispravljeno
+
+- Poruka „Poziv je kreiran. Link važi do …” više nema dvostruku tačku.
+
 ## [2.63.0] - 2026-11-01
 
 Uvoz nacrta novog ZEV-a iz fajla (JSON ili CSV): podatke iz tabele ili iz razgovora sa asistentom (ChatGPT, Claude…) klijent unosi u nacrt odjednom, umjesto ručno korak po korak. Uvoz samo puni nacrt: potvrda registra, dokazi o vlasništvu i objava ostaju kod klijenta. Plan: `Plans/zev-onboarding-wizard-plan.md`.

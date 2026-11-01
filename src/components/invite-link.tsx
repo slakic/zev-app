@@ -3,10 +3,19 @@
 // polje samo za čitanje + „Kopiraj link". Link postoji samo u ovom odgovoru servera — ne čuva se
 // i ne ide u adresu stranice. `inset` za prikaz unutar reda tabele (bez sopstvene kartice).
 import { useState } from "react";
-import { Btn, Card, inputCls } from "@/components/ui";
+import { Btn, Card, Flash, inputCls } from "@/components/ui";
+import type { InviteEmailStatus } from "@/server/actions/onboarding";
 import { t, tf } from "@/lib/i18n";
 
-export function InviteLink({ link, email, inset }: { link: string; email: string; inset?: boolean }) {
+/** Jedna rečenica o ishodu slanja e-poštom; `skipped` (admin isključio slanje) ne prikazuje ništa. */
+function EmailNote({ status, email, error }: { status: InviteEmailStatus; email: string; error?: string }) {
+  if (status === "sent") return <Flash msg={tf("onboarding.newPage.emailSent", { email })} inset />;
+  if (status === "queued") return <Flash warn={tf("onboarding.newPage.emailQueued", { email })} inset />;
+  if (status === "failed") return <Flash warn={tf("onboarding.newPage.emailFailed", { razlog: (error ?? "").replace(/\.$/, "") || "nepoznata greška" })} inset />;
+  return null;
+}
+
+export function InviteLink({ link, email, inset, emailStatus = "skipped", emailError }: { link: string; email: string; inset?: boolean; emailStatus?: InviteEmailStatus; emailError?: string }) {
   const [copied, setCopied] = useState(false);
   async function copy() {
     try {
@@ -19,6 +28,7 @@ export function InviteLink({ link, email, inset }: { link: string; email: string
   }
   const body = (
     <>
+      <div className="mb-3"><EmailNote status={emailStatus} email={email} error={emailError} /></div>
       <p className="max-w-[68ch] text-sm text-slate-700">{t("onboarding.newPage.linkBody")}</p>
       <div className="mt-4 flex max-w-3xl flex-wrap items-center gap-2">
         <label className="min-w-0 flex-1">

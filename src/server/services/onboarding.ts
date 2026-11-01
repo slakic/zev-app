@@ -13,7 +13,10 @@ import { authenticate } from "@/server/services/users";
 import { emailAddressSchema } from "@/lib/emailAddress";
 import { isValidJib } from "@/lib/identifiers";
 import { parseMoneyInput } from "@/lib/money";
-import { t, tf } from "@/lib/i18n";
+import { t, tf, formatDate } from "@/lib/i18n";
+import { getEnv } from "@/lib/env";
+import { enqueueNotification, queueNotification } from "@/server/notifications/service";
+import { remainingToday } from "@/server/notifications/dailyBudget";
 import {
   parseDraftData,
   initialDraftData,
@@ -137,6 +140,67 @@ export async function reissueOnboardingInvite(actor: Actor, inviteId: string): P
     after: { expiresAt: expiresAt.toISOString() },
   });
   return { token, expiresAt, email: invite.email };
+}
+
+/** Pun link poziva; token ostaje samo u odgovoru servera (u bazi je samo njegov hash). */
+export function onboardingInviteLink(token: string): string {
+  return `${getEnv().APP_URL.replace(/\/$/, "")}/onboarding/poziv/${token}`;
+}
+
+export const INVITE_EMAIL_TEMPLATE = "onboarding.invite";
+
+/** Ishod slanja pozivne poruke: `queued` = čeka dnevni limit slanja, `failed` = provajder/probni period odbio. */
+export type InviteEmailResult = { status: "sent" | "queued" | "failed"; error?: string };
+
+/**
+ * Šalje klijentu link poziva e-poštom (račun-nivo poruka, bez ZEV-a — ZEV još ne postoji). Neuspjeh slanja
+ * NE baca grešku: poziv ostaje važeći, a admin link kopira i šalje ručno. Poruka ne ulazi u audit sa
+ * tokenom — audit bilježi samo ishod. Poštuje probni period (allowlist) i dnevni limit kao ostala slanja.
+ */
+export async function sendOnboardingInviteEmail(actor: Actor, input: { inviteId: string; token: string }): Promise<InviteEmailResult> {
+  requireSuperAdmin(actor);
+  const invite = await prisma.onboardingInvite.findUniqueOrThrow({ where: { id: input.inviteId } });
+  if (invite.status !== "ACTIVE") throw new Error("E-mail se može poslati samo za poziv koji klijent još nije prihvatio.");
+  if (sha256(input.token) !== invite.tokenHash) throw new Error("Link ne odgovara ovom pozivu.");
+  const message = {
+    channel: "EMAIL" as const,
+    recipientId: null,
+    toAddress: invite.email,
+    template: INVITE_EMAIL_TEMPLATE,
+    subject: `Poziv za kreiranje ZEV-a „${invite.workingName}” u aplikaciji ZEV upravnik`,
+    body:
+      `Poštovani,\n\n` +
+      `pozvani ste da u aplikaciji ZEV upravnik podesite ZEV „${invite.workingName}”.\n\n` +
+      `Preko linka ispod otvarate nalog i unosite podatke o ZEV-u, zgradama, posebnim dijelovima i vlasnicima. ` +
+      `Unos možete prekinuti i nastaviti kasnije; ZEV nastaje tek kad objavite unesene podatke.\n\n` +
+      `Link za poziv (važi do ${formatDate(invite.expiresAt)}): ${onboardingInviteLink(input.token)}\n\n` +
+      `Link radi samo sa e-adresom ${invite.email} i lični je — ne prosljeđujte ga drugima. ` +
+      `Ako Vam bude poslat novi link, prethodni prestaje da važi.\n\n` +
+      `Ako ovaj poziv niste očekivali, slobodno zanemarite ovu poruku.\n`,
+    relatedType: "OnboardingInvite",
+    relatedId: invite.id,
+  };
+  let result: InviteEmailResult;
+  try {
+    // Dnevni limit je zajednički za cijelu platformu: kad je potrošen, poruka se samo upisuje u red
+    // (vidi „Poslate poruke”), umjesto da se pošalje preko limita.
+    if ((await remainingToday()) <= 0) {
+      await enqueueNotification(message);
+      result = { status: "queued" };
+    } else {
+      const msg = await queueNotification(message);
+      result = msg.status === "FAILED" ? { status: "failed", error: msg.lastError ?? undefined } : { status: "sent" };
+    }
+  } catch (e) {
+    result = { status: "failed", error: e instanceof Error ? e.message : String(e) };
+  }
+  await audit(platformActor(actor), {
+    action: "onboarding.invite.email",
+    targetType: "OnboardingInvite",
+    targetId: invite.id,
+    after: { to: invite.email, status: result.status, error: result.error ?? null },
+  });
+  return result;
 }
 
 export async function revokeOnboardingInvite(actor: Actor, inviteId: string, reason: string): Promise<void> {

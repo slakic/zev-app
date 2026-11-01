@@ -13,7 +13,7 @@ export function InviteForm({ tierOptions }: { tierOptions: { value: string; labe
     return (
       <div className="space-y-4">
         <Flash msg={tf("onboarding.newPage.created", { datum: state.validUntil })} inset />
-        <InviteLink link={state.link} email={state.email} inset />
+        <InviteLink link={state.link} email={state.email} emailStatus={state.emailStatus} emailError={state.emailError} inset />
         <BtnLink href="/admin?tab=pozivi">{t("onboarding.newPage.toList")}</BtnLink>
       </div>
     );
@@ -35,6 +35,10 @@ export function InviteForm({ tierOptions }: { tierOptions: { value: string; labe
       <Field label={t("onboarding.newPage.note")} hint={t("onboarding.newPage.noteHint")}>
         <textarea name="note" rows={2} className={inputCls} />
       </Field>
+      <label className="flex items-start gap-2">
+        <input type="checkbox" name="sendEmail" defaultChecked className="mt-1" />
+        <span>{t("onboarding.newPage.sendEmail")}</span>
+      </label>
       <SubmitBtn disabled={pending}>{t("onboarding.newPage.submit")}</SubmitBtn>
     </form>
   );
