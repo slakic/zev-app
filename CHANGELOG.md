@@ -43,6 +43,21 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.64.1] - 2026-11-01
+
+Korisničko uputstvo je dopunjeno svim izmjenama od verzije 2.54.0 (do sada je pratilo stanje 2.53.0).
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Izmijenjeno (korisničko uputstvo)
+
+- **Novo poglavlje 15 „Novi ZEV — čarobnjak”:** poziv i nalog, svih 10 koraka, potvrda registra, vlasnici sa dokazima i prijedlozi udjela, organi, objava, pristup administratora i „Uvoz iz fajla” (JSON/CSV, uputstvo za asistenta, pregled, oznaka „Uvezeno”).
+- **Novo poglavlje 16 „Povezani asistenti”:** veza i opsezi, token, Claude Code, claude.ai preko konektora i ekrana „Povezivanje asistenta”, prekid veze, pristup administratora nacrtu, savjeti za bezbjednost.
+- **Super admin (14.4, 14.5):** „Pozivi i nacrti” (slanje poziva i e-mailom, novi link, opoziv, stanja), pregled i odbacivanje nacrta, kartica „Asistent”.
+- **Skupština:** bilješke i zaključci na sjednici uživo i u zapisniku (6.4, 6.9, 6.13); glasanje vlasnika prepisano prema sadašnjem izgledu (jedan glasački listić po sjednici, potvrda, „Vaše učešće”; 6.10, 6.11).
+- **Početna vlasnika (2.2)** prema sadašnjem izgledu („Za Vas sada”, „Dugujete ukupno”); meni naloga (1.5); provjera formata JIB-a i broja računa (13.2, 14.1).
+- Rječnik (sada 17) dopunjen pojmovima: čarobnjak, nacrt, poziv, registar, prijedlog udjela, povezani asistent, opseg, token, MCP.
+
 ## [2.64.0] - 2026-11-01
 
 Poziv za kreiranje novog ZEV-a se sada može poslati klijentu e-mailom, umjesto samo ručnim kopiranjem linka.
