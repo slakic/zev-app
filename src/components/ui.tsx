@@ -99,6 +99,8 @@ const statusTone: Record<string, string> = {
   // Onboarding novog ZEV-a (v2.57.0, mockupi O-M01/O-M03): stanje poziva i nacrta, sporno vlasništvo.
   INVITE_ACTIVE: "blue", DRAFT_IN_PROGRESS: "blue", INVITE_EXPIRED: "slate", INVITE_REVOKED: "slate",
   DRAFT_PUBLISHED: "green", OWNER_DISPUTED: "slate",
+  // Uvoz nacrta iz fajla: oznaka „Uvezeno” na stavkama koje nisu unesene rukom.
+  SOURCE_IMPORT: "slate",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */

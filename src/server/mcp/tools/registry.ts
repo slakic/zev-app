@@ -11,6 +11,7 @@ import type { McpRequestContext } from "@/server/mcp/auth";
 import { whoamiTool } from "@/server/mcp/tools/whoami";
 import { onboardingStatusTool } from "@/server/mcp/tools/onboarding/status";
 import { getDraftTool } from "@/server/mcp/tools/onboarding/draft";
+import { getImportFormatTool } from "@/server/mcp/tools/onboarding/importFormat";
 
 export type McpToolDef = {
   name: string;
@@ -18,7 +19,7 @@ export type McpToolDef = {
   register: (server: McpServer, ctx: McpRequestContext) => void;
 };
 
-export const MCP_TOOLS: McpToolDef[] = [whoamiTool, onboardingStatusTool, getDraftTool];
+export const MCP_TOOLS: McpToolDef[] = [whoamiTool, onboardingStatusTool, getDraftTool, getImportFormatTool];
 
 export function toolsFor(ctx: McpRequestContext): McpToolDef[] {
   return MCP_TOOLS.filter((tool) => tool.requires === null || ctx.scopes.some((s) => s.kind === tool.requires));

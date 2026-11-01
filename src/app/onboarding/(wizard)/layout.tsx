@@ -18,6 +18,7 @@ export default async function OnboardingLayout({ children }: { children: React.R
     <OnboardingShell
       actor={actor}
       showSaved
+      importHref="/onboarding/uvoz"
       assistantHref={mcp ? `/nalog/asistenti?opseg=draft:${draft.id}` : undefined}
       adminAccessNotice={adminAccessNotice}
     >

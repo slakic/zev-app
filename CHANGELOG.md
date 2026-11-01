@@ -43,6 +43,30 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.63.0] - 2026-11-01
+
+Uvoz nacrta novog ZEV-a iz fajla (JSON ili CSV): podatke iz tabele ili iz razgovora sa asistentom (ChatGPT, Claude…) klijent unosi u nacrt odjednom, umjesto ručno korak po korak. Uvoz samo puni nacrt: potvrda registra, dokazi o vlasništvu i objava ostaju kod klijenta. Plan: `Plans/zev-onboarding-wizard-plan.md`.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Dodato
+
+- **Stranica „Uvoz iz fajla”** (`/onboarding/uvoz`, veza u zaglavlju čarobnjaka i u koracima 5 i 8):
+  - obrazac CSV, primjer JSON i „Izvezi nacrt (JSON)” za preuzimanje;
+  - uputstvo za asistenta za kopiranje, da asistent napravi JSON iz dokumenata (etažni elaborat, rješenje o registraciji);
+  - „Pročitaj fajl” pokazuje šta je novo, izmijenjeno, bez promjene ili preskočeno, sa upozorenjima i greškama po redu fajla; ništa se ne upisuje dok se ne klikne „Uvezi u nacrt”.
+- **Formati:** JSON (`zev-upravnik/onboarding-draft`, `formatVersion` 1, isti oblik kao `get_draft`, pa se izvezen nacrt uvozi bez izmjena) i jedan CSV „Posebni dijelovi i vlasnici” (red po paru posebni dio–vlasnik; razdjelnik `;` ili `,`, decimalni zarez, datumi `dd.mm.yyyy`, UTF-8 ili Windows-1250).
+- **Spajanje:** stavke se prepoznaju po ključu ili nazivu; nađene se ažuriraju, nove dodaju, ništa se ne briše. Sve ili ništa: fajl sa ijednom greškom ne upisuje ništa. Potvrđen registar se ne mijenja uvozom.
+- **Prijedlozi udjela:** udjeli iz fajla postaju „prijedlozi” u koraku „Vlasnici” i čekaju dokaz („Upiši uz dokaz”); pravilo „nema udjela bez dokaza” ostaje.
+- Uvezene stavke imaju oznaku „Uvezeno” dok ih klijent ne izmijeni.
+- **Uvoz iz administracije:** super admin sa aktivnim pristupom nacrtu (kartica „Asistent”) uvozi i sa `/admin/nacrti/[id]/uvoz`; bez pristupa stranica i preuzimanja se odbijaju.
+- MCP alat `get_import_format` (format, primjer i kolone CSV-a za asistenta).
+- Audit: `onboarding.draft.import` (brojevi stavki, bez sadržaja).
+
+### Izmijenjeno
+
+- Pravila polja čarobnjaka su izdvojena u `src/lib/onboarding/rules.ts`, pa uvoz i čarobnjak koriste isti kod.
+
 ## [2.62.0] - 2026-11-01
 
 MCP onboarding, Faza O-A: asistent čita nacrt novog ZEV-a. Klijent (ili super admin kome je klijent vidljivo dao pristup) povezuje asistenta sa nacrtom, a asistent vidi šta je urađeno, šta nedostaje i cio sadržaj nacrta. Upis stiže u O-B. Sve je i dalje iza `MCP_ENABLED`. Plan: `Plans/mcp-onboarding-asistent-plan.md`.

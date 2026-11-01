@@ -42,6 +42,14 @@ describe("draftForAssistant", () => {
     expect(out.buildings[0].entrances).toEqual([{ key: "e1", name: "A" }]);
   });
 
+  it("lists import proposals in the owners section (no proof, no internal fields) and only there", () => {
+    const d = sample();
+    d.stakeProposals = [{ key: "sp1", unitKey: "u1", partyKey: "p1", sharePercent: "40", validFrom: "2026-03-01", source: "IMPORT" }];
+    const out = draftForAssistant(d, []) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    expect(out.stakeProposals).toEqual([{ key: "sp1", unitKey: "u1", partyKey: "p1", sharePercent: "40", validFrom: "2026-03-01" }]);
+    expect(Object.keys(draftForAssistant(d, [], ["units"]))).not.toContain("stakeProposals");
+  });
+
   it("returns a null/LATER accountant as-is and a missing proof as null", () => {
     const d = sample();
     d.offices.accountant = "LATER";

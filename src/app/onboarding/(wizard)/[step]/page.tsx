@@ -2,6 +2,7 @@
 // Korak iza trenutnog (prvog nekompletnog) se ne otvara — preusmjerava se na trenutni; isto pravilo
 // server provjerava i u svakoj akciji (updateDraft). Faza A: koraci 1–4 i pregled; koraci 5–9 su
 // vidljivi u StepNav-u, ali još nemaju ekran (zaustavljaju čarobnjak, onboardingProgress).
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import { getMyDraft, landingPath, reachableStepOrCurrent, stepSlug, type MyDraft } from "@/server/services/onboarding";
@@ -13,6 +14,7 @@ import {
   publishAction,
   removeBoardMemberAction,
   removeStakeAction,
+  removeStakeProposalAction,
   setAccountantAction,
   setAccountantLaterAction,
   setDisputedAction,
@@ -43,6 +45,12 @@ import { OnboardingSummary } from "@/components/onboarding-summary";
 import { ProofFileField } from "@/components/proof-file-field";
 import { PasswordField } from "@/components/password-field";
 import { formatDate, t, tEnum, tf } from "@/lib/i18n";
+
+/** Oznaka „Uvezeno” uz stavku koja je došla iz fajla (ručna izmjena je briše). */
+function ImportedChip({ source }: { source?: string }) {
+  if (source !== "IMPORT") return null;
+  return <span className="ml-2 align-middle"><StatusBadge status="SOURCE_IMPORT" label={t("onboarding.import.imported")} /></span>;
+}
 
 function Version({ draft }: { draft: MyDraft }) {
   return <input type="hidden" name="version" value={draft.version} />;
@@ -167,7 +175,7 @@ function AccountsStep({ draft }: { draft: MyDraft }) {
         >
           {draft.data.accounts.map((a) => (
             <tr key={a.key}>
-              <Td>{a.name}</Td>
+              <Td>{a.name}<ImportedChip source={a.source} /></Td>
               <Td>{a.type === "BANK" ? t("onboarding.accounts.typeBank") : t("onboarding.accounts.typeCash")}</Td>
               <Td>{a.bankName ?? "—"}</Td>
               <Td><span className="tabular-nums">{a.number ?? "—"}</span></Td>
@@ -245,7 +253,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
         >
           {buildings.map((b) => (
             <tr key={b.key}>
-              <Td>{b.name}</Td>
+              <Td>{b.name}<ImportedChip source={b.source} /></Td>
               <Td>{b.address}</Td>
               <Td>{b.cadastralRef ?? "—"}</Td>
               <Td>{b.yearBuilt ?? "—"}</Td>
@@ -284,7 +292,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
           >
             {entrances.map((e) => (
               <tr key={e.key}>
-                <Td>{e.name}</Td>
+                <Td>{e.name}<ImportedChip source={e.source} /></Td>
                 <Td>{e.building.name}</Td>
                 <Td>
                   {!locked && (
@@ -408,7 +416,7 @@ function UnitsTable({ draft, editable }: { draft: MyDraft; editable: boolean }) 
       >
         {units.map((u) => (
           <tr key={u.key}>
-            <Td>{u.label}</Td>
+            <Td>{u.label}<ImportedChip source={u.source} /></Td>
             <Td>{tEnum("unitType", u.type)}</Td>
             <Td>{placeOf(draft, u)}</Td>
             <Td>{u.floor ?? "—"}</Td>
@@ -496,7 +504,7 @@ function CommonAssetsStep({ draft }: { draft: MyDraft }) {
         >
           {assets.map((a) => (
             <tr key={a.key}>
-              <Td>{a.name}</Td>
+              <Td>{a.name}<ImportedChip source={a.source} /></Td>
               <Td>{t(`onboarding.commonAssets.kind${a.kind}`)}</Td>
               <Td>{buildingName(a.buildingKey)}</Td>
               <Td>{a.description ?? "—"}</Td>
@@ -592,6 +600,7 @@ const ownerHeaders: ColumnSpec[] = [
 
 function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
   const stakes = draft.data.stakes.filter((s) => s.unitKey === unit.key);
+  const proposals = draft.data.stakeProposals.filter((p) => p.unitKey === unit.key);
   const disputed = draft.data.disputedUnits.includes(unit.key);
   return (
     <tr className="bg-slate-50">
@@ -614,6 +623,47 @@ function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
               </li>
             ))}
           </ul>
+        )}
+        {proposals.length > 0 && (
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-slate-700">{t("onboarding.import.proposals.title")}</p>
+            <p className="mt-0.5 max-w-[68ch] text-[13px] text-slate-600">{t("onboarding.import.proposals.hint")}</p>
+            <ul className="mt-2 divide-y divide-slate-200 border-y border-slate-200">
+              {proposals.map((p) => (
+                <li key={p.key} className="py-3 text-sm">
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+                    <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, p.partyKey)}<ImportedChip source={p.source} /></span>
+                    <span className="tabular-nums">{p.sharePercent.replace(".", ",")} %</span>
+                    <span className="text-slate-600">{tf("onboarding.owners.since", { datum: formatDate(p.validFrom) })}</span>
+                    <form action={removeStakeProposalAction} className="ml-auto">
+                      <Version draft={draft} />
+                      <input type="hidden" name="key" value={p.key} />
+                      <input type="hidden" name="unitKey" value={unit.key} />
+                      <RowAction type="submit" variant="caution">{t("onboarding.import.proposals.remove")}</RowAction>
+                    </form>
+                  </div>
+                  <form action={addStakeAction} className="mt-3 grid grid-cols-1 items-start gap-x-4 gap-y-3 md:grid-cols-4">
+                    <Version draft={draft} />
+                    <input type="hidden" name="unitKey" value={unit.key} />
+                    <input type="hidden" name="partyKey" value={p.partyKey} />
+                    <input type="hidden" name="sharePercent" value={p.sharePercent} />
+                    <input type="hidden" name="validFrom" value={p.validFrom} />
+                    <div className="md:col-span-3">
+                      <ProofFileField
+                        name="proofFile"
+                        label={t("onboarding.owners.proof")}
+                        buttonLabel={t("onboarding.owners.proofButton")}
+                        hint={t("onboarding.owners.proofHint")}
+                        accept="application/pdf,image/jpeg,image/png,image/webp"
+                        required
+                      />
+                    </div>
+                    <div className="md:pt-6"><SubmitBtn variant="tonal">{t("onboarding.import.proposals.add")}</SubmitBtn></div>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
         <form action={addStakeAction} className="mt-4 grid grid-cols-1 items-start gap-x-4 gap-y-3 md:grid-cols-4">
           <Version draft={draft} />
@@ -660,13 +710,18 @@ function OwnersStep({ draft, openUnit }: { draft: MyDraft; openUnit?: string }) 
           const disputed = draft.data.disputedUnits.includes(u.key);
           const chip = shareSumChip(sumShares(stakes.map((s) => s.sharePercent)), stakes.length);
           const open = openUnit === u.key;
+          // Prijedlozi iz uvoza se vide uz vlasnike, ali se ne računaju u zbir (nemaju dokaz).
+          const owners = [
+            ...stakes.map((s) => draftPartyName(draft.data, s.partyKey)),
+            ...draft.data.stakeProposals.filter((p) => p.unitKey === u.key).map((p) => `${draftPartyName(draft.data, p.partyKey)} ${t("onboarding.import.proposals.suffix")}`),
+          ];
           return [
             <tr key={u.key} className={open ? "bg-slate-50" : undefined}>
               <Td>
                 {u.label}
                 <div className="text-[13px] text-slate-500">{placeOf(draft, u)} · {fmtDec(u.usableArea)} m²</div>
               </Td>
-              <Td>{stakes.length > 0 ? stakes.map((s) => draftPartyName(draft.data, s.partyKey)).join(", ") : "—"}</Td>
+              <Td>{owners.length > 0 ? owners.join(", ") : "—"}</Td>
               <Td>{disputed ? <StatusBadge status="OWNER_DISPUTED" label={t("onboarding.owners.disputedChip")} /> : <StatusBadge status={chip.status} label={chip.label} />}</Td>
               <Td>
                 <RowActionLink href={open ? "/onboarding/vlasnici" : `/onboarding/vlasnici?jedinica=${u.key}`} variant={open ? "tonal" : undefined}>
@@ -854,6 +909,12 @@ export default async function OnboardingStepPage({
           <PageHeader title={step.label} subtitle={introFor(draft, key)} />
           <Flash err={err} msg={msg === "saved" ? t("onboarding.saved") : undefined} />
           <div className="space-y-6">
+            {(key === "units" || key === "owners") && (
+              <p className="max-w-[68ch] text-sm text-slate-600">
+                {t("onboarding.import.introLead")}{" "}
+                <Link href="/onboarding/uvoz" className="font-medium text-primary-ink underline underline-offset-2">{t("onboarding.import.introLink")}</Link>
+              </p>
+            )}
             {key === "account" && <AccountStep draft={draft} />}
             {key === "zev" && <ZevStep draft={draft} />}
             {key === "accounts" && <AccountsStep draft={draft} />}

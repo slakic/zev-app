@@ -120,6 +120,11 @@ type DraftAccess = {
 - Ručna izmjena stavke u čarobnjaku briše oznaku, jer ju je čovjek pregledao.
 - Čarobnjak uz takve stavke prikazuje chip „Upisao asistent“ / „Upisao asistent administratora“.
   Novi ključevi u `statusTone` (`SOURCE_MCP_OWNER`, `SOURCE_MCP_ADMIN`), bez novog tona.
+- **Isporučeno uz uvoz iz fajla:** enum `source` je u nacrtu isporučen sa vrijednostima `"IMPORT" | "MCP_OWNER" | "MCP_ADMIN"`
+  (`src/lib/onboarding/draft.ts`, `sourceSchema`), a chip „Uvezeno“ (`SOURCE_IMPORT`, ton `slate`) već postoji u čarobnjaku.
+  O-B dodaje samo chipove za MCP izvore. Nacrt ima i `stakeProposals` (prijedlozi udjela bez dokaza; ne ulaze u zbirove, napredak
+  ni objavu); grupni upis O-B ih treba koristiti umjesto upisa udjela bez dokaza. Koraci čarobnjaka i uvoz dijele ista pravila polja
+  (`src/lib/onboarding/rules.ts`), pa ih O-B treba pozivati iz istog modula.
 
 ### 3.4 Pristup administratora nacrtu (M2, platforma P6)
 
@@ -205,6 +210,8 @@ Usklađeno sa planom platforme (§8 tamo; redoslijed potvrđen 2026-10-31):
 - **Veličina zahtjeva i timeout na Vercelu** za grupni upis i base64 dokaze treba izmjeriti.
 - **Pravna strana:** dokumenti klijenta (lični podaci vlasnika) prolaze kroz asistenta koga bira
   klijent ili administrator; tekst obavještenja i saglasnost — pregled pravnika (platforma §9).
-- Ideje van plana, za kasnije: uvoz iz Excel/CSV tabele, provjera dosljednosti prije objave
+- Uvoz iz JSON/CSV fajla je isporučen (stranica „Uvoz iz fajla“ u čarobnjaku i na /admin/nacrti/[id]/uvoz uz aktivan pristup
+  administratora, alat `get_import_format`, format `zev-upravnik/onboarding-draft` verzija 1); .xlsx i dalje nije podržan.
+- Ideje van plana, za kasnije: provjera dosljednosti prije objave
   (površine vs. udjeli, dvostruko upisana lica), izvještaj asistenta o stavkama koje treba ručno
   provjeriti.

@@ -508,6 +508,14 @@ jer se do tada nacrt ne može objaviti.
 
 ---
 
+## 10a. Uvoz nacrta iz fajla (dodato uz v2.63.0)
+
+Klijent (i super admin sa aktivnim pristupom nacrtu) može nacrt popuniti odjednom iz JSON ili CSV fajla (`/onboarding/uvoz`,
+`/admin/nacrti/[id]/uvoz`). Uvozi se U nacrt, nikad direktno u ZEV; pravila polja su ista kao u koracima (`src/lib/onboarding/rules.ts`),
+spajanje „dopuni i ažuriraj, nikad ne briši“, pregled pa potvrda (hash fajla + verzija nacrta), jedna nova verzija nacrta i audit
+`onboarding.draft.import` bez sadržaja. Vlasnički udjeli iz fajla postaju `stakeProposals` i čekaju dokaz u koraku 8; dokaz,
+potvrda registra i objava ostaju radnje klijenta. Stavke iz fajla nose `source: "IMPORT"` (chip „Uvezeno“) do prve ručne izmjene.
+
 ## 11. Šta plan namjerno ne radi
 
 - Ne uvozi finansijsku istoriju: početna stanja vlasnika, neplaćene fakture, stavke zaduženja.

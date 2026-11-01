@@ -79,6 +79,7 @@ export default async function AdminDraftPage({ params, searchParams }: { params:
                   <p className="max-w-[68ch] text-sm text-slate-700">{tf("onboarding.adminDraft.assistant.active", { datum: formatDate(mine.grantedAt) })}</p>
                   <div className="flex flex-wrap items-start gap-2">
                     <BtnLink href={`/nalog/asistenti?opseg=draft:${draft.id}`} variant="tonal">{t("onboarding.adminDraft.assistant.connect")}</BtnLink>
+                    <BtnLink href={`/admin/nacrti/${draft.id}/uvoz`} variant="tonal">{t("onboarding.import.adminLink")}</BtnLink>
                     <ConfirmAction
                       trigger={t("onboarding.adminDraft.assistant.revoke")}
                       title={tf("onboarding.adminDraft.assistant.revokeTitle", { naziv: draft.data.zev.legalName || draft.invite.workingName })}

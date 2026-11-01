@@ -1,6 +1,7 @@
 // /api/mcp (Plans/mcp-platforma-plan.md, P-A): ruta iza MCP_ENABLED, token u Authorization zaglavlju, alati po
 // opsegu veze. Precedent: tests/health.test.ts (poziva handler direktno). getEnv() kešira, pa se modul
 // uvozi svjež poslije postavljanja MCP_ENABLED.
+import { CSV_COLUMNS, IMPORT_FORMAT_ID, IMPORT_FORMAT_VERSION, IMPORT_JSON_EXAMPLE, IMPORT_SCHEMA_DESCRIPTION, assistantInstructions } from "@/lib/onboarding/import/importFormat";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { prisma } from "@/lib/prisma";
 import type { Actor } from "@/server/auth/guards";
@@ -139,9 +140,27 @@ describe("/api/mcp — alati za nacrt (O-A)", () => {
     const { POST } = await loadRoute("true");
     const names = async (token: string) => (await body(await POST(rpc({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} }, token)))).result.tools.map((x: { name: string }) => x.name);
     expect(await names(none.token)).toEqual(["whoami"]);
-    expect(await names(withDraft.token)).toEqual(["whoami", "get_onboarding_status", "get_draft"]);
+    expect(await names(withDraft.token)).toEqual(["whoami", "get_onboarding_status", "get_draft", "get_import_format"]);
     const tools = (await body(await POST(rpc({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} }, withDraft.token)))).result.tools;
     for (const tool of tools) expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false });
+  });
+
+  it("get_import_format returns the shared import description (same source as the import page) and is read-only", async () => {
+    const c = await clientWithDraft("rt-fmt");
+    const { token } = await createMcpConnection(c.actor, { name: "Format", client: "OTHER", scopeKey: `draft:${c.draftId}`, days: 7 });
+    const { POST } = await loadRoute("true");
+    const res = (await body(await POST(rpc(call("get_import_format"), token)))).result;
+    expect(res.isError).toBeUndefined();
+    expect(res.structuredContent).toMatchObject({
+      format: IMPORT_FORMAT_ID,
+      formatVersion: IMPORT_FORMAT_VERSION,
+      instructions: assistantInstructions(),
+      fields: IMPORT_SCHEMA_DESCRIPTION,
+      example: IMPORT_JSON_EXAMPLE,
+    });
+    expect(res.structuredContent.csvColumns.map((x: { name: string }) => x.name)).toEqual(CSV_COLUMNS.map((x) => x.name));
+    // Draft version is a different concept from the file format version.
+    expect(res.structuredContent).not.toHaveProperty("version");
   });
 
   it("owner: status and draft without draft_id, no secrets in the response, no audit rows from reads", async () => {

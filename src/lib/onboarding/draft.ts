@@ -3,6 +3,10 @@
 // Čisto: bez baze, da ga koriste i servis, stranice i testovi.
 import { z } from "zod";
 
+/** Odakle stavka dolazi kad nije unesena rukom u čarobnjaku: uvoz iz fajla ili asistent (MCP). Ručna izmjena briše oznaku. */
+export const sourceSchema = z.enum(["IMPORT", "MCP_OWNER", "MCP_ADMIN"]).optional();
+export type DraftSource = NonNullable<z.infer<typeof sourceSchema>>;
+
 const accountSchema = z.object({
   key: z.string(),
   type: z.enum(["BANK", "CASH"]),
@@ -11,9 +15,10 @@ const accountSchema = z.object({
   number: z.string().nullable().default(null),
   openingBalance: z.string(),
   openingDate: z.string(), // yyyy-mm-dd
+  source: sourceSchema,
 });
 
-const entranceSchema = z.object({ key: z.string(), name: z.string() });
+const entranceSchema = z.object({ key: z.string(), name: z.string(), source: sourceSchema });
 
 const buildingSchema = z.object({
   key: z.string(),
@@ -23,6 +28,7 @@ const buildingSchema = z.object({
   yearBuilt: z.number().int().nullable().default(null),
   floorsCount: z.number().int().nullable().default(null),
   entrances: z.array(entranceSchema).default([]),
+  source: sourceSchema,
 });
 
 /** Posebni dio u nacrtu: ista polja koja registar provjerava (RegisterPreconditionUnit) + položaj u zgradi.
@@ -36,6 +42,7 @@ const unitSchema = z.object({
   floor: z.number().int().nullable().default(null),
   usableArea: z.string(),
   ownershipShare: z.string(),
+  source: sourceSchema,
 });
 
 const commonAssetSchema = z.object({
@@ -44,6 +51,7 @@ const commonAssetSchema = z.object({
   kind: z.enum(["AREA", "SYSTEM", "EQUIPMENT"]),
   name: z.string(),
   description: z.string().nullable().default(null),
+  source: sourceSchema,
 });
 
 /** Ključ lica „predsjednik” (pozvani): njegovo lice nastaje pri objavi iz `president`, pa ga koraci 8 i 9
@@ -59,6 +67,7 @@ const partySchema = z.object({
   orgIdNumber: z.string().default(""),
   email: z.string().default(""),
   phone: z.string().default(""),
+  source: sourceSchema,
 });
 
 const stakeSchema = z.object({
@@ -71,7 +80,18 @@ const stakeSchema = z.object({
   proofFilename: z.string().default(""),
 });
 
-const officeTermSchema = z.object({ key: z.string(), partyKey: z.string(), validFrom: z.string() });
+/** Prijedlog udjela iz uvoza: vlasnik bez dokaza. Postaje pravi udio (`stakes`) tek kad klijent u koraku „Vlasnici” priloži
+ *  dokaz; ne ulazi u zbirove, napredak ni objavu. */
+const stakeProposalSchema = z.object({
+  key: z.string(),
+  unitKey: z.string(),
+  partyKey: z.string(),
+  sharePercent: z.string(),
+  validFrom: z.string(), // yyyy-mm-dd
+  source: sourceSchema,
+});
+
+const officeTermSchema = z.object({ key: z.string(), partyKey: z.string(), validFrom: z.string(), source: sourceSchema });
 
 const accountantSchema = officeTermSchema.extend({
   /** Nalog računovođe (nije obavezan): e-adresa za prijavu i hash početne lozinke — nikad otvoren tekst. */
@@ -103,6 +123,7 @@ export const draftDataSchema = z.object({
   registerConfirmedAt: z.string().nullable().default(null),
   parties: z.array(partySchema).default([]),
   stakes: z.array(stakeSchema).default([]),
+  stakeProposals: z.array(stakeProposalSchema).default([]),
   /** Posebni dijelovi sa potvrdom „vlasništvo u sporu — unijeću kasnije” (D6a). */
   disputedUnits: z.array(z.string()).default([]),
   offices: z
@@ -123,6 +144,7 @@ export type DraftCommonAsset = OnboardingDraftData["commonAssets"][number];
 
 export type DraftParty = OnboardingDraftData["parties"][number];
 export type DraftStake = OnboardingDraftData["stakes"][number];
+export type DraftStakeProposal = OnboardingDraftData["stakeProposals"][number];
 
 /** Ime lica za prikaz (isto pravilo kao partyDisplayName u aplikaciji); predsjednik je „ime prezime”. */
 export function draftPartyName(data: OnboardingDraftData, partyKey: string): string {

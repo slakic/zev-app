@@ -87,12 +87,14 @@ function SavedIcon() {
  * crta stranica. `showSaved` je oznaka „Sve izmjene su sačuvane” (samo u čarobnjaku, ne na /nalog).
  */
 export function OnboardingShell({
-  actor, showSaved, assistantHref, adminAccessNotice, children,
+  actor, showSaved, assistantHref, importHref, adminAccessNotice, children,
 }: {
   actor: ShellActor & { email: string };
   showSaved: boolean;
   /** Veza na „Povezani asistenti" sa unaprijed izabranim nacrtom; samo kad su asistenti uključeni (MCP_ENABLED). */
   assistantHref?: string;
+  /** Uvoz nacrta iz JSON/CSV fajla (/onboarding/uvoz); samo u čarobnjaku. */
+  importHref?: string;
   /** Administrator platforme ima aktivan pristup nacrtu kroz asistenta: klijent to mora vidjeti. */
   adminAccessNotice?: boolean;
   children: ReactNode;
@@ -110,6 +112,7 @@ export function OnboardingShell({
             <span className="md:hidden">{t("onboarding.savedShort")}</span>
           </span>
         )}
+        {importHref && <BtnLink href={importHref} variant="ghost">{t("onboarding.import.link")}</BtnLink>}
         {assistantHref && <BtnLink href={assistantHref} variant="ghost">{t("onboarding.assistantLink")}</BtnLink>}
         <span className="hidden text-[13px] text-slate-600 md:inline">{actor.email}</span>
         <AccountMenu

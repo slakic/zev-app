@@ -101,6 +101,8 @@ Od v2.43.0 (faza FR, registar posebnih dijelova) mapa ima i ključeve `REGISTER_
 
 Od v2.57.0 (onboarding, mockupi O-M01/O-M03) i `INVITE_ACTIVE` (blue, „Čeka klijenta”), `DRAFT_IN_PROGRESS` (blue, „Unos u toku”), `INVITE_EXPIRED` (slate, „Istekao”), `INVITE_REVOKED` (slate, „Opozvan”), `DRAFT_PUBLISHED` (green, „Objavljen”) i `OWNER_DISPUTED` (slate, „U sporu”). Bez novog tona.
 
+Od v2.63.0 (uvoz nacrta iz fajla) i `SOURCE_IMPORT` (slate, „Uvezeno”) za stavke nacrta koje nisu unesene rukom. Bez novog tona. Pregled uvoza (`components/onboarding-import.tsx`) je kompozicija postojećih primitiva (`Card`, `Table`, `Flash inset`, `FilePicker`, `Btn`); najviše jedno `primary` po regiji („Uvezi u nacrt”, a u stanju „uvezeno” „Idi na korak”).
+
 Od v2.55.0 (F4.5) i `VOTE_PENDING` (amber, „Niste se izjasnili”), `VOTE_DONE` (green, „Izjasnili ste se”), `VOTE_REPRESENTATIVE` (blue, „Glasa predstavnik”), `VOTE_CLOSED` i `VOTE_NONE` (slate) za stanje vlasnika na prijedlogu i sjednici (`components/owner-vote-state.tsx`). Bez novog tona.
 
 Mapa `statusTone` (`ui.tsx:67-81`) je jedino mjesto gdje se odlučuje koji status je koje boje. **Novi enum status dodaje red u tu mapu**, ne novi chip i ne inline boju na stranici.

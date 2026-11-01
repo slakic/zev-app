@@ -64,6 +64,8 @@ export function draftForAssistant(data: OnboardingDraftData, files: DraftFileMet
         proof: f ? { filename: f.filename, mime: f.mime, size: f.size } : s.proofFilename ? { filename: s.proofFilename, mime: null, size: null } : null,
       };
     });
+    // Prijedlozi iz uvoza (bez dokaza): isti oblik kao `stakes` bez `proof`; uvoz ih ponovo čita kao prijedloge.
+    out.stakeProposals = data.stakeProposals.map((s) => ({ key: s.key, unitKey: s.unitKey, partyKey: s.partyKey, sharePercent: s.sharePercent, validFrom: s.validFrom }));
     out.disputedUnits = [...data.disputedUnits];
   }
   if (want("offices")) {

@@ -14,6 +14,7 @@ import {
   publishOnboardingDraft,
   removeDraftBoardMember,
   removeDraftStake,
+  removeDraftStakeProposal,
   setAccountantLater,
   setDraftAccountant,
   setUnitDisputed,
@@ -179,6 +180,11 @@ export async function addStakeAction(fd: FormData) {
 
 export async function removeStakeAction(fd: FormData) {
   await run("vlasnici", fd, (a, v) => removeDraftStake(a, v, str(fd, "key")), undefined, `&jedinica=${encodeURIComponent(str(fd, "unitKey"))}`);
+}
+
+/** Prijedlog iz uvoza se uklanja bez dokaza; otvoren ostaje panel istog posebnog dijela. */
+export async function removeStakeProposalAction(fd: FormData) {
+  await run("vlasnici", fd, (a, v) => removeDraftStakeProposal(a, v, str(fd, "key")), undefined, `&jedinica=${encodeURIComponent(str(fd, "unitKey"))}`);
 }
 
 export async function setDisputedAction(fd: FormData) {
