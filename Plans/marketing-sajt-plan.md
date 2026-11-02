@@ -478,6 +478,17 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
 
 ### 7.2 Preporuka: B
 
+> **Odluka korisnika (2026-11-02): opcija C** — sajt na `zevupravnik.com`, aplikacija na
+> `app.zevupravnik.com`. Rizike opcije C (stari linkovi, SMS, MCP) rješava
+> `Plans/domeni-marketing-i-app-uputstvo.md`: aplikacija prvo prelazi na `app.` uz oba domena aktivna,
+> a sajt preuzima apex tek uz preusmjerenja svih starih putanja (Cloudflare Redirect Rule). Izmjena
+> „anonimni `/` → sajt“ ispod tada otpada.
+>
+> **Hosting sajta (2026-11-02): Cloudflare Pages**, ne Vercel. Vercelov besplatni Hobby plan je samo za
+> nekomercijalnu upotrebu, a Pages je besplatan, dozvoljava komercijalnu upotrebu, a DNS je već na
+> Cloudflare-u. Forma je Pages Function `/api/upit`, a analitika Cloudflare Web Analytics (§8.1).
+> Aplikacija ostaje na Vercelu.
+
 - **Astro 5** (statički izlaz), u folderu `marketing/` ovog repozitorijuma (dijeli logo i lako prati
   uputstvo i CHANGELOG) ili u posebnom repozitorijumu (P12). Poseban Vercel projekat sa
   „Root Directory = marketing“.
@@ -486,7 +497,7 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
   `redirect("/login")`. Za tačno `/` (ne podstranice) neprijavljen posjetilac ide na
   `https://www.zevupravnik.com` (307, adresa iz env varijable `MARKETING_URL`; bez nje ponašanje
   ostaje kao danas). Ovo je izmjena aplikacije → CHANGELOG + verzija, kao i svaka druga.
-- Forma „Javite se“: Vercel funkcija u marketinškom projektu (§8.2).
+- Forma „Javite se“: Pages Function u marketinškom projektu (§8.2; ranije Vercel funkcija).
 - Ako se kasnije pokaže potreba za opcijom C, ova odluka je ne blokira.
 
 ---
@@ -497,11 +508,13 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
 
 | Opcija | Kolačići / baner | Napomena |
 |---|---|---|
-| **Vercel Web Analytics** (preporuka za početak) | bez kolačića, bez banera | Već je na Vercelu; stranice, izvori, uređaji; prilagođeni događaji u plaćenom planu |
+| **Cloudflare Web Analytics** (preporuka za početak, uz Pages) | bez kolačića, bez banera | Besplatno, uključuje se jednim klikom na Pages projektu; stranice, izvori, uređaji; bez prilagođenih događaja |
+| Vercel Web Analytics | bez kolačića | Otpada: sajt nije na Vercelu |
 | Plausible (EU) | bez kolačića | Odličan za događaje i UTM; mjesečna pretplata |
 | Google Analytics 4 | traži saglasnost (baner) | Ne preporučuje se: baner kvari prvi utisak, a podaci idu van EU |
 
-- **Događaji:** `cta_click` (sa mjestom: hero / sekcija / paketi / podnožje), `form_submit`,
+- **Događaji** (traže Plausible ili sličan alat; Cloudflare Web Analytics ih nema, pa u prvoj fazi
+  konverziju mjerimo brojem upita iz `/api/upit` i posjetama stranice `/kontakt`): `cta_click` (sa mjestom: hero / sekcija / paketi / podnožje), `form_submit`,
   `form_error`, `paket_view`, `login_click`.
 - **UTM konvencija** za objave: `utm_source=facebook|viber|linkedin|instagram|email`,
   `utm_medium=social|message|newsletter`, `utm_campaign=lansiranje-2026|glasanje|novac`.
@@ -525,10 +538,10 @@ Kad se sajt implementira, CLAUDE.md treba dopuniti jednom rečenicom: dizajn sis
 | Faza | Šta | Preduslov |
 |---|---|---|
 | **M0 — odluke** | Odgovori na P1–P13; pravna provjera tvrdnji iz §2 i Privatnosti; potvrda paketa | ovaj plan + mockupi |
-| **M1 — temelj i Početna** | `marketing/` (Astro), tokeni §5.2, Archivo, zaglavlje/podnožje, Početna sa fasadom i animacijom, meta + OG Početne, Vercel projekat na preview adresi | M0 |
+| **M1 — temelj i Početna** | `marketing/` (Astro), tokeni §5.2, Archivo, zaglavlje/podnožje, Početna sa fasadom i animacijom, meta + OG Početne, Cloudflare Pages projekat na `*.pages.dev` | M0 |
 | **M2 — ostale stranice** | Funkcije, Paketi, Javite se + `/api/upit`, Privatnost/Uslovi, 404 | M1 |
 | **M3 — prikazi i OG** | Pravi screenshotovi iz seeda (računar + telefon), četiri OG slike iz šablona, provjera pregleda na Viberu/WhatsAppu/Facebooku (Sharing Debugger)/LinkedInu (Post Inspector) | M2 |
-| **M4 — puštanje** | `www.zevupravnik.com` na Vercel projekat, izmjena `/` u aplikaciji (`MARKETING_URL`, CHANGELOG + verzija), Vercel Analytics, sitemap, Search Console | M3 |
+| **M4 — puštanje** | Po `Plans/domeni-marketing-i-app-uputstvo.md`: aplikacija na `app.`, `zevupravnik.com` na Pages, pravilo preusmjerenja starih putanja; Cloudflare Web Analytics, sitemap, Search Console | M3 |
 | **M5 — kampanje** | Odredišne stranice „glasanje“ i „novac“, UTM, objave iz §4.7 | M4 |
 | **Paralelno, prije prodaje paketa** | „Faza 2 — feature paketi“ (`requireFeature`, meni, promjena paketa iz admina) | P3 |
 
