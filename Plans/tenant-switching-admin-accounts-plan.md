@@ -1,6 +1,6 @@
 # Prebacivanje između ZEV-ova, administrativni nalozi i početna lozinka — plan za pregled
 
-**Status: PLAN, implementacija nije počela.** Nastalo na zahtjev korisnika (2026-09-10):
+**Status: Koraci 1–3 ISPORUČENI (v2.3.0–v2.5.0); Korak 4 odložen po odluci korisnika (§6).** Nastalo na zahtjev korisnika (2026-09-10):
 *"Right now, I can create a new tenant, and create one account within that tenant, but after
 that I cannot switch to this zev, nor can I do anything else. I need ability to seamlessly
 switch between the tenants, and as a super admin add accounts with permission to administer.

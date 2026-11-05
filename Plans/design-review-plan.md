@@ -1,6 +1,6 @@
 # Pregled dizajna aplikacije po korisničkim tokovima — prijedlog za odobravanje po fazama
 
-**Status: ČEKA PREGLED KORISNIKA (2026-10-24).** Ovo je **dizajn pregled**, ne implementacioni plan. Nijedan red koda aplikacije nije promijenjen. Kad korisnik odobri jednu fazu iz §6, ta faza se pretvara u zaseban implementacioni plan u `Plans/` (po fajlovima, sa verzijom), u stilu postojećih planova.
+**Status: FAZE F1–F9 i FR ISPORUČENE (v2.42.0–v2.55.0); F10 (higijena) ostaje kontinuirana, uz svaku buduću fazu.** Svaka faza ima svoj implementacioni plan u `Plans/` (`f1-…` do `f8-…`, `fr-…`); F7 i F9 su isporučene bez zasebnog plana (v2.51.0, v2.52.0). Ovo je **dizajn pregled**, ne implementacioni plan. Ranije: ČEKA PREGLED KORISNIKA (2026-10-24). Kad korisnik odobri jednu fazu iz §6, ta faza se pretvara u zaseban implementacioni plan u `Plans/` (po fajlovima, sa verzijom), u stilu postojećih planova.
 
 Nastalo na zahtjev korisnika (2026-10-24): „sveobuhvatna analiza dizajna aplikacije, u fazama, sa preporukama izmjena; fazni pristup u kojem pregledam i odobrim dizajn, a zatim se pretvara u plan implementacije; po korisničkom toku ili po grupama stranica, da izmjene mogu uvoditi postepeno”.
 

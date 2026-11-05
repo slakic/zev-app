@@ -1,6 +1,6 @@
 # Upravljanje nacrtima prijedloga (izmjena/brisanje) i testno izlaganje glasačkih linkova — plan za pregled
 
-**Status: PRIJEDLOG — čeka odluke korisnika (P1–P7 u §0.3).** Plan-only prolaz
+**Status: Faza B1 ISPORUČENA u v2.22.0, Dio A u v2.23.0; Faze B2 (gejtovani prikaz u outbox-u) i B3 (brisanje tajne iz `body`) nisu počele.** Ranije: PRIJEDLOG — čeka odluke korisnika (P1–P7 u §0.3). Plan-only prolaz
 (Opus, bez izmjena koda), zasnovan na stvarnom čitanju `src/server/services/meetings.ts`,
 `src/app/(app)/skupstina/**`, `src/server/notifications/**`, `prisma/schema.prisma`,
 `tests/helpers.ts` i `e2e/smoke.e2e.mjs` — ne na pretpostavkama.

@@ -1,6 +1,6 @@
 # `Party` po tenantu — okretanje veze `User`↔`Party` i zatvaranje curenja `partyId` između ZEV-ova — plan za pregled
 
-**Status: PLAN, implementacija nije počela.** Nastalo nakon što je u ovoj sesiji
+**Status: Korak 1 ISPORUČEN u v2.24.0 (`Party.userId`, migracija primijenjena na Neon 2026-09-23); Korak 2 (brisanje LEGACY `User.partyId`) nije počeo.** Nastalo nakon što je u ovoj sesiji
 dijagnostikovan i korisniku prijavljen konkretan bag: `getAuthContext()` razrješava `roles`
 po aktivnom ZEV-u, a `partyId` globalno — pa korisnik sa članstvima u dva ZEV-a nakon
 prebacivanja vidi podatke pogrešne zajednice. Korisnik je izabrao **potpunu ispravku**

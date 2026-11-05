@@ -1,6 +1,6 @@
 # MCP platforma — povezani asistenti, tokeni i opsezi — implementacioni plan
 
-**Status: PLAN, odluke usvojene (2026-10-31). Faza P-A (osnova platforme) implementirana 2026-11-01; P-B i dalje čekaju.** Nastalo iz razgovora o MCP-u
+**Status: PLAN, odluke usvojene (2026-10-31). Faza P-A (osnova platforme) isporučena u v2.60.0, P-B (OAuth 2.1) u v2.61.0 (2026-11-01).** Prije produkcije: pravni pregled i spoljni pregled OAuth-a (§9). Nastalo iz razgovora o MCP-u
 za onboarding (2026-10-29/31): MCP se gradi kao **opšta mogućnost aplikacije**, a onboarding je prvi
 skup alata na njoj (`Plans/mcp-onboarding-asistent-plan.md`).
 

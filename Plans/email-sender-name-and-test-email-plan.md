@@ -1,6 +1,6 @@
 # Plan: ime pošiljaoca u e-mailu i slanje probne poruke (Mailjet, go-live)
 
-**Status: PLAN, odluke korisnika potvrđene (2026-10-22), implementacija u toku.** Plan je napravljen čitanjem stvarnog koda (v2.37.0, `package.json:3`), uz Opus plan-only prolaz; ključne tvrdnje (R2: `lastError` se ne upisuje za `ok:false`; `retryFailed` bez pozivalaca; fiksni „mock" podnaslov) ručno provjerene.
+**Status: ISPORUČENO u v2.38.0** (ime pošiljaoca u `/admin` i probna e-mail poruka). Odluke korisnika potvrđene 2026-10-22. Plan je napravljen čitanjem stvarnog koda (v2.37.0, `package.json:3`), uz Opus plan-only prolaz; ključne tvrdnje (R2: `lastError` se ne upisuje za `ok:false`; `retryFailed` bez pozivalaca; fiksni „mock" podnaslov) ručno provjerene.
 
 ## Odluke korisnika (2026-10-22)
 

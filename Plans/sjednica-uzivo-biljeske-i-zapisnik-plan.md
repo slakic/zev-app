@@ -1,6 +1,6 @@
 # Sjednica uživo: bilješke, zaključci i zapisnik — implementacioni plan
 
-**Status: ISPORUČENO u v2.54.0 (nije commitovano) — odobreno 2026-10-26, minor (sa migracijom).** Implementira Sonnet po planu, pregleda Opus. Korisnik je prihvatio preporuke §7: **P-B1 (b)** zasebni unosi Bilješka/Zaključak · **P-B2 (b)** pišu predsjednik i računovođa · **P-B3 (a)** teme van dnevnog reda samo zapis, bez glasanja · **P-B4 (b)** izbor zapisničara na sjednici (polje `Meeting.minutesTakerId` u istoj migraciji), ime ide uz potpis · **P-B5 (a)** ispravke do finalizacije zapisnika · **P-B6** minor 2.54.0.
+**Status: ISPORUČENO u v2.54.0 — odobreno 2026-10-26, minor (sa migracijom).** Implementira Sonnet po planu, pregleda Opus. Korisnik je prihvatio preporuke §7: **P-B1 (b)** zasebni unosi Bilješka/Zaključak · **P-B2 (b)** pišu predsjednik i računovođa · **P-B3 (a)** teme van dnevnog reda samo zapis, bez glasanja · **P-B4 (b)** izbor zapisničara na sjednici (polje `Meeting.minutesTakerId` u istoj migraciji), ime ide uz potpis · **P-B5 (a)** ispravke do finalizacije zapisnika · **P-B6** minor 2.54.0.
 
 Korisnik je 2026-10-26 tražio: *„osoba koja vodi sjednicu uživo može pisati zaključke i sve ostalo što je bitno da se zapiše tokom sjednice uživo, te da te bilješke budu uključene u zapisnik. Ovo se može odnositi na teme koje nisu dio agende, ili koje su dio tačke dnevnog reda pod ‚Razno’.”* Plan je izrađen čitanjem stvarnog koda (v2.53.0). Nijedan red koda još nije napisan. Prijedlog verzije: **minor → 2.54.0**, uz potvrdu prije upisa.
 

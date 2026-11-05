@@ -1,6 +1,6 @@
 # ZEV onboarding — pozivni link i čarobnjak za kreiranje novog ZEV-a — implementacioni plan
 
-**Status: PLAN, odluke usvojene (2026-10-29), implementacija nije počela.** Nastalo na zahtjev
+**Status: ISPORUČENO — Faze 0, A, B i C (v2.56.0–v2.59.0); dopune: uvoz nacrta iz fajla (v2.63.0) i poziv e-poštom (v2.64.0).** Odluke usvojene 2026-10-29. Nastalo na zahtjev
 korisnika (2026-10-29):
 *„ZEV onboarding funkcionalnost koja omogućava super adminu da kreira novi ZEV i da pošalje link
 potencijalnom klijentu koji će dobiti wizard tip interfejsa koji će ga voditi kroz proces

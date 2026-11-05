@@ -1,6 +1,6 @@
 # F3 — Vlasnik: „Kako da platim” i početna „Za Vas sada” — implementacioni plan
 
-**Status: ISPORUČENO u v2.46.0 (nije commitovano).** Odobreno 2026-10-25, minor → 2.46.0; implementirao Sonnet, pregleda Opus. Korisnik je prihvatio preporuke §7:
+**Status: ISPORUČENO u v2.46.0.** Odobreno 2026-10-25, minor → 2.46.0; implementirao Sonnet, pregleda Opus. Korisnik je prihvatio preporuke §7:
 - **F3-Q1:** račun za uplate je najstariji aktivan bankovni račun ZEV-a (podešavanje „Račun za uplate vlasnika” tek ako neki ZEV ima više računa).
 - **F3-Q2:** svrha uplate „ZEV {period} — {broj fakture}”.
 - **F3-Q3:** „uskoro dospijeva” = narednih 14 dana.

@@ -1,6 +1,6 @@
 # F6 — Predsjednik: sjednica, režim uživo i početna — implementacioni plan
 
-**Status: ISPORUČENO u v2.47.0 (nije commitovano).** Odobreno 2026-10-25, minor → 2.47.0; implementirao Sonnet po planu, pregleda Opus. Korisnik je prihvatio preporuke §7:
+**Status: ISPORUČENO u v2.47.0.** Odobreno 2026-10-25, minor → 2.47.0; implementirao Sonnet po planu, pregleda Opus. Korisnik je prihvatio preporuke §7:
 - **P-Q2: (b)** — „Odobreno” uz obavezan izbor odluke ili „u okviru ovlašćenja”; odobrenje prije usvojene odluke je upozorenje na početnoj. F6.4 se radi.
 - **P-Q3: da** — P10 se ukida; kartica „Prisustvo” postaje sažetak + link na prozivku.
 - **P-Q4: da** — režim uživo za upravni odbor ostaje (kvorum po članu); P3 u `live-meeting-mode-plan.md` se dopunjava.

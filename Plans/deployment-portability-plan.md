@@ -1,6 +1,6 @@
 # Prenosivost deployment-a (deployment portability) — smanjenje zavisnosti od Dockera — plan za pregled
 
-**Status: ODLUKE DONESENE — plan ažuriran, spreman za implementaciju od Faze 0.**
+**Status: ISPORUČENO — Faze 0–5 (v2.7.1–v2.12.0).** Ranije: ODLUKE DONESENE — plan ažuriran, spreman za implementaciju od Faze 0.
 Nastalo na zahtjev korisnika (2026-09-15), nakon prethodnog pitanja u istoj
 konverzaciji: „how could I deploy this application to Vercel?". Zahtjev je
 proširen sa „kako na Vercel" na „kako učiniti aplikaciju konfigurabilno

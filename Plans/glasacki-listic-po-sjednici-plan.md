@@ -1,6 +1,6 @@
 # Glasački listić po sjednici — jedan e-mail, jedan link i jedan kod za sve prijedloge — plan za pregled
 
-**Status: ISPORUČENO u v2.44.0 (nije commitovano).** Odobreno 2026-10-25, minor → 2.44.0. Korisnik je prihvatio preporuke za P-L1 do P-L6 (§9):
+**Status: ISPORUČENO u v2.44.0.** Odobreno 2026-10-25, minor → 2.44.0. Korisnik je prihvatio preporuke za P-L1 do P-L6 (§9):
 - **P-L1:** „Uzdržan” je validan odgovor; listić se predaje tek kad svaki prijedlog ima odgovor.
 - **P-L2:** novi prijedlog se ne može dodati sjednici dok je njeno glasanje otvoreno (listić je zaključan skup); nova tačka ide na novu sjednicu.
 - **P-L3:** svi prijedlozi listića moraju imati isti rok glasanja — preduslov za otvaranje glasanja na sjednici.

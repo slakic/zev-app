@@ -1,6 +1,6 @@
 # FR — Registar posebnih dijelova i glasanje po etažnim vlasnicima — implementacioni plan
 
-**Status: PLAN ZA PREGLED (2026-10-24).** Korisnik je 2026-10-24 tražio da se faza FR iz `Plans/design-review-plan.md` §6 pretvori u implementacioni plan. Nijedan red koda još nije napisan.
+**Status: ISPORUČENO u v2.43.0; K-03b (jedno lice, najviše jedan glas) u v2.53.0.** Ranije: PLAN ZA PREGLED (2026-10-24). Korisnik je 2026-10-24 tražio da se faza FR iz `Plans/design-review-plan.md` §6 pretvori u implementacioni plan.
 
 Plan je nastao čitanjem stvarnog koda (v2.42.0); tvrdnje su vezane za fajl i liniju. Verzija: prijedlog je **minor → 2.43.0**, a potvrđuje se prije upisa (patch / minor / major).
 

@@ -1,6 +1,6 @@
 # F1 — Sigurnost novca i pravnih koraka — implementacioni plan
 
-**Status: PLAN ZA PREGLED (2026-10-24).** Fazu F1 iz `Plans/design-review-plan.md` §6 korisnik je odobrio 2026-10-24 („Odobravam F1 (sigurnost novca i pravnih koraka)”). Nijedan red koda još nije napisan.
+**Status: ISPORUČENO u v2.42.0.** Ranije: PLAN ZA PREGLED (2026-10-24). Fazu F1 iz `Plans/design-review-plan.md` §6 korisnik je odobrio 2026-10-24 („Odobravam F1 (sigurnost novca i pravnih koraka)”).
 
 Plan je nastao čitanjem stvarnog koda (v2.41.0); svaka tvrdnja je vezana za fajl i liniju. Verzija: prijedlog je **minor → 2.42.0**, ali se prije upisa potvrđuje sa korisnikom (patch / minor / major).
 

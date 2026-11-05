@@ -1,6 +1,6 @@
 # MCP onboarding — asistent popunjava nacrt novog ZEV-a — implementacioni plan
 
-**Status: PLAN, odluke usvojene (2026-10-29/31), implementacija nije počela.** Prvi skup MCP alata u
+**Status: Faza O-A (pristup i čitanje) ISPORUČENA u v2.62.0; O-B (upis) i O-C (vlasnici) nisu počele.** Odluke usvojene 2026-10-29/31. Prvi skup MCP alata u
 aplikaciji. Tokeni, opsezi, ruta, OAuth i stranica „Povezani asistenti“ su u
 [`Plans/mcp-platforma-plan.md`](mcp-platforma-plan.md); ovaj plan opisuje samo **alate za nacrt
 onboardinga** i ono što oni traže od servisa i čarobnjaka.

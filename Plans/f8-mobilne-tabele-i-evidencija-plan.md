@@ -1,6 +1,6 @@
 # F8 — Mobilne tabele i evidencija vlasnika i jedinica — implementacioni plan
 
-**Status: ISPORUČENO u v2.50.0 (nije commitovano).** (Odobreno 2026-10-25, minor → 2.50.0.) Implementira Sonnet po planu, pregleda Opus. Korisnik je prihvatio preporuke §7:
+**Status: ISPORUČENO u v2.50.0.** (Odobreno 2026-10-25, minor → 2.50.0.) Implementira Sonnet po planu, pregleda Opus. Korisnik je prihvatio preporuke §7:
 - **V-Q5: (a)** — vlasnik ne vidi imena drugih vlasnika dok se pravni osnov ne potvrdi; F8 ne dodaje nove prikaze, postojeći se samo popišu.
 - **F8-Q1: (a)** — fiksna lista kategorija kvara u kodu + „Drugo”.
 - **F8-Q2: (a)** — bez rečenice o preporučenom broju članova UO (nema postavke ni izvora), pa taj dio F8.7 otpada.

@@ -1,6 +1,6 @@
 # Dnevnik korisničkih aktivnosti (user action log) — plan za pregled
 
-**Status: PLAN ODOBREN (2026-09-09), implementacija još nije počela.**
+**Status: ISPORUČENO — Faze 1–3 (v2.6.0–v2.7.0).** Plan odobren 2026-09-09.
 Nastalo na zahtjev korisnika (2026-09-09): "give ZEV presidents ability to show
 user action log, which would record user actions like voting, submitting
 maintenance requests, uploading documents etc." Izrađeno kroz plansku analizu

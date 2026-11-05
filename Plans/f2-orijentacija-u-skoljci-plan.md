@@ -1,6 +1,6 @@
 # F2 — Orijentacija u školjci i prijava — implementacioni plan
 
-**Status: ISPORUČENO u v2.45.0 (nije commitovano); implementirao Sonnet, pregleda Opus.** (Odobreno 2026-10-25, verzija minor.) Fazu F2 iz `Plans/design-review-plan.md` §6 korisnik je tražio kao sljedeći korak 2026-10-25 („Da, napravi implementacioni plan za F2”). Odluka o dizajn sistemu koju faza koristi je **D9** (naziv ZEV-a uvijek vidljiv, 2026-10-25). 
+**Status: ISPORUČENO u v2.45.0; implementirao Sonnet, pregleda Opus.** (Odobreno 2026-10-25, verzija minor.) Fazu F2 iz `Plans/design-review-plan.md` §6 korisnik je tražio kao sljedeći korak 2026-10-25 („Da, napravi implementacioni plan za F2”). Odluka o dizajn sistemu koju faza koristi je **D9** (naziv ZEV-a uvijek vidljiv, 2026-10-25). 
 
 Plan je izrađen čitanjem stvarnog koda (v2.44.0); tvrdnje su vezane za fajl i liniju. Verzija: prijedlog je **minor → 2.45.0**, uz potvrdu prije upisa.
 

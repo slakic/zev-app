@@ -1,6 +1,6 @@
 # F4 — Vlasnik: glasanje — implementacioni plan
 
-**Status: ODOBRENO 2026-10-26, implementacija u toku (Sonnet po planu, pregled Opus).** Korisnik je prihvatio sve preporuke §7:
+**Status: ISPORUČENO u v2.55.0.** Odobreno 2026-10-26; implementirao Sonnet po planu, pregledao Opus. Korisnik je prihvatio sve preporuke §7:
 - **F4-Q1 (a):** vlasnik u aplikaciji vidi svoj izbor (sopstveni glas i glas punomoćnika u njegovo ime; nikad glas zajednice preko predstavnika).
 - **F4-Q2 (a):** u aplikaciji ime + telefon + e-adresa predsjednika; na javnoj stranici glasanja samo ime.
 - **F4-Q3 (a):** adresa potvrde radi trajno, dok postoji zapis glasa.

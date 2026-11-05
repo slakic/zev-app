@@ -1,6 +1,6 @@
 ﻿# Plan: automatski prijem SMS obavještenja Nova Banke („Priliv") i uparivanje uplata
 
-**Status: PLAN, odluke korisnika potvrđene (2026-10-04), implementacija Faze 1 u toku.** Plan je napravljen čitanjem stvarnog koda.
+**Status: Faza 1 ISPORUČENA u v2.35.0; Faza 2 (lanac stanja `Raspolozivo`, „Unesi ručno”, zajednička komponenta pregleda) nije počela.** Odluke korisnika potvrđene 2026-10-04. Plan je napravljen čitanjem stvarnog koda.
 
 ## Odluke korisnika (2026-10-04)
 

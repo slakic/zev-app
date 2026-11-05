@@ -1,6 +1,6 @@
 # Sjednica uživo — vođenje skupštine sa telefona (prozivka, glasanje po tačkama, rezultati u realnom vremenu) — plan za pregled
 
-**Status: ODLUKE DONESENE (2026-09-23) — spreman za faznu implementaciju.** Nijedan red koda nije još napisan; ovaj dokument je ažuriran da odražava odluke ispod prije nego što implementacija počne.
+**Status: ISPORUČENO — Faze 0–4 (v2.26.0–v2.30.1).** Odluke donesene 2026-09-23; dokument je ažuriran da odražava odluke ispod prije nego što je implementacija počela.
 Nastalo na zahtjev korisnika (2026-09-23): predsjedniku treba alat kojim, stojeći u sali, sa telefona, vodi skupštinu — evidentira ko je došao, unosi rezultate glasanja po tačkama dnevnog reda, automatski šalje e-glasačke linkove samo onima kojih **nema** u sali, i gleda kako rezultat raste u realnom vremenu. Izričit dodatni zahtjev: **to mora biti poseban, namjerno uključen režim, bez značajnog uticaja na standardni UI na velikom ekranu.**
 
 Izrađeno plan-only prolazom (Opus), zasnovano na stvarnom čitanju koda — svaka tvrdnja ispod je vezana za fajl i liniju. Ciljna publika je ista kao u `Plans/ui-ux-redesign-plan.md:16-19`: netehnički, često stariji korisnici, u finansijsko-pravnom softveru gdje jedan pogrešan klik zatvara glasanje. Ovdje se tome dodaje novi kontekst koji dosad nije postojao ni na jednom ekranu aplikacije: **korisnik stoji, drži telefon jednom rukom, ispred njega je 40 ljudi koji čekaju.** To je, a ne estetika, razlog za svaku odluku u §3.
