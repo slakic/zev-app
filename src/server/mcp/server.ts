@@ -15,6 +15,14 @@ function json(status: number, body: Record<string, unknown>): Response {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 }
 
+/**
+ * Najveće tijelo zahtjeva. Dokaz o vlasništvu stiže kao base64 (add_owner_stake): sam fajl smije imati MAX_UPLOAD_MB, pa
+ * tijelo smije biti za base64 (4/3) i JSON omotač veće. Veličinu samog fajla i dalje provjerava assertUploadable.
+ */
+function maxBodyBytes(): number {
+  return Math.ceil((getEnv().MAX_UPLOAD_MB * 1024 * 1024 * 4) / 3) + 64 * 1024;
+}
+
 // Server se pravi po zahtjevu i registruje samo alate koje opseg veze dozvoljava.
 const handler = createMcpHandler(
   ({ authInfo }) => {
@@ -24,16 +32,15 @@ const handler = createMcpHandler(
     for (const tool of toolsFor(ctx)) tool.register(server, ctx);
     return server;
   },
-  // Bez SSE tokova: alati su kratki upiti, a serverless platforme ne vole otvorene veze.
-  { responseMode: "json" }
+  // Bez SSE tokova: alati su kratki upiti, a serverless platforme ne vole otvorene veze. SDK inače odbija tijelo veće od 4 MB.
+  { responseMode: "json", maxRequestBodySize: maxBodyBytes() }
 );
 
 export async function handleMcpRequest(req: Request, ipHash: string | null): Promise<Response> {
   const ipKey = ipHash ?? "unknown";
   if (!mcpAuthFailuresAllowed(ipKey)) return json(429, { error: "rate_limited" });
 
-  const maxBytes = getEnv().MAX_UPLOAD_MB * 1024 * 1024;
-  if (Number(req.headers.get("content-length") ?? 0) > maxBytes) return json(413, { error: "too_large" });
+  if (Number(req.headers.get("content-length") ?? 0) > maxBodyBytes()) return json(413, { error: "too_large" });
 
   const authorization = req.headers.get("authorization");
   const ctx = await verifyMcpToken(authorization);

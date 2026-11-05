@@ -1,6 +1,6 @@
 # MCP onboarding — asistent popunjava nacrt novog ZEV-a — implementacioni plan
 
-**Status: Faza O-A (pristup i čitanje) ISPORUČENA u v2.62.0; O-B (upis) i O-C (vlasnici) nisu počele.** Odluke usvojene 2026-10-29/31. Prvi skup MCP alata u
+**Status: ISPORUČENO — O-A (pristup i čitanje) u v2.62.0; O-B (upis) i O-C (vlasnici) zajedno u v2.65.0 (2026-11-05).** Odluke usvojene 2026-10-29/31. Prvi skup MCP alata u
 aplikaciji. Tokeni, opsezi, ruta, OAuth i stranica „Povezani asistenti“ su u
 [`Plans/mcp-platforma-plan.md`](mcp-platforma-plan.md); ovaj plan opisuje samo **alate za nacrt
 onboardinga** i ono što oni traže od servisa i čarobnjaka.
@@ -200,14 +200,31 @@ Usklađeno sa planom platforme (§8 tamo; redoslijed potvrđen 2026-10-31):
      se ne diraju (O-B).
    - **Q7** pristup može ukloniti vlasnik nacrta ili bilo koji super admin.
    - **Q8** ponovno dodavanje pristupa oživljava postojeće admin veze sa tim opsegom (red pristupa odlučuje).
-5. **Faza O-B — upis.** Alati za korake 2–6 i 9, grupni upis (§3.2), oznaka izvora (§3.3).
-6. **Faza O-C — vlasnici.** `add_owner_stake` sa dokazom, `remove_owner_stake`, `set_unit_disputed`.
+5. **Faza O-B — upis. ✅ Urađena 2026-11-05** (zajedno sa O-C). Alati za korake 2–6 i 9 (`src/server/mcp/tools/onboarding/write.ts`),
+   grupni upis (§3.2: `addDraftUnits`, `addDraftCommonAssets`, `DraftBatchError` sa rednim brojem), oznaka izvora (§3.3: chipovi
+   „Upisao asistent“ / „Upisao asistent administratora“, ton `blue`), audit `mcp.call` po upisu (alat, broj stavki, veza, opseg,
+   `via`; bez sadržaja). Odstupanja i dopune u odnosu na plan:
+   - **`DraftWriter` umjesto zamjene prvog argumenta:** funkcije koraka primaju `Pick<Actor, "userId"> | DraftAccess`, pa
+     čarobnjak i njegovi testovi ostaju nepromijenjeni, a asistent ide kroz isti guard koraka i istu bravu.
+   - **`save_zev_details` je djelimičan:** polja koja asistent ne pošalje ostaju kakva jesu.
+   - **Alati vraćaju ključeve novih stavki** (`created`), da asistent ne mora ponovo čitati nacrt između koraka; `get_draft`
+     vraća i `source` stavke kad postoji.
+   - **`set_accountant` / `set_accountant_later` odbijaju izmjenu** kad je klijent već otvorio nalog računovođe (inače bi
+     asistent tiho obrisao e-adresu i hash lozinke).
+   - **Udio dobija polje `source`** (u planu ga imaju ostale stavke); chip se vidi i uz udio, računovođu i člana odbora.
+6. **Faza O-C — vlasnici. ✅ Urađena 2026-11-05.** `add_owner_stake` sa dokazom (base64; isti formati i veličina kao prilog u
+   aplikaciji — `assertUploadable`), `remove_owner_stake`, `set_unit_disputed` (`src/server/mcp/tools/onboarding/owners.ts`).
+   Dopuna: **`add_stake_proposals`** — grupni upis vlasnika bez dokaza kao prijedloga (§3.3: „grupni upis O-B ih treba koristiti
+   umjesto upisa udjela bez dokaza“); klijent prilaže dokaz u koraku „Vlasnici“ kao za prijedloge iz uvoza.
 
 ## 8. Rizici i otvoreno
 
 - **Kvalitet čitanja dokumenata.** Skenirani elaborati i rukom pisani ugovori mogu se pogrešno
   pročitati. Klijent mora pregledati sve; oznaka iz M6 olakšava, ali ne garantuje.
-- **Veličina zahtjeva i timeout na Vercelu** za grupni upis i base64 dokaze treba izmjeriti.
+- **Veličina zahtjeva i timeout na Vercelu** za grupni upis i base64 dokaze treba izmjeriti. Ruta i SDK (`maxRequestBodySize`,
+  inače 4 MB) sada primaju tijelo do `MAX_UPLOAD_MB × 4/3 + 64 KB`, ali **Vercel funkcije primaju najviše 4,5 MB tijela**, pa je
+  na Vercelu stvarna granica dokaza kroz asistenta oko 3,3 MB (fajl), manje od 4 MB koliko primaju forme. Ručna provjera u Claude
+  Pro: može li asistent uopšte poslati base64 fajla iz razgovora (ako ne može, put je `add_stake_proposals` + dokaz u aplikaciji).
 - **Pravna strana:** dokumenti klijenta (lični podaci vlasnika) prolaze kroz asistenta koga bira
   klijent ili administrator; tekst obavještenja i saglasnost — pregled pravnika (platforma §9).
 - Uvoz iz JSON/CSV fajla je isporučen (stranica „Uvoz iz fajla“ u čarobnjaku i na /admin/nacrti/[id]/uvoz uz aktivan pristup

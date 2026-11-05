@@ -140,9 +140,12 @@ describe("/api/mcp — alati za nacrt (O-A)", () => {
     const { POST } = await loadRoute("true");
     const names = async (token: string) => (await body(await POST(rpc({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} }, token)))).result.tools.map((x: { name: string }) => x.name);
     expect(await names(none.token)).toEqual(["whoami"]);
-    expect(await names(withDraft.token)).toEqual(["whoami", "get_onboarding_status", "get_draft", "get_import_format"]);
+    const listed = await names(withDraft.token);
+    expect(listed.slice(0, 4)).toEqual(["whoami", "get_onboarding_status", "get_draft", "get_import_format"]);
+    // Alati upisa (O-B, O-C) su tu, a objave, potvrde registra i naloga nema (tests/mcp-onboarding-write.test.ts).
+    expect(listed).toContain("add_units");
     const tools = (await body(await POST(rpc({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} }, withDraft.token)))).result.tools;
-    for (const tool of tools) expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false });
+    for (const tool of tools.slice(0, 4)) expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false });
   });
 
   it("get_import_format returns the shared import description (same source as the import page) and is read-only", async () => {

@@ -46,7 +46,8 @@ describe("draftForAssistant", () => {
     const d = sample();
     d.stakeProposals = [{ key: "sp1", unitKey: "u1", partyKey: "p1", sharePercent: "40", validFrom: "2026-03-01", source: "IMPORT" }];
     const out = draftForAssistant(d, []) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
-    expect(out.stakeProposals).toEqual([{ key: "sp1", unitKey: "u1", partyKey: "p1", sharePercent: "40", validFrom: "2026-03-01" }]);
+    // Izvor stavke (M6, O-B) se šalje kad postoji.
+    expect(out.stakeProposals).toEqual([{ key: "sp1", unitKey: "u1", partyKey: "p1", sharePercent: "40", validFrom: "2026-03-01", source: "IMPORT" }]);
     expect(Object.keys(draftForAssistant(d, [], ["units"]))).not.toContain("stakeProposals");
   });
 

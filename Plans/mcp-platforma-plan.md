@@ -272,7 +272,7 @@ Svaka faza je zasebna minor verzija sa `CHANGELOG.md` unosom. Redoslijed sa plan
    svom Claude Pro dodaje pravi konektor, klikne „Dozvoli“ i pozove `whoami`, pa se svaka kasnija faza
    onboardinga odmah provjerava u Claude Pro, kao kod klijenata.
 4. **Onboarding O-A** (plan onboardinga): pristup nacrtu, čitanje, pristup administratora (P6). ✅ Urađena 2026-11-01.
-5. **Onboarding O-B i O-C:** upis, grupni unos, vlasnici sa dokazima.
+5. **Onboarding O-B i O-C:** upis, grupni unos, vlasnici sa dokazima. ✅ Urađene 2026-11-05 (v2.65.0); audit `mcp.call` po §4.
 
 M-0 je pokazao da Claude Pro **ne** prihvata token u zaglavlju, pa P-B (OAuth) ide odmah iza P-A,
 prije svih faza onboardinga. Token iz P-A se koristi od početka u klijentima koji ga prihvataju

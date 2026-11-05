@@ -490,6 +490,10 @@ const srLatn = {
       draftClosed: "Nacrt „{naziv}” više nije u toku.",
       draftIdRequired: "Ova veza ima pristup za više nacrta; navedite draft_id: {spisak}.",
       noDraftScope: "Ova veza nema pristup nijednom nacrtu.",
+      stale: "Nacrt je u međuvremenu izmijenjen; trenutna verzija je {verzija}. Pročitajte nacrt ponovo (get_draft) i pošaljite izmjenu sa novom verzijom.",
+      partyRequired: "Navedite postojeće lice (party_key: ključ lica iz get_draft ili \"president\") ili novo lice (new_party), ne oboje.",
+      accountantHasLogin: "Klijent je za računovođu već otvorio nalog za prijavu; računovođu mijenja klijent u aplikaciji.",
+      proofInvalid: "Dokaz nije ispravno kodiran (očekuje se base64 sadržaj fajla).",
       internal: "Došlo je do greške. Pokušajte ponovo.",
     },
     tools: {
@@ -570,6 +574,15 @@ const srLatn = {
     adminAccessNoticeLink: "Povezani asistenti",
     stale: "Nacrt je u međuvremenu izmijenjen (možda u drugoj kartici ili na drugom uređaju). Osvježite stranicu i pokušajte ponovo.",
     stepLocked: "Prvo završite korak „{korak}”.",
+    batch: {
+      invalid: "Stavki sa greškom: {broj}. Ništa nije upisano; ispravite ih i pošaljite cijelu grupu ponovo.",
+      empty: "Pošaljite bar jednu stavku.",
+      tooMany: "U jednom pozivu može biti najviše {broj} stavki.",
+    },
+    source: {
+      mcpOwner: "Upisao asistent",
+      mcpAdmin: "Upisao asistent administratora",
+    },
     steps: {
       account: "Vaš nalog",
       zev: "Podaci o ZEV-u",
@@ -1333,6 +1346,7 @@ const srLatn = {
       publish: "Objavljen novi ZEV",
     },
     mcp: {
+      call: "Asistent upisao izmjenu u nacrt novog ZEV-a",
       connection: {
         create: "Napravljena veza sa asistentom",
         revoke: "Prekinuta veza sa asistentom",

@@ -78,6 +78,7 @@ const stakeSchema = z.object({
   validFrom: z.string(), // yyyy-mm-dd
   proofFileId: z.string(), // OnboardingDraftFile.id
   proofFilename: z.string().default(""),
+  source: sourceSchema,
 });
 
 /** Prijedlog udjela iz uvoza: vlasnik bez dokaza. Postaje pravi udio (`stakes`) tek kad klijent u koraku „Vlasnici” priloži

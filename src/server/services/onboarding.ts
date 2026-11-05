@@ -21,6 +21,7 @@ import {
   parseDraftData,
   initialDraftData,
   PRESIDENT_PARTY_KEY,
+  type DraftSource,
   type OnboardingDraftData,
 } from "@/lib/onboarding/draft";
 import {
@@ -35,6 +36,7 @@ import {
   normalizeParty,
   trimOr,
   validUnit,
+  type CommonAssetInput,
   type DraftUnitInput,
   type NewPartyInput,
 } from "@/lib/onboarding/rules";
@@ -453,16 +455,37 @@ async function applyDraftUpdate(
   return version + 1;
 }
 
-/** Izmjena nacrta koji pripada prijavljenom vlasniku (koraci čarobnjaka). */
+/**
+ * Ko mijenja nacrt (Plans/mcp-onboarding-asistent-plan.md §3.1): vlasnik iz sesije čarobnjaka (`Actor`) ili dokazano pravo
+ * pristupa (`DraftAccess` — asistent vlasnika ili administratora). Funkcije koraka primaju oba, pa asistent ide kroz ista
+ * pravila, isti guard koraka i istu bravu kao čovjek.
+ */
+export type DraftWriter = Pick<Actor, "userId"> | DraftAccess;
+
+function isDraftAccess(who: DraftWriter): who is DraftAccess {
+  return "via" in who;
+}
+
+async function loadDraft(who: DraftWriter): Promise<MyDraft> {
+  if (isDraftAccess(who)) return getDraftByAccess(who);
+  const draft = await getMyDraft(who);
+  if (!draft) throw new Error(t("onboarding.noDraft"));
+  return draft;
+}
+
+/** Oznaka izvora za stavke koje upisuje asistent (M6); ručni unos je nema, pa ručna izmjena briše oznaku. */
+function sourceOf(who: DraftWriter): DraftSource | undefined {
+  return isDraftAccess(who) && (who.via === "MCP_OWNER" || who.via === "MCP_ADMIN") ? who.via : undefined;
+}
+
+/** Izmjena nacrta u jednom koraku čarobnjaka. */
 async function updateDraft(
-  actor: Pick<Actor, "userId">,
+  who: DraftWriter,
   step: OnboardingStepKey,
   version: number,
   mutate: (data: OnboardingDraftData) => OnboardingDraftData
 ): Promise<number> {
-  const draft = await getMyDraft(actor);
-  if (!draft) throw new Error(t("onboarding.noDraft"));
-  return applyDraftUpdate(draft, step, version, mutate);
+  return applyDraftUpdate(await loadDraft(who), step, version, mutate);
 }
 
 /** Izmjena nacrta po dokazanom pravu pristupa (vlasnik ili super admin sa aktivnim pristupom) — koristi je uvoz iz fajla. */
@@ -486,7 +509,7 @@ export function stepSlug(key: OnboardingStepKey): string {
 }
 
 // Korak 1 — Vaš nalog
-export async function saveAccountStep(actor: Pick<Actor, "userId">, version: number, input: { firstName: string; lastName: string; phone?: string | null }) {
+export async function saveAccountStep(actor: DraftWriter, version: number, input: { firstName: string; lastName: string; phone?: string | null }) {
   return updateDraft(actor, "account", version, (d) => ({
     ...d,
     president: { firstName: trimOr(input.firstName), lastName: trimOr(input.lastName), phone: trimOr(input.phone) },
@@ -496,7 +519,7 @@ export async function saveAccountStep(actor: Pick<Actor, "userId">, version: num
 // Korak 2 — Podaci o ZEV-u. Neispravan JIB se NE odbija ovdje (forma bi izgubila sve ostale unesene
 // podatke): čuva se, a korak ostaje nekompletan sa ⚠ iz istog pravila kao upsertZev (isValidJib, D5),
 // pa ZEV sa neispravnim JIB-om ne može biti objavljen. `jibValid` kaže stranici da to i napiše.
-export async function saveZevStep(actor: Pick<Actor, "userId">, version: number, input: OnboardingDraftData["zev"]): Promise<{ version: number; jibValid: boolean }> {
+export async function saveZevStep(actor: DraftWriter, version: number, input: OnboardingDraftData["zev"]): Promise<{ version: number; jibValid: boolean }> {
   const jib = trimOr(input.jib);
   const jibValid = !jib || isValidJib(jib);
   const next = await updateDraft(actor, "zev", version, (d) => ({
@@ -512,7 +535,7 @@ export async function saveZevStep(actor: Pick<Actor, "userId">, version: number,
 
 // Korak 3 — Računi
 export async function addDraftAccount(
-  actor: Pick<Actor, "userId">,
+  actor: DraftWriter,
   version: number,
   input: { type: "BANK" | "CASH"; name: string; bankName?: string | null; number?: string | null; openingBalance: string; openingDate: string }
 ) {
@@ -521,20 +544,20 @@ export async function addDraftAccount(
     ...d,
     accounts: [
       ...d.accounts,
-      { key: randomUUID(), ...fields },
+      { key: randomUUID(), ...fields, source: sourceOf(actor) },
     ],
     acks: { ...d.acks, noAccounts: false },
   }));
 }
 
-export async function removeDraftAccount(actor: Pick<Actor, "userId">, version: number, key: string) {
+export async function removeDraftAccount(actor: DraftWriter, version: number, key: string) {
   return updateDraft(actor, "accounts", version, (d) => ({ ...d, accounts: d.accounts.filter((a) => a.key !== key) }));
 }
 
 /** Samo paket BASIC (D7): nastavak bez računa je izričit izbor, ne prazan korak. */
-export async function setNoAccounts(actor: Pick<Actor, "userId">, version: number, value: boolean) {
-  const draft = await getMyDraft(actor);
-  if (draft && draft.tier !== "BASIC" && value) throw new Error("Uz paket sa finansijama bankovni račun je obavezan.");
+export async function setNoAccounts(actor: DraftWriter, version: number, value: boolean) {
+  const draft = await loadDraft(actor);
+  if (draft.tier !== "BASIC" && value) throw new Error("Uz paket sa finansijama bankovni račun je obavezan.");
   return updateDraft(actor, "accounts", version, (d) => ({ ...d, acks: { ...d.acks, noAccounts: value } }));
 }
 
@@ -544,7 +567,7 @@ function assertBuildingsEditable(d: OnboardingDraftData) {
 }
 
 export async function addDraftBuilding(
-  actor: Pick<Actor, "userId">,
+  actor: DraftWriter,
   version: number,
   input: { name: string; address: string; cadastralRef?: string | null; yearBuilt?: string | null; floorsCount?: string | null }
 ) {
@@ -552,12 +575,12 @@ export async function addDraftBuilding(
   return updateDraft(actor, "buildings", version, (d) => {
     assertBuildingsEditable(d);
     assertBuildingNameFree(d, fields.name, null);
-    return { ...d, buildings: [...d.buildings, { key: randomUUID(), ...fields, entrances: [] }] };
+    return { ...d, buildings: [...d.buildings, { key: randomUUID(), ...fields, entrances: [], source: sourceOf(actor) }] };
   });
 }
 
 /** Uklanja zgradu i sve što na nju upućuje u nacrtu (jedinice i zajedničke dijelove, kad ih bude). */
-export async function removeDraftBuilding(actor: Pick<Actor, "userId">, version: number, key: string) {
+export async function removeDraftBuilding(actor: DraftWriter, version: number, key: string) {
   return updateDraft(actor, "buildings", version, (d) => {
     assertBuildingsEditable(d);
     const removedUnits = new Set(d.units.filter((u) => u.buildingKey === key).map((u) => u.key));
@@ -571,19 +594,19 @@ export async function removeDraftBuilding(actor: Pick<Actor, "userId">, version:
   });
 }
 
-export async function addDraftEntrance(actor: Pick<Actor, "userId">, version: number, buildingKey: string, name: string) {
+export async function addDraftEntrance(actor: DraftWriter, version: number, buildingKey: string, name: string) {
   const n = normalizeEntranceName(name);
   return updateDraft(actor, "buildings", version, (d) => {
     assertBuildingsEditable(d);
     const b = d.buildings.find((x) => x.key === buildingKey);
     if (!b) throw new Error("Zgrada nije pronađena u nacrtu.");
     assertEntranceNameFree(b, n, null);
-    b.entrances.push({ key: randomUUID(), name: n });
+    b.entrances.push({ key: randomUUID(), name: n, source: sourceOf(actor) });
     return d;
   });
 }
 
-export async function removeDraftEntrance(actor: Pick<Actor, "userId">, version: number, buildingKey: string, entranceKey: string) {
+export async function removeDraftEntrance(actor: DraftWriter, version: number, buildingKey: string, entranceKey: string) {
   return updateDraft(actor, "buildings", version, (d) => {
     assertBuildingsEditable(d);
     const b = d.buildings.find((x) => x.key === buildingKey);
@@ -600,23 +623,23 @@ function assertRegisterOpen(d: OnboardingDraftData) {
   if (d.registerConfirmedAt) throw new Error(t("onboarding.units.locked"));
 }
 
-export async function addDraftUnit(actor: Pick<Actor, "userId">, version: number, input: DraftUnitInput) {
+export async function addDraftUnit(actor: DraftWriter, version: number, input: DraftUnitInput) {
   return updateDraft(actor, "units", version, (d) => {
     assertRegisterOpen(d);
-    return { ...d, units: [...d.units, { key: randomUUID(), ...validUnit(d, input, null) }] };
+    return { ...d, units: [...d.units, { key: randomUUID(), ...validUnit(d, input, null), source: sourceOf(actor) }] };
   });
 }
 
-export async function updateDraftUnit(actor: Pick<Actor, "userId">, version: number, key: string, input: DraftUnitInput) {
+export async function updateDraftUnit(actor: DraftWriter, version: number, key: string, input: DraftUnitInput) {
   return updateDraft(actor, "units", version, (d) => {
     assertRegisterOpen(d);
     if (!d.units.some((u) => u.key === key)) throw new Error("Posebni dio nije pronađen u nacrtu.");
     const next = validUnit(d, input, key);
-    return { ...d, units: d.units.map((u) => (u.key === key ? { key, ...next } : u)) };
+    return { ...d, units: d.units.map((u) => (u.key === key ? { key, ...next, source: sourceOf(actor) } : u)) };
   });
 }
 
-export async function removeDraftUnit(actor: Pick<Actor, "userId">, version: number, key: string) {
+export async function removeDraftUnit(actor: DraftWriter, version: number, key: string) {
   return updateDraft(actor, "units", version, (d) => {
     assertRegisterOpen(d);
     return { ...d, units: d.units.filter((u) => u.key !== key), stakeProposals: d.stakeProposals.filter((p) => p.unitKey !== key) };
@@ -625,7 +648,7 @@ export async function removeDraftUnit(actor: Pick<Actor, "userId">, version: num
 
 // Korak 6 — Zajednički dijelovi (D4: bar jedan zajednički prostor po zgradi).
 export async function addDraftCommonAsset(
-  actor: Pick<Actor, "userId">,
+  actor: DraftWriter,
   version: number,
   input: { buildingKey: string; kind: string; name: string; description?: string | null }
 ) {
@@ -633,11 +656,70 @@ export async function addDraftCommonAsset(
   return updateDraft(actor, "commonAssets", version, (d) => {
     assertRegisterOpen(d);
     assertBuildingExists(d, input.buildingKey);
-    return { ...d, commonAssets: [...d.commonAssets, { key: randomUUID(), ...fields }] };
+    return { ...d, commonAssets: [...d.commonAssets, { key: randomUUID(), ...fields, source: sourceOf(actor) }] };
   });
 }
 
-export async function removeDraftCommonAsset(actor: Pick<Actor, "userId">, version: number, key: string) {
+// ---- Grupni upis (M5): sve ili ništa, do DRAFT_BATCH_MAX stavki, jedna nova verzija po pozivu -----------------------
+
+export const DRAFT_BATCH_MAX = 200;
+
+export type DraftBatchIssue = { index: number; message: string };
+
+/** Bar jedna stavka grupe ne prolazi pravila; ništa nije upisano. `index` je redni broj stavke (od 1). */
+export class DraftBatchError extends Error {
+  constructor(public readonly issues: DraftBatchIssue[]) {
+    super(tf("onboarding.batch.invalid", { broj: issues.length }));
+    this.name = "DraftBatchError";
+  }
+}
+
+function assertBatchSize(n: number) {
+  if (n === 0) throw new Error(t("onboarding.batch.empty"));
+  if (n > DRAFT_BATCH_MAX) throw new Error(tf("onboarding.batch.tooMany", { broj: DRAFT_BATCH_MAX }));
+}
+
+/**
+ * Primjenjuje `add` na svaku stavku redom nad istim nacrtom (pa se duplikat UNUTAR grupe hvata kao i duplikat sa već
+ * upisanim), skuplja greške po rednom broju i baca ih zajedno — mutacija se tada odbacuje cijela.
+ */
+function applyBatch<T>(items: T[], add: (item: T) => void) {
+  const issues: DraftBatchIssue[] = [];
+  items.forEach((item, i) => {
+    try {
+      add(item);
+    } catch (e) {
+      issues.push({ index: i + 1, message: e instanceof Error ? e.message : String(e) });
+    }
+  });
+  if (issues.length > 0) throw new DraftBatchError(issues);
+}
+
+export async function addDraftUnits(actor: DraftWriter, version: number, inputs: DraftUnitInput[]) {
+  assertBatchSize(inputs.length);
+  const source = sourceOf(actor);
+  return updateDraft(actor, "units", version, (d) => {
+    assertRegisterOpen(d);
+    applyBatch(inputs, (input) => d.units.push({ key: randomUUID(), ...validUnit(d, input, null), source }));
+    return d;
+  });
+}
+
+export async function addDraftCommonAssets(actor: DraftWriter, version: number, inputs: CommonAssetInput[]) {
+  assertBatchSize(inputs.length);
+  const source = sourceOf(actor);
+  return updateDraft(actor, "commonAssets", version, (d) => {
+    assertRegisterOpen(d);
+    applyBatch(inputs, (input) => {
+      const fields = normalizeCommonAsset(input);
+      assertBuildingExists(d, input.buildingKey);
+      d.commonAssets.push({ key: randomUUID(), ...fields, source });
+    });
+    return d;
+  });
+}
+
+export async function removeDraftCommonAsset(actor: DraftWriter, version: number, key: string) {
   return updateDraft(actor, "commonAssets", version, (d) => {
     assertRegisterOpen(d);
     return { ...d, commonAssets: d.commonAssets.filter((c) => c.key !== key) };
@@ -647,7 +729,7 @@ export async function removeDraftCommonAsset(actor: Pick<Actor, "userId">, versi
 // Korak 7 — Utvrđivanje registra. U nacrtu je to potvrda koja zaključava korake 4–6; pravo
 // utvrđivanje (UnitRegisterChange ESTABLISH, verzija 1) radi objava u Fazi C. Korak 7 je dostupan
 // samo kad su koraci 5 i 6 kompletni, pa su preduslovi registra tada već ispunjeni.
-export async function confirmDraftRegister(actor: Pick<Actor, "userId">, version: number) {
+export async function confirmDraftRegister(actor: DraftWriter, version: number) {
   return updateDraft(actor, "register", version, (d) => {
     if (d.registerConfirmedAt) throw new Error("Registar je već potvrđen.");
     return { ...d, registerConfirmedAt: new Date().toISOString() };
@@ -655,7 +737,7 @@ export async function confirmDraftRegister(actor: Pick<Actor, "userId">, version
 }
 
 /** „Otključaj registar” (§4.1): u nacrtu nema pravne posljedice, pa se potvrda može povući. */
-export async function unlockDraftRegister(actor: Pick<Actor, "userId">, version: number) {
+export async function unlockDraftRegister(actor: DraftWriter, version: number) {
   return updateDraft(actor, "register", version, (d) => {
     if (!d.registerConfirmedAt) throw new Error("Registar nije potvrđen.");
     return { ...d, registerConfirmedAt: null };
@@ -673,9 +755,9 @@ export type { NewPartyInput };
 export type PartyChoice = { partyKey: string; newParty?: NewPartyInput | null };
 
 /** Razrješava izbor lica u nacrtu: postojeće lice, predsjednik ili novo (koje se dodaje u `parties`). */
-function resolveParty(d: OnboardingDraftData, choice: PartyChoice): string {
+function resolveParty(d: OnboardingDraftData, choice: PartyChoice, source?: DraftSource): string {
   if (choice.partyKey === "new") {
-    const p = normalizeParty(choice.newParty ?? { kind: "PERSON" }, randomUUID());
+    const p = { ...normalizeParty(choice.newParty ?? { kind: "PERSON" }, randomUUID()), source };
     d.parties.push(p);
     return p.key;
   }
@@ -684,7 +766,7 @@ function resolveParty(d: OnboardingDraftData, choice: PartyChoice): string {
 }
 
 export async function addDraftStake(
-  actor: Pick<Actor, "userId">,
+  actor: DraftWriter,
   version: number,
   input: PartyChoice & { unitKey: string; sharePercent: string; validFrom: string },
   proof: { buffer: Buffer; filename: string; mime: string } | null
@@ -693,8 +775,8 @@ export async function addDraftStake(
   assertUploadable({ ...proof, category: "OWNERSHIP_PROOF" }); // isti formati i veličina kao prilozi u aplikaciji
   const share = assertSharePercent(parseMoneyInput(input.sharePercent) ?? ""); // isto pravilo kao addOwnershipStake
   const validFrom = assertDate(input.validFrom, t("onboarding.owners.validFrom"));
-  const draft = await getMyDraft(actor);
-  if (!draft) throw new Error(t("onboarding.noDraft"));
+  const draft = await loadDraft(actor);
+  const source = sourceOf(actor);
   const used = await prisma.onboardingDraftFile.aggregate({ where: { draftId: draft.id }, _sum: { size: true } });
   if ((used._sum.size ?? 0) + proof.buffer.length > DRAFT_FILES_MAX_BYTES) throw new Error("Nacrt je dostigao ukupno ograničenje fajlova (200 MB).");
 
@@ -704,11 +786,11 @@ export async function addDraftStake(
   try {
     return await updateDraft(actor, "owners", version, (d) => {
       if (!d.units.some((u) => u.key === input.unitKey)) throw new Error("Posebni dio nije pronađen u nacrtu.");
-      const partyKey = resolveParty(d, input);
+      const partyKey = resolveParty(d, input, source);
       if (d.stakes.some((s) => s.unitKey === input.unitKey && s.partyKey === partyKey)) {
         throw new Error("Ovo lice je već upisano kao vlasnik ovog posebnog dijela.");
       }
-      d.stakes.push({ key: randomUUID(), unitKey: input.unitKey, partyKey, sharePercent: share.toString(), validFrom, proofFileId: file.id, proofFilename: proof.filename });
+      d.stakes.push({ key: randomUUID(), unitKey: input.unitKey, partyKey, sharePercent: share.toString(), validFrom, proofFileId: file.id, proofFilename: proof.filename, source });
       // Upisan vlasnik znači da vlasništvo više nije „u sporu”.
       d.disputedUnits = d.disputedUnits.filter((k) => k !== input.unitKey);
       // Prijedlog iz uvoza za isto lice na istom dijelu je ovim ispunjen (dokaz je priložen).
@@ -721,7 +803,7 @@ export async function addDraftStake(
   }
 }
 
-export async function removeDraftStake(actor: Pick<Actor, "userId">, version: number, stakeKey: string) {
+export async function removeDraftStake(actor: DraftWriter, version: number, stakeKey: string) {
   let fileId: string | null = null;
   const next = await updateDraft(actor, "owners", version, (d) => {
     fileId = d.stakes.find((s) => s.key === stakeKey)?.proofFileId ?? null;
@@ -731,12 +813,39 @@ export async function removeDraftStake(actor: Pick<Actor, "userId">, version: nu
   return next;
 }
 
+export type StakeProposalInput = PartyChoice & { unitKey: string; sharePercent: string; validFrom: string };
+
+/**
+ * Prijedlozi udjela BEZ dokaza (grupni upis, M5): asistent upisuje vlasnike koje je pročitao, a klijent u koraku „Vlasnici”
+ * prilaže dokaz i tek tada nastaje pravi udio. Pravilo „nema udjela bez dokaza” time ostaje (isti oblik kao prijedlozi iz uvoza).
+ */
+export async function addDraftStakeProposals(actor: DraftWriter, version: number, inputs: StakeProposalInput[]) {
+  assertBatchSize(inputs.length);
+  const source = sourceOf(actor);
+  return updateDraft(actor, "owners", version, (d) => {
+    applyBatch(inputs, (input) => {
+      if (!d.units.some((u) => u.key === input.unitKey)) throw new Error("Posebni dio nije pronađen u nacrtu.");
+      const share = assertSharePercent(parseMoneyInput(input.sharePercent) ?? "");
+      const validFrom = assertDate(input.validFrom, t("onboarding.owners.validFrom"));
+      const partyKey = resolveParty(d, input, source);
+      if (d.stakes.some((s) => s.unitKey === input.unitKey && s.partyKey === partyKey)) {
+        throw new Error("Ovo lice je već upisano kao vlasnik ovog posebnog dijela.");
+      }
+      if (d.stakeProposals.some((p) => p.unitKey === input.unitKey && p.partyKey === partyKey)) {
+        throw new Error("Za ovo lice na ovom posebnom dijelu prijedlog udjela već postoji.");
+      }
+      d.stakeProposals.push({ key: randomUUID(), unitKey: input.unitKey, partyKey, sharePercent: share.toString(), validFrom, source });
+    });
+    return d;
+  });
+}
+
 /** Uklanja prijedlog udjela iz uvoza (bez dokaza ništa drugo ne zavisi od njega). */
-export async function removeDraftStakeProposal(actor: Pick<Actor, "userId">, version: number, key: string) {
+export async function removeDraftStakeProposal(actor: DraftWriter, version: number, key: string) {
   return updateDraft(actor, "owners", version, (d) => ({ ...d, stakeProposals: d.stakeProposals.filter((p) => p.key !== key) }));
 }
 
-export async function setUnitDisputed(actor: Pick<Actor, "userId">, version: number, unitKey: string, disputed: boolean) {
+export async function setUnitDisputed(actor: DraftWriter, version: number, unitKey: string, disputed: boolean) {
   return updateDraft(actor, "owners", version, (d) => {
     if (!d.units.some((u) => u.key === unitKey)) throw new Error("Posebni dio nije pronađen u nacrtu.");
     const rest = d.disputedUnits.filter((k) => k !== unitKey);
@@ -747,7 +856,7 @@ export async function setUnitDisputed(actor: Pick<Actor, "userId">, version: num
 // ---- Korak 9 — Organi i nalozi --------------------------------------------------------------
 
 export async function setDraftAccountant(
-  actor: Pick<Actor, "userId">,
+  actor: DraftWriter,
   version: number,
   input: PartyChoice & { validFrom: string; loginEmail?: string | null; password?: string | null }
 ) {
@@ -762,28 +871,30 @@ export async function setDraftAccountant(
     assertPasswordStrong(input.password ?? "");
     passwordHash = await hashPassword(input.password!);
   }
+  const source = sourceOf(actor);
   return updateDraft(actor, "offices", version, (d) => {
-    const partyKey = resolveParty(d, input);
+    const partyKey = resolveParty(d, input, source);
     if (loginEmail && partyKey === PRESIDENT_PARTY_KEY) throw new Error("Vi već imate nalog; nalog za računovođu otvorite samo za drugu osobu.");
-    return { ...d, offices: { ...d.offices, accountant: { key: randomUUID(), partyKey, validFrom, loginEmail, passwordHash } } };
+    return { ...d, offices: { ...d.offices, accountant: { key: randomUUID(), partyKey, validFrom, loginEmail, passwordHash, source } } };
   });
 }
 
 /** „Računovođu dodajem kasnije” (null = poništi izbor i vrati korak na nekompletan). */
-export async function setAccountantLater(actor: Pick<Actor, "userId">, version: number, later: boolean) {
+export async function setAccountantLater(actor: DraftWriter, version: number, later: boolean) {
   return updateDraft(actor, "offices", version, (d) => ({ ...d, offices: { ...d.offices, accountant: later ? "LATER" : null } }));
 }
 
-export async function addDraftBoardMember(actor: Pick<Actor, "userId">, version: number, input: PartyChoice & { validFrom: string }) {
+export async function addDraftBoardMember(actor: DraftWriter, version: number, input: PartyChoice & { validFrom: string }) {
   const validFrom = assertDate(input.validFrom, t("onboarding.offices.validFrom"));
+  const source = sourceOf(actor);
   return updateDraft(actor, "offices", version, (d) => {
-    const partyKey = resolveParty(d, input);
+    const partyKey = resolveParty(d, input, source);
     if (d.offices.board.some((b) => b.partyKey === partyKey)) throw new Error("Ovo lice je već član upravnog odbora."); // kao addBoardMember
-    return { ...d, offices: { ...d.offices, board: [...d.offices.board, { key: randomUUID(), partyKey, validFrom }] } };
+    return { ...d, offices: { ...d.offices, board: [...d.offices.board, { key: randomUUID(), partyKey, validFrom, source }] } };
   });
 }
 
-export async function removeDraftBoardMember(actor: Pick<Actor, "userId">, version: number, key: string) {
+export async function removeDraftBoardMember(actor: DraftWriter, version: number, key: string) {
   return updateDraft(actor, "offices", version, (d) => ({ ...d, offices: { ...d.offices, board: d.offices.board.filter((b) => b.key !== key) } }));
 }
 

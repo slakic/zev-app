@@ -39,17 +39,23 @@ import { PreconditionList } from "@/components/precondition-list";
 import { PageHeader, Card, Field, Flash, Table, Td, RowAction, RowActionLink, SubmitBtn, BtnLink, Btn, ConfirmAction, StatusBadge, inputCls, type ColumnSpec } from "@/components/ui";
 import { dec, formatMoney } from "@/lib/money";
 import { sharesSum, sumIsHundred } from "@/lib/registerRules";
-import { draftPartyName, PRESIDENT_PARTY_KEY, type DraftUnit } from "@/lib/onboarding/draft";
+import { draftPartyName, PRESIDENT_PARTY_KEY, type DraftSource, type DraftUnit } from "@/lib/onboarding/draft";
 import { shareSumChip, sumShares } from "@/lib/shareSum";
 import { OnboardingSummary } from "@/components/onboarding-summary";
 import { ProofFileField } from "@/components/proof-file-field";
 import { PasswordField } from "@/components/password-field";
 import { formatDate, t, tEnum, tf } from "@/lib/i18n";
 
-/** Oznaka „Uvezeno” uz stavku koja je došla iz fajla (ručna izmjena je briše). */
-function ImportedChip({ source }: { source?: string }) {
-  if (source !== "IMPORT") return null;
-  return <span className="ml-2 align-middle"><StatusBadge status="SOURCE_IMPORT" label={t("onboarding.import.imported")} /></span>;
+const SOURCE_LABEL: Record<DraftSource, string> = {
+  IMPORT: "onboarding.import.imported",
+  MCP_OWNER: "onboarding.source.mcpOwner",
+  MCP_ADMIN: "onboarding.source.mcpAdmin",
+};
+
+/** Oznaka izvora uz stavku koja nije unesena rukom: „Uvezeno” (fajl) ili „Upisao asistent” (MCP); ručna izmjena je briše. */
+function SourceChip({ source }: { source?: DraftSource }) {
+  if (!source) return null;
+  return <span className="ml-2 align-middle"><StatusBadge status={`SOURCE_${source}`} label={t(SOURCE_LABEL[source])} /></span>;
 }
 
 function Version({ draft }: { draft: MyDraft }) {
@@ -175,7 +181,7 @@ function AccountsStep({ draft }: { draft: MyDraft }) {
         >
           {draft.data.accounts.map((a) => (
             <tr key={a.key}>
-              <Td>{a.name}<ImportedChip source={a.source} /></Td>
+              <Td>{a.name}<SourceChip source={a.source} /></Td>
               <Td>{a.type === "BANK" ? t("onboarding.accounts.typeBank") : t("onboarding.accounts.typeCash")}</Td>
               <Td>{a.bankName ?? "—"}</Td>
               <Td><span className="tabular-nums">{a.number ?? "—"}</span></Td>
@@ -253,7 +259,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
         >
           {buildings.map((b) => (
             <tr key={b.key}>
-              <Td>{b.name}<ImportedChip source={b.source} /></Td>
+              <Td>{b.name}<SourceChip source={b.source} /></Td>
               <Td>{b.address}</Td>
               <Td>{b.cadastralRef ?? "—"}</Td>
               <Td>{b.yearBuilt ?? "—"}</Td>
@@ -292,7 +298,7 @@ function BuildingsStep({ draft }: { draft: MyDraft }) {
           >
             {entrances.map((e) => (
               <tr key={e.key}>
-                <Td>{e.name}<ImportedChip source={e.source} /></Td>
+                <Td>{e.name}<SourceChip source={e.source} /></Td>
                 <Td>{e.building.name}</Td>
                 <Td>
                   {!locked && (
@@ -416,7 +422,7 @@ function UnitsTable({ draft, editable }: { draft: MyDraft; editable: boolean }) 
       >
         {units.map((u) => (
           <tr key={u.key}>
-            <Td>{u.label}<ImportedChip source={u.source} /></Td>
+            <Td>{u.label}<SourceChip source={u.source} /></Td>
             <Td>{tEnum("unitType", u.type)}</Td>
             <Td>{placeOf(draft, u)}</Td>
             <Td>{u.floor ?? "—"}</Td>
@@ -504,7 +510,7 @@ function CommonAssetsStep({ draft }: { draft: MyDraft }) {
         >
           {assets.map((a) => (
             <tr key={a.key}>
-              <Td>{a.name}<ImportedChip source={a.source} /></Td>
+              <Td>{a.name}<SourceChip source={a.source} /></Td>
               <Td>{t(`onboarding.commonAssets.kind${a.kind}`)}</Td>
               <Td>{buildingName(a.buildingKey)}</Td>
               <Td>{a.description ?? "—"}</Td>
@@ -610,7 +616,7 @@ function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
           <ul className="mt-2 divide-y divide-slate-200 border-y border-slate-200">
             {stakes.map((st) => (
               <li key={st.key} className="flex flex-wrap items-center gap-x-6 gap-y-1 py-2 text-sm">
-                <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, st.partyKey)}</span>
+                <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, st.partyKey)}<SourceChip source={st.source} /></span>
                 <span className="tabular-nums">{st.sharePercent.replace(".", ",")} %</span>
                 <span className="text-slate-600">{tf("onboarding.owners.since", { datum: formatDate(st.validFrom) })}</span>
                 {st.proofFilename && <span className="text-[13px] text-slate-600">{st.proofFilename}</span>}
@@ -632,7 +638,7 @@ function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
               {proposals.map((p) => (
                 <li key={p.key} className="py-3 text-sm">
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
-                    <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, p.partyKey)}<ImportedChip source={p.source} /></span>
+                    <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, p.partyKey)}<SourceChip source={p.source} /></span>
                     <span className="tabular-nums">{p.sharePercent.replace(".", ",")} %</span>
                     <span className="text-slate-600">{tf("onboarding.owners.since", { datum: formatDate(p.validFrom) })}</span>
                     <form action={removeStakeProposalAction} className="ml-auto">
@@ -755,7 +761,7 @@ function OfficesStep({ draft }: { draft: MyDraft }) {
         {acc && acc !== "LATER" ? (
           <div className="flex flex-wrap items-center gap-3">
             <p className="text-sm text-slate-700">
-              {draftPartyName(draft.data, acc.partyKey)} · {tf("onboarding.owners.since", { datum: formatDate(acc.validFrom) })}
+              {draftPartyName(draft.data, acc.partyKey)} · {tf("onboarding.owners.since", { datum: formatDate(acc.validFrom) })}<SourceChip source={acc.source} />
               {acc.loginEmail && <span className="block text-[13px] text-slate-600">{tf("onboarding.offices.loginFor", { email: acc.loginEmail })}</span>}
             </p>
             <form action={setAccountantLaterAction} className="ml-auto">
@@ -803,7 +809,7 @@ function OfficesStep({ draft }: { draft: MyDraft }) {
         <Table id="onboarding-board" caption={t("onboarding.offices.board")} headers={boardHeaders} empty={board.length === 0} emptyTitle={t("onboarding.offices.boardEmpty")}>
           {board.map((b) => (
             <tr key={b.key}>
-              <Td>{draftPartyName(draft.data, b.partyKey)}</Td>
+              <Td>{draftPartyName(draft.data, b.partyKey)}<SourceChip source={b.source} /></Td>
               <Td>{formatDate(b.validFrom)}</Td>
               <Td>
                 <form action={removeBoardMemberAction}>

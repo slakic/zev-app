@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.65.0] - 2026-11-05
+
+MCP onboarding, Faze O-B i O-C: asistent sada i upisuje u nacrt novog ZEV-a — podatke o ZEV-u, račune, zgrade i ulaze, posebne i zajedničke dijelove, vlasnike i organe — po istim pravilima kao čarobnjak. Klijent sve vidi sa oznakom „Upisao asistent”, pregleda i sam objavljuje ZEV. Sve je i dalje iza `MCP_ENABLED`. Plan: `Plans/mcp-onboarding-asistent-plan.md`.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Dodato
+
+- **Alati za upis (O-B):** `save_zev_details` (samo poslata polja), `add_bank_account`, `remove_account`, `add_building`, `remove_building`, `add_entrance`, `remove_entrance`, `add_units`, `update_unit`, `remove_unit`, `add_common_assets`, `remove_common_asset`, `set_accountant`, `set_accountant_later`, `add_board_member`, `remove_board_member`.
+- **Alati za vlasnike (O-C):** `add_owner_stake` sa dokazom (base64; isti formati i veličina kao prilog u aplikaciji), `remove_owner_stake`, `set_unit_disputed` i `add_stake_proposals` (vlasnici bez dokaza kao prijedlozi, kojima klijent u koraku „Vlasnici” prilaže dokaz).
+- Svaki upis traži `expected_version`; zastarjela verzija se odbija uz trenutnu verziju, pa asistent ne može pregaziti izmjenu klijenta. Isti guard koraka kao čarobnjak: nema upisa u korak iza trenutnog ni u korake 4–6 poslije potvrde registra.
+- **Grupni upis** posebnih i zajedničkih dijelova i prijedloga vlasnika: do 200 stavki, sve ili ništa, greške po rednom broju stavke; jedna nova verzija nacrta po pozivu.
+- Alati vraćaju ključeve novih stavki (`created`); `get_draft` vraća i izvor stavke.
+- **Oznake u čarobnjaku:** „Upisao asistent” i „Upisao asistent administratora” (plavi chip) uz račune, zgrade, ulaze, posebne i zajedničke dijelove, lica, udjele, prijedloge, računovođu i članove odbora. Ručna izmjena briše oznaku.
+- Audit `mcp.call` za svaki upis (alat, broj stavki, veza, opseg, vlasnik ili administrator — bez sadržaja), vidljiv u platformskim Aktivnostima.
+
+### Izmijenjeno
+
+- Funkcije koraka čarobnjaka primaju i dokazano pravo pristupa (`DraftAccess`), pa asistent ide kroz iste servise; ponašanje čarobnjaka je isto.
+- `/api/mcp` prima tijelo do `MAX_UPLOAD_MB × 4/3 + 64 KB` (base64 dokaza); SDK je ranije odbijao sve iznad 4 MB. Na Vercelu ostaje granica platforme od 4,5 MB po zahtjevu.
+- Asistent ne mijenja računovođu kome je klijent već otvorio nalog za prijavu.
+- Korisničko uputstvo, poglavlje 16: šta asistent upisuje, pravila i oznake.
+
 ## [2.64.1] - 2026-11-01
 
 Korisničko uputstvo je dopunjeno svim izmjenama od verzije 2.54.0 (do sada je pratilo stanje 2.53.0).
