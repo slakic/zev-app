@@ -68,7 +68,7 @@ export function draftForAssistant(data: OnboardingDraftData, files: DraftFileMet
         ...src(s),
       };
     });
-    // Prijedlozi iz uvoza (bez dokaza): isti oblik kao `stakes` bez `proof`; uvoz ih ponovo čita kao prijedloge.
+    // Prijedlozi iz uvoza ili od asistenta (bez dokaza): isti oblik kao `stakes` bez `proof`; uvoz ih ponovo čita kao prijedloge.
     out.stakeProposals = data.stakeProposals.map((s) => ({ key: s.key, unitKey: s.unitKey, partyKey: s.partyKey, sharePercent: s.sharePercent, validFrom: s.validFrom, ...src(s) }));
     out.disputedUnits = [...data.disputedUnits];
   }

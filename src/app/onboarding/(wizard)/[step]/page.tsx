@@ -716,7 +716,7 @@ function OwnersStep({ draft, openUnit }: { draft: MyDraft; openUnit?: string }) 
           const disputed = draft.data.disputedUnits.includes(u.key);
           const chip = shareSumChip(sumShares(stakes.map((s) => s.sharePercent)), stakes.length);
           const open = openUnit === u.key;
-          // Prijedlozi iz uvoza se vide uz vlasnike, ali se ne računaju u zbir (nemaju dokaz).
+          // Prijedlozi (uvoz ili asistent) se vide uz vlasnike, ali se ne računaju u zbir (nemaju dokaz).
           const owners = [
             ...stakes.map((s) => draftPartyName(draft.data, s.partyKey)),
             ...draft.data.stakeProposals.filter((p) => p.unitKey === u.key).map((p) => `${draftPartyName(draft.data, p.partyKey)} ${t("onboarding.import.proposals.suffix")}`),

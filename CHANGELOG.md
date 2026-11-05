@@ -43,6 +43,17 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.65.1] - 2026-11-05
+
+Dopuna uz 2.65.0: korisničko uputstvo i čarobnjak usklađeni sa upisom kroz asistenta.
+
+**Migracija: ne — bez migracije, deploy ne traži ručni korak.**
+
+### Izmijenjeno
+
+- Korisničko uputstvo: 14.5 (asistent administratora sada i upisuje u klijentov nacrt, oznaka „Upisao asistent administratora”), 15.5 (prijedlozi vlasnika dolaze iz uvoza ili od asistenta), 15.8 (pristup administratora i oznake izvora „Uvezeno” / „Upisao asistent” / „Upisao asistent administratora”) i 15.9.
+- Čarobnjak, korak „Vlasnici”: kartica „Prijedlozi iz uvoza (čekaju dokaz)” je sada „Prijedlozi vlasnika (čekaju dokaz)”, a objašnjenje navodi i asistenta, jer prijedloge može upisati i on.
+
 ## [2.65.0] - 2026-11-05
 
 MCP onboarding, Faze O-B i O-C: asistent sada i upisuje u nacrt novog ZEV-a — podatke o ZEV-u, račune, zgrade i ulaze, posebne i zajedničke dijelove, vlasnike i organe — po istim pravilima kao čarobnjak. Klijent sve vidi sa oznakom „Upisao asistent”, pregleda i sam objavljuje ZEV. Sve je i dalje iza `MCP_ENABLED`. Plan: `Plans/mcp-onboarding-asistent-plan.md`.

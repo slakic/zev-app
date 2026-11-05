@@ -668,8 +668,8 @@ const srLatn = {
         another: "Uvezi drugi fajl",
       },
       proposals: {
-        title: "Prijedlozi iz uvoza (čekaju dokaz)",
-        hint: "Ovi vlasnici dolaze iz uvezenog fajla. Postaju vlasnici tek kad priložite dokaz o vlasništvu.",
+        title: "Prijedlozi vlasnika (čekaju dokaz)",
+        hint: "Ove vlasnike je upisao uvoz iz fajla ili asistent, bez dokaza. Postaju vlasnici tek kad priložite dokaz o vlasništvu.",
         suffix: "(prijedlog)",
         add: "Upiši uz dokaz",
         remove: "Ukloni prijedlog",
