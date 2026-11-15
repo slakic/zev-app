@@ -34,6 +34,9 @@ export type UserMinAggregateOutputType = {
   passwordResetTokenHash: string | null
   passwordResetExpiresAt: Date | null
   partyId: string | null
+  uiTextLarge: boolean | null
+  uiLayoutSimple: boolean | null
+  uiPrefsAskedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +51,9 @@ export type UserMaxAggregateOutputType = {
   passwordResetTokenHash: string | null
   passwordResetExpiresAt: Date | null
   partyId: string | null
+  uiTextLarge: boolean | null
+  uiLayoutSimple: boolean | null
+  uiPrefsAskedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -63,6 +69,9 @@ export type UserCountAggregateOutputType = {
   passwordResetTokenHash: number
   passwordResetExpiresAt: number
   partyId: number
+  uiTextLarge: number
+  uiLayoutSimple: number
+  uiPrefsAskedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -79,6 +88,9 @@ export type UserMinAggregateInputType = {
   passwordResetTokenHash?: true
   passwordResetExpiresAt?: true
   partyId?: true
+  uiTextLarge?: true
+  uiLayoutSimple?: true
+  uiPrefsAskedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -93,6 +105,9 @@ export type UserMaxAggregateInputType = {
   passwordResetTokenHash?: true
   passwordResetExpiresAt?: true
   partyId?: true
+  uiTextLarge?: true
+  uiLayoutSimple?: true
+  uiPrefsAskedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -108,6 +123,9 @@ export type UserCountAggregateInputType = {
   passwordResetTokenHash?: true
   passwordResetExpiresAt?: true
   partyId?: true
+  uiTextLarge?: true
+  uiLayoutSimple?: true
+  uiPrefsAskedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -196,6 +214,9 @@ export type UserGroupByOutputType = {
   passwordResetTokenHash: string | null
   passwordResetExpiresAt: Date | null
   partyId: string | null
+  uiTextLarge: boolean
+  uiLayoutSimple: boolean
+  uiPrefsAskedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -232,6 +253,9 @@ export type UserWhereInput = {
   passwordResetTokenHash?: Prisma.StringNullableFilter<"User"> | string | null
   passwordResetExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   partyId?: Prisma.StringNullableFilter<"User"> | string | null
+  uiTextLarge?: Prisma.BoolFilter<"User"> | boolean
+  uiLayoutSimple?: Prisma.BoolFilter<"User"> | boolean
+  uiPrefsAskedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   party?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
@@ -252,6 +276,9 @@ export type UserOrderByWithRelationInput = {
   passwordResetTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   passwordResetExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   partyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  uiTextLarge?: Prisma.SortOrder
+  uiLayoutSimple?: Prisma.SortOrder
+  uiPrefsAskedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   party?: Prisma.PartyOrderByWithRelationInput
@@ -275,6 +302,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   deactivatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   passwordResetTokenHash?: Prisma.StringNullableFilter<"User"> | string | null
   passwordResetExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  uiTextLarge?: Prisma.BoolFilter<"User"> | boolean
+  uiLayoutSimple?: Prisma.BoolFilter<"User"> | boolean
+  uiPrefsAskedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   party?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
@@ -295,6 +325,9 @@ export type UserOrderByWithAggregationInput = {
   passwordResetTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   passwordResetExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   partyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  uiTextLarge?: Prisma.SortOrder
+  uiLayoutSimple?: Prisma.SortOrder
+  uiPrefsAskedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -316,6 +349,9 @@ export type UserScalarWhereWithAggregatesInput = {
   passwordResetTokenHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   passwordResetExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   partyId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  uiTextLarge?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  uiLayoutSimple?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  uiPrefsAskedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -330,6 +366,9 @@ export type UserCreateInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
@@ -350,6 +389,9 @@ export type UserUncheckedCreateInput = {
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
   partyId?: string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
@@ -368,6 +410,9 @@ export type UserUpdateInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
@@ -388,6 +433,9 @@ export type UserUncheckedUpdateInput = {
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
@@ -407,6 +455,9 @@ export type UserCreateManyInput = {
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
   partyId?: string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -421,6 +472,9 @@ export type UserUpdateManyMutationInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -436,6 +490,9 @@ export type UserUncheckedUpdateManyInput = {
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -459,6 +516,9 @@ export type UserCountOrderByAggregateInput = {
   passwordResetTokenHash?: Prisma.SortOrder
   passwordResetExpiresAt?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
+  uiTextLarge?: Prisma.SortOrder
+  uiLayoutSimple?: Prisma.SortOrder
+  uiPrefsAskedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,6 +533,9 @@ export type UserMaxOrderByAggregateInput = {
   passwordResetTokenHash?: Prisma.SortOrder
   passwordResetExpiresAt?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
+  uiTextLarge?: Prisma.SortOrder
+  uiLayoutSimple?: Prisma.SortOrder
+  uiPrefsAskedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -487,6 +550,9 @@ export type UserMinOrderByAggregateInput = {
   passwordResetTokenHash?: Prisma.SortOrder
   passwordResetExpiresAt?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
+  uiTextLarge?: Prisma.SortOrder
+  uiLayoutSimple?: Prisma.SortOrder
+  uiPrefsAskedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -630,6 +696,9 @@ export type UserCreateWithoutSessionsInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
@@ -649,6 +718,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
   partyId?: string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
@@ -682,6 +754,9 @@ export type UserUpdateWithoutSessionsInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
@@ -701,6 +776,9 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
@@ -718,6 +796,9 @@ export type UserCreateWithoutPartiesInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
@@ -737,6 +818,9 @@ export type UserUncheckedCreateWithoutPartiesInput = {
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
   partyId?: string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -759,6 +843,9 @@ export type UserCreateWithoutPartyInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parties?: Prisma.PartyCreateNestedManyWithoutUserInput
@@ -777,6 +864,9 @@ export type UserUncheckedCreateWithoutPartyInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
@@ -811,6 +901,9 @@ export type UserUpdateWithoutPartiesInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
@@ -830,6 +923,9 @@ export type UserUncheckedUpdateWithoutPartiesInput = {
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -858,6 +954,9 @@ export type UserUpdateWithoutPartyInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUpdateManyWithoutUserNestedInput
@@ -876,6 +975,9 @@ export type UserUncheckedUpdateWithoutPartyInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
@@ -894,6 +996,9 @@ export type UserCreateWithoutMembershipsInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
@@ -913,6 +1018,9 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
   partyId?: string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
@@ -946,6 +1054,9 @@ export type UserUpdateWithoutMembershipsInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
@@ -965,6 +1076,9 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
@@ -982,6 +1096,9 @@ export type UserCreateWithoutMcpConnectionsInput = {
   deactivatedAt?: Date | string | null
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutLegacyUserInput
@@ -1001,6 +1118,9 @@ export type UserUncheckedCreateWithoutMcpConnectionsInput = {
   passwordResetTokenHash?: string | null
   passwordResetExpiresAt?: Date | string | null
   partyId?: string | null
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   parties?: Prisma.PartyUncheckedCreateNestedManyWithoutUserInput
@@ -1034,6 +1154,9 @@ export type UserUpdateWithoutMcpConnectionsInput = {
   deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutLegacyUserNestedInput
@@ -1053,6 +1176,9 @@ export type UserUncheckedUpdateWithoutMcpConnectionsInput = {
   passwordResetTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordResetExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uiTextLarge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiLayoutSimple?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  uiPrefsAskedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parties?: Prisma.PartyUncheckedUpdateManyWithoutUserNestedInput
@@ -1129,6 +1255,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   passwordResetTokenHash?: boolean
   passwordResetExpiresAt?: boolean
   partyId?: boolean
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.User$partyArgs<ExtArgs>
@@ -1150,6 +1279,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordResetTokenHash?: boolean
   passwordResetExpiresAt?: boolean
   partyId?: boolean
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.User$partyArgs<ExtArgs>
@@ -1166,6 +1298,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordResetTokenHash?: boolean
   passwordResetExpiresAt?: boolean
   partyId?: boolean
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.User$partyArgs<ExtArgs>
@@ -1182,11 +1317,14 @@ export type UserSelectScalar = {
   passwordResetTokenHash?: boolean
   passwordResetExpiresAt?: boolean
   partyId?: boolean
+  uiTextLarge?: boolean
+  uiLayoutSimple?: boolean
+  uiPrefsAskedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "roles" | "isSuperAdmin" | "active" | "deactivatedAt" | "passwordResetTokenHash" | "passwordResetExpiresAt" | "partyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "roles" | "isSuperAdmin" | "active" | "deactivatedAt" | "passwordResetTokenHash" | "passwordResetExpiresAt" | "partyId" | "uiTextLarge" | "uiLayoutSimple" | "uiPrefsAskedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.User$partyArgs<ExtArgs>
   parties?: boolean | Prisma.User$partiesArgs<ExtArgs>
@@ -1240,6 +1378,15 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     passwordResetTokenHash: string | null
     passwordResetExpiresAt: Date | null
     partyId: string | null
+    /**
+     * Lične postavke prikaza (Plans/pristupacni-prikaz-plan.md, D-P1 A): po osobi, ne po ZEV-u,
+     * da važe na svakom uređaju. uiTextLarge = „Veći tekst i dugmad” (data-text="large" na <html>);
+     * uiLayoutSimple = „Jednostavan prikaz” (faza B — polje postoji, UI još ne);
+     * uiPrefsAskedAt = kada je korisniku jednom postavljeno pitanje o prikazu (D-P2 A), null = još nije.
+     */
+    uiTextLarge: boolean
+    uiLayoutSimple: boolean
+    uiPrefsAskedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1680,6 +1827,9 @@ export interface UserFieldRefs {
   readonly passwordResetTokenHash: Prisma.FieldRef<"User", 'String'>
   readonly passwordResetExpiresAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly partyId: Prisma.FieldRef<"User", 'String'>
+  readonly uiTextLarge: Prisma.FieldRef<"User", 'Boolean'>
+  readonly uiLayoutSimple: Prisma.FieldRef<"User", 'Boolean'>
+  readonly uiPrefsAskedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

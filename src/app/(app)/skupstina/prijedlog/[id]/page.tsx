@@ -235,13 +235,13 @@ export default async function ProposalPage({ params, searchParams }: { params: P
           </div>
         </Card>
         <div className="mt-4">
-          <Card title="Tekst prijedloga"><p className="max-w-[68ch] whitespace-pre-wrap text-[15px] leading-relaxed">{op.text}</p></Card>
+          <Card title="Tekst prijedloga"><p className="max-w-[68ch] whitespace-pre-wrap text-lead leading-relaxed">{op.text}</p></Card>
         </div>
-        {op.rationale && <div className="mt-4"><Card title="Obrazloženje"><p className="max-w-[68ch] whitespace-pre-wrap text-[15px] leading-relaxed">{op.rationale}</p></Card></div>}
+        {op.rationale && <div className="mt-4"><Card title="Obrazloženje"><p className="max-w-[68ch] whitespace-pre-wrap text-lead leading-relaxed">{op.rationale}</p></Card></div>}
         {op.attachments.length > 0 && (
           <div className="mt-4">
             <Card title={t("ownerVoting.attachmentsTitle")}>
-              <ul className="space-y-1 text-[15px] text-slate-700">
+              <ul className="space-y-1 text-lead text-slate-700">
                 {op.attachments.map((a) => (
                   <li key={a.id} className="flex flex-wrap items-baseline gap-x-3">
                     <span>{tf("ownerVoting.attachmentRow", { naziv: a.filename, velicina: Math.max(1, Math.round(a.size / 1024)) })}</span>
@@ -429,7 +429,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
                 {votingOpen ? `${t("live.resultOutcomeIfClosedNow")}: ` : `${t("confirm.result.outcome")}: `}
                 {outcomeText(result)}
               </p>
-              <p className="text-[13px] text-slate-500">Nevažećih: {result.invalidCount} · Glasalo: {result.votesCast}/{result.totalEligibleOwners} {byVotes ? t("votingSubject.result.votesUnit") : "vlasnika"}</p>
+              <p className="text-hint text-slate-500">Nevažećih: {result.invalidCount} · Glasalo: {result.votesCast}/{result.totalEligibleOwners} {byVotes ? t("votingSubject.result.votesUnit") : "vlasnika"}</p>
             </div>
           )}
         </Card>
@@ -637,7 +637,7 @@ export default async function ProposalPage({ params, searchParams }: { params: P
             </form>
           </Card>
           <Card title="Izmjena prijedloga (materijalna promjena)">
-            <p className="mb-2 text-[13px] text-slate-500">
+            <p className="mb-2 text-hint text-slate-500">
               Kreira NOVU verziju prijedloga i poništava sve izdate linkove. Postojeći glasovi ostaju evidentirani uz staru verziju.
             </p>
             <ConfirmAction

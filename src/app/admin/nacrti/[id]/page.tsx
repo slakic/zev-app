@@ -99,7 +99,7 @@ export default async function AdminDraftPage({ params, searchParams }: { params:
                   </form>
                 </>
               )}
-              {others.length > 0 && <p className="text-[13px] text-slate-600">{tf("onboarding.adminDraft.assistant.others", { imena: others.join(", ") })}</p>}
+              {others.length > 0 && <p className="text-hint text-slate-600">{tf("onboarding.adminDraft.assistant.others", { imena: others.join(", ") })}</p>}
             </div>
           </Card>
         )}

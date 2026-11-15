@@ -171,12 +171,12 @@ export default async function AssemblyPage({ searchParams }: { searchParams: Pro
                     </select>
                   </Field>
                   <Field label="Većina %"><input name="majorityPercent" className={inputCls} placeholder="50" /></Field>
-                  <p className="max-w-[68ch] self-end text-[13px] text-slate-500">{t("votingSubject.weightNote")}</p>
+                  <p className="max-w-[68ch] self-end text-hint text-slate-500">{t("votingSubject.weightNote")}</p>
                   <div className="flex items-end"><SubmitBtn>Sačuvaj pravilo</SubmitBtn></div>
                 </form>
               </details>
             )}
-            <p className="mt-3 text-[13px] text-slate-500">
+            <p className="mt-3 text-hint text-slate-500">
               Napomena: zakonski kvorum i većine po tipu odluke potvrđuje pravnik prije produkcijske upotrebe.
             </p>
           </Card>

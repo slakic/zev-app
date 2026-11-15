@@ -41,7 +41,7 @@ export function AuthShell({
           {children}
         </div>
       </div>
-      {footnote && <p className={`${max} text-center text-[13px] text-slate-500`}>{footnote}</p>}
+      {footnote && <p className={`${max} text-center text-hint text-slate-500`}>{footnote}</p>}
     </main>
   );
 }

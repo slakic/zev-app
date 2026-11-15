@@ -49,7 +49,7 @@ export function EmailSettingsCard({ settings }: { settings: AdminEmailSettings }
           />
           <span>Poruke jednog ZEV-a nose i naziv tog ZEV-a</span>
         </label>
-        <p className="text-[13px] text-slate-500">
+        <p className="text-hint text-slate-500">
           Primalac vidi: <span className="font-medium text-slate-700">{example}</span>
         </p>
 
@@ -66,7 +66,7 @@ export function EmailSettingsCard({ settings }: { settings: AdminEmailSettings }
           />
         </Field>
         {allowlistOn && (
-          <p className="text-[13px] text-amber-800">
+          <p className="text-hint text-amber-800">
             Probni period je uključen: pozivi za glasanje i ostale poruke vlasnicima van liste se ne šalju i ne šalju se ni
             kasnije.
           </p>

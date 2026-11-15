@@ -190,7 +190,7 @@ export default async function ReportsPage({
           />
           <SubmitBtn variant="tonal">Prikaži</SubmitBtn>
         </form>
-        <p className="mb-2 text-[13px] text-slate-500">
+        <p className="mb-2 text-hint text-slate-500">
           <strong>Prethodni saldo</strong> = ukupno stanje vlasnika prije izabranog dana. <strong>Zaduženo / Plaćeno /
           Korekcije</strong> = promjene knjižene na taj dan (ako ih nema, saldo ostaje jednak prethodnom).{" "}
           <strong>Pozitivan iznos</strong> znači da vlasnik duguje ZEV-u, <strong>negativan</strong> da ima preplatu
@@ -214,14 +214,14 @@ export default async function ReportsPage({
                 <Td>{r.units}</Td>
                 <Td>
                   {formatMoney(r.previousBalance, "")}
-                  <span className={`ml-1.5 text-[13px] ${prevStatus.cls}`}>({prevStatus.text})</span>
+                  <span className={`ml-1.5 text-hint ${prevStatus.cls}`}>({prevStatus.text})</span>
                 </Td>
                 <Td>{formatMoney(r.chargedToday, "")}</Td>
                 <Td>{formatMoney(r.paidToday, "")}</Td>
                 <Td>{formatMoney(r.correctionsToday, "")}</Td>
                 <Td className="font-semibold">
                   {formatMoney(r.balance, "")}
-                  <span className={`ml-1.5 text-[13px] font-normal ${status.cls}`}>({status.text})</span>
+                  <span className={`ml-1.5 text-hint font-normal ${status.cls}`}>({status.text})</span>
                 </Td>
               </tr>
             );
@@ -284,7 +284,7 @@ export default async function ReportsPage({
 
         <Card title={`Fond održavanja (uplaćeno ${formatMoney(fund.income)}, utrošeno ${formatMoney(fund.spent)})`}>
           <p className="text-2xl font-semibold tabular-nums">{formatMoney(fund.balance)}</p>
-          <p className="mt-1 text-[13px] text-slate-500">Prati se preko oznake „fond održavanja” na stavkama naknada i transakcijama.</p>
+          <p className="mt-1 text-hint text-slate-500">Prati se preko oznake „fond održavanja” na stavkama naknada i transakcijama.</p>
         </Card>
       </div>
       </>

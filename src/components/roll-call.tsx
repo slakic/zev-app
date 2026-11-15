@@ -92,7 +92,7 @@ export function RollCall({
               type="button"
               onClick={() => setFilter(f.value)}
               aria-pressed={isActive}
-              className={`rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-hint font-medium transition-colors ${
                 isActive ? "bg-blue-50 text-blue-700" : "border border-slate-300 text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -103,20 +103,20 @@ export function RollCall({
       </div>
 
       {voters.some((v) => v.isCommunity) && (
-        <p className="mb-3 text-[13px] text-slate-600">{t("votingSubject.live.communityNote")}</p>
+        <p className="mb-3 text-hint text-slate-600">{t("votingSubject.live.communityNote")}</p>
       )}
 
       <ul className="space-y-2">
         {filtered.map((v) => (
           <li key={v.subjectKey} className="rounded-xl border border-slate-200/80 bg-white p-3">
             <div className="mb-2">
-              <div className="text-[15px] font-medium text-slate-900">{v.ownerName}</div>
+              <div className="text-lead font-medium text-slate-900">{v.ownerName}</div>
               {v.isCommunity && (
-                <div className="text-[13px] text-slate-600">
+                <div className="text-hint text-slate-600">
                   {tf("votingSubject.live.representative", { name: v.representativeName })}
                 </div>
               )}
-              <div className="text-[13px] text-slate-500">
+              <div className="text-hint text-slate-500">
                 {v.unitLabels.length > 0 ? v.unitLabels.join(", ") : "—"}
                 {" · "}
                 {v.eVoteConsentSigned ? (
@@ -151,7 +151,7 @@ export function RollCall({
           </li>
         ))}
         {filtered.length === 0 && (
-          <li className="py-10 text-center text-[15px] text-slate-500">{t("live.empty")}</li>
+          <li className="py-10 text-center text-lead text-slate-500">{t("live.empty")}</li>
         )}
       </ul>
 

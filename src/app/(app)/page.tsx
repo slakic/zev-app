@@ -89,7 +89,7 @@ async function AccountantDashboard({ actor }: { actor: Awaited<ReturnType<typeof
               <li key={b.id} className="flex items-center justify-between gap-2 text-sm">
                 <RowLink href={`/fakture/serija/${b.id}`}>{b.period}</RowLink>
                 <span className="flex items-center gap-2">
-                  <span className="text-[13px] text-slate-600">{b._count.invoices} faktura</span>
+                  <span className="text-hint text-slate-600">{b._count.invoices} faktura</span>
                   <StatusBadge status={b.status} label={b.status === "DRAFT" ? "Nacrt" : b.status === "ISSUED" ? "Izdata" : "Stornirana"} />
                 </span>
               </li>
@@ -251,9 +251,9 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
               <li key={u.key} className="flex items-center justify-between gap-2 text-sm">
                 <span className="min-w-0">
                   <RowLink href={u.href}>{u.title}</RowLink>
-                  <span className="ml-2 text-[13px] text-slate-600">{u.kind}</span>
+                  <span className="ml-2 text-hint text-slate-600">{u.kind}</span>
                 </span>
-                <span className="shrink-0 text-[13px] text-slate-600">{formatDateTime(u.at)}</span>
+                <span className="shrink-0 text-hint text-slate-600">{formatDateTime(u.at)}</span>
               </li>
             ))}
           </ul>
@@ -264,7 +264,7 @@ async function PresidentDashboard({ actor }: { actor: Awaited<ReturnType<typeof 
             {votings.map((v) => (
               <li key={v.proposalId} className="flex items-center justify-between gap-2 text-sm">
                 <RowLink href={`/skupstina/prijedlog/${v.proposalId}`}>{v.code} — {v.title}</RowLink>
-                <span className="shrink-0 text-[13px] text-slate-600">{tf("presidentHome.votes.voted", { glasalo: v.voted, ukupno: v.voters })}</span>
+                <span className="shrink-0 text-hint text-slate-600">{tf("presidentHome.votes.voted", { glasalo: v.voted, ukupno: v.voters })}</span>
               </li>
             ))}
           </ul>
@@ -415,9 +415,9 @@ async function OwnerDashboard({ actor }: { actor: Awaited<ReturnType<typeof requ
               <li key={m.id} className="flex items-center justify-between gap-2 text-sm">
                 <span className="min-w-0">
                   <Link className="text-blue-700 hover:underline" href={`/skupstina/${m.id}`}>{m.title}</Link>
-                  {isBoard && <span className="ml-2 text-[13px] text-slate-500">{tEnum("ownerHome.body", m.body)}</span>}
+                  {isBoard && <span className="ml-2 text-hint text-slate-500">{tEnum("ownerHome.body", m.body)}</span>}
                 </span>
-                <span className="text-[13px] text-slate-500">{formatDateTime(m.scheduledAt)}</span>
+                <span className="text-hint text-slate-500">{formatDateTime(m.scheduledAt)}</span>
               </li>
             ))}
             {meetings.length === 0 && <p className="text-sm text-slate-500">Nema zakazanih sjednica.</p>}

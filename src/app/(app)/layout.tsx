@@ -3,7 +3,8 @@ import { t, tf } from "@/lib/i18n";
 import { maybeActor } from "@/server/actor";
 import { getMyDraft, landingPath } from "@/server/services/onboarding";
 import Link from "next/link";
-import { Flash } from "@/components/ui";
+import { Card, Flash } from "@/components/ui";
+import { DisplayChoiceForm } from "@/components/display-choice";
 import { TenantShell } from "@/components/shells";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -32,6 +33,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </>
           }
         />
+      )}
+      {/* Jednom pitati (Plans/pristupacni-prikaz-plan.md, D-P2 A): postavka koja postoji samo u profilu je
+          za korisnika koji ne istražuje „Moji podaci” nevidljiva. Svaki izbor upisuje uiPrefsAskedAt. */}
+      {!actor.uiPrefsAskedAt && (
+        <div className="mb-6 max-w-2xl">
+          <Card title={t("settingsPage.display.askTitle")} hint={t("settingsPage.display.askHint")}>
+            <DisplayChoiceForm large={actor.uiTextLarge} saveLabel={t("settingsPage.display.askSave")} />
+          </Card>
+        </div>
       )}
       {children}
     </TenantShell>

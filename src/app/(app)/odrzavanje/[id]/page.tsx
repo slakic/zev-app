@@ -209,7 +209,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
             {issue.statusEvents.map((e) => (
               <li key={e.id} className="flex justify-between gap-2">
                 <span>{tEnum("issueStatus", e.to)}{e.note ? ` — ${e.note}` : ""}</span>
-                <span className="whitespace-nowrap text-[13px] text-slate-500">{formatDateTime(e.createdAt)}</span>
+                <span className="whitespace-nowrap text-hint text-slate-500">{formatDateTime(e.createdAt)}</span>
               </li>
             ))}
           </ol>
@@ -218,7 +218,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
               {t("maintenance.approval.approvedBy")}{" "}
               <RowLink href={`/skupstina/prijedlog/${issue.approvalProposal.id}`}>{issue.approvalProposal.code}</RowLink>{" "}
               <StatusBadge status={issue.approvalProposal.status} label={tEnum("proposalStatus", issue.approvalProposal.status)} />
-              {issue.approvalProposal.status !== "ACCEPTED" && <span className="ml-2 text-[13px] text-slate-600">({t("maintenance.approval.votingRunning")})</span>}
+              {issue.approvalProposal.status !== "ACCEPTED" && <span className="ml-2 text-hint text-slate-600">({t("maintenance.approval.votingRunning")})</span>}
             </p>
           )}
           {isPresident && nextSteps.length > 0 && (
@@ -324,7 +324,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
                       <form action={completeWoAction} className="flex items-center gap-1">
                         <input type="hidden" name="issueId" value={issue.id} />
                         <input type="hidden" name="workOrderId" value={wo.id} />
-                        <input name="note" placeholder="dokaz o završetku" className={`${inputCls} w-32 py-1 text-[13px]`} />
+                        <input name="note" placeholder="dokaz o završetku" className={`${inputCls} w-32 py-1 text-hint`} />
                         <RowAction variant="tonal">završi</RowAction>
                       </form>
                     )}
@@ -353,7 +353,7 @@ export default async function IssuePage({ params, searchParams }: { params: Prom
           <ul className="space-y-2 text-sm">
             {issue.comments.map((c) => (
               <li key={c.id} className="rounded bg-slate-50 p-2">
-                <span className="text-[13px] text-slate-500">{formatDateTime(c.createdAt)}:</span> {c.text}
+                <span className="text-hint text-slate-500">{formatDateTime(c.createdAt)}:</span> {c.text}
               </li>
             ))}
             {issue.comments.length === 0 && <li className="text-slate-500">Nema komentara.</li>}

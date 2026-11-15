@@ -27,7 +27,7 @@ export const reviewFieldW = {
   select: "md:min-w-56 md:max-w-[20rem]",
 } as const;
 /** Poziv na broj / IBAN (R-N22: mono samo na vrijednosti, nikad na labeli). */
-export const reviewMono = "font-mono text-[13px] text-slate-600";
+export const reviewMono = "font-mono text-hint text-slate-600";
 
 /** Smjer kao `StatusBadge` (uplata = zelena, isplata = amber, kao i do sada u SMS pregledu). */
 export function DirectionBadge({ direction }: { direction: "IN" | "OUT" }) {
@@ -129,7 +129,7 @@ export function ReviewTable<R>({
                   <tr key={ri} data-off={selectable && !on ? "true" : undefined} className={selectable && !on ? "bg-slate-50/60" : ""}>
                     {selectable && (
                       <td className="px-3 py-1.5 align-top" data-title={cardTitle ? "" : undefined}>
-                        <label className="inline-flex min-h-[28px] items-center gap-2 max-md:min-h-[44px]">
+                        <label className="inline-flex min-h-7 items-center gap-2 max-md:min-h-11 large:min-h-11">
                           <input
                             type="checkbox"
                             className="h-4 w-4"
@@ -137,7 +137,7 @@ export function ReviewTable<R>({
                             checked={on}
                             onChange={(e) => onToggle!(gi, ri, e.target.checked)}
                           />
-                          {cardTitle && <span className="text-[15px] font-semibold text-ink md:hidden">{cardTitle(row)}</span>}
+                          {cardTitle && <span className="text-lead font-semibold text-ink md:hidden">{cardTitle(row)}</span>}
                         </label>
                       </td>
                     )}

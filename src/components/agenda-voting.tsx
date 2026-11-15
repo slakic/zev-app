@@ -77,7 +77,7 @@ export function AgendaTabs({
             href={`/uzivo/${meetingId}?tab=dnevni-red&t=${a.id}`}
             scroll={false}
             aria-current={isActive ? "page" : undefined}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors ${
+            className={`shrink-0 rounded-full px-3 py-1.5 text-hint font-medium transition-colors ${
               isActive ? "bg-blue-50 text-blue-700" : "border border-slate-300 text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -89,7 +89,7 @@ export function AgendaTabs({
         href={`/uzivo/${meetingId}?tab=dnevni-red&t=${OFF_AGENDA_ID}`}
         scroll={false}
         aria-current={offActive ? "page" : undefined}
-        className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors ${
+        className={`shrink-0 rounded-full px-3 py-1.5 text-hint font-medium transition-colors ${
           offActive ? "bg-blue-50 text-blue-700" : "border border-slate-300 text-slate-600 hover:bg-slate-50"
         }`}
       >
@@ -105,22 +105,22 @@ function ResultSummary({ result }: { result: LiveResult }) {
       <div className="grid grid-cols-3 gap-2 text-center">
         <div>
           <div className="text-xl font-semibold tabular-nums text-emerald-700">{formatWeight(result.approveWeight)}</div>
-          <div className="text-[13px] text-slate-500">{t("live.voteFor")}</div>
+          <div className="text-hint text-slate-500">{t("live.voteFor")}</div>
         </div>
         <div>
           <div className="text-xl font-semibold tabular-nums text-red-700">{formatWeight(result.rejectWeight)}</div>
-          <div className="text-[13px] text-slate-500">{t("live.voteAgainst")}</div>
+          <div className="text-hint text-slate-500">{t("live.voteAgainst")}</div>
         </div>
         <div>
           <div className="text-xl font-semibold tabular-nums text-slate-700">{formatWeight(result.abstainWeight)}</div>
-          <div className="text-[13px] text-slate-500">{t("live.voteAbstain")}</div>
+          <div className="text-hint text-slate-500">{t("live.voteAbstain")}</div>
         </div>
       </div>
-      <p className="mt-3 border-t border-slate-100 pt-3 text-[13px] text-slate-600">
+      <p className="mt-3 border-t border-slate-100 pt-3 text-hint text-slate-600">
         {result.quorumReached ? t("live.resultQuorumReached") : t("live.resultQuorumNotReached")} (
         {formatWeight(result.weightCast)} / {formatWeight(result.totalEligibleWeight)})
       </p>
-      <p className="text-[13px] font-medium text-slate-700">
+      <p className="text-hint font-medium text-slate-700">
         {t("live.resultOutcomeIfClosedNow")}: {result.accepted ? t("live.resultAccepted") : t("live.resultNotAccepted")}
       </p>
     </div>
@@ -151,12 +151,12 @@ export function AgendaItemPanel({
   if (!proposal) {
     return (
       <Card>
-        <p className="text-[15px] font-medium text-slate-900">{item.title}</p>
-        {item.note && <p className="mt-1 text-[13px] text-slate-500">{item.note}</p>}
-        <p className="mt-3 text-[13px] text-slate-500">{t("live.discussionOnly")}</p>
+        <p className="text-lead font-medium text-slate-900">{item.title}</p>
+        {item.note && <p className="mt-1 text-hint text-slate-500">{item.note}</p>}
+        <p className="mt-3 text-hint text-slate-500">{t("live.discussionOnly")}</p>
         {unlinkedProposals.length > 0 ? (
           <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
-            <p className="text-[13px] text-slate-600">{t("confirm.liveLink.unlinkedExists")}</p>
+            <p className="text-hint text-slate-600">{t("confirm.liveLink.unlinkedExists")}</p>
             {canLink ? (
               unlinkedProposals.map((d) => (
                 <form key={d.id} action={linkProposalAction} className="flex flex-wrap items-center gap-2">
@@ -164,17 +164,17 @@ export function AgendaItemPanel({
                   <input type="hidden" name="agendaItemId" value={item.id} />
                   <input type="hidden" name="meetingId" value={meetingId} />
                   <RowAction variant="tonal">{tf("confirm.liveLink.link", { kod: d.code })}</RowAction>
-                  <span className="text-[13px] text-slate-500">
+                  <span className="text-hint text-slate-500">
                     {d.title} · {tEnum("proposalStatus", d.status)}
                   </span>
                 </form>
               ))
             ) : (
-              <p className="text-[13px] text-slate-600">{t("confirm.liveLink.presidentOnly")}</p>
+              <p className="text-hint text-slate-600">{t("confirm.liveLink.presidentOnly")}</p>
             )}
           </div>
         ) : (
-          <p className="mt-2 text-[13px] text-slate-500">{t("confirm.liveLink.nothingToDo")}</p>
+          <p className="mt-2 text-hint text-slate-500">{t("confirm.liveLink.nothingToDo")}</p>
         )}
       </Card>
     );
@@ -184,10 +184,10 @@ export function AgendaItemPanel({
     return (
       <Card>
         <div className="mb-1 flex items-center gap-2">
-          <span className="text-[13px] font-medium text-slate-500">{proposal.code}</span>
+          <span className="text-hint font-medium text-slate-500">{proposal.code}</span>
           <StatusBadge status={proposal.status} label={tEnum("proposalStatus", proposal.status)} />
         </div>
-        <p className="text-[15px] font-medium text-slate-900">{proposal.title}</p>
+        <p className="text-lead font-medium text-slate-900">{proposal.title}</p>
         <details className="group mt-2">
           <ToggleBtn variant="secondary">{t("live.proposalText")}</ToggleBtn>
           <p className="mt-2 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm text-slate-700">{proposal.text}</p>
@@ -243,14 +243,14 @@ export function AgendaItemPanel({
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-medium text-slate-500">{proposal.code}</span>
+          <span className="text-hint font-medium text-slate-500">{proposal.code}</span>
           <StatusBadge status={proposal.status} label={tEnum("proposalStatus", proposal.status)} />
         </div>
 
         {activeResult && <ResultSummary result={activeResult} />}
 
         {anyFailed && (
-          <p className="rounded-lg border-l-4 border-l-red-500 bg-red-50 px-3 py-2.5 text-[13px] text-red-800">
+          <p className="rounded-lg border-l-4 border-l-red-500 bg-red-50 px-3 py-2.5 text-hint text-red-800">
             ⚠ {t("live.notifyFailedWarning")}
           </p>
         )}
@@ -261,9 +261,9 @@ export function AgendaItemPanel({
           <ul className="space-y-2">
             {notYetVoted.map((v) => (
               <li key={v.eligibleVoterId} className="rounded-lg border border-slate-200/80 p-2.5">
-                <p className="mb-2 text-[15px] font-medium text-slate-900">
+                <p className="mb-2 text-lead font-medium text-slate-900">
                   {v.ownerName}
-                  {v.isCommunity && <span className="block text-[13px] font-normal text-slate-500">{t("votingSubject.live.communityHint")}</span>}
+                  {v.isCommunity && <span className="block text-hint font-normal text-slate-500">{t("votingSubject.live.communityHint")}</span>}
                 </p>
                 <form action={manualVoteAction}>
                   <input type="hidden" name="proposalId" value={proposal.id} />
@@ -282,7 +282,7 @@ export function AgendaItemPanel({
                 </form>
               </li>
             ))}
-            {notYetVoted.length === 0 && <li className="py-4 text-center text-[13px] text-slate-500">—</li>}
+            {notYetVoted.length === 0 && <li className="py-4 text-center text-hint text-slate-500">—</li>}
           </ul>
 
           {notYetVoted.length > 0 && (
@@ -322,16 +322,16 @@ export function AgendaItemPanel({
             {pendingElectronic.map((v) => (
               <li
                 key={v.eligibleVoterId}
-                className="flex items-center justify-between gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-[15px] text-slate-700"
+                className="flex items-center justify-between gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-lead text-slate-700"
               >
                 <span>{v.ownerName}</span>
-                <span className={`text-[13px] ${v.notifyStatus === "FAILED" ? "font-medium text-red-700" : "text-slate-500"}`}>
+                <span className={`text-hint ${v.notifyStatus === "FAILED" ? "font-medium text-red-700" : "text-slate-500"}`}>
                   {v.notifyStatus === "FAILED" && "⚠ "}
                   {v.notifyStatus ? t(NOTIFY_STATUS_KEY[v.notifyStatus] ?? "live.notifyQueued") : "—"}
                 </span>
               </li>
             ))}
-            {pendingElectronic.length === 0 && <li className="text-[13px] text-slate-500">—</li>}
+            {pendingElectronic.length === 0 && <li className="text-hint text-slate-500">—</li>}
           </ul>
         </details>
 
@@ -341,11 +341,11 @@ export function AgendaItemPanel({
           </ToggleBtn>
           <ul className="mt-2 space-y-1.5">
             {electronic.map((v) => (
-              <li key={v.eligibleVoterId} className="rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-[15px] text-slate-700">
+              <li key={v.eligibleVoterId} className="rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-lead text-slate-700">
                 {v.ownerName}
               </li>
             ))}
-            {electronic.length === 0 && <li className="text-[13px] text-slate-500">—</li>}
+            {electronic.length === 0 && <li className="text-hint text-slate-500">—</li>}
           </ul>
         </details>
 
@@ -356,8 +356,8 @@ export function AgendaItemPanel({
           <ul className="mt-2 space-y-2">
             {noChannel.map((v) => (
               <li key={v.eligibleVoterId} className="rounded-lg border border-slate-200/80 p-2.5">
-                <p className="mb-1 text-[15px] font-medium text-slate-900">{v.ownerName}</p>
-                <p className="mb-2 text-[13px] text-slate-500">{t("live.paperEntryHint")}</p>
+                <p className="mb-1 text-lead font-medium text-slate-900">{v.ownerName}</p>
+                <p className="mb-2 text-hint text-slate-500">{t("live.paperEntryHint")}</p>
                 <form action={manualVoteAction}>
                   <input type="hidden" name="proposalId" value={proposal.id} />
                   <input type="hidden" name="agendaItemId" value={item.id} />
@@ -375,7 +375,7 @@ export function AgendaItemPanel({
                 </form>
               </li>
             ))}
-            {noChannel.length === 0 && <li className="text-[13px] text-slate-500">—</li>}
+            {noChannel.length === 0 && <li className="text-hint text-slate-500">—</li>}
           </ul>
         </details>
 
@@ -413,10 +413,10 @@ export function AgendaItemPanel({
   return (
     <Card>
       <div className="mb-1 flex items-center gap-2">
-        <span className="text-[13px] font-medium text-slate-500">{proposal.code}</span>
+        <span className="text-hint font-medium text-slate-500">{proposal.code}</span>
         <StatusBadge status={proposal.status} label={tEnum("proposalStatus", proposal.status)} />
       </div>
-      <p className="text-[15px] font-medium text-slate-900">{proposal.title}</p>
+      <p className="text-lead font-medium text-slate-900">{proposal.title}</p>
     </Card>
   );
 }

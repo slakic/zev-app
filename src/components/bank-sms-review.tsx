@@ -74,10 +74,10 @@ export function BankSmsReviewTable({
   if (rows.length === 0) {
     return (
       <div className="py-8 text-center">
-        <div className="text-[15px] font-medium text-slate-700">
+        <div className="text-lead font-medium text-slate-700">
           {receiptEnabled ? t("smsReview.emptyTitle") : t("smsReceiptOff.title")}
         </div>
-        <p className="mx-auto mt-1 max-w-md text-[13px] text-slate-500">
+        <p className="mx-auto mt-1 max-w-md text-hint text-slate-500">
           {receiptEnabled ? (
             t("smsReview.emptyHint")
           ) : (
@@ -139,7 +139,7 @@ export function BankSmsReviewTable({
           ) : undefined
         }
         renderCells={(r, { rowNumber, rowIndex: i }) => [
-          <span key="recv" className="whitespace-nowrap text-[13px] text-slate-600">{formatDateTime(new Date(r.receivedAt))}</span>,
+          <span key="recv" className="whitespace-nowrap text-hint text-slate-600">{formatDateTime(new Date(r.receivedAt))}</span>,
           <DirectionBadge key="dir" direction={r.kind === "PRILIV" ? "IN" : "OUT"} />,
           <div key="acc" className="space-y-1">
             <select
@@ -232,7 +232,7 @@ export function BankSmsReviewTable({
                 )}
               </>
             )}
-            {r.matchHint && <p className="max-w-72 text-[13px] text-slate-600">{tf("reviewTable.hint", { razlog: r.matchHint })}</p>}
+            {r.matchHint && <p className="max-w-72 text-hint text-slate-600">{tf("reviewTable.hint", { razlog: r.matchHint })}</p>}
             {r.warnings.map((w) => (
               <Flash key={w} warn={w} inset />
             ))}

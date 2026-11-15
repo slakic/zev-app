@@ -407,7 +407,7 @@ export default async function PartyDetailPage({
                   <input name="correspondenceAddress" defaultValue={party.correspondenceAddress ?? ""} className={inputCls} />
                 </Field>
                 {!isPresident && (
-                  <p className="text-[13px] text-slate-500">Kao vlasnik možete mijenjati samo svoje kontakt podatke.</p>
+                  <p className="text-hint text-slate-500">Kao vlasnik možete mijenjati samo svoje kontakt podatke.</p>
                 )}
                 <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>
               </form>
@@ -455,7 +455,7 @@ export default async function PartyDetailPage({
                 <input name="reason" className={inputCls} />
               </Field>
             )}
-            <p className="text-[13px] text-slate-500">
+            <p className="text-hint text-slate-500">
               {isSelf ? "Promjena se bilježi u revizorski trag." : "Uključite samo na zahtjev vlasnika. Promjena se bilježi u revizorski trag."}
             </p>
             <SubmitBtn variant="tonal">Sačuvaj</SubmitBtn>

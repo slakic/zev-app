@@ -11,9 +11,10 @@ import { accountLinksFor } from "@/server/shell";
 import { NavShell } from "@/components/nav-shell";
 import { AccountMenu } from "@/components/account-menu";
 import { BtnLink, Flash } from "@/components/ui";
+import { TextSizeToggle } from "@/components/display-choice";
 import { buildPlatformNav, buildTenantNav, settingsInAccountMenu, type NavRole } from "@/lib/nav-structure";
 
-type ShellActor = Actor & { displayName: string };
+type ShellActor = Actor & { displayName: string; uiTextLarge: boolean };
 
 /** Školjka ZEV-a: bočni meni po ulozi, prekidač ZEV-ova i meni naloga. */
 export async function TenantShell({ actor, children }: { actor: ShellActor; children: ReactNode }) {
@@ -44,6 +45,7 @@ export async function TenantShell({ actor, children }: { actor: ShellActor; chil
       tenants={tenantOptions}
       activeZevId={actor.zevId}
       switchZevAction={switchZevAction}
+      headerExtra={<TextSizeToggle large={actor.uiTextLarge} />}
     >
       {children}
     </NavShell>
@@ -66,6 +68,7 @@ export function PlatformShell({ actor, children }: { actor: ShellActor; children
       accountLinks={accountLinksFor({ includeMyData: false })}
       logoutLabel={t("nav.logout")}
       logoutAction={logoutAction}
+      headerExtra={<TextSizeToggle large={actor.uiTextLarge} />}
     >
       {children}
     </NavShell>
@@ -106,7 +109,7 @@ export function OnboardingShell({
         <span className="hidden text-sm text-slate-500 md:inline">{t("onboarding.shellTitle")}</span>
         <div className="flex-1" />
         {showSaved && (
-          <span className="inline-flex items-center gap-1.5 text-[13px] text-slate-600">
+          <span className="inline-flex items-center gap-1.5 text-hint text-slate-600">
             <SavedIcon />
             <span className="hidden md:inline">{t("onboarding.saved")}</span>
             <span className="md:hidden">{t("onboarding.savedShort")}</span>
@@ -114,7 +117,8 @@ export function OnboardingShell({
         )}
         {importHref && <BtnLink href={importHref} variant="ghost">{t("onboarding.import.link")}</BtnLink>}
         {assistantHref && <BtnLink href={assistantHref} variant="ghost">{t("onboarding.assistantLink")}</BtnLink>}
-        <span className="hidden text-[13px] text-slate-600 md:inline">{actor.email}</span>
+        <span className="hidden text-hint text-slate-600 md:inline">{actor.email}</span>
+        <TextSizeToggle large={actor.uiTextLarge} />
         <AccountMenu
           displayName={actor.displayName}
           rolesText={actor.email}

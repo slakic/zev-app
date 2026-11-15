@@ -74,18 +74,18 @@ export async function MessagesTab({ actor, sp }: { actor: Actor; sp: MessagesSea
               <Td className="text-sm">{m.toAddress}</Td>
               <Td className="text-sm">
                 {m.subject ?? m.template ?? "—"}
-                {m.attachmentDocumentId && <span className="text-[13px] text-slate-600"> {t("records.messages.pdfAttached")}</span>}
+                {m.attachmentDocumentId && <span className="text-hint text-slate-600"> {t("records.messages.pdfAttached")}</span>}
               </Td>
               <Td>
                 <StatusBadge status={m.status} label={tEnum("records.messages.statusLabel", m.status)} />
-                {m.status === "FAILED" && m.lastError && <p className="mt-1 max-w-72 text-[13px] text-slate-600">{m.lastError}</p>}
+                {m.status === "FAILED" && m.lastError && <p className="mt-1 max-w-72 text-hint text-slate-600">{m.lastError}</p>}
               </Td>
               <Td className="text-sm">{m.attempts}</Td>
             </tr>
           ))}
         </Table>
         <Pagination page={result.page} pageCount={result.pageCount} hrefFor={(p) => recordsHref("poruke", { q, status, str: String(p) })} />
-        <p className="mt-2 text-[13px] text-slate-500">{t("records.messages.footnote")}</p>
+        <p className="mt-2 text-hint text-slate-500">{t("records.messages.footnote")}</p>
       </Card>
     </>
   );

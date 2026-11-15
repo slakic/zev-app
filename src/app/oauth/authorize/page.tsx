@@ -27,7 +27,7 @@ export default async function OAuthAuthorizePage({ searchParams }: { searchParam
     return (
       <AuthShell pageTitle={t("oauth.error.title")} width="wide">
         <p className="text-sm text-slate-700">{t(`oauth.error.${v.reason}`)}</p>
-        <p className="mt-2 text-[13px] text-slate-500">{t("oauth.error.hint")}</p>
+        <p className="mt-2 text-hint text-slate-500">{t("oauth.error.hint")}</p>
       </AuthShell>
     );
   }

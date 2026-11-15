@@ -43,6 +43,27 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [2.66.0] - 2026-11-15
+
+Pristupačni prikaz, faza A: lična postavka **„Veći tekst i dugmad”** za korisnike kojima je uobičajeni prikaz sitan (tipično predsjednik ZEV-a u penziji). Uključuje se i isključuje dugmetom „A+” u gornjoj traci ili u „Moji podaci”; uobičajeni prikaz se ne mijenja. Plan: `Plans/pristupacni-prikaz-plan.md`.
+
+**Migracija: da — tri nove kolone na `User` (`uiTextLarge`, `uiLayoutSimple`, `uiPrefsAskedAt`); samo dodavanje. Primijeniti prije deploya (`MIGRATE_DATABASE_URL="…" node scripts/migrate.mjs apply`).**
+
+### Dodato
+
+- **Veći tekst i dugmad:** tekst je oko 2px veći (osnovni 14→16px, pomoćni 13→15px), sivi pomoćni tekst je tamniji, zaglavlja tabela i labele brojki nisu više velikim slovima, a dugmad i radnje u redu tabele imaju 44px i na računaru. Važi na svim ekranima prijavljenog korisnika, uključujući sjednicu uživo i čarobnjak.
+- **Dugme „A+ Veći tekst” / „A− Manji tekst”** u gornjoj traci svih školjki (ZEV, platforma, čarobnjak).
+- **Kartica „Prikaz”** u „Moji podaci”, za svakog korisnika (i bez vezanog lica).
+- **Jednokratno pitanje „Kako Vam je lakše čitati?”** na vrhu aplikacije, dok korisnik ne izabere. Dobiće ga i svi postojeći korisnici, jednom.
+- Postavka se čuva uz korisnika (ne po ZEV-u ni po uređaju), servis `uiPreferences.ts`, uvijek samo za sopstveni nalog.
+- Ekrani bez prijave (prijava, zaboravljena lozinka, reset, glasanje putem linka) su uvijek u većem tekstu.
+
+### Izmijenjeno
+
+- **Imenovane veličine umjesto px vrijednosti:** `text-[13px]` → `text-hint`, `text-[15px]` → `text-lead`, `text-[11px]` → `text-2xs`, `min-h-[44px]` / `[28px]` → `min-h-11` / `min-h-7` (309 mjesta u 63 fajla), sa istim vrijednostima. Uobičajeni prikaz je nepromijenjen.
+- Dizajn sistem, §2.1: pravila pristupačnog prikaza, varijanta `large:` i pravilo da novi kod ne koristi `text-[Npx]`.
+- Korisničko uputstvo: 1.5 (dugme „A+”) i 13.1 (kartica „Prikaz”).
+
 ## [2.65.1] - 2026-11-05
 
 Dopuna uz 2.65.0: korisničko uputstvo i čarobnjak usklađeni sa upisom kroz asistenta.

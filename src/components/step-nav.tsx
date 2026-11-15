@@ -47,7 +47,7 @@ function StepList({ items }: { items: StepNavItem[] }) {
       {items.map((s) => {
         const extras = (
           <>
-            {s.optional && <span className="ml-auto text-[13px] font-normal text-slate-500">{t("onboarding.optional")}</span>}
+            {s.optional && <span className="ml-auto text-hint font-normal text-slate-500">{t("onboarding.optional")}</span>}
             {s.readOnly && (
               <span className="ml-auto text-slate-500" title={t("onboarding.readOnly")}>
                 <LockIcon />
@@ -60,7 +60,7 @@ function StepList({ items }: { items: StepNavItem[] }) {
           return (
             <li key={s.number}>
               <span aria-current="step" className="flex items-center gap-3 rounded-full bg-primary-soft px-3 py-2 text-sm font-semibold text-primary-ink">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-primary text-[13px] font-semibold">{s.number}</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-primary text-hint font-semibold">{s.number}</span>
                 {s.label}
                 {extras}
               </span>
@@ -70,11 +70,11 @@ function StepList({ items }: { items: StepNavItem[] }) {
         if (s.href) {
           return (
             <li key={s.number}>
-              <Link href={s.href} className="flex min-h-[44px] items-center gap-3 rounded-full px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 md:min-h-0">
+              <Link href={s.href} className="flex min-h-11 items-center gap-3 rounded-full px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 md:min-h-0">
                 {s.complete ? (
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white"><CheckIcon /></span>
                 ) : (
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-primary text-[13px] font-semibold text-primary-ink">{s.number}</span>
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-primary text-hint font-semibold text-primary-ink">{s.number}</span>
                 )}
                 {s.complete && <span className="sr-only">{t("onboarding.doneSr")}</span>}
                 {s.label}
@@ -86,7 +86,7 @@ function StepList({ items }: { items: StepNavItem[] }) {
         return (
           <li key={s.number}>
             <span className="flex items-center gap-3 px-3 py-2 text-sm text-slate-500">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[13px]">{s.number}</span>
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-300 text-hint">{s.number}</span>
               <span className="sr-only">{t("onboarding.lockedSr")}</span>
               {s.label}
               {extras}
@@ -106,16 +106,16 @@ export function StepNav({ title, items }: { title: string; items: StepNavItem[] 
       <div className="hidden md:block">
         <div className="px-3 pb-3">
           <p className="text-sm font-semibold text-slate-800">{title}</p>
-          <p className="text-[13px] text-slate-500">{stepOf}</p>
+          <p className="text-hint text-slate-500">{stepOf}</p>
         </div>
         <StepList items={items} />
       </div>
       <details className="group rounded-xl border border-slate-200 bg-white md:hidden">
-        <summary className="flex min-h-[44px] cursor-pointer list-none items-center gap-2 px-4 py-2 text-sm text-slate-700 [&::-webkit-details-marker]:hidden">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-4 py-2 text-sm text-slate-700 [&::-webkit-details-marker]:hidden">
           <span>
             {stepOf} · <b className="font-semibold text-slate-900">{viewing.label}</b>
           </span>
-          <span className="ml-auto inline-flex items-center gap-1 text-[13px] font-medium text-primary-ink">
+          <span className="ml-auto inline-flex items-center gap-1 text-hint font-medium text-primary-ink">
             {t("onboarding.allSteps")}
             <ChevronIcon />
           </span>

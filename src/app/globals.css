@@ -3,6 +3,10 @@
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
 
+/* `large:` utilities apply only under the "Veći tekst i dugmad" preference
+   (Plans/pristupacni-prikaz-plan.md §3 P1). */
+@custom-variant large (&:where([data-text="large"], [data-text="large"] *));
+
 /* Design tokens (Plans/ui-ux-redesign-plan.md §3.2). Names for the palette that was
    already in use (slate neutrals, blue-600 primary, tonal emerald/amber/red) — no colors
    are actually changing here, this just gives them a role-based name so future code (and
@@ -40,6 +44,39 @@
   --color-platform-hover: #0f172a;
   --color-platform-ink: #1e293b;
   --color-platform-soft: #f1f5f9;
+  /* Named sizes for what used to be arbitrary px values (text-[13px] etc.), so the
+     "Veći tekst" display preference below can scale them (Plans/pristupacni-prikaz-plan.md
+     §3 P1). No line-height pair on purpose: like the old arbitrary classes, these
+     inherit the parent's line-height, so the default view is pixel-identical. */
+  --text-2xs: 11px;
+  --text-hint: 13px;
+  --text-lead: 15px;
+}
+
+/* "Veći tekst i dugmad" (Plans/pristupacni-prikaz-plan.md §3 P1): set as
+   data-text="large" on <html> from the user's saved preference (root layout), and
+   always on the public auth screens. Only variables change here — components stay as
+   they are. Nothing a user must read goes below 15px in this mode. */
+:root[data-text="large"] {
+  --text-2xs: 13px;
+  --text-xs: 0.875rem;
+  --text-xs--line-height: calc(1.25 / 0.875);
+  --text-hint: 15px;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.5;
+  --text-lead: 17px;
+  --text-base: 1.125rem;
+  --text-base--line-height: calc(1.75 / 1.125);
+  /* Secondary text one step darker (slate-600 / slate-500). */
+  --color-slate-500: #475569;
+  --color-slate-400: #64748b;
+}
+
+/* Spaced-out capitals are hard to read; in large mode table headers and Stat labels
+   read as normal sentence-case text. */
+:root[data-text="large"] .uppercase.tracking-wider {
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 body {

@@ -20,7 +20,7 @@ export function OnboardingSummary({ data, editable }: { data: OnboardingDraftDat
       body: (
         <>
           {z.legalName}
-          <div className="text-[13px] text-slate-600">
+          <div className="text-hint text-slate-600">
             {t("onboarding.zev.jib")} {z.jib || "—"} · {t("onboarding.zev.registrationNumber")} {z.registrationNumber || "—"} · {z.registeredAddress}, {z.city}
           </div>
         </>
@@ -31,7 +31,7 @@ export function OnboardingSummary({ data, editable }: { data: OnboardingDraftDat
       body: data.accounts.length === 0 ? t("onboarding.check.noAccountsAck") : data.accounts.map((a) => (
         <div key={a.key}>
           {a.name}{a.bankName ? ` — ${a.bankName}` : ""}
-          <div className="text-[13px] text-slate-600">{a.number ?? t("onboarding.accounts.typeCash")} · {formatMoney(a.openingBalance)} · {formatDate(a.openingDate)}</div>
+          <div className="text-hint text-slate-600">{a.number ?? t("onboarding.accounts.typeCash")} · {formatMoney(a.openingBalance)} · {formatDate(a.openingDate)}</div>
         </div>
       )),
     },
@@ -56,7 +56,7 @@ export function OnboardingSummary({ data, editable }: { data: OnboardingDraftDat
         <>
           {tf("onboarding.summary.owners", { lica: new Set(data.stakes.map((s) => s.partyKey)).size, udjela: data.stakes.length })}
           {disputed.length > 0 && (
-            <div className="mt-1 text-[13px] text-slate-600">
+            <div className="mt-1 text-hint text-slate-600">
               {disputed.map((u) => u.label).join(", ")}: <StatusBadge status="OWNER_DISPUTED" label={t("onboarding.owners.disputedChip")} /> {t("onboarding.summary.disputedNote")}
             </div>
           )}
@@ -80,12 +80,12 @@ export function OnboardingSummary({ data, editable }: { data: OnboardingDraftDat
       <dl className="divide-y divide-slate-100">
         {rows.map((r) => (
           <div key={r.key} className="grid grid-cols-1 gap-1 py-3 md:grid-cols-[12rem_1fr_auto] md:items-start md:gap-4">
-            <dt className="text-[13px] font-medium text-slate-500 md:text-sm md:text-slate-700">{r.label}</dt>
+            <dt className="text-hint font-medium text-slate-500 md:text-sm md:text-slate-700">{r.label}</dt>
             <dd className="text-sm text-slate-800">{r.body}</dd>
             {editable && (
               <dd className="md:text-right">
                 {r.lockable && locked ? (
-                  <span className="text-[13px] text-slate-500">{t("onboarding.summary.lockedEdit")}</span>
+                  <span className="text-hint text-slate-500">{t("onboarding.summary.lockedEdit")}</span>
                 ) : (
                   <RowActionLink href={`/onboarding/${slug(r.key)}`}>{t("onboarding.summary.edit")}</RowActionLink>
                 )}

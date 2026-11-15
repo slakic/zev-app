@@ -40,6 +40,10 @@ export type AuthContext = {
    * Null when zevId is null (nothing to be suspended). requireActor() acts on this. */
   zevSuspended: boolean | null;
   isSuperAdmin: boolean;
+  /** Display preferences (Plans/pristupacni-prikaz-plan.md): read by the root layout to set
+   *  data-text on <html>, and by the (app) layout to decide whether to ask once. */
+  uiTextLarge: boolean;
+  uiPrefsAskedAt: Date | null;
 };
 
 export async function createSession(userId: string, ip?: string | null, userAgent?: string | null) {
@@ -214,6 +218,8 @@ export async function getAuthContext(): Promise<AuthContext | null> {
     zevId,
     zevSuspended,
     isSuperAdmin: u.isSuperAdmin,
+    uiTextLarge: u.uiTextLarge,
+    uiPrefsAskedAt: u.uiPrefsAskedAt,
   };
 }
 

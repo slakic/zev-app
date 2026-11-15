@@ -5716,6 +5716,9 @@ export const UserScalarFieldEnum = {
   passwordResetTokenHash: 'passwordResetTokenHash',
   passwordResetExpiresAt: 'passwordResetExpiresAt',
   partyId: 'partyId',
+  uiTextLarge: 'uiTextLarge',
+  uiLayoutSimple: 'uiLayoutSimple',
+  uiPrefsAskedAt: 'uiPrefsAskedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

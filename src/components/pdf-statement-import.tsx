@@ -159,8 +159,8 @@ export function PdfStatementImport({ accounts, toMatchCount }: { accounts: Accou
         <div className="space-y-2">
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span className="font-medium text-ink">{p.filename}</span>
-            {p.statementDateIso && <span className="text-[13px] text-slate-600">{tf("pdfImport.statementOf", { datum: formatDate(p.statementDateIso) })}</span>}
-            <span className="text-[13px] text-slate-600">
+            {p.statementDateIso && <span className="text-hint text-slate-600">{tf("pdfImport.statementOf", { datum: formatDate(p.statementDateIso) })}</span>}
+            <span className="text-hint text-slate-600">
               {tf("pdfImport.statementCounts", { stavki: rs.length, uplata: inCount, isplata: outCount })}
               {p.skipped > 0 && `, ${tf("pdfImport.skipped", { broj: p.skipped })}`}
             </span>
@@ -332,7 +332,7 @@ export function PdfStatementImport({ accounts, toMatchCount }: { accounts: Accou
                     )}
                   </>
                 )}
-                {r.matchHint && <p className="max-w-72 text-[13px] text-slate-600">{tf("reviewTable.hint", { razlog: r.matchHint })}</p>}
+                {r.matchHint && <p className="max-w-72 text-hint text-slate-600">{tf("reviewTable.hint", { razlog: r.matchHint })}</p>}
                 {r.duplicateOf && (
                   <Flash
                     inset

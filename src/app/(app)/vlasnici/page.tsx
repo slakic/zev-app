@@ -273,8 +273,8 @@ export default async function OwnersPage({
       {ownershipTab && registerStatus === "DRAFT" && (
         <Card title={t("register.owners.lockedCardTitle")}>
           <div className="py-4 text-center">
-            <p className="text-[15px] font-medium text-slate-700">{t("register.owners.lockedTitle")}</p>
-            <p className="mx-auto mt-1 max-w-[68ch] text-[13px] text-slate-500">{t("register.owners.lockedHint")}</p>
+            <p className="text-lead font-medium text-slate-700">{t("register.owners.lockedTitle")}</p>
+            <p className="mx-auto mt-1 max-w-[68ch] text-hint text-slate-500">{t("register.owners.lockedHint")}</p>
             <div className="mt-4"><BtnLink href="/zgrade?tab=posebni" variant="tonal">{t("register.owners.lockedLink")}</BtnLink></div>
           </div>
         </Card>
@@ -307,7 +307,7 @@ export default async function OwnersPage({
                       <div className="font-medium text-slate-900">{sub.units.map((u) => u.label).join(", ")} · {sub.ownerName}</div>
                       <div>
                         {tf("register.owners.representative", { name: sub.members.find((m) => m.partyId === sub.ownerId)?.name ?? sub.ownerName })}
-                        {!sub.representativeConfirmed && <span className="ml-2 text-[13px] text-amber-800">{t("register.owners.notConfirmed")}</span>}
+                        {!sub.representativeConfirmed && <span className="ml-2 text-hint text-amber-800">{t("register.owners.notConfirmed")}</span>}
                       </div>
                     </div>
                     <RepresentativeChange
@@ -348,7 +348,7 @@ export default async function OwnersPage({
               const unitCell = (
                 <div className="space-y-1">
                   <div>{u.label}</div>
-                  <div className="text-[13px] text-slate-500">{u.building.name}</div>
+                  <div className="text-hint text-slate-500">{u.building.name}</div>
                   <StatusBadge status={chip.status} label={chip.label} />
                 </div>
               );
@@ -413,7 +413,7 @@ export default async function OwnersPage({
             </details>
           </Card>
           <Card title="Promjena vlasništva (promet jedinice)">
-            <p className="mb-3 text-[13px] text-slate-500">
+            <p className="mb-3 text-hint text-slate-500">
               Istorijski dug ostaje na prethodnom vlasniku; prenos duga moguć je samo izričitom korekcijom salda.
             </p>
             <details className="group">
@@ -451,7 +451,7 @@ export default async function OwnersPage({
             </details>
           </Card>
           <Card title="Evidentiraj stanara / zakupca">
-            <p className="mb-3 text-[13px] text-slate-500">Stanar ili zakupac NE stiče pravo glasa stanovanjem.</p>
+            <p className="mb-3 text-hint text-slate-500">Stanar ili zakupac NE stiče pravo glasa stanovanjem.</p>
             <details className="group">
               <ToggleBtn>Evidentiraj</ToggleBtn>
               <form action={addOccupancyAction} className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">

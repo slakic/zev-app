@@ -212,7 +212,7 @@ export default async function PaymentsPage({
                 return (
                   <tr key={p.id}>
                     <Td>{formatDate(p.date)}</Td>
-                    <Td className="font-mono text-[13px]">{p.reference ?? "—"}</Td>
+                    <Td className="font-mono text-hint">{p.reference ?? "—"}</Td>
                     <Td>{formatMoney(p.amount.toString())}</Td>
                     <Td>
                       {applied.length === 0 ? "—" : (
@@ -231,7 +231,7 @@ export default async function PaymentsPage({
               <tr key={p.id}>
                 <Td>{formatDate(p.date)}</Td>
                 <Td>{p.payer ? partyDisplayName(p.payer) : p.payerNameRaw ?? "—"}</Td>
-                <Td className="font-mono text-[13px]">{p.reference ?? "—"}</Td>
+                <Td className="font-mono text-hint">{p.reference ?? "—"}</Td>
                 <Td>{formatMoney(p.amount.toString())}</Td>
                 <Td><StatusBadge status={p.status} label={tEnum("paymentStatus", p.status)} /></Td>
                 <Td>
@@ -271,7 +271,7 @@ export default async function PaymentsPage({
                   </Field>
                   <Field label={t("paymentsPage.manual.payerRaw")}><input name="payerNameRaw" className={inputCls} /></Field>
                   <Field label={t("paymentsPage.manual.reference")}><input name="reference" className={inputCls} /></Field>
-                  <p className="text-[13px] text-slate-500 sm:col-span-2">{t("paymentsPage.manual.hint")}</p>
+                  <p className="text-hint text-slate-500 sm:col-span-2">{t("paymentsPage.manual.hint")}</p>
                   <div className="sm:col-span-2"><SubmitBtn variant="tonal">{t("paymentsPage.manual.submit")}</SubmitBtn></div>
                 </form>
               </Card>

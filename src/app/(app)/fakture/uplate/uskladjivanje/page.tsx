@@ -52,12 +52,12 @@ function RecordCell({ r }: { r: ChannelRecord }) {
       ) : (
         <span className="font-medium text-slate-900">{title}</span>
       )}
-      <p className="text-[13px] text-slate-500">
+      <p className="text-hint text-slate-500">
         {formatDate(new Date(`${r.date}T12:00:00Z`))}, {sourceLabel[r.source]}
       </p>
-      {r.purpose && <p className="text-[13px] text-slate-500">{r.purpose}</p>}
+      {r.purpose && <p className="text-hint text-slate-500">{r.purpose}</p>}
       {r.kind === "PAYMENT" && (
-        <p className="text-[13px] text-slate-700">
+        <p className="text-hint text-slate-700">
           {r.invoices.length > 0 ? `Raspoređeno na: ${r.invoices.join(", ")}` : "Nije raspoređeno na fakturu"}
         </p>
       )}
@@ -74,7 +74,7 @@ function survivorOf(d: ChannelDuplicate): "SMS" | "OTHER" {
 function DuplicateActions({ d }: { d: ChannelDuplicate }) {
   if (d.linkedButBothActive) {
     return (
-      <p className="max-w-64 text-[13px] text-amber-800">
+      <p className="max-w-64 text-hint text-amber-800">
         Označeno kao ista isplata, ali su obje i dalje proknjižene. Isplate se ne spajaju automatski — duplu isplatu ispravite
         ručno.
       </p>
@@ -185,7 +185,7 @@ export default async function ChannelReconciliationPage({
                     status={d.confidence === "HIGH" ? "PENDING" : "NONE"}
                     label={d.confidence === "HIGH" ? "visoka" : "moguća"}
                   />
-                  <p className="mt-1 text-[13px] text-slate-500">{d.direction === "IN" ? "uplata" : "isplata"}</p>
+                  <p className="mt-1 text-hint text-slate-500">{d.direction === "IN" ? "uplata" : "isplata"}</p>
                 </Td>
                 <Td>{formatMoney(d.sms.amount)}</Td>
                 <Td>
@@ -194,7 +194,7 @@ export default async function ChannelReconciliationPage({
                 <Td>
                   <RecordCell r={d.other} />
                 </Td>
-                <Td>{canDecide ? <DuplicateActions d={d} /> : <span className="text-[13px] text-slate-500">odlučuje računovođa</span>}</Td>
+                <Td>{canDecide ? <DuplicateActions d={d} /> : <span className="text-hint text-slate-500">odlučuje računovođa</span>}</Td>
               </tr>
             ))}
           </Table>
@@ -215,7 +215,7 @@ export default async function ChannelReconciliationPage({
           >
             {rec.unconfirmed.map((u) => (
               <tr key={u.smsId}>
-                <Td className="text-[13px]">
+                <Td className="text-hint">
                   {formatDateTime(new Date(u.smsReceivedAt))}
                   <p className="text-slate-500">prije {u.ageDays} dana</p>
                 </Td>

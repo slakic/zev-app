@@ -172,21 +172,21 @@ export function BallotForm(props: {
       <input type="hidden" name="token" value={token} />
 
       <Card>
-        <p className="text-[13px] font-semibold uppercase tracking-wide text-slate-500">{t("ballot.page.title")}</p>
+        <p className="text-hint font-semibold uppercase tracking-wide text-slate-500">{t("ballot.page.title")}</p>
         <h1 className="mt-1 text-xl font-semibold text-slate-900">{props.meetingTitle}</h1>
-        <p className="mt-2 text-[15px] text-slate-700">
+        <p className="mt-2 text-lead text-slate-700">
           {tf("ballot.page.who", {})}: <b>{props.recipientName}</b>
         </p>
-        {whoLine && !proposals.some((p) => p.proxyName) && <p className="mt-1 text-[15px] text-slate-700">{whoLine}</p>}
+        {whoLine && !proposals.some((p) => p.proxyName) && <p className="mt-1 text-lead text-slate-700">{whoLine}</p>}
         {single && props.weight && (
-          <p className="mt-1 text-[15px] text-slate-700">{tf("ballot.page.weight", { tezina: props.weight })}</p>
+          <p className="mt-1 text-lead text-slate-700">{tf("ballot.page.weight", { tezina: props.weight })}</p>
         )}
-        <p className="mt-1 text-[15px] text-slate-700">{tf("ballot.page.until", { rok: props.untilLabel })}</p>
-        <p className="mt-3 max-w-[68ch] text-[15px] text-slate-700">
+        <p className="mt-1 text-lead text-slate-700">{tf("ballot.page.until", { rok: props.untilLabel })}</p>
+        <p className="mt-3 max-w-[68ch] text-lead text-slate-700">
           {single ? t("ballot.page.introSingle") : tf("ballot.page.intro", { broj: open.length })}
         </p>
         {!single && (
-          <p className="mt-3 text-[15px] font-medium text-slate-900" aria-live="polite">
+          <p className="mt-3 text-lead font-medium text-slate-900" aria-live="polite">
             {tf(selected === open.length ? "ballot.page.counterDone" : "ballot.page.counter", { izabrano: selected, ukupno: open.length })}
           </p>
         )}
@@ -200,20 +200,20 @@ export function BallotForm(props: {
               : tf("ballot.page.proposalTitle", { kod: p.code, naslov: p.title })}
           </h2>
           {(p.proxyName || p.subjectName) && (
-            <p className="mt-1 text-[15px] text-slate-700">
+            <p className="mt-1 text-lead text-slate-700">
               {p.proxyName ? tf("ballot.page.asProxy", { punomocnik: p.proxyName, vlasnik: p.ownerName }) : null}
               {p.proxyName && p.subjectName ? " " : null}
               {p.subjectName ? tf("votingSubject.public.community", { name: p.subjectName }) : null}
             </p>
           )}
-          <p className="mt-3 max-w-[68ch] whitespace-pre-wrap text-[16px] leading-relaxed text-slate-900">{p.text}</p>
+          <p className="mt-3 max-w-[68ch] whitespace-pre-wrap text-base leading-relaxed text-slate-900">{p.text}</p>
           {p.rationale && (
-            <p className="mt-3 max-w-[68ch] whitespace-pre-wrap text-[15px] text-slate-600">
+            <p className="mt-3 max-w-[68ch] whitespace-pre-wrap text-lead text-slate-600">
               <b>{t("ballot.page.rationale")}</b> {p.rationale}
             </p>
           )}
           {p.attachments.length > 0 && (
-            <div className="mt-3 text-[15px] text-slate-700">
+            <div className="mt-3 text-lead text-slate-700">
               <p className="font-medium">{t("ballot.page.attachments")}</p>
               <ul className="mt-1 space-y-1">
                 {p.attachments.map((a) => (
@@ -236,8 +236,8 @@ export function BallotForm(props: {
             </div>
           )}
           <details className="mt-3">
-            <summary className="cursor-pointer text-[13px] font-medium text-slate-600">{t("ballot.page.technical")}</summary>
-            <div className="mt-1 space-y-1 break-all text-[13px] text-slate-600">
+            <summary className="cursor-pointer text-hint font-medium text-slate-600">{t("ballot.page.technical")}</summary>
+            <div className="mt-1 space-y-1 break-all text-hint text-slate-600">
               {p.contentHash && <p>{tf("ballot.page.technicalBody", { otisak: p.contentHash })}</p>}
               <p>{tf("ballot.page.technicalVersion", { verzija: p.version })}</p>
               {p.attachments.map((a) => (
@@ -269,7 +269,7 @@ export function BallotForm(props: {
               </div>
             </fieldset>
           ) : (
-            <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[15px] text-slate-700">
+            <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-lead text-slate-700">
               {t(p.state === "voted" ? "ballot.page.stateVoted" : "ballot.page.stateClosed")}
             </p>
           )}
@@ -313,7 +313,7 @@ export function BallotForm(props: {
             }}
             className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600"
           />
-          <span className="text-[15px] text-slate-700">
+          <span className="text-lead text-slate-700">
             <b>{t(single ? "ballot.page.ackPrefixSingle" : "ballot.page.ackPrefix")}</b> {props.ackText}
           </span>
         </label>
@@ -327,7 +327,7 @@ export function BallotForm(props: {
         )}
 
         {!single && (
-          <p className="mt-4 text-[15px] font-medium text-slate-900" aria-live="polite">
+          <p className="mt-4 text-lead font-medium text-slate-900" aria-live="polite">
             {tf(selected === open.length ? "ballot.page.counterDone" : "ballot.page.counter", { izabrano: selected, ukupno: open.length })}
           </p>
         )}
@@ -348,8 +348,8 @@ export function BallotForm(props: {
               confirmDisabled={pending}
               body={
                 <>
-                  <p className="text-[15px] text-amber-900">{t("ballot.page.reviewIntro")}</p>
-                  <ul className="space-y-1 text-[15px] text-amber-950">
+                  <p className="text-lead text-amber-900">{t("ballot.page.reviewIntro")}</p>
+                  <ul className="space-y-1 text-lead text-amber-950">
                     {open.map((p) => (
                       <li key={p.proposalId}>
                         {tf("ballot.page.reviewRow", { kod: p.code, naslov: p.title })}: <b>{choiceLabel(choices[p.proposalId])}</b>

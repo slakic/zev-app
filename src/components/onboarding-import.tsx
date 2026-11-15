@@ -57,11 +57,11 @@ function CopyInstructions({ text }: { text: string }) {
     <div className="mt-3">
       <label className="block">
         <span className="sr-only">{t("onboarding.import.how.assistantLabel")}</span>
-        <textarea readOnly rows={8} value={text} onFocus={(e) => e.currentTarget.select()} className={`${inputCls} bg-slate-50 font-mono text-[13px]`} />
+        <textarea readOnly rows={8} value={text} onFocus={(e) => e.currentTarget.select()} className={`${inputCls} bg-slate-50 font-mono text-hint`} />
       </label>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <Btn type="button" variant="tonal" onClick={copy}>{t("onboarding.import.how.copy")}</Btn>
-        <span aria-live="polite" className="text-[13px] text-slate-600">{copied ? t("onboarding.import.how.copied") : ""}</span>
+        <span aria-live="polite" className="text-hint text-slate-600">{copied ? t("onboarding.import.how.copied") : ""}</span>
       </div>
     </div>
   );
@@ -135,7 +135,7 @@ export function OnboardingImport({ draftId, instructions, csvHref, jsonHref, exp
           <BtnLink href={jsonHref}>{t("onboarding.import.how.json")}</BtnLink>
           <BtnLink href={exportHref}>{t("onboarding.import.how.export")}</BtnLink>
         </div>
-        <p className="mt-3 max-w-[68ch] text-[13px] text-slate-600">{t("onboarding.import.how.csvNote")}</p>
+        <p className="mt-3 max-w-[68ch] text-hint text-slate-600">{t("onboarding.import.how.csvNote")}</p>
         <h3 className="mt-5 text-sm font-semibold text-slate-700">{t("onboarding.import.how.assistantTitle")}</h3>
         <p className="mt-1 max-w-[68ch] text-sm text-slate-700">{t("onboarding.import.how.assistantText")}</p>
         <CopyInstructions text={instructions} />
@@ -203,7 +203,7 @@ function PreviewPanel({ preview, blocked, pending, onCancel, onConfirm }: { prev
               </tr>
             ))}
           </Table>
-          {preview.errorCount > SHOWN && <p className="text-[13px] text-slate-600">{tf("onboarding.import.preview.errorsMore", { broj: preview.errorCount - SHOWN })}</p>}
+          {preview.errorCount > SHOWN && <p className="text-hint text-slate-600">{tf("onboarding.import.preview.errorsMore", { broj: preview.errorCount - SHOWN })}</p>}
         </>
       ) : (
         <>

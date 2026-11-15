@@ -39,6 +39,7 @@ export function NavShell({
   activeZevId,
   switchZevAction,
   variant = "tenant",
+  headerExtra,
   children,
 }: {
   appName: string;
@@ -62,6 +63,8 @@ export function NavShell({
    * caller never passes `tenants`/`switchZevAction` — a super admin has no "own" tenant
    * to switch into from here. */
   variant?: "tenant" | "platform";
+  /** Kontrola u gornjoj traci lijevo od avatara — dugme „A+” (Plans/pristupacni-prikaz-plan.md, D-P3 B). */
+  headerExtra?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -212,7 +215,7 @@ export function NavShell({
               <div className={`text-lg font-bold tracking-tight ${accent.appName}`}>{appName}</div>
               {!platform && activeTenant && (
                 <div
-                  className="truncate text-[13px] text-slate-500"
+                  className="truncate text-hint text-slate-500"
                   title={tenantTitle(activeTenant) ?? activeTenant.label}
                 >
                   {activeTenant.label}
@@ -264,7 +267,7 @@ export function NavShell({
                 {g.label && (
                   <div
                     id={headingId}
-                    className={`px-3.5 pb-1 text-[13px] font-medium text-slate-500 ${gi > 0 ? "pt-4" : "pt-1"} ${
+                    className={`px-3.5 pb-1 text-hint font-medium text-slate-500 ${gi > 0 ? "pt-4" : "pt-1"} ${
                       collapsed ? "md:hidden" : ""
                     }`}
                   >
@@ -306,7 +309,7 @@ export function NavShell({
           <div className="flex-1" />
 
           {platform ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-[13px] font-semibold text-white ring-1 ring-inset ring-slate-900/10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-hint font-semibold text-white ring-1 ring-inset ring-slate-900/10">
               <IconShield className="h-3.5 w-3.5 shrink-0" />
               {t("admin.badge")}
             </span>
@@ -315,13 +318,15 @@ export function NavShell({
             activeTenant && (
               <span
                 title={tenantTitle(activeTenant) ?? activeTenant.label}
-                className="inline-flex max-w-[10rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-[13px] font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:max-w-[16rem]"
+                className="inline-flex max-w-[10rem] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-hint font-semibold text-blue-700 ring-1 ring-inset ring-blue-200 sm:max-w-[16rem]"
               >
                 <IconBuilding className="h-3.5 w-3.5 shrink-0 text-blue-500" />
                 <span className="truncate">{activeTenant.label}</span>
               </span>
             )
           )}
+
+          {headerExtra}
 
           <AccountMenu
             displayName={displayName}

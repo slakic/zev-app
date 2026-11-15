@@ -220,7 +220,7 @@ export default async function LiveMeetingPage({
       ) : tab === "zapisnik" && minutes ? (
         <Card title={t("live.tabMinutes")} hint={t("live.minutes.intro")}>
           <div className="mb-4 space-y-3 border-b border-slate-100 pb-4">
-            <p className="text-[13px] text-slate-600">
+            <p className="text-hint text-slate-600">
               {minutes.meeting.minutesTaker ? tf("live.minutes.takerLine", { ime: minutes.meeting.minutesTaker.name }) : t("live.minutes.takerNone")}
               {" · "}
               {tf("meetingNotes.countsLine", { zakljucaka: minutes.counts.conclusions, biljeski: minutes.counts.notes })}
@@ -231,7 +231,7 @@ export default async function LiveMeetingPage({
                 <SubmitBtn variant="secondary">{t("live.minutes.draftPdf")}</SubmitBtn>
               </form>
             ) : (
-              <p className="text-[13px] text-slate-500">{t("live.minutes.draftPdfHint")}</p>
+              <p className="text-hint text-slate-500">{t("live.minutes.draftPdfHint")}</p>
             )}
           </div>
           <MinutesOverview
@@ -251,7 +251,7 @@ export default async function LiveMeetingPage({
           />
           {PRE_VOTING_STATUSES.includes(base.status) && (
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-3">
-              <p className="text-[13px] text-slate-600">{t("live.advanceMeetingBanner")}</p>
+              <p className="text-hint text-slate-600">{t("live.advanceMeetingBanner")}</p>
               <form action={advanceMeetingAction}>
                 <input type="hidden" name="meetingId" value={meetingId} />
                 {activeAgendaItemId && <input type="hidden" name="agendaItemId" value={activeAgendaItemId} />}
@@ -268,7 +268,7 @@ export default async function LiveMeetingPage({
                 writable={canWrite}
                 returnTo={`/uzivo/${meetingId}?tab=dnevni-red&t=${OFF_AGENDA_ID}`}
               />
-              {!canWrite && <p className="mt-3 text-[13px] text-slate-500">{t("live.notesLocked")}</p>}
+              {!canWrite && <p className="mt-3 text-hint text-slate-500">{t("live.notesLocked")}</p>}
             </Card>
           ) : activeItem ? (
             <div className="space-y-4">
@@ -298,12 +298,12 @@ export default async function LiveMeetingPage({
                   returnTo={`/uzivo/${meetingId}?tab=dnevni-red&t=${activeItem.id}`}
                   scope={activeItem.id}
                 />
-                {!canWrite && <p className="mt-3 text-[13px] text-slate-500">{t("live.notesLocked")}</p>}
+                {!canWrite && <p className="mt-3 text-hint text-slate-500">{t("live.notesLocked")}</p>}
               </Card>
             )}
             </div>
           ) : (
-            <p className="py-8 text-center text-[15px] text-slate-500">
+            <p className="py-8 text-center text-lead text-slate-500">
               <BtnLink href={`/skupstina/${meetingId}`} variant="secondary">
                 {t("live.backToMeeting")}
               </BtnLink>

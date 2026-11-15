@@ -112,7 +112,7 @@ export default async function DocumentsPage({
             {docs.map((d) => (
               <tr key={d.id}>
                 <Td>{d.title}</Td>
-                <Td className="text-[13px]">{d.number}</Td>
+                <Td className="text-hint">{d.number}</Td>
                 <Td>{tEnum("docType", d.type)}</Td>
                 <Td>v{d.version}</Td>
                 <Td><StatusBadge status={d.status} label={tEnum("docStatus", d.status)} /></Td>
@@ -134,7 +134,7 @@ export default async function DocumentsPage({
                           hiddenFields={{ documentId: d.id }}
                         />
                       ) : (
-                        <span className="text-[13px] text-slate-500">{t("confirm.publishDoc.draftNote")}</span>
+                        <span className="text-hint text-slate-500">{t("confirm.publishDoc.draftNote")}</span>
                       )
                     )}
                   </div>
@@ -155,7 +155,7 @@ export default async function DocumentsPage({
                 <Td>
                   {d.title}
                   {(versionCount.get(`${d.type}|${d.number}`) ?? 1) > 1 && (
-                    <span className="ml-2 text-[13px] text-slate-500">{tf("docsPage.owner.version", { broj: d.version })}</span>
+                    <span className="ml-2 text-hint text-slate-500">{tf("docsPage.owner.version", { broj: d.version })}</span>
                   )}
                 </Td>
                 <Td>{tEnum("docType", d.type)}</Td>
@@ -169,7 +169,7 @@ export default async function DocumentsPage({
 
       {management && (
         <Card title="Otpremljeni dokumenti" className="mt-4">
-          <p className="mb-3 text-[13px] text-slate-500">
+          <p className="mb-3 text-hint text-slate-500">
             Skenirana ili primljena dokumentacija koju čuva ZEV — ugovori, izvještaji, zapisnici, prepiska i slično.
             Dokazi o vlasništvu priloženi uz vlasničke udjele takođe se čuvaju ovdje i dostupni su na stranici vlasnika.
           </p>

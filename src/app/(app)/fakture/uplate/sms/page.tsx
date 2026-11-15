@@ -79,18 +79,18 @@ export default async function BankSmsPage({
           >
             {other.confirmed.map((s) => (
               <tr key={s.id}>
-                <Td className="text-[13px]">{formatDateTime(new Date(s.receivedAt))}</Td>
+                <Td className="text-hint">{formatDateTime(new Date(s.receivedAt))}</Td>
                 <Td>
                   <StatusBadge status={s.kind === "PRILIV" ? "DIRECTION_IN" : "DIRECTION_OUT"} label={s.kind === "PRILIV" ? "uplata" : "isplata"} />
                 </Td>
                 <Td>{s.amount ? formatMoney(s.amount) : "—"}</Td>
                 <Td>{s.counterpartyName ?? "—"}</Td>
-                <Td className="text-[13px]">{s.purposeRaw ?? "—"}</Td>
+                <Td className="text-hint">{s.purposeRaw ?? "—"}</Td>
                 <Td>
                   {s.paymentId ? (
                     <RowActionLink href={`/fakture/uplate/${s.paymentId}`}>uplata</RowActionLink>
                   ) : (
-                    <span className="text-[13px] text-slate-500">isplata evidentirana</span>
+                    <span className="text-hint text-slate-500">isplata evidentirana</span>
                   )}
                 </Td>
               </tr>
@@ -101,7 +101,7 @@ export default async function BankSmsPage({
 
       {activeTab === "neprepoznate" && (
         <Card>
-          <p className="mb-3 text-[13px] text-slate-500">
+          <p className="mb-3 text-hint text-slate-500">
             Poruke koje aplikacija nije mogla pročitati kao uplatu ili isplatu. Ako ovdje stalno stižu poruke banke, format se
             možda promijenio — evidentirajte ih ručno i javite. Poruke koje nisu od Nova Banke čuvaju se bez teksta (lična
             prepiska se ne smije zadržavati) — to znači da je filter u automatizaciji na telefonu preširok.
@@ -115,9 +115,9 @@ export default async function BankSmsPage({
           >
             {other.rejected.map((s) => (
               <tr key={s.id}>
-                <Td className="text-[13px]">{formatDateTime(new Date(s.receivedAt))}</Td>
-                <Td className="text-[13px]">{s.parseError ?? "—"}</Td>
-                <Td className="text-[13px] font-mono">{s.rawText ?? "— (nije od banke, tekst nije sačuvan)"}</Td>
+                <Td className="text-hint">{formatDateTime(new Date(s.receivedAt))}</Td>
+                <Td className="text-hint">{s.parseError ?? "—"}</Td>
+                <Td className="text-hint font-mono">{s.rawText ?? "— (nije od banke, tekst nije sačuvan)"}</Td>
                 <Td>
                   {canConfirm && (
                     <ConfirmAction

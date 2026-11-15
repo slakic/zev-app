@@ -25,7 +25,7 @@ export function VoteReceipt({ receipt: r }: { receipt: ReceiptView }) {
     <div>
       <Flash msg={t("ballot.receipt.done")} />
       <Card title={t("ballot.receipt.title")}>
-        <dl className="grid grid-cols-1 gap-x-4 gap-y-1 text-[15px] sm:grid-cols-[auto_1fr]">
+        <dl className="grid grid-cols-1 gap-x-4 gap-y-1 text-lead sm:grid-cols-[auto_1fr]">
           <dt className="text-slate-600">{t("ballot.receipt.meeting")}</dt>
           <dd className="mb-2 text-slate-900 sm:mb-0">{r.meetingTitle}</dd>
           <dt className="text-slate-600">{t("ballot.receipt.voter")}</dt>
@@ -36,18 +36,18 @@ export function VoteReceipt({ receipt: r }: { receipt: ReceiptView }) {
         <ul className="mt-4 divide-y divide-slate-100 border-t border-slate-100">
           {r.items.map((i) => (
             <li key={i.voteId} className="py-3">
-              <p className="text-[15px] font-medium text-slate-900">{i.code} — {i.title}</p>
-              <p className="mt-1 text-[15px] text-slate-900">
+              <p className="text-lead font-medium text-slate-900">{i.code} — {i.title}</p>
+              <p className="mt-1 text-lead text-slate-900">
                 {t("ballot.receipt.yourChoice")}: <b>{t(CHOICE_LABEL[i.choice] ?? "")}</b>
               </p>
-              <p className="mt-1 break-all font-mono text-[13px] text-slate-600">
+              <p className="mt-1 break-all font-mono text-hint text-slate-600">
                 {t("ballot.receipt.number")}: {i.voteId}
               </p>
             </li>
           ))}
         </ul>
         {r.skipped.length > 0 && (
-          <div className="mt-1 border-t border-slate-100 pt-3 text-[15px] text-slate-600">
+          <div className="mt-1 border-t border-slate-100 pt-3 text-lead text-slate-600">
             <p className="font-medium">{t("ballot.receipt.skipped")}</p>
             <ul className="list-disc pl-5">
               {r.skipped.map((s) => (
@@ -58,7 +58,7 @@ export function VoteReceipt({ receipt: r }: { receipt: ReceiptView }) {
             </ul>
           </div>
         )}
-        <p className="mt-4 max-w-[68ch] text-[15px] text-slate-700">
+        <p className="mt-4 max-w-[68ch] text-lead text-slate-700">
           {r.closesAt ? tf("ballot.receipt.final", { rok: formatDateTime(r.closesAt) }) : t("ballot.receipt.finalNoDate")}
         </p>
         <div className="mt-3 max-w-[68ch]">

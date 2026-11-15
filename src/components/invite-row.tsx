@@ -44,13 +44,13 @@ export function InviteRow({ row, colSpan }: { row: InviteRowData; colSpan: numbe
       <tr className={open ? "bg-slate-50" : undefined}>
         <Td>
           <span className="font-medium text-slate-900">{row.workingName}</span>
-          <div className="text-[13px] text-slate-500">{row.email}</div>
+          <div className="text-hint text-slate-500">{row.email}</div>
         </Td>
         <Td>{row.tierLabel}</Td>
         <Td><StatusBadge status={chip.status} label={t(chip.labelKey)} /></Td>
         <Td>
           {row.progress}
-          {row.progressMeta && <div className="text-[13px] text-slate-500">{row.progressMeta}</div>}
+          {row.progressMeta && <div className="text-hint text-slate-500">{row.progressMeta}</div>}
         </Td>
         <Td>{row.updated}</Td>
         <Td>

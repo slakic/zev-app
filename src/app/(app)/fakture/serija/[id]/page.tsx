@@ -53,7 +53,7 @@ function WarningGroup({ text, entries }: { text: string; entries: WarningEntry[]
   return (
     <li>
       {text}
-      <ul className="mt-1 list-none space-y-0.5 pl-3 text-[13px]">
+      <ul className="mt-1 list-none space-y-0.5 pl-3 text-hint">
         {shown.map((e, i) => (
           <li key={`${e.unitId}:${i}`}>{e.unit}{e.detail ? ` — ${e.detail}` : ""}</li>
         ))}
@@ -209,8 +209,8 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
                     <Td>{r.toAddress}</Td>
                     <Td>
                       <StatusBadge status={r.status} label={NOTIF_LABEL[r.status] ?? r.status} />
-                      <span className="ml-2 text-[13px] text-slate-500">{formatDateTime(r.sentAt ?? r.createdAt)}</span>
-                      {r.lastError && <div className="mt-1 text-[13px] text-red-700">{r.lastError}</div>}
+                      <span className="ml-2 text-hint text-slate-500">{formatDateTime(r.sentAt ?? r.createdAt)}</span>
+                      {r.lastError && <div className="mt-1 text-hint text-red-700">{r.lastError}</div>}
                     </Td>
                   </tr>
                 ))}
@@ -234,7 +234,7 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
               warn={
                 <div>
                   <p className="font-semibold">{t("batchWarnings.title")}</p>
-                  <p className="mt-0.5 text-[13px]">{t("batchWarnings.intro")}</p>
+                  <p className="mt-0.5 text-hint">{t("batchWarnings.intro")}</p>
                   <ul className="mt-2 list-disc space-y-1.5 pl-5">
                     {warnings.duePast && <li>{tf("batchWarnings.duePast", { datum: formatDate(dueDate) })}</li>}
                     {warnings.noDebtor.length > 0 && <WarningGroup text={tf("batchWarnings.noDebtor", { broj: warnings.noDebtor.length })} entries={warnings.noDebtor} />}
@@ -264,10 +264,10 @@ export default async function BatchPage({ params, searchParams }: { params: Prom
               <Td>
                 {calc.lines.length === 0 ? "—" : (
                   <details>
-                    <summary className="cursor-pointer text-[13px] font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                    <summary className="cursor-pointer text-hint font-medium text-primary-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
                       {t("batchPage.showCalc")}
                     </summary>
-                    <ul className="mt-2 space-y-1 text-[13px] text-slate-700">
+                    <ul className="mt-2 space-y-1 text-hint text-slate-700">
                       {calc.lines.map((l, i) => (
                         <li key={i}>
                           {l.name} — {describeChargeLine({ method: l.method, allocationBasis: l.allocationBasis, inputs: l.inputs })} = {formatMoney(l.amount)}

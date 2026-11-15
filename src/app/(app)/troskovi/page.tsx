@@ -193,7 +193,7 @@ export default async function ExpensesPage({
               <tr key={s.id}>
                 <Td>{s.name}</Td>
                 <Td>{s.jib ?? "—"}</Td>
-                <Td className="font-mono text-[13px]">{s.iban ?? "—"}</Td>
+                <Td className="font-mono text-hint">{s.iban ?? "—"}</Td>
                 <Td>{s.email ?? s.phone ?? "—"}</Td>
               </tr>
             ))}

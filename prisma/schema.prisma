@@ -51,6 +51,13 @@ model User {
   sessions     Session[]
   memberships  Membership[]
   mcpConnections McpConnection[]
+  /// Lične postavke prikaza (Plans/pristupacni-prikaz-plan.md, D-P1 A): po osobi, ne po ZEV-u,
+  /// da važe na svakom uređaju. uiTextLarge = „Veći tekst i dugmad” (data-text="large" na <html>);
+  /// uiLayoutSimple = „Jednostavan prikaz” (faza B — polje postoji, UI još ne);
+  /// uiPrefsAskedAt = kada je korisniku jednom postavljeno pitanje o prikazu (D-P2 A), null = još nije.
+  uiTextLarge    Boolean   @default(false)
+  uiLayoutSimple Boolean   @default(false)
+  uiPrefsAskedAt DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }

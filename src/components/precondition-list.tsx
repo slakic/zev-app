@@ -18,7 +18,7 @@ export function PreconditionList({ items }: { items: { ok: boolean; text: ReactN
               </svg>
             </span>
           ) : (
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-[13px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-600/20" aria-hidden="true">!</span>
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-50 text-hint font-semibold text-amber-800 ring-1 ring-inset ring-amber-600/20" aria-hidden="true">!</span>
           )}
           <span className="sr-only">{it.ok ? t("register.ui.okLabel") : t("register.ui.warnLabel")}</span>
           <span>{it.text}</span>

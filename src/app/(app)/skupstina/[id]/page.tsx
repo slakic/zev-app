@@ -273,7 +273,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             {meeting.agendaItems.map((a) => (
               <li key={a.id}>
                 {a.title}
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 pl-5 text-[13px] text-slate-600">
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 pl-5 text-hint text-slate-600">
                   {a.proposals.length > 0 ? (
                     <>
                       <span>{t("confirm.agenda.proposal")}</span>
@@ -355,7 +355,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
             ))}
           </Table>
           {isPresident && proposalsLocked && (
-            <p className="mt-4 text-[15px] text-slate-600">{t("ballot.err.proposalLocked")}</p>
+            <p className="mt-4 text-lead text-slate-600">{t("ballot.err.proposalLocked")}</p>
           )}
           {isPresident && !proposalsLocked && (
             <details id="novi-prijedlog" open={Boolean(preselectedAgendaItem)} className="group mt-4">
@@ -405,8 +405,8 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         {minutes && (
           <div id="biljeske" className="scroll-mt-20 lg:col-span-2">
             <Card title={t("meetingNotes.title")}>
-              {minutes.state === "locked" && <p className="mb-4 text-[15px] text-slate-700">{t("meetingNotes.locked")}</p>}
-              {minutes.state === "early" && <p className="mb-4 text-[15px] text-slate-700">{t("meetingNotes.early")}</p>}
+              {minutes.state === "locked" && <p className="mb-4 text-lead text-slate-700">{t("meetingNotes.locked")}</p>}
+              {minutes.state === "early" && <p className="mb-4 text-lead text-slate-700">{t("meetingNotes.early")}</p>}
               {minutes.state === "writable" ? (
                 <form action={setMinutesTakerAction} className="mb-4 flex flex-wrap items-end gap-3 border-b border-slate-100 pb-4">
                   <input type="hidden" name="meetingId" value={meeting.id} />
@@ -422,7 +422,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                   <SubmitBtn variant="tonal">{t("meetingNotes.minutesTaker.save")}</SubmitBtn>
                 </form>
               ) : (
-                <p className="mb-4 text-[15px] text-slate-700">
+                <p className="mb-4 text-lead text-slate-700">
                   {t("meetingNotes.minutesTaker.label")}: {minutes.meeting.minutesTaker?.name ?? t("meetingNotes.minutesTaker.none")}
                 </p>
               )}
@@ -434,13 +434,13 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
         {isPresident && ballotSummary && (ballotSummary.total > 0 || ballotSummary.invitationsQueued > 0) && (
           <div id="listici" className="scroll-mt-20 lg:col-span-2">
             <Card title={t("ballot.card.title")} hint={t("ballot.card.hint")}>
-              <p className="text-[15px] text-slate-700">
+              <p className="text-lead text-slate-700">
                 {t("ballot.card.total")}: <b>{ballotSummary.total}</b> · {t("ballot.card.sent")}: <b>{ballotSummary.sent}</b> ·{" "}
                 {t("ballot.card.queued")}: <b>{ballotSummary.queued}</b> · {t("ballot.card.failed")}: <b>{ballotSummary.failed}</b> ·{" "}
                 {t("ballot.card.used")}: <b>{ballotSummary.used}</b>
               </p>
               {ballotSummary.invitationsQueued > 0 && (
-                <p className="mt-1 text-[15px] text-slate-700">{tf("ballot.card.invitationsQueued", { broj: ballotSummary.invitationsQueued })}</p>
+                <p className="mt-1 text-lead text-slate-700">{tf("ballot.card.invitationsQueued", { broj: ballotSummary.invitationsQueued })}</p>
               )}
               {(ballotSummary.queued > 0 || ballotSummary.failed > 0 || ballotSummary.invitationsQueued > 0) && (
                 <form action={dispatchEmailsAction} className="mt-3">
@@ -465,7 +465,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
                           <>
                             <StatusBadge status={r.messageStatus} label={t(`ballot.card.msgStatus.${r.messageStatus}`)} />
                             {r.messageStatus === "FAILED" && r.lastError && (
-                              <span className="mt-1 block max-w-[28ch] text-[13px] text-red-700">{r.lastError}</span>
+                              <span className="mt-1 block max-w-[28ch] text-hint text-red-700">{r.lastError}</span>
                             )}
                           </>
                         ) : (
@@ -529,7 +529,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               {liveAvailable ? (
                 <BtnLink href={`/uzivo/${meeting.id}`} variant="secondary">{t("meetingPage.attendance.open")}</BtnLink>
               ) : (
-                <p className="text-[13px] text-slate-600">{t("meetingPage.attendance.unavailable")}</p>
+                <p className="text-hint text-slate-600">{t("meetingPage.attendance.unavailable")}</p>
               )}
             </div>
             {meeting.attendances.length > 0 && (
@@ -555,7 +555,7 @@ export default async function MeetingPage({ params, searchParams }: { params: Pr
               <input type="hidden" name="meetingId" value={meeting.id} />
               <SubmitBtn variant="secondary">Generiši nacrt zapisnika (PDF)</SubmitBtn>
             </form>
-            <p className="mt-2 text-[13px] text-slate-600">{t("meetingPage.documentsNote")}</p>
+            <p className="mt-2 text-hint text-slate-600">{t("meetingPage.documentsNote")}</p>
             <div className="mt-4">
               <Table
                 id="meeting-documents-table"
@@ -609,20 +609,20 @@ function OwnerSessionCard({
         steps={OWNER_MEETING_STAGES.map((k) => ({ key: k, label: t(`ownerVoting.stage.${k}`) }))}
         activeKey={stage.activeKey}
       />
-      <p className="text-[15px] font-medium text-slate-800">
+      <p className="text-lead font-medium text-slate-800">
         {stage.sentenceKey === "votingOpen" && closes
           ? tf("ownerVoting.stage.votingOpen", { rok: formatDateTime(closes) })
           : stage.sentenceKey === "votingOpen"
             ? t("ownerVoting.stage.votingOpenNoDate")
             : t(`ownerVoting.stage.${stage.sentenceKey}`)}
       </p>
-      <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-1 text-[15px] sm:grid-cols-[auto_1fr]">
+      <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-1 text-lead sm:grid-cols-[auto_1fr]">
         <dt className="text-slate-600">{t("ownerVoting.meeting.when")}</dt>
         <dd className="mb-2 text-slate-900 sm:mb-0">{formatDateTime(meeting.scheduledAt)}</dd>
         <dt className="text-slate-600">{t("ownerVoting.meeting.where")}</dt>
         <dd className="text-slate-900">{meeting.location ?? "—"}</dd>
       </dl>
-      {role && <p className="mt-3 max-w-[68ch] text-[15px] text-slate-700">{role}</p>}
+      {role && <p className="mt-3 max-w-[68ch] text-lead text-slate-700">{role}</p>}
       {states.some(needsContact) && (
         <div className="mt-3 max-w-[68ch]">
           <VotingContactLine contact={contact} noEmail={states.some((s) => s.kind === "canVote" && s.link === "none" && !s.proxyName)} />

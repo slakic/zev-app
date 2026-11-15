@@ -103,7 +103,7 @@ export function CsvImportForm({ accounts, action }: { accounts: Account[]; actio
       {saved ? (
         <div>
           <p className="text-sm text-slate-700">{tf("csvImport.saved", { racun: accountName })}</p>
-          <p className="text-[13px] text-slate-500">{t("csvImport.savedHint")}</p>
+          <p className="text-hint text-slate-500">{t("csvImport.savedHint")}</p>
           <details className="group mt-2">
             <ToggleBtn>{t("csvImport.change")}</ToggleBtn>
             {fields}

@@ -112,12 +112,12 @@ export function AccountMenu({
             </div>
             <div className="min-w-0">
               <div className="truncate text-sm font-medium text-slate-800">{displayName}</div>
-              <div className="truncate text-[13px] text-slate-500">{rolesText}</div>
+              <div className="truncate text-hint text-slate-500">{rolesText}</div>
             </div>
           </div>
           {showSwitcher && (
             <div className="border-b border-slate-100 py-1.5">
-              <div className="px-3.5 pb-1 text-[13px] font-medium text-slate-500">
+              <div className="px-3.5 pb-1 text-hint font-medium text-slate-500">
                 {t("tenant.switcherHeading")}
               </div>
               <div className="px-1.5">

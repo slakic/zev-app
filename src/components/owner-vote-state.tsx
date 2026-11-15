@@ -70,10 +70,10 @@ export function OwnerVoteStateBlock({ state: s }: { state: OwnerVoteState }) {
     <div className="space-y-1">
       <StatusBadge status={chip.status} label={chip.label} />
       {lines.map((l, i) => (
-        <p key={i} className="text-[15px] text-slate-700">{l}</p>
+        <p key={i} className="text-lead text-slate-700">{l}</p>
       ))}
       {mono.map((l, i) => (
-        <p key={i} className="break-all font-mono text-[13px] text-slate-600">{l}</p>
+        <p key={i} className="break-all font-mono text-hint text-slate-600">{l}</p>
       ))}
     </div>
   );
@@ -82,7 +82,7 @@ export function OwnerVoteStateBlock({ state: s }: { state: OwnerVoteState }) {
 /** "Niste dobili link? Novi lični link izdaje predsjednik ZEV-a {ime} — {telefon} · {e-adresa}." (F4-Q2 a: the app shows the contact). */
 export function VotingContactLine({ contact, noEmail }: { contact: VotingContactData; noEmail?: boolean }) {
   return (
-    <div className="space-y-1 text-[15px] text-slate-700">
+    <div className="space-y-1 text-lead text-slate-700">
       {contact ? (
         <p>
           {tf("ownerVoting.contact.lead", { ime: contact.name })}

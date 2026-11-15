@@ -10,7 +10,7 @@ function Count({ value, label }: { value: number; label: string }) {
   return (
     <span className="inline-flex items-baseline gap-1.5">
       <span className="text-2xl font-semibold tabular-nums text-ink">{value}</span>
-      <span className="text-[13px] text-slate-600">{label}</span>
+      <span className="text-hint text-slate-600">{label}</span>
     </span>
   );
 }
@@ -40,9 +40,9 @@ export function LiveQuorumBar({
       <div className="mt-1.5">
         <PreconditionList items={[line]} />
         {quorum && quorum.kind !== "NONE" && (
-          <p className="mt-1 text-[13px] text-slate-600">{tf("live.quorum.forProposal", { sifra: quorum.proposalCode })}</p>
+          <p className="mt-1 text-hint text-slate-600">{tf("live.quorum.forProposal", { sifra: quorum.proposalCode })}</p>
         )}
-        {quorum?.acceptsEVotes && <p className="mt-1 text-[13px] text-slate-600">{t("live.quorum.eVotes")}</p>}
+        {quorum?.acceptsEVotes && <p className="mt-1 text-hint text-slate-600">{t("live.quorum.eVotes")}</p>}
       </div>
     </div>
   );

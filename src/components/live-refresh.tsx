@@ -41,7 +41,7 @@ export function LiveRefresh() {
 
   return (
     <div className="mb-3 flex items-center justify-between gap-3">
-      <span className="text-[13px] text-slate-500">
+      <span className="text-hint text-slate-500">
         {t("live.updatedPrefix")} {secondsAgo}s
       </span>
       <Btn type="button" variant="secondary" onClick={() => startTransition(() => router.refresh())}>

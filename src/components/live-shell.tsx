@@ -19,7 +19,7 @@ export function LiveShell({
       <header className="border-b border-slate-200 bg-white p-3 shadow-sm">
         <Link
           href={backHref}
-          className="mb-1 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-[13px] font-medium text-blue-700 transition-colors hover:bg-blue-50"
+          className="mb-1 inline-flex items-center gap-1 rounded-full px-2 py-1 -ml-2 text-hint font-medium text-blue-700 transition-colors hover:bg-blue-50"
         >
           ‹ {t("live.backToMeeting")}
         </Link>

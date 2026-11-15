@@ -126,7 +126,7 @@ export default async function AssistantsPage({ searchParams }: { searchParams: P
             <tr key={c.id}>
               <Td>
                 <span className="font-medium text-slate-900">{c.name}</span>
-                <div className="text-[13px] text-slate-500">
+                <div className="text-hint text-slate-500">
                   {t(`assistants.clientShort.${c.client}`)} · {t(`assistants.kind.${c.kind}`)}
                   {c.kind === "OAUTH" && c.oauthClientName ? ` · ${c.oauthClientName}` : ""}
                 </div>

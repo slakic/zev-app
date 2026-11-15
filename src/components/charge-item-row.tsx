@@ -41,7 +41,7 @@ export function ChargeItemRow({
       <tr className={open ? "bg-slate-50" : !c.active ? "opacity-50" : undefined}>
         <Td>
           {c.name}
-          {c.minWarning && <div className="mt-1 whitespace-normal text-[13px] font-normal text-amber-800">{c.minWarning}</div>}
+          {c.minWarning && <div className="mt-1 whitespace-normal text-hint font-normal text-amber-800">{c.minWarning}</div>}
           {!c.active && <span className="ml-1.5 text-xs text-slate-500">(neaktivna)</span>}
         </Td>
         <Td>{tEnum("chargeMethod", c.method)}</Td>

@@ -11,6 +11,7 @@ import { getSettings, saveSettings } from "@/server/services/settings";
 import { getBankSmsStatus } from "@/server/services/bankSms";
 import { getTestEmailStatus } from "@/server/services/emailTest";
 import { TestEmailCard } from "@/components/test-email-card";
+import { DisplayChoiceForm } from "@/components/display-choice";
 import { BankSmsTokenCard } from "@/components/bank-sms-token-card";
 import { SETTING_DEFINITIONS, DEFAULT_SETTINGS, type SettingDefinition } from "@/lib/settings-defaults";
 import {
@@ -160,7 +161,7 @@ async function revokeMyConsentAction(formData: FormData) {
   redirect("/podesavanja?tab=moji&msg=consentRevoked");
 }
 
-const FLASH_KEYS = ["saved", "contact", "zev", "accountSaved", "accountAdded", "invoiceEmailOn", "invoiceEmailOff", "consentRevoked", "paramsNone"] as const;
+const FLASH_KEYS = ["saved", "displaySaved", "contact", "zev", "accountSaved", "accountAdded", "invoiceEmailOn", "invoiceEmailOff", "consentRevoked", "paramsNone"] as const;
 
 /** Vrijednost za polje: novac sa zarezom i dvije decimale ("500,00"), ostalo kako je sačuvano. */
 function fieldValue(def: SettingDefinition, value: string): string {
@@ -246,7 +247,7 @@ export default async function SettingsPage({
           <input name="correspondenceAddress" defaultValue={myParty.correspondenceAddress ?? ""} className={inputCls} />
         </Field>
         {/* Uloga odlučuje šta se tvrdi: samo predsjednik ima stranicu na kojoj se ime i adresa mijenjaju. */}
-        <p className="text-[13px] text-slate-500">
+        <p className="text-hint text-slate-500">
           {isPresident ? (
             <>
               {t("settingsPage.mine.hintPresidentBefore")}
@@ -277,7 +278,7 @@ export default async function SettingsPage({
           <p className="text-slate-600">{t("settingsPage.invoiceDelivery.withoutEmail")}</p>
         )}
         {myParty.invoiceEmailDelivery && myParty.invoiceEmailDeliveryAt && (
-          <p className="text-[13px] text-slate-500">{tf("settingsPage.invoiceDelivery.since", { date: formatDate(myParty.invoiceEmailDeliveryAt) })}</p>
+          <p className="text-hint text-slate-500">{tf("settingsPage.invoiceDelivery.since", { date: formatDate(myParty.invoiceEmailDeliveryAt) })}</p>
         )}
         {myParty.email && <SubmitBtn variant="tonal">{t("settingsPage.invoiceDelivery.save")}</SubmitBtn>}
       </form>
@@ -343,6 +344,13 @@ export default async function SettingsPage({
     </Card>
   );
 
+  // Lična postavka prikaza (Plans/pristupacni-prikaz-plan.md): za svakoga, i bez Party-ja.
+  const displayCard = (
+    <Card key="display" title={t("settingsPage.display.title")}>
+      <DisplayChoiceForm large={actor.uiTextLarge} returnTo="/podesavanja?tab=moji&msg=displaySaved" saveLabel={t("settingsPage.display.save")} />
+    </Card>
+  );
+
   return (
     <div>
       <PageHeader
@@ -368,6 +376,7 @@ export default async function SettingsPage({
           </Card>
         )}
         {showMoji && (consentActive ? [contactCard, deliveryCard, evoteCard] : [evoteCard, contactCard, deliveryCard])}
+        {showMoji && displayCard}
 
         {showZev && (
           <Card title={t("settingsPage.zev.title")} hint={isPresident ? undefined : t("settingsPage.zev.readOnlyHint")}>

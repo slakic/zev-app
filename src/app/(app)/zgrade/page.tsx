@@ -289,7 +289,7 @@ export default async function BuildingsPage({
                       action={establishRegisterAction}
                     />
                   ) : (
-                    <p className="text-[13px] text-amber-800">{t("register.establish.blocked")}</p>
+                    <p className="text-hint text-amber-800">{t("register.establish.blocked")}</p>
                   )}
                 </div>
               )}
@@ -502,7 +502,7 @@ export default async function BuildingsPage({
                     <tr key={sub.subjectKey}>
                       <Td>
                         <div className="font-medium text-slate-900">{sub.ownerName}</div>
-                        <div className="text-[13px] text-slate-500">
+                        <div className="text-hint text-slate-500">
                           {isCommunity ? t("register.owners.community") : t("register.owners.sole")}
                         </div>
                       </Td>
@@ -513,7 +513,7 @@ export default async function BuildingsPage({
                             <div>
                               {tf("register.owners.representative", { name: sub.members.find((m) => m.partyId === sub.ownerId)?.name ?? sub.ownerName })}
                               {!sub.representativeConfirmed && (
-                                <span className="ml-2 text-[13px] text-amber-800">{t("register.owners.notConfirmed")}</span>
+                                <span className="ml-2 text-hint text-amber-800">{t("register.owners.notConfirmed")}</span>
                               )}
                             </div>
                             {isPresident && (
@@ -555,8 +555,8 @@ export default async function BuildingsPage({
                   <li key={h.id} className="text-sm text-slate-700">
                     <div className="flex flex-wrap items-baseline gap-x-3">
                       <span className="font-medium text-slate-900">{tf("register.history.version", { version: h.version })}</span>
-                      <span className="text-[13px] text-slate-500">{formatDateTime(h.createdAt)}</span>
-                      <span className="text-[13px] text-slate-500">{tEnum("unitRegisterChangeKind", h.kind)}</span>
+                      <span className="text-hint text-slate-500">{formatDateTime(h.createdAt)}</span>
+                      <span className="text-hint text-slate-500">{tEnum("unitRegisterChangeKind", h.kind)}</span>
                     </div>
                     <p>{h.reason}</p>
                     {h.attachmentId && (

@@ -139,7 +139,7 @@ export function NoteForm({
         <Btn type="submit" variant="tonal" disabled={!canSave}>
           {pending ? t("meetingNotes.saving") : t("meetingNotes.save")}
         </Btn>
-        {restored && !pending && <span className="text-[13px] text-slate-500">{t("meetingNotes.draftRestored")}</span>}
+        {restored && !pending && <span className="text-hint text-slate-500">{t("meetingNotes.draftRestored")}</span>}
       </div>
       {result && !result.ok && <Flash err={result.error} inset />}
     </form>
@@ -213,8 +213,8 @@ function NoteItem({
         </div>
       ) : (
         <>
-          <p className="text-[13px] font-medium text-slate-500">{label}</p>
-          <p className="mt-0.5 whitespace-pre-wrap break-words text-[15px] text-slate-900">{note.text}</p>
+          <p className="text-hint font-medium text-slate-500">{label}</p>
+          <p className="mt-0.5 whitespace-pre-wrap break-words text-lead text-slate-900">{note.text}</p>
           {writable && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <RowAction
@@ -258,7 +258,7 @@ export function NotesBlock({
   const empty = conclusions.length === 0 && notes.length === 0;
   return (
     <div className="space-y-4">
-      {empty && !askTopic && <p className="text-[13px] text-slate-500">{t("meetingNotes.empty")}</p>}
+      {empty && !askTopic && <p className="text-hint text-slate-500">{t("meetingNotes.empty")}</p>}
       {conclusions.length > 0 && (
         <ul className="space-y-2">
           {conclusions.map((n, i) => (
@@ -308,7 +308,7 @@ export function OffAgendaNotes({
     <div className="space-y-5">
       {topics.map((tp) => (
         <section key={tp.topic} className="space-y-3 border-b border-slate-100 pb-5 last:border-b-0">
-          <h3 className="text-[15px] font-semibold text-slate-900">{tp.topic}</h3>
+          <h3 className="text-lead font-semibold text-slate-900">{tp.topic}</h3>
           <NotesBlock
             meetingId={meetingId}
             topic={tp.topic}
@@ -323,7 +323,7 @@ export function OffAgendaNotes({
       {writable && (
         <NotesBlock meetingId={meetingId} askTopic conclusions={[]} notes={[]} writable returnTo={returnTo} scope="off:new" />
       )}
-      {!writable && topics.length === 0 && <p className="text-[13px] text-slate-500">{t("meetingNotes.empty")}</p>}
+      {!writable && topics.length === 0 && <p className="text-hint text-slate-500">{t("meetingNotes.empty")}</p>}
     </div>
   );
 }

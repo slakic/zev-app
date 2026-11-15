@@ -136,7 +136,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
       </div>
 
       {free.greaterThan(0) && payment.status !== "REVERSED" && (
-        <p className="-mt-2 mb-4 text-[13px] text-slate-600">
+        <p className="-mt-2 mb-4 text-hint text-slate-600">
           {tf("confirm.allocation.advance", { iznos: formatMoney(free.toFixed(2)) })}
         </p>
       )}

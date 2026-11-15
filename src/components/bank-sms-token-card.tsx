@@ -70,7 +70,7 @@ export function BankSmsTokenCard({ status }: { status: BankSmsStatus }) {
         <dl className="space-y-1.5">
           <div>
             <dt className="inline font-medium">Adresa: </dt>
-            <dd className="inline font-mono text-[13px]">{status.url}</dd>
+            <dd className="inline font-mono text-hint">{status.url}</dd>
           </div>
           <div>
             <dt className="inline font-medium">Stanje: </dt>
@@ -102,24 +102,24 @@ export function BankSmsTokenCard({ status }: { status: BankSmsStatus }) {
           <div className="space-y-2 rounded-xl border-l-4 border-l-emerald-500 bg-emerald-50 px-3 py-3 text-emerald-900">
             <p className="font-semibold">Novi pristupni ključ je generisan. Prikazuje se samo sada — kopirajte ga u automatizaciju.</p>
             <div>
-              <div className="text-[13px] font-medium">Adresa (URL)</div>
+              <div className="text-hint font-medium">Adresa (URL)</div>
               <div className="flex flex-wrap items-center gap-2">
-                <code className="break-all rounded bg-white px-2 py-1 text-[13px]">{secret.url}</code>
+                <code className="break-all rounded bg-white px-2 py-1 text-hint">{secret.url}</code>
                 <button type="button" onClick={() => copy("url", secret.url)} className={`${btnBase} ${btnVariantCls.secondary}`}>
                   {copied === "url" ? "Kopirano" : "Kopiraj"}
                 </button>
               </div>
             </div>
             <div>
-              <div className="text-[13px] font-medium">Zaglavlje <span className="font-mono">Authorization</span></div>
+              <div className="text-hint font-medium">Zaglavlje <span className="font-mono">Authorization</span></div>
               <div className="flex flex-wrap items-center gap-2">
-                <code className="break-all rounded bg-white px-2 py-1 text-[13px]">Bearer {secret.token}</code>
+                <code className="break-all rounded bg-white px-2 py-1 text-hint">Bearer {secret.token}</code>
                 <button type="button" onClick={() => copy("token", `Bearer ${secret.token}`)} className={`${btnBase} ${btnVariantCls.secondary}`}>
                   {copied === "token" ? "Kopirano" : "Kopiraj"}
                 </button>
               </div>
             </div>
-            <p className="text-[13px]">
+            <p className="text-hint">
               Ne šaljite ključ porukom i ne objavljujte screenshot Shortcut-a. Ako ikad procuri, generišite novi — stari odmah
               prestaje da važi.
             </p>
@@ -158,7 +158,7 @@ export function BankSmsTokenCard({ status }: { status: BankSmsStatus }) {
 
         <div className="border-t border-slate-100 pt-3">
           <p className="mb-2 font-medium text-slate-700">Provjeri poruku</p>
-          <p className="mb-2 text-[13px] text-slate-500">
+          <p className="mb-2 text-hint text-slate-500">
             Nalijepite tekst jedne SMS poruke banke da vidite kako će je aplikacija pročitati. Ništa se ne čuva.
           </p>
           <textarea
@@ -226,7 +226,7 @@ export function BankSmsTokenCard({ status }: { status: BankSmsStatus }) {
             </li>
             <li>Dodirnite <b>Done</b>. Prva stvarna poruka pojavit će se ovdje u „Na čekanju“; do tada provjerite format kroz „Provjeri poruku“.</li>
           </ol>
-          <p className="mt-2 text-[13px] text-slate-500">
+          <p className="mt-2 text-hint text-slate-500">
             Telefon mora imati internet u trenutku kad SMS stigne — poruka koja ne stigne ne šalje se naknadno. Izvod ostaje
             kontrola potpunosti. Ako i predsjednik i računovođa podese istu automatizaciju sa istim ključem, aplikacija
             prepoznaje duplikate.

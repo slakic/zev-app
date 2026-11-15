@@ -97,7 +97,7 @@ export function FilePicker({
           >
             {buttonLabel}
           </button>
-          <span className="text-[13px] text-slate-500">
+          <span className="text-hint text-slate-500">
             {files.length === 0 ? (hint ?? "ili ih prevucite ovdje") : `Izabrano: ${files.length}`}
           </span>
         </div>
@@ -107,7 +107,7 @@ export function FilePicker({
               <li key={`${f.name}-${f.size}-${f.lastModified}`} className="flex items-center justify-between gap-3 px-3 py-1.5 text-sm">
                 <span className="min-w-0 truncate text-slate-800" title={f.name}>{f.name}</span>
                 <span className="flex shrink-0 items-center gap-2">
-                  <span className="text-[13px] tabular-nums text-slate-500">{formatSize(f.size)}</span>
+                  <span className="text-hint tabular-nums text-slate-500">{formatSize(f.size)}</span>
                   <button
                     type="button"
                     disabled={disabled}

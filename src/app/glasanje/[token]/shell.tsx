@@ -9,7 +9,7 @@ export function Shell({ zevName, presidentName, children }: { zevName?: string; 
         <AuthBrandHeader />
       </div>
       {children}
-      <div className="mt-6 space-y-2 text-center text-[13px] text-slate-500 md:text-left">
+      <div className="mt-6 space-y-2 text-center text-hint text-slate-500 md:text-left">
         <p>
           {t("ballot.footerNotice")}
         </p>

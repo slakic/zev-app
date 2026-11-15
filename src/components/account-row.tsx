@@ -30,7 +30,7 @@ export function AccountRow({
       <tr className={open ? "bg-slate-50" : undefined}>
         <Td>
           <div>{a.name}</div>
-          {a.bankName && <div className="mt-0.5 text-[13px] text-slate-500">{a.bankName}</div>}
+          {a.bankName && <div className="mt-0.5 text-hint text-slate-500">{a.bankName}</div>}
         </Td>
         <Td>{a.type === "BANK" ? "Banka" : "Blagajna"}</Td>
         <Td className="font-mono text-xs">{a.iban ?? "—"}</Td>

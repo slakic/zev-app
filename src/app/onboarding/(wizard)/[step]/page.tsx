@@ -345,7 +345,7 @@ function ShareSum({ units }: { units: DraftUnit[] }) {
       <span className="font-medium">{t("onboarding.units.sum")}</span>
       <StatusBadge status={ok ? "OWNER_SUM_OK" : "OWNER_SUM_WARN"} label={`${fmtDec(sum.toString())} %`} />
       {!ok && units.length > 0 && (
-        <span className="text-[13px] text-slate-600">
+        <span className="text-hint text-slate-600">
           {diff.greaterThan(0)
             ? tf("onboarding.units.sumMissing", { razlika: fmtDec(diff.toString()) })
             : tf("onboarding.units.sumOver", { razlika: fmtDec(diff.abs().toString()) })}
@@ -619,7 +619,7 @@ function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
                 <span className="min-w-[12rem] font-medium text-slate-900">{draftPartyName(draft.data, st.partyKey)}<SourceChip source={st.source} /></span>
                 <span className="tabular-nums">{st.sharePercent.replace(".", ",")} %</span>
                 <span className="text-slate-600">{tf("onboarding.owners.since", { datum: formatDate(st.validFrom) })}</span>
-                {st.proofFilename && <span className="text-[13px] text-slate-600">{st.proofFilename}</span>}
+                {st.proofFilename && <span className="text-hint text-slate-600">{st.proofFilename}</span>}
                 <form action={removeStakeAction} className="ml-auto">
                   <Version draft={draft} />
                   <input type="hidden" name="key" value={st.key} />
@@ -633,7 +633,7 @@ function OwnersPanel({ draft, unit }: { draft: MyDraft; unit: DraftUnit }) {
         {proposals.length > 0 && (
           <div className="mt-4">
             <p className="text-sm font-semibold text-slate-700">{t("onboarding.import.proposals.title")}</p>
-            <p className="mt-0.5 max-w-[68ch] text-[13px] text-slate-600">{t("onboarding.import.proposals.hint")}</p>
+            <p className="mt-0.5 max-w-[68ch] text-hint text-slate-600">{t("onboarding.import.proposals.hint")}</p>
             <ul className="mt-2 divide-y divide-slate-200 border-y border-slate-200">
               {proposals.map((p) => (
                 <li key={p.key} className="py-3 text-sm">
@@ -725,7 +725,7 @@ function OwnersStep({ draft, openUnit }: { draft: MyDraft; openUnit?: string }) 
             <tr key={u.key} className={open ? "bg-slate-50" : undefined}>
               <Td>
                 {u.label}
-                <div className="text-[13px] text-slate-500">{placeOf(draft, u)} · {fmtDec(u.usableArea)} m²</div>
+                <div className="text-hint text-slate-500">{placeOf(draft, u)} · {fmtDec(u.usableArea)} m²</div>
               </Td>
               <Td>{owners.length > 0 ? owners.join(", ") : "—"}</Td>
               <Td>{disputed ? <StatusBadge status="OWNER_DISPUTED" label={t("onboarding.owners.disputedChip")} /> : <StatusBadge status={chip.status} label={chip.label} />}</Td>
@@ -762,7 +762,7 @@ function OfficesStep({ draft }: { draft: MyDraft }) {
           <div className="flex flex-wrap items-center gap-3">
             <p className="text-sm text-slate-700">
               {draftPartyName(draft.data, acc.partyKey)} · {tf("onboarding.owners.since", { datum: formatDate(acc.validFrom) })}<SourceChip source={acc.source} />
-              {acc.loginEmail && <span className="block text-[13px] text-slate-600">{tf("onboarding.offices.loginFor", { email: acc.loginEmail })}</span>}
+              {acc.loginEmail && <span className="block text-hint text-slate-600">{tf("onboarding.offices.loginFor", { email: acc.loginEmail })}</span>}
             </p>
             <form action={setAccountantLaterAction} className="ml-auto">
               <Version draft={draft} />

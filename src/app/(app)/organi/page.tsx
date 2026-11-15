@@ -128,7 +128,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
             <div className="text-sm">
               <div className="text-lg font-semibold text-slate-900">{partyDisplayName(holders.president.party)}</div>
               <div className="mt-1 text-slate-500">Mandat od {formatDate(holders.president.validFrom)}</div>
-              {holders.president.decisionRef && <div className="text-[13px] text-slate-500">Osnov: {holders.president.decisionRef}</div>}
+              {holders.president.decisionRef && <div className="text-hint text-slate-500">Osnov: {holders.president.decisionRef}</div>}
             </div>
           ) : (
             <p className="text-sm text-slate-500">Nije evidentiran predsjednik.</p>
@@ -139,7 +139,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
             <div className="text-sm">
               <div className="text-lg font-semibold text-slate-900">{partyDisplayName(holders.accountant.party)}</div>
               <div className="mt-1 text-slate-500">Angažman od {formatDate(holders.accountant.validFrom)}</div>
-              {holders.accountant.decisionRef && <div className="text-[13px] text-slate-500">Osnov: {holders.accountant.decisionRef}</div>}
+              {holders.accountant.decisionRef && <div className="text-hint text-slate-500">Osnov: {holders.accountant.decisionRef}</div>}
             </div>
           ) : (
             <p className="text-sm text-slate-500">Nije evidentiran računovođa.</p>
@@ -168,7 +168,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
               <SubmitBtn>Postavi</SubmitBtn>
             </form>
           </details>
-          <p className="mt-2 text-[13px] text-slate-500">
+          <p className="mt-2 text-hint text-slate-500">
             Postavljanje nove osobe automatski okončava tekući mandat prethodnog nosioca te funkcije na izabrani datum.
           </p>
         </Card>
@@ -176,7 +176,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
 
       <Card title={`Upravni odbor (${boardCount} ${memberWord(boardCount)}, uključujući predsjednika)`}>
         {boardCount < Number(boardSize) && (
-          <p className="mb-3 text-[13px] text-amber-800">
+          <p className="mb-3 text-hint text-amber-800">
             {tf("organi.boardSizeWarn", { broj: boardCount, rijec: memberWord(boardCount), preporuka: boardSize })}
           </p>
         )}
@@ -192,7 +192,7 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
             <tr key={m.id}>
               <Td>{partyDisplayName(m.party)}</Td>
               <Td>{formatDate(m.validFrom)}</Td>
-              <Td className="text-[13px] text-slate-500">{m.decisionRef ?? "—"}</Td>
+              <Td className="text-hint text-slate-500">{m.decisionRef ?? "—"}</Td>
               <Td>
                 {isPresident && (
                   <ConfirmAction
@@ -259,9 +259,9 @@ export default async function OrganiPage({ searchParams }: { searchParams: Promi
             <tr key={h.id}>
               <Td>{h.role === "PRESIDENT" ? "Predsjednik ZEV" : h.role === "ACCOUNTANT" ? "Računovođa" : "Član upravnog odbora"}</Td>
               <Td>{partyDisplayName(h.party)}</Td>
-              <Td className="whitespace-nowrap text-[13px]">{formatDate(h.validFrom)}</Td>
-              <Td className="whitespace-nowrap text-[13px]">{h.validTo ? formatDate(h.validTo) : <span className="text-emerald-600">aktivno</span>}</Td>
-              <Td className="text-[13px] text-slate-500">{h.decisionRef ?? "—"}</Td>
+              <Td className="whitespace-nowrap text-hint">{formatDate(h.validFrom)}</Td>
+              <Td className="whitespace-nowrap text-hint">{h.validTo ? formatDate(h.validTo) : <span className="text-emerald-600">aktivno</span>}</Td>
+              <Td className="text-hint text-slate-500">{h.decisionRef ?? "—"}</Td>
             </tr>
           ))}
         </Table>

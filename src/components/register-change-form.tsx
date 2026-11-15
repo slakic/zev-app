@@ -218,7 +218,7 @@ export function RegisterChangeForm({
             <legend className="text-sm font-medium text-slate-700">{t("register.change.retireWhich")}</legend>
             <div className="grid grid-cols-1 gap-1 sm:grid-cols-3">
               {units.map((u) => (
-                <label key={u.id} className="flex min-h-[44px] items-center gap-2 text-sm text-slate-700 md:min-h-0">
+                <label key={u.id} className="flex min-h-11 items-center gap-2 text-sm text-slate-700 md:min-h-0">
                   <input
                     type="checkbox"
                     checked={retire.includes(u.id)}
@@ -261,7 +261,7 @@ export function RegisterChangeForm({
                     const diff = gone ? -toMicro(u.ownershipShare) : (Number.isNaN(now) ? 0 : now - toMicro(u.ownershipShare));
                     return (
                       <tr key={u.id}>
-                        <td className="px-3 py-1.5"><span className="font-medium text-slate-900">{u.label}</span> <span className="block text-[13px] text-slate-500">{u.where}</span></td>
+                        <td className="px-3 py-1.5"><span className="font-medium text-slate-900">{u.label}</span> <span className="block text-hint text-slate-500">{u.where}</span></td>
                         <td className="px-3 py-1.5 text-right tabular-nums">{fmt(toMicro(u.ownershipShare))} %</td>
                         <td className="px-3 py-1.5 text-right">
                           {gone ? (
@@ -296,7 +296,7 @@ export function RegisterChangeForm({
                     <td className="px-3 py-1.5 text-right tabular-nums">{fmt(calc.before)} %</td>
                     <td className="px-3 py-1.5 text-right tabular-nums">{calc.invalid ? "—" : `${fmt(calc.after)} %`}</td>
                     <td className="px-3 py-1.5 text-right">
-                      <span className={`inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset ${calc.ok ? "bg-emerald-50 text-emerald-800 ring-emerald-600/20" : "bg-amber-50 text-amber-800 ring-amber-600/20"}`}>
+                      <span className={`inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-hint font-medium ring-1 ring-inset ${calc.ok ? "bg-emerald-50 text-emerald-800 ring-emerald-600/20" : "bg-amber-50 text-amber-800 ring-amber-600/20"}`}>
                         {calc.ok ? t("register.change.sumOk") : t("register.change.sumBad")}
                       </span>
                     </td>
@@ -304,7 +304,7 @@ export function RegisterChangeForm({
                 </tbody>
               </table>
             </div>
-            <p className="max-w-[68ch] text-[13px] text-slate-500">{t("register.change.sumHint")}</p>
+            <p className="max-w-[68ch] text-hint text-slate-500">{t("register.change.sumHint")}</p>
           </>
         )}
 
@@ -350,7 +350,7 @@ export function RegisterChangeForm({
             action={action}
           />
         ) : (
-          <p className="text-[13px] text-amber-800">{t("register.change.notReady")}</p>
+          <p className="text-hint text-amber-800">{t("register.change.notReady")}</p>
         )}
       </div>
     </Card>

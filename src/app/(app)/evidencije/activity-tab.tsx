@@ -65,7 +65,7 @@ export async function ActivityTab({ actor, sp }: { actor: Actor; sp: ActivitySea
           <input type="date" name="to" defaultValue={to} className={`${inputCls} ml-1 w-36`} />
         </label>
         <fieldset>
-          <legend className="mb-1 text-[13px] font-medium text-slate-500">{t("records.activity.category")}</legend>
+          <legend className="mb-1 text-hint font-medium text-slate-500">{t("records.activity.category")}</legend>
           <div className="flex flex-wrap gap-3">
             {ACTIVITY_CATEGORIES.map((c) => (
               <label key={c} className="inline-flex items-center gap-1.5 text-sm">
@@ -109,7 +109,7 @@ export async function ActivityTab({ actor, sp }: { actor: Actor; sp: ActivitySea
             const summary = summarize(e);
             return (
               <tr key={e.id}>
-                <Td className={label.translated ? "text-sm" : "font-mono text-[13px] text-slate-500"}>
+                <Td className={label.translated ? "text-sm" : "font-mono text-hint text-slate-500"}>
                   {label.label}
                   {summary && <span className="ml-1.5 text-slate-500">— {summary}</span>}
                 </Td>

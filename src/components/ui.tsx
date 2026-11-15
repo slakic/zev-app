@@ -26,7 +26,7 @@ export function PageHeader({
           </Link>
         )}
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>
-        {subtitle && <p className="mt-1 text-[15px] text-slate-500">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-lead text-slate-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -39,7 +39,7 @@ export function Card({
   return (
     <section className={`rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm ${className ?? ""}`}>
       {title && <h2 className={`text-sm font-semibold text-slate-700 ${hint ? "" : "mb-3"}`}>{title}</h2>}
-      {hint && <p className="mb-3 mt-0.5 text-[13px] text-slate-500">{hint}</p>}
+      {hint && <p className="mb-3 mt-0.5 text-hint text-slate-500">{hint}</p>}
       {children}
     </section>
   );
@@ -107,7 +107,7 @@ const statusTone: Record<string, string> = {
 export function StatusBadge({ status, label }: { status: string; label: string }) {
   const tone = badgeTones[statusTone[status] ?? "slate"];
   return (
-    <span className={`inline-block rounded-full px-2.5 py-0.5 text-[13px] font-medium ring-1 ring-inset ${tone}`}>
+    <span className={`inline-block rounded-full px-2.5 py-0.5 text-hint font-medium ring-1 ring-inset ${tone}`}>
       {label}
     </span>
   );
@@ -143,7 +143,7 @@ export function StatusTimeline({
             <div className="flex w-16 flex-col items-center gap-1 text-center">
               <span
                 aria-current={current ? "step" : undefined}
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-2xs font-semibold ${
                   done
                     ? "bg-primary text-white"
                     : current
@@ -154,7 +154,7 @@ export function StatusTimeline({
                 {done ? <CheckCircleIcon /> : i + 1}
               </span>
               <span
-                className={`text-[11px] leading-tight ${
+                className={`text-2xs leading-tight ${
                   current ? "font-semibold text-slate-700" : "text-slate-500"
                 }`}
               >
@@ -303,13 +303,13 @@ export function Table({
                 {emptyTitle ? (
                   <div className="flex flex-col items-center gap-2">
                     <EmptyTrayIcon />
-                    <div className="text-[15px] font-medium text-slate-700">{emptyTitle}</div>
-                    {emptyHint && <div className="max-w-sm text-[13px] text-slate-500">{emptyHint}</div>}
+                    <div className="text-lead font-medium text-slate-700">{emptyTitle}</div>
+                    {emptyHint && <div className="max-w-sm text-hint text-slate-500">{emptyHint}</div>}
                   </div>
                 ) : (
                   <div className="text-slate-500">
                     <div>Nema podataka.</div>
-                    {emptyHint && <div className="mt-1 text-[13px]">{emptyHint}</div>}
+                    {emptyHint && <div className="mt-1 text-hint">{emptyHint}</div>}
                   </div>
                 )}
               </td>
@@ -330,11 +330,12 @@ export function Td({
 // Compact geometry for a "Radnje" column cell, distinct from btnBase (Plans/ui-ux-redesign-plan.md
 // §3.C): 28px tall on desktop — still clears WCAG 2.2 AA's 24px minimum target size, trading the
 // 44px AAA target Faza 0 aimed for in exchange for the row density a real user asked for — but
-// max-md:min-h-[44px] keeps the full touch target below `md`, where the card transform (above)
+// max-md:min-h-11 keeps the full touch target below `md` (and large:min-h-11 under the
+// "Veći tekst" preference, Plans/pristupacni-prikaz-plan.md), where the card transform (above)
 // also gives the action a whole card-width row to sit in rather than a cramped cell.
 const rowActionBase =
-  "inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium " +
-  "min-h-[28px] max-md:min-h-[44px] transition-all active:scale-[0.97] focus-visible:outline-none " +
+  "inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-hint font-medium " +
+  "min-h-7 max-md:min-h-11 large:min-h-11 transition-all active:scale-[0.97] focus-visible:outline-none " +
   "focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50";
 
 /** A "Radnje" (actions) column cell — a verb, not an identity (see `RowLink` below). Defaults to
@@ -395,10 +396,11 @@ export function RowLink({ href, children, className, newTab }: { href: string; c
 }
 
 // py-2.5 + a 44px floor below md keeps every button a real touch target (WCAG 2.5.5) —
-// the old py-1.5 measured ~30px tall (Plans/ui-ux-redesign-plan.md §3.7, A2).
+// the old py-1.5 measured ~30px tall (Plans/ui-ux-redesign-plan.md §3.7, A2). Under the
+// "Veći tekst" preference the floor applies on every width (Plans/pristupacni-prikaz-plan.md).
 export const btnBase =
   "inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium " +
-  "max-md:min-h-[44px] transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 " +
+  "max-md:min-h-11 large:min-h-11 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 " +
   "focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50";
 
 // Five weights of loudness, not three (Plans/ui-ux-redesign-plan.md §3.6): a page author who
@@ -481,7 +483,7 @@ export function SegmentedAction({
             value={opt.value}
             onClick={onSelect ? () => onSelect(opt.value) : undefined}
             aria-pressed={isActive}
-            className={`inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${btnVariantCls[variant]}`}
+            className={`inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-medium transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${btnVariantCls[variant]}`}
           >
             {isActive && <SegmentCheckIcon />}
             {opt.label}
@@ -675,14 +677,14 @@ export function Tabs({
             href={hrefFor(tab.key)}
             scroll={false}
             aria-current={isActive ? "page" : undefined}
-            className={`flex min-h-[44px] shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${
+            className={`flex min-h-11 shrink-0 items-center whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${
               isActive
                 ? "border-primary text-primary-ink"
                 : "border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
             }`}
           >
             {tab.label}
-            {tab.count !== undefined && <span className="ml-1.5 text-[13px] text-slate-500">· {tab.count}</span>}
+            {tab.count !== undefined && <span className="ml-1.5 text-hint text-slate-500">· {tab.count}</span>}
           </Link>
         );
       })}
@@ -710,7 +712,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
     <label className="block text-sm">
       <span className="mb-1 block font-medium text-slate-700">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-[13px] text-slate-500">{hint}</span>}
+      {hint && <span className="mt-1 block text-hint text-slate-500">{hint}</span>}
     </label>
   );
 }
@@ -744,9 +746,9 @@ export function ChoiceCards({
             <input type="radio" name={name} value={o.value} defaultChecked={o.value === defaultValue} className="mt-1 h-4 w-4 shrink-0 accent-primary" />
             <span className="min-w-0">
               <span className="block text-sm font-semibold text-slate-900">{o.title}</span>
-              {o.allowed && <span className="mt-0.5 block text-[13px] text-slate-600">{o.allowed}</span>}
-              {o.denied && <span className="mt-0.5 block text-[13px] text-slate-600">{o.denied}</span>}
-              {o.note && <span className="mt-0.5 block text-[13px] text-slate-500">{o.note}</span>}
+              {o.allowed && <span className="mt-0.5 block text-hint text-slate-600">{o.allowed}</span>}
+              {o.denied && <span className="mt-0.5 block text-hint text-slate-600">{o.denied}</span>}
+              {o.note && <span className="mt-0.5 block text-hint text-slate-500">{o.note}</span>}
             </span>
           </label>
         ))}
@@ -820,7 +822,7 @@ export function TaskRow({ row }: { row: TaskRowData }) {
           </div>
         ) : chip}
         <p className="text-sm text-slate-800">{row.text}</p>
-        {row.meta && <p className="text-[13px] text-slate-600">{row.meta}</p>}
+        {row.meta && <p className="text-hint text-slate-600">{row.meta}</p>}
       </div>
       {row.action && (
         <div className="shrink-0 max-sm:[&>*]:w-full">
@@ -849,7 +851,7 @@ export function TaskList({
           <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
           <div>
             <p className="text-sm text-slate-800">{empty.text}</p>
-            {empty.meta && <p className="mt-1 text-[13px] text-slate-600">{empty.meta}</p>}
+            {empty.meta && <p className="mt-1 text-hint text-slate-600">{empty.meta}</p>}
           </div>
         </div>
       )}
@@ -861,7 +863,7 @@ export function TaskList({
         </ul>
       )}
       {doneNote && rows.length > 0 && (
-        <div className="mt-3 flex items-center gap-2 border-t border-border pt-3 text-[13px] text-slate-600">
+        <div className="mt-3 flex items-center gap-2 border-t border-border pt-3 text-hint text-slate-600">
           <IconCheck className="h-4 w-4 shrink-0 text-emerald-700" />
           <span>{doneNote}</span>
         </div>

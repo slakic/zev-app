@@ -42,7 +42,7 @@ export function McpOAuthConsentForm({
       </div>
       {localhost && <Flash warn={t("oauth.consent.localhost")} inset />}
 
-      <form action={mcpOAuthSwitchAccountAction} className="text-[13px] text-slate-600">
+      <form action={mcpOAuthSwitchAccountAction} className="text-hint text-slate-600">
         <Hidden params={params} />
         {tf("oauth.consent.signedIn", { email })}{" "}
         <button type="submit" className="text-blue-700 hover:underline">{t("oauth.consent.switchAccount")}</button>
@@ -61,7 +61,7 @@ export function McpOAuthConsentForm({
             ))}
           </select>
         </Field>
-        <p className="text-[13px] text-slate-500">{t("oauth.consent.note")}</p>
+        <p className="text-hint text-slate-500">{t("oauth.consent.note")}</p>
         <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
           <SubmitBtn name="decision" value="allow">{t("oauth.consent.allow")}</SubmitBtn>
           <SubmitBtn name="decision" value="deny" variant="secondary">{t("oauth.consent.deny")}</SubmitBtn>

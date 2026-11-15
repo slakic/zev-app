@@ -67,7 +67,7 @@ export function UnitRow({
         {u.ownerSum && (
           <Td>
             <StatusBadge status={u.ownerSum.ok ? "OWNER_SUM_OK" : "OWNER_SUM_WARN"} label={u.ownerSum.label} />
-            {u.ownerSum.note && <div className="mt-1 text-[13px] text-amber-800">{u.ownerSum.note}</div>}
+            {u.ownerSum.note && <div className="mt-1 text-hint text-amber-800">{u.ownerSum.note}</div>}
           </Td>
         )}
         <Td>{u.occupantsDisplay}</Td>
@@ -92,11 +92,11 @@ export function UnitRow({
                   <input type="hidden" name="usableArea" value={u.usableArea} />
                   <input type="hidden" name="ownershipShare" value={u.ownershipShare} />
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:col-span-4 sm:grid-cols-4">
-                    <div><dt className="text-[13px] text-slate-500">Zgrada</dt><dd>{u.buildingName}</dd></div>
-                    <div><dt className="text-[13px] text-slate-500">Oznaka · tip</dt><dd>{u.label} · {u.typeLabel}</dd></div>
-                    <div><dt className="text-[13px] text-slate-500">Površina (m²)</dt><dd className="tabular-nums">{u.usableArea}</dd></div>
-                    <div><dt className="text-[13px] text-slate-500">Udio u troškovima (%)</dt><dd className="tabular-nums">{u.ownershipShare}</dd></div>
-                    <p className="col-span-2 text-[13px] text-slate-500 sm:col-span-4">Ovi podaci su dio utvrđenog registra i mijenjaju se kroz Izmjenu registra.</p>
+                    <div><dt className="text-hint text-slate-500">Zgrada</dt><dd>{u.buildingName}</dd></div>
+                    <div><dt className="text-hint text-slate-500">Oznaka · tip</dt><dd>{u.label} · {u.typeLabel}</dd></div>
+                    <div><dt className="text-hint text-slate-500">Površina (m²)</dt><dd className="tabular-nums">{u.usableArea}</dd></div>
+                    <div><dt className="text-hint text-slate-500">Udio u troškovima (%)</dt><dd className="tabular-nums">{u.ownershipShare}</dd></div>
+                    <p className="col-span-2 text-hint text-slate-500 sm:col-span-4">Ovi podaci su dio utvrđenog registra i mijenjaju se kroz Izmjenu registra.</p>
                   </dl>
                 </>
               ) : (

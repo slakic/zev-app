@@ -22,7 +22,7 @@ function Json({ label, value }: { label: string; value: unknown }) {
     <div>
       <dt className="font-medium text-slate-700">{label}</dt>
       <dd>
-        <pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-white p-2 font-mono text-[13px] text-slate-700">
+        <pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-white p-2 font-mono text-hint text-slate-700">
           {JSON.stringify(value, null, 2)}
         </pre>
       </dd>
@@ -115,18 +115,18 @@ export async function AuditTab({ actor, sp }: { actor: Actor; sp: AuditSearch })
             return (
               <tr key={e.id} className="align-top">
                 <Td>
-                  <div className={action.translated ? "text-sm font-medium text-slate-900" : "break-all font-mono text-[13px] text-slate-600"}>
+                  <div className={action.translated ? "text-sm font-medium text-slate-900" : "break-all font-mono text-hint text-slate-600"}>
                     {action.label}
                     {summary && <span className="font-normal text-slate-500"> — {summary}</span>}
                   </div>
                   {action.translated && (
-                    <div className="hidden break-all font-mono text-[13px] text-slate-500 md:block">{e.action}</div>
+                    <div className="hidden break-all font-mono text-hint text-slate-500 md:block">{e.action}</div>
                   )}
-                  {e.reason && <div className="mt-0.5 text-[13px] text-slate-600">{t("records.audit.reason")}: {e.reason}</div>}
+                  {e.reason && <div className="mt-0.5 text-hint text-slate-600">{t("records.audit.reason")}: {e.reason}</div>}
                   <details className="group">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded max-md:min-h-[44px] md:justify-start [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                      <span className="text-[13px] text-slate-500 md:hidden">{who} · {when}</span>
-                      <span className="inline-flex items-center gap-1 text-[13px] font-medium text-primary-ink">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded max-md:min-h-11 md:justify-start [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                      <span className="text-hint text-slate-500 md:hidden">{who} · {when}</span>
+                      <span className="inline-flex items-center gap-1 text-hint font-medium text-primary-ink">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 transition-transform duration-150 group-open:rotate-90" aria-hidden="true">
                           <path d="M7 5l6 5-6 5" />
                         </svg>
@@ -134,7 +134,7 @@ export async function AuditTab({ actor, sp }: { actor: Actor; sp: AuditSearch })
                         <span className="hidden group-open:inline">{t("records.audit.hide")}</span>
                       </span>
                     </summary>
-                    <dl className="mt-1 space-y-2 rounded-lg bg-slate-50 p-3 text-[13px]">
+                    <dl className="mt-1 space-y-2 rounded-lg bg-slate-50 p-3 text-hint">
                       <Detail label={t("records.audit.target")}>{labelForTarget(e.targetType)}</Detail>
                       {e.targetId && <Detail label={t("records.audit.recordId")}><span className="font-mono">{e.targetId}</span></Detail>}
                       <Detail label={t("records.audit.code")}><span className="font-mono">{e.action}</span></Detail>

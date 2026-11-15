@@ -175,7 +175,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
               <div className="space-y-3 lg:col-start-1 lg:row-start-1">
                 <div>
-                  <div className="text-[13px] text-slate-500">{t("pay.amount")}</div>
+                  <div className="text-hint text-slate-500">{t("pay.amount")}</div>
                   <div className="text-2xl font-semibold tabular-nums text-ink">{formatMoney(pay.remaining)}</div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
@@ -183,7 +183,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                   {overdue && <StatusBadge status="OVERDUE" label={tEnum("invoiceStatus", "OVERDUE")} />}
                 </div>
                 {overdue && (
-                  <p className="text-[13px] text-slate-600">
+                  <p className="text-hint text-slate-600">
                     {tf("pay.overdueSince", { kada: tf(isOneForm(pay.overdueDays) ? "pay.daysAgo.one" : "pay.daysAgo.other", { dana: pay.overdueDays }) })}
                   </p>
                 )}
@@ -205,7 +205,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                 )}
               </div>
               <div className="space-y-3 lg:col-start-1 lg:row-start-2">
-                <p className="max-w-[68ch] text-[13px] text-slate-500">{t("pay.note")}</p>
+                <p className="max-w-[68ch] text-hint text-slate-500">{t("pay.note")}</p>
                 {pdfForm}
               </div>
             </div>
@@ -241,7 +241,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             <div className="flex justify-between"><dt>Otvoreno:</dt><dd className="tabular-nums font-semibold">{formatMoney(open.toFixed(2))}</dd></div>
             <div className="flex justify-between"><dt>Izdata:</dt><dd>{formatDate(inv.issueDate)}</dd></div>
             <div className="flex justify-between"><dt>Dospijeće:</dt><dd>{formatDate(inv.dueDate)}</dd></div>
-            <div className="flex justify-between"><dt>Poziv na broj:</dt><dd className="text-[13px] tabular-nums">{inv.paymentReference ?? "—"}</dd></div>
+            <div className="flex justify-between"><dt>Poziv na broj:</dt><dd className="text-hint tabular-nums">{inv.paymentReference ?? "—"}</dd></div>
             <div className="flex justify-between gap-3">
               <dt>Dostava e-poštom:</dt>
               <dd className="text-right">
@@ -252,7 +252,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                 {emailStatus?.status === "FAILED" && (
                   <>
                     Neuspješno
-                    {emailStatus.lastError && <span className="block text-[13px] text-slate-500">{emailStatus.lastError}</span>}
+                    {emailStatus.lastError && <span className="block text-hint text-slate-500">{emailStatus.lastError}</span>}
                   </>
                 )}
               </dd>
@@ -334,7 +334,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
           <Card title="Storniranje">
             {!paid.isZero() ? (
               <div className="space-y-2">
-                <p className="text-[13px] text-slate-600">
+                <p className="text-hint text-slate-600">
                   {tf("confirm.invoiceCancel.hasPayments", { iznos: formatMoney(paid.toFixed(2)) })}
                 </p>
                 <ul className="space-y-1 text-sm">
@@ -348,7 +348,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
               </div>
             ) : (
               <>
-                <p className="mb-2 text-[13px] text-slate-500">{t("confirm.invoiceCancel.hint")}</p>
+                <p className="mb-2 text-hint text-slate-500">{t("confirm.invoiceCancel.hint")}</p>
                 <ConfirmAction
                   trigger="Storniraj"
                   title={t("confirm.invoiceCancel.title")}
@@ -380,11 +380,11 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
 function PayField({ label, children, unit, extra, breakAll }: { label: string; children: ReactNode; unit?: string; extra?: string | null; breakAll?: boolean }) {
   return (
     <div>
-      <dt className="text-[13px] text-slate-500">{label}</dt>
-      <dd className="text-[15px] tabular-nums text-ink">
+      <dt className="text-hint text-slate-500">{label}</dt>
+      <dd className="text-lead tabular-nums text-ink">
         <span className={`select-all ${breakAll ? "break-all" : "break-words"}`}>{children}</span>
         {unit && <span className="ml-1 text-slate-600">{unit}</span>}
-        {extra && <span className="block text-[13px] text-slate-500">{extra}</span>}
+        {extra && <span className="block text-hint text-slate-500">{extra}</span>}
       </dd>
     </div>
   );

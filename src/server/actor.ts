@@ -4,8 +4,11 @@ import { getAuthContext, destroySession } from "@/server/auth/session";
 import type { Actor } from "@/server/auth/guards";
 import type { Role } from "@/generated/prisma/client";
 
+/** Postavke prikaza sesije (Plans/pristupacni-prikaz-plan.md) — školjke crtaju „A+” iz njih. */
+type UiPrefs = { uiTextLarge: boolean; uiPrefsAskedAt: Date | null };
+
 /** Resolve the Actor for server components / actions; redirects to /login when absent. */
-export async function requireActor(...roles: Role[]): Promise<Actor & { displayName: string; email: string }> {
+export async function requireActor(...roles: Role[]): Promise<Actor & { displayName: string; email: string } & UiPrefs> {
   const ctx = await getAuthContext();
   if (!ctx) redirect("/login");
   // A suspended tenant should read as clearly blocked, not silently forbidden. Sign the
@@ -25,6 +28,8 @@ export async function requireActor(...roles: Role[]): Promise<Actor & { displayN
     displayName: ctx.displayName,
     email: ctx.email,
     label: ctx.displayName,
+    uiTextLarge: ctx.uiTextLarge,
+    uiPrefsAskedAt: ctx.uiPrefsAskedAt,
   };
   if (roles.length > 0 && !ctx.roles.some((r) => roles.includes(r))) {
     redirect("/?err=forbidden");
@@ -39,7 +44,7 @@ export async function requireActor(...roles: Role[]): Promise<Actor & { displayN
  * user visiting /admin as unauthenticated. Deliberately skips the zevSuspended check:
  * /admin operates at the platform level, not within any one tenant.
  */
-export async function requireSuperAdminActor(): Promise<Actor & { displayName: string; email: string }> {
+export async function requireSuperAdminActor(): Promise<Actor & { displayName: string; email: string } & UiPrefs> {
   const ctx = await getAuthContext();
   if (!ctx) redirect("/login");
   if (!ctx.isSuperAdmin) redirect("/?err=forbidden");
@@ -53,10 +58,12 @@ export async function requireSuperAdminActor(): Promise<Actor & { displayName: s
     displayName: ctx.displayName,
     email: ctx.email,
     label: ctx.displayName,
+    uiTextLarge: ctx.uiTextLarge,
+    uiPrefsAskedAt: ctx.uiPrefsAskedAt,
   };
 }
 
-export async function maybeActor(): Promise<(Actor & { displayName: string }) | null> {
+export async function maybeActor(): Promise<(Actor & { displayName: string } & UiPrefs) | null> {
   const ctx = await getAuthContext();
   if (!ctx) return null;
   return {
@@ -68,6 +75,8 @@ export async function maybeActor(): Promise<(Actor & { displayName: string }) | 
     sessionId: ctx.sessionId,
     displayName: ctx.displayName,
     label: ctx.displayName,
+    uiTextLarge: ctx.uiTextLarge,
+    uiPrefsAskedAt: ctx.uiPrefsAskedAt,
   };
 }
 

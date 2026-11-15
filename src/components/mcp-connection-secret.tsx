@@ -26,17 +26,17 @@ export function CopyField({ label, value, hint }: { label: string; value: string
       <div className="mt-1 flex max-w-3xl flex-wrap items-center gap-2">
         <label className="min-w-0 flex-1">
           <span className="sr-only">{label}</span>
-          <input readOnly value={value} onFocus={(e) => e.currentTarget.select()} className={`${inputCls} bg-slate-50 font-mono text-[13px]`} />
+          <input readOnly value={value} onFocus={(e) => e.currentTarget.select()} className={`${inputCls} bg-slate-50 font-mono text-hint`} />
         </label>
         <Btn type="button" variant="tonal" onClick={copy}>{t("assistants.secret.copy")}</Btn>
-        <span aria-live="polite" className="text-[13px] text-slate-600">{copied ? t("assistants.secret.copied") : ""}</span>
+        <span aria-live="polite" className="text-hint text-slate-600">{copied ? t("assistants.secret.copied") : ""}</span>
       </div>
-      {hint && <p className="mt-1 text-[13px] text-slate-500">{hint}</p>}
+      {hint && <p className="mt-1 text-hint text-slate-500">{hint}</p>}
     </div>
   );
 }
 
-const pre = "mt-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-[13px] text-slate-800";
+const pre = "mt-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-hint text-slate-800";
 
 export function McpConnectionSecret({
   serverUrl, token, client, oauthEnabled = false, onDone,

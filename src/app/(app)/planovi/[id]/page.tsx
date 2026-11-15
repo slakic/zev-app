@@ -149,7 +149,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
             </Field>
             <SubmitBtn>Usvoji plan</SubmitBtn>
           </form>
-          {acceptedProposals.length === 0 && <p className="mt-2 text-[13px] text-amber-700">Nema usvojenih prijedloga — plan se usvaja tek nakon odluke skupštine.</p>}
+          {acceptedProposals.length === 0 && <p className="mt-2 text-hint text-amber-700">Nema usvojenih prijedloga — plan se usvaja tek nakon odluke skupštine.</p>}
         </Card>
       )}
 

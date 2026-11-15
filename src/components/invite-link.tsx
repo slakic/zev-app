@@ -33,12 +33,12 @@ export function InviteLink({ link, email, inset, emailStatus = "skipped", emailE
       <div className="mt-4 flex max-w-3xl flex-wrap items-center gap-2">
         <label className="min-w-0 flex-1">
           <span className="sr-only">{t("onboarding.newPage.linkTitle")}</span>
-          <input readOnly value={link} onFocus={(e) => e.currentTarget.select()} className={`${inputCls} bg-slate-50 font-mono text-[13px]`} />
+          <input readOnly value={link} onFocus={(e) => e.currentTarget.select()} className={`${inputCls} bg-slate-50 font-mono text-hint`} />
         </label>
         <Btn type="button" variant="tonal" onClick={copy}>{t("onboarding.newPage.copy")}</Btn>
-        <span aria-live="polite" className="text-[13px] text-slate-600">{copied ? t("onboarding.newPage.copied") : ""}</span>
+        <span aria-live="polite" className="text-hint text-slate-600">{copied ? t("onboarding.newPage.copied") : ""}</span>
       </div>
-      <p className="mt-3 text-[13px] text-slate-500">{tf("onboarding.newPage.linkWarning", { email })}</p>
+      <p className="mt-3 text-hint text-slate-500">{tf("onboarding.newPage.linkWarning", { email })}</p>
     </>
   );
   if (inset) {
