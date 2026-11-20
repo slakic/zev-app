@@ -137,10 +137,27 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "supplier.create": "FINANCE",
   "transaction.cancel": "FINANCE",
   "transaction.enter": "FINANCE",
+  // Kontni plan (Plans/kontni-plan-i-knjizenje-plan.md, A1)
+  "zev_chart.assign": "FINANCE",
+  "zev_chart.activate": "FINANCE",
+  "zev_chart.retire": "FINANCE",
+  "zev_account.create": "FINANCE",
+  "zev_account.update": "FINANCE",
+  "zev_account.deactivate": "FINANCE",
+  "zev_account.reactivate": "FINANCE",
+  "zev_account.replace": "FINANCE",
+  "zev_account.delete": "FINANCE",
+  "fiscal_year.open": "FINANCE",
 
   // ---- SYSTEM — platform/technical (excluded from /aktivnosti by default; §9/Faza 3 for
   // /admin/aktivnosti, where this is exactly what a super admin wants to see) ----
   "admin.account.create": "SYSTEM",
+  // Kontni predlošci su platformski (super admin) — A1
+  "chart_template.create": "SYSTEM",
+  "chart_template.version": "SYSTEM",
+  "chart_template.update": "SYSTEM",
+  "chart_template.import": "SYSTEM",
+  "chart_template.status": "SYSTEM",
   "admin.membership.grant": "SYSTEM",
   "admin.membership.grant_self": "SYSTEM",
   "admin.membership.revoke": "SYSTEM",

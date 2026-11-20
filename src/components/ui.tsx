@@ -101,6 +101,8 @@ const statusTone: Record<string, string> = {
   DRAFT_PUBLISHED: "green", OWNER_DISPUTED: "slate",
   // Uvoz nacrta iz fajla i asistent (MCP): oznaka izvora na stavkama koje nisu unesene rukom.
   SOURCE_IMPORT: "slate", SOURCE_MCP_OWNER: "blue", SOURCE_MCP_ADMIN: "blue",
+  // Kontni plan (A1): status predloška, plana, konta i poslovnog perioda; tab koji još nije dostupan.
+  REVIEWED: "green", DEMO: "amber", RETIRED: "slate", OPEN: "green", ACCOUNT_INACTIVE: "slate", NOT_YET_AVAILABLE: "slate",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */

@@ -1106,6 +1106,74 @@ export type EnumNotifStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumNotifStatusFilter<$PrismaModel>
 }
 
+export type EnumChartTemplateStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChartTemplateStatus | Prisma.EnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChartTemplateStatusFilter<$PrismaModel> | $Enums.ChartTemplateStatus
+}
+
+export type EnumChartTemplateStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChartTemplateStatus | Prisma.EnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChartTemplateStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChartTemplateStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChartTemplateStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChartTemplateStatusFilter<$PrismaModel>
+}
+
+export type EnumAccountNatureFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountNature | Prisma.EnumAccountNatureFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountNatureFilter<$PrismaModel> | $Enums.AccountNature
+}
+
+export type EnumAccountNatureWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountNature | Prisma.EnumAccountNatureFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountNatureWithAggregatesFilter<$PrismaModel> | $Enums.AccountNature
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountNatureFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountNatureFilter<$PrismaModel>
+}
+
+export type EnumZevChartStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ZevChartStatus | Prisma.EnumZevChartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumZevChartStatusFilter<$PrismaModel> | $Enums.ZevChartStatus
+}
+
+export type EnumZevChartStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ZevChartStatus | Prisma.EnumZevChartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumZevChartStatusWithAggregatesFilter<$PrismaModel> | $Enums.ZevChartStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumZevChartStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumZevChartStatusFilter<$PrismaModel>
+}
+
+export type EnumFiscalStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.FiscalStatus | Prisma.EnumFiscalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFiscalStatusFilter<$PrismaModel> | $Enums.FiscalStatus
+}
+
+export type EnumFiscalStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FiscalStatus | Prisma.EnumFiscalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFiscalStatusWithAggregatesFilter<$PrismaModel> | $Enums.FiscalStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFiscalStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFiscalStatusFilter<$PrismaModel>
+}
+
 export type EnumOnboardingInviteStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
   in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
@@ -2257,6 +2325,74 @@ export type NestedEnumNotifStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotifStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotifStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumChartTemplateStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChartTemplateStatus | Prisma.EnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChartTemplateStatusFilter<$PrismaModel> | $Enums.ChartTemplateStatus
+}
+
+export type NestedEnumChartTemplateStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChartTemplateStatus | Prisma.EnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChartTemplateStatus[] | Prisma.ListEnumChartTemplateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChartTemplateStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChartTemplateStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChartTemplateStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChartTemplateStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumAccountNatureFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountNature | Prisma.EnumAccountNatureFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountNatureFilter<$PrismaModel> | $Enums.AccountNature
+}
+
+export type NestedEnumAccountNatureWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountNature | Prisma.EnumAccountNatureFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountNature[] | Prisma.ListEnumAccountNatureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountNatureWithAggregatesFilter<$PrismaModel> | $Enums.AccountNature
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountNatureFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountNatureFilter<$PrismaModel>
+}
+
+export type NestedEnumZevChartStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ZevChartStatus | Prisma.EnumZevChartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumZevChartStatusFilter<$PrismaModel> | $Enums.ZevChartStatus
+}
+
+export type NestedEnumZevChartStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ZevChartStatus | Prisma.EnumZevChartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ZevChartStatus[] | Prisma.ListEnumZevChartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumZevChartStatusWithAggregatesFilter<$PrismaModel> | $Enums.ZevChartStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumZevChartStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumZevChartStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumFiscalStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.FiscalStatus | Prisma.EnumFiscalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFiscalStatusFilter<$PrismaModel> | $Enums.FiscalStatus
+}
+
+export type NestedEnumFiscalStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FiscalStatus | Prisma.EnumFiscalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FiscalStatus[] | Prisma.ListEnumFiscalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFiscalStatusWithAggregatesFilter<$PrismaModel> | $Enums.FiscalStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFiscalStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFiscalStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumOnboardingInviteStatusFilter<$PrismaModel = never> = {

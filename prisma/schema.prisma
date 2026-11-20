@@ -204,6 +204,9 @@ model Zev {
   tier               ZevTier  @default(FULL)
   /// Soft-disable a tenant without deleting its data (e.g. suspended account).
   active             Boolean  @default(true)
+  /// Demo/test ZEV (seed): jedini kome se smije dodijeliti DEMO kontni predložak
+  /// (Plans/kontni-plan-i-knjizenje-plan.md, A-Q5). Produkcioni ZEV ostaje false.
+  isDemo             Boolean  @default(false)
   /// Registar posebnih dijelova (FR, K-02): DRAFT -> ESTABLISHED; REVIEW = postojeci ZEV koji
   /// predsjednik tek treba da provjeri i utvrdi (FR-Q4).
   unitRegisterStatus        UnitRegisterStatus @default(DRAFT)
@@ -256,6 +259,10 @@ model Zev {
   notificationMessages  NotificationMessage[]
   auditEvents           AuditEvent[]
   settings              Setting[]
+  zevCharts             ZevChart[]
+  zevAccounts           ZevAccount[]
+  fiscalYears           FiscalYear[]
+  fiscalPeriods         FiscalPeriod[]
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 }
@@ -1846,6 +1853,170 @@ model PlatformSetting {
   value       Json
   updatedAt   DateTime @updatedAt
   updatedById String?
+}
+
+// ---------------------------------------------------------------------------
+// Kontni plan (Plans/kontni-plan-i-knjizenje-plan.md, Faza A1). Ovo NIJE knjigovodstvo:
+// samo šifarnik konta, predlošci i poslovne godine/periodi — nema naloga ni knjiženja.
+// Šifra konta je uvijek TEKST (vodeće nule se čuvaju: "0100" i "100" su dva konta).
+// ---------------------------------------------------------------------------
+
+enum ChartTemplateStatus {
+  DRAFT    // u izradi (uvoz konta); ne dodjeljuje se ZEV-u
+  DEMO     // demonstracioni, izmišljene šifre — samo za Zev.isDemo
+  REVIEWED // stručno provjeren: source + reviewedBy + reviewedAt obavezni
+  RETIRED  // ne dodjeljuje se novim ZEV-ovima; postojeći planovi ostaju
+}
+
+/// Računovodstvena priroda konta. Lista čeka potvrdu računovođe (plan §10 R-1).
+enum AccountNature {
+  ASSET
+  LIABILITY
+  EQUITY
+  INCOME
+  EXPENSE
+  OFF_BALANCE
+}
+
+enum ZevChartStatus {
+  DRAFT   // dodijeljen, razrada u toku; šifre, vrste i hijerarhija se još smiju mijenjati
+  ACTIVE  // potvrđen; šifra/vrsta/zbirno-knjižno su zaključani (promjena = zamjena konta)
+  RETIRED // povučen; ostaje čitljiv
+}
+
+enum FiscalStatus {
+  OPEN
+  CLOSED
+}
+
+/// Predložak kontnog plana (platformski — dijele ga svi ZEV-ovi; uređuje ga samo super admin).
+/// Nova verzija = novi red sa istim `key` i većom `version`; poslije izlaska iz DRAFT-a red i
+/// njegova konta se ne mijenjaju (servis). Dodjela ZEV-u pravi KOPIJU (ZevChart), pa izmjena
+/// predloška nikad ne dira postojeće planove ZEV-ova.
+model ChartTemplate {
+  id           String              @id @default(cuid())
+  key          String
+  version      Int
+  name         String
+  jurisdiction String
+  source       String?             // propis/izvor okvira; obavezan za REVIEWED
+  note         String?
+  status       ChartTemplateStatus @default(DRAFT)
+  reviewedBy   String?             // ime i svojstvo stručnog lica (tekst)
+  reviewedAt   DateTime?
+  validFrom    DateTime?
+  validTo      DateTime?
+  /// Pravila šifara, vezana za predložak (src/lib/accountCodes.ts CodeRules):
+  /// { digitsOnly, allowedLengths, childExtendsParent, maxDepth }
+  codeRules    Json
+  accounts     ChartTemplateAccount[]
+  zevCharts    ZevChart[]
+  createdById  String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@unique([key, version])
+}
+
+model ChartTemplateAccount {
+  id                 String        @id @default(cuid())
+  template           ChartTemplate @relation(fields: [templateId], references: [id])
+  templateId         String
+  code               String
+  name               String
+  description        String?
+  parent             ChartTemplateAccount?  @relation("TplTree", fields: [parentId], references: [id], onDelete: Restrict)
+  parentId           String?
+  children           ChartTemplateAccount[] @relation("TplTree")
+  nature             AccountNature
+  postable           Boolean       // false = zbirno konto
+  requiredDimensions String[]      @default([])
+  zevAccounts        ZevAccount[]
+
+  @@unique([templateId, code])
+}
+
+/// Kontni plan jednog ZEV-a: snimak predloška u trenutku dodjele + lokalna analitička razrada.
+/// Najviše jedan ne-povučen plan po ZEV-u (servis, pod zaključavanjem reda Zev).
+model ZevChart {
+  id               String         @id @default(cuid())
+  zev              Zev            @relation(fields: [zevId], references: [id])
+  zevId            String
+  sourceTemplate   ChartTemplate  @relation(fields: [sourceTemplateId], references: [id])
+  sourceTemplateId String         // tačna verzija iz koje je nastao
+  codeRules        Json           // kopija pravila šifara (predložak se poslije dodjele ne čita)
+  status           ZevChartStatus @default(DRAFT)
+  activatedAt      DateTime?
+  retiredAt        DateTime?
+  accounts         ZevAccount[]
+  createdById      String?
+  createdAt        DateTime       @default(now())
+
+  @@index([zevId, status])
+}
+
+model ZevAccount {
+  id                 String        @id @default(cuid())
+  zev                Zev           @relation(fields: [zevId], references: [id])
+  zevId              String
+  chart              ZevChart      @relation(fields: [chartId], references: [id])
+  chartId            String
+  /// Konto predloška od kojeg je kopiran; null = lokalna analitika ZEV-a.
+  templateAccount    ChartTemplateAccount? @relation(fields: [templateAccountId], references: [id])
+  templateAccountId  String?
+  code               String
+  name               String
+  description        String?
+  parent             ZevAccount?   @relation("ZevTree", fields: [parentId], references: [id], onDelete: Restrict)
+  parentId           String?
+  children           ZevAccount[]  @relation("ZevTree")
+  nature             AccountNature
+  postable           Boolean
+  active             Boolean       @default(true)
+  deactivatedAt      DateTime?
+  requiredDimensions String[]      @default([])
+  /// Kontrolisana zamjena konta aktivnog plana: novi red upućuje na stari, stari se deaktivira.
+  replaces           ZevAccount?   @relation("AccountReplace", fields: [replacesId], references: [id], onDelete: Restrict)
+  replacesId         String?       @unique
+  replacedBy         ZevAccount?   @relation("AccountReplace")
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@unique([chartId, code])
+  @@index([zevId])
+}
+
+/// Poslovna godina ZEV-a. U A1 se samo otvara i pregleda; zatvaranje je Faza B.
+model FiscalYear {
+  id          String         @id @default(cuid())
+  zev         Zev            @relation(fields: [zevId], references: [id])
+  zevId       String
+  label       String
+  startDate   DateTime
+  endDate     DateTime       // posljednji dan godine (uključivo, 00:00 tog dana)
+  status      FiscalStatus   @default(OPEN)
+  periods     FiscalPeriod[]
+  createdById String?
+  createdAt   DateTime       @default(now())
+
+  @@unique([zevId, label])
+}
+
+model FiscalPeriod {
+  id         String       @id @default(cuid())
+  zev        Zev          @relation(fields: [zevId], references: [id])
+  zevId      String
+  year       FiscalYear   @relation(fields: [yearId], references: [id])
+  yearId     String
+  label      String
+  startDate  DateTime
+  endDate    DateTime
+  status     FiscalStatus @default(OPEN)
+  closedAt   DateTime?
+  closedById String?
+
+  @@unique([yearId, label])
+  @@index([zevId, startDate])
 }
 
 // ---------------------------------------------------------------------------

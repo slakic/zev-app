@@ -24,6 +24,8 @@ import * as plans from "../src/server/services/plans";
 import * as maintenance from "../src/server/services/maintenance";
 import * as documents from "../src/server/services/documents";
 import { seedDefaultSettings } from "../src/server/services/settings";
+import { parseChartCsv, parentsFirst } from "../src/lib/accountCodes";
+import { parseCsv } from "../src/lib/csv";
 
 const PASSWORD = "Lozinka123!";
 
@@ -62,6 +64,8 @@ async function main() {
       registeredAddress: "Ulica Vojvode Mišića 10, 78000 Banja Luka",
       city: "Banja Luka",
       municipality: "Banja Luka",
+      // Demo ZEV: smije preuzeti DEMO kontni predložak ispod (Plans/kontni-plan-i-knjizenje-plan.md, A-Q5).
+      isDemo: true,
     },
   });
 
@@ -506,6 +510,54 @@ async function main() {
   // Viber subscribers (opt-in demo)
   await prisma.viberSubscriber.create({ data: { partyId: ownerMarko.id, viberId: "viber-sub-marko-001", optIn: true, optInAt: new Date() } });
   await prisma.viberSubscriber.create({ data: { partyId: ownerAna.id, viberId: "viber-sub-ana-002", optIn: false, optOutAt: new Date() } });
+
+  // Demonstracioni kontni predložak (A-Q5): IZMIŠLJENE šifre sa prefiksom „D”, status DEMO — samo za demo ZEV.
+  // Nije službeni kontni okvir; produkcioni predložak super admin uvozi iz službenog teksta.
+  {
+    const rules = { digitsOnly: false, allowedLengths: [], childExtendsParent: true, maxDepth: 4 };
+    const csv = [
+      "D0;DEMO vanbilansna evidencija;;OFF_BALANCE;ne",
+      "D01;DEMO primljene garancije;D0;OFF_BALANCE;ne",
+      "D010;DEMO garancije izvođača;D01;OFF_BALANCE;da",
+      "D1;DEMO sredstva;;ASSET;ne",
+      "D10;DEMO novčana sredstva;D1;ASSET;ne",
+      "D100;DEMO tekući račun;D10;ASSET;da",
+      "D101;DEMO blagajna;D10;ASSET;da",
+      "D12;DEMO potraživanja;D1;ASSET;ne",
+      "D120;DEMO potraživanja od etažnih vlasnika;D12;ASSET;da",
+      "D4;DEMO obaveze;;LIABILITY;ne",
+      "D43;DEMO obaveze prema dobavljačima;D4;LIABILITY;ne",
+      "D430;DEMO dobavljači u zemlji;D43;LIABILITY;da",
+      "D44;DEMO primljeni avansi;D4;LIABILITY;ne",
+      "D440;DEMO avansi etažnih vlasnika;D44;LIABILITY;da",
+      "D441;DEMO neidentifikovane uplate;D44;LIABILITY;da",
+      "D5;DEMO rashodi;;EXPENSE;ne",
+      "D50;DEMO troškovi održavanja;D5;EXPENSE;ne",
+      "D500;DEMO tekuće održavanje;D50;EXPENSE;da",
+      "D501;DEMO bankarske naknade;D50;EXPENSE;da",
+      "D6;DEMO prihodi;;INCOME;ne",
+      "D60;DEMO naknade etažnih vlasnika;D6;INCOME;ne",
+      "D600;DEMO naknada za održavanje;D60;INCOME;da",
+    ].join("\n");
+    const { rows, errors } = parseChartCsv(parseCsv(csv, ";"), rules);
+    if (errors.length) throw new Error(errors.join("\n"));
+    const tpl = await prisma.chartTemplate.create({
+      data: {
+        key: "demo-zev", version: 1, name: "DEMO kontni plan (izmišljene šifre)", jurisdiction: "DEMO",
+        note: "Demonstracioni predložak za isprobavanje. Nije službeni kontni okvir.", status: "DEMO", codeRules: rules,
+      },
+    });
+    const idByCode = new Map<string, string>();
+    for (const r of parentsFirst(rows)) {
+      const a = await prisma.chartTemplateAccount.create({
+        data: {
+          templateId: tpl.id, code: r.code, name: r.name, nature: r.nature, postable: r.postable,
+          parentId: r.parentCode ? idByCode.get(r.parentCode) ?? null : null,
+        },
+      });
+      idByCode.set(r.code, a.id);
+    }
+  }
 
   console.log("\n=== DEMO NALOZI (lozinka za sve: " + PASSWORD + ") ===");
   console.log("Predsjednik:  predsjednik@zev.ba");

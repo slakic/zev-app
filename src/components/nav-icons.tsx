@@ -255,6 +255,17 @@ export function IconHelp(props: IconProps) {
   );
 }
 
+/** Knjiga sa redovima konta — „Knjigovodstvo” i platformski „Kontni okviri” (kontni plan, A1). */
+export function IconLedger(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 3.5h9.5a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5z" />
+      <path d="M7.5 3.5v13" />
+      <path d="M10 7h3M10 10h3M10 13h2" />
+    </IconBase>
+  );
+}
+
 /** href -> icon, for the sidebar. Falls back to IconDot for anything unmapped. */
 export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/": IconHome,
@@ -271,8 +282,10 @@ export const NAV_ICONS: Record<string, (props: IconProps) => ReactNode> = {
   "/izvjestaji": IconChart,
   "/podesavanja": IconSliders,
   "/evidencije": IconRecords,
+  "/knjigovodstvo": IconLedger,
   "/admin": IconShield,
   "/admin/aktivnosti": IconActivity,
   "/admin/sesije": IconMonitor,
+  "/admin/kontni-okviri": IconLedger,
   "/admin/podesavanja": IconSliders,
 };

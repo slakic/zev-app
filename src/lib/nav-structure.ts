@@ -37,6 +37,7 @@ const PLANS = item("/planovi", "nav.plans");
 const MAINTENANCE = item("/odrzavanje", "nav.maintenance");
 const DOCUMENTS = item("/dokumenti", "nav.documents");
 const RECORDS = item("/evidencije", "nav.records", MANAGEMENT);
+const LEDGER = item("/knjigovodstvo", "nav.ledger", MANAGEMENT);
 const SETTINGS_ZEV = item("/podesavanja", "nav.settingsZev", MANAGEMENT);
 
 type GroupRule = { labelKey?: string; items: Rule[] };
@@ -49,11 +50,11 @@ const OWNER_LAYOUT: GroupRule[] = [
 const PRESIDENT_LAYOUT: GroupRule[] = [
   { labelKey: "nav.group.daily", items: [HOME, INVOICES_MGMT, PAYMENTS, EXPENSES, ASSEMBLY, MAINTENANCE] },
   { labelKey: "nav.group.community", items: [OWNERS, BUILDINGS, ORGANS, PLANS, DOCUMENTS] },
-  { labelKey: "nav.group.management", items: [REPORTS, RECORDS, SETTINGS_ZEV] },
+  { labelKey: "nav.group.management", items: [REPORTS, LEDGER, RECORDS, SETTINGS_ZEV] },
 ];
 
 const ACCOUNTANT_LAYOUT: GroupRule[] = [
-  { labelKey: "nav.group.finance", items: [HOME, INVOICES_MGMT, PAYMENTS, EXPENSES, REPORTS] },
+  { labelKey: "nav.group.finance", items: [HOME, INVOICES_MGMT, PAYMENTS, EXPENSES, REPORTS, LEDGER] },
   { labelKey: "nav.group.community", items: [OWNERS, BUILDINGS, PLANS, MAINTENANCE, ASSEMBLY, ORGANS, DOCUMENTS] },
   { labelKey: "nav.group.management", items: [RECORDS, SETTINGS_ZEV] },
 ];
@@ -92,6 +93,7 @@ export function buildPlatformNav(opts: { hasZev: boolean }): NavGroupSpec[] {
     { href: "/admin", labelKey: "admin.accounts" },
     { href: "/admin/aktivnosti", labelKey: "admin.activity" },
     { href: "/admin/sesije", labelKey: "admin.sessions" },
+    { href: "/admin/kontni-okviri", labelKey: "admin.chartTemplates" },
     { href: "/admin/podesavanja", labelKey: "admin.settings" },
   ];
   if (opts.hasZev) items.push({ href: "/", labelKey: "admin.myZev" });

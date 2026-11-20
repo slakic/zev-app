@@ -459,6 +459,12 @@ export const ModelName = {
   AuditEvent: 'AuditEvent',
   Setting: 'Setting',
   PlatformSetting: 'PlatformSetting',
+  ChartTemplate: 'ChartTemplate',
+  ChartTemplateAccount: 'ChartTemplateAccount',
+  ZevChart: 'ZevChart',
+  ZevAccount: 'ZevAccount',
+  FiscalYear: 'FiscalYear',
+  FiscalPeriod: 'FiscalPeriod',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
@@ -482,7 +488,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5074,6 +5080,450 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChartTemplate: {
+      payload: Prisma.$ChartTemplatePayload<ExtArgs>
+      fields: Prisma.ChartTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChartTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChartTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.ChartTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChartTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.ChartTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.ChartTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.ChartTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChartTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.ChartTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>
+        }
+        update: {
+          args: Prisma.ChartTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChartTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChartTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChartTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChartTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.ChartTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChartTemplate>
+        }
+        groupBy: {
+          args: Prisma.ChartTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChartTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChartTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChartTemplateCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChartTemplateAccount: {
+      payload: Prisma.$ChartTemplateAccountPayload<ExtArgs>
+      fields: Prisma.ChartTemplateAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChartTemplateAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChartTemplateAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.ChartTemplateAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChartTemplateAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>
+        }
+        findMany: {
+          args: Prisma.ChartTemplateAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>[]
+        }
+        create: {
+          args: Prisma.ChartTemplateAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>
+        }
+        createMany: {
+          args: Prisma.ChartTemplateAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChartTemplateAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.ChartTemplateAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>
+        }
+        update: {
+          args: Prisma.ChartTemplateAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChartTemplateAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChartTemplateAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChartTemplateAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChartTemplateAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChartTemplateAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.ChartTemplateAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChartTemplateAccount>
+        }
+        groupBy: {
+          args: Prisma.ChartTemplateAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChartTemplateAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChartTemplateAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChartTemplateAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    ZevChart: {
+      payload: Prisma.$ZevChartPayload<ExtArgs>
+      fields: Prisma.ZevChartFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ZevChartFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ZevChartFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>
+        }
+        findFirst: {
+          args: Prisma.ZevChartFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ZevChartFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>
+        }
+        findMany: {
+          args: Prisma.ZevChartFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>[]
+        }
+        create: {
+          args: Prisma.ZevChartCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>
+        }
+        createMany: {
+          args: Prisma.ZevChartCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ZevChartCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>[]
+        }
+        delete: {
+          args: Prisma.ZevChartDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>
+        }
+        update: {
+          args: Prisma.ZevChartUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>
+        }
+        deleteMany: {
+          args: Prisma.ZevChartDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ZevChartUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ZevChartUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>[]
+        }
+        upsert: {
+          args: Prisma.ZevChartUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevChartPayload>
+        }
+        aggregate: {
+          args: Prisma.ZevChartAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateZevChart>
+        }
+        groupBy: {
+          args: Prisma.ZevChartGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ZevChartGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ZevChartCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ZevChartCountAggregateOutputType> | number
+        }
+      }
+    }
+    ZevAccount: {
+      payload: Prisma.$ZevAccountPayload<ExtArgs>
+      fields: Prisma.ZevAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ZevAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ZevAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.ZevAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ZevAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>
+        }
+        findMany: {
+          args: Prisma.ZevAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>[]
+        }
+        create: {
+          args: Prisma.ZevAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>
+        }
+        createMany: {
+          args: Prisma.ZevAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ZevAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.ZevAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>
+        }
+        update: {
+          args: Prisma.ZevAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.ZevAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ZevAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ZevAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.ZevAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.ZevAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateZevAccount>
+        }
+        groupBy: {
+          args: Prisma.ZevAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ZevAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ZevAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ZevAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    FiscalYear: {
+      payload: Prisma.$FiscalYearPayload<ExtArgs>
+      fields: Prisma.FiscalYearFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FiscalYearFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FiscalYearFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>
+        }
+        findFirst: {
+          args: Prisma.FiscalYearFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FiscalYearFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>
+        }
+        findMany: {
+          args: Prisma.FiscalYearFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>[]
+        }
+        create: {
+          args: Prisma.FiscalYearCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>
+        }
+        createMany: {
+          args: Prisma.FiscalYearCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FiscalYearCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>[]
+        }
+        delete: {
+          args: Prisma.FiscalYearDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>
+        }
+        update: {
+          args: Prisma.FiscalYearUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>
+        }
+        deleteMany: {
+          args: Prisma.FiscalYearDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FiscalYearUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FiscalYearUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>[]
+        }
+        upsert: {
+          args: Prisma.FiscalYearUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalYearPayload>
+        }
+        aggregate: {
+          args: Prisma.FiscalYearAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFiscalYear>
+        }
+        groupBy: {
+          args: Prisma.FiscalYearGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FiscalYearGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FiscalYearCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FiscalYearCountAggregateOutputType> | number
+        }
+      }
+    }
+    FiscalPeriod: {
+      payload: Prisma.$FiscalPeriodPayload<ExtArgs>
+      fields: Prisma.FiscalPeriodFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FiscalPeriodFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FiscalPeriodFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>
+        }
+        findFirst: {
+          args: Prisma.FiscalPeriodFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FiscalPeriodFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>
+        }
+        findMany: {
+          args: Prisma.FiscalPeriodFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>[]
+        }
+        create: {
+          args: Prisma.FiscalPeriodCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>
+        }
+        createMany: {
+          args: Prisma.FiscalPeriodCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FiscalPeriodCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>[]
+        }
+        delete: {
+          args: Prisma.FiscalPeriodDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>
+        }
+        update: {
+          args: Prisma.FiscalPeriodUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>
+        }
+        deleteMany: {
+          args: Prisma.FiscalPeriodDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FiscalPeriodUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FiscalPeriodUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>[]
+        }
+        upsert: {
+          args: Prisma.FiscalPeriodUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FiscalPeriodPayload>
+        }
+        aggregate: {
+          args: Prisma.FiscalPeriodAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFiscalPeriod>
+        }
+        groupBy: {
+          args: Prisma.FiscalPeriodGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FiscalPeriodGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FiscalPeriodCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FiscalPeriodCountAggregateOutputType> | number
+        }
+      }
+    }
     OnboardingInvite: {
       payload: Prisma.$OnboardingInvitePayload<ExtArgs>
       fields: Prisma.OnboardingInviteFieldRefs
@@ -5783,6 +6233,7 @@ export const ZevScalarFieldEnum = {
   note: 'note',
   tier: 'tier',
   active: 'active',
+  isDemo: 'isDemo',
   unitRegisterStatus: 'unitRegisterStatus',
   unitRegisterVersion: 'unitRegisterVersion',
   unitRegisterEstablishedAt: 'unitRegisterEstablishedAt',
@@ -6804,6 +7255,109 @@ export const PlatformSettingScalarFieldEnum = {
 export type PlatformSettingScalarFieldEnum = (typeof PlatformSettingScalarFieldEnum)[keyof typeof PlatformSettingScalarFieldEnum]
 
 
+export const ChartTemplateScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  version: 'version',
+  name: 'name',
+  jurisdiction: 'jurisdiction',
+  source: 'source',
+  note: 'note',
+  status: 'status',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  validFrom: 'validFrom',
+  validTo: 'validTo',
+  codeRules: 'codeRules',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChartTemplateScalarFieldEnum = (typeof ChartTemplateScalarFieldEnum)[keyof typeof ChartTemplateScalarFieldEnum]
+
+
+export const ChartTemplateAccountScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  nature: 'nature',
+  postable: 'postable',
+  requiredDimensions: 'requiredDimensions'
+} as const
+
+export type ChartTemplateAccountScalarFieldEnum = (typeof ChartTemplateAccountScalarFieldEnum)[keyof typeof ChartTemplateAccountScalarFieldEnum]
+
+
+export const ZevChartScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  sourceTemplateId: 'sourceTemplateId',
+  codeRules: 'codeRules',
+  status: 'status',
+  activatedAt: 'activatedAt',
+  retiredAt: 'retiredAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type ZevChartScalarFieldEnum = (typeof ZevChartScalarFieldEnum)[keyof typeof ZevChartScalarFieldEnum]
+
+
+export const ZevAccountScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  chartId: 'chartId',
+  templateAccountId: 'templateAccountId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  nature: 'nature',
+  postable: 'postable',
+  active: 'active',
+  deactivatedAt: 'deactivatedAt',
+  requiredDimensions: 'requiredDimensions',
+  replacesId: 'replacesId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ZevAccountScalarFieldEnum = (typeof ZevAccountScalarFieldEnum)[keyof typeof ZevAccountScalarFieldEnum]
+
+
+export const FiscalYearScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  label: 'label',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type FiscalYearScalarFieldEnum = (typeof FiscalYearScalarFieldEnum)[keyof typeof FiscalYearScalarFieldEnum]
+
+
+export const FiscalPeriodScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  yearId: 'yearId',
+  label: 'label',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  closedAt: 'closedAt',
+  closedById: 'closedById'
+} as const
+
+export type FiscalPeriodScalarFieldEnum = (typeof FiscalPeriodScalarFieldEnum)[keyof typeof FiscalPeriodScalarFieldEnum]
+
+
 export const OnboardingInviteScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -7673,6 +8227,62 @@ export type ListEnumNotifStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'ChartTemplateStatus'
+ */
+export type EnumChartTemplateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChartTemplateStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ChartTemplateStatus[]'
+ */
+export type ListEnumChartTemplateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChartTemplateStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountNature'
+ */
+export type EnumAccountNatureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountNature'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountNature[]'
+ */
+export type ListEnumAccountNatureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountNature[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ZevChartStatus'
+ */
+export type EnumZevChartStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ZevChartStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ZevChartStatus[]'
+ */
+export type ListEnumZevChartStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ZevChartStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FiscalStatus'
+ */
+export type EnumFiscalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FiscalStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FiscalStatus[]'
+ */
+export type ListEnumFiscalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FiscalStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'OnboardingInviteStatus'
  */
 export type EnumOnboardingInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingInviteStatus'>
@@ -7982,6 +8592,12 @@ export type GlobalOmitConfig = {
   auditEvent?: Prisma.AuditEventOmit
   setting?: Prisma.SettingOmit
   platformSetting?: Prisma.PlatformSettingOmit
+  chartTemplate?: Prisma.ChartTemplateOmit
+  chartTemplateAccount?: Prisma.ChartTemplateAccountOmit
+  zevChart?: Prisma.ZevChartOmit
+  zevAccount?: Prisma.ZevAccountOmit
+  fiscalYear?: Prisma.FiscalYearOmit
+  fiscalPeriod?: Prisma.FiscalPeriodOmit
   onboardingInvite?: Prisma.OnboardingInviteOmit
   onboardingDraft?: Prisma.OnboardingDraftOmit
   onboardingDraftAdminAccess?: Prisma.OnboardingDraftAdminAccessOmit

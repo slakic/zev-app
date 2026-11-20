@@ -113,6 +113,12 @@ export const ModelName = {
   AuditEvent: 'AuditEvent',
   Setting: 'Setting',
   PlatformSetting: 'PlatformSetting',
+  ChartTemplate: 'ChartTemplate',
+  ChartTemplateAccount: 'ChartTemplateAccount',
+  ZevChart: 'ZevChart',
+  ZevAccount: 'ZevAccount',
+  FiscalYear: 'FiscalYear',
+  FiscalPeriod: 'FiscalPeriod',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
@@ -217,6 +223,7 @@ export const ZevScalarFieldEnum = {
   note: 'note',
   tier: 'tier',
   active: 'active',
+  isDemo: 'isDemo',
   unitRegisterStatus: 'unitRegisterStatus',
   unitRegisterVersion: 'unitRegisterVersion',
   unitRegisterEstablishedAt: 'unitRegisterEstablishedAt',
@@ -1236,6 +1243,109 @@ export const PlatformSettingScalarFieldEnum = {
 } as const
 
 export type PlatformSettingScalarFieldEnum = (typeof PlatformSettingScalarFieldEnum)[keyof typeof PlatformSettingScalarFieldEnum]
+
+
+export const ChartTemplateScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  version: 'version',
+  name: 'name',
+  jurisdiction: 'jurisdiction',
+  source: 'source',
+  note: 'note',
+  status: 'status',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  validFrom: 'validFrom',
+  validTo: 'validTo',
+  codeRules: 'codeRules',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChartTemplateScalarFieldEnum = (typeof ChartTemplateScalarFieldEnum)[keyof typeof ChartTemplateScalarFieldEnum]
+
+
+export const ChartTemplateAccountScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  nature: 'nature',
+  postable: 'postable',
+  requiredDimensions: 'requiredDimensions'
+} as const
+
+export type ChartTemplateAccountScalarFieldEnum = (typeof ChartTemplateAccountScalarFieldEnum)[keyof typeof ChartTemplateAccountScalarFieldEnum]
+
+
+export const ZevChartScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  sourceTemplateId: 'sourceTemplateId',
+  codeRules: 'codeRules',
+  status: 'status',
+  activatedAt: 'activatedAt',
+  retiredAt: 'retiredAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type ZevChartScalarFieldEnum = (typeof ZevChartScalarFieldEnum)[keyof typeof ZevChartScalarFieldEnum]
+
+
+export const ZevAccountScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  chartId: 'chartId',
+  templateAccountId: 'templateAccountId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  nature: 'nature',
+  postable: 'postable',
+  active: 'active',
+  deactivatedAt: 'deactivatedAt',
+  requiredDimensions: 'requiredDimensions',
+  replacesId: 'replacesId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ZevAccountScalarFieldEnum = (typeof ZevAccountScalarFieldEnum)[keyof typeof ZevAccountScalarFieldEnum]
+
+
+export const FiscalYearScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  label: 'label',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type FiscalYearScalarFieldEnum = (typeof FiscalYearScalarFieldEnum)[keyof typeof FiscalYearScalarFieldEnum]
+
+
+export const FiscalPeriodScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  yearId: 'yearId',
+  label: 'label',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  closedAt: 'closedAt',
+  closedById: 'closedById'
+} as const
+
+export type FiscalPeriodScalarFieldEnum = (typeof FiscalPeriodScalarFieldEnum)[keyof typeof FiscalPeriodScalarFieldEnum]
 
 
 export const OnboardingInviteScalarFieldEnum = {

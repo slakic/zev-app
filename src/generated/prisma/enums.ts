@@ -450,6 +450,45 @@ export const NotifStatus = {
 export type NotifStatus = (typeof NotifStatus)[keyof typeof NotifStatus]
 
 
+export const ChartTemplateStatus = {
+  DRAFT: 'DRAFT',
+  DEMO: 'DEMO',
+  REVIEWED: 'REVIEWED',
+  RETIRED: 'RETIRED'
+} as const
+
+export type ChartTemplateStatus = (typeof ChartTemplateStatus)[keyof typeof ChartTemplateStatus]
+
+
+export const AccountNature = {
+  ASSET: 'ASSET',
+  LIABILITY: 'LIABILITY',
+  EQUITY: 'EQUITY',
+  INCOME: 'INCOME',
+  EXPENSE: 'EXPENSE',
+  OFF_BALANCE: 'OFF_BALANCE'
+} as const
+
+export type AccountNature = (typeof AccountNature)[keyof typeof AccountNature]
+
+
+export const ZevChartStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  RETIRED: 'RETIRED'
+} as const
+
+export type ZevChartStatus = (typeof ZevChartStatus)[keyof typeof ZevChartStatus]
+
+
+export const FiscalStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type FiscalStatus = (typeof FiscalStatus)[keyof typeof FiscalStatus]
+
+
 export const OnboardingInviteStatus = {
   ACTIVE: 'ACTIVE',
   ACCEPTED: 'ACCEPTED',

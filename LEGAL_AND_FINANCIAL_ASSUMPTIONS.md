@@ -124,6 +124,15 @@ fiksno „da” u kodu).
    obračunskih perioda ni finansijskih izvještaja po MRS/MSFI. Zakonske poslovne knjige ZEV vodi
    eksterno. Aplikacija je operativna evidencija: stanje računa, prihodi, rashodi, zaduženja,
    uplate, dugovi, obaveze prema dobavljačima, plan vs. realizacija. **[RAČUNOVODSTVENA PROVJERA]**
+   *Dopuna (v3.1.0, 2026-11-20):* aplikacija ima **kontni plan** (šifarnik konta po ZEV-u, predlošci sa verzijama i
+   stručnom provjerom, poslovne godine — `Plans/kontni-plan-i-knjizenje-plan.md`, Faza A1), ali **nema knjiženja** i
+   i dalje nije zakonsko knjigovodstvo. Knjiženje (Faza B) se uključuje tek kad računovođa potvrdi kontni okvir i
+   konkretne šeme knjiženja. Kao izvor prvog produkcionog predloška korisnik je naveo Kontni okvir za privredna
+   društva, druga pravna lica i preduzetnike („Sl. glasnik RS” 104/21, 59/22), koji se po čl. 123 Zakona o
+   računovodstvu i reviziji („Sl. glasnik RS” 115/25) primjenjuje do donošenja novog; posljednje službeno izdanje se
+   provjerava prije produkcione primjene, a predložak ostaje nacrt do stručne provjere. Automatsko priznavanje
+   prihoda i bilansna klasifikacija zajedničke rezerve ostaju isključeni dok računovođa ne potvrdi šeme (K-6).
+   **[RAČUNOVODSTVENA PROVJERA]**
 3. **Saldo vlasnika** = početno stanje + izdata zaduženja − alocirane uplate ± evidentirane korekcije.
    Preplate i avansi stoje kao nealocirani iznosi ili pretplata na kartici vlasnika.
 4. **Dug ostaje na vlasniku, a ne na jedinici** (odluka 2026-10-26, korisnik). Poslije promjene vlasništva
@@ -210,3 +219,6 @@ Još otvoreno:
 4. Tretman fonda održavanja i PDV status (§5.7, §5.8).
 5. Trajanje mandata, nadležnosti upravnog odbora i način glasanja u odboru (jedan član — jedan glas), te
    isključenje punomoćja za članove odbora (§7).
+6. Kontni okvir za ZEV i sve računovodstvene odluke iz `Plans/kontni-plan-i-knjizenje-plan.md` §10 (R-1 do R-15):
+   vrste konta, pravila šifara, priznavanje prihoda, avansi i neidentifikovane uplate, zajednička rezerva, početna
+   stanja, zatvaranje godine.

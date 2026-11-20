@@ -48,6 +48,7 @@ export type ZevMinAggregateOutputType = {
   note: string | null
   tier: $Enums.ZevTier | null
   active: boolean | null
+  isDemo: boolean | null
   unitRegisterStatus: $Enums.UnitRegisterStatus | null
   unitRegisterVersion: number | null
   unitRegisterEstablishedAt: Date | null
@@ -69,6 +70,7 @@ export type ZevMaxAggregateOutputType = {
   note: string | null
   tier: $Enums.ZevTier | null
   active: boolean | null
+  isDemo: boolean | null
   unitRegisterStatus: $Enums.UnitRegisterStatus | null
   unitRegisterVersion: number | null
   unitRegisterEstablishedAt: Date | null
@@ -90,6 +92,7 @@ export type ZevCountAggregateOutputType = {
   note: number
   tier: number
   active: number
+  isDemo: number
   unitRegisterStatus: number
   unitRegisterVersion: number
   unitRegisterEstablishedAt: number
@@ -121,6 +124,7 @@ export type ZevMinAggregateInputType = {
   note?: true
   tier?: true
   active?: true
+  isDemo?: true
   unitRegisterStatus?: true
   unitRegisterVersion?: true
   unitRegisterEstablishedAt?: true
@@ -142,6 +146,7 @@ export type ZevMaxAggregateInputType = {
   note?: true
   tier?: true
   active?: true
+  isDemo?: true
   unitRegisterStatus?: true
   unitRegisterVersion?: true
   unitRegisterEstablishedAt?: true
@@ -163,6 +168,7 @@ export type ZevCountAggregateInputType = {
   note?: true
   tier?: true
   active?: true
+  isDemo?: true
   unitRegisterStatus?: true
   unitRegisterVersion?: true
   unitRegisterEstablishedAt?: true
@@ -271,6 +277,7 @@ export type ZevGroupByOutputType = {
   note: string | null
   tier: $Enums.ZevTier
   active: boolean
+  isDemo: boolean
   unitRegisterStatus: $Enums.UnitRegisterStatus
   unitRegisterVersion: number
   unitRegisterEstablishedAt: Date | null
@@ -315,6 +322,7 @@ export type ZevWhereInput = {
   note?: Prisma.StringNullableFilter<"Zev"> | string | null
   tier?: Prisma.EnumZevTierFilter<"Zev"> | $Enums.ZevTier
   active?: Prisma.BoolFilter<"Zev"> | boolean
+  isDemo?: Prisma.BoolFilter<"Zev"> | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFilter<"Zev"> | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFilter<"Zev"> | number
   unitRegisterEstablishedAt?: Prisma.DateTimeNullableFilter<"Zev"> | Date | string | null
@@ -362,6 +370,10 @@ export type ZevWhereInput = {
   notificationMessages?: Prisma.NotificationMessageListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
   settings?: Prisma.SettingListRelationFilter
+  zevCharts?: Prisma.ZevChartListRelationFilter
+  zevAccounts?: Prisma.ZevAccountListRelationFilter
+  fiscalYears?: Prisma.FiscalYearListRelationFilter
+  fiscalPeriods?: Prisma.FiscalPeriodListRelationFilter
 }
 
 export type ZevOrderByWithRelationInput = {
@@ -378,6 +390,7 @@ export type ZevOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   tier?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   unitRegisterStatus?: Prisma.SortOrder
   unitRegisterVersion?: Prisma.SortOrder
   unitRegisterEstablishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -425,6 +438,10 @@ export type ZevOrderByWithRelationInput = {
   notificationMessages?: Prisma.NotificationMessageOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
   settings?: Prisma.SettingOrderByRelationAggregateInput
+  zevCharts?: Prisma.ZevChartOrderByRelationAggregateInput
+  zevAccounts?: Prisma.ZevAccountOrderByRelationAggregateInput
+  fiscalYears?: Prisma.FiscalYearOrderByRelationAggregateInput
+  fiscalPeriods?: Prisma.FiscalPeriodOrderByRelationAggregateInput
 }
 
 export type ZevWhereUniqueInput = Prisma.AtLeast<{
@@ -444,6 +461,7 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"Zev"> | string | null
   tier?: Prisma.EnumZevTierFilter<"Zev"> | $Enums.ZevTier
   active?: Prisma.BoolFilter<"Zev"> | boolean
+  isDemo?: Prisma.BoolFilter<"Zev"> | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFilter<"Zev"> | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFilter<"Zev"> | number
   unitRegisterEstablishedAt?: Prisma.DateTimeNullableFilter<"Zev"> | Date | string | null
@@ -491,6 +509,10 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   notificationMessages?: Prisma.NotificationMessageListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
   settings?: Prisma.SettingListRelationFilter
+  zevCharts?: Prisma.ZevChartListRelationFilter
+  zevAccounts?: Prisma.ZevAccountListRelationFilter
+  fiscalYears?: Prisma.FiscalYearListRelationFilter
+  fiscalPeriods?: Prisma.FiscalPeriodListRelationFilter
 }, "id">
 
 export type ZevOrderByWithAggregationInput = {
@@ -507,6 +529,7 @@ export type ZevOrderByWithAggregationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   tier?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   unitRegisterStatus?: Prisma.SortOrder
   unitRegisterVersion?: Prisma.SortOrder
   unitRegisterEstablishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -536,6 +559,7 @@ export type ZevScalarWhereWithAggregatesInput = {
   note?: Prisma.StringNullableWithAggregatesFilter<"Zev"> | string | null
   tier?: Prisma.EnumZevTierWithAggregatesFilter<"Zev"> | $Enums.ZevTier
   active?: Prisma.BoolWithAggregatesFilter<"Zev"> | boolean
+  isDemo?: Prisma.BoolWithAggregatesFilter<"Zev"> | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusWithAggregatesFilter<"Zev"> | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntWithAggregatesFilter<"Zev"> | number
   unitRegisterEstablishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Zev"> | Date | string | null
@@ -557,6 +581,7 @@ export type ZevCreateInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -604,6 +629,10 @@ export type ZevCreateInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateInput = {
@@ -620,6 +649,7 @@ export type ZevUncheckedCreateInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -667,6 +697,10 @@ export type ZevUncheckedCreateInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevUpdateInput = {
@@ -683,6 +717,7 @@ export type ZevUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -730,6 +765,10 @@ export type ZevUpdateInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateInput = {
@@ -746,6 +785,7 @@ export type ZevUncheckedUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -793,6 +833,10 @@ export type ZevUncheckedUpdateInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateManyInput = {
@@ -809,6 +853,7 @@ export type ZevCreateManyInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -830,6 +875,7 @@ export type ZevUpdateManyMutationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -851,6 +897,7 @@ export type ZevUncheckedUpdateManyInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -882,6 +929,7 @@ export type ZevCountOrderByAggregateInput = {
   note?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   unitRegisterStatus?: Prisma.SortOrder
   unitRegisterVersion?: Prisma.SortOrder
   unitRegisterEstablishedAt?: Prisma.SortOrder
@@ -907,6 +955,7 @@ export type ZevMaxOrderByAggregateInput = {
   note?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   unitRegisterStatus?: Prisma.SortOrder
   unitRegisterVersion?: Prisma.SortOrder
   unitRegisterEstablishedAt?: Prisma.SortOrder
@@ -928,6 +977,7 @@ export type ZevMinOrderByAggregateInput = {
   note?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  isDemo?: Prisma.SortOrder
   unitRegisterStatus?: Prisma.SortOrder
   unitRegisterVersion?: Prisma.SortOrder
   unitRegisterEstablishedAt?: Prisma.SortOrder
@@ -1549,6 +1599,62 @@ export type ZevUpdateOneRequiredWithoutSettingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutSettingsInput, Prisma.ZevUpdateWithoutSettingsInput>, Prisma.ZevUncheckedUpdateWithoutSettingsInput>
 }
 
+export type ZevCreateNestedOneWithoutZevChartsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutZevChartsInput, Prisma.ZevUncheckedCreateWithoutZevChartsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutZevChartsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutZevChartsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutZevChartsInput, Prisma.ZevUncheckedCreateWithoutZevChartsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutZevChartsInput
+  upsert?: Prisma.ZevUpsertWithoutZevChartsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutZevChartsInput, Prisma.ZevUpdateWithoutZevChartsInput>, Prisma.ZevUncheckedUpdateWithoutZevChartsInput>
+}
+
+export type ZevCreateNestedOneWithoutZevAccountsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutZevAccountsInput, Prisma.ZevUncheckedCreateWithoutZevAccountsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutZevAccountsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutZevAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutZevAccountsInput, Prisma.ZevUncheckedCreateWithoutZevAccountsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutZevAccountsInput
+  upsert?: Prisma.ZevUpsertWithoutZevAccountsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutZevAccountsInput, Prisma.ZevUpdateWithoutZevAccountsInput>, Prisma.ZevUncheckedUpdateWithoutZevAccountsInput>
+}
+
+export type ZevCreateNestedOneWithoutFiscalYearsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutFiscalYearsInput, Prisma.ZevUncheckedCreateWithoutFiscalYearsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutFiscalYearsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutFiscalYearsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutFiscalYearsInput, Prisma.ZevUncheckedCreateWithoutFiscalYearsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutFiscalYearsInput
+  upsert?: Prisma.ZevUpsertWithoutFiscalYearsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutFiscalYearsInput, Prisma.ZevUpdateWithoutFiscalYearsInput>, Prisma.ZevUncheckedUpdateWithoutFiscalYearsInput>
+}
+
+export type ZevCreateNestedOneWithoutFiscalPeriodsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutFiscalPeriodsInput, Prisma.ZevUncheckedCreateWithoutFiscalPeriodsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutFiscalPeriodsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutFiscalPeriodsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutFiscalPeriodsInput, Prisma.ZevUncheckedCreateWithoutFiscalPeriodsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutFiscalPeriodsInput
+  upsert?: Prisma.ZevUpsertWithoutFiscalPeriodsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutFiscalPeriodsInput, Prisma.ZevUpdateWithoutFiscalPeriodsInput>, Prisma.ZevUncheckedUpdateWithoutFiscalPeriodsInput>
+}
+
 export type ZevCreateWithoutSessionsInput = {
   id?: string
   legalName: string
@@ -1563,6 +1669,7 @@ export type ZevCreateWithoutSessionsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -1609,6 +1716,10 @@ export type ZevCreateWithoutSessionsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutSessionsInput = {
@@ -1625,6 +1736,7 @@ export type ZevUncheckedCreateWithoutSessionsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -1671,6 +1783,10 @@ export type ZevUncheckedCreateWithoutSessionsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutSessionsInput = {
@@ -1703,6 +1819,7 @@ export type ZevUpdateWithoutSessionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1749,6 +1866,10 @@ export type ZevUpdateWithoutSessionsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutSessionsInput = {
@@ -1765,6 +1886,7 @@ export type ZevUncheckedUpdateWithoutSessionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1811,6 +1933,10 @@ export type ZevUncheckedUpdateWithoutSessionsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutPartiesInput = {
@@ -1827,6 +1953,7 @@ export type ZevCreateWithoutPartiesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -1873,6 +2000,10 @@ export type ZevCreateWithoutPartiesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutPartiesInput = {
@@ -1889,6 +2020,7 @@ export type ZevUncheckedCreateWithoutPartiesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -1935,6 +2067,10 @@ export type ZevUncheckedCreateWithoutPartiesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutPartiesInput = {
@@ -1967,6 +2103,7 @@ export type ZevUpdateWithoutPartiesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2013,6 +2150,10 @@ export type ZevUpdateWithoutPartiesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutPartiesInput = {
@@ -2029,6 +2170,7 @@ export type ZevUncheckedUpdateWithoutPartiesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2075,6 +2217,10 @@ export type ZevUncheckedUpdateWithoutPartiesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMembershipsInput = {
@@ -2091,6 +2237,7 @@ export type ZevCreateWithoutMembershipsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2137,6 +2284,10 @@ export type ZevCreateWithoutMembershipsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMembershipsInput = {
@@ -2153,6 +2304,7 @@ export type ZevUncheckedCreateWithoutMembershipsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2199,6 +2351,10 @@ export type ZevUncheckedCreateWithoutMembershipsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMembershipsInput = {
@@ -2231,6 +2387,7 @@ export type ZevUpdateWithoutMembershipsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2277,6 +2434,10 @@ export type ZevUpdateWithoutMembershipsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMembershipsInput = {
@@ -2293,6 +2454,7 @@ export type ZevUncheckedUpdateWithoutMembershipsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2339,6 +2501,10 @@ export type ZevUncheckedUpdateWithoutMembershipsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBuildingsInput = {
@@ -2355,6 +2521,7 @@ export type ZevCreateWithoutBuildingsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2401,6 +2568,10 @@ export type ZevCreateWithoutBuildingsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBuildingsInput = {
@@ -2417,6 +2588,7 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2463,6 +2635,10 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBuildingsInput = {
@@ -2495,6 +2671,7 @@ export type ZevUpdateWithoutBuildingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2541,6 +2718,10 @@ export type ZevUpdateWithoutBuildingsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBuildingsInput = {
@@ -2557,6 +2738,7 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2603,6 +2785,10 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutEntrancesInput = {
@@ -2619,6 +2805,7 @@ export type ZevCreateWithoutEntrancesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2665,6 +2852,10 @@ export type ZevCreateWithoutEntrancesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutEntrancesInput = {
@@ -2681,6 +2872,7 @@ export type ZevUncheckedCreateWithoutEntrancesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2727,6 +2919,10 @@ export type ZevUncheckedCreateWithoutEntrancesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutEntrancesInput = {
@@ -2759,6 +2955,7 @@ export type ZevUpdateWithoutEntrancesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2805,6 +3002,10 @@ export type ZevUpdateWithoutEntrancesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutEntrancesInput = {
@@ -2821,6 +3022,7 @@ export type ZevUncheckedUpdateWithoutEntrancesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2867,6 +3069,10 @@ export type ZevUncheckedUpdateWithoutEntrancesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutUnitRegisterChangesInput = {
@@ -2883,6 +3089,7 @@ export type ZevCreateWithoutUnitRegisterChangesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2929,6 +3136,10 @@ export type ZevCreateWithoutUnitRegisterChangesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutUnitRegisterChangesInput = {
@@ -2945,6 +3156,7 @@ export type ZevUncheckedCreateWithoutUnitRegisterChangesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -2991,6 +3203,10 @@ export type ZevUncheckedCreateWithoutUnitRegisterChangesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutUnitRegisterChangesInput = {
@@ -3023,6 +3239,7 @@ export type ZevUpdateWithoutUnitRegisterChangesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3069,6 +3286,10 @@ export type ZevUpdateWithoutUnitRegisterChangesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutUnitRegisterChangesInput = {
@@ -3085,6 +3306,7 @@ export type ZevUncheckedUpdateWithoutUnitRegisterChangesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3131,6 +3353,10 @@ export type ZevUncheckedUpdateWithoutUnitRegisterChangesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutUnitsInput = {
@@ -3147,6 +3373,7 @@ export type ZevCreateWithoutUnitsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3193,6 +3420,10 @@ export type ZevCreateWithoutUnitsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutUnitsInput = {
@@ -3209,6 +3440,7 @@ export type ZevUncheckedCreateWithoutUnitsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3255,6 +3487,10 @@ export type ZevUncheckedCreateWithoutUnitsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutUnitsInput = {
@@ -3287,6 +3523,7 @@ export type ZevUpdateWithoutUnitsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3333,6 +3570,10 @@ export type ZevUpdateWithoutUnitsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutUnitsInput = {
@@ -3349,6 +3590,7 @@ export type ZevUncheckedUpdateWithoutUnitsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3395,6 +3637,10 @@ export type ZevUncheckedUpdateWithoutUnitsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutOwnershipStakesInput = {
@@ -3411,6 +3657,7 @@ export type ZevCreateWithoutOwnershipStakesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3457,6 +3704,10 @@ export type ZevCreateWithoutOwnershipStakesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
@@ -3473,6 +3724,7 @@ export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3519,6 +3771,10 @@ export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutOwnershipStakesInput = {
@@ -3551,6 +3807,7 @@ export type ZevUpdateWithoutOwnershipStakesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3597,6 +3854,10 @@ export type ZevUpdateWithoutOwnershipStakesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
@@ -3613,6 +3874,7 @@ export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3659,6 +3921,10 @@ export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutOccupanciesInput = {
@@ -3675,6 +3941,7 @@ export type ZevCreateWithoutOccupanciesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3721,6 +3988,10 @@ export type ZevCreateWithoutOccupanciesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutOccupanciesInput = {
@@ -3737,6 +4008,7 @@ export type ZevUncheckedCreateWithoutOccupanciesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3783,6 +4055,10 @@ export type ZevUncheckedCreateWithoutOccupanciesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutOccupanciesInput = {
@@ -3815,6 +4091,7 @@ export type ZevUpdateWithoutOccupanciesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3861,6 +4138,10 @@ export type ZevUpdateWithoutOccupanciesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutOccupanciesInput = {
@@ -3877,6 +4158,7 @@ export type ZevUncheckedUpdateWithoutOccupanciesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3923,6 +4205,10 @@ export type ZevUncheckedUpdateWithoutOccupanciesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutProxiesInput = {
@@ -3939,6 +4225,7 @@ export type ZevCreateWithoutProxiesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -3985,6 +4272,10 @@ export type ZevCreateWithoutProxiesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutProxiesInput = {
@@ -4001,6 +4292,7 @@ export type ZevUncheckedCreateWithoutProxiesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4047,6 +4339,10 @@ export type ZevUncheckedCreateWithoutProxiesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutProxiesInput = {
@@ -4079,6 +4375,7 @@ export type ZevUpdateWithoutProxiesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4125,6 +4422,10 @@ export type ZevUpdateWithoutProxiesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutProxiesInput = {
@@ -4141,6 +4442,7 @@ export type ZevUncheckedUpdateWithoutProxiesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4187,6 +4489,10 @@ export type ZevUncheckedUpdateWithoutProxiesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutOfficeTermsInput = {
@@ -4203,6 +4509,7 @@ export type ZevCreateWithoutOfficeTermsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4249,6 +4556,10 @@ export type ZevCreateWithoutOfficeTermsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutOfficeTermsInput = {
@@ -4265,6 +4576,7 @@ export type ZevUncheckedCreateWithoutOfficeTermsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4311,6 +4623,10 @@ export type ZevUncheckedCreateWithoutOfficeTermsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutOfficeTermsInput = {
@@ -4343,6 +4659,7 @@ export type ZevUpdateWithoutOfficeTermsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4389,6 +4706,10 @@ export type ZevUpdateWithoutOfficeTermsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
@@ -4405,6 +4726,7 @@ export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4451,6 +4773,10 @@ export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAllocationGroupsInput = {
@@ -4467,6 +4793,7 @@ export type ZevCreateWithoutAllocationGroupsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4513,6 +4840,10 @@ export type ZevCreateWithoutAllocationGroupsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
@@ -4529,6 +4860,7 @@ export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4575,6 +4907,10 @@ export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAllocationGroupsInput = {
@@ -4607,6 +4943,7 @@ export type ZevUpdateWithoutAllocationGroupsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4653,6 +4990,10 @@ export type ZevUpdateWithoutAllocationGroupsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
@@ -4669,6 +5010,7 @@ export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4715,6 +5057,10 @@ export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutCommonAssetsInput = {
@@ -4731,6 +5077,7 @@ export type ZevCreateWithoutCommonAssetsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4777,6 +5124,10 @@ export type ZevCreateWithoutCommonAssetsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutCommonAssetsInput = {
@@ -4793,6 +5144,7 @@ export type ZevUncheckedCreateWithoutCommonAssetsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -4839,6 +5191,10 @@ export type ZevUncheckedCreateWithoutCommonAssetsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutCommonAssetsInput = {
@@ -4871,6 +5227,7 @@ export type ZevUpdateWithoutCommonAssetsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4917,6 +5274,10 @@ export type ZevUpdateWithoutCommonAssetsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
@@ -4933,6 +5294,7 @@ export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4979,6 +5341,10 @@ export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMeetingsInput = {
@@ -4995,6 +5361,7 @@ export type ZevCreateWithoutMeetingsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5041,6 +5408,10 @@ export type ZevCreateWithoutMeetingsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMeetingsInput = {
@@ -5057,6 +5428,7 @@ export type ZevUncheckedCreateWithoutMeetingsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5103,6 +5475,10 @@ export type ZevUncheckedCreateWithoutMeetingsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMeetingsInput = {
@@ -5135,6 +5511,7 @@ export type ZevUpdateWithoutMeetingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5181,6 +5558,10 @@ export type ZevUpdateWithoutMeetingsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMeetingsInput = {
@@ -5197,6 +5578,7 @@ export type ZevUncheckedUpdateWithoutMeetingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5243,6 +5625,10 @@ export type ZevUncheckedUpdateWithoutMeetingsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMeetingNotesInput = {
@@ -5259,6 +5645,7 @@ export type ZevCreateWithoutMeetingNotesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5305,6 +5692,10 @@ export type ZevCreateWithoutMeetingNotesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMeetingNotesInput = {
@@ -5321,6 +5712,7 @@ export type ZevUncheckedCreateWithoutMeetingNotesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5367,6 +5759,10 @@ export type ZevUncheckedCreateWithoutMeetingNotesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMeetingNotesInput = {
@@ -5399,6 +5795,7 @@ export type ZevUpdateWithoutMeetingNotesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5445,6 +5842,10 @@ export type ZevUpdateWithoutMeetingNotesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMeetingNotesInput = {
@@ -5461,6 +5862,7 @@ export type ZevUncheckedUpdateWithoutMeetingNotesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5507,6 +5909,10 @@ export type ZevUncheckedUpdateWithoutMeetingNotesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutVotingRulesInput = {
@@ -5523,6 +5929,7 @@ export type ZevCreateWithoutVotingRulesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5569,6 +5976,10 @@ export type ZevCreateWithoutVotingRulesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutVotingRulesInput = {
@@ -5585,6 +5996,7 @@ export type ZevUncheckedCreateWithoutVotingRulesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5631,6 +6043,10 @@ export type ZevUncheckedCreateWithoutVotingRulesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutVotingRulesInput = {
@@ -5663,6 +6079,7 @@ export type ZevUpdateWithoutVotingRulesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5709,6 +6126,10 @@ export type ZevUpdateWithoutVotingRulesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutVotingRulesInput = {
@@ -5725,6 +6146,7 @@ export type ZevUncheckedUpdateWithoutVotingRulesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5771,6 +6193,10 @@ export type ZevUncheckedUpdateWithoutVotingRulesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutProposalsInput = {
@@ -5787,6 +6213,7 @@ export type ZevCreateWithoutProposalsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5833,6 +6260,10 @@ export type ZevCreateWithoutProposalsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutProposalsInput = {
@@ -5849,6 +6280,7 @@ export type ZevUncheckedCreateWithoutProposalsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -5895,6 +6327,10 @@ export type ZevUncheckedCreateWithoutProposalsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutProposalsInput = {
@@ -5927,6 +6363,7 @@ export type ZevUpdateWithoutProposalsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5973,6 +6410,10 @@ export type ZevUpdateWithoutProposalsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutProposalsInput = {
@@ -5989,6 +6430,7 @@ export type ZevUncheckedUpdateWithoutProposalsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6035,6 +6477,10 @@ export type ZevUncheckedUpdateWithoutProposalsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBallotsInput = {
@@ -6051,6 +6497,7 @@ export type ZevCreateWithoutBallotsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6097,6 +6544,10 @@ export type ZevCreateWithoutBallotsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBallotsInput = {
@@ -6113,6 +6564,7 @@ export type ZevUncheckedCreateWithoutBallotsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6159,6 +6611,10 @@ export type ZevUncheckedCreateWithoutBallotsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBallotsInput = {
@@ -6191,6 +6647,7 @@ export type ZevUpdateWithoutBallotsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6237,6 +6694,10 @@ export type ZevUpdateWithoutBallotsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBallotsInput = {
@@ -6253,6 +6714,7 @@ export type ZevUncheckedUpdateWithoutBallotsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6299,6 +6761,10 @@ export type ZevUncheckedUpdateWithoutBallotsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutVotesInput = {
@@ -6315,6 +6781,7 @@ export type ZevCreateWithoutVotesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6361,6 +6828,10 @@ export type ZevCreateWithoutVotesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutVotesInput = {
@@ -6377,6 +6848,7 @@ export type ZevUncheckedCreateWithoutVotesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6423,6 +6895,10 @@ export type ZevUncheckedCreateWithoutVotesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutVotesInput = {
@@ -6455,6 +6931,7 @@ export type ZevUpdateWithoutVotesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6501,6 +6978,10 @@ export type ZevUpdateWithoutVotesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutVotesInput = {
@@ -6517,6 +6998,7 @@ export type ZevUncheckedUpdateWithoutVotesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6563,6 +7045,10 @@ export type ZevUncheckedUpdateWithoutVotesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAccountsInput = {
@@ -6579,6 +7065,7 @@ export type ZevCreateWithoutAccountsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6625,6 +7112,10 @@ export type ZevCreateWithoutAccountsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAccountsInput = {
@@ -6641,6 +7132,7 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6687,6 +7179,10 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAccountsInput = {
@@ -6719,6 +7215,7 @@ export type ZevUpdateWithoutAccountsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6765,6 +7262,10 @@ export type ZevUpdateWithoutAccountsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAccountsInput = {
@@ -6781,6 +7282,7 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6827,6 +7329,10 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutTransactionCategoriesInput = {
@@ -6843,6 +7349,7 @@ export type ZevCreateWithoutTransactionCategoriesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6889,6 +7396,10 @@ export type ZevCreateWithoutTransactionCategoriesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
@@ -6905,6 +7416,7 @@ export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -6951,6 +7463,10 @@ export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutTransactionCategoriesInput = {
@@ -6983,6 +7499,7 @@ export type ZevUpdateWithoutTransactionCategoriesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7029,6 +7546,10 @@ export type ZevUpdateWithoutTransactionCategoriesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
@@ -7045,6 +7566,7 @@ export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7091,6 +7613,10 @@ export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutFinTransactionsInput = {
@@ -7107,6 +7633,7 @@ export type ZevCreateWithoutFinTransactionsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7153,6 +7680,10 @@ export type ZevCreateWithoutFinTransactionsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutFinTransactionsInput = {
@@ -7169,6 +7700,7 @@ export type ZevUncheckedCreateWithoutFinTransactionsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7215,6 +7747,10 @@ export type ZevUncheckedCreateWithoutFinTransactionsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutFinTransactionsInput = {
@@ -7247,6 +7783,7 @@ export type ZevUpdateWithoutFinTransactionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7293,6 +7830,10 @@ export type ZevUpdateWithoutFinTransactionsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
@@ -7309,6 +7850,7 @@ export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7355,6 +7897,10 @@ export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutChargeItemsInput = {
@@ -7371,6 +7917,7 @@ export type ZevCreateWithoutChargeItemsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7417,6 +7964,10 @@ export type ZevCreateWithoutChargeItemsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutChargeItemsInput = {
@@ -7433,6 +7984,7 @@ export type ZevUncheckedCreateWithoutChargeItemsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7479,6 +8031,10 @@ export type ZevUncheckedCreateWithoutChargeItemsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutChargeItemsInput = {
@@ -7511,6 +8067,7 @@ export type ZevUpdateWithoutChargeItemsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7557,6 +8114,10 @@ export type ZevUpdateWithoutChargeItemsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutChargeItemsInput = {
@@ -7573,6 +8134,7 @@ export type ZevUncheckedUpdateWithoutChargeItemsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7619,6 +8181,10 @@ export type ZevUncheckedUpdateWithoutChargeItemsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutInvoiceBatchesInput = {
@@ -7635,6 +8201,7 @@ export type ZevCreateWithoutInvoiceBatchesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7681,6 +8248,10 @@ export type ZevCreateWithoutInvoiceBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
@@ -7697,6 +8268,7 @@ export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7743,6 +8315,10 @@ export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutInvoiceBatchesInput = {
@@ -7775,6 +8351,7 @@ export type ZevUpdateWithoutInvoiceBatchesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7821,6 +8398,10 @@ export type ZevUpdateWithoutInvoiceBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
@@ -7837,6 +8418,7 @@ export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7883,6 +8465,10 @@ export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutInvoicesInput = {
@@ -7899,6 +8485,7 @@ export type ZevCreateWithoutInvoicesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -7945,6 +8532,10 @@ export type ZevCreateWithoutInvoicesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutInvoicesInput = {
@@ -7961,6 +8552,7 @@ export type ZevUncheckedCreateWithoutInvoicesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8007,6 +8599,10 @@ export type ZevUncheckedCreateWithoutInvoicesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutInvoicesInput = {
@@ -8039,6 +8635,7 @@ export type ZevUpdateWithoutInvoicesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8085,6 +8682,10 @@ export type ZevUpdateWithoutInvoicesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutInvoicesInput = {
@@ -8101,6 +8702,7 @@ export type ZevUncheckedUpdateWithoutInvoicesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8147,6 +8749,10 @@ export type ZevUncheckedUpdateWithoutInvoicesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBankImportBatchesInput = {
@@ -8163,6 +8769,7 @@ export type ZevCreateWithoutBankImportBatchesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8209,6 +8816,10 @@ export type ZevCreateWithoutBankImportBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
@@ -8225,6 +8836,7 @@ export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8271,6 +8883,10 @@ export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBankImportBatchesInput = {
@@ -8303,6 +8919,7 @@ export type ZevUpdateWithoutBankImportBatchesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8349,6 +8966,10 @@ export type ZevUpdateWithoutBankImportBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
@@ -8365,6 +8986,7 @@ export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8411,6 +9033,10 @@ export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutIncomingBankSmsInput = {
@@ -8427,6 +9053,7 @@ export type ZevCreateWithoutIncomingBankSmsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8473,6 +9100,10 @@ export type ZevCreateWithoutIncomingBankSmsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutIncomingBankSmsInput = {
@@ -8489,6 +9120,7 @@ export type ZevUncheckedCreateWithoutIncomingBankSmsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8535,6 +9167,10 @@ export type ZevUncheckedCreateWithoutIncomingBankSmsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutIncomingBankSmsInput = {
@@ -8567,6 +9203,7 @@ export type ZevUpdateWithoutIncomingBankSmsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8613,6 +9250,10 @@ export type ZevUpdateWithoutIncomingBankSmsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutIncomingBankSmsInput = {
@@ -8629,6 +9270,7 @@ export type ZevUncheckedUpdateWithoutIncomingBankSmsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8675,6 +9317,10 @@ export type ZevUncheckedUpdateWithoutIncomingBankSmsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBankRecordMatchesInput = {
@@ -8691,6 +9337,7 @@ export type ZevCreateWithoutBankRecordMatchesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8737,6 +9384,10 @@ export type ZevCreateWithoutBankRecordMatchesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBankRecordMatchesInput = {
@@ -8753,6 +9404,7 @@ export type ZevUncheckedCreateWithoutBankRecordMatchesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -8799,6 +9451,10 @@ export type ZevUncheckedCreateWithoutBankRecordMatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBankRecordMatchesInput = {
@@ -8831,6 +9487,7 @@ export type ZevUpdateWithoutBankRecordMatchesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8877,6 +9534,10 @@ export type ZevUpdateWithoutBankRecordMatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBankRecordMatchesInput = {
@@ -8893,6 +9554,7 @@ export type ZevUncheckedUpdateWithoutBankRecordMatchesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8939,6 +9601,10 @@ export type ZevUncheckedUpdateWithoutBankRecordMatchesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutPaymentsInput = {
@@ -8955,6 +9621,7 @@ export type ZevCreateWithoutPaymentsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9001,6 +9668,10 @@ export type ZevCreateWithoutPaymentsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutPaymentsInput = {
@@ -9017,6 +9688,7 @@ export type ZevUncheckedCreateWithoutPaymentsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9063,6 +9735,10 @@ export type ZevUncheckedCreateWithoutPaymentsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutPaymentsInput = {
@@ -9095,6 +9771,7 @@ export type ZevUpdateWithoutPaymentsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9141,6 +9818,10 @@ export type ZevUpdateWithoutPaymentsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutPaymentsInput = {
@@ -9157,6 +9838,7 @@ export type ZevUncheckedUpdateWithoutPaymentsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9203,6 +9885,10 @@ export type ZevUncheckedUpdateWithoutPaymentsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutBalanceCorrectionsInput = {
@@ -9219,6 +9905,7 @@ export type ZevCreateWithoutBalanceCorrectionsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9265,6 +9952,10 @@ export type ZevCreateWithoutBalanceCorrectionsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
@@ -9281,6 +9972,7 @@ export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9327,6 +10019,10 @@ export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutBalanceCorrectionsInput = {
@@ -9359,6 +10055,7 @@ export type ZevUpdateWithoutBalanceCorrectionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9405,6 +10102,10 @@ export type ZevUpdateWithoutBalanceCorrectionsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
@@ -9421,6 +10122,7 @@ export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9467,6 +10169,10 @@ export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutSuppliersInput = {
@@ -9483,6 +10189,7 @@ export type ZevCreateWithoutSuppliersInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9529,6 +10236,10 @@ export type ZevCreateWithoutSuppliersInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutSuppliersInput = {
@@ -9545,6 +10256,7 @@ export type ZevUncheckedCreateWithoutSuppliersInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9591,6 +10303,10 @@ export type ZevUncheckedCreateWithoutSuppliersInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutSuppliersInput = {
@@ -9623,6 +10339,7 @@ export type ZevUpdateWithoutSuppliersInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9669,6 +10386,10 @@ export type ZevUpdateWithoutSuppliersInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutSuppliersInput = {
@@ -9685,6 +10406,7 @@ export type ZevUncheckedUpdateWithoutSuppliersInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9731,6 +10453,10 @@ export type ZevUncheckedUpdateWithoutSuppliersInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutExpensesInput = {
@@ -9747,6 +10473,7 @@ export type ZevCreateWithoutExpensesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9793,6 +10520,10 @@ export type ZevCreateWithoutExpensesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutExpensesInput = {
@@ -9809,6 +10540,7 @@ export type ZevUncheckedCreateWithoutExpensesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -9855,6 +10587,10 @@ export type ZevUncheckedCreateWithoutExpensesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutExpensesInput = {
@@ -9887,6 +10623,7 @@ export type ZevUpdateWithoutExpensesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9933,6 +10670,10 @@ export type ZevUpdateWithoutExpensesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutExpensesInput = {
@@ -9949,6 +10690,7 @@ export type ZevUncheckedUpdateWithoutExpensesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9995,6 +10737,10 @@ export type ZevUncheckedUpdateWithoutExpensesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAnnualPlansInput = {
@@ -10011,6 +10757,7 @@ export type ZevCreateWithoutAnnualPlansInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10057,6 +10804,10 @@ export type ZevCreateWithoutAnnualPlansInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAnnualPlansInput = {
@@ -10073,6 +10824,7 @@ export type ZevUncheckedCreateWithoutAnnualPlansInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10119,6 +10871,10 @@ export type ZevUncheckedCreateWithoutAnnualPlansInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAnnualPlansInput = {
@@ -10151,6 +10907,7 @@ export type ZevUpdateWithoutAnnualPlansInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10197,6 +10954,10 @@ export type ZevUpdateWithoutAnnualPlansInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
@@ -10213,6 +10974,7 @@ export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10259,6 +11021,10 @@ export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutPlanItemsInput = {
@@ -10275,6 +11041,7 @@ export type ZevCreateWithoutPlanItemsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10321,6 +11088,10 @@ export type ZevCreateWithoutPlanItemsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutPlanItemsInput = {
@@ -10337,6 +11108,7 @@ export type ZevUncheckedCreateWithoutPlanItemsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10383,6 +11155,10 @@ export type ZevUncheckedCreateWithoutPlanItemsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutPlanItemsInput = {
@@ -10415,6 +11191,7 @@ export type ZevUpdateWithoutPlanItemsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10461,6 +11238,10 @@ export type ZevUpdateWithoutPlanItemsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutPlanItemsInput = {
@@ -10477,6 +11258,7 @@ export type ZevUncheckedUpdateWithoutPlanItemsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10523,6 +11305,10 @@ export type ZevUncheckedUpdateWithoutPlanItemsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutProjectsInput = {
@@ -10539,6 +11325,7 @@ export type ZevCreateWithoutProjectsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10585,6 +11372,10 @@ export type ZevCreateWithoutProjectsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutProjectsInput = {
@@ -10601,6 +11392,7 @@ export type ZevUncheckedCreateWithoutProjectsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10647,6 +11439,10 @@ export type ZevUncheckedCreateWithoutProjectsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutProjectsInput = {
@@ -10679,6 +11475,7 @@ export type ZevUpdateWithoutProjectsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10725,6 +11522,10 @@ export type ZevUpdateWithoutProjectsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutProjectsInput = {
@@ -10741,6 +11542,7 @@ export type ZevUncheckedUpdateWithoutProjectsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10787,6 +11589,10 @@ export type ZevUncheckedUpdateWithoutProjectsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutMaintenanceIssuesInput = {
@@ -10803,6 +11609,7 @@ export type ZevCreateWithoutMaintenanceIssuesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10849,6 +11656,10 @@ export type ZevCreateWithoutMaintenanceIssuesInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
@@ -10865,6 +11676,7 @@ export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -10911,6 +11723,10 @@ export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutMaintenanceIssuesInput = {
@@ -10943,6 +11759,7 @@ export type ZevUpdateWithoutMaintenanceIssuesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10989,6 +11806,10 @@ export type ZevUpdateWithoutMaintenanceIssuesInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
@@ -11005,6 +11826,7 @@ export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11051,6 +11873,10 @@ export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutWorkOrdersInput = {
@@ -11067,6 +11893,7 @@ export type ZevCreateWithoutWorkOrdersInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11113,6 +11940,10 @@ export type ZevCreateWithoutWorkOrdersInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutWorkOrdersInput = {
@@ -11129,6 +11960,7 @@ export type ZevUncheckedCreateWithoutWorkOrdersInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11175,6 +12007,10 @@ export type ZevUncheckedCreateWithoutWorkOrdersInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutWorkOrdersInput = {
@@ -11207,6 +12043,7 @@ export type ZevUpdateWithoutWorkOrdersInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11253,6 +12090,10 @@ export type ZevUpdateWithoutWorkOrdersInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
@@ -11269,6 +12110,7 @@ export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11315,6 +12157,10 @@ export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutDocumentsInput = {
@@ -11331,6 +12177,7 @@ export type ZevCreateWithoutDocumentsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11377,6 +12224,10 @@ export type ZevCreateWithoutDocumentsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutDocumentsInput = {
@@ -11393,6 +12244,7 @@ export type ZevUncheckedCreateWithoutDocumentsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11439,6 +12291,10 @@ export type ZevUncheckedCreateWithoutDocumentsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutDocumentsInput = {
@@ -11471,6 +12327,7 @@ export type ZevUpdateWithoutDocumentsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11517,6 +12374,10 @@ export type ZevUpdateWithoutDocumentsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutDocumentsInput = {
@@ -11533,6 +12394,7 @@ export type ZevUncheckedUpdateWithoutDocumentsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11579,6 +12441,10 @@ export type ZevUncheckedUpdateWithoutDocumentsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAttachmentsInput = {
@@ -11595,6 +12461,7 @@ export type ZevCreateWithoutAttachmentsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11641,6 +12508,10 @@ export type ZevCreateWithoutAttachmentsInput = {
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAttachmentsInput = {
@@ -11657,6 +12528,7 @@ export type ZevUncheckedCreateWithoutAttachmentsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11703,6 +12575,10 @@ export type ZevUncheckedCreateWithoutAttachmentsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAttachmentsInput = {
@@ -11735,6 +12611,7 @@ export type ZevUpdateWithoutAttachmentsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11781,6 +12658,10 @@ export type ZevUpdateWithoutAttachmentsInput = {
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAttachmentsInput = {
@@ -11797,6 +12678,7 @@ export type ZevUncheckedUpdateWithoutAttachmentsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11843,6 +12725,10 @@ export type ZevUncheckedUpdateWithoutAttachmentsInput = {
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutNotificationMessagesInput = {
@@ -11859,6 +12745,7 @@ export type ZevCreateWithoutNotificationMessagesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11905,6 +12792,10 @@ export type ZevCreateWithoutNotificationMessagesInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
@@ -11921,6 +12812,7 @@ export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -11967,6 +12859,10 @@ export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutNotificationMessagesInput = {
@@ -11999,6 +12895,7 @@ export type ZevUpdateWithoutNotificationMessagesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12045,6 +12942,10 @@ export type ZevUpdateWithoutNotificationMessagesInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
@@ -12061,6 +12962,7 @@ export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12107,6 +13009,10 @@ export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutAuditEventsInput = {
@@ -12123,6 +13029,7 @@ export type ZevCreateWithoutAuditEventsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -12169,6 +13076,10 @@ export type ZevCreateWithoutAuditEventsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutAuditEventsInput = {
@@ -12185,6 +13096,7 @@ export type ZevUncheckedCreateWithoutAuditEventsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -12231,6 +13143,10 @@ export type ZevUncheckedCreateWithoutAuditEventsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutAuditEventsInput = {
@@ -12263,6 +13179,7 @@ export type ZevUpdateWithoutAuditEventsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12309,6 +13226,10 @@ export type ZevUpdateWithoutAuditEventsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutAuditEventsInput = {
@@ -12325,6 +13246,7 @@ export type ZevUncheckedUpdateWithoutAuditEventsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12371,6 +13293,10 @@ export type ZevUncheckedUpdateWithoutAuditEventsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
 
 export type ZevCreateWithoutSettingsInput = {
@@ -12387,6 +13313,7 @@ export type ZevCreateWithoutSettingsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -12433,6 +13360,10 @@ export type ZevCreateWithoutSettingsInput = {
   attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
 
 export type ZevUncheckedCreateWithoutSettingsInput = {
@@ -12449,6 +13380,7 @@ export type ZevUncheckedCreateWithoutSettingsInput = {
   note?: string | null
   tier?: $Enums.ZevTier
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: $Enums.UnitRegisterStatus
   unitRegisterVersion?: number
   unitRegisterEstablishedAt?: Date | string | null
@@ -12495,6 +13427,10 @@ export type ZevUncheckedCreateWithoutSettingsInput = {
   attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
   notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
 
 export type ZevCreateOrConnectWithoutSettingsInput = {
@@ -12527,6 +13463,7 @@ export type ZevUpdateWithoutSettingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12573,6 +13510,10 @@ export type ZevUpdateWithoutSettingsInput = {
   attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
 
 export type ZevUncheckedUpdateWithoutSettingsInput = {
@@ -12589,6 +13530,7 @@ export type ZevUncheckedUpdateWithoutSettingsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
   unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
   unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12635,6 +13577,1146 @@ export type ZevUncheckedUpdateWithoutSettingsInput = {
   attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
   notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutZevChartsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutZevChartsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutZevChartsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutZevChartsInput, Prisma.ZevUncheckedCreateWithoutZevChartsInput>
+}
+
+export type ZevUpsertWithoutZevChartsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutZevChartsInput, Prisma.ZevUncheckedUpdateWithoutZevChartsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutZevChartsInput, Prisma.ZevUncheckedCreateWithoutZevChartsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutZevChartsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutZevChartsInput, Prisma.ZevUncheckedUpdateWithoutZevChartsInput>
+}
+
+export type ZevUpdateWithoutZevChartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutZevChartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutZevAccountsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutZevAccountsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutZevAccountsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutZevAccountsInput, Prisma.ZevUncheckedCreateWithoutZevAccountsInput>
+}
+
+export type ZevUpsertWithoutZevAccountsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutZevAccountsInput, Prisma.ZevUncheckedUpdateWithoutZevAccountsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutZevAccountsInput, Prisma.ZevUncheckedCreateWithoutZevAccountsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutZevAccountsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutZevAccountsInput, Prisma.ZevUncheckedUpdateWithoutZevAccountsInput>
+}
+
+export type ZevUpdateWithoutZevAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutZevAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutFiscalYearsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutFiscalYearsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutFiscalYearsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutFiscalYearsInput, Prisma.ZevUncheckedCreateWithoutFiscalYearsInput>
+}
+
+export type ZevUpsertWithoutFiscalYearsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutFiscalYearsInput, Prisma.ZevUncheckedUpdateWithoutFiscalYearsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutFiscalYearsInput, Prisma.ZevUncheckedCreateWithoutFiscalYearsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutFiscalYearsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutFiscalYearsInput, Prisma.ZevUncheckedUpdateWithoutFiscalYearsInput>
+}
+
+export type ZevUpdateWithoutFiscalYearsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutFiscalYearsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutFiscalPeriodsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutFiscalPeriodsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutFiscalPeriodsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutFiscalPeriodsInput, Prisma.ZevUncheckedCreateWithoutFiscalPeriodsInput>
+}
+
+export type ZevUpsertWithoutFiscalPeriodsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutFiscalPeriodsInput, Prisma.ZevUncheckedUpdateWithoutFiscalPeriodsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutFiscalPeriodsInput, Prisma.ZevUncheckedCreateWithoutFiscalPeriodsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutFiscalPeriodsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutFiscalPeriodsInput, Prisma.ZevUncheckedUpdateWithoutFiscalPeriodsInput>
+}
+
+export type ZevUpdateWithoutFiscalPeriodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutFiscalPeriodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
 }
 
 
@@ -12685,6 +14767,10 @@ export type ZevCountOutputType = {
   notificationMessages: number
   auditEvents: number
   settings: number
+  zevCharts: number
+  zevAccounts: number
+  fiscalYears: number
+  fiscalPeriods: number
 }
 
 export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -12730,6 +14816,10 @@ export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.In
   notificationMessages?: boolean | ZevCountOutputTypeCountNotificationMessagesArgs
   auditEvents?: boolean | ZevCountOutputTypeCountAuditEventsArgs
   settings?: boolean | ZevCountOutputTypeCountSettingsArgs
+  zevCharts?: boolean | ZevCountOutputTypeCountZevChartsArgs
+  zevAccounts?: boolean | ZevCountOutputTypeCountZevAccountsArgs
+  fiscalYears?: boolean | ZevCountOutputTypeCountFiscalYearsArgs
+  fiscalPeriods?: boolean | ZevCountOutputTypeCountFiscalPeriodsArgs
 }
 
 /**
@@ -13036,6 +15126,34 @@ export type ZevCountOutputTypeCountSettingsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.SettingWhereInput
 }
 
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountZevChartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ZevChartWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountZevAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ZevAccountWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountFiscalYearsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FiscalYearWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountFiscalPeriodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FiscalPeriodWhereInput
+}
+
 
 export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -13051,6 +15169,7 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   note?: boolean
   tier?: boolean
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: boolean
   unitRegisterVersion?: boolean
   unitRegisterEstablishedAt?: boolean
@@ -13098,6 +15217,10 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   notificationMessages?: boolean | Prisma.Zev$notificationMessagesArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Zev$auditEventsArgs<ExtArgs>
   settings?: boolean | Prisma.Zev$settingsArgs<ExtArgs>
+  zevCharts?: boolean | Prisma.Zev$zevChartsArgs<ExtArgs>
+  zevAccounts?: boolean | Prisma.Zev$zevAccountsArgs<ExtArgs>
+  fiscalYears?: boolean | Prisma.Zev$fiscalYearsArgs<ExtArgs>
+  fiscalPeriods?: boolean | Prisma.Zev$fiscalPeriodsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["zev"]>
 
@@ -13115,6 +15238,7 @@ export type ZevSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   note?: boolean
   tier?: boolean
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: boolean
   unitRegisterVersion?: boolean
   unitRegisterEstablishedAt?: boolean
@@ -13136,6 +15260,7 @@ export type ZevSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   note?: boolean
   tier?: boolean
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: boolean
   unitRegisterVersion?: boolean
   unitRegisterEstablishedAt?: boolean
@@ -13157,6 +15282,7 @@ export type ZevSelectScalar = {
   note?: boolean
   tier?: boolean
   active?: boolean
+  isDemo?: boolean
   unitRegisterStatus?: boolean
   unitRegisterVersion?: boolean
   unitRegisterEstablishedAt?: boolean
@@ -13164,7 +15290,7 @@ export type ZevSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ZevOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "legalName" | "shortName" | "registrationNumber" | "jib" | "registeredAddress" | "city" | "municipality" | "foundingDate" | "registrationDate" | "note" | "tier" | "active" | "unitRegisterStatus" | "unitRegisterVersion" | "unitRegisterEstablishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["zev"]>
+export type ZevOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "legalName" | "shortName" | "registrationNumber" | "jib" | "registeredAddress" | "city" | "municipality" | "foundingDate" | "registrationDate" | "note" | "tier" | "active" | "isDemo" | "unitRegisterStatus" | "unitRegisterVersion" | "unitRegisterEstablishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["zev"]>
 export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   unitRegisterChanges?: boolean | Prisma.Zev$unitRegisterChangesArgs<ExtArgs>
   buildings?: boolean | Prisma.Zev$buildingsArgs<ExtArgs>
@@ -13208,6 +15334,10 @@ export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notificationMessages?: boolean | Prisma.Zev$notificationMessagesArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Zev$auditEventsArgs<ExtArgs>
   settings?: boolean | Prisma.Zev$settingsArgs<ExtArgs>
+  zevCharts?: boolean | Prisma.Zev$zevChartsArgs<ExtArgs>
+  zevAccounts?: boolean | Prisma.Zev$zevAccountsArgs<ExtArgs>
+  fiscalYears?: boolean | Prisma.Zev$fiscalYearsArgs<ExtArgs>
+  fiscalPeriods?: boolean | Prisma.Zev$fiscalPeriodsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ZevIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -13258,6 +15388,10 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     notificationMessages: Prisma.$NotificationMessagePayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
     settings: Prisma.$SettingPayload<ExtArgs>[]
+    zevCharts: Prisma.$ZevChartPayload<ExtArgs>[]
+    zevAccounts: Prisma.$ZevAccountPayload<ExtArgs>[]
+    fiscalYears: Prisma.$FiscalYearPayload<ExtArgs>[]
+    fiscalPeriods: Prisma.$FiscalPeriodPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -13280,6 +15414,11 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
      * Soft-disable a tenant without deleting its data (e.g. suspended account).
      */
     active: boolean
+    /**
+     * Demo/test ZEV (seed): jedini kome se smije dodijeliti DEMO kontni predložak
+     * (Plans/kontni-plan-i-knjizenje-plan.md, A-Q5). Produkcioni ZEV ostaje false.
+     */
+    isDemo: boolean
     /**
      * Registar posebnih dijelova (FR, K-02): DRAFT -> ESTABLISHED; REVIEW = postojeci ZEV koji
      * predsjednik tek treba da provjeri i utvrdi (FR-Q4).
@@ -13725,6 +15864,10 @@ export interface Prisma__ZevClient<T, Null = never, ExtArgs extends runtime.Type
   notificationMessages<T extends Prisma.Zev$notificationMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$notificationMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.Zev$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   settings<T extends Prisma.Zev$settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$settingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  zevCharts<T extends Prisma.Zev$zevChartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$zevChartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevChartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  zevAccounts<T extends Prisma.Zev$zevAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$zevAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fiscalYears<T extends Prisma.Zev$fiscalYearsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$fiscalYearsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FiscalYearPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fiscalPeriods<T extends Prisma.Zev$fiscalPeriodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$fiscalPeriodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FiscalPeriodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13767,6 +15910,7 @@ export interface ZevFieldRefs {
   readonly note: Prisma.FieldRef<"Zev", 'String'>
   readonly tier: Prisma.FieldRef<"Zev", 'ZevTier'>
   readonly active: Prisma.FieldRef<"Zev", 'Boolean'>
+  readonly isDemo: Prisma.FieldRef<"Zev", 'Boolean'>
   readonly unitRegisterStatus: Prisma.FieldRef<"Zev", 'UnitRegisterStatus'>
   readonly unitRegisterVersion: Prisma.FieldRef<"Zev", 'Int'>
   readonly unitRegisterEstablishedAt: Prisma.FieldRef<"Zev", 'DateTime'>
@@ -15170,6 +17314,102 @@ export type Zev$settingsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.SettingScalarFieldEnum | Prisma.SettingScalarFieldEnum[]
+}
+
+/**
+ * Zev.zevCharts
+ */
+export type Zev$zevChartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ZevChart
+   */
+  select?: Prisma.ZevChartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ZevChart
+   */
+  omit?: Prisma.ZevChartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevChartInclude<ExtArgs> | null
+  where?: Prisma.ZevChartWhereInput
+  orderBy?: Prisma.ZevChartOrderByWithRelationInput | Prisma.ZevChartOrderByWithRelationInput[]
+  cursor?: Prisma.ZevChartWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ZevChartScalarFieldEnum | Prisma.ZevChartScalarFieldEnum[]
+}
+
+/**
+ * Zev.zevAccounts
+ */
+export type Zev$zevAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ZevAccount
+   */
+  select?: Prisma.ZevAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ZevAccount
+   */
+  omit?: Prisma.ZevAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevAccountInclude<ExtArgs> | null
+  where?: Prisma.ZevAccountWhereInput
+  orderBy?: Prisma.ZevAccountOrderByWithRelationInput | Prisma.ZevAccountOrderByWithRelationInput[]
+  cursor?: Prisma.ZevAccountWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ZevAccountScalarFieldEnum | Prisma.ZevAccountScalarFieldEnum[]
+}
+
+/**
+ * Zev.fiscalYears
+ */
+export type Zev$fiscalYearsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FiscalYear
+   */
+  select?: Prisma.FiscalYearSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FiscalYear
+   */
+  omit?: Prisma.FiscalYearOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FiscalYearInclude<ExtArgs> | null
+  where?: Prisma.FiscalYearWhereInput
+  orderBy?: Prisma.FiscalYearOrderByWithRelationInput | Prisma.FiscalYearOrderByWithRelationInput[]
+  cursor?: Prisma.FiscalYearWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FiscalYearScalarFieldEnum | Prisma.FiscalYearScalarFieldEnum[]
+}
+
+/**
+ * Zev.fiscalPeriods
+ */
+export type Zev$fiscalPeriodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FiscalPeriod
+   */
+  select?: Prisma.FiscalPeriodSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FiscalPeriod
+   */
+  omit?: Prisma.FiscalPeriodOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FiscalPeriodInclude<ExtArgs> | null
+  where?: Prisma.FiscalPeriodWhereInput
+  orderBy?: Prisma.FiscalPeriodOrderByWithRelationInput | Prisma.FiscalPeriodOrderByWithRelationInput[]
+  cursor?: Prisma.FiscalPeriodWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FiscalPeriodScalarFieldEnum | Prisma.FiscalPeriodScalarFieldEnum[]
 }
 
 /**

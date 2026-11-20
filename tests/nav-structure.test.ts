@@ -23,14 +23,14 @@ describe("buildTenantNav — meni po ulozi (F9, D8)", () => {
     expect(shape(["PRESIDENT"])).toEqual([
       ["nav.group.daily", ["/", "/fakture", "/fakture/uplate", "/troskovi", "/skupstina", "/odrzavanje"]],
       ["nav.group.community", ["/vlasnici", "/zgrade", "/organi", "/planovi", "/dokumenti"]],
-      ["nav.group.management", ["/izvjestaji", "/evidencije", "/podesavanja"]],
+      ["nav.group.management", ["/izvjestaji", "/knjigovodstvo", "/evidencije", "/podesavanja"]],
     ]);
     expect(settingsInAccountMenu(["PRESIDENT"])).toBe(false);
   });
 
   it("računovođa: Finansije prvo, pa Zajednica i Uprava", () => {
     expect(shape(["ACCOUNTANT"])).toEqual([
-      ["nav.group.finance", ["/", "/fakture", "/fakture/uplate", "/troskovi", "/izvjestaji"]],
+      ["nav.group.finance", ["/", "/fakture", "/fakture/uplate", "/troskovi", "/izvjestaji", "/knjigovodstvo"]],
       ["nav.group.community", ["/vlasnici", "/zgrade", "/planovi", "/odrzavanje", "/skupstina", "/organi", "/dokumenti"]],
       ["nav.group.management", ["/evidencije", "/podesavanja"]],
     ]);
@@ -44,7 +44,7 @@ describe("buildTenantNav — meni po ulozi (F9, D8)", () => {
     // vlasnik: Podešavanja prelaze u meni naloga, ostalo isto
     expect(hrefs(["OWNER"]).sort()).toEqual(old.OWNER.filter((h) => h !== "/podesavanja").sort());
     for (const r of ["PRESIDENT", "ACCOUNTANT"] as const) {
-      expect(hrefs([r]).sort()).toEqual([...old.MGMT, "/fakture/uplate"].sort());
+      expect(hrefs([r]).sort()).toEqual([...old.MGMT, "/fakture/uplate", "/knjigovodstvo"].sort());
     }
   });
 
@@ -106,7 +106,7 @@ describe("aktivna stavka po prefiksu", () => {
 describe("buildPlatformNav", () => {
   it("ravna lista sa Podešavanjima platforme; Moj ZEV samo uz ZEV", () => {
     const flat = (z: boolean) => buildPlatformNav({ hasZev: z }).flatMap((g) => g.items.map((i) => i.href));
-    expect(flat(false)).toEqual(["/admin", "/admin/aktivnosti", "/admin/sesije", "/admin/podesavanja"]);
+    expect(flat(false)).toEqual(["/admin", "/admin/aktivnosti", "/admin/sesije", "/admin/kontni-okviri", "/admin/podesavanja"]);
     expect(flat(true)).toEqual([...flat(false), "/"]);
     expect(buildPlatformNav({ hasZev: true })).toHaveLength(1);
     expect(buildPlatformNav({ hasZev: true })[0].labelKey).toBeUndefined();

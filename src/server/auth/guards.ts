@@ -1,6 +1,7 @@
 // Server-side authorization. Every service function takes an Actor and calls
 // one of these guards — hiding a button in the UI is never the enforcement point.
 import type { Role } from "@/generated/prisma/client";
+import { hasCapability, type AccountingCapability } from "@/lib/accountingCapabilities";
 
 /**
  * Actor is deliberately decoupled from the HTTP session so the service layer
@@ -64,6 +65,13 @@ export function hasRole(actor: Actor, ...roles: Role[]): boolean {
 export function requireRole(actor: Actor | null | undefined, ...roles: Role[]): Actor {
   if (!actor) throw new AuthError();
   if (!hasRole(actor, ...roles)) throw new ForbiddenError();
+  return actor;
+}
+
+/** Knjigovodstvene mogućnosti (src/lib/accountingCapabilities.ts) — imenovana dozvola mapirana na uloge. */
+export function requireCapability(actor: Actor | null | undefined, cap: AccountingCapability): Actor {
+  if (!actor) throw new AuthError();
+  if (!hasCapability(actor.roles, cap)) throw new ForbiddenError();
   return actor;
 }
 

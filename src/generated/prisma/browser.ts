@@ -351,6 +351,40 @@ export type Setting = Prisma.SettingModel
  */
 export type PlatformSetting = Prisma.PlatformSettingModel
 /**
+ * Model ChartTemplate
+ * Predložak kontnog plana (platformski — dijele ga svi ZEV-ovi; uređuje ga samo super admin).
+ * Nova verzija = novi red sa istim `key` i većom `version`; poslije izlaska iz DRAFT-a red i
+ * njegova konta se ne mijenjaju (servis). Dodjela ZEV-u pravi KOPIJU (ZevChart), pa izmjena
+ * predloška nikad ne dira postojeće planove ZEV-ova.
+ */
+export type ChartTemplate = Prisma.ChartTemplateModel
+/**
+ * Model ChartTemplateAccount
+ * 
+ */
+export type ChartTemplateAccount = Prisma.ChartTemplateAccountModel
+/**
+ * Model ZevChart
+ * Kontni plan jednog ZEV-a: snimak predloška u trenutku dodjele + lokalna analitička razrada.
+ * Najviše jedan ne-povučen plan po ZEV-u (servis, pod zaključavanjem reda Zev).
+ */
+export type ZevChart = Prisma.ZevChartModel
+/**
+ * Model ZevAccount
+ * 
+ */
+export type ZevAccount = Prisma.ZevAccountModel
+/**
+ * Model FiscalYear
+ * Poslovna godina ZEV-a. U A1 se samo otvara i pregleda; zatvaranje je Faza B.
+ */
+export type FiscalYear = Prisma.FiscalYearModel
+/**
+ * Model FiscalPeriod
+ * 
+ */
+export type FiscalPeriod = Prisma.FiscalPeriodModel
+/**
  * Model OnboardingInvite
  * Pozivni link za klijenta. Token se nikad ne čuva, samo sha256 (kao ApprovalToken).
  * „Izdaj novi link" mijenja tokenHash i rok na istom redu — stari link time prestaje da važi.

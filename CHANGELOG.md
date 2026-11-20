@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.1.0] - 2026-11-20
+
+Prekretnica: početak knjigovodstvenog dijela aplikacije — **Faza A1, kontni plan** (`Plans/kontni-plan-i-knjizenje-plan.md`). Ovo **nije** zakonsko knjigovodstvo i nema knjiženja: uvodi se šifarnik konta, predlošci kontnih planova sa verzijama i stručnom provjerom, kontni plan po ZEV-u i poslovne godine. Postojeći tokovi zaduživanja, uplata i plaćanja se ne mijenjaju.
+
+**Migracija: da — `20261120120000_chart_of_accounts` (šest novih tabela, četiri enuma, kolona `Zev.isDemo`, dva okidača protiv ciklusa u hijerarhiji konta); samo dodavanje. Primijeniti prije deploya (`MIGRATE_DATABASE_URL="…" node scripts/migrate.mjs apply`).**
+
+### Dodato
+
+- **Knjigovodstvo** (`/knjigovodstvo`, predsjednik pregled, računovođa uređuje): tabovi Kontni plan, Poslovne godine, te Pravila knjiženja, Nalozi i Izvještaji označeni „Nije još dostupno”. Na vrhu stalno upozorenje da ovo još nije zakonsko knjigovodstvo.
+- **Kontni plan ZEV-a:** dodjela iz stručno provjerenog predloška kao **kopija** (izmjena ili nova verzija predloška ne mijenja plan ZEV-a); hijerarhija u tabeli sa uvlačenjem po dubini; pretraga po šifri i nazivu; prikaz samo aktivnih ili svih konta.
+- **Pravila konta:** šifra je tekst (vodeće nule ostaju), jedinstvena u planu, provjerava se po pravilima predloška (samo cifre, dozvoljene dužine, šifra podkonta počinje šifrom nadređenog, najviše nivoa); hijerarhija bez ciklusa (servis + okidač u bazi); konto sa podkontima nije knjižno.
+- **Nacrt i aktivan plan:** u nacrtu se šifre, vrste i hijerarhija slobodno mijenjaju i konta brišu; poslije aktivacije su šifra, vrsta i zbirno/knjižno zaključani — promjena ide kroz **„Zamijeni konto”** (novi konto sa vezom na stari, stari deaktiviran), a konta se samo **deaktiviraju**, ne brišu. Svaka izmjena ide u revizorski trag (prije/poslije, razlog za deaktivaciju, zamjenu i povlačenje plana).
+- **Poslovne godine:** otvaranje godine sa mjesečnim periodima ili jednim periodom, bez preklapanja. Zatvaranje perioda dolazi sa nalozima (Faza B).
+- **Kontni okviri** (`/admin/kontni-okviri`, super admin): predlošci sa ključem i verzijom, jurisdikcijom, izvorom (propisom), periodom primjene i pravilima šifara; uvoz konta iz CSV-a u nacrt (ništa se ne upisuje ako ijedan red ima grešku, greške po broju reda); status Nacrt → Stručno provjeren (izvor, ko je provjerio i datum obavezni) ili Demonstracioni → Povučen; nova verzija iz postojeće.
+- **Demonstracioni predložak** u seed podacima (izmišljene šifre sa prefiksom „D”), dodjeljiv samo demo ZEV-u (`Zev.isDemo`). Službene šifre se ne unose iz aplikacije; prvi produkcioni predložak se uvozi iz službenog teksta kontnog okvira i ostaje nacrt do stručne provjere.
+- Imenovane mogućnosti knjigovodstva (`src/lib/accountingCapabilities.ts`, guard `requireCapability`) mapirane na postojeće uloge; ne daju pravo plaćanja ni odobravanja nabavke.
+- Meni: „Knjigovodstvo” (predsjednik: Uprava; računovođa: Finansije) i „Kontni okviri” u platformskom meniju, sa novom ikonom.
+- Testovi: `tests/chart-of-accounts.test.ts` (vodeće nule, pravila šifara, CSV, ciklusi i okidač, razdvajanje dva ZEV-a, nezavisnost od nove verzije predloška, zaključavanje aktivnog plana, zamjena i deaktivacija, poslovne godine).
+
 ## [2.66.0] - 2026-11-15
 
 Pristupačni prikaz, faza A: lična postavka **„Veći tekst i dugmad”** za korisnike kojima je uobičajeni prikaz sitan (tipično predsjednik ZEV-a u penziji). Uključuje se i isključuje dugmetom „A+” u gornjoj traci ili u „Moji podaci”; uobičajeni prikaz se ne mijenja. Plan: `Plans/pristupacni-prikaz-plan.md`.
