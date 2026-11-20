@@ -139,6 +139,13 @@ async function PlanTab({ actor, canEdit, q, show }: { actor: Actor; canEdit: boo
           </dl>
           {tpl.status === "DEMO" && <Flash inset warn={t("ledger.chart.demo")} />}
           {isDraft && <p className="max-w-[68ch] text-sm text-slate-600">{t("ledger.chart.draftHint")}</p>}
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
+              <BtnLink href="/api/knjigovodstvo/kontni-plan?format=xlsx">{t("ledger.exportXlsx")}</BtnLink>
+              <BtnLink href="/api/knjigovodstvo/kontni-plan?format=pdf">{t("ledger.exportPdf")}</BtnLink>
+            </div>
+            <p className="max-w-[68ch] text-hint text-slate-500">{t("ledger.exportHint")}</p>
+          </div>
           {canEdit && (
             <div className="flex flex-wrap items-start gap-3">
               {isDraft && (

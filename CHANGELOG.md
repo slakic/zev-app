@@ -43,6 +43,22 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.4.0] - 2026-11-20
+
+Izvoz kontnog plana u Excel i PDF, za slanje računovođi na stručnu provjeru. **Migracija: ne.**
+
+### Dodato
+
+- **Izvoz u Excel / Izvoz u PDF** na kartici „Kontni plan ZEV-a” (predsjednik i računovođa) i na stranici kontnog predloška u adminu (super admin, u bilo kom statusu — prije označavanja kao stručno provjeren). Izvozi se cijeli plan, i neaktivna konta, kao stablo.
+- **Excel (.xlsx):** prvih šest kolona je tačno u formatu uvoza kontnog predloška (šifra; naziv; nadređena; vrsta; knjižno; opis), pa se ispravljen fajl, sačuvan kao CSV, može ponovo uvesti; zatim vrsta riječima, nivo, status i prazna kolona „Napomena računovođe”. Šifre su tekst (vodeće nule ostaju), zbirna konta podebljana, prvi red zamrznut sa filterom. Drugi list „Podaci”: predložak, izvor, stručna provjera, pravila šifara. Pravi se bez nove zavisnosti (`src/server/xlsx.ts`).
+- **PDF:** zaglavlje sa podacima o planu i napomenom da nije zakonsko knjigovodstvo, tabela sa uvučenim stablom i praznom kolonom „Provjera”. Izvoz se ne čuva u Dokumentima, ali se bilježi u revizorskom tragu.
+
+### Ispravljeno
+
+- Tabele u PDF izvještajima: zaglavlje kolone koje se prelomi u dva reda više ne pada preko prvog reda podataka (zajednička funkcija za sve PDF izvještaje).
+
+Uputstvo: 13.2 (izvoz za računovođu) i 15.6 (izvoz predloška za stručnu provjeru).
+
 ## [3.3.1] - 2026-11-20
 
 Korisničko uputstvo dopunjeno za verzije 3.1.0–3.3.0. **Migracija: ne.**

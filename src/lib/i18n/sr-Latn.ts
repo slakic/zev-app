@@ -1330,6 +1330,7 @@ const srLatn = {
       activate: "Aktiviran kontni plan",
       retire: "Povučen kontni plan",
       sync: "Preuzete izmjene iz nove verzije kontnog predloška",
+      export: "Izvezen kontni plan (Excel ili PDF)",
     },
     zev_account: {
       create: "Dodat konto",
@@ -1346,6 +1347,7 @@ const srLatn = {
       update: "Izmijenjen kontni predložak",
       import: "Uvezena konta u kontni predložak",
       status: "Promijenjen status kontnog predloška",
+      export: "Izvezen kontni predložak (Excel ili PDF)",
       account: {
         create: "Dodat konto u nacrt kontnog predloška",
         update: "Izmijenjen konto u nacrtu kontnog predloška",
@@ -1453,6 +1455,9 @@ const srLatn = {
     notLegal: "Kontni plan služi za razvrstavanje poslovnih promjena. Ovo još nije zakonsko knjigovodstvo: knjiženje se uključuje tek kad računovođa potvrdi kontni okvir i pravila knjiženja.",
     tabs: { plan: "Kontni plan", periods: "Poslovne godine", rules: "Pravila knjiženja", journal: "Nalozi", reports: "Izvještaji" },
     notYet: "Nije još dostupno",
+    exportXlsx: "Izvoz u Excel",
+    exportPdf: "Izvoz u PDF",
+    exportHint: "Za slanje računovođi na provjeru. U Excelu je kolona „Napomena računovođe”, a prvih šest kolona je u formatu za uvoz.",
     msg: {
       assigned: "Kontni plan je preuzet kao nacrt.",
       activated: "Kontni plan je aktiviran.",

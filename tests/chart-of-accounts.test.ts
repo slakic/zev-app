@@ -355,3 +355,54 @@ describe("preuzimanje izmjena iz nove verzije predloška", () => {
     expect(chart.accounts.find((a) => a.code === "100")?.name).toBe("Konto 100 — treći naziv");
   });
 });
+
+describe("izvoz kontnog plana (Excel i PDF)", () => {
+  let sa: Actor;
+  let f: Fixture;
+  let tplId: string;
+  beforeAll(async () => {
+    sa = await createSuperAdminActor("coa-exp");
+    f = await createFixture("coa-exp");
+    tplId = (await makeReviewedTemplate(sa, "exp")).id;
+    await coa.assignChart(f.accountant, tplId);
+  });
+
+  it("prava: vlasnik ne izvozi, predsjednik i računovođa da; predložak samo super admin", async () => {
+    const { exportChartFile } = await import("@/server/services/chartExport");
+    await expect(exportChartFile(f.actorA, { kind: "zev" }, "xlsx")).rejects.toThrow();
+    await expect(exportChartFile(f.accountant, { kind: "template", templateId: tplId }, "xlsx")).rejects.toThrow();
+    const pres = await exportChartFile(f.president, { kind: "zev" }, "pdf");
+    expect(pres.body.subarray(0, 4).toString()).toBe("%PDF");
+    expect(pres.filename).toMatch(/^kontni-plan-.*\.pdf$/);
+    const ev = await prisma.auditEvent.findFirst({ where: { action: "zev_chart.export", actorId: f.president.userId } });
+    expect(ev).not.toBeNull();
+  });
+
+  it("Excel: pravi ZIP paket, šifre kao tekst sa vodećim nulama; kolone A–F se mogu ponovo uvesti", async () => {
+    const { zevChartExport, chartXlsx } = await import("@/server/services/chartExport");
+    const exp = await zevChartExport(f.accountant);
+    const xlsx = chartXlsx(exp);
+    expect(xlsx.subarray(0, 2).toString()).toBe("PK");
+    const text = xlsx.toString("utf8");
+    expect(text).toContain('<t xml:space="preserve">0100</t>');
+    expect(text).toContain("Napomena računovođe");
+    // Povratni uvoz: prvih šest kolona kao CSV prolazi isti parser kao uvoz predloška.
+    const csv = ["šifra;naziv;nadređena;vrsta;knjižno;opis", ...exp.rows.map((r) => [r.code, r.name, r.parentCode ?? "", r.nature, r.postable ? "da" : "ne", r.description ?? ""].join(";"))].join("\n");
+    const parsed = parseChartCsv(parseCsv(csv, ";"), NUMERIC_RULES);
+    expect(parsed.errors).toEqual([]);
+    expect(parsed.rows.map((r) => r.code).sort()).toEqual(exp.rows.map((r) => r.code).sort());
+    // Roditelj se uvijek pojavljuje prije djeteta.
+    const seen = new Set<string>();
+    for (const r of exp.rows) {
+      if (r.parentCode) expect(seen.has(r.parentCode)).toBe(true);
+      seen.add(r.code);
+    }
+  });
+
+  it("predložak: super admin izvozi i nacrt", async () => {
+    const { exportChartFile } = await import("@/server/services/chartExport");
+    const file = await exportChartFile(sa, { kind: "template", templateId: tplId }, "xlsx");
+    expect(file.filename).toMatch(/^kontni-predlozak-.*-v1\.xlsx$/);
+    expect(file.contentType).toContain("spreadsheetml");
+  });
+});

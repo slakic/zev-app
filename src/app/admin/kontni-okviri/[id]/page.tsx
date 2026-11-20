@@ -3,7 +3,7 @@ import { requireSuperAdminActor } from "@/server/actor";
 import { getTemplate } from "@/server/services/chartOfAccounts";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { formatDate, t, tEnum, tf, toZonedDateIso } from "@/lib/i18n";
-import { PageHeader, Card, Flash, Field, inputCls, SubmitBtn, ConfirmAction, StatusBadge, ToggleBtn } from "@/components/ui";
+import { PageHeader, Card, Flash, Field, inputCls, SubmitBtn, ConfirmAction, StatusBadge, ToggleBtn, BtnLink } from "@/components/ui";
 import { AccountTreeTable } from "@/components/account-tree-table";
 import { TemplateMetaFields } from "@/components/template-meta-fields";
 import { TemplateAccountForm } from "@/components/template-account-form";
@@ -43,6 +43,13 @@ export default async function ChartTemplatePage({
               <span className="text-hint text-slate-500">{tf("ledger.templates.usedBy", { broj: tpl._count.zevCharts })}</span>
             </div>
             {tpl.status === "DEMO" && <Flash inset warn={t("ledger.templates.demoWarning")} />}
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
+                <BtnLink href={`/api/admin/kontni-okviri/${tpl.id}?format=xlsx`}>{t("ledger.exportXlsx")}</BtnLink>
+                <BtnLink href={`/api/admin/kontni-okviri/${tpl.id}?format=pdf`}>{t("ledger.exportPdf")}</BtnLink>
+              </div>
+              <p className="max-w-[68ch] text-hint text-slate-500">{t("ledger.exportHint")}</p>
+            </div>
             {isDraft ? (
               <form action={updateTemplateAction} className="space-y-4">
                 <input type="hidden" name="id" value={tpl.id} />

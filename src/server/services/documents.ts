@@ -26,6 +26,7 @@ import fs from "node:fs";
 import { createHash } from "node:crypto";
 import type { DocumentType } from "@/generated/prisma/client";
 import { getFonts } from "@/server/pdf/fonts";
+import type { ChartExport } from "./chartExport";
 
 type PdfBuild = (doc: PDFKit.PDFDocument) => Promise<void> | void;
 
@@ -987,7 +988,10 @@ function pdfTable(doc: PDFKit.PDFDocument, cols: PdfCol[], rows: string[][], emp
   const drawHeader = () => {
     doc.font("bold").fontSize(8.5);
     const hy = doc.y;
+    // Isto kao kod redova: zaglavlje koje se prelomi u dva reda ne smije pasti preko prvog reda podataka.
+    const headerHeight = Math.max(...cols.map((c) => doc.heightOfString(c.label, { width: c.width })));
     cols.forEach((c) => doc.text(c.label, c.x, hy, { width: c.width, align: c.right ? "right" : "left" }));
+    doc.y = hy + headerHeight;
     doc.moveTo(50, doc.y + 2).lineTo(545, doc.y + 2).stroke();
     doc.moveDown(0.25);
     doc.font("reg").fontSize(9);
@@ -1218,5 +1222,52 @@ export async function generateOwnerDebtReportPdf(actor: Actor, opts: { asOf: Dat
     title: `Izvještaj dugovanja po vlasnicima — ${formatDate(opts.asOf)} (${scopeLabel})`,
     buffer,
     finalize: true,
+  });
+}
+
+/**
+ * Kontni plan za stručnu provjeru (izvoz, v3.4.0): ZEV-a ili kontnog predloška. Jednokratni izlaz — vraća se kao
+ * buffer i NE čuva u Dokumentima (kao i nepotpisani obrasci); prava i podatke priprema chartExport.ts.
+ * Kolona „Provjera” je prazna, za oznake računovođe na odštampanom primjerku.
+ */
+export async function renderChartPdf(exp: ChartExport): Promise<Buffer> {
+  return renderPdf(async (doc) => {
+    if (exp.zevName) doc.font("bold").fontSize(12).text(exp.zevName);
+    doc.moveDown(0.3);
+    doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke();
+    doc.moveDown(0.5);
+    doc.font("bold").fontSize(14).text(exp.title.toUpperCase(), { align: "center" });
+    doc.font("reg").fontSize(9).text(`Izvezeno: ${formatDateTime(new Date())}`, { align: "center" });
+    doc.moveDown(0.8);
+    for (const [label, value] of exp.meta) {
+      doc.font("bold").fontSize(9).text(`${label}: `, 50, doc.y, { continued: true }).font("reg").text(value || "—");
+    }
+    doc.moveDown(0.5);
+    doc.fontSize(8.5).fillColor("#555").text(exp.notice, 50, doc.y, { width: 495 }).fillColor("#000");
+    doc.moveDown(0.8);
+    const nbsp = "   ";
+    const cols: PdfCol[] = [
+      // Širine izmjerene za najduže vrijednosti (DejaVuSans 9pt / zaglavlje 8,5pt bold), sa razmakom 6pt.
+      { label: "Šifra", x: 50, width: 45 },
+      { label: "Naziv", x: 101, width: 178 },
+      { label: "Vrsta", x: 285, width: 76 },
+      { label: "Zbirno/knjižno", x: 367, width: 72 },
+      { label: "Status", x: 445, width: 48 },
+      { label: "Provjera", x: 499, width: 46 },
+    ];
+    pdfTable(
+      doc,
+      cols,
+      exp.rows.map((r) => [
+        r.code,
+        `${nbsp.repeat(r.depth)}${r.name}`,
+        tEnum("accountNature", r.nature),
+        r.postable ? "Knjižno" : "Zbirno",
+        r.active === undefined ? "—" : r.active ? "Aktivno" : "Neaktivno",
+        "",
+      ]),
+      "Nema konta."
+    );
+    docFooter(doc, { sourceRef: exp.sourceRef, version: exp.version, status: exp.status });
   });
 }
