@@ -6,6 +6,7 @@
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
+import { displayNameFor } from "@/server/auth/displayName";
 import { requireSuperAdmin, type Actor } from "@/server/auth/guards";
 import { generateToken, sha256 } from "@/server/auth/tokens";
 import { hashPassword, assertPasswordStrong } from "@/server/auth/password";
@@ -363,7 +364,7 @@ export async function acceptOnboardingInvite(token: string, input: AcceptInviteI
     return uid;
   });
   if (!result) return { ok: false, error: "used" };
-  await audit({ userId: result }, {
+  await audit({ userId: result, label: await displayNameFor(result) }, {
     action: "onboarding.invite.accept",
     targetType: "OnboardingInvite",
     targetId: inv.id,

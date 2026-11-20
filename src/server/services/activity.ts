@@ -127,22 +127,39 @@ export async function listActivityActorsForZev(actor: Actor, zevId: string) {
 export async function resolveActorLabels(actor: Actor, pairs: { userId: string | null; zevId: string | null }[]) {
   requireSuperAdmin(actor);
   const known = pairs.filter((p): p is { userId: string; zevId: string } => p.userId != null && p.zevId != null);
+  // Događaji bez ZEV-a sa poznatim korisnikom (prijava, promjena lozinke, prihvatanje poziva — upisuju se prije
+  // nego što je izabran aktivni ZEV): ime po istom pravilu kao displayNameFor (najstariji Party bilo gdje, pa
+  // e-pošta). Ključ je `${userId}:null`, kao što ga sastavlja pozivalac. Pokriva i stare redove bez actorLabel.
+  const tenantless = [...new Set(pairs.filter((p) => p.userId != null && p.zevId == null).map((p) => p.userId as string))];
   const result = new Map<string, string>();
-  if (known.length === 0) return result;
-  const userIds = [...new Set(known.map((p) => p.userId))];
+  if (known.length === 0 && tenantless.length === 0) return result;
+  const userIds = [...new Set([...known.map((p) => p.userId), ...tenantless])];
   const zevIds = [...new Set(known.map((p) => p.zevId))];
   const [parties, users] = await Promise.all([
-    prisma.party.findMany({
-      where: { userId: { in: userIds }, zevId: { in: zevIds } },
-      select: { userId: true, zevId: true, kind: true, firstName: true, lastName: true, orgName: true },
+    zevIds.length
+      ? prisma.party.findMany({
+          where: { userId: { in: userIds }, zevId: { in: zevIds } },
+          select: { userId: true, zevId: true, kind: true, firstName: true, lastName: true, orgName: true },
+        })
+      : Promise.resolve([]),
+    prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: {
+        id: true,
+        email: true,
+        parties: { select: { kind: true, firstName: true, lastName: true, orgName: true }, orderBy: { createdAt: "asc" }, take: 1 },
+      },
     }),
-    prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true, email: true } }),
   ]);
   const partyByKey = new Map(parties.map((p) => [`${p.userId}:${p.zevId}`, partyDisplayName(p)]));
-  const emailById = new Map(users.map((u) => [u.id, u.email]));
+  const userById = new Map(users.map((u) => [u.id, u]));
   for (const { userId, zevId } of known) {
     const key = `${userId}:${zevId}`;
-    result.set(key, partyByKey.get(key) || emailById.get(userId) || "");
+    result.set(key, partyByKey.get(key) || userById.get(userId)?.email || "");
+  }
+  for (const userId of tenantless) {
+    const u = userById.get(userId);
+    result.set(`${userId}:null`, u ? (u.parties[0] ? partyDisplayName(u.parties[0]) : "") || u.email : "");
   }
   return result;
 }

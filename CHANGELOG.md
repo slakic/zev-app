@@ -43,6 +43,17 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.3.0] - 2026-11-20
+
+**Migracija: ne.**
+
+### Ispravljeno
+
+- **Aktivnosti (super admin): „Prijava u aplikaciju” bez aktera.** Prijava se upisuje prije nego što je izabran aktivni ZEV, pa red nema ZEV, a ime aktera se nije čuvalo. Prikaz je tražio ime po paru korisnik–ZEV i za takav red pokazivao „—”. Sada:
+  - prijava, zahtjev i završetak promjene lozinke i prihvatanje poziva za novi ZEV upisuju ime aktera uz događaj;
+  - `/admin/aktivnosti` za događaje bez ZEV-a ime traži po samom korisniku (lice iz najstarijeg ZEV-a, inače e-pošta), pa ime dobijaju i ranije prijave (revizorski trag se ne mijenja naknadno).
+- Test u `tests/admin-activity.test.ts`.
+
 ## [3.2.0] - 2026-11-20
 
 Kontni plan: uređivanje pojedinačnih konta u nacrtu predloška i **preuzimanje izmjena iz nove verzije predloška** u plan ZEV-a (`Plans/kontni-plan-i-knjizenje-plan.md` §3.4). Ništa se i dalje ne preuzima samo.

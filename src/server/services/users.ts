@@ -3,6 +3,7 @@ import { hashPassword, verifyPassword, assertPasswordStrong } from "@/server/aut
 import { generateToken, sha256 } from "@/server/auth/tokens";
 import { queueNotification } from "@/server/notifications/service";
 import { audit } from "@/server/audit";
+import { displayNameFor } from "@/server/auth/displayName";
 import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import type { Role } from "@/generated/prisma/client";
 
@@ -51,7 +52,7 @@ export async function authenticate(email: string, password: string, ipHash?: str
     return { ok: false as const, error: "deactivated" as const };
   }
   failedLogins.delete(key);
-  await audit({ userId: user.id }, { action: "auth.login", targetType: "User", targetId: user.id, ipHash });
+  await audit({ userId: user.id, label: await displayNameFor(user.id) }, { action: "auth.login", targetType: "User", targetId: user.id, ipHash });
   return { ok: true as const, user };
 }
 
@@ -151,7 +152,7 @@ export async function requestPasswordReset(email: string, appUrl: string, ipHash
     where: { id: user.id },
     data: { passwordResetTokenHash: sha256(token), passwordResetExpiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS) },
   });
-  await audit({ userId: user.id }, { action: "password_reset.requested", targetType: "User", targetId: user.id, ipHash });
+  await audit({ userId: user.id, label: await displayNameFor(user.id) }, { action: "password_reset.requested", targetType: "User", targetId: user.id, ipHash });
   // No zevId here on purpose: a password reset is account-level, not tied to any one
   // ZEV, and this user may hold memberships in several (or none) — see queueNotification's
   // own doc comment and docs/multitenancy-plan.md §6.4 Modul 6 for the open question this
@@ -206,7 +207,7 @@ export async function resetPassword(token: string, newPassword: string): Promise
     // Force re-login everywhere — a stolen/old session should not survive a password reset.
     await tx.session.updateMany({ where: { userId: user.id }, data: { revokedAt: new Date(), ipAddress: null } });
   });
-  await audit({ userId: user.id }, { action: "password_reset.completed", targetType: "User", targetId: user.id });
+  await audit({ userId: user.id, label: await displayNameFor(user.id) }, { action: "password_reset.completed", targetType: "User", targetId: user.id });
   return { ok: true };
 }
 
