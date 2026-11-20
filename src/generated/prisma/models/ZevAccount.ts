@@ -273,6 +273,8 @@ export type ZevAccountWhereInput = {
   children?: Prisma.ZevAccountListRelationFilter
   replaces?: Prisma.XOR<Prisma.ZevAccountNullableScalarRelationFilter, Prisma.ZevAccountWhereInput> | null
   replacedBy?: Prisma.XOR<Prisma.ZevAccountNullableScalarRelationFilter, Prisma.ZevAccountWhereInput> | null
+  controlRoles?: Prisma.ZevControlAccountListRelationFilter
+  postingRules?: Prisma.PostingRuleListRelationFilter
 }
 
 export type ZevAccountOrderByWithRelationInput = {
@@ -299,6 +301,8 @@ export type ZevAccountOrderByWithRelationInput = {
   children?: Prisma.ZevAccountOrderByRelationAggregateInput
   replaces?: Prisma.ZevAccountOrderByWithRelationInput
   replacedBy?: Prisma.ZevAccountOrderByWithRelationInput
+  controlRoles?: Prisma.ZevControlAccountOrderByRelationAggregateInput
+  postingRules?: Prisma.PostingRuleOrderByRelationAggregateInput
 }
 
 export type ZevAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -329,6 +333,8 @@ export type ZevAccountWhereUniqueInput = Prisma.AtLeast<{
   children?: Prisma.ZevAccountListRelationFilter
   replaces?: Prisma.XOR<Prisma.ZevAccountNullableScalarRelationFilter, Prisma.ZevAccountWhereInput> | null
   replacedBy?: Prisma.XOR<Prisma.ZevAccountNullableScalarRelationFilter, Prisma.ZevAccountWhereInput> | null
+  controlRoles?: Prisma.ZevControlAccountListRelationFilter
+  postingRules?: Prisma.PostingRuleListRelationFilter
 }, "id" | "replacesId" | "chartId_code">
 
 export type ZevAccountOrderByWithAggregationInput = {
@@ -394,6 +400,8 @@ export type ZevAccountCreateInput = {
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateInput = {
@@ -415,6 +423,8 @@ export type ZevAccountUncheckedCreateInput = {
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUpdateInput = {
@@ -436,6 +446,8 @@ export type ZevAccountUpdateInput = {
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateInput = {
@@ -457,6 +469,8 @@ export type ZevAccountUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountCreateManyInput = {
@@ -584,6 +598,11 @@ export type ZevAccountMinOrderByAggregateInput = {
   replacesId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ZevAccountScalarRelationFilter = {
+  is?: Prisma.ZevAccountWhereInput
+  isNot?: Prisma.ZevAccountWhereInput
 }
 
 export type ZevAccountCreateNestedManyWithoutZevInput = {
@@ -827,6 +846,34 @@ export type ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevAccountUpdateToOneWithWhereWithoutReplacesInput, Prisma.ZevAccountUpdateWithoutReplacesInput>, Prisma.ZevAccountUncheckedUpdateWithoutReplacesInput>
 }
 
+export type ZevAccountCreateNestedOneWithoutControlRolesInput = {
+  create?: Prisma.XOR<Prisma.ZevAccountCreateWithoutControlRolesInput, Prisma.ZevAccountUncheckedCreateWithoutControlRolesInput>
+  connectOrCreate?: Prisma.ZevAccountCreateOrConnectWithoutControlRolesInput
+  connect?: Prisma.ZevAccountWhereUniqueInput
+}
+
+export type ZevAccountUpdateOneRequiredWithoutControlRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevAccountCreateWithoutControlRolesInput, Prisma.ZevAccountUncheckedCreateWithoutControlRolesInput>
+  connectOrCreate?: Prisma.ZevAccountCreateOrConnectWithoutControlRolesInput
+  upsert?: Prisma.ZevAccountUpsertWithoutControlRolesInput
+  connect?: Prisma.ZevAccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevAccountUpdateToOneWithWhereWithoutControlRolesInput, Prisma.ZevAccountUpdateWithoutControlRolesInput>, Prisma.ZevAccountUncheckedUpdateWithoutControlRolesInput>
+}
+
+export type ZevAccountCreateNestedOneWithoutPostingRulesInput = {
+  create?: Prisma.XOR<Prisma.ZevAccountCreateWithoutPostingRulesInput, Prisma.ZevAccountUncheckedCreateWithoutPostingRulesInput>
+  connectOrCreate?: Prisma.ZevAccountCreateOrConnectWithoutPostingRulesInput
+  connect?: Prisma.ZevAccountWhereUniqueInput
+}
+
+export type ZevAccountUpdateOneRequiredWithoutPostingRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevAccountCreateWithoutPostingRulesInput, Prisma.ZevAccountUncheckedCreateWithoutPostingRulesInput>
+  connectOrCreate?: Prisma.ZevAccountCreateOrConnectWithoutPostingRulesInput
+  upsert?: Prisma.ZevAccountUpsertWithoutPostingRulesInput
+  connect?: Prisma.ZevAccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevAccountUpdateToOneWithWhereWithoutPostingRulesInput, Prisma.ZevAccountUpdateWithoutPostingRulesInput>, Prisma.ZevAccountUncheckedUpdateWithoutPostingRulesInput>
+}
+
 export type ZevAccountCreateWithoutZevInput = {
   id?: string
   code: string
@@ -845,6 +892,8 @@ export type ZevAccountCreateWithoutZevInput = {
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutZevInput = {
@@ -865,6 +914,8 @@ export type ZevAccountUncheckedCreateWithoutZevInput = {
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutZevInput = {
@@ -933,6 +984,8 @@ export type ZevAccountCreateWithoutTemplateAccountInput = {
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutTemplateAccountInput = {
@@ -953,6 +1006,8 @@ export type ZevAccountUncheckedCreateWithoutTemplateAccountInput = {
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutTemplateAccountInput = {
@@ -999,6 +1054,8 @@ export type ZevAccountCreateWithoutChartInput = {
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutChartInput = {
@@ -1019,6 +1076,8 @@ export type ZevAccountUncheckedCreateWithoutChartInput = {
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutChartInput = {
@@ -1065,6 +1124,8 @@ export type ZevAccountCreateWithoutChildrenInput = {
   parent?: Prisma.ZevAccountCreateNestedOneWithoutChildrenInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutChildrenInput = {
@@ -1085,6 +1146,8 @@ export type ZevAccountUncheckedCreateWithoutChildrenInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutChildrenInput = {
@@ -1110,6 +1173,8 @@ export type ZevAccountCreateWithoutParentInput = {
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutParentInput = {
@@ -1130,6 +1195,8 @@ export type ZevAccountUncheckedCreateWithoutParentInput = {
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutParentInput = {
@@ -1160,6 +1227,8 @@ export type ZevAccountCreateWithoutReplacedByInput = {
   parent?: Prisma.ZevAccountCreateNestedOneWithoutChildrenInput
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutReplacedByInput = {
@@ -1180,6 +1249,8 @@ export type ZevAccountUncheckedCreateWithoutReplacedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutReplacedByInput = {
@@ -1205,6 +1276,8 @@ export type ZevAccountCreateWithoutReplacesInput = {
   parent?: Prisma.ZevAccountCreateNestedOneWithoutChildrenInput
   children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountUncheckedCreateWithoutReplacesInput = {
@@ -1225,6 +1298,8 @@ export type ZevAccountUncheckedCreateWithoutReplacesInput = {
   updatedAt?: Date | string
   children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
   replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
 }
 
 export type ZevAccountCreateOrConnectWithoutReplacesInput = {
@@ -1261,6 +1336,8 @@ export type ZevAccountUpdateWithoutChildrenInput = {
   parent?: Prisma.ZevAccountUpdateOneWithoutChildrenNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutChildrenInput = {
@@ -1281,6 +1358,8 @@ export type ZevAccountUncheckedUpdateWithoutChildrenInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUpsertWithWhereUniqueWithoutParentInput = {
@@ -1328,6 +1407,8 @@ export type ZevAccountUpdateWithoutReplacedByInput = {
   parent?: Prisma.ZevAccountUpdateOneWithoutChildrenNestedInput
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutReplacedByInput = {
@@ -1348,6 +1429,8 @@ export type ZevAccountUncheckedUpdateWithoutReplacedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUpsertWithoutReplacesInput = {
@@ -1379,6 +1462,8 @@ export type ZevAccountUpdateWithoutReplacesInput = {
   parent?: Prisma.ZevAccountUpdateOneWithoutChildrenNestedInput
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutReplacesInput = {
@@ -1399,6 +1484,216 @@ export type ZevAccountUncheckedUpdateWithoutReplacesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
+}
+
+export type ZevAccountCreateWithoutControlRolesInput = {
+  id?: string
+  code: string
+  name: string
+  description?: string | null
+  nature: $Enums.AccountNature
+  postable: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  requiredDimensions?: Prisma.ZevAccountCreaterequiredDimensionsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutZevAccountsInput
+  chart: Prisma.ZevChartCreateNestedOneWithoutAccountsInput
+  templateAccount?: Prisma.ChartTemplateAccountCreateNestedOneWithoutZevAccountsInput
+  parent?: Prisma.ZevAccountCreateNestedOneWithoutChildrenInput
+  children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
+  replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
+  replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCounterAccountInput
+}
+
+export type ZevAccountUncheckedCreateWithoutControlRolesInput = {
+  id?: string
+  zevId: string
+  chartId: string
+  templateAccountId?: string | null
+  code: string
+  name: string
+  description?: string | null
+  parentId?: string | null
+  nature: $Enums.AccountNature
+  postable: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  requiredDimensions?: Prisma.ZevAccountCreaterequiredDimensionsInput | string[]
+  replacesId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
+  replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCounterAccountInput
+}
+
+export type ZevAccountCreateOrConnectWithoutControlRolesInput = {
+  where: Prisma.ZevAccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevAccountCreateWithoutControlRolesInput, Prisma.ZevAccountUncheckedCreateWithoutControlRolesInput>
+}
+
+export type ZevAccountUpsertWithoutControlRolesInput = {
+  update: Prisma.XOR<Prisma.ZevAccountUpdateWithoutControlRolesInput, Prisma.ZevAccountUncheckedUpdateWithoutControlRolesInput>
+  create: Prisma.XOR<Prisma.ZevAccountCreateWithoutControlRolesInput, Prisma.ZevAccountUncheckedCreateWithoutControlRolesInput>
+  where?: Prisma.ZevAccountWhereInput
+}
+
+export type ZevAccountUpdateToOneWithWhereWithoutControlRolesInput = {
+  where?: Prisma.ZevAccountWhereInput
+  data: Prisma.XOR<Prisma.ZevAccountUpdateWithoutControlRolesInput, Prisma.ZevAccountUncheckedUpdateWithoutControlRolesInput>
+}
+
+export type ZevAccountUpdateWithoutControlRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nature?: Prisma.EnumAccountNatureFieldUpdateOperationsInput | $Enums.AccountNature
+  postable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredDimensions?: Prisma.ZevAccountUpdaterequiredDimensionsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutZevAccountsNestedInput
+  chart?: Prisma.ZevChartUpdateOneRequiredWithoutAccountsNestedInput
+  templateAccount?: Prisma.ChartTemplateAccountUpdateOneWithoutZevAccountsNestedInput
+  parent?: Prisma.ZevAccountUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
+  replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
+  replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
+}
+
+export type ZevAccountUncheckedUpdateWithoutControlRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  chartId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nature?: Prisma.EnumAccountNatureFieldUpdateOperationsInput | $Enums.AccountNature
+  postable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredDimensions?: Prisma.ZevAccountUpdaterequiredDimensionsInput | string[]
+  replacesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
+  replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
+}
+
+export type ZevAccountCreateWithoutPostingRulesInput = {
+  id?: string
+  code: string
+  name: string
+  description?: string | null
+  nature: $Enums.AccountNature
+  postable: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  requiredDimensions?: Prisma.ZevAccountCreaterequiredDimensionsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutZevAccountsInput
+  chart: Prisma.ZevChartCreateNestedOneWithoutAccountsInput
+  templateAccount?: Prisma.ChartTemplateAccountCreateNestedOneWithoutZevAccountsInput
+  parent?: Prisma.ZevAccountCreateNestedOneWithoutChildrenInput
+  children?: Prisma.ZevAccountCreateNestedManyWithoutParentInput
+  replaces?: Prisma.ZevAccountCreateNestedOneWithoutReplacedByInput
+  replacedBy?: Prisma.ZevAccountCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountCreateNestedManyWithoutAccountInput
+}
+
+export type ZevAccountUncheckedCreateWithoutPostingRulesInput = {
+  id?: string
+  zevId: string
+  chartId: string
+  templateAccountId?: string | null
+  code: string
+  name: string
+  description?: string | null
+  parentId?: string | null
+  nature: $Enums.AccountNature
+  postable: boolean
+  active?: boolean
+  deactivatedAt?: Date | string | null
+  requiredDimensions?: Prisma.ZevAccountCreaterequiredDimensionsInput | string[]
+  replacesId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutParentInput
+  replacedBy?: Prisma.ZevAccountUncheckedCreateNestedOneWithoutReplacesInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type ZevAccountCreateOrConnectWithoutPostingRulesInput = {
+  where: Prisma.ZevAccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevAccountCreateWithoutPostingRulesInput, Prisma.ZevAccountUncheckedCreateWithoutPostingRulesInput>
+}
+
+export type ZevAccountUpsertWithoutPostingRulesInput = {
+  update: Prisma.XOR<Prisma.ZevAccountUpdateWithoutPostingRulesInput, Prisma.ZevAccountUncheckedUpdateWithoutPostingRulesInput>
+  create: Prisma.XOR<Prisma.ZevAccountCreateWithoutPostingRulesInput, Prisma.ZevAccountUncheckedCreateWithoutPostingRulesInput>
+  where?: Prisma.ZevAccountWhereInput
+}
+
+export type ZevAccountUpdateToOneWithWhereWithoutPostingRulesInput = {
+  where?: Prisma.ZevAccountWhereInput
+  data: Prisma.XOR<Prisma.ZevAccountUpdateWithoutPostingRulesInput, Prisma.ZevAccountUncheckedUpdateWithoutPostingRulesInput>
+}
+
+export type ZevAccountUpdateWithoutPostingRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nature?: Prisma.EnumAccountNatureFieldUpdateOperationsInput | $Enums.AccountNature
+  postable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredDimensions?: Prisma.ZevAccountUpdaterequiredDimensionsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutZevAccountsNestedInput
+  chart?: Prisma.ZevChartUpdateOneRequiredWithoutAccountsNestedInput
+  templateAccount?: Prisma.ChartTemplateAccountUpdateOneWithoutZevAccountsNestedInput
+  parent?: Prisma.ZevAccountUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
+  replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
+  replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+}
+
+export type ZevAccountUncheckedUpdateWithoutPostingRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  chartId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nature?: Prisma.EnumAccountNatureFieldUpdateOperationsInput | $Enums.AccountNature
+  postable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredDimensions?: Prisma.ZevAccountUpdaterequiredDimensionsInput | string[]
+  replacesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
+  replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type ZevAccountCreateManyZevInput = {
@@ -1437,6 +1732,8 @@ export type ZevAccountUpdateWithoutZevInput = {
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutZevInput = {
@@ -1457,6 +1754,8 @@ export type ZevAccountUncheckedUpdateWithoutZevInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateManyWithoutZevInput = {
@@ -1513,6 +1812,8 @@ export type ZevAccountUpdateWithoutTemplateAccountInput = {
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutTemplateAccountInput = {
@@ -1533,6 +1834,8 @@ export type ZevAccountUncheckedUpdateWithoutTemplateAccountInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateManyWithoutTemplateAccountInput = {
@@ -1589,6 +1892,8 @@ export type ZevAccountUpdateWithoutChartInput = {
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutChartInput = {
@@ -1609,6 +1914,8 @@ export type ZevAccountUncheckedUpdateWithoutChartInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateManyWithoutChartInput = {
@@ -1665,6 +1972,8 @@ export type ZevAccountUpdateWithoutParentInput = {
   children?: Prisma.ZevAccountUpdateManyWithoutParentNestedInput
   replaces?: Prisma.ZevAccountUpdateOneWithoutReplacedByNestedInput
   replacedBy?: Prisma.ZevAccountUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateWithoutParentInput = {
@@ -1685,6 +1994,8 @@ export type ZevAccountUncheckedUpdateWithoutParentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ZevAccountUncheckedUpdateManyWithoutParentNestedInput
   replacedBy?: Prisma.ZevAccountUncheckedUpdateOneWithoutReplacesNestedInput
+  controlRoles?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutAccountNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCounterAccountNestedInput
 }
 
 export type ZevAccountUncheckedUpdateManyWithoutParentInput = {
@@ -1712,10 +2023,14 @@ export type ZevAccountUncheckedUpdateManyWithoutParentInput = {
 
 export type ZevAccountCountOutputType = {
   children: number
+  controlRoles: number
+  postingRules: number
 }
 
 export type ZevAccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   children?: boolean | ZevAccountCountOutputTypeCountChildrenArgs
+  controlRoles?: boolean | ZevAccountCountOutputTypeCountControlRolesArgs
+  postingRules?: boolean | ZevAccountCountOutputTypeCountPostingRulesArgs
 }
 
 /**
@@ -1733,6 +2048,20 @@ export type ZevAccountCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.E
  */
 export type ZevAccountCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ZevAccountWhereInput
+}
+
+/**
+ * ZevAccountCountOutputType without action
+ */
+export type ZevAccountCountOutputTypeCountControlRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ZevControlAccountWhereInput
+}
+
+/**
+ * ZevAccountCountOutputType without action
+ */
+export type ZevAccountCountOutputTypeCountPostingRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostingRuleWhereInput
 }
 
 
@@ -1760,6 +2089,8 @@ export type ZevAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   children?: boolean | Prisma.ZevAccount$childrenArgs<ExtArgs>
   replaces?: boolean | Prisma.ZevAccount$replacesArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ZevAccount$replacedByArgs<ExtArgs>
+  controlRoles?: boolean | Prisma.ZevAccount$controlRolesArgs<ExtArgs>
+  postingRules?: boolean | Prisma.ZevAccount$postingRulesArgs<ExtArgs>
   _count?: boolean | Prisma.ZevAccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["zevAccount"]>
 
@@ -1839,6 +2170,8 @@ export type ZevAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   children?: boolean | Prisma.ZevAccount$childrenArgs<ExtArgs>
   replaces?: boolean | Prisma.ZevAccount$replacesArgs<ExtArgs>
   replacedBy?: boolean | Prisma.ZevAccount$replacedByArgs<ExtArgs>
+  controlRoles?: boolean | Prisma.ZevAccount$controlRolesArgs<ExtArgs>
+  postingRules?: boolean | Prisma.ZevAccount$postingRulesArgs<ExtArgs>
   _count?: boolean | Prisma.ZevAccountCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ZevAccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1872,6 +2205,8 @@ export type $ZevAccountPayload<ExtArgs extends runtime.Types.Extensions.Internal
      */
     replaces: Prisma.$ZevAccountPayload<ExtArgs> | null
     replacedBy: Prisma.$ZevAccountPayload<ExtArgs> | null
+    controlRoles: Prisma.$ZevControlAccountPayload<ExtArgs>[]
+    postingRules: Prisma.$PostingRulePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2291,6 +2626,8 @@ export interface Prisma__ZevAccountClient<T, Null = never, ExtArgs extends runti
   children<T extends Prisma.ZevAccount$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevAccount$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   replaces<T extends Prisma.ZevAccount$replacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevAccount$replacesArgs<ExtArgs>>): Prisma.Prisma__ZevAccountClient<runtime.Types.Result.GetResult<Prisma.$ZevAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   replacedBy<T extends Prisma.ZevAccount$replacedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevAccount$replacedByArgs<ExtArgs>>): Prisma.Prisma__ZevAccountClient<runtime.Types.Result.GetResult<Prisma.$ZevAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  controlRoles<T extends Prisma.ZevAccount$controlRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevAccount$controlRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevControlAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postingRules<T extends Prisma.ZevAccount$postingRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevAccount$postingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2834,6 +3171,54 @@ export type ZevAccount$replacedByArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.ZevAccountInclude<ExtArgs> | null
   where?: Prisma.ZevAccountWhereInput
+}
+
+/**
+ * ZevAccount.controlRoles
+ */
+export type ZevAccount$controlRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ZevControlAccount
+   */
+  select?: Prisma.ZevControlAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ZevControlAccount
+   */
+  omit?: Prisma.ZevControlAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevControlAccountInclude<ExtArgs> | null
+  where?: Prisma.ZevControlAccountWhereInput
+  orderBy?: Prisma.ZevControlAccountOrderByWithRelationInput | Prisma.ZevControlAccountOrderByWithRelationInput[]
+  cursor?: Prisma.ZevControlAccountWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ZevControlAccountScalarFieldEnum | Prisma.ZevControlAccountScalarFieldEnum[]
+}
+
+/**
+ * ZevAccount.postingRules
+ */
+export type ZevAccount$postingRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostingRule
+   */
+  select?: Prisma.PostingRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostingRule
+   */
+  omit?: Prisma.PostingRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostingRuleInclude<ExtArgs> | null
+  where?: Prisma.PostingRuleWhereInput
+  orderBy?: Prisma.PostingRuleOrderByWithRelationInput | Prisma.PostingRuleOrderByWithRelationInput[]
+  cursor?: Prisma.PostingRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostingRuleScalarFieldEnum | Prisma.PostingRuleScalarFieldEnum[]
 }
 
 /**

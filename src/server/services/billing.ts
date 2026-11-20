@@ -312,6 +312,13 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
     const defaultDue = opts?.dueDate ?? defaultBatchDueDate(batch.period);
     const issueDate = new Date();
 
+    // Snimak vrste zaduženja po liniji (kontni plan A2): pravilo knjiženja visi na vrsti, a kasnija promjena
+    // stavke naknade ne smije promijeniti istorijsko zaduženje.
+    const itemIds = [...new Set(preview.flatMap((c) => c.lines.map((l) => l.chargeItemId)).filter((x): x is string => !!x))];
+    const typeByItem = new Map(
+      (await tx.chargeItem.findMany({ where: { zevId, id: { in: itemIds } }, select: { id: true, chargeTypeId: true } })).map((i) => [i.id, i.chargeTypeId])
+    );
+
     const invoices = [];
     for (const calc of preview) {
       if (!calc.debtorId) throw new Error(`Jedinica ${calc.unitLabel} nema evidentiranog vlasnika/primaoca fakture.`);
@@ -332,6 +339,7 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
           lines: {
             create: calc.lines.map((l, idx) => ({
               chargeItemId: l.chargeItemId,
+              chargeTypeId: l.chargeItemId ? typeByItem.get(l.chargeItemId) ?? null : null,
               description: l.name,
               calcSnapshot: l as unknown as Prisma.InputJsonValue,
               amount: l.amount,

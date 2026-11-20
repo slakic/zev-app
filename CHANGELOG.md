@@ -43,6 +43,29 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.5.0] - 2026-11-21
+
+Kontni plan, **Faza A2 — podešavanje knjiženja** (`Plans/kontni-plan-i-knjizenje-plan.md` §3.5–3.6, §11). Tab „Pravila knjiženja” u Knjigovodstvu je sada aktivan. **Ništa se ne knjiži** — ovo je podešavanje koje će koristiti knjiženje u sljedećoj fazi.
+
+**Migracija: da — `20261121090000_ledger_posting_rules` (pet novih tabela, četiri enuma, kolone `ChargeItem.chargeTypeId` i `InvoiceLine.chargeTypeId`, okidači: potvrđeno pravilo se ne mijenja, kontrolna konta i potvrde šema su append-only); samo dodavanje. Primijeniti prije deploya.**
+
+### Dodato
+
+- **Pokrivenost:** za svaku vrstu zaduženja i kategoriju troška/prihoda status „Podešeno”, „Nacrt čeka potvrdu”, „Čeka podešavanje knjiženja” ili „Čeka potvrdu šeme knjiženja”; upozorenje za stavke naknade bez vrste.
+- **Namjene sredstava i vrste zaduženja**, uz „Početno podešavanje” (Redovno održavanje / Zajednička rezerva i razvrstavanje postojećih stavki naknade po oznaci fonda). Stavke naknade se povezuju sa vrstom; **linija fakture pamti vrstu u trenutku izdavanja** serije.
+- **Kontrolna konta** (račun novca, potraživanja od vlasnika po namjeni, avansi, neidentifikovane uplate, dobavljači), sa datumom od kada važe i istorijom; prijedlog iz kontnog okvira v2 (20101/20102, 24101, 24601, 43001, 43002, 43201) jednim klikom. Jedno konto ne može imati dvije uloge.
+- **Pravila knjiženja** po vrsti zaduženja i po kategoriji (račun dobavljača, ručni rashod, ručni prihod): nacrt → potvrda uz ime stručnog lica; potvrđeno pravilo se ne mijenja, izmjena je nova verzija od kasnijeg datuma. Kontrolno konto ne može biti protivkonto; priznavanje prihoda nema pravilo.
+- **Šeme pod kapijom** (K-6): priznavanje prihoda i bilansna klasifikacija zajedničke rezerve ostaju zatvorene dok se ne evidentira stručna potvrda (opis šeme, stručno lice, datum); pravilo za rezervu se do tada ne može potvrditi. Opoziv je nov zapis.
+- **Pravilo raspodjele djelimične uplate** na fakturu sa više namjena (srazmjerno / najstarije prvo); dok nije izabrano, takav raspored čeka (R-15).
+- Nove mogućnosti `chargeTypes.edit`, `rules.edit`, `rules.confirm`, `schema.approve` (računovođa); predsjednik vidi sve.
+- Testovi `tests/ledger-config.test.ts`.
+
+### Izmijenjeno
+
+- Plan usklađen sa odgovorima na računovodstveni upitnik (§11): potraživanja po namjeni, avans nosi namjenu kad je poznata, ponovno otvaranje perioda uz dvostruko odobrenje (Faza B).
+
+Uputstvo: novo 13.8 „Pravila knjiženja”, uvod poglavlja 13, tabela uloga i rječnik (kontrolno konto, namjena sredstava, vrsta zaduženja).
+
 ## [3.4.2] - 2026-11-20
 
 **Migracija: ne.**

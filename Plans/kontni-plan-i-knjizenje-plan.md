@@ -1,6 +1,6 @@
 # Kontni plan i knjiženje — arhitektonski i implementacioni plan
 
-**Status: A1 ISPORUČENO u v3.1.0 (2026-11-20; korisnik izabrao major); dopuna u v3.2.0 (konta u nacrtu predloška bez CSV-a, preuzimanje izmjena iz nove verzije). Odobreno 2026-11-20 (preporuke A-Q1–A-Q9, §9). Sljedeće: A2. Faza B čeka stručnu potvrdu računovođe (§10).**
+**Status: A1 ISPORUČENO u v3.1.0 (2026-11-20; korisnik izabrao major); dopuna u v3.2.0 (konta u nacrtu predloška bez CSV-a, preuzimanje izmjena iz nove verzije). **A2 isporučeno u v3.5.0** (namjene, vrste zaduženja, kontrolna konta, pravila, kapije, pokrivenost, pravilo raspodjele). Ručne i korektivne fakture za sada nemaju vrstu zaduženja na liniji — bira se pri knjiženju (B). Odobreno 2026-11-20 (preporuke A-Q1–A-Q9, §9). Sljedeće: A2. Faza B čeka stručnu potvrdu računovođe (§10).**
 Plan je izrađen 2026-11-20 čitanjem stvarnog koda (v2.66.0). Nijedan red koda još nije napisan.
 
 **Izmjene korisnika (2026-11-20), ugrađene u §2, §3.5–3.8, §4–§7, §9 i §10 (izvor kontnog okvira u §3.1 i R-1):**
@@ -424,12 +424,15 @@ model ZevControlAccount {
   zevId          String
   role           ControlRole
   moneyAccountId String?
+  /// R-2/R-3 (§11): potraživanja se analitički dijele po namjeni (20101 održavanje, 20102 rezerva) —
+  /// OWNER_RECEIVABLE ima po jedno konto za svaku namjenu; null = važi za namjene bez sopstvenog konta.
+  purposeId      String?
   accountId      String   // ZevAccount: postable, active
   validFrom      DateTime
   reason         String?
   createdById    String
   createdAt      DateTime @default(now())
-  @@unique([zevId, role, moneyAccountId, validFrom])
+  @@unique([zevId, role, moneyAccountId, purposeId, validFrom])
 }
 ```
 
@@ -439,7 +442,8 @@ model ZevControlAccount {
   `SUPPLIER_PAYABLE` → `SUPPLIER`).
 - **Namjene sredstava** su dimenzija `purposeId` (§3.5) na potraživanjima i na kontima iz pravila
   vrste zaduženja, pa se iz glavne knjige vidi koliko je zaduženo, naplaćeno i potrošeno po namjeni.
-  Avans nema namjenu dok se ne rasporedi (R-5).
+  *Usklađeno sa §11 (R-5d):* avans nosi namjenu odmah kad je poznata (platilac je naveo ili je odlukom vezana);
+  inače je bez namjene dok se ne rasporedi.
 - Konto u kontrolnoj ulozi ne smije biti „protivkonto” u pravilu kategorije ni vrste zaduženja (§3.6.4),
   pa se na avans, neidentifikovane uplate ili banku ne može knjižiti zaobilaznim putem.
 - Pregled „Avansi i neidentifikovane uplate” (B3) mora se slagati sa operativnim stanjem: zbir avansa
@@ -590,7 +594,7 @@ provjeravane u servisu kroz novi guard `requireCapability(actor, cap)`:
 | `schema.approve` — evidencija stručne potvrde šeme pod kapijom (§3.6.5) | računovođa, uz ime stručnog lica i prilog (A-Q9 a) |
 | `journal.prepare` — nacrt naloga, uklj. nalog početnog stanja (Faza B) | računovođa |
 | `journal.post` / `journal.reverse` (Faza B) | računovođa |
-| `period.close` / `period.reopen` (Faza B) | računovođa zatvara; ponovno otvaranje predsjednik, uz razlog |
+| `period.close` / `period.reopen` (Faza B) | računovođa zatvara; ponovno otvaranje traži **dvostruko odobrenje** — predsjednik i računovođa, uz razlog (§11, R-9) |
 | `ledger.view` / `ledger.export` | predsjednik, računovođa |
 
 Nijedna od ovih mogućnosti ne daje pravo plaćanja ili odobravanja nabavke — ta prava ostaju na
@@ -786,7 +790,7 @@ CSV izvoz kroz postojeći `toCsv`. Propisani godišnji obrasci su van obuhvata.
 |---|---|---|
 | 1 | Ovaj plan | — |
 | **A1** | Migracija za §3.1–3.3, servis `chartOfAccounts.ts`, admin predložaka (uvoz CSV, verzije, izvor/provjera), kontni plan ZEV-a, periodi (otvaranje), demo predložak u seed-u, testovi | **ISPORUČENO: 3.1.0** (major, izbor korisnika) |
-| **A2** | Namjene (`FundPurpose`), vrste zaduženja (`ChargeType`, `ChargeItem.chargeTypeId`, snimak na `InvoiceLine`), kontrolna konta, pravila po vrsti zaduženja i kategoriji sa verzijama, kapije K-6 (`PostingSchemaApproval`), pokrivenost, `requireCapability`, dopune `PERMISSION_MATRIX.md` i `LEGAL_AND_FINANCIAL_ASSUMPTIONS.md` | minor |
+| **A2** | *Usklađeno sa §11:* kontrolna konta po namjeni (potraživanja 20101/20102), podešavanje „pravilo raspodjele djelimične uplate” po ZEV-u (R-15: nije izabrano / srazmjerno / najstarije prvo — bez izbora raspored čeka), prijedlog kontrolnih konta iz okvira v2 (201xx, 241xx, 246xx, 43001, 43002, 432xx, 499xx) koji računovođa potvrđuje. Namjene (`FundPurpose`), vrste zaduženja (`ChargeType`, `ChargeItem.chargeTypeId`, snimak na `InvoiceLine`), kontrolna konta, pravila po vrsti zaduženja i kategoriji sa verzijama, kapije K-6 (`PostingSchemaApproval`), pokrivenost, `requireCapability`, dopune `PERMISSION_MATRIX.md` i `LEGAL_AND_FINANCIAL_ASSUMPTIONS.md` | minor |
 | — | **Stop: potvrda računovođe** (§10) — bez nje Faza B ne počinje | — |
 | B1 | Nalozi, kontrole, storno, zatvaranje perioda, ručni nalog, **nalog početnog stanja sa usklađivanjem** (§4.4) | minor |
 | B2 | Outbox i automatsko knjiženje potvrđenih događaja (bez `REVENUE_RECOGNIZED`) | minor |

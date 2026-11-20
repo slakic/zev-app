@@ -489,6 +489,56 @@ export const FiscalStatus = {
 export type FiscalStatus = (typeof FiscalStatus)[keyof typeof FiscalStatus]
 
 
+export const ControlRole = {
+  MONEY_ACCOUNT: 'MONEY_ACCOUNT',
+  OWNER_RECEIVABLE: 'OWNER_RECEIVABLE',
+  OWNER_ADVANCE: 'OWNER_ADVANCE',
+  UNIDENTIFIED_RECEIPTS: 'UNIDENTIFIED_RECEIPTS',
+  SUPPLIER_PAYABLE: 'SUPPLIER_PAYABLE'
+} as const
+
+export type ControlRole = (typeof ControlRole)[keyof typeof ControlRole]
+
+
+export const AccountingEventKind = {
+  CHARGE_ISSUED: 'CHARGE_ISSUED',
+  CHARGE_CANCELLED: 'CHARGE_CANCELLED',
+  CHARGE_CORRECTED: 'CHARGE_CORRECTED',
+  PAYMENT_RECEIVED: 'PAYMENT_RECEIVED',
+  PAYMENT_REVERSED: 'PAYMENT_REVERSED',
+  PAYMENT_IDENTIFIED: 'PAYMENT_IDENTIFIED',
+  PAYMENT_ALLOCATED: 'PAYMENT_ALLOCATED',
+  ALLOCATION_REVERSED: 'ALLOCATION_REVERSED',
+  REVENUE_RECOGNIZED: 'REVENUE_RECOGNIZED',
+  SUPPLIER_INVOICE: 'SUPPLIER_INVOICE',
+  SUPPLIER_INVOICE_CANCELLED: 'SUPPLIER_INVOICE_CANCELLED',
+  SUPPLIER_PAYMENT: 'SUPPLIER_PAYMENT',
+  CASH_INCOME: 'CASH_INCOME',
+  CASH_EXPENSE: 'CASH_EXPENSE',
+  TRANSACTION_CANCELLED: 'TRANSACTION_CANCELLED',
+  BALANCE_CORRECTION: 'BALANCE_CORRECTION'
+} as const
+
+export type AccountingEventKind = (typeof AccountingEventKind)[keyof typeof AccountingEventKind]
+
+
+export const PostingRuleStatus = {
+  DRAFT: 'DRAFT',
+  CONFIRMED: 'CONFIRMED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type PostingRuleStatus = (typeof PostingRuleStatus)[keyof typeof PostingRuleStatus]
+
+
+export const GatedSchema = {
+  REVENUE_RECOGNITION: 'REVENUE_RECOGNITION',
+  COMMON_RESERVE_CLASSIFICATION: 'COMMON_RESERVE_CLASSIFICATION'
+} as const
+
+export type GatedSchema = (typeof GatedSchema)[keyof typeof GatedSchema]
+
+
 export const OnboardingInviteStatus = {
   ACTIVE: 'ACTIVE',
   ACCEPTED: 'ACCEPTED',

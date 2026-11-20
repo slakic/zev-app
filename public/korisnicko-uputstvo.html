@@ -217,6 +217,7 @@
       <a class="lvl-3" href="#135-stranica-konta">13.5 Stranica konta</a>
       <a class="lvl-3" href="#136-nova-verzija-predloska">13.6 Nova verzija kontnog predloška</a>
       <a class="lvl-3" href="#137-poslovne-godine">13.7 Poslovne godine</a>
+      <a class="lvl-3" href="#138-pravila-knjizenja">13.8 Pravila knjiženja</a>
       <a class="lvl-2" href="#14-podesavanja">14. Podešavanja</a>
       <a class="lvl-3" href="#141-moji-podaci">14.1 Moji podaci</a>
       <a class="lvl-3" href="#142-tab-zev">14.2 Tab „ZEV"</a>
@@ -272,7 +273,7 @@
 <thead><tr><th>Uloga</th><th>Kako se prikazuje</th><th>Šta u praksi radi</th></tr></thead>
 <tbody>
 <tr><td><strong>Predsjednik ZEV</strong></td><td>„Predsjednik ZEV"</td><td>Upravlja svim: unosi zgrade, jedinice i vlasnike, otvara naloge vlasnicima, zakazuje sjednice, otvara i zatvara glasanje, evidentira odluke, vodi održavanje, usvaja planove i objavljuje dokumente vlasnicima. <strong>Knjigovodstvo</strong> samo pregleda.</td></tr>
-<tr><td><strong>Računovođa</strong></td><td>„Računovođa"</td><td>Vodi finansije: stavke naknada, serije faktura, uplate, uvoz bankovnih izvoda, troškove i plaćanja dobavljačima, izvještaje, kontni plan i poslovne godine (<strong>Knjigovodstvo</strong>). Skupštinu, planove i održavanje uglavnom samo pregleda. Može pomagati u vođenju sjednice uživo.</td></tr>
+<tr><td><strong>Računovođa</strong></td><td>„Računovođa"</td><td>Vodi finansije: stavke naknada, serije faktura, uplate, uvoz bankovnih izvoda, troškove i plaćanja dobavljačima, izvještaje, kontni plan, poslovne godine i pravila knjiženja (<strong>Knjigovodstvo</strong>). Skupštinu, planove i održavanje uglavnom samo pregleda. Može pomagati u vođenju sjednice uživo.</td></tr>
 <tr><td><strong>Vlasnik / Član skupštine</strong></td><td>„Član skupštine / vlasnik"</td><td>Vidi svoje fakture, uplate i saldo, glasa elektronski preko ličnog linka, prijavljuje kvarove i prati svoje prijave, čita objavljene odluke i dokumente, mijenja svoje kontakt podatke.</td></tr>
 </tbody></table></div>
 <p>Kada kliknete na krug sa inicijalima u gornjem desnom uglu, ispod imena piše uloga (ili uloge) vašeg naloga.</p>
@@ -892,7 +893,7 @@
 <h2 id="13-knjigovodstvo">13. Knjigovodstvo</h2>
 <p><strong>Knjigovodstvo</strong> otvarate iz lijevog menija: predsjednik u grupi <em>Uprava</em>, računovođa u grupi <em>Finansije</em>. Računovođa uređuje kontni plan i otvara poslovne godine. Predsjednik sve vidi, ali ne mijenja ništa. Vlasnik ovaj modul ne vidi.</p>
 <blockquote><p><strong>Važno:</strong> Na vrhu stranice stalno piše da ovo još nije zakonsko knjigovodstvo, i to ostaje i kad je kontni plan aktivan. Kontni plan je spisak konta za razvrstavanje poslovnih promjena. Knjiženja (nalozi, glavna knjiga, bruto bilans) u aplikaciji još nema; ne uključuje ga aktivacija plana, nego dolazi u sljedećoj fazi, kad računovođa potvrdi pravila knjiženja. Do tada fakture, uplate i troškovi rade potpuno isto kao ranije.</p></blockquote>
-<p>Modul ima pet tabova: <strong>Kontni plan</strong>, <strong>Poslovne godine</strong>, <strong>Pravila knjiženja</strong>, <strong>Nalozi</strong> i <strong>Izvještaji</strong>. Na posljednja tri piše <strong>„Nije još dostupno”</strong>, uz rečenicu šta će se tu raditi.</p>
+<p>Modul ima pet tabova: <strong>Kontni plan</strong>, <strong>Poslovne godine</strong>, <strong>Pravila knjiženja</strong>, <strong>Nalozi</strong> i <strong>Izvještaji</strong>. Na posljednja dva piše <strong>„Nije još dostupno”</strong>, uz rečenicu šta će se tu raditi.</p>
 <h3 id="131-dodjela-kontnog-plana">13.1 Dodjela kontnog plana</h3>
 <p>Dok ZEV nema kontni plan, na tabu <strong>Kontni plan</strong> stoji kartica <strong>Dodijelite kontni plan</strong> (računovođa):</p>
 <ol><li>U polju <strong>Kontni predložak</strong> izaberite predložak. Uz naziv piše verzija, status i broj konta.</li><li>Kliknite <strong>Preuzmi kontni plan</strong>.</li></ol>
@@ -929,6 +930,19 @@
 <p>Tab <strong>Poslovne godine</strong> prikazuje svaku godinu sa njenim periodima (<strong>Period</strong>, <strong>Od</strong>, <strong>Do</strong>, <strong>Status</strong>).</p>
 <ol><li>U kartici <strong>Otvori poslovnu godinu</strong> (računovođa) upišite <strong>Oznaka</strong>, <strong>Prvi dan</strong> i <strong>Posljednji dan</strong>.</li><li>U polju <strong>Periodi</strong> izaberite <strong>Mjesečni</strong> ili <strong>Jedan period za cijelu godinu</strong>.</li><li>Kliknite <strong>Otvori godinu</strong>.</li></ol>
 <p>Poslovne godine se ne smiju preklapati. Zatvaranje perioda dolazi zajedno sa nalozima za knjiženje.</p>
+<h3 id="138-pravila-knjizenja">13.8 Pravila knjiženja</h3>
+<p>Na tabu <strong>Pravila knjiženja</strong> računovođa podešava kako će se poslovne promjene knjižiti kad se uključi knjiženje (sljedeća faza). <strong>Ništa se sada ne knjiži.</strong> Predsjednik sve vidi, ali ne mijenja. Kontni plan mora biti aktivan.</p>
+<ul>
+<li><strong>Pokrivenost</strong> (prva kartica): za svaku vrstu zaduženja i svaku kategoriju troška ili prihoda piše da li je pravilo <strong>Podešeno</strong>, <strong>Nacrt čeka potvrdu</strong>, <strong>Čeka podešavanje knjiženja</strong> ili <strong>Čeka potvrdu šeme knjiženja</strong> (zajednička rezerva). Iznad tabele stoji upozorenje ako neka stavka naknade nema vrstu zaduženja.</li>
+<li><strong>Namjene i vrste zaduženja</strong>: namjena kaže za šta su sredstva prikupljena (npr. redovno održavanje, zajednička rezerva); vrsta zaduženja je stalni naziv iznad stavki naknade, na kojem visi pravilo. Dugme <strong>Početno podešavanje</strong> (dok nema ni jedne ni druge) pravi „Redovno održavanje” i „Zajednička rezerva” i razvrstava postojeće stavke naknade po oznaci „fond održavanja”. Nove dodajete sa <strong>Dodaj namjenu</strong> i <strong>Dodaj vrstu zaduženja</strong>.</li>
+<li><strong>Stavke naknade</strong>: u svakom redu izaberite vrstu zaduženja i kliknite <strong>Sačuvaj</strong>. Faktura pamti vrstu u trenutku izdavanja, pa kasnija promjena ne mijenja već izdate fakture.</li>
+<li><strong>Kontrolna konta</strong>: konta koja određuju drugu stranu knjiženja — za svaki račun novca (banka, blagajna), potraživanja od vlasnika po namjeni, avanse vlasnika, neidentifikovane uplate i dobavljače. Ako kontni plan ima predložene šifre (npr. 20101, 43001), kartica nudi <strong>Primijeni prijedlog</strong>. Pojedinačno: <strong>Postavi kontrolno konto</strong> (uloga, račun novca ili namjena kad treba, konto, <strong>Važi od</strong>). Promjena važi od datuma, a ranije ostaje u istoriji; jedno konto ne može imati dvije uloge.</li>
+<li><strong>Pravila knjiženja</strong>: pravilo daje protivkonto za vrstu zaduženja (npr. zaduženje za održavanje → razgraničena sredstva 49901) ili za kategoriju (račun dobavljača, ručni rashod ili prihod), od datuma <strong>Važi od</strong>. <strong>Novo pravilo</strong> se čuva kao nacrt; <strong>Potvrdi</strong> traži ime stručnog lica, a <strong>Povuci</strong> razlog. Potvrđeno pravilo se više ne mijenja — izmjena je nova verzija od kasnijeg datuma. Kontrolno konto ne može biti protivkonto.</li>
+<li><strong>Šeme pod kapijom</strong>: <em>priznavanje prihoda</em> i <em>bilansna klasifikacija zajedničke rezerve</em> ostaju isključeni dok ovlašćeni računovođa ne potvrdi konkretnu šemu. <strong>Evidentiraj stručnu potvrdu</strong> traži opis šeme, stručno lice i datum; tek tada se može potvrditi pravilo za rezervu. <strong>Opozovi potvrdu</strong> ponovo zatvara šemu (već potvrđena pravila ostaju).</li>
+<li><strong>Djelimična uplata na fakturu sa više namjena</strong>: pravilo raspodjele kad vlasnik plati samo dio fakture koja ima i održavanje i rezervu, a nije naveo namjenu — <strong>Srazmjerno stavkama fakture</strong> ili <strong>Prvo najstarije dospjele obaveze</strong>. Dok nije izabrano, takav raspored čeka.</li>
+</ul>
+<p>Sve izmjene se bilježe u revizorskom tragu.</p>
+
 <h2 id="14-podesavanja">14. Podešavanja</h2>
 <p><strong>Podešavanja ZEV-a</strong> otvarate iz lijevog menija (grupa <em>Uprava</em>). Vlasnik ih otvara iz menija naloga (krug sa inicijalima) kao <strong>Moji podaci</strong>.</p>
 <p><strong>Ko šta može:</strong></p>
@@ -1185,11 +1199,13 @@
 <p><strong>Kontni okvir (predložak):</strong> zajednički spisak konta koji propisuje propis i iz kojeg ZEV preuzima svoj kontni plan. Vodi se po verzijama (poglavlje 13 i 15.6).</p>
 <p><strong>Kontni plan:</strong> spisak konta jednog ZEV-a, nastao kao kopija kontnog okvira i dopunjen lokalnim podkontima (poglavlje 13).</p>
 <p><strong>Konto:</strong> mjesto u kontnom planu sa šifrom i nazivom, na koje se razvrstavaju poslovne promjene iste vrste.</p>
+<p><strong>Kontrolno konto:</strong> konto koje određuje drugu stranu knjiženja za određenu ulogu (banka, potraživanja od vlasnika, avansi, neidentifikovane uplate, dobavljači) — poglavlje 13.8.</p>
 <p><strong>Korektivna faktura:</strong> nova faktura koja zamjenjuje pogrešnu. Original ostaje vidljiv sa statusom „Korigovana".</p>
 <p><strong>Kvorum:</strong> najmanji broj učesnika (ili najmanja zbirna težina glasova) potreban da bi glasanje bilo punovažno. Bez kvoruma prijedlog nije usvojen.</p>
 <p><strong>Lični link i verifikacioni kod:</strong> jednokratni, lični pristup glasanju koji vlasnik dobija e-mailom. Link otvara stranicu za glasanje, a kod potvrđuje identitet.</p>
 <p><strong>MCP:</strong> standardni način da se asistent (na primjer Claude ili ChatGPT) uz vašu dozvolu poveže sa aplikacijom. Ne morate ga razumjeti da biste ga koristili (poglavlje 17).</p>
 <p><strong>Nacrt (novog ZEV-a):</strong> podaci o novom ZEV-u koje klijent unosi u čarobnjaku. Nacrt postaje ZEV tek objavom.</p>
+<p><strong>Namjena sredstava:</strong> za šta su sredstva prikupljena i smiju se trošiti (npr. redovno održavanje, zajednička rezerva) — poglavlje 13.8.</p>
 <p><strong>Obuhvat:</strong> na šta se nešto odnosi. Može biti cijela ZEV, jedna zgrada, ulaz ili odabrane jedinice.</p>
 <p><strong>Opseg (veze asistenta):</strong> šta tačno asistent smije u okviru jedne veze, na primjer da čita jedan nacrt ili samo da provjeri vezu.</p>
 <p><strong>Poseban dio:</strong> stan, poslovni prostor, garaža ili druga samostalna jedinica u zgradi.</p>
@@ -1211,6 +1227,7 @@
 <p><strong>Upravni odbor:</strong> kolegijalno tijelo koje bira skupština i koje upravlja zajednicom između sjednica skupštine.</p>
 <p><strong>Većina:</strong> koliko glasova „Za" je potrebno da prijedlog bude usvojen. Može biti prosta većina glasalih, procenat glasalih ili procenat ukupne glasačke baze.</p>
 <p><strong>Vlasnički udio:</strong> udio jedinice u cijeloj ZEV (u procentima), odnosno udio pojedinog vlasnika u jednoj jedinici (100% za jedinog vlasnika, 50% za polovinu).</p>
+<p><strong>Vrsta zaduženja:</strong> stalni naziv iznad stavki naknade (npr. redovno održavanje, zajednička rezerva) na kojem visi pravilo knjiženja; faktura pamti vrstu u trenutku izdavanja — poglavlje 13.8.</p>
 <p><strong>ZEV (Zajednica etažnih vlasnika):</strong> pravno lice koje čine svi vlasnici posebnih dijelova jedne ili više zgrada i koje upravlja održavanjem zgrade. Organizuje se prema Zakonu o održavanju zgrada Republike Srpske.</p>
 <p><strong>Zajednički dijelovi:</strong> dijelovi zgrade koji služe svim vlasnicima, kao što su krov, fasada, stepenište, lift, podrum, instalacije i kotlovnica.</p>
 <p><strong>Zakupac / stanar / korisnik:</strong> lice koje koristi jedinicu, a nije njen vlasnik. Ne stiče pravo glasa u skupštini.</p>

@@ -150,6 +150,20 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "zev_account.replace": "FINANCE",
   "zev_account.delete": "FINANCE",
   "fiscal_year.open": "FINANCE",
+  // Podešavanje knjiženja (A2)
+  "fund_purpose.create": "FINANCE",
+  "fund_purpose.update": "FINANCE",
+  "charge_type.create": "FINANCE",
+  "charge_type.update": "FINANCE",
+  "charge_item.set_type": "FINANCE",
+  "ledger.starter_setup": "FINANCE",
+  "ledger.allocation_rule.set": "FINANCE",
+  "control_account.set": "FINANCE",
+  "posting_rule.create": "FINANCE",
+  "posting_rule.confirm": "FINANCE",
+  "posting_rule.withdraw": "FINANCE",
+  "posting_schema.approve": "FINANCE",
+  "posting_schema.revoke": "FINANCE",
 
   // ---- SYSTEM — platform/technical (excluded from /aktivnosti by default; §9/Faza 3 for
   // /admin/aktivnosti, where this is exactly what a super admin wants to see) ----

@@ -385,6 +385,32 @@ export type FiscalYear = Prisma.FiscalYearModel
  */
 export type FiscalPeriod = Prisma.FiscalPeriodModel
 /**
+ * Model FundPurpose
+ * Namjena sredstava (K-4): za šta su sredstva prikupljena i smiju se trošiti. Nije konto.
+ */
+export type FundPurpose = Prisma.FundPurposeModel
+/**
+ * Model ChargeType
+ * Vrsta zaduženja (K-3): stabilan pojam iznad stavki naknade, na kojem visi pravilo knjiženja.
+ */
+export type ChargeType = Prisma.ChargeTypeModel
+/**
+ * Model ZevControlAccount
+ * Koje konto igra koju ulogu u šemama knjiženja. Append-only: promjena = nov red sa kasnijim validFrom.
+ */
+export type ZevControlAccount = Prisma.ZevControlAccountModel
+/**
+ * Model PostingRule
+ * Pravilo knjiženja (K-3): protivkonto šeme za vrstu zaduženja ili kategoriju, sa datumom početka primjene.
+ * Potvrđen red se ne mijenja (DB okidač); izmjena = nov red sa `supersedesId`, kasnijim `validFrom` i razlogom.
+ */
+export type PostingRule = Prisma.PostingRuleModel
+/**
+ * Model PostingSchemaApproval
+ * Evidencija stručne potvrde šeme pod kapijom (K-6). Append-only; opoziv = nov red sa revokesId.
+ */
+export type PostingSchemaApproval = Prisma.PostingSchemaApprovalModel
+/**
  * Model OnboardingInvite
  * Pozivni link za klijenta. Token se nikad ne čuva, samo sha256 (kao ApprovalToken).
  * „Izdaj novi link" mijenja tokenHash i rok na istom redu — stari link time prestaje da važi.

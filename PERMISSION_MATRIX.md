@@ -54,6 +54,10 @@ Sva prava se provjeravaju u servisnom sloju (`src/server/services/*` + `src/serv
 | Kontni plan i poslovne godine — pregled (`ledger.view`) | ✔ | ✔ | – |
 | Kontni plan ZEV-a — dodjela iz predloška, aktivacija, povlačenje, konta, deaktivacija, zamjena, preuzimanje izmjena iz nove verzije predloška (`chart.edit`) | – | ✔ | – |
 | Otvaranje poslovne godine (`period.open`) | – | ✔ | – |
+| Namjene sredstava, vrste zaduženja, veza stavki naknade sa vrstom (`chargeTypes.edit`) | pregled | ✔ | – |
+| Kontrolna konta, nacrti pravila knjiženja, pravilo raspodjele djelimične uplate (`rules.edit`) | pregled | ✔ | – |
+| Potvrda pravila knjiženja, uz ime stručnog lica (`rules.confirm`) | – | ✔ | – |
+| Evidencija i opoziv stručne potvrde šeme pod kapijom (`schema.approve`) | – | ✔ | – |
 | Kontni predlošci (kontni okviri) — izrada, uvoz, pojedinačna konta u nacrtu, stručna provjera, verzije | samo super admin (platforma) | | |
 | **Sistem** |
 | Izvještaji + CSV izvoz | ✔ | ✔ | – |

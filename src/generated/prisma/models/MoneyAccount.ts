@@ -260,6 +260,7 @@ export type MoneyAccountWhereInput = {
   transactions?: Prisma.FinTransactionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   incomingBankSms?: Prisma.IncomingBankSmsListRelationFilter
+  controlAccounts?: Prisma.ZevControlAccountListRelationFilter
 }
 
 export type MoneyAccountOrderByWithRelationInput = {
@@ -277,6 +278,7 @@ export type MoneyAccountOrderByWithRelationInput = {
   transactions?: Prisma.FinTransactionOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   incomingBankSms?: Prisma.IncomingBankSmsOrderByRelationAggregateInput
+  controlAccounts?: Prisma.ZevControlAccountOrderByRelationAggregateInput
 }
 
 export type MoneyAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -297,6 +299,7 @@ export type MoneyAccountWhereUniqueInput = Prisma.AtLeast<{
   transactions?: Prisma.FinTransactionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   incomingBankSms?: Prisma.IncomingBankSmsListRelationFilter
+  controlAccounts?: Prisma.ZevControlAccountListRelationFilter
 }, "id">
 
 export type MoneyAccountOrderByWithAggregationInput = {
@@ -347,6 +350,7 @@ export type MoneyAccountCreateInput = {
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutAccountInput
   payments?: Prisma.PaymentCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountUncheckedCreateInput = {
@@ -363,6 +367,7 @@ export type MoneyAccountUncheckedCreateInput = {
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutAccountInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountUpdateInput = {
@@ -379,6 +384,7 @@ export type MoneyAccountUpdateInput = {
   transactions?: Prisma.FinTransactionUpdateManyWithoutAccountNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountUncheckedUpdateInput = {
@@ -395,6 +401,7 @@ export type MoneyAccountUncheckedUpdateInput = {
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutAccountNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountCreateManyInput = {
@@ -592,6 +599,22 @@ export type MoneyAccountUpdateOneRequiredWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MoneyAccountUpdateToOneWithWhereWithoutPaymentsInput, Prisma.MoneyAccountUpdateWithoutPaymentsInput>, Prisma.MoneyAccountUncheckedUpdateWithoutPaymentsInput>
 }
 
+export type MoneyAccountCreateNestedOneWithoutControlAccountsInput = {
+  create?: Prisma.XOR<Prisma.MoneyAccountCreateWithoutControlAccountsInput, Prisma.MoneyAccountUncheckedCreateWithoutControlAccountsInput>
+  connectOrCreate?: Prisma.MoneyAccountCreateOrConnectWithoutControlAccountsInput
+  connect?: Prisma.MoneyAccountWhereUniqueInput
+}
+
+export type MoneyAccountUpdateOneWithoutControlAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.MoneyAccountCreateWithoutControlAccountsInput, Prisma.MoneyAccountUncheckedCreateWithoutControlAccountsInput>
+  connectOrCreate?: Prisma.MoneyAccountCreateOrConnectWithoutControlAccountsInput
+  upsert?: Prisma.MoneyAccountUpsertWithoutControlAccountsInput
+  disconnect?: Prisma.MoneyAccountWhereInput | boolean
+  delete?: Prisma.MoneyAccountWhereInput | boolean
+  connect?: Prisma.MoneyAccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MoneyAccountUpdateToOneWithWhereWithoutControlAccountsInput, Prisma.MoneyAccountUpdateWithoutControlAccountsInput>, Prisma.MoneyAccountUncheckedUpdateWithoutControlAccountsInput>
+}
+
 export type MoneyAccountCreateWithoutZevInput = {
   id?: string
   type: $Enums.AccountType
@@ -605,6 +628,7 @@ export type MoneyAccountCreateWithoutZevInput = {
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutAccountInput
   payments?: Prisma.PaymentCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountUncheckedCreateWithoutZevInput = {
@@ -620,6 +644,7 @@ export type MoneyAccountUncheckedCreateWithoutZevInput = {
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutAccountInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountCreateOrConnectWithoutZevInput = {
@@ -677,6 +702,7 @@ export type MoneyAccountCreateWithoutTransactionsInput = {
   zev: Prisma.ZevCreateNestedOneWithoutAccountsInput
   payments?: Prisma.PaymentCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountUncheckedCreateWithoutTransactionsInput = {
@@ -692,6 +718,7 @@ export type MoneyAccountUncheckedCreateWithoutTransactionsInput = {
   createdAt?: Date | string
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountCreateOrConnectWithoutTransactionsInput = {
@@ -723,6 +750,7 @@ export type MoneyAccountUpdateWithoutTransactionsInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutAccountsNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountUncheckedUpdateWithoutTransactionsInput = {
@@ -738,6 +766,7 @@ export type MoneyAccountUncheckedUpdateWithoutTransactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountCreateWithoutIncomingBankSmsInput = {
@@ -753,6 +782,7 @@ export type MoneyAccountCreateWithoutIncomingBankSmsInput = {
   zev: Prisma.ZevCreateNestedOneWithoutAccountsInput
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutAccountInput
   payments?: Prisma.PaymentCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountUncheckedCreateWithoutIncomingBankSmsInput = {
@@ -768,6 +798,7 @@ export type MoneyAccountUncheckedCreateWithoutIncomingBankSmsInput = {
   createdAt?: Date | string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutAccountInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountCreateOrConnectWithoutIncomingBankSmsInput = {
@@ -799,6 +830,7 @@ export type MoneyAccountUpdateWithoutIncomingBankSmsInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutAccountsNestedInput
   transactions?: Prisma.FinTransactionUpdateManyWithoutAccountNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountUncheckedUpdateWithoutIncomingBankSmsInput = {
@@ -814,6 +846,7 @@ export type MoneyAccountUncheckedUpdateWithoutIncomingBankSmsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutAccountNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountCreateWithoutPaymentsInput = {
@@ -829,6 +862,7 @@ export type MoneyAccountCreateWithoutPaymentsInput = {
   zev: Prisma.ZevCreateNestedOneWithoutAccountsInput
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountUncheckedCreateWithoutPaymentsInput = {
@@ -844,6 +878,7 @@ export type MoneyAccountUncheckedCreateWithoutPaymentsInput = {
   createdAt?: Date | string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutAccountInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutAccountInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutMoneyAccountInput
 }
 
 export type MoneyAccountCreateOrConnectWithoutPaymentsInput = {
@@ -875,6 +910,7 @@ export type MoneyAccountUpdateWithoutPaymentsInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutAccountsNestedInput
   transactions?: Prisma.FinTransactionUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountUncheckedUpdateWithoutPaymentsInput = {
@@ -889,6 +925,87 @@ export type MoneyAccountUncheckedUpdateWithoutPaymentsInput = {
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutAccountNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutMoneyAccountNestedInput
+}
+
+export type MoneyAccountCreateWithoutControlAccountsInput = {
+  id?: string
+  type: $Enums.AccountType
+  name: string
+  bankName?: string | null
+  iban?: string | null
+  openingBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingDate: Date | string
+  active?: boolean
+  createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutAccountsInput
+  transactions?: Prisma.FinTransactionCreateNestedManyWithoutAccountInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutAccountInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutAccountInput
+}
+
+export type MoneyAccountUncheckedCreateWithoutControlAccountsInput = {
+  id?: string
+  zevId: string
+  type: $Enums.AccountType
+  name: string
+  bankName?: string | null
+  iban?: string | null
+  openingBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingDate: Date | string
+  active?: boolean
+  createdAt?: Date | string
+  transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutAccountInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutAccountInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type MoneyAccountCreateOrConnectWithoutControlAccountsInput = {
+  where: Prisma.MoneyAccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.MoneyAccountCreateWithoutControlAccountsInput, Prisma.MoneyAccountUncheckedCreateWithoutControlAccountsInput>
+}
+
+export type MoneyAccountUpsertWithoutControlAccountsInput = {
+  update: Prisma.XOR<Prisma.MoneyAccountUpdateWithoutControlAccountsInput, Prisma.MoneyAccountUncheckedUpdateWithoutControlAccountsInput>
+  create: Prisma.XOR<Prisma.MoneyAccountCreateWithoutControlAccountsInput, Prisma.MoneyAccountUncheckedCreateWithoutControlAccountsInput>
+  where?: Prisma.MoneyAccountWhereInput
+}
+
+export type MoneyAccountUpdateToOneWithWhereWithoutControlAccountsInput = {
+  where?: Prisma.MoneyAccountWhereInput
+  data: Prisma.XOR<Prisma.MoneyAccountUpdateWithoutControlAccountsInput, Prisma.MoneyAccountUncheckedUpdateWithoutControlAccountsInput>
+}
+
+export type MoneyAccountUpdateWithoutControlAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutAccountsNestedInput
+  transactions?: Prisma.FinTransactionUpdateManyWithoutAccountNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutAccountNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutAccountNestedInput
+}
+
+export type MoneyAccountUncheckedUpdateWithoutControlAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutAccountNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutAccountNestedInput
 }
 
@@ -917,6 +1034,7 @@ export type MoneyAccountUpdateWithoutZevInput = {
   transactions?: Prisma.FinTransactionUpdateManyWithoutAccountNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountUncheckedUpdateWithoutZevInput = {
@@ -932,6 +1050,7 @@ export type MoneyAccountUncheckedUpdateWithoutZevInput = {
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutAccountNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutAccountNestedInput
   incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutAccountNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutMoneyAccountNestedInput
 }
 
 export type MoneyAccountUncheckedUpdateManyWithoutZevInput = {
@@ -955,12 +1074,14 @@ export type MoneyAccountCountOutputType = {
   transactions: number
   payments: number
   incomingBankSms: number
+  controlAccounts: number
 }
 
 export type MoneyAccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactions?: boolean | MoneyAccountCountOutputTypeCountTransactionsArgs
   payments?: boolean | MoneyAccountCountOutputTypeCountPaymentsArgs
   incomingBankSms?: boolean | MoneyAccountCountOutputTypeCountIncomingBankSmsArgs
+  controlAccounts?: boolean | MoneyAccountCountOutputTypeCountControlAccountsArgs
 }
 
 /**
@@ -994,6 +1115,13 @@ export type MoneyAccountCountOutputTypeCountIncomingBankSmsArgs<ExtArgs extends 
   where?: Prisma.IncomingBankSmsWhereInput
 }
 
+/**
+ * MoneyAccountCountOutputType without action
+ */
+export type MoneyAccountCountOutputTypeCountControlAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ZevControlAccountWhereInput
+}
+
 
 export type MoneyAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1010,6 +1138,7 @@ export type MoneyAccountSelect<ExtArgs extends runtime.Types.Extensions.Internal
   transactions?: boolean | Prisma.MoneyAccount$transactionsArgs<ExtArgs>
   payments?: boolean | Prisma.MoneyAccount$paymentsArgs<ExtArgs>
   incomingBankSms?: boolean | Prisma.MoneyAccount$incomingBankSmsArgs<ExtArgs>
+  controlAccounts?: boolean | Prisma.MoneyAccount$controlAccountsArgs<ExtArgs>
   _count?: boolean | Prisma.MoneyAccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["moneyAccount"]>
 
@@ -1060,6 +1189,7 @@ export type MoneyAccountInclude<ExtArgs extends runtime.Types.Extensions.Interna
   transactions?: boolean | Prisma.MoneyAccount$transactionsArgs<ExtArgs>
   payments?: boolean | Prisma.MoneyAccount$paymentsArgs<ExtArgs>
   incomingBankSms?: boolean | Prisma.MoneyAccount$incomingBankSmsArgs<ExtArgs>
+  controlAccounts?: boolean | Prisma.MoneyAccount$controlAccountsArgs<ExtArgs>
   _count?: boolean | Prisma.MoneyAccountCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MoneyAccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1076,6 +1206,7 @@ export type $MoneyAccountPayload<ExtArgs extends runtime.Types.Extensions.Intern
     transactions: Prisma.$FinTransactionPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     incomingBankSms: Prisma.$IncomingBankSmsPayload<ExtArgs>[]
+    controlAccounts: Prisma.$ZevControlAccountPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1486,6 +1617,7 @@ export interface Prisma__MoneyAccountClient<T, Null = never, ExtArgs extends run
   transactions<T extends Prisma.MoneyAccount$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MoneyAccount$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.MoneyAccount$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MoneyAccount$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   incomingBankSms<T extends Prisma.MoneyAccount$incomingBankSmsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MoneyAccount$incomingBankSmsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncomingBankSmsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  controlAccounts<T extends Prisma.MoneyAccount$controlAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MoneyAccount$controlAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevControlAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1995,6 +2127,30 @@ export type MoneyAccount$incomingBankSmsArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.IncomingBankSmsScalarFieldEnum | Prisma.IncomingBankSmsScalarFieldEnum[]
+}
+
+/**
+ * MoneyAccount.controlAccounts
+ */
+export type MoneyAccount$controlAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ZevControlAccount
+   */
+  select?: Prisma.ZevControlAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ZevControlAccount
+   */
+  omit?: Prisma.ZevControlAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ZevControlAccountInclude<ExtArgs> | null
+  where?: Prisma.ZevControlAccountWhereInput
+  orderBy?: Prisma.ZevControlAccountOrderByWithRelationInput | Prisma.ZevControlAccountOrderByWithRelationInput[]
+  cursor?: Prisma.ZevControlAccountWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ZevControlAccountScalarFieldEnum | Prisma.ZevControlAccountScalarFieldEnum[]
 }
 
 /**

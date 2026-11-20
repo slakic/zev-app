@@ -6,7 +6,7 @@
 // `requireSuperAdmin`. Nijedna mogućnost iz ove mape ne daje pravo plaćanja ni odobravanja
 // nabavke — ti guardovi u expenses.ts/maintenance.ts ovu mapu ne čitaju.
 //
-// Faza A1 uvodi samo mogućnosti koje već imaju servis; A2/B dodaju svoje (rules.*, journal.*, …).
+// A1 uvodi chart.edit/period.open/ledger.view, A2 vrste zaduženja, pravila i kapije; B dodaje journal.* i period.*.
 import type { Role } from "@/generated/prisma/client";
 
 export const ACCOUNTING_CAPABILITIES = {
@@ -14,6 +14,14 @@ export const ACCOUNTING_CAPABILITIES = {
   "chart.edit": ["ACCOUNTANT"],
   /** Otvaranje poslovne godine i njenih perioda (zatvaranje je Faza B). */
   "period.open": ["ACCOUNTANT"],
+  /** Vrste zaduženja, namjene sredstava i veza stavki naknade sa vrstom (A2). */
+  "chargeTypes.edit": ["ACCOUNTANT"],
+  /** Kontrolna konta, nacrti pravila knjiženja, pravilo raspodjele djelimične uplate (A2). */
+  "rules.edit": ["ACCOUNTANT"],
+  /** Potvrda pravila knjiženja, uz obavezan podatak ko je stručno potvrdio (A-Q3 (a)). */
+  "rules.confirm": ["ACCOUNTANT"],
+  /** Evidencija stručne potvrde šeme pod kapijom (K-6), uz ime stručnog lica (A-Q9 (a)). */
+  "schema.approve": ["ACCOUNTANT"],
   /** Pregled kontnog plana, perioda i (kasnije) knjiga. */
   "ledger.view": ["PRESIDENT", "ACCOUNTANT"],
 } as const satisfies Record<string, readonly Role[]>;

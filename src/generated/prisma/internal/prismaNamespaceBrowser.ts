@@ -119,6 +119,11 @@ export const ModelName = {
   ZevAccount: 'ZevAccount',
   FiscalYear: 'FiscalYear',
   FiscalPeriod: 'FiscalPeriod',
+  FundPurpose: 'FundPurpose',
+  ChargeType: 'ChargeType',
+  ZevControlAccount: 'ZevControlAccount',
+  PostingRule: 'PostingRule',
+  PostingSchemaApproval: 'PostingSchemaApproval',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
@@ -708,6 +713,7 @@ export const ChargeItemScalarFieldEnum = {
   displayOrder: 'displayOrder',
   isReserveFund: 'isReserveFund',
   active: 'active',
+  chargeTypeId: 'chargeTypeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -789,7 +795,8 @@ export const InvoiceLineScalarFieldEnum = {
   description: 'description',
   calcSnapshot: 'calcSnapshot',
   amount: 'amount',
-  order: 'order'
+  order: 'order',
+  chargeTypeId: 'chargeTypeId'
 } as const
 
 export type InvoiceLineScalarFieldEnum = (typeof InvoiceLineScalarFieldEnum)[keyof typeof InvoiceLineScalarFieldEnum]
@@ -1348,6 +1355,88 @@ export const FiscalPeriodScalarFieldEnum = {
 } as const
 
 export type FiscalPeriodScalarFieldEnum = (typeof FiscalPeriodScalarFieldEnum)[keyof typeof FiscalPeriodScalarFieldEnum]
+
+
+export const FundPurposeScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  code: 'code',
+  name: 'name',
+  isCommonReserve: 'isCommonReserve',
+  decisionRef: 'decisionRef',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type FundPurposeScalarFieldEnum = (typeof FundPurposeScalarFieldEnum)[keyof typeof FundPurposeScalarFieldEnum]
+
+
+export const ChargeTypeScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  code: 'code',
+  name: 'name',
+  defaultPurposeId: 'defaultPurposeId',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type ChargeTypeScalarFieldEnum = (typeof ChargeTypeScalarFieldEnum)[keyof typeof ChargeTypeScalarFieldEnum]
+
+
+export const ZevControlAccountScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  role: 'role',
+  moneyAccountId: 'moneyAccountId',
+  purposeId: 'purposeId',
+  accountId: 'accountId',
+  validFrom: 'validFrom',
+  reason: 'reason',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type ZevControlAccountScalarFieldEnum = (typeof ZevControlAccountScalarFieldEnum)[keyof typeof ZevControlAccountScalarFieldEnum]
+
+
+export const PostingRuleScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  chartId: 'chartId',
+  kind: 'kind',
+  chargeTypeId: 'chargeTypeId',
+  categoryId: 'categoryId',
+  counterAccountId: 'counterAccountId',
+  purposeId: 'purposeId',
+  validFrom: 'validFrom',
+  status: 'status',
+  supersedesId: 'supersedesId',
+  reason: 'reason',
+  expertRef: 'expertRef',
+  createdById: 'createdById',
+  confirmedById: 'confirmedById',
+  confirmedAt: 'confirmedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type PostingRuleScalarFieldEnum = (typeof PostingRuleScalarFieldEnum)[keyof typeof PostingRuleScalarFieldEnum]
+
+
+export const PostingSchemaApprovalScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  schema: 'schema',
+  description: 'description',
+  expertName: 'expertName',
+  approvedAt: 'approvedAt',
+  attachmentId: 'attachmentId',
+  revokesId: 'revokesId',
+  recordedById: 'recordedById',
+  createdAt: 'createdAt'
+} as const
+
+export type PostingSchemaApprovalScalarFieldEnum = (typeof PostingSchemaApprovalScalarFieldEnum)[keyof typeof PostingSchemaApprovalScalarFieldEnum]
 
 
 export const OnboardingInviteScalarFieldEnum = {

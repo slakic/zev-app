@@ -177,6 +177,7 @@ export type TransactionCategoryWhereInput = {
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   transactions?: Prisma.FinTransactionListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
+  postingRules?: Prisma.PostingRuleListRelationFilter
 }
 
 export type TransactionCategoryOrderByWithRelationInput = {
@@ -187,6 +188,7 @@ export type TransactionCategoryOrderByWithRelationInput = {
   zev?: Prisma.ZevOrderByWithRelationInput
   transactions?: Prisma.FinTransactionOrderByRelationAggregateInput
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
+  postingRules?: Prisma.PostingRuleOrderByRelationAggregateInput
 }
 
 export type TransactionCategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -201,6 +203,7 @@ export type TransactionCategoryWhereUniqueInput = Prisma.AtLeast<{
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   transactions?: Prisma.FinTransactionListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
+  postingRules?: Prisma.PostingRuleListRelationFilter
 }, "id" | "zevId_name">
 
 export type TransactionCategoryOrderByWithAggregationInput = {
@@ -230,6 +233,7 @@ export type TransactionCategoryCreateInput = {
   zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateInput = {
@@ -239,6 +243,7 @@ export type TransactionCategoryUncheckedCreateInput = {
   kind: string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUpdateInput = {
@@ -248,6 +253,7 @@ export type TransactionCategoryUpdateInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
   transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateInput = {
@@ -257,6 +263,7 @@ export type TransactionCategoryUncheckedUpdateInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryCreateManyInput = {
@@ -394,12 +401,29 @@ export type TransactionCategoryUpdateOneWithoutExpensesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TransactionCategoryUpdateToOneWithWhereWithoutExpensesInput, Prisma.TransactionCategoryUpdateWithoutExpensesInput>, Prisma.TransactionCategoryUncheckedUpdateWithoutExpensesInput>
 }
 
+export type TransactionCategoryCreateNestedOneWithoutPostingRulesInput = {
+  create?: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutPostingRulesInput, Prisma.TransactionCategoryUncheckedCreateWithoutPostingRulesInput>
+  connectOrCreate?: Prisma.TransactionCategoryCreateOrConnectWithoutPostingRulesInput
+  connect?: Prisma.TransactionCategoryWhereUniqueInput
+}
+
+export type TransactionCategoryUpdateOneWithoutPostingRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutPostingRulesInput, Prisma.TransactionCategoryUncheckedCreateWithoutPostingRulesInput>
+  connectOrCreate?: Prisma.TransactionCategoryCreateOrConnectWithoutPostingRulesInput
+  upsert?: Prisma.TransactionCategoryUpsertWithoutPostingRulesInput
+  disconnect?: Prisma.TransactionCategoryWhereInput | boolean
+  delete?: Prisma.TransactionCategoryWhereInput | boolean
+  connect?: Prisma.TransactionCategoryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TransactionCategoryUpdateToOneWithWhereWithoutPostingRulesInput, Prisma.TransactionCategoryUpdateWithoutPostingRulesInput>, Prisma.TransactionCategoryUncheckedUpdateWithoutPostingRulesInput>
+}
+
 export type TransactionCategoryCreateWithoutZevInput = {
   id?: string
   name: string
   kind: string
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateWithoutZevInput = {
@@ -408,6 +432,7 @@ export type TransactionCategoryUncheckedCreateWithoutZevInput = {
   kind: string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryCreateOrConnectWithoutZevInput = {
@@ -452,6 +477,7 @@ export type TransactionCategoryCreateWithoutTransactionsInput = {
   kind: string
   zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateWithoutTransactionsInput = {
@@ -460,6 +486,7 @@ export type TransactionCategoryUncheckedCreateWithoutTransactionsInput = {
   name: string
   kind: string
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryCreateOrConnectWithoutTransactionsInput = {
@@ -484,6 +511,7 @@ export type TransactionCategoryUpdateWithoutTransactionsInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateWithoutTransactionsInput = {
@@ -492,6 +520,7 @@ export type TransactionCategoryUncheckedUpdateWithoutTransactionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryCreateWithoutExpensesInput = {
@@ -500,6 +529,7 @@ export type TransactionCategoryCreateWithoutExpensesInput = {
   kind: string
   zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
   transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryUncheckedCreateWithoutExpensesInput = {
@@ -508,6 +538,7 @@ export type TransactionCategoryUncheckedCreateWithoutExpensesInput = {
   name: string
   kind: string
   transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type TransactionCategoryCreateOrConnectWithoutExpensesInput = {
@@ -532,6 +563,7 @@ export type TransactionCategoryUpdateWithoutExpensesInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
   transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateWithoutExpensesInput = {
@@ -540,6 +572,59 @@ export type TransactionCategoryUncheckedUpdateWithoutExpensesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+export type TransactionCategoryCreateWithoutPostingRulesInput = {
+  id?: string
+  name: string
+  kind: string
+  zev: Prisma.ZevCreateNestedOneWithoutTransactionCategoriesInput
+  transactions?: Prisma.FinTransactionCreateNestedManyWithoutCategoryInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutCategoryInput
+}
+
+export type TransactionCategoryUncheckedCreateWithoutPostingRulesInput = {
+  id?: string
+  zevId: string
+  name: string
+  kind: string
+  transactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutCategoryInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCategoryInput
+}
+
+export type TransactionCategoryCreateOrConnectWithoutPostingRulesInput = {
+  where: Prisma.TransactionCategoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutPostingRulesInput, Prisma.TransactionCategoryUncheckedCreateWithoutPostingRulesInput>
+}
+
+export type TransactionCategoryUpsertWithoutPostingRulesInput = {
+  update: Prisma.XOR<Prisma.TransactionCategoryUpdateWithoutPostingRulesInput, Prisma.TransactionCategoryUncheckedUpdateWithoutPostingRulesInput>
+  create: Prisma.XOR<Prisma.TransactionCategoryCreateWithoutPostingRulesInput, Prisma.TransactionCategoryUncheckedCreateWithoutPostingRulesInput>
+  where?: Prisma.TransactionCategoryWhereInput
+}
+
+export type TransactionCategoryUpdateToOneWithWhereWithoutPostingRulesInput = {
+  where?: Prisma.TransactionCategoryWhereInput
+  data: Prisma.XOR<Prisma.TransactionCategoryUpdateWithoutPostingRulesInput, Prisma.TransactionCategoryUncheckedUpdateWithoutPostingRulesInput>
+}
+
+export type TransactionCategoryUpdateWithoutPostingRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutTransactionCategoriesNestedInput
+  transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
+}
+
+export type TransactionCategoryUncheckedUpdateWithoutPostingRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.StringFieldUpdateOperationsInput | string
+  transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryCreateManyZevInput = {
@@ -554,6 +639,7 @@ export type TransactionCategoryUpdateWithoutZevInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   transactions?: Prisma.FinTransactionUpdateManyWithoutCategoryNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateWithoutZevInput = {
@@ -562,6 +648,7 @@ export type TransactionCategoryUncheckedUpdateWithoutZevInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   transactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutCategoryNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCategoryNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutCategoryNestedInput
 }
 
 export type TransactionCategoryUncheckedUpdateManyWithoutZevInput = {
@@ -578,11 +665,13 @@ export type TransactionCategoryUncheckedUpdateManyWithoutZevInput = {
 export type TransactionCategoryCountOutputType = {
   transactions: number
   expenses: number
+  postingRules: number
 }
 
 export type TransactionCategoryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactions?: boolean | TransactionCategoryCountOutputTypeCountTransactionsArgs
   expenses?: boolean | TransactionCategoryCountOutputTypeCountExpensesArgs
+  postingRules?: boolean | TransactionCategoryCountOutputTypeCountPostingRulesArgs
 }
 
 /**
@@ -609,6 +698,13 @@ export type TransactionCategoryCountOutputTypeCountExpensesArgs<ExtArgs extends 
   where?: Prisma.ExpenseWhereInput
 }
 
+/**
+ * TransactionCategoryCountOutputType without action
+ */
+export type TransactionCategoryCountOutputTypeCountPostingRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostingRuleWhereInput
+}
+
 
 export type TransactionCategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -618,6 +714,7 @@ export type TransactionCategorySelect<ExtArgs extends runtime.Types.Extensions.I
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   transactions?: boolean | Prisma.TransactionCategory$transactionsArgs<ExtArgs>
   expenses?: boolean | Prisma.TransactionCategory$expensesArgs<ExtArgs>
+  postingRules?: boolean | Prisma.TransactionCategory$postingRulesArgs<ExtArgs>
   _count?: boolean | Prisma.TransactionCategoryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["transactionCategory"]>
 
@@ -649,6 +746,7 @@ export type TransactionCategoryInclude<ExtArgs extends runtime.Types.Extensions.
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   transactions?: boolean | Prisma.TransactionCategory$transactionsArgs<ExtArgs>
   expenses?: boolean | Prisma.TransactionCategory$expensesArgs<ExtArgs>
+  postingRules?: boolean | Prisma.TransactionCategory$postingRulesArgs<ExtArgs>
   _count?: boolean | Prisma.TransactionCategoryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TransactionCategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -664,6 +762,7 @@ export type $TransactionCategoryPayload<ExtArgs extends runtime.Types.Extensions
     zev: Prisma.$ZevPayload<ExtArgs>
     transactions: Prisma.$FinTransactionPayload<ExtArgs>[]
     expenses: Prisma.$ExpensePayload<ExtArgs>[]
+    postingRules: Prisma.$PostingRulePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1067,6 +1166,7 @@ export interface Prisma__TransactionCategoryClient<T, Null = never, ExtArgs exte
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   transactions<T extends Prisma.TransactionCategory$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TransactionCategory$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   expenses<T extends Prisma.TransactionCategory$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TransactionCategory$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postingRules<T extends Prisma.TransactionCategory$postingRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TransactionCategory$postingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1546,6 +1646,30 @@ export type TransactionCategory$expensesArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.ExpenseScalarFieldEnum | Prisma.ExpenseScalarFieldEnum[]
+}
+
+/**
+ * TransactionCategory.postingRules
+ */
+export type TransactionCategory$postingRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostingRule
+   */
+  select?: Prisma.PostingRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostingRule
+   */
+  omit?: Prisma.PostingRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostingRuleInclude<ExtArgs> | null
+  where?: Prisma.PostingRuleWhereInput
+  orderBy?: Prisma.PostingRuleOrderByWithRelationInput | Prisma.PostingRuleOrderByWithRelationInput[]
+  cursor?: Prisma.PostingRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostingRuleScalarFieldEnum | Prisma.PostingRuleScalarFieldEnum[]
 }
 
 /**

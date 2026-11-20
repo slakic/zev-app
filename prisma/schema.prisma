@@ -260,6 +260,11 @@ model Zev {
   auditEvents           AuditEvent[]
   settings              Setting[]
   zevCharts             ZevChart[]
+  fundPurposes          FundPurpose[]
+  chargeTypes           ChargeType[]
+  controlAccounts       ZevControlAccount[]
+  postingRules          PostingRule[]
+  schemaApprovals       PostingSchemaApproval[]
   zevAccounts           ZevAccount[]
   fiscalYears           FiscalYear[]
   fiscalPeriods         FiscalPeriod[]
@@ -977,6 +982,7 @@ model MoneyAccount {
   transactions   FinTransaction[]
   payments       Payment[]
   incomingBankSms IncomingBankSms[]
+  controlAccounts ZevControlAccount[]
   createdAt      DateTime    @default(now())
 }
 
@@ -988,6 +994,7 @@ model TransactionCategory {
   kind  String // INCOME | EXPENSE
   transactions FinTransaction[]
   expenses     Expense[]
+  postingRules PostingRule[]
 
   @@unique([zevId, name])
 }
@@ -1090,6 +1097,9 @@ model ChargeItem {
   unitOverrides     ChargeUnitOverride[]
   meterReadings     MeterReading[]
   invoiceLines      InvoiceLine[]
+  /// Vrsta zaduženja (kontni plan A2, K-3): pravilo knjiženja visi na vrsti, ne na stavci; null = „Čeka podešavanje knjiženja”.
+  chargeType        ChargeType?    @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
+  chargeTypeId      String?
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 }
@@ -1198,6 +1208,9 @@ model InvoiceLine {
   calcSnapshot Json        // method, formula, inputs, allocation basis, rounding
   amount       Decimal     @db.Decimal(14, 2)
   order        Int         @default(0)
+  /// Snimak vrste zaduženja u trenutku izdavanja (A2): kasnija promjena stavke naknade ne mijenja istorijsko zaduženje.
+  chargeType   ChargeType? @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
+  chargeTypeId String?
 }
 
 enum PaymentStatus {
@@ -1985,6 +1998,8 @@ model ZevAccount {
   replaces           ZevAccount?   @relation("AccountReplace", fields: [replacesId], references: [id], onDelete: Restrict)
   replacesId         String?       @unique
   replacedBy         ZevAccount?   @relation("AccountReplace")
+  controlRoles       ZevControlAccount[]
+  postingRules       PostingRule[]
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
@@ -2023,6 +2038,158 @@ model FiscalPeriod {
 
   @@unique([yearId, label])
   @@index([zevId, startDate])
+}
+
+// ---------------------------------------------------------------------------
+// Kontni plan A2: vrste zaduženja, namjene sredstava, kontrolna konta, pravila
+// knjiženja i kapije (Plans/kontni-plan-i-knjizenje-plan.md §3.5–3.6, §11).
+// Ništa od ovoga ne knjiži — samo podešava. Potvrđeno pravilo, kontrolno konto i
+// potvrda šeme se ne mijenjaju naknadno (DB okidači); izmjena = novi red.
+// ---------------------------------------------------------------------------
+
+/// Namjena sredstava (K-4): za šta su sredstva prikupljena i smiju se trošiti. Nije konto.
+model FundPurpose {
+  id              String   @id @default(cuid())
+  zev             Zev      @relation(fields: [zevId], references: [id])
+  zevId           String
+  code            String
+  name            String
+  /// Zajednička rezerva: njena pravila i kontrolna konta podliježu kapiji COMMON_RESERVE_CLASSIFICATION (K-6).
+  isCommonReserve Boolean  @default(false)
+  decisionRef     String?  // odluka skupštine kojom je namjena utvrđena
+  active          Boolean  @default(true)
+  chargeTypes     ChargeType[]
+  controlAccounts ZevControlAccount[]
+  postingRules    PostingRule[]
+  createdAt       DateTime @default(now())
+
+  @@unique([zevId, code])
+}
+
+/// Vrsta zaduženja (K-3): stabilan pojam iznad stavki naknade, na kojem visi pravilo knjiženja.
+model ChargeType {
+  id               String       @id @default(cuid())
+  zev              Zev          @relation(fields: [zevId], references: [id])
+  zevId            String
+  code             String
+  name             String
+  defaultPurpose   FundPurpose? @relation(fields: [defaultPurposeId], references: [id], onDelete: Restrict)
+  defaultPurposeId String?
+  active           Boolean      @default(true)
+  chargeItems      ChargeItem[]
+  invoiceLines     InvoiceLine[]
+  postingRules     PostingRule[]
+  createdAt        DateTime     @default(now())
+
+  @@unique([zevId, code])
+}
+
+enum ControlRole {
+  MONEY_ACCOUNT          // konto računa novca (banka/blagajna); moneyAccountId obavezan
+  OWNER_RECEIVABLE       // potraživanja od vlasnika (po namjeni, §11 R-2)
+  OWNER_ADVANCE          // avansi poznatih vlasnika
+  UNIDENTIFIED_RECEIPTS  // neidentifikovane uplate
+  SUPPLIER_PAYABLE       // obaveze prema dobavljačima
+}
+
+/// Koje konto igra koju ulogu u šemama knjiženja. Append-only: promjena = nov red sa kasnijim validFrom.
+model ZevControlAccount {
+  id             String        @id @default(cuid())
+  zev            Zev           @relation(fields: [zevId], references: [id])
+  zevId          String
+  role           ControlRole
+  moneyAccount   MoneyAccount? @relation(fields: [moneyAccountId], references: [id], onDelete: Restrict)
+  moneyAccountId String?
+  purpose        FundPurpose?  @relation(fields: [purposeId], references: [id], onDelete: Restrict)
+  purposeId      String?
+  account        ZevAccount    @relation(fields: [accountId], references: [id])
+  accountId      String
+  validFrom      DateTime
+  reason         String?
+  createdById    String
+  createdAt      DateTime      @default(now())
+
+  @@index([zevId, role])
+}
+
+enum AccountingEventKind {
+  CHARGE_ISSUED
+  CHARGE_CANCELLED
+  CHARGE_CORRECTED
+  PAYMENT_RECEIVED
+  PAYMENT_REVERSED
+  PAYMENT_IDENTIFIED
+  PAYMENT_ALLOCATED
+  ALLOCATION_REVERSED
+  REVENUE_RECOGNIZED
+  SUPPLIER_INVOICE
+  SUPPLIER_INVOICE_CANCELLED
+  SUPPLIER_PAYMENT
+  CASH_INCOME
+  CASH_EXPENSE
+  TRANSACTION_CANCELLED
+  BALANCE_CORRECTION
+}
+
+enum PostingRuleStatus {
+  DRAFT
+  CONFIRMED
+  WITHDRAWN
+}
+
+/// Pravilo knjiženja (K-3): protivkonto šeme za vrstu zaduženja ili kategoriju, sa datumom početka primjene.
+/// Potvrđen red se ne mijenja (DB okidač); izmjena = nov red sa `supersedesId`, kasnijim `validFrom` i razlogom.
+model PostingRule {
+  id               String              @id @default(cuid())
+  zev              Zev                 @relation(fields: [zevId], references: [id])
+  zevId            String
+  chartId          String
+  kind             AccountingEventKind
+  chargeType       ChargeType?         @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
+  chargeTypeId     String?
+  category         TransactionCategory? @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categoryId       String?
+  counterAccount   ZevAccount          @relation(fields: [counterAccountId], references: [id])
+  counterAccountId String
+  purpose          FundPurpose?        @relation(fields: [purposeId], references: [id], onDelete: Restrict)
+  purposeId        String?
+  validFrom        DateTime
+  status           PostingRuleStatus   @default(DRAFT)
+  supersedes       PostingRule?        @relation("RuleSupersede", fields: [supersedesId], references: [id], onDelete: Restrict)
+  supersedesId     String?             @unique
+  supersededBy     PostingRule?        @relation("RuleSupersede")
+  reason           String
+  expertRef        String?
+  createdById      String
+  confirmedById    String?
+  confirmedAt      DateTime?
+  createdAt        DateTime            @default(now())
+
+  @@index([zevId, kind, chargeTypeId, categoryId, validFrom])
+}
+
+enum GatedSchema {
+  REVENUE_RECOGNITION
+  COMMON_RESERVE_CLASSIFICATION
+}
+
+/// Evidencija stručne potvrde šeme pod kapijom (K-6). Append-only; opoziv = nov red sa revokesId.
+model PostingSchemaApproval {
+  id           String                 @id @default(cuid())
+  zev          Zev                    @relation(fields: [zevId], references: [id])
+  zevId        String
+  schema       GatedSchema
+  description  String
+  expertName   String
+  approvedAt   DateTime
+  attachmentId String?
+  revokes      PostingSchemaApproval? @relation("SchemaRevoke", fields: [revokesId], references: [id], onDelete: Restrict)
+  revokesId    String?                @unique
+  revokedBy    PostingSchemaApproval? @relation("SchemaRevoke")
+  recordedById String
+  createdAt    DateTime               @default(now())
+
+  @@index([zevId, schema])
 }
 
 // ---------------------------------------------------------------------------

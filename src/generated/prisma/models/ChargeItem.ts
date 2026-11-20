@@ -63,6 +63,7 @@ export type ChargeItemMinAggregateOutputType = {
   displayOrder: number | null
   isReserveFund: boolean | null
   active: boolean | null
+  chargeTypeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -88,6 +89,7 @@ export type ChargeItemMaxAggregateOutputType = {
   displayOrder: number | null
   isReserveFund: boolean | null
   active: boolean | null
+  chargeTypeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -113,6 +115,7 @@ export type ChargeItemCountAggregateOutputType = {
   displayOrder: number
   isReserveFund: number
   active: number
+  chargeTypeId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -156,6 +159,7 @@ export type ChargeItemMinAggregateInputType = {
   displayOrder?: true
   isReserveFund?: true
   active?: true
+  chargeTypeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -181,6 +185,7 @@ export type ChargeItemMaxAggregateInputType = {
   displayOrder?: true
   isReserveFund?: true
   active?: true
+  chargeTypeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -206,6 +211,7 @@ export type ChargeItemCountAggregateInputType = {
   displayOrder?: true
   isReserveFund?: true
   active?: true
+  chargeTypeId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -318,6 +324,7 @@ export type ChargeItemGroupByOutputType = {
   displayOrder: number
   isReserveFund: boolean
   active: boolean
+  chargeTypeId: string | null
   createdAt: Date
   updatedAt: Date
   _count: ChargeItemCountAggregateOutputType | null
@@ -366,12 +373,14 @@ export type ChargeItemWhereInput = {
   displayOrder?: Prisma.IntFilter<"ChargeItem"> | number
   isReserveFund?: Prisma.BoolFilter<"ChargeItem"> | boolean
   active?: Prisma.BoolFilter<"ChargeItem"> | boolean
+  chargeTypeId?: Prisma.StringNullableFilter<"ChargeItem"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ChargeItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChargeItem"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   unitOverrides?: Prisma.ChargeUnitOverrideListRelationFilter
   meterReadings?: Prisma.MeterReadingListRelationFilter
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
+  chargeType?: Prisma.XOR<Prisma.ChargeTypeNullableScalarRelationFilter, Prisma.ChargeTypeWhereInput> | null
 }
 
 export type ChargeItemOrderByWithRelationInput = {
@@ -395,12 +404,14 @@ export type ChargeItemOrderByWithRelationInput = {
   displayOrder?: Prisma.SortOrder
   isReserveFund?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  chargeTypeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
   unitOverrides?: Prisma.ChargeUnitOverrideOrderByRelationAggregateInput
   meterReadings?: Prisma.MeterReadingOrderByRelationAggregateInput
   invoiceLines?: Prisma.InvoiceLineOrderByRelationAggregateInput
+  chargeType?: Prisma.ChargeTypeOrderByWithRelationInput
 }
 
 export type ChargeItemWhereUniqueInput = Prisma.AtLeast<{
@@ -427,12 +438,14 @@ export type ChargeItemWhereUniqueInput = Prisma.AtLeast<{
   displayOrder?: Prisma.IntFilter<"ChargeItem"> | number
   isReserveFund?: Prisma.BoolFilter<"ChargeItem"> | boolean
   active?: Prisma.BoolFilter<"ChargeItem"> | boolean
+  chargeTypeId?: Prisma.StringNullableFilter<"ChargeItem"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ChargeItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChargeItem"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   unitOverrides?: Prisma.ChargeUnitOverrideListRelationFilter
   meterReadings?: Prisma.MeterReadingListRelationFilter
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
+  chargeType?: Prisma.XOR<Prisma.ChargeTypeNullableScalarRelationFilter, Prisma.ChargeTypeWhereInput> | null
 }, "id">
 
 export type ChargeItemOrderByWithAggregationInput = {
@@ -456,6 +469,7 @@ export type ChargeItemOrderByWithAggregationInput = {
   displayOrder?: Prisma.SortOrder
   isReserveFund?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  chargeTypeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ChargeItemCountOrderByAggregateInput
@@ -489,6 +503,7 @@ export type ChargeItemScalarWhereWithAggregatesInput = {
   displayOrder?: Prisma.IntWithAggregatesFilter<"ChargeItem"> | number
   isReserveFund?: Prisma.BoolWithAggregatesFilter<"ChargeItem"> | boolean
   active?: Prisma.BoolWithAggregatesFilter<"ChargeItem"> | boolean
+  chargeTypeId?: Prisma.StringNullableWithAggregatesFilter<"ChargeItem"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ChargeItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ChargeItem"> | Date | string
 }
@@ -519,6 +534,7 @@ export type ChargeItemCreateInput = {
   unitOverrides?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutChargeItemInput
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutChargeItemInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutChargeItemInput
+  chargeType?: Prisma.ChargeTypeCreateNestedOneWithoutChargeItemsInput
 }
 
 export type ChargeItemUncheckedCreateInput = {
@@ -542,6 +558,7 @@ export type ChargeItemUncheckedCreateInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutChargeItemInput
@@ -575,6 +592,7 @@ export type ChargeItemUpdateInput = {
   unitOverrides?: Prisma.ChargeUnitOverrideUpdateManyWithoutChargeItemNestedInput
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutChargeItemNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutChargeItemNestedInput
+  chargeType?: Prisma.ChargeTypeUpdateOneWithoutChargeItemsNestedInput
 }
 
 export type ChargeItemUncheckedUpdateInput = {
@@ -598,6 +616,7 @@ export type ChargeItemUncheckedUpdateInput = {
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutChargeItemNestedInput
@@ -626,6 +645,7 @@ export type ChargeItemCreateManyInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -675,6 +695,7 @@ export type ChargeItemUncheckedUpdateManyInput = {
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -710,6 +731,7 @@ export type ChargeItemCountOrderByAggregateInput = {
   displayOrder?: Prisma.SortOrder
   isReserveFund?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  chargeTypeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -743,6 +765,7 @@ export type ChargeItemMaxOrderByAggregateInput = {
   displayOrder?: Prisma.SortOrder
   isReserveFund?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  chargeTypeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -768,6 +791,7 @@ export type ChargeItemMinOrderByAggregateInput = {
   displayOrder?: Prisma.SortOrder
   isReserveFund?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  chargeTypeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -888,6 +912,48 @@ export type ChargeItemUpdateOneWithoutInvoiceLinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChargeItemUpdateToOneWithWhereWithoutInvoiceLinesInput, Prisma.ChargeItemUpdateWithoutInvoiceLinesInput>, Prisma.ChargeItemUncheckedUpdateWithoutInvoiceLinesInput>
 }
 
+export type ChargeItemCreateNestedManyWithoutChargeTypeInput = {
+  create?: Prisma.XOR<Prisma.ChargeItemCreateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput> | Prisma.ChargeItemCreateWithoutChargeTypeInput[] | Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput[]
+  connectOrCreate?: Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput | Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput[]
+  createMany?: Prisma.ChargeItemCreateManyChargeTypeInputEnvelope
+  connect?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+}
+
+export type ChargeItemUncheckedCreateNestedManyWithoutChargeTypeInput = {
+  create?: Prisma.XOR<Prisma.ChargeItemCreateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput> | Prisma.ChargeItemCreateWithoutChargeTypeInput[] | Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput[]
+  connectOrCreate?: Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput | Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput[]
+  createMany?: Prisma.ChargeItemCreateManyChargeTypeInputEnvelope
+  connect?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+}
+
+export type ChargeItemUpdateManyWithoutChargeTypeNestedInput = {
+  create?: Prisma.XOR<Prisma.ChargeItemCreateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput> | Prisma.ChargeItemCreateWithoutChargeTypeInput[] | Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput[]
+  connectOrCreate?: Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput | Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput[]
+  upsert?: Prisma.ChargeItemUpsertWithWhereUniqueWithoutChargeTypeInput | Prisma.ChargeItemUpsertWithWhereUniqueWithoutChargeTypeInput[]
+  createMany?: Prisma.ChargeItemCreateManyChargeTypeInputEnvelope
+  set?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  disconnect?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  delete?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  connect?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  update?: Prisma.ChargeItemUpdateWithWhereUniqueWithoutChargeTypeInput | Prisma.ChargeItemUpdateWithWhereUniqueWithoutChargeTypeInput[]
+  updateMany?: Prisma.ChargeItemUpdateManyWithWhereWithoutChargeTypeInput | Prisma.ChargeItemUpdateManyWithWhereWithoutChargeTypeInput[]
+  deleteMany?: Prisma.ChargeItemScalarWhereInput | Prisma.ChargeItemScalarWhereInput[]
+}
+
+export type ChargeItemUncheckedUpdateManyWithoutChargeTypeNestedInput = {
+  create?: Prisma.XOR<Prisma.ChargeItemCreateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput> | Prisma.ChargeItemCreateWithoutChargeTypeInput[] | Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput[]
+  connectOrCreate?: Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput | Prisma.ChargeItemCreateOrConnectWithoutChargeTypeInput[]
+  upsert?: Prisma.ChargeItemUpsertWithWhereUniqueWithoutChargeTypeInput | Prisma.ChargeItemUpsertWithWhereUniqueWithoutChargeTypeInput[]
+  createMany?: Prisma.ChargeItemCreateManyChargeTypeInputEnvelope
+  set?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  disconnect?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  delete?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  connect?: Prisma.ChargeItemWhereUniqueInput | Prisma.ChargeItemWhereUniqueInput[]
+  update?: Prisma.ChargeItemUpdateWithWhereUniqueWithoutChargeTypeInput | Prisma.ChargeItemUpdateWithWhereUniqueWithoutChargeTypeInput[]
+  updateMany?: Prisma.ChargeItemUpdateManyWithWhereWithoutChargeTypeInput | Prisma.ChargeItemUpdateManyWithWhereWithoutChargeTypeInput[]
+  deleteMany?: Prisma.ChargeItemScalarWhereInput | Prisma.ChargeItemScalarWhereInput[]
+}
+
 export type ChargeItemCreateWithoutZevInput = {
   id?: string
   name: string
@@ -913,6 +979,7 @@ export type ChargeItemCreateWithoutZevInput = {
   unitOverrides?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutChargeItemInput
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutChargeItemInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutChargeItemInput
+  chargeType?: Prisma.ChargeTypeCreateNestedOneWithoutChargeItemsInput
 }
 
 export type ChargeItemUncheckedCreateWithoutZevInput = {
@@ -935,6 +1002,7 @@ export type ChargeItemUncheckedCreateWithoutZevInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutChargeItemInput
@@ -992,6 +1060,7 @@ export type ChargeItemScalarWhereInput = {
   displayOrder?: Prisma.IntFilter<"ChargeItem"> | number
   isReserveFund?: Prisma.BoolFilter<"ChargeItem"> | boolean
   active?: Prisma.BoolFilter<"ChargeItem"> | boolean
+  chargeTypeId?: Prisma.StringNullableFilter<"ChargeItem"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ChargeItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChargeItem"> | Date | string
 }
@@ -1021,6 +1090,7 @@ export type ChargeItemCreateWithoutUnitOverridesInput = {
   zev: Prisma.ZevCreateNestedOneWithoutChargeItemsInput
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutChargeItemInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutChargeItemInput
+  chargeType?: Prisma.ChargeTypeCreateNestedOneWithoutChargeItemsInput
 }
 
 export type ChargeItemUncheckedCreateWithoutUnitOverridesInput = {
@@ -1044,6 +1114,7 @@ export type ChargeItemUncheckedCreateWithoutUnitOverridesInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutChargeItemInput
@@ -1091,6 +1162,7 @@ export type ChargeItemUpdateWithoutUnitOverridesInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutChargeItemsNestedInput
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutChargeItemNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutChargeItemNestedInput
+  chargeType?: Prisma.ChargeTypeUpdateOneWithoutChargeItemsNestedInput
 }
 
 export type ChargeItemUncheckedUpdateWithoutUnitOverridesInput = {
@@ -1114,6 +1186,7 @@ export type ChargeItemUncheckedUpdateWithoutUnitOverridesInput = {
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutChargeItemNestedInput
@@ -1145,6 +1218,7 @@ export type ChargeItemCreateWithoutMeterReadingsInput = {
   zev: Prisma.ZevCreateNestedOneWithoutChargeItemsInput
   unitOverrides?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutChargeItemInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutChargeItemInput
+  chargeType?: Prisma.ChargeTypeCreateNestedOneWithoutChargeItemsInput
 }
 
 export type ChargeItemUncheckedCreateWithoutMeterReadingsInput = {
@@ -1168,6 +1242,7 @@ export type ChargeItemUncheckedCreateWithoutMeterReadingsInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutChargeItemInput
@@ -1215,6 +1290,7 @@ export type ChargeItemUpdateWithoutMeterReadingsInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutChargeItemsNestedInput
   unitOverrides?: Prisma.ChargeUnitOverrideUpdateManyWithoutChargeItemNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutChargeItemNestedInput
+  chargeType?: Prisma.ChargeTypeUpdateOneWithoutChargeItemsNestedInput
 }
 
 export type ChargeItemUncheckedUpdateWithoutMeterReadingsInput = {
@@ -1238,6 +1314,7 @@ export type ChargeItemUncheckedUpdateWithoutMeterReadingsInput = {
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutChargeItemNestedInput
@@ -1269,6 +1346,7 @@ export type ChargeItemCreateWithoutInvoiceLinesInput = {
   zev: Prisma.ZevCreateNestedOneWithoutChargeItemsInput
   unitOverrides?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutChargeItemInput
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutChargeItemInput
+  chargeType?: Prisma.ChargeTypeCreateNestedOneWithoutChargeItemsInput
 }
 
 export type ChargeItemUncheckedCreateWithoutInvoiceLinesInput = {
@@ -1292,6 +1370,7 @@ export type ChargeItemUncheckedCreateWithoutInvoiceLinesInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutChargeItemInput
@@ -1339,6 +1418,7 @@ export type ChargeItemUpdateWithoutInvoiceLinesInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutChargeItemsNestedInput
   unitOverrides?: Prisma.ChargeUnitOverrideUpdateManyWithoutChargeItemNestedInput
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutChargeItemNestedInput
+  chargeType?: Prisma.ChargeTypeUpdateOneWithoutChargeItemsNestedInput
 }
 
 export type ChargeItemUncheckedUpdateWithoutInvoiceLinesInput = {
@@ -1362,10 +1442,93 @@ export type ChargeItemUncheckedUpdateWithoutInvoiceLinesInput = {
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   unitOverrides?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutChargeItemNestedInput
   meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutChargeItemNestedInput
+}
+
+export type ChargeItemCreateWithoutChargeTypeInput = {
+  id?: string
+  name: string
+  description?: string | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  allocationGroupId?: string | null
+  method: $Enums.ChargeMethod
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  frequency?: $Enums.BillingFrequency
+  dueDayOfMonth?: number
+  rounding?: $Enums.RoundingMethod
+  minAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  displayOrder?: number
+  isReserveFund?: boolean
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutChargeItemsInput
+  unitOverrides?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutChargeItemInput
+  meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutChargeItemInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutChargeItemInput
+}
+
+export type ChargeItemUncheckedCreateWithoutChargeTypeInput = {
+  id?: string
+  zevId: string
+  name: string
+  description?: string | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  allocationGroupId?: string | null
+  method: $Enums.ChargeMethod
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  frequency?: $Enums.BillingFrequency
+  dueDayOfMonth?: number
+  rounding?: $Enums.RoundingMethod
+  minAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  displayOrder?: number
+  isReserveFund?: boolean
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitOverrides?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutChargeItemInput
+  meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutChargeItemInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutChargeItemInput
+}
+
+export type ChargeItemCreateOrConnectWithoutChargeTypeInput = {
+  where: Prisma.ChargeItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChargeItemCreateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput>
+}
+
+export type ChargeItemCreateManyChargeTypeInputEnvelope = {
+  data: Prisma.ChargeItemCreateManyChargeTypeInput | Prisma.ChargeItemCreateManyChargeTypeInput[]
+  skipDuplicates?: boolean
+}
+
+export type ChargeItemUpsertWithWhereUniqueWithoutChargeTypeInput = {
+  where: Prisma.ChargeItemWhereUniqueInput
+  update: Prisma.XOR<Prisma.ChargeItemUpdateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedUpdateWithoutChargeTypeInput>
+  create: Prisma.XOR<Prisma.ChargeItemCreateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedCreateWithoutChargeTypeInput>
+}
+
+export type ChargeItemUpdateWithWhereUniqueWithoutChargeTypeInput = {
+  where: Prisma.ChargeItemWhereUniqueInput
+  data: Prisma.XOR<Prisma.ChargeItemUpdateWithoutChargeTypeInput, Prisma.ChargeItemUncheckedUpdateWithoutChargeTypeInput>
+}
+
+export type ChargeItemUpdateManyWithWhereWithoutChargeTypeInput = {
+  where: Prisma.ChargeItemScalarWhereInput
+  data: Prisma.XOR<Prisma.ChargeItemUpdateManyMutationInput, Prisma.ChargeItemUncheckedUpdateManyWithoutChargeTypeInput>
 }
 
 export type ChargeItemCreateManyZevInput = {
@@ -1388,6 +1551,7 @@ export type ChargeItemCreateManyZevInput = {
   displayOrder?: number
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1417,10 +1581,118 @@ export type ChargeItemUpdateWithoutZevInput = {
   unitOverrides?: Prisma.ChargeUnitOverrideUpdateManyWithoutChargeItemNestedInput
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutChargeItemNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutChargeItemNestedInput
+  chargeType?: Prisma.ChargeTypeUpdateOneWithoutChargeItemsNestedInput
 }
 
 export type ChargeItemUncheckedUpdateWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allocationGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  method?: Prisma.EnumChargeMethodFieldUpdateOperationsInput | $Enums.ChargeMethod
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  frequency?: Prisma.EnumBillingFrequencyFieldUpdateOperationsInput | $Enums.BillingFrequency
+  dueDayOfMonth?: Prisma.IntFieldUpdateOperationsInput | number
+  rounding?: Prisma.EnumRoundingMethodFieldUpdateOperationsInput | $Enums.RoundingMethod
+  minAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitOverrides?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutChargeItemNestedInput
+  meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutChargeItemNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutChargeItemNestedInput
+}
+
+export type ChargeItemUncheckedUpdateManyWithoutZevInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allocationGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  method?: Prisma.EnumChargeMethodFieldUpdateOperationsInput | $Enums.ChargeMethod
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  frequency?: Prisma.EnumBillingFrequencyFieldUpdateOperationsInput | $Enums.BillingFrequency
+  dueDayOfMonth?: Prisma.IntFieldUpdateOperationsInput | number
+  rounding?: Prisma.EnumRoundingMethodFieldUpdateOperationsInput | $Enums.RoundingMethod
+  minAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ChargeItemCreateManyChargeTypeInput = {
+  id?: string
+  zevId: string
+  name: string
+  description?: string | null
+  scopeType?: $Enums.ScopeType
+  buildingId?: string | null
+  entranceId?: string | null
+  allocationGroupId?: string | null
+  method: $Enums.ChargeMethod
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  frequency?: $Enums.BillingFrequency
+  dueDayOfMonth?: number
+  rounding?: $Enums.RoundingMethod
+  minAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  displayOrder?: number
+  isReserveFund?: boolean
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ChargeItemUpdateWithoutChargeTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  buildingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allocationGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  method?: Prisma.EnumChargeMethodFieldUpdateOperationsInput | $Enums.ChargeMethod
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  frequency?: Prisma.EnumBillingFrequencyFieldUpdateOperationsInput | $Enums.BillingFrequency
+  dueDayOfMonth?: Prisma.IntFieldUpdateOperationsInput | number
+  rounding?: Prisma.EnumRoundingMethodFieldUpdateOperationsInput | $Enums.RoundingMethod
+  minAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maxAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isReserveFund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutChargeItemsNestedInput
+  unitOverrides?: Prisma.ChargeUnitOverrideUpdateManyWithoutChargeItemNestedInput
+  meterReadings?: Prisma.MeterReadingUpdateManyWithoutChargeItemNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutChargeItemNestedInput
+}
+
+export type ChargeItemUncheckedUpdateWithoutChargeTypeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
@@ -1446,8 +1718,9 @@ export type ChargeItemUncheckedUpdateWithoutZevInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutChargeItemNestedInput
 }
 
-export type ChargeItemUncheckedUpdateManyWithoutZevInput = {
+export type ChargeItemUncheckedUpdateManyWithoutChargeTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scopeType?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
@@ -1540,12 +1813,14 @@ export type ChargeItemSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   displayOrder?: boolean
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unitOverrides?: boolean | Prisma.ChargeItem$unitOverridesArgs<ExtArgs>
   meterReadings?: boolean | Prisma.ChargeItem$meterReadingsArgs<ExtArgs>
   invoiceLines?: boolean | Prisma.ChargeItem$invoiceLinesArgs<ExtArgs>
+  chargeType?: boolean | Prisma.ChargeItem$chargeTypeArgs<ExtArgs>
   _count?: boolean | Prisma.ChargeItemCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chargeItem"]>
 
@@ -1570,9 +1845,11 @@ export type ChargeItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   displayOrder?: boolean
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  chargeType?: boolean | Prisma.ChargeItem$chargeTypeArgs<ExtArgs>
 }, ExtArgs["result"]["chargeItem"]>
 
 export type ChargeItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1596,9 +1873,11 @@ export type ChargeItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   displayOrder?: boolean
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  chargeType?: boolean | Prisma.ChargeItem$chargeTypeArgs<ExtArgs>
 }, ExtArgs["result"]["chargeItem"]>
 
 export type ChargeItemSelectScalar = {
@@ -1622,23 +1901,27 @@ export type ChargeItemSelectScalar = {
   displayOrder?: boolean
   isReserveFund?: boolean
   active?: boolean
+  chargeTypeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ChargeItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "description" | "scopeType" | "buildingId" | "entranceId" | "allocationGroupId" | "method" | "rate" | "effectiveFrom" | "effectiveTo" | "frequency" | "dueDayOfMonth" | "rounding" | "minAmount" | "maxAmount" | "displayOrder" | "isReserveFund" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["chargeItem"]>
+export type ChargeItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "description" | "scopeType" | "buildingId" | "entranceId" | "allocationGroupId" | "method" | "rate" | "effectiveFrom" | "effectiveTo" | "frequency" | "dueDayOfMonth" | "rounding" | "minAmount" | "maxAmount" | "displayOrder" | "isReserveFund" | "active" | "chargeTypeId" | "createdAt" | "updatedAt", ExtArgs["result"]["chargeItem"]>
 export type ChargeItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   unitOverrides?: boolean | Prisma.ChargeItem$unitOverridesArgs<ExtArgs>
   meterReadings?: boolean | Prisma.ChargeItem$meterReadingsArgs<ExtArgs>
   invoiceLines?: boolean | Prisma.ChargeItem$invoiceLinesArgs<ExtArgs>
+  chargeType?: boolean | Prisma.ChargeItem$chargeTypeArgs<ExtArgs>
   _count?: boolean | Prisma.ChargeItemCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChargeItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  chargeType?: boolean | Prisma.ChargeItem$chargeTypeArgs<ExtArgs>
 }
 export type ChargeItemIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  chargeType?: boolean | Prisma.ChargeItem$chargeTypeArgs<ExtArgs>
 }
 
 export type $ChargeItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1648,6 +1931,10 @@ export type $ChargeItemPayload<ExtArgs extends runtime.Types.Extensions.Internal
     unitOverrides: Prisma.$ChargeUnitOverridePayload<ExtArgs>[]
     meterReadings: Prisma.$MeterReadingPayload<ExtArgs>[]
     invoiceLines: Prisma.$InvoiceLinePayload<ExtArgs>[]
+    /**
+     * Vrsta zaduženja (kontni plan A2, K-3): pravilo knjiženja visi na vrsti, ne na stavci; null = „Čeka podešavanje knjiženja”.
+     */
+    chargeType: Prisma.$ChargeTypePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1670,6 +1957,7 @@ export type $ChargeItemPayload<ExtArgs extends runtime.Types.Extensions.Internal
     displayOrder: number
     isReserveFund: boolean
     active: boolean
+    chargeTypeId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["chargeItem"]>
@@ -2070,6 +2358,7 @@ export interface Prisma__ChargeItemClient<T, Null = never, ExtArgs extends runti
   unitOverrides<T extends Prisma.ChargeItem$unitOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChargeItem$unitOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChargeUnitOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meterReadings<T extends Prisma.ChargeItem$meterReadingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChargeItem$meterReadingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeterReadingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoiceLines<T extends Prisma.ChargeItem$invoiceLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChargeItem$invoiceLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chargeType<T extends Prisma.ChargeItem$chargeTypeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChargeItem$chargeTypeArgs<ExtArgs>>): Prisma.Prisma__ChargeTypeClient<runtime.Types.Result.GetResult<Prisma.$ChargeTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2119,6 +2408,7 @@ export interface ChargeItemFieldRefs {
   readonly displayOrder: Prisma.FieldRef<"ChargeItem", 'Int'>
   readonly isReserveFund: Prisma.FieldRef<"ChargeItem", 'Boolean'>
   readonly active: Prisma.FieldRef<"ChargeItem", 'Boolean'>
+  readonly chargeTypeId: Prisma.FieldRef<"ChargeItem", 'String'>
   readonly createdAt: Prisma.FieldRef<"ChargeItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ChargeItem", 'DateTime'>
 }
@@ -2591,6 +2881,25 @@ export type ChargeItem$invoiceLinesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceLineScalarFieldEnum | Prisma.InvoiceLineScalarFieldEnum[]
+}
+
+/**
+ * ChargeItem.chargeType
+ */
+export type ChargeItem$chargeTypeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChargeType
+   */
+  select?: Prisma.ChargeTypeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChargeType
+   */
+  omit?: Prisma.ChargeTypeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChargeTypeInclude<ExtArgs> | null
+  where?: Prisma.ChargeTypeWhereInput
 }
 
 /**

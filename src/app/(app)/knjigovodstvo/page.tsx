@@ -8,6 +8,7 @@ import {
 } from "@/components/ui";
 import { AccountTreeTable } from "@/components/account-tree-table";
 import { AddAccountForm } from "@/components/add-account-form";
+import { RulesTab } from "./rules-tab";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { activateChartAction, assignChartAction, openFiscalYearAction, retireChartAction } from "@/server/actions/chartOfAccounts";
 
@@ -57,7 +58,7 @@ export default async function LedgerPage({
       />
       {tab === "plan" && <PlanTab actor={actor} canEdit={canEdit} q={sp.q ?? ""} show={sp.show === "all" ? "all" : "active"} />}
       {tab === "godine" && <PeriodsTab actor={actor} canOpen={canOpenPeriod} />}
-      {tab === "pravila" && <NotYet text={t("ledger.upcoming.rules")} title={t("ledger.tabs.rules")} />}
+      {tab === "pravila" && <RulesTab actor={actor} />}
       {tab === "nalozi" && <NotYet text={t("ledger.upcoming.journal")} title={t("ledger.tabs.journal")} />}
       {tab === "izvjestaji" && <NotYet text={t("ledger.upcoming.reports")} title={t("ledger.tabs.reports")} />}
     </div>

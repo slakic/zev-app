@@ -465,6 +465,11 @@ export const ModelName = {
   ZevAccount: 'ZevAccount',
   FiscalYear: 'FiscalYear',
   FiscalPeriod: 'FiscalPeriod',
+  FundPurpose: 'FundPurpose',
+  ChargeType: 'ChargeType',
+  ZevControlAccount: 'ZevControlAccount',
+  PostingRule: 'PostingRule',
+  PostingSchemaApproval: 'PostingSchemaApproval',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
@@ -488,7 +493,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "fundPurpose" | "chargeType" | "zevControlAccount" | "postingRule" | "postingSchemaApproval" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5524,6 +5529,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FundPurpose: {
+      payload: Prisma.$FundPurposePayload<ExtArgs>
+      fields: Prisma.FundPurposeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FundPurposeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FundPurposeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>
+        }
+        findFirst: {
+          args: Prisma.FundPurposeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FundPurposeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>
+        }
+        findMany: {
+          args: Prisma.FundPurposeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>[]
+        }
+        create: {
+          args: Prisma.FundPurposeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>
+        }
+        createMany: {
+          args: Prisma.FundPurposeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FundPurposeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>[]
+        }
+        delete: {
+          args: Prisma.FundPurposeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>
+        }
+        update: {
+          args: Prisma.FundPurposeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>
+        }
+        deleteMany: {
+          args: Prisma.FundPurposeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FundPurposeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FundPurposeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>[]
+        }
+        upsert: {
+          args: Prisma.FundPurposeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FundPurposePayload>
+        }
+        aggregate: {
+          args: Prisma.FundPurposeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFundPurpose>
+        }
+        groupBy: {
+          args: Prisma.FundPurposeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FundPurposeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FundPurposeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FundPurposeCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChargeType: {
+      payload: Prisma.$ChargeTypePayload<ExtArgs>
+      fields: Prisma.ChargeTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChargeTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChargeTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>
+        }
+        findFirst: {
+          args: Prisma.ChargeTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChargeTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>
+        }
+        findMany: {
+          args: Prisma.ChargeTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>[]
+        }
+        create: {
+          args: Prisma.ChargeTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>
+        }
+        createMany: {
+          args: Prisma.ChargeTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChargeTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>[]
+        }
+        delete: {
+          args: Prisma.ChargeTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>
+        }
+        update: {
+          args: Prisma.ChargeTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChargeTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChargeTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChargeTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChargeTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChargeTypePayload>
+        }
+        aggregate: {
+          args: Prisma.ChargeTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChargeType>
+        }
+        groupBy: {
+          args: Prisma.ChargeTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChargeTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChargeTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChargeTypeCountAggregateOutputType> | number
+        }
+      }
+    }
+    ZevControlAccount: {
+      payload: Prisma.$ZevControlAccountPayload<ExtArgs>
+      fields: Prisma.ZevControlAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ZevControlAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ZevControlAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.ZevControlAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ZevControlAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>
+        }
+        findMany: {
+          args: Prisma.ZevControlAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>[]
+        }
+        create: {
+          args: Prisma.ZevControlAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>
+        }
+        createMany: {
+          args: Prisma.ZevControlAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ZevControlAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.ZevControlAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>
+        }
+        update: {
+          args: Prisma.ZevControlAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.ZevControlAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ZevControlAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ZevControlAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.ZevControlAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ZevControlAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.ZevControlAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateZevControlAccount>
+        }
+        groupBy: {
+          args: Prisma.ZevControlAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ZevControlAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ZevControlAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ZevControlAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    PostingRule: {
+      payload: Prisma.$PostingRulePayload<ExtArgs>
+      fields: Prisma.PostingRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostingRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostingRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>
+        }
+        findFirst: {
+          args: Prisma.PostingRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostingRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>
+        }
+        findMany: {
+          args: Prisma.PostingRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>[]
+        }
+        create: {
+          args: Prisma.PostingRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>
+        }
+        createMany: {
+          args: Prisma.PostingRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostingRuleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>[]
+        }
+        delete: {
+          args: Prisma.PostingRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>
+        }
+        update: {
+          args: Prisma.PostingRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.PostingRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostingRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostingRuleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>[]
+        }
+        upsert: {
+          args: Prisma.PostingRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingRulePayload>
+        }
+        aggregate: {
+          args: Prisma.PostingRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostingRule>
+        }
+        groupBy: {
+          args: Prisma.PostingRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostingRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostingRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostingRuleCountAggregateOutputType> | number
+        }
+      }
+    }
+    PostingSchemaApproval: {
+      payload: Prisma.$PostingSchemaApprovalPayload<ExtArgs>
+      fields: Prisma.PostingSchemaApprovalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostingSchemaApprovalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostingSchemaApprovalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>
+        }
+        findFirst: {
+          args: Prisma.PostingSchemaApprovalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostingSchemaApprovalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>
+        }
+        findMany: {
+          args: Prisma.PostingSchemaApprovalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>[]
+        }
+        create: {
+          args: Prisma.PostingSchemaApprovalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>
+        }
+        createMany: {
+          args: Prisma.PostingSchemaApprovalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostingSchemaApprovalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>[]
+        }
+        delete: {
+          args: Prisma.PostingSchemaApprovalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>
+        }
+        update: {
+          args: Prisma.PostingSchemaApprovalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostingSchemaApprovalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostingSchemaApprovalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostingSchemaApprovalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>[]
+        }
+        upsert: {
+          args: Prisma.PostingSchemaApprovalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostingSchemaApprovalPayload>
+        }
+        aggregate: {
+          args: Prisma.PostingSchemaApprovalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostingSchemaApproval>
+        }
+        groupBy: {
+          args: Prisma.PostingSchemaApprovalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostingSchemaApprovalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostingSchemaApprovalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostingSchemaApprovalCountAggregateOutputType> | number
+        }
+      }
+    }
     OnboardingInvite: {
       payload: Prisma.$OnboardingInvitePayload<ExtArgs>
       fields: Prisma.OnboardingInviteFieldRefs
@@ -6718,6 +7093,7 @@ export const ChargeItemScalarFieldEnum = {
   displayOrder: 'displayOrder',
   isReserveFund: 'isReserveFund',
   active: 'active',
+  chargeTypeId: 'chargeTypeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -6799,7 +7175,8 @@ export const InvoiceLineScalarFieldEnum = {
   description: 'description',
   calcSnapshot: 'calcSnapshot',
   amount: 'amount',
-  order: 'order'
+  order: 'order',
+  chargeTypeId: 'chargeTypeId'
 } as const
 
 export type InvoiceLineScalarFieldEnum = (typeof InvoiceLineScalarFieldEnum)[keyof typeof InvoiceLineScalarFieldEnum]
@@ -7358,6 +7735,88 @@ export const FiscalPeriodScalarFieldEnum = {
 } as const
 
 export type FiscalPeriodScalarFieldEnum = (typeof FiscalPeriodScalarFieldEnum)[keyof typeof FiscalPeriodScalarFieldEnum]
+
+
+export const FundPurposeScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  code: 'code',
+  name: 'name',
+  isCommonReserve: 'isCommonReserve',
+  decisionRef: 'decisionRef',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type FundPurposeScalarFieldEnum = (typeof FundPurposeScalarFieldEnum)[keyof typeof FundPurposeScalarFieldEnum]
+
+
+export const ChargeTypeScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  code: 'code',
+  name: 'name',
+  defaultPurposeId: 'defaultPurposeId',
+  active: 'active',
+  createdAt: 'createdAt'
+} as const
+
+export type ChargeTypeScalarFieldEnum = (typeof ChargeTypeScalarFieldEnum)[keyof typeof ChargeTypeScalarFieldEnum]
+
+
+export const ZevControlAccountScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  role: 'role',
+  moneyAccountId: 'moneyAccountId',
+  purposeId: 'purposeId',
+  accountId: 'accountId',
+  validFrom: 'validFrom',
+  reason: 'reason',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type ZevControlAccountScalarFieldEnum = (typeof ZevControlAccountScalarFieldEnum)[keyof typeof ZevControlAccountScalarFieldEnum]
+
+
+export const PostingRuleScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  chartId: 'chartId',
+  kind: 'kind',
+  chargeTypeId: 'chargeTypeId',
+  categoryId: 'categoryId',
+  counterAccountId: 'counterAccountId',
+  purposeId: 'purposeId',
+  validFrom: 'validFrom',
+  status: 'status',
+  supersedesId: 'supersedesId',
+  reason: 'reason',
+  expertRef: 'expertRef',
+  createdById: 'createdById',
+  confirmedById: 'confirmedById',
+  confirmedAt: 'confirmedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type PostingRuleScalarFieldEnum = (typeof PostingRuleScalarFieldEnum)[keyof typeof PostingRuleScalarFieldEnum]
+
+
+export const PostingSchemaApprovalScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  schema: 'schema',
+  description: 'description',
+  expertName: 'expertName',
+  approvedAt: 'approvedAt',
+  attachmentId: 'attachmentId',
+  revokesId: 'revokesId',
+  recordedById: 'recordedById',
+  createdAt: 'createdAt'
+} as const
+
+export type PostingSchemaApprovalScalarFieldEnum = (typeof PostingSchemaApprovalScalarFieldEnum)[keyof typeof PostingSchemaApprovalScalarFieldEnum]
 
 
 export const OnboardingInviteScalarFieldEnum = {
@@ -8285,6 +8744,62 @@ export type ListEnumFiscalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'ControlRole'
+ */
+export type EnumControlRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ControlRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ControlRole[]'
+ */
+export type ListEnumControlRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ControlRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountingEventKind'
+ */
+export type EnumAccountingEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountingEventKind'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountingEventKind[]'
+ */
+export type ListEnumAccountingEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountingEventKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PostingRuleStatus'
+ */
+export type EnumPostingRuleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostingRuleStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PostingRuleStatus[]'
+ */
+export type ListEnumPostingRuleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostingRuleStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GatedSchema'
+ */
+export type EnumGatedSchemaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GatedSchema'>
+    
+
+
+/**
+ * Reference to a field of type 'GatedSchema[]'
+ */
+export type ListEnumGatedSchemaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GatedSchema[]'>
+    
+
+
+/**
  * Reference to a field of type 'OnboardingInviteStatus'
  */
 export type EnumOnboardingInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingInviteStatus'>
@@ -8600,6 +9115,11 @@ export type GlobalOmitConfig = {
   zevAccount?: Prisma.ZevAccountOmit
   fiscalYear?: Prisma.FiscalYearOmit
   fiscalPeriod?: Prisma.FiscalPeriodOmit
+  fundPurpose?: Prisma.FundPurposeOmit
+  chargeType?: Prisma.ChargeTypeOmit
+  zevControlAccount?: Prisma.ZevControlAccountOmit
+  postingRule?: Prisma.PostingRuleOmit
+  postingSchemaApproval?: Prisma.PostingSchemaApprovalOmit
   onboardingInvite?: Prisma.OnboardingInviteOmit
   onboardingDraft?: Prisma.OnboardingDraftOmit
   onboardingDraftAdminAccess?: Prisma.OnboardingDraftAdminAccessOmit
