@@ -43,6 +43,16 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.4.1] - 2026-11-20
+
+**Migracija: ne.**
+
+### Ispravljeno
+
+- **Padajuća polja:** strelica više nije prilijepljena uz desnu ivicu. Umjesto izvorne strelice pregledača (Chrome i Safari je crtaju tik uz ivicu) sva padajuća polja u aplikaciji dobijaju istu strelicu u stilu ikona aplikacije, 12px od ivice; tekst izabrane opcije ne ide ispod nje. Jedno globalno pravilo u `globals.css`, zapisano i u dizajn sistemu (`inputCls`).
+
+Uputstvo: bez izmjena.
+
 ## [3.4.0] - 2026-11-20
 
 Izvoz kontnog plana u Excel i PDF, za slanje računovođi na stručnu provjeru. **Migracija: ne.**

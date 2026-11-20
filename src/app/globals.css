@@ -72,6 +72,22 @@
   --color-slate-400: #64748b;
 }
 
+/* Padajuća polja (v3.4.1): izvornu strelicu pregledača Chrome/Safari crta tik uz desnu ivicu bez obzira na
+   padding. Umjesto nje ista strelica u svakom pregledaču, u stilu ikona aplikacije (stroke 1.6, slate-500),
+   odmaknuta 12px od ivice, a tekst ne ide ispod nje. Namjerno izvan @layer: Tailwindovi `px-3` iz `inputCls`
+   inače bi pregazili padding-right. Samo za obična polja — `multiple`/`size` su liste, ne padajući meni. */
+select:not([multiple]):not([size]) {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2364748b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.5rem;
+}
+select:not([multiple]):not([size]):disabled {
+  opacity: 0.6;
+}
+
 /* Spaced-out capitals are hard to read; in large mode table headers and Stat labels
    read as normal sentence-case text. */
 :root[data-text="large"] .uppercase.tracking-wider {
