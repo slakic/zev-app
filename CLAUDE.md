@@ -26,3 +26,19 @@ planova u `Plans/`) umjesto da ga tiho improvizuješ na jednoj stranici.
 
 Puna istorija odluka i heuristička evaluacija koja je do ovog sistema dovela je u
 `Plans/ui-ux-redesign-plan.md`.
+
+## Korisničko uputstvo — ažurira se sa svakom verzijom
+
+Korisničko uputstvo je `public/korisnicko-uputstvo.html` (link „Korisničko uputstvo” u meniju naloga).
+**Svaka izmjena koju korisnik vidi ili koristi drugačije** (novi ekran, tab, dugme, polje, poruka, pravilo,
+uloga ili ograničenje) ažurira uputstvo **u istom commitu** kao `CHANGELOG.md` i podizanje verzije:
+
+- novo poglavlje ili potpoglavlje za novu funkcionalnost, dopuna postojećeg za izmjenu, uklanjanje opisa
+  onoga čega više nema; ažurirati i bočni sadržaj (`nav.toc`), listu „Sadržaj”, tabelu uloga (1.2) i
+  „Rječnik pojmova” kad se uvodi novi pojam;
+- ako se poglavlja prenumerišu, ispraviti i `id`-jeve, linkove iz bočnog sadržaja i sve unakrsne reference
+  („vidi 14.4”, „poglavlje 15”);
+- ton i stil kao u ostatku uputstva: obraćanje na „Vi”, nazivi dugmadi i polja tačno kako pišu u aplikaciji
+  (podebljano), bez internih naziva fajlova i tehničkih detalja;
+- u `CHANGELOG.md` uz unos navesti „Uputstvo: …” (šta je dopunjeno), a za čisto tehničku izmjenu bez
+  vidljive posljedice „Uputstvo: bez izmjena”.

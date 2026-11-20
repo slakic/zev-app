@@ -43,6 +43,15 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.3.1] - 2026-11-20
+
+Korisničko uputstvo dopunjeno za verzije 3.1.0–3.3.0. **Migracija: ne.**
+
+### Izmijenjeno
+
+- **Uputstvo:** novo poglavlje **13. Knjigovodstvo** (dodjela kontnog plana, pregled, nacrt i aktivan plan, dodavanje konta, stranica konta, nova verzija predloška, poslovne godine); novi odjeljak **15.6 Kontni okviri** za super admina (novi predložak, pravila šifara uz objašnjenje polja „Dozvoljene dužine šifre”, uvoz CSV-a, pojedinačna konta, status i verzije); dopunjeni 1.1, napomena o knjigovodstvu, tabela uloga i rječnik pojmova. Dosadašnja poglavlja 13–17 su postala 14–18, sa ispravljenim unakrsnim referencama.
+- **Pravilo za razvoj** (`CLAUDE.md`): svaka izmjena koju korisnik vidi ažurira korisničko uputstvo u istom commitu kao CHANGELOG, a unos u CHANGELOG-u navodi „Uputstvo: …” ili „Uputstvo: bez izmjena”.
+
 ## [3.3.0] - 2026-11-20
 
 **Migracija: ne.**
