@@ -1,0 +1,68 @@
+šifra;naziv;nadređena;vrsta;knjižno;opis
+2;Kratkoročna potraživanja, plasmani i gotovina;;ASSET;ne;Klasa — naziv provjeriti u službenom tekstu
+20;Potraživanja po osnovu prodaje;2;ASSET;ne;Grupa — naziv provjeriti u službenom tekstu
+201;Potraživanja od etažnih vlasnika;20;ASSET;ne;Sintetika 201 po odgovoru R-2/R-3. službeni naziv provjeriti
+20101;Potraživanja od vlasnika — redovno održavanje;201;ASSET;da;Analitika ZEV-a (odgovor: 201.01). Vlasnik se prati dimenzijom
+20102;Potraživanja od vlasnika — zajednička rezerva;201;ASSET;da;Analitika ZEV-a (odgovor: 201.02)
+20103;Potraživanja od vlasnika — ostala zaduženja;201;ASSET;da;Analitika ZEV-a (namjenska prikupljanja i sl.). prijedlog, nije u odgovoru
+24;Gotovinski ekvivalenti i gotovina;2;ASSET;ne;Grupa — naziv provjeriti u službenom tekstu
+241;Tekući (poslovni) računi;24;ASSET;ne;Sintetika 241 po odgovoru R-3. službeni naziv provjeriti
+24101;Tekući račun ZEV-a;241;ASSET;da;Analitika ZEV-a. po jedan podkonto za svaki bankovni račun
+243;Izdvojena novčana sredstva;24;ASSET;ne;Sintetika 243 po odgovoru R-6: novac na posebnom računu za definisanu namjenu. samo ako ZEV ima takav račun
+24301;Poseban račun zajedničke rezerve;243;ASSET;da;Analitika ZEV-a. opciono (odgovor R-6b: poseban račun nije obavezan)
+246;Blagajna u domaćoj valuti;24;ASSET;ne;Sintetika 246 po odgovoru R-13
+24601;Blagajna ZEV-a;246;ASSET;da;Analitika ZEV-a
+28;Aktivna vremenska razgraničenja;2;ASSET;ne;Grupa — naziv provjeriti u službenom tekstu
+280;Unaprijed plaćeni rashodi;28;ASSET;ne;Sintetika 280 po odgovoru R-7d
+28001;Unaprijed plaćeni rashodi — osiguranje i ugovori;280;ASSET;da;Analitika ZEV-a. mjesečni prenos na trošak
+3;Kapital;;EQUITY;ne;Klasa — rezultat ZEV-a. računovođa potvrđuje (R-12). Neiskorišćene namjenske akontacije nisu višak prihoda
+34;Neraspoređeni dobitak;3;EQUITY;ne;Grupa — za ZEV višak prihoda nad rashodima. šifru i naziv provjeriti
+340;Neraspoređeni dobitak ranijih godina;34;EQUITY;ne;Sintetika — šifru i naziv provjeriti u službenom tekstu
+34001;Višak prihoda nad rashodima ranijih godina;340;EQUITY;da;Analitika ZEV-a
+341;Neraspoređeni dobitak tekuće godine;34;EQUITY;ne;Sintetika — šifru i naziv provjeriti u službenom tekstu
+34101;Višak prihoda nad rashodima tekuće godine;341;EQUITY;da;Analitika ZEV-a
+35;Gubitak;3;EQUITY;ne;Grupa — za ZEV manjak prihoda nad rashodima. šifru i naziv provjeriti
+350;Gubitak ranijih godina;35;EQUITY;ne;Sintetika — šifru i naziv provjeriti u službenom tekstu
+35001;Manjak prihoda nad rashodima ranijih godina;350;EQUITY;da;Analitika ZEV-a
+351;Gubitak tekuće godine;35;EQUITY;ne;Sintetika — šifru i naziv provjeriti u službenom tekstu
+35101;Manjak prihoda nad rashodima tekuće godine;351;EQUITY;da;Analitika ZEV-a
+4;Dugoročna rezervisanja i obaveze;;LIABILITY;ne;Klasa — naziv provjeriti u službenom tekstu
+43;Obaveze iz poslovanja;4;LIABILITY;ne;Grupa — naziv provjeriti u službenom tekstu
+430;Primljeni avansi;43;LIABILITY;ne;Sintetika 430 po odgovoru R-5 (obaveze po primljenim avansima)
+43001;Primljeni avansi poznatih vlasnika;430;LIABILITY;da;Analitika ZEV-a (odgovor: 430.01). Priliv poznatog platioca prije raspoređivanja. vlasnik i namjena kao dimenzije
+43002;Neidentifikovane uplate;430;LIABILITY;da;Analitika ZEV-a (odgovor: 430.02). Po identifikaciji prenos na 43001
+432;Dobavljači iz Republike Srpske;43;LIABILITY;ne;Sintetika 432 po odgovoru R-6/R-7
+43201;Dobavljači iz Republike Srpske — usluge i održavanje;432;LIABILITY;da;Analitika ZEV-a (odgovor: 432.01). Dobavljač se prati dimenzijom
+49;Pasivna vremenska razgraničenja;4;LIABILITY;ne;Grupa — naziv provjeriti u službenom tekstu
+499;Razgraničena sredstva po akontacijama vlasnika;49;LIABILITY;ne;Sintetika 499 po odgovoru R-3: radna analitika za razgraničenje, nije propisana rezerva ZEV-a. klasifikacija čeka potvrdu ovlašćenog računovođe (K-6)
+49901;Razgraničena sredstva za redovno održavanje;499;LIABILITY;da;Analitika ZEV-a (odgovor: 499.01). Protivkonto zaduženja za održavanje
+49902;Razgraničena sredstva zajedničke rezerve;499;LIABILITY;da;Analitika ZEV-a (odgovor: 499.02). Bilansna klasifikacija rezerve čeka potvrdu (K-6)
+5;Rashodi;;EXPENSE;ne;Klasa — naziv provjeriti u službenom tekstu
+51;Troškovi materijala i energije;5;EXPENSE;ne;Grupa — nije u odgovoru. šifru i naziv provjeriti
+512;Troškovi ostalog materijala;51;EXPENSE;ne;Sintetika — nije u odgovoru. šifru i naziv provjeriti
+51201;Potrošni materijal za održavanje;512;EXPENSE;da;Analitika ZEV-a
+513;Troškovi goriva i energije;51;EXPENSE;ne;Sintetika — nije u odgovoru. šifru i naziv provjeriti
+51301;Električna energija zajedničkih prostorija;513;EXPENSE;da;Analitika ZEV-a
+53;Troškovi proizvodnih usluga;5;EXPENSE;ne;Grupa — naziv provjeriti u službenom tekstu
+532;Troškovi usluga održavanja;53;EXPENSE;ne;Sintetika 532 po odgovoru R-7b
+53201;Tekuće održavanje zgrade;532;EXPENSE;da;Analitika ZEV-a
+53202;Održavanje i servis lifta;532;EXPENSE;da;Analitika ZEV-a
+53203;Hitne intervencije;532;EXPENSE;da;Analitika ZEV-a
+53204;Investiciono održavanje zajedničkih dijelova;532;EXPENSE;da;Analitika ZEV-a. Odgovor R-7c: rad na zajedničkom dijelu obično nije imovina ZEV-a. trošenje rezerve samo uz odluku (R-6c)
+55;Nematerijalni troškovi;5;EXPENSE;ne;Grupa — naziv provjeriti u službenom tekstu
+550;Troškovi ostalih usluga;55;EXPENSE;ne;Sintetika 550 po odgovoru R-7b (druge usluge). službeni naziv provjeriti
+55001;Čišćenje zajedničkih prostorija;550;EXPENSE;da;Analitika ZEV-a
+55002;Komunalne usluge zajedničkih dijelova;550;EXPENSE;da;Analitika ZEV-a
+55003;Knjigovodstvene usluge;550;EXPENSE;da;Analitika ZEV-a
+55004;Pravne i administrativne usluge;550;EXPENSE;da;Analitika ZEV-a
+55005;Osiguranje zgrade;550;EXPENSE;da;Analitika ZEV-a. Provjeriti da li premije osiguranja imaju poseban sintetički račun
+553;Troškovi platnog prometa;55;EXPENSE;ne;Sintetika 553 po odgovoru R-8a
+55301;Bankarske naknade i provizije;553;EXPENSE;da;Analitika ZEV-a
+6;Prihodi;;INCOME;ne;Klasa — naziv provjeriti u službenom tekstu. Automatsko priznavanje prihoda ostaje isključeno (K-6)
+65;Ostali poslovni prihodi;6;INCOME;ne;Grupa 65 po odgovoru R-3. službeni naziv provjeriti
+659;Ostali poslovni prihodi — akontacije vlasnika;65;INCOME;ne;Sintetika — odgovor navodi samo grupu 65. trocifreni račun odabrati u službenom tekstu
+65901;Prihodi od iskorišćenih akontacija — održavanje;659;INCOME;da;Analitika ZEV-a. Knjiži se tek priznavanjem prihoda D 49901 (R-3, korak 4), ne pri fakturisanju
+65902;Prihodi od iskorišćenih sredstava rezerve;659;INCOME;da;Analitika ZEV-a. Samo uz odluku o trošenju rezerve (R-6c)
+66;Finansijski prihodi;6;INCOME;ne;Grupa 66 po odgovoru R-8b
+662;Prihodi od kamata;66;INCOME;ne;Sintetika — odgovor navodi samo grupu 66. šifru provjeriti
+66201;Kamate na sredstva na računu;662;INCOME;da;Analitika ZEV-a

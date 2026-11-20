@@ -926,3 +926,40 @@ konta, strane i trenutak knjiženja.
 | R-13 | PDV status (`LEGAL…` §5.8) i blagajnički maksimum |
 | R-14 | Obim izvještaja: da li dnevnik/glavna knjiga/bruto bilans u ovom obliku zadovoljavaju; godišnji obrasci van obuhvata |
 | R-15 | Djelimično raspoređivanje na fakturu sa više namjena: srazmjerno, ili prvo određena namjena (§3.6.1) |
+
+---
+
+## 11. Odgovori na upitnik R-1–R-15 (radni prijedlog, 2026-11-20)
+
+Korisnik je proslijedio odgovore na upitnik iz §10. **Autor u samom tekstu navodi da to nije mišljenje ovlašćenog
+računovođe**, nego radni prijedlog za tipičan registrovan ZEV u RS (bez zaposlenih i komercijalne djelatnosti,
+mjesečne akontacije, održavanje, zajednička rezerva). Zato se odgovori ovdje vode kao **prijedlog za Fazu B**, a
+kapije K-6 (automatsko priznavanje prihoda, bilansna klasifikacija rezerve) ostaju zatvorene dok ovlašćeni
+računovođa ZEV-a ne odobri pisanu računovodstvenu politiku i ogledna knjiženja. Šifre ispod nisu nezavisno
+provjerene u službenom tekstu pravilnika.
+
+| # | Sažetak odgovora | Posljedica za aplikaciju |
+|---|---|---|
+| R-1 | Kontni okvir za privredna društva, druga pravna lica i preduzetnike (Sl. glasnik RS 104/21, 59/22); ZEV = drugo pravno lice; poseban okvir za ZEV ne postoji; Zakon 115/25 od 1.1.2026, stari pravilnik važi do novog. | Potvrđuje §3.1. |
+| R-2 | Propisani su trocifreni računi; ZEV ih ne proširuje novim sintetičkim, nego analitikom (4. i naredne cifre) svojim opštim aktom. Analitika za ZEV nije propisana jedinstveno — aplikacija nudi standard, računovođa prilagođava. Predložena analitika: 201.01/201.02 potraživanja (održavanje/rezerva), 430.01 avansi poznatih vlasnika, 430.02 neidentifikovane uplate, 432.01 dobavljači iz RS, 499.01/499.02 razgraničena sredstva (održavanje/rezerva). Vlasnik, dobavljač, faktura, namjena, zgrada/ulaz = dimenzije. | Predložak = samo sintetika (klase, grupe, trocifreni); analitika ZEV-a lokalno ili kao „standardna analitika” koju računovođa mijenja. **Odluka: zapis analitike sa tačkom („430.01”) ili bez („43001”)** — pravila šifara predloška danas dozvoljavaju samo cifre. |
+| R-3 | Mjesečni iznos je **akontacija** (čl. 35 Zakona o održavanju zgrada), ne prihod pri fakturisanju. Šema: zaduženje D 201 / P 499; priliv D 241 / P 430; raspoređivanje D 430 / P 201; priznavanje prihoda D 499 / P grupa 65 — **ne automatski**, tek po usvojenoj politici. | Potvrđuje K-1, K-2, K-6. Kontrolne uloge: OWNER_RECEIVABLE → 201.xx, OWNER_ADVANCE → 430.01, protivkonto zaduženja po vrsti → 499.xx. |
+| R-4 | D 430 / P 201; priliv prvo na avans je uredan; kontrola da se uplata ne rasporedi dvaput. | Potvrđuje §3.6.1 (PaymentAllocation već brani prekoračenje). |
+| R-5 | Avansi: 430, analitički po vlasniku i namjeni; neidentifikovane: 430.02, po identifikaciji prenos na vlasnika; povrat preplate D 430 / P 241; namjena se vodi odmah ako je poznata. | UNIDENTIFIED_RECEIPTS → 430.02; novi događaj „povrat preplate” (R-8). Avans može nositi namjenu kad je poznata (dopuna §3.6.2: „avans nema namjenu dok se ne rasporedi” → „ako nije poznata”). |
+| R-6 | Rezerva **nije kapital**; privremeno u obavezama/razgraničenim namjenskim sredstvima (499.02), uz potvrdu računovođe. Poseban račun nije obavezan (243 = izdvojena sredstva, ako postoji). Trošenje rezerve: račun D trošak / P 432, plaćanje D 432 / P 241, korišćenje rezerve D 499.02 / P prihod ili razgraničenje — samo uz odluku koja račun veže za namjenu. | Kapija COMMON_RESERVE_CLASSIFICATION ostaje; trošenje rezerve traži vezu odluka–račun–plaćanje–namjena (novo u B). |
+| R-7 | Obračunsko načelo: rashod pri nastanku obaveze. D 532 (održavanje) ili 550 (druge usluge) / P 432. Investicije na zajedničkom dijelu nisu automatski imovina ZEV-a. Razgraničenja: 280 pa mjesečni prenos na trošak. | SUPPLIER_INVOICE pri prijemu računa (kako je i planirano). Razgraničenje troškova — novo, kasnije. |
+| R-8 | Provizije D 553 / P 241; kamata D 241 / P grupa 66; povrat vlasniku D 430 / P 241; povrat dobavljača prema prvobitnom knjiženju; reklamacija = korekcija računa. | Kategorije CASH_* za proviziju i kamatu; povrati kao posebni događaji. |
+| R-9 | Zatvoren period se ne mijenja; ispravka stornom ili korektivnim nalogom; ponovno otvaranje izuzetno, uz odobrenje ovlašćenog predstavnika ZEV-a **i** računovođe, sa razlogom i tragom. | `period.reopen`: predsjednik + računovođa (dvostruko odobrenje), ne samo predsjednik kako je predloženo u §3.7. |
+| R-10 | Otpis uz odluku i dokaz: D rashod (grupa 58) / P 201, ili preko ispravke vrijednosti 209. Prenos duga: D 201 novi vlasnik / P 201 stari, samo uz pisani osnov; promjena vlasnika ne prenosi dug automatski. | Potvrđuje §5.4 pretpostavki i BALANCE_CORRECTION. |
+| R-11 | Pojedinačno: neplaćene fakture vlasnika, računi dobavljača, avansi, neidentifikovane, dati avansi; zbirno banka i slično, uz usaglašavanje. Rezerva na 499.02 uz dokument. Preporučeni početak: **1. januar 2027.** | Potvrđuje §4.4; datum početka primjene = 2027-01-01 (prijedlog). |
+| R-12 | Rezultat po usvojenoj politici; neiskorišćene namjenske akontacije **nisu** višak prihoda; bilansna stanja se prenose sa analitikom. | Zatvaranje godine u B mora razdvojiti rezultat od namjenskih salda. |
+| R-13 | ZEV nije automatski PDV obveznik; prag 100.000 KM oporezivog prometa; zakup i usluge trećima traže poresku analizu. Blagajna 246, blagajnički nalozi, bez fiksnog maksimuma. | Blagajna kao MONEY_ACCOUNT na 246; maksimum kao podešavanje po ZEV-u, ne fiksno. |
+| R-14 | Dodati: otvorene stavke po dospijeću/vlasniku/dobavljaču, avansi i neidentifikovane, stanje po namjeni (rezerva), usaglašavanje banke i blagajne, pregled storna i korektivnih naloga, godišnji pregled prihoda, rashoda i utroška sredstava za skupštinu. APIF obrasci provjeriti posebno. | Dopuna §4.5 (B3). |
+| R-15 | Ne podrazumijevati srazmjernu raspodjelu: prvo namjena koju je platilac naveo; inače pravilo koje ZEV usvoji (srazmjerno ili najstarije prvo), vidljivo i ručno ispravljivo uz trag. | Pravilo raspodjele = podešavanje po ZEV-u; dok nije izabrano, raspored na fakturu sa više namjena čeka (kako je i planirano). |
+
+**Neslaganje sa trenutnim produkcionim predloškom.** Predložak „ZEV osnovni kontni okvir” v1 nastao je iz
+`Plans/predlog-kontnog-plana-zev.csv`, čije je trocifrene šifre Claude složio bez službenog teksta. Po ovim
+odgovorima razlikuju se najmanje: potraživanja od vlasnika 204 → **201**, blagajna 243 → **246** (243 =
+izdvojena novčana sredstva), dobavljači 435 → **432**, platni promet 554 → **553**, 550/553 drugačije značenje, a
+nedostaje **499** (razgraničena namjenska sredstva). Pošto se još ništa ne knjiži, ispravka je jeftina: nova
+verzija predloška sa ispravljenom sintetikom (provjerenom u službenom tekstu), pa u planu ZEV-a povlačenje i
+ponovna dodjela ili „Pregledaj izmjene” + zamjena konta.
