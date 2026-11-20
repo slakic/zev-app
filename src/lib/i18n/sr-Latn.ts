@@ -1452,7 +1452,7 @@ const srLatn = {
   ledger: {
     title: "Knjigovodstvo",
     subtitle: "Kontni plan i poslovne godine ZEV-a",
-    notLegal: "Kontni plan služi za razvrstavanje poslovnih promjena. Ovo još nije zakonsko knjigovodstvo: knjiženje se uključuje tek kad računovođa potvrdi kontni okvir i pravila knjiženja.",
+    notLegal: "Ovo još nije zakonsko knjigovodstvo. Kontni plan je spisak konta za razvrstavanje poslovnih promjena; knjiženja (nalozi, glavna knjiga, bruto bilans) u aplikaciji još nema. Aktivacija plana ga ne uključuje — dolazi u sljedećoj fazi, kad računovođa potvrdi pravila knjiženja. Do tada fakture, uplate i troškovi rade kao i ranije.",
     tabs: { plan: "Kontni plan", periods: "Poslovne godine", rules: "Pravila knjiženja", journal: "Nalozi", reports: "Izvještaji" },
     notYet: "Nije još dostupno",
     exportXlsx: "Izvoz u Excel",

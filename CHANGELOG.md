@@ -43,6 +43,16 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.4.2] - 2026-11-20
+
+**Migracija: ne.**
+
+### Izmijenjeno
+
+- **Knjigovodstvo — upozorenje na vrhu:** tekst je zvučao kao da se knjiženje uključuje aktivacijom kontnog plana. Sada jasno kaže da knjiženja (nalozi, glavna knjiga, bruto bilans) u aplikaciji još nema, da ga aktivacija plana ne uključuje i da dolazi u sljedećoj fazi, kad računovođa potvrdi pravila knjiženja.
+
+Uputstvo: napomena na početku poglavlja 13 usklađena sa novim tekstom.
+
 ## [3.4.1] - 2026-11-20
 
 **Migracija: ne.**
