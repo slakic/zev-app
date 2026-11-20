@@ -1,9 +1,9 @@
 import { requireActor } from "@/server/actor";
 import { hasCapability } from "@/lib/accountingCapabilities";
-import { countRetiredCharts, getZevChart, listAssignableTemplates, listFiscalYears } from "@/server/services/chartOfAccounts";
+import { countRetiredCharts, getChartUpdate, getZevChart, listAssignableTemplates, listFiscalYears } from "@/server/services/chartOfAccounts";
 import { formatDate, t, tEnum, tf } from "@/lib/i18n";
 import {
-  PageHeader, Card, Flash, Tabs, FilterBar, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, StatusBadge, Table, Td,
+  PageHeader, Card, Flash, Tabs, FilterBar, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, StatusBadge, Table, Td, BtnLink,
   type ColumnSpec,
 } from "@/components/ui";
 import { AccountTreeTable } from "@/components/account-tree-table";
@@ -113,6 +113,7 @@ async function PlanTab({ actor, canEdit, q, show }: { actor: Actor; canEdit: boo
       (!needle || a.code.toLocaleLowerCase("sr-Latn").includes(needle) || a.name.toLocaleLowerCase("sr-Latn").includes(needle))
   );
   const summaryParents = chart.accounts.filter((a) => !a.postable && a.active);
+  const update = await getChartUpdate(actor);
   const tpl = chart.sourceTemplate;
   const isDraft = chart.status === "DRAFT";
 
@@ -165,6 +166,22 @@ async function PlanTab({ actor, canEdit, q, show }: { actor: Actor; canEdit: boo
           )}
         </div>
       </Card>
+
+      {update && (
+        <Card title={t("ledger.sync.cardTitle")}>
+          <div className="space-y-3">
+            <p className="max-w-[68ch] text-sm text-slate-700">
+              {tf("ledger.sync.available", { verzija: update.target.version, naziv: update.target.name })}
+            </p>
+            <p className="text-hint text-slate-500">
+              {tf("ledger.sync.summary", {
+                dodata: update.added.length, nazivi: update.renamed.length, znacenje: update.changedMeaning.length, uklonjena: update.removed.length,
+              })}
+            </p>
+            <BtnLink href="/knjigovodstvo/izmjene" variant={canEdit ? "primary" : "secondary"}>{t("ledger.sync.review")}</BtnLink>
+          </div>
+        </Card>
+      )}
 
       <Card title={t("ledger.list.cardTitle")}>
         <FilterBar>

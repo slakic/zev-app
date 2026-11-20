@@ -1,0 +1,86 @@
+šifra;naziv;nadređena;vrsta;knjižno;opis
+2;Kratkoročna potraživanja, plasmani i gotovina;;ASSET;ne;Klasa — provjeriti naziv u službenom tekstu
+20;Potraživanja po osnovu prodaje;2;ASSET;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+204;Kupci u zemlji;20;ASSET;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+2040;Potraživanja od etažnih vlasnika — naknada za održavanje;204;ASSET;da;Prijedlog analitike ZEV-a. Vlasnik se prati dimenzijom, ne posebnim kontom
+2041;Potraživanja od etažnih vlasnika — zajednička rezerva;204;ASSET;da;Prijedlog analitike ZEV-a. Samo potraživanje. Klasifikacija same rezerve čeka potvrdu (K-6)
+2042;Potraživanja od etažnih vlasnika — ostala zaduženja;204;ASSET;da;Prijedlog analitike ZEV-a (namjenska prikupljanja i sl.)
+22;Druga kratkoročna potraživanja;2;ASSET;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+228;Ostala kratkoročna potraživanja;22;ASSET;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+2280;Potraživanja od dobavljača — povrati i reklamacije;228;ASSET;da;Prijedlog analitike ZEV-a
+24;Gotovinski ekvivalenti i gotovina;2;ASSET;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+241;Tekući (poslovni) računi;24;ASSET;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+2410;Tekući račun ZEV-a;241;ASSET;da;Prijedlog analitike ZEV-a. Po jedan podkonto za svaki bankovni račun
+243;Blagajna;24;ASSET;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+2430;Blagajna ZEV-a;243;ASSET;da;Prijedlog analitike ZEV-a
+28;Aktivna vremenska razgraničenja;2;ASSET;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+280;Unaprijed plaćeni troškovi;28;ASSET;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+2800;Unaprijed plaćeni troškovi — osiguranje i ugovori;280;ASSET;da;Prijedlog analitike ZEV-a
+3;Kapital;;EQUITY;ne;Klasa — provjeriti naziv u službenom tekstu i primjenu na ZEV
+34;Neraspoređeni dobitak;3;EQUITY;ne;Grupa — za ZEV vjerovatno višak prihoda nad rashodima. Provjeriti
+340;Neraspoređeni dobitak ranijih godina;34;EQUITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+3400;Višak prihoda nad rashodima ranijih godina;340;EQUITY;da;Prijedlog analitike ZEV-a
+341;Neraspoređeni dobitak tekuće godine;34;EQUITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+3410;Višak prihoda nad rashodima tekuće godine;341;EQUITY;da;Prijedlog analitike ZEV-a
+35;Gubitak;3;EQUITY;ne;Grupa — za ZEV vjerovatno manjak prihoda nad rashodima. Provjeriti
+350;Gubitak ranijih godina;35;EQUITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+3500;Manjak prihoda nad rashodima ranijih godina;350;EQUITY;da;Prijedlog analitike ZEV-a
+351;Gubitak tekuće godine;35;EQUITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+3510;Manjak prihoda nad rashodima tekuće godine;351;EQUITY;da;Prijedlog analitike ZEV-a
+4;Dugoročna rezervisanja i obaveze;;LIABILITY;ne;Klasa — provjeriti naziv u službenom tekstu
+43;Obaveze iz poslovanja;4;LIABILITY;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+430;Primljeni avansi, depoziti i kaucije;43;LIABILITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+4300;Avansi etažnih vlasnika;430;LIABILITY;da;Prijedlog analitike ZEV-a. Uplata poznatog platioca prije raspoređivanja na fakturu (K-4)
+4301;Neidentifikovane uplate;430;LIABILITY;da;Prijedlog analitike ZEV-a. Platilac nepoznat (K-4). Provjeriti da li pripada ovoj grupi ili drugim obavezama
+435;Dobavljači u zemlji;43;LIABILITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+4350;Dobavljači — održavanje i usluge;435;LIABILITY;da;Prijedlog analitike ZEV-a. Dobavljač se prati dimenzijom
+4351;Dobavljači — energija i komunalne usluge;435;LIABILITY;da;Prijedlog analitike ZEV-a
+46;Druge kratkoročne obaveze;4;LIABILITY;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+465;Obaveze prema fizičkim licima za naknade po ugovorima;46;LIABILITY;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+4650;Naknade predsjedniku i članovima organa ZEV-a;465;LIABILITY;da;Prijedlog analitike ZEV-a. Samo ako ZEV isplaćuje naknade. Porezi i doprinosi se dodaju po potrebi
+5;Rashodi;;EXPENSE;ne;Klasa — provjeriti naziv u službenom tekstu
+51;Troškovi materijala i energije;5;EXPENSE;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+512;Troškovi ostalog materijala;51;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5120;Potrošni materijal za održavanje;512;EXPENSE;da;Prijedlog analitike ZEV-a
+513;Troškovi goriva i energije;51;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5130;Električna energija zajedničkih prostorija;513;EXPENSE;da;Prijedlog analitike ZEV-a
+5131;Ostala energija;513;EXPENSE;da;Prijedlog analitike ZEV-a
+53;Troškovi proizvodnih usluga;5;EXPENSE;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+532;Troškovi usluga održavanja;53;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5320;Tekuće održavanje zgrade;532;EXPENSE;da;Prijedlog analitike ZEV-a
+5321;Održavanje lifta;532;EXPENSE;da;Prijedlog analitike ZEV-a
+5322;Hitne intervencije;532;EXPENSE;da;Prijedlog analitike ZEV-a
+5323;Investiciono održavanje;532;EXPENSE;da;Prijedlog analitike ZEV-a. Tretman kapitalnih radova i trošenja rezerve čeka potvrdu (R-6, R-7)
+539;Troškovi ostalih usluga;53;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5390;Čišćenje zajedničkih prostorija;539;EXPENSE;da;Prijedlog analitike ZEV-a
+5391;Komunalne usluge zajedničkih dijelova;539;EXPENSE;da;Prijedlog analitike ZEV-a
+5392;Usluge profesionalnog upravljanja;539;EXPENSE;da;Prijedlog analitike ZEV-a
+55;Nematerijalni troškovi;5;EXPENSE;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+550;Troškovi neproizvodnih usluga;55;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5500;Knjigovodstvene usluge;550;EXPENSE;da;Prijedlog analitike ZEV-a
+5501;Pravne i administrativne usluge;550;EXPENSE;da;Prijedlog analitike ZEV-a
+553;Troškovi premija osiguranja;55;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5530;Osiguranje zgrade;553;EXPENSE;da;Prijedlog analitike ZEV-a
+554;Troškovi platnog prometa;55;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5540;Bankarske naknade i provizije;554;EXPENSE;da;Prijedlog analitike ZEV-a
+559;Ostali nematerijalni troškovi;55;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5590;Kancelarijski troškovi i takse;559;EXPENSE;da;Prijedlog analitike ZEV-a
+56;Finansijski rashodi;5;EXPENSE;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+562;Rashodi kamata;56;EXPENSE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+5620;Kamate prema dobavljačima i bankama;562;EXPENSE;da;Prijedlog analitike ZEV-a
+6;Prihodi;;INCOME;ne;Klasa — provjeriti naziv u službenom tekstu
+65;Drugi poslovni prihodi;6;INCOME;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+652;Prihodi od zakupnina;65;INCOME;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+6520;Zakup zajedničkih dijelova zgrade;652;INCOME;da;Prijedlog analitike ZEV-a
+659;Ostali poslovni prihodi;65;INCOME;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+6590;Naknade etažnih vlasnika za održavanje;659;INCOME;da;Prijedlog. Da li je naknada prihod ili obaveza/namjenska sredstva čeka potvrdu (R-3). Automatsko priznavanje prihoda ostaje isključeno (K-6)
+66;Finansijski prihodi;6;INCOME;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+662;Prihodi od kamata;66;INCOME;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+6620;Kamate na sredstva na računu;662;INCOME;da;Prijedlog analitike ZEV-a
+8;Vanbilansna evidencija;;OFF_BALANCE;ne;Klasa — provjeriti naziv u službenom tekstu
+88;Vanbilansna aktiva;8;OFF_BALANCE;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+880;Primljene garancije i jemstva;88;OFF_BALANCE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+8800;Garancije izvođača za radove na zgradi;880;OFF_BALANCE;da;Prijedlog analitike ZEV-a
+89;Vanbilansna pasiva;8;OFF_BALANCE;ne;Grupa — provjeriti šifru i naziv u službenom tekstu
+890;Obaveze po primljenim garancijama i jemstvima;89;OFF_BALANCE;ne;Sintetika — provjeriti šifru i naziv u službenom tekstu
+8900;Garancije izvođača — protivstavka;890;OFF_BALANCE;da;Prijedlog analitike ZEV-a

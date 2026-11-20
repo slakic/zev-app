@@ -255,6 +255,131 @@ export async function setTemplateStatus(
   return after;
 }
 
+// ---- Pojedinačna konta u NACRTU predloška (bez ponovnog uvoza CSV-a) --------------
+
+async function templateDepthOf(tx: Tx, parentId: string | null): Promise<number> {
+  let depth = 1;
+  let cur = parentId;
+  while (cur) {
+    depth += 1;
+    const p = await tx.chartTemplateAccount.findUnique({ where: { id: cur }, select: { parentId: true } });
+    cur = p?.parentId ?? null;
+    if (depth > 64) break;
+  }
+  return depth;
+}
+
+export async function getTemplateAccount(actor: Actor, id: string) {
+  requireSuperAdmin(actor);
+  return prisma.chartTemplateAccount.findUniqueOrThrow({
+    where: { id },
+    include: {
+      template: true,
+      parent: { select: { id: true, code: true, name: true } },
+      children: { select: { id: true, code: true, name: true, postable: true }, orderBy: { code: "asc" } },
+    },
+  });
+}
+
+export type TemplateAccountInput = {
+  parentId?: string | null;
+  code: string;
+  name: string;
+  description?: string | null;
+  nature: string;
+  postable: boolean;
+};
+
+/** Provjera konta u nacrtu predloška (dodavanje ili izmjena) — ista pravila kao uvoz CSV-a. */
+async function checkTemplateAccount(tx: Tx, templateId: string, id: string | null, input: TemplateAccountInput, code: string) {
+  const tpl = await requireDraftTemplate(tx, templateId);
+  if (!input.name.trim()) throw new Error("Naziv konta je obavezan.");
+  const parentId = input.parentId || null;
+  let parentCode: string | null = null;
+  if (parentId) {
+    const parent = await tx.chartTemplateAccount.findUnique({ where: { id: parentId } });
+    if (!parent || parent.templateId !== templateId) throw new Error("Nadređeni konto nije u ovom predlošku.");
+    if (parent.postable) throw new Error(`Konto „${parent.code}” je knjižno. Podkonto se dodaje samo zbirnom kontu — prvo ga označite kao zbirno.`);
+    if (id) {
+      const nodes = await tx.chartTemplateAccount.findMany({ where: { templateId }, select: { id: true, code: true, parentId: true } });
+      if (wouldCreateCycle(nodes, id, parentId)) throw new Error("Hijerarhija konta ne smije imati ciklus.");
+    }
+    parentCode = parent.code;
+  }
+  if (id && input.postable) {
+    const children = await tx.chartTemplateAccount.count({ where: { parentId: id } });
+    if (children > 0) throw new Error("Konto sa podkontima ne može biti knjižno.");
+  }
+  const err = validateAccountCode(code, parseCodeRules(tpl.codeRules), { parentCode, depth: await templateDepthOf(tx, parentId) });
+  if (err) throw new Error(err);
+  return { parentId, nature: assertNature(input.nature) };
+}
+
+export async function addTemplateAccount(actor: Actor, templateId: string, input: TemplateAccountInput) {
+  requireSuperAdmin(actor);
+  const code = normalizeCode(input.code);
+  try {
+    const acc = await prisma.$transaction(async (tx) => {
+      const { parentId, nature } = await checkTemplateAccount(tx, templateId, null, input, code);
+      return tx.chartTemplateAccount.create({
+        data: { templateId, code, name: input.name.trim(), description: input.description?.trim() || null, nature, postable: input.postable, parentId },
+      });
+    });
+    await audit(actor, {
+      action: "chart_template.account.create", targetType: "ChartTemplate", targetId: templateId,
+      after: { code: acc.code, name: acc.name, nature: acc.nature, postable: acc.postable, parentId: acc.parentId },
+    });
+    return acc;
+  } catch (e) {
+    if (isUniqueViolation(e)) throw new Error(`Konto sa šifrom „${code}” već postoji u predlošku.`);
+    throw e;
+  }
+}
+
+export async function updateTemplateAccount(actor: Actor, id: string, input: TemplateAccountInput) {
+  requireSuperAdmin(actor);
+  const code = normalizeCode(input.code);
+  try {
+    const { before, after } = await prisma.$transaction(async (tx) => {
+      const before = await tx.chartTemplateAccount.findUniqueOrThrow({ where: { id }, include: { template: true, children: { select: { id: true } } } });
+      if (code !== before.code && before.children.length > 0 && parseCodeRules(before.template.codeRules).childExtendsParent) {
+        throw new Error("Šifra konta sa podkontima se ne mijenja, jer šifre podkonta počinju njom.");
+      }
+      const { parentId, nature } = await checkTemplateAccount(tx, before.templateId, id, input, code);
+      const after = await tx.chartTemplateAccount.update({
+        where: { id },
+        data: { code, name: input.name.trim(), description: input.description?.trim() || null, nature, postable: input.postable, parentId },
+      });
+      return { before, after };
+    });
+    await audit(actor, {
+      action: "chart_template.account.update", targetType: "ChartTemplate", targetId: before.templateId,
+      before: { code: before.code, name: before.name, nature: before.nature, postable: before.postable, parentId: before.parentId },
+      after: { code: after.code, name: after.name, nature: after.nature, postable: after.postable, parentId: after.parentId },
+    });
+    return after;
+  } catch (e) {
+    if (isUniqueViolation(e)) throw new Error(`Konto sa šifrom „${code}” već postoji u predlošku.`);
+    throw e;
+  }
+}
+
+export async function deleteTemplateAccount(actor: Actor, id: string) {
+  requireSuperAdmin(actor);
+  const acc = await prisma.$transaction(async (tx) => {
+    const acc = await tx.chartTemplateAccount.findUniqueOrThrow({ where: { id }, include: { children: { select: { id: true } } } });
+    await requireDraftTemplate(tx, acc.templateId);
+    if (acc.children.length > 0) throw new Error("Prvo obrišite podkonta ovog konta.");
+    await tx.chartTemplateAccount.delete({ where: { id } });
+    return acc;
+  });
+  await audit(actor, {
+    action: "chart_template.account.delete", targetType: "ChartTemplate", targetId: acc.templateId,
+    before: { code: acc.code, name: acc.name },
+  });
+  return acc;
+}
+
 // ---------------------------------------------------------------------------
 // Kontni plan ZEV-a
 // ---------------------------------------------------------------------------
@@ -635,6 +760,161 @@ export async function deleteAccount(actor: Actor, id: string) {
     before: { code: acc.code, name: acc.name },
   });
   return acc;
+}
+
+// ---------------------------------------------------------------------------
+// Izmjene iz nove verzije predloška („Preuzmi izmjene”) — §3.4: ništa automatski
+// ---------------------------------------------------------------------------
+
+export type ChartUpdateDiff = {
+  target: { id: string; key: string; version: number; name: string; source: string | null; reviewedBy: string | null; reviewedAt: Date | null };
+  /** Konta nove verzije čije šifre nema u planu ZEV-a. `parentCode` mora postojati u planu ili biti među dodatima. */
+  added: { code: string; name: string; description: string | null; nature: AccountNature; postable: boolean; parentCode: string | null; parentMissing: boolean }[];
+  /** Naziv ili opis promijenjen u predlošku (u odnosu na verziju sa kojom je konto ZEV-a povezan). */
+  renamed: { code: string; zevName: string; oldName: string; newName: string; newDescription: string | null }[];
+  /** Ista šifra, druga vrsta ili zbirno/knjižno — samo informacija; u aktivnom planu to je ručna zamjena konta. */
+  changedMeaning: { code: string; name: string; zevNature: AccountNature; newNature: AccountNature; zevPostable: boolean; newPostable: boolean }[];
+  /** Konta iz ranije verzije kojih u novoj nema — samo informacija; ZEV ih po potrebi deaktivira sam. */
+  removed: { code: string; name: string }[];
+};
+
+/**
+ * Da li postoji novija verzija predloška iz iste porodice (`key`) od izvorne i od posljednje pregledane, i šta se
+ * u njoj razlikuje od plana ZEV-a. Nudi se samo verzija istog statusa provjere (REVIEWED; DEMO samo za demo plan).
+ */
+export async function getChartUpdate(actor: Actor): Promise<ChartUpdateDiff | null> {
+  requireCapability(actor, "ledger.view");
+  const zevId = requireZev(actor);
+  return chartUpdateInTx(prisma as unknown as Tx, zevId);
+}
+
+async function chartUpdateInTx(tx: Tx, zevId: string): Promise<ChartUpdateDiff | null> {
+  const chart = await tx.zevChart.findFirst({
+    where: { zevId, status: { not: "RETIRED" } },
+    include: { sourceTemplate: true, syncedTemplate: true, accounts: { include: { templateAccount: true } } },
+  });
+  if (!chart) return null;
+  const seenVersion = Math.max(chart.sourceTemplate.version, chart.syncedTemplate?.version ?? 0);
+  const allowedStatus: ChartTemplateStatus[] = chart.sourceTemplate.status === "DEMO" ? ["DEMO"] : ["REVIEWED"];
+  const target = await tx.chartTemplate.findFirst({
+    where: { key: chart.sourceTemplate.key, version: { gt: seenVersion }, status: { in: allowedStatus } },
+    orderBy: { version: "desc" },
+    include: { accounts: true },
+  });
+  if (!target) return null;
+
+  const zevByCode = new Map(chart.accounts.map((a) => [a.code, a]));
+  const targetByCode = new Map(target.accounts.map((a) => [a.code, a]));
+  const targetCodeById = new Map(target.accounts.map((a) => [a.id, a.code]));
+  const addedCodes = new Set(target.accounts.filter((a) => !zevByCode.has(a.code)).map((a) => a.code));
+
+  const added = target.accounts
+    .filter((a) => addedCodes.has(a.code))
+    .map((a) => {
+      const parentCode = a.parentId ? targetCodeById.get(a.parentId) ?? null : null;
+      const parentInZev = parentCode ? zevByCode.get(parentCode) : undefined;
+      return {
+        code: a.code, name: a.name, description: a.description, nature: a.nature, postable: a.postable, parentCode,
+        parentMissing: parentCode !== null && !parentInZev && !addedCodes.has(parentCode),
+      };
+    })
+    .sort((x, y) => (x.code < y.code ? -1 : x.code > y.code ? 1 : 0));
+
+  const renamed: ChartUpdateDiff["renamed"] = [];
+  const changedMeaning: ChartUpdateDiff["changedMeaning"] = [];
+  for (const z of chart.accounts) {
+    const t = targetByCode.get(z.code);
+    if (!t) continue;
+    if (t.nature !== z.nature || t.postable !== z.postable) {
+      changedMeaning.push({ code: z.code, name: z.name, zevNature: z.nature, newNature: t.nature, zevPostable: z.postable, newPostable: t.postable });
+    }
+    const linked = z.templateAccount;
+    if (linked && linked.code === t.code && (linked.name !== t.name || (linked.description ?? null) !== (t.description ?? null))) {
+      renamed.push({ code: z.code, zevName: z.name, oldName: linked.name, newName: t.name, newDescription: t.description });
+    }
+  }
+  const removed = chart.accounts
+    .filter((z) => z.templateAccountId && !targetByCode.has(z.code))
+    .map((z) => ({ code: z.code, name: z.name }));
+
+  const byCode = <T extends { code: string }>(a: T, b: T) => (a.code < b.code ? -1 : a.code > b.code ? 1 : 0);
+  return {
+    target: { id: target.id, key: target.key, version: target.version, name: target.name, source: target.source, reviewedBy: target.reviewedBy, reviewedAt: target.reviewedAt },
+    added, renamed: renamed.sort(byCode), changedMeaning: changedMeaning.sort(byCode), removed: removed.sort(byCode),
+  };
+}
+
+/**
+ * Preuzima IZABRANE izmjene nove verzije: dodaje izabrana konta (roditelji prije djece) i preuzima izabrane nazive.
+ * Konta iste šifre i značenja se povezuju sa novom verzijom, a plan pamti verziju kao pregledanu — i kad se ne
+ * preuzme ništa („pregledano, bez izmjena”). Vrsta/zbirno-knjižno i uklonjena konta se nikad ne mijenjaju ovdje.
+ */
+export async function applyChartUpdate(actor: Actor, targetTemplateId: string, choice: { addCodes: string[]; renameCodes: string[] }) {
+  requireCapability(actor, "chart.edit");
+  const zevId = requireZev(actor);
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      await lockZev(tx, zevId);
+      const diff = await chartUpdateInTx(tx, zevId);
+      if (!diff || diff.target.id !== targetTemplateId) throw new Error("Ova verzija predloška više nije na čekanju — otvorite pregled izmjena ponovo.");
+      const chart = await currentChartInTx(tx, zevId);
+      const rules = parseCodeRules(chart.codeRules);
+      const target = await tx.chartTemplate.findUniqueOrThrow({ where: { id: targetTemplateId }, include: { accounts: true } });
+      const tplByCode = new Map(target.accounts.map((a) => [a.code, a]));
+
+      const addSet = new Set(choice.addCodes);
+      const toAdd = diff.added.filter((a) => addSet.has(a.code));
+      const zevAccounts = await tx.zevAccount.findMany({ where: { chartId: chart.id } });
+      const idByCode = new Map(zevAccounts.map((a) => [a.code, a.id]));
+      const zevByCode = new Map(zevAccounts.map((a) => [a.code, a]));
+      for (const a of parentsFirst(toAdd)) {
+        let parentId: string | null = null;
+        if (a.parentCode) {
+          parentId = idByCode.get(a.parentCode) ?? null;
+          if (!parentId) throw new Error(`Konto „${a.code}” se ne može dodati bez nadređenog „${a.parentCode}” — izaberite i njega.`);
+          const parent = zevByCode.get(a.parentCode);
+          if (parent && parent.postable) throw new Error(`Konto „${a.parentCode}” je u planu ZEV-a knjižno, pa „${a.code}” ne može biti njegov podkonto.`);
+          if (parent && !parent.active) throw new Error(`Nadređeni konto „${a.parentCode}” je neaktivan.`);
+        }
+        const err = validateAccountCode(a.code, rules, { parentCode: a.parentCode, depth: await depthOf(tx, parentId) });
+        if (err) throw new Error(err);
+        const created = await tx.zevAccount.create({
+          data: {
+            zevId, chartId: chart.id, templateAccountId: tplByCode.get(a.code)?.id ?? null, code: a.code, name: a.name,
+            description: a.description, nature: a.nature, postable: a.postable, parentId,
+            requiredDimensions: tplByCode.get(a.code)?.requiredDimensions ?? [],
+          },
+        });
+        idByCode.set(a.code, created.id);
+      }
+
+      const renameSet = new Set(choice.renameCodes);
+      const renamed = diff.renamed.filter((r) => renameSet.has(r.code));
+      for (const r of renamed) {
+        await tx.zevAccount.update({
+          where: { chartId_code: { chartId: chart.id, code: r.code } },
+          data: { name: r.newName, description: r.newDescription },
+        });
+      }
+      // Povezivanje sa novom verzijom: ista šifra i isto značenje → sljedeće poređenje ide prema ovoj verziji.
+      for (const z of zevAccounts) {
+        const t = tplByCode.get(z.code);
+        if (t && t.nature === z.nature && t.postable === z.postable && z.templateAccountId !== t.id) {
+          await tx.zevAccount.update({ where: { id: z.id }, data: { templateAccountId: t.id } });
+        }
+      }
+      await tx.zevChart.update({ where: { id: chart.id }, data: { syncedTemplateId: targetTemplateId, syncedAt: new Date() } });
+      return { chartId: chart.id, version: diff.target.version, added: toAdd.map((a) => a.code), renamed: renamed.map((r) => ({ code: r.code, from: r.zevName, to: r.newName })) };
+    }, { timeout: 60_000 });
+    await audit(actor, {
+      action: "zev_chart.sync", targetType: "ZevChart", targetId: result.chartId,
+      after: { templateId: targetTemplateId, version: result.version, added: result.added, renamed: result.renamed },
+    });
+    return result;
+  } catch (e) {
+    if (isUniqueViolation(e)) throw new Error("Konto sa nekom od izabranih šifri već postoji u planu — otvorite pregled izmjena ponovo.");
+    throw e;
+  }
 }
 
 // ---------------------------------------------------------------------------

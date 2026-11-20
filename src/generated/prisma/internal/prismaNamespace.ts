@@ -7296,6 +7296,8 @@ export const ZevChartScalarFieldEnum = {
   id: 'id',
   zevId: 'zevId',
   sourceTemplateId: 'sourceTemplateId',
+  syncedTemplateId: 'syncedTemplateId',
+  syncedAt: 'syncedAt',
   codeRules: 'codeRules',
   status: 'status',
   activatedAt: 'activatedAt',

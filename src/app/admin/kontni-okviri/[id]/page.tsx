@@ -3,9 +3,10 @@ import { requireSuperAdminActor } from "@/server/actor";
 import { getTemplate } from "@/server/services/chartOfAccounts";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { formatDate, t, tEnum, tf, toZonedDateIso } from "@/lib/i18n";
-import { PageHeader, Card, Flash, Field, inputCls, SubmitBtn, ConfirmAction, StatusBadge } from "@/components/ui";
+import { PageHeader, Card, Flash, Field, inputCls, SubmitBtn, ConfirmAction, StatusBadge, ToggleBtn } from "@/components/ui";
 import { AccountTreeTable } from "@/components/account-tree-table";
 import { TemplateMetaFields } from "@/components/template-meta-fields";
+import { TemplateAccountForm } from "@/components/template-account-form";
 import { ProofFileField } from "@/components/proof-file-field";
 import {
   createTemplateVersionAction, importTemplateAccountsAction, setTemplateStatusAction, updateTemplateAction,
@@ -127,14 +128,21 @@ export default async function ChartTemplatePage({
           </Card>
         )}
 
-        <Card title={t("ledger.templates.accounts")}>
+        <Card title={t("ledger.templates.accounts")} hint={isDraft ? t("ledger.templates.addAccountHint") : undefined}>
           <AccountTreeTable
             id="template-accounts"
             caption={t("ledger.templates.accounts")}
             rows={tpl.accounts}
+            hrefFor={isDraft ? (r) => `/admin/kontni-okviri/${tpl.id}/konto/${r.id}` : undefined}
             emptyTitle={t("ledger.templates.accountsEmpty")}
             emptyHint={isDraft ? t("ledger.templates.accountsEmptyHint") : undefined}
           />
+          {isDraft && (
+            <details className="group mt-4">
+              <ToggleBtn variant="tonal">{t("ledger.templates.addAccount")}</ToggleBtn>
+              <TemplateAccountForm templateId={tpl.id} parents={tpl.accounts.filter((a) => !a.postable)} />
+            </details>
+          )}
         </Card>
       </div>
     </div>

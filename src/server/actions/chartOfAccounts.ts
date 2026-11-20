@@ -201,3 +201,45 @@ export async function createTemplateVersionAction(fd: FormData) {
     return `/admin/kontni-okviri/${tpl.id}`;
   });
 }
+
+export async function applyChartUpdateAction(fd: FormData) {
+  const actor = await requireActor("ACCOUNTANT");
+  await run("/knjigovodstvo/izmjene", "synced", () =>
+    coa.applyChartUpdate(actor, str(fd, "targetId"), {
+      addCodes: fd.getAll("add").map(String),
+      renameCodes: fd.getAll("rename").map(String),
+    }),
+  "/knjigovodstvo");
+}
+
+// ---- Platforma: pojedinačna konta u nacrtu predloška -------------------------------
+
+function templateAccountInput(fd: FormData) {
+  return {
+    parentId: opt(fd, "parentId"),
+    code: str(fd, "code"),
+    name: str(fd, "name"),
+    description: opt(fd, "description"),
+    nature: str(fd, "nature"),
+    postable: str(fd, "postable") === "1",
+  };
+}
+
+export async function addTemplateAccountAction(fd: FormData) {
+  const actor = await requireSuperAdminActor();
+  const templateId = str(fd, "templateId");
+  await run(`/admin/kontni-okviri/${templateId}`, "added", () => coa.addTemplateAccount(actor, templateId, templateAccountInput(fd)));
+}
+
+export async function updateTemplateAccountAction(fd: FormData) {
+  const actor = await requireSuperAdminActor();
+  const id = str(fd, "id");
+  await run(`/admin/kontni-okviri/${str(fd, "templateId")}/konto/${id}`, "saved", () => coa.updateTemplateAccount(actor, id, templateAccountInput(fd)));
+}
+
+export async function deleteTemplateAccountAction(fd: FormData) {
+  const actor = await requireSuperAdminActor();
+  const id = str(fd, "id");
+  const templateId = str(fd, "templateId");
+  await run(`/admin/kontni-okviri/${templateId}/konto/${id}`, "deleted", () => coa.deleteTemplateAccount(actor, id), `/admin/kontni-okviri/${templateId}`);
+}

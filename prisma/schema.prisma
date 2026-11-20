@@ -1910,7 +1910,8 @@ model ChartTemplate {
   /// { digitsOnly, allowedLengths, childExtendsParent, maxDepth }
   codeRules    Json
   accounts     ChartTemplateAccount[]
-  zevCharts    ZevChart[]
+  zevCharts    ZevChart[]         @relation("ZevChartSource")
+  zevChartsSynced ZevChart[]      @relation("ZevChartSynced")
   createdById  String?
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
@@ -1942,8 +1943,13 @@ model ZevChart {
   id               String         @id @default(cuid())
   zev              Zev            @relation(fields: [zevId], references: [id])
   zevId            String
-  sourceTemplate   ChartTemplate  @relation(fields: [sourceTemplateId], references: [id])
+  sourceTemplate   ChartTemplate  @relation("ZevChartSource", fields: [sourceTemplateId], references: [id])
   sourceTemplateId String         // tačna verzija iz koje je nastao
+  /// Posljednja verzija predloška čije je izmjene računovođa pregledao („Preuzmi izmjene”); null = samo izvorna.
+  /// Nova verzija se nudi samo kad je novija od ove (i od izvorne). Preuzimanje je uvijek izričito i djelimično.
+  syncedTemplate   ChartTemplate? @relation("ZevChartSynced", fields: [syncedTemplateId], references: [id])
+  syncedTemplateId String?
+  syncedAt         DateTime?
   codeRules        Json           // kopija pravila šifara (predložak se poslije dodjele ne čita)
   status           ZevChartStatus @default(DRAFT)
   activatedAt      DateTime?

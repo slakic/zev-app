@@ -256,3 +256,102 @@ describe("poslovne godine i periodi", () => {
     ]);
   });
 });
+
+describe("konta u nacrtu predloška (bez CSV-a)", () => {
+  let sa: Actor;
+  let f: Fixture;
+  beforeAll(async () => {
+    sa = await createSuperAdminActor("coa-sa3");
+    f = await createFixture("coa-tplacc");
+  });
+
+  it("dodavanje, izmjena i brisanje pojedinačnog konta, uz ista pravila kao uvoz", async () => {
+    const tpl = await coa.createTemplate(sa, { key: `acc-${uid("a").toLowerCase()}`, name: "Acc", jurisdiction: "RS", codeRules: NUMERIC_RULES });
+    await coa.importTemplateAccounts(sa, tpl.id, CSV);
+    await expect(coa.addTemplateAccount(f.accountant, tpl.id, { code: "9", name: "X", nature: "ASSET", postable: false })).rejects.toThrow();
+    const g10 = await prisma.chartTemplateAccount.findFirstOrThrow({ where: { templateId: tpl.id, code: "10" } });
+    const k100 = await prisma.chartTemplateAccount.findFirstOrThrow({ where: { templateId: tpl.id, code: "100" } });
+    const added = await coa.addTemplateAccount(sa, tpl.id, { parentId: g10.id, code: "0102", name: "Vodeća nula", nature: "ASSET", postable: true }).catch((e) => e);
+    expect(String(added)).toMatch(/mora počinjati/);
+    const k102 = await coa.addTemplateAccount(sa, tpl.id, { parentId: g10.id, code: "102", name: "Novo", nature: "ASSET", postable: true });
+    await expect(coa.addTemplateAccount(sa, tpl.id, { parentId: g10.id, code: "102", name: "Dup", nature: "ASSET", postable: true })).rejects.toThrow(/već postoji/);
+    await expect(coa.addTemplateAccount(sa, tpl.id, { parentId: k100.id, code: "1001", name: "Pod", nature: "ASSET", postable: true })).rejects.toThrow(/knjižno/);
+    await coa.updateTemplateAccount(sa, k102.id, { parentId: g10.id, code: "103", name: "Preimenovano", nature: "ASSET", postable: true });
+    expect((await coa.getTemplateAccount(sa, k102.id)).code).toBe("103");
+    await expect(coa.updateTemplateAccount(sa, g10.id, { parentId: k102.id, code: "10", name: "G", nature: "ASSET", postable: false })).rejects.toThrow();
+    await expect(coa.deleteTemplateAccount(sa, g10.id)).rejects.toThrow(/podkonta/);
+    await coa.deleteTemplateAccount(sa, k102.id);
+    await coa.setTemplateStatus(sa, tpl.id, "REVIEWED", { source: "S", reviewedBy: "N.N.", reviewedAt: "2026-11-20" });
+    await expect(coa.addTemplateAccount(sa, tpl.id, { parentId: g10.id, code: "104", name: "Kasno", nature: "ASSET", postable: true })).rejects.toThrow(/nacrt/);
+  });
+});
+
+describe("preuzimanje izmjena iz nove verzije predloška", () => {
+  let sa: Actor;
+  let f: Fixture;
+  let v1: string;
+
+  beforeAll(async () => {
+    sa = await createSuperAdminActor("coa-sa4");
+    f = await createFixture("coa-sync");
+    v1 = (await makeReviewedTemplate(sa, "sync")).id;
+    await coa.assignChart(f.accountant, v1);
+    await coa.activateChart(f.accountant);
+  });
+
+  it("nema ponude dok ne postoji novija provjerena verzija; nacrt verzije se ne nudi", async () => {
+    expect(await coa.getChartUpdate(f.accountant)).toBeNull();
+    await coa.createTemplateVersion(sa, v1);
+    expect(await coa.getChartUpdate(f.accountant)).toBeNull();
+  });
+
+  it("razlike: nova konta, novi nazivi, promjena značenja i uklonjena konta", async () => {
+    const v2 = await prisma.chartTemplate.findFirstOrThrow({ where: { key: (await prisma.chartTemplate.findUniqueOrThrow({ where: { id: v1 } })).key, version: 2 } });
+    const csv2 = CSV
+      .replace("Konto 100;10;ASSET;da;", "Konto 100 — novi naziv;10;ASSET;da;")
+      .replace("101;Konto 101;10;ASSET;da;", "101;Konto 101;10;LIABILITY;da;")
+      .replace("\n435;Obaveze;43;LIABILITY;da;", "")
+      + "\n11;Nova grupa;1;ASSET;ne;\n110;Novo konto;11;ASSET;da;\n0101;Novo uz nulu;01;ASSET;da;";
+    expect((await coa.importTemplateAccounts(sa, v2.id, csv2)).ok).toBe(true);
+    await coa.setTemplateStatus(sa, v2.id, "REVIEWED", { reviewedBy: "N.N.", reviewedAt: "2026-11-21" });
+
+    const diff = (await coa.getChartUpdate(f.president))!;
+    expect(diff.target.version).toBe(2);
+    expect(diff.added.map((a) => a.code)).toEqual(["0101", "11", "110"]);
+    expect(diff.renamed.map((r) => [r.code, r.newName])).toEqual([["100", "Konto 100 — novi naziv"]]);
+    expect(diff.changedMeaning.map((c) => c.code)).toEqual(["101"]);
+    expect(diff.removed.map((r) => r.code)).toEqual(["435"]);
+    await expect(coa.applyChartUpdate(f.president, v2.id, { addCodes: [], renameCodes: [] })).rejects.toThrow();
+  });
+
+  it("dijete bez izabranog roditelja se odbija; djelimično preuzimanje radi i verzija se pamti", async () => {
+    const diff = (await coa.getChartUpdate(f.accountant))!;
+    await expect(coa.applyChartUpdate(f.accountant, diff.target.id, { addCodes: ["110"], renameCodes: [] })).rejects.toThrow(/bez nadređenog/);
+    const res = await coa.applyChartUpdate(f.accountant, diff.target.id, { addCodes: ["11", "110", "0101"], renameCodes: [] });
+    expect([...res.added].sort()).toEqual(["0101", "11", "110"]);
+    const chart = (await coa.getZevChart(f.accountant))!;
+    expect(chart.accounts.find((a) => a.code === "0101")?.parentId).toBe(chart.accounts.find((a) => a.code === "01")?.id);
+    expect(chart.accounts.find((a) => a.code === "100")?.name).toBe("Konto 100");
+    // Promjena značenja i uklonjeno konto se ne diraju.
+    expect(chart.accounts.find((a) => a.code === "101")?.nature).toBe("ASSET");
+    expect(chart.accounts.find((a) => a.code === "435")?.active).toBe(true);
+    expect(await coa.getChartUpdate(f.accountant)).toBeNull();
+    expect(await coa.applyChartUpdate(f.accountant, diff.target.id, { addCodes: [], renameCodes: [] }).catch((e) => String(e))).toMatch(/više nije na čekanju/);
+    const ev = await prisma.auditEvent.findFirst({ where: { action: "zev_chart.sync", targetId: chart.id } });
+    expect(ev).not.toBeNull();
+  });
+
+  it("sljedeća verzija nudi samo nove razlike; preuzeti naziv ostaje u istoriji", async () => {
+    const v2 = (await coa.getZevChart(f.accountant))!.syncedTemplateId!;
+    const v3 = await coa.createTemplateVersion(sa, v2);
+    const v3acc = await prisma.chartTemplateAccount.findFirstOrThrow({ where: { templateId: v3.id, code: "100" } });
+    await coa.updateTemplateAccount(sa, v3acc.id, { parentId: v3acc.parentId, code: "100", name: "Konto 100 — treći naziv", nature: "ASSET", postable: true });
+    await coa.setTemplateStatus(sa, v3.id, "REVIEWED", { source: "S", reviewedBy: "N.N.", reviewedAt: "2026-11-22" });
+    const diff = (await coa.getChartUpdate(f.accountant))!;
+    expect(diff.added).toEqual([]);
+    expect(diff.renamed.map((r) => [r.code, r.oldName, r.newName])).toEqual([["100", "Konto 100 — novi naziv", "Konto 100 — treći naziv"]]);
+    await coa.applyChartUpdate(f.accountant, v3.id, { addCodes: [], renameCodes: ["100"] });
+    const chart = (await coa.getZevChart(f.accountant))!;
+    expect(chart.accounts.find((a) => a.code === "100")?.name).toBe("Konto 100 — treći naziv");
+  });
+});

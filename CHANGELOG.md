@@ -43,6 +43,18 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.2.0] - 2026-11-20
+
+Kontni plan: uređivanje pojedinačnih konta u nacrtu predloška i **preuzimanje izmjena iz nove verzije predloška** u plan ZEV-a (`Plans/kontni-plan-i-knjizenje-plan.md` §3.4). Ništa se i dalje ne preuzima samo.
+
+**Migracija: da — `20261120150000_chart_template_sync` (kolone `ZevChart.syncedTemplateId` i `syncedAt`); samo dodavanje. Primijeniti prije deploya (`MIGRATE_DATABASE_URL="…" node scripts/migrate.mjs apply`).**
+
+### Dodato
+
+- **Konta u nacrtu predloška bez CSV-a** (`/admin/kontni-okviri/[id]`, super admin): „Dodaj konto” ispod stabla i stranica konta (`…/konto/[id]`) za izmjenu i brisanje. Važe ista pravila kao kod uvoza (šifre po pravilima predloška, bez ciklusa, knjižno konto nema podkonta); provjeren predložak se i dalje ne mijenja.
+- **Nova verzija predloška u planu ZEV-a:** kad postoji novija provjerena verzija istog predloška, na kontnom planu se pojavljuje kartica sa brojem razlika i dugmetom „Pregledaj izmjene” (`/knjigovodstvo/izmjene`). Računovođa bira **nova konta** (podkonto samo uz svoj nadređeni) i **nove nazive**; promjena vrste ili zbirno/knjižno i konta uklonjena u novoj verziji se samo prikazuju, a rješavaju ručno (zamjena ili deaktivacija konta). Verzija se pamti kao pregledana i kad se ništa ne izabere, pa se iste izmjene više ne nude. Svako preuzimanje ide u revizorski trag.
+- Testovi za oba toka u `tests/chart-of-accounts.test.ts`.
+
 ## [3.1.0] - 2026-11-20
 
 Prekretnica: početak knjigovodstvenog dijela aplikacije — **Faza A1, kontni plan** (`Plans/kontni-plan-i-knjizenje-plan.md`). Ovo **nije** zakonsko knjigovodstvo i nema knjiženja: uvodi se šifarnik konta, predlošci kontnih planova sa verzijama i stručnom provjerom, kontni plan po ZEV-u i poslovne godine. Postojeći tokovi zaduživanja, uplata i plaćanja se ne mijenjaju.

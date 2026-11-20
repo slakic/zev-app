@@ -29,6 +29,8 @@ export type ZevChartMinAggregateOutputType = {
   id: string | null
   zevId: string | null
   sourceTemplateId: string | null
+  syncedTemplateId: string | null
+  syncedAt: Date | null
   status: $Enums.ZevChartStatus | null
   activatedAt: Date | null
   retiredAt: Date | null
@@ -40,6 +42,8 @@ export type ZevChartMaxAggregateOutputType = {
   id: string | null
   zevId: string | null
   sourceTemplateId: string | null
+  syncedTemplateId: string | null
+  syncedAt: Date | null
   status: $Enums.ZevChartStatus | null
   activatedAt: Date | null
   retiredAt: Date | null
@@ -51,6 +55,8 @@ export type ZevChartCountAggregateOutputType = {
   id: number
   zevId: number
   sourceTemplateId: number
+  syncedTemplateId: number
+  syncedAt: number
   codeRules: number
   status: number
   activatedAt: number
@@ -65,6 +71,8 @@ export type ZevChartMinAggregateInputType = {
   id?: true
   zevId?: true
   sourceTemplateId?: true
+  syncedTemplateId?: true
+  syncedAt?: true
   status?: true
   activatedAt?: true
   retiredAt?: true
@@ -76,6 +84,8 @@ export type ZevChartMaxAggregateInputType = {
   id?: true
   zevId?: true
   sourceTemplateId?: true
+  syncedTemplateId?: true
+  syncedAt?: true
   status?: true
   activatedAt?: true
   retiredAt?: true
@@ -87,6 +97,8 @@ export type ZevChartCountAggregateInputType = {
   id?: true
   zevId?: true
   sourceTemplateId?: true
+  syncedTemplateId?: true
+  syncedAt?: true
   codeRules?: true
   status?: true
   activatedAt?: true
@@ -172,6 +184,8 @@ export type ZevChartGroupByOutputType = {
   id: string
   zevId: string
   sourceTemplateId: string
+  syncedTemplateId: string | null
+  syncedAt: Date | null
   codeRules: runtime.JsonValue
   status: $Enums.ZevChartStatus
   activatedAt: Date | null
@@ -205,6 +219,8 @@ export type ZevChartWhereInput = {
   id?: Prisma.StringFilter<"ZevChart"> | string
   zevId?: Prisma.StringFilter<"ZevChart"> | string
   sourceTemplateId?: Prisma.StringFilter<"ZevChart"> | string
+  syncedTemplateId?: Prisma.StringNullableFilter<"ZevChart"> | string | null
+  syncedAt?: Prisma.DateTimeNullableFilter<"ZevChart"> | Date | string | null
   codeRules?: Prisma.JsonFilter<"ZevChart">
   status?: Prisma.EnumZevChartStatusFilter<"ZevChart"> | $Enums.ZevChartStatus
   activatedAt?: Prisma.DateTimeNullableFilter<"ZevChart"> | Date | string | null
@@ -213,6 +229,7 @@ export type ZevChartWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ZevChart"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   sourceTemplate?: Prisma.XOR<Prisma.ChartTemplateScalarRelationFilter, Prisma.ChartTemplateWhereInput>
+  syncedTemplate?: Prisma.XOR<Prisma.ChartTemplateNullableScalarRelationFilter, Prisma.ChartTemplateWhereInput> | null
   accounts?: Prisma.ZevAccountListRelationFilter
 }
 
@@ -220,6 +237,8 @@ export type ZevChartOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   zevId?: Prisma.SortOrder
   sourceTemplateId?: Prisma.SortOrder
+  syncedTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  syncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   codeRules?: Prisma.SortOrder
   status?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -228,6 +247,7 @@ export type ZevChartOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
   sourceTemplate?: Prisma.ChartTemplateOrderByWithRelationInput
+  syncedTemplate?: Prisma.ChartTemplateOrderByWithRelationInput
   accounts?: Prisma.ZevAccountOrderByRelationAggregateInput
 }
 
@@ -238,6 +258,8 @@ export type ZevChartWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ZevChartWhereInput | Prisma.ZevChartWhereInput[]
   zevId?: Prisma.StringFilter<"ZevChart"> | string
   sourceTemplateId?: Prisma.StringFilter<"ZevChart"> | string
+  syncedTemplateId?: Prisma.StringNullableFilter<"ZevChart"> | string | null
+  syncedAt?: Prisma.DateTimeNullableFilter<"ZevChart"> | Date | string | null
   codeRules?: Prisma.JsonFilter<"ZevChart">
   status?: Prisma.EnumZevChartStatusFilter<"ZevChart"> | $Enums.ZevChartStatus
   activatedAt?: Prisma.DateTimeNullableFilter<"ZevChart"> | Date | string | null
@@ -246,6 +268,7 @@ export type ZevChartWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ZevChart"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   sourceTemplate?: Prisma.XOR<Prisma.ChartTemplateScalarRelationFilter, Prisma.ChartTemplateWhereInput>
+  syncedTemplate?: Prisma.XOR<Prisma.ChartTemplateNullableScalarRelationFilter, Prisma.ChartTemplateWhereInput> | null
   accounts?: Prisma.ZevAccountListRelationFilter
 }, "id">
 
@@ -253,6 +276,8 @@ export type ZevChartOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   zevId?: Prisma.SortOrder
   sourceTemplateId?: Prisma.SortOrder
+  syncedTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  syncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   codeRules?: Prisma.SortOrder
   status?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -271,6 +296,8 @@ export type ZevChartScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ZevChart"> | string
   zevId?: Prisma.StringWithAggregatesFilter<"ZevChart"> | string
   sourceTemplateId?: Prisma.StringWithAggregatesFilter<"ZevChart"> | string
+  syncedTemplateId?: Prisma.StringNullableWithAggregatesFilter<"ZevChart"> | string | null
+  syncedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ZevChart"> | Date | string | null
   codeRules?: Prisma.JsonWithAggregatesFilter<"ZevChart">
   status?: Prisma.EnumZevChartStatusWithAggregatesFilter<"ZevChart"> | $Enums.ZevChartStatus
   activatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ZevChart"> | Date | string | null
@@ -281,6 +308,7 @@ export type ZevChartScalarWhereWithAggregatesInput = {
 
 export type ZevChartCreateInput = {
   id?: string
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -289,6 +317,7 @@ export type ZevChartCreateInput = {
   createdAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutZevChartsInput
   sourceTemplate: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsInput
+  syncedTemplate?: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsSyncedInput
   accounts?: Prisma.ZevAccountCreateNestedManyWithoutChartInput
 }
 
@@ -296,6 +325,8 @@ export type ZevChartUncheckedCreateInput = {
   id?: string
   zevId: string
   sourceTemplateId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -307,6 +338,7 @@ export type ZevChartUncheckedCreateInput = {
 
 export type ZevChartUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -315,6 +347,7 @@ export type ZevChartUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutZevChartsNestedInput
   sourceTemplate?: Prisma.ChartTemplateUpdateOneRequiredWithoutZevChartsNestedInput
+  syncedTemplate?: Prisma.ChartTemplateUpdateOneWithoutZevChartsSyncedNestedInput
   accounts?: Prisma.ZevAccountUpdateManyWithoutChartNestedInput
 }
 
@@ -322,6 +355,8 @@ export type ZevChartUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   zevId?: Prisma.StringFieldUpdateOperationsInput | string
   sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -335,6 +370,8 @@ export type ZevChartCreateManyInput = {
   id?: string
   zevId: string
   sourceTemplateId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -345,6 +382,7 @@ export type ZevChartCreateManyInput = {
 
 export type ZevChartUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -357,6 +395,8 @@ export type ZevChartUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   zevId?: Prisma.StringFieldUpdateOperationsInput | string
   sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -379,6 +419,8 @@ export type ZevChartCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   zevId?: Prisma.SortOrder
   sourceTemplateId?: Prisma.SortOrder
+  syncedTemplateId?: Prisma.SortOrder
+  syncedAt?: Prisma.SortOrder
   codeRules?: Prisma.SortOrder
   status?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
@@ -391,6 +433,8 @@ export type ZevChartMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   zevId?: Prisma.SortOrder
   sourceTemplateId?: Prisma.SortOrder
+  syncedTemplateId?: Prisma.SortOrder
+  syncedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   retiredAt?: Prisma.SortOrder
@@ -402,6 +446,8 @@ export type ZevChartMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   zevId?: Prisma.SortOrder
   sourceTemplateId?: Prisma.SortOrder
+  syncedTemplateId?: Prisma.SortOrder
+  syncedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   retiredAt?: Prisma.SortOrder
@@ -463,10 +509,24 @@ export type ZevChartCreateNestedManyWithoutSourceTemplateInput = {
   connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
 }
 
+export type ZevChartCreateNestedManyWithoutSyncedTemplateInput = {
+  create?: Prisma.XOR<Prisma.ZevChartCreateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput> | Prisma.ZevChartCreateWithoutSyncedTemplateInput[] | Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput[]
+  connectOrCreate?: Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput | Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput[]
+  createMany?: Prisma.ZevChartCreateManySyncedTemplateInputEnvelope
+  connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+}
+
 export type ZevChartUncheckedCreateNestedManyWithoutSourceTemplateInput = {
   create?: Prisma.XOR<Prisma.ZevChartCreateWithoutSourceTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSourceTemplateInput> | Prisma.ZevChartCreateWithoutSourceTemplateInput[] | Prisma.ZevChartUncheckedCreateWithoutSourceTemplateInput[]
   connectOrCreate?: Prisma.ZevChartCreateOrConnectWithoutSourceTemplateInput | Prisma.ZevChartCreateOrConnectWithoutSourceTemplateInput[]
   createMany?: Prisma.ZevChartCreateManySourceTemplateInputEnvelope
+  connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+}
+
+export type ZevChartUncheckedCreateNestedManyWithoutSyncedTemplateInput = {
+  create?: Prisma.XOR<Prisma.ZevChartCreateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput> | Prisma.ZevChartCreateWithoutSyncedTemplateInput[] | Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput[]
+  connectOrCreate?: Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput | Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput[]
+  createMany?: Prisma.ZevChartCreateManySyncedTemplateInputEnvelope
   connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
 }
 
@@ -484,6 +544,20 @@ export type ZevChartUpdateManyWithoutSourceTemplateNestedInput = {
   deleteMany?: Prisma.ZevChartScalarWhereInput | Prisma.ZevChartScalarWhereInput[]
 }
 
+export type ZevChartUpdateManyWithoutSyncedTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevChartCreateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput> | Prisma.ZevChartCreateWithoutSyncedTemplateInput[] | Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput[]
+  connectOrCreate?: Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput | Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput[]
+  upsert?: Prisma.ZevChartUpsertWithWhereUniqueWithoutSyncedTemplateInput | Prisma.ZevChartUpsertWithWhereUniqueWithoutSyncedTemplateInput[]
+  createMany?: Prisma.ZevChartCreateManySyncedTemplateInputEnvelope
+  set?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  disconnect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  delete?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  update?: Prisma.ZevChartUpdateWithWhereUniqueWithoutSyncedTemplateInput | Prisma.ZevChartUpdateWithWhereUniqueWithoutSyncedTemplateInput[]
+  updateMany?: Prisma.ZevChartUpdateManyWithWhereWithoutSyncedTemplateInput | Prisma.ZevChartUpdateManyWithWhereWithoutSyncedTemplateInput[]
+  deleteMany?: Prisma.ZevChartScalarWhereInput | Prisma.ZevChartScalarWhereInput[]
+}
+
 export type ZevChartUncheckedUpdateManyWithoutSourceTemplateNestedInput = {
   create?: Prisma.XOR<Prisma.ZevChartCreateWithoutSourceTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSourceTemplateInput> | Prisma.ZevChartCreateWithoutSourceTemplateInput[] | Prisma.ZevChartUncheckedCreateWithoutSourceTemplateInput[]
   connectOrCreate?: Prisma.ZevChartCreateOrConnectWithoutSourceTemplateInput | Prisma.ZevChartCreateOrConnectWithoutSourceTemplateInput[]
@@ -495,6 +569,20 @@ export type ZevChartUncheckedUpdateManyWithoutSourceTemplateNestedInput = {
   connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
   update?: Prisma.ZevChartUpdateWithWhereUniqueWithoutSourceTemplateInput | Prisma.ZevChartUpdateWithWhereUniqueWithoutSourceTemplateInput[]
   updateMany?: Prisma.ZevChartUpdateManyWithWhereWithoutSourceTemplateInput | Prisma.ZevChartUpdateManyWithWhereWithoutSourceTemplateInput[]
+  deleteMany?: Prisma.ZevChartScalarWhereInput | Prisma.ZevChartScalarWhereInput[]
+}
+
+export type ZevChartUncheckedUpdateManyWithoutSyncedTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevChartCreateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput> | Prisma.ZevChartCreateWithoutSyncedTemplateInput[] | Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput[]
+  connectOrCreate?: Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput | Prisma.ZevChartCreateOrConnectWithoutSyncedTemplateInput[]
+  upsert?: Prisma.ZevChartUpsertWithWhereUniqueWithoutSyncedTemplateInput | Prisma.ZevChartUpsertWithWhereUniqueWithoutSyncedTemplateInput[]
+  createMany?: Prisma.ZevChartCreateManySyncedTemplateInputEnvelope
+  set?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  disconnect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  delete?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  connect?: Prisma.ZevChartWhereUniqueInput | Prisma.ZevChartWhereUniqueInput[]
+  update?: Prisma.ZevChartUpdateWithWhereUniqueWithoutSyncedTemplateInput | Prisma.ZevChartUpdateWithWhereUniqueWithoutSyncedTemplateInput[]
+  updateMany?: Prisma.ZevChartUpdateManyWithWhereWithoutSyncedTemplateInput | Prisma.ZevChartUpdateManyWithWhereWithoutSyncedTemplateInput[]
   deleteMany?: Prisma.ZevChartScalarWhereInput | Prisma.ZevChartScalarWhereInput[]
 }
 
@@ -518,6 +606,7 @@ export type ZevChartUpdateOneRequiredWithoutAccountsNestedInput = {
 
 export type ZevChartCreateWithoutZevInput = {
   id?: string
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -525,12 +614,15 @@ export type ZevChartCreateWithoutZevInput = {
   createdById?: string | null
   createdAt?: Date | string
   sourceTemplate: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsInput
+  syncedTemplate?: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsSyncedInput
   accounts?: Prisma.ZevAccountCreateNestedManyWithoutChartInput
 }
 
 export type ZevChartUncheckedCreateWithoutZevInput = {
   id?: string
   sourceTemplateId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -573,6 +665,8 @@ export type ZevChartScalarWhereInput = {
   id?: Prisma.StringFilter<"ZevChart"> | string
   zevId?: Prisma.StringFilter<"ZevChart"> | string
   sourceTemplateId?: Prisma.StringFilter<"ZevChart"> | string
+  syncedTemplateId?: Prisma.StringNullableFilter<"ZevChart"> | string | null
+  syncedAt?: Prisma.DateTimeNullableFilter<"ZevChart"> | Date | string | null
   codeRules?: Prisma.JsonFilter<"ZevChart">
   status?: Prisma.EnumZevChartStatusFilter<"ZevChart"> | $Enums.ZevChartStatus
   activatedAt?: Prisma.DateTimeNullableFilter<"ZevChart"> | Date | string | null
@@ -583,6 +677,7 @@ export type ZevChartScalarWhereInput = {
 
 export type ZevChartCreateWithoutSourceTemplateInput = {
   id?: string
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -590,12 +685,15 @@ export type ZevChartCreateWithoutSourceTemplateInput = {
   createdById?: string | null
   createdAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutZevChartsInput
+  syncedTemplate?: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsSyncedInput
   accounts?: Prisma.ZevAccountCreateNestedManyWithoutChartInput
 }
 
 export type ZevChartUncheckedCreateWithoutSourceTemplateInput = {
   id?: string
   zevId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -615,6 +713,44 @@ export type ZevChartCreateManySourceTemplateInputEnvelope = {
   skipDuplicates?: boolean
 }
 
+export type ZevChartCreateWithoutSyncedTemplateInput = {
+  id?: string
+  syncedAt?: Date | string | null
+  codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.ZevChartStatus
+  activatedAt?: Date | string | null
+  retiredAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutZevChartsInput
+  sourceTemplate: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsInput
+  accounts?: Prisma.ZevAccountCreateNestedManyWithoutChartInput
+}
+
+export type ZevChartUncheckedCreateWithoutSyncedTemplateInput = {
+  id?: string
+  zevId: string
+  sourceTemplateId: string
+  syncedAt?: Date | string | null
+  codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.ZevChartStatus
+  activatedAt?: Date | string | null
+  retiredAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  accounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutChartInput
+}
+
+export type ZevChartCreateOrConnectWithoutSyncedTemplateInput = {
+  where: Prisma.ZevChartWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevChartCreateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput>
+}
+
+export type ZevChartCreateManySyncedTemplateInputEnvelope = {
+  data: Prisma.ZevChartCreateManySyncedTemplateInput | Prisma.ZevChartCreateManySyncedTemplateInput[]
+  skipDuplicates?: boolean
+}
+
 export type ZevChartUpsertWithWhereUniqueWithoutSourceTemplateInput = {
   where: Prisma.ZevChartWhereUniqueInput
   update: Prisma.XOR<Prisma.ZevChartUpdateWithoutSourceTemplateInput, Prisma.ZevChartUncheckedUpdateWithoutSourceTemplateInput>
@@ -631,8 +767,25 @@ export type ZevChartUpdateManyWithWhereWithoutSourceTemplateInput = {
   data: Prisma.XOR<Prisma.ZevChartUpdateManyMutationInput, Prisma.ZevChartUncheckedUpdateManyWithoutSourceTemplateInput>
 }
 
+export type ZevChartUpsertWithWhereUniqueWithoutSyncedTemplateInput = {
+  where: Prisma.ZevChartWhereUniqueInput
+  update: Prisma.XOR<Prisma.ZevChartUpdateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedUpdateWithoutSyncedTemplateInput>
+  create: Prisma.XOR<Prisma.ZevChartCreateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedCreateWithoutSyncedTemplateInput>
+}
+
+export type ZevChartUpdateWithWhereUniqueWithoutSyncedTemplateInput = {
+  where: Prisma.ZevChartWhereUniqueInput
+  data: Prisma.XOR<Prisma.ZevChartUpdateWithoutSyncedTemplateInput, Prisma.ZevChartUncheckedUpdateWithoutSyncedTemplateInput>
+}
+
+export type ZevChartUpdateManyWithWhereWithoutSyncedTemplateInput = {
+  where: Prisma.ZevChartScalarWhereInput
+  data: Prisma.XOR<Prisma.ZevChartUpdateManyMutationInput, Prisma.ZevChartUncheckedUpdateManyWithoutSyncedTemplateInput>
+}
+
 export type ZevChartCreateWithoutAccountsInput = {
   id?: string
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -641,12 +794,15 @@ export type ZevChartCreateWithoutAccountsInput = {
   createdAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutZevChartsInput
   sourceTemplate: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsInput
+  syncedTemplate?: Prisma.ChartTemplateCreateNestedOneWithoutZevChartsSyncedInput
 }
 
 export type ZevChartUncheckedCreateWithoutAccountsInput = {
   id?: string
   zevId: string
   sourceTemplateId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -673,6 +829,7 @@ export type ZevChartUpdateToOneWithWhereWithoutAccountsInput = {
 
 export type ZevChartUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -681,12 +838,15 @@ export type ZevChartUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutZevChartsNestedInput
   sourceTemplate?: Prisma.ChartTemplateUpdateOneRequiredWithoutZevChartsNestedInput
+  syncedTemplate?: Prisma.ChartTemplateUpdateOneWithoutZevChartsSyncedNestedInput
 }
 
 export type ZevChartUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   zevId?: Prisma.StringFieldUpdateOperationsInput | string
   sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -698,6 +858,8 @@ export type ZevChartUncheckedUpdateWithoutAccountsInput = {
 export type ZevChartCreateManyZevInput = {
   id?: string
   sourceTemplateId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -708,6 +870,7 @@ export type ZevChartCreateManyZevInput = {
 
 export type ZevChartUpdateWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -715,12 +878,15 @@ export type ZevChartUpdateWithoutZevInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceTemplate?: Prisma.ChartTemplateUpdateOneRequiredWithoutZevChartsNestedInput
+  syncedTemplate?: Prisma.ChartTemplateUpdateOneWithoutZevChartsSyncedNestedInput
   accounts?: Prisma.ZevAccountUpdateManyWithoutChartNestedInput
 }
 
 export type ZevChartUncheckedUpdateWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -733,6 +899,8 @@ export type ZevChartUncheckedUpdateWithoutZevInput = {
 export type ZevChartUncheckedUpdateManyWithoutZevInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -744,6 +912,21 @@ export type ZevChartUncheckedUpdateManyWithoutZevInput = {
 export type ZevChartCreateManySourceTemplateInput = {
   id?: string
   zevId: string
+  syncedTemplateId?: string | null
+  syncedAt?: Date | string | null
+  codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.ZevChartStatus
+  activatedAt?: Date | string | null
+  retiredAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type ZevChartCreateManySyncedTemplateInput = {
+  id?: string
+  zevId: string
+  sourceTemplateId: string
+  syncedAt?: Date | string | null
   codeRules: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.ZevChartStatus
   activatedAt?: Date | string | null
@@ -754,6 +937,7 @@ export type ZevChartCreateManySourceTemplateInput = {
 
 export type ZevChartUpdateWithoutSourceTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -761,12 +945,15 @@ export type ZevChartUpdateWithoutSourceTemplateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutZevChartsNestedInput
+  syncedTemplate?: Prisma.ChartTemplateUpdateOneWithoutZevChartsSyncedNestedInput
   accounts?: Prisma.ZevAccountUpdateManyWithoutChartNestedInput
 }
 
 export type ZevChartUncheckedUpdateWithoutSourceTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -779,6 +966,49 @@ export type ZevChartUncheckedUpdateWithoutSourceTemplateInput = {
 export type ZevChartUncheckedUpdateManyWithoutSourceTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ZevChartUpdateWithoutSyncedTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutZevChartsNestedInput
+  sourceTemplate?: Prisma.ChartTemplateUpdateOneRequiredWithoutZevChartsNestedInput
+  accounts?: Prisma.ZevAccountUpdateManyWithoutChartNestedInput
+}
+
+export type ZevChartUncheckedUpdateWithoutSyncedTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutChartNestedInput
+}
+
+export type ZevChartUncheckedUpdateManyWithoutSyncedTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codeRules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumZevChartStatusFieldUpdateOperationsInput | $Enums.ZevChartStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -822,6 +1052,8 @@ export type ZevChartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   zevId?: boolean
   sourceTemplateId?: boolean
+  syncedTemplateId?: boolean
+  syncedAt?: boolean
   codeRules?: boolean
   status?: boolean
   activatedAt?: boolean
@@ -830,6 +1062,7 @@ export type ZevChartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   sourceTemplate?: boolean | Prisma.ChartTemplateDefaultArgs<ExtArgs>
+  syncedTemplate?: boolean | Prisma.ZevChart$syncedTemplateArgs<ExtArgs>
   accounts?: boolean | Prisma.ZevChart$accountsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevChartCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["zevChart"]>
@@ -838,6 +1071,8 @@ export type ZevChartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   zevId?: boolean
   sourceTemplateId?: boolean
+  syncedTemplateId?: boolean
+  syncedAt?: boolean
   codeRules?: boolean
   status?: boolean
   activatedAt?: boolean
@@ -846,12 +1081,15 @@ export type ZevChartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   sourceTemplate?: boolean | Prisma.ChartTemplateDefaultArgs<ExtArgs>
+  syncedTemplate?: boolean | Prisma.ZevChart$syncedTemplateArgs<ExtArgs>
 }, ExtArgs["result"]["zevChart"]>
 
 export type ZevChartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   zevId?: boolean
   sourceTemplateId?: boolean
+  syncedTemplateId?: boolean
+  syncedAt?: boolean
   codeRules?: boolean
   status?: boolean
   activatedAt?: boolean
@@ -860,12 +1098,15 @@ export type ZevChartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   sourceTemplate?: boolean | Prisma.ChartTemplateDefaultArgs<ExtArgs>
+  syncedTemplate?: boolean | Prisma.ZevChart$syncedTemplateArgs<ExtArgs>
 }, ExtArgs["result"]["zevChart"]>
 
 export type ZevChartSelectScalar = {
   id?: boolean
   zevId?: boolean
   sourceTemplateId?: boolean
+  syncedTemplateId?: boolean
+  syncedAt?: boolean
   codeRules?: boolean
   status?: boolean
   activatedAt?: boolean
@@ -874,20 +1115,23 @@ export type ZevChartSelectScalar = {
   createdAt?: boolean
 }
 
-export type ZevChartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "sourceTemplateId" | "codeRules" | "status" | "activatedAt" | "retiredAt" | "createdById" | "createdAt", ExtArgs["result"]["zevChart"]>
+export type ZevChartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "sourceTemplateId" | "syncedTemplateId" | "syncedAt" | "codeRules" | "status" | "activatedAt" | "retiredAt" | "createdById" | "createdAt", ExtArgs["result"]["zevChart"]>
 export type ZevChartInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   sourceTemplate?: boolean | Prisma.ChartTemplateDefaultArgs<ExtArgs>
+  syncedTemplate?: boolean | Prisma.ZevChart$syncedTemplateArgs<ExtArgs>
   accounts?: boolean | Prisma.ZevChart$accountsArgs<ExtArgs>
   _count?: boolean | Prisma.ZevChartCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ZevChartIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   sourceTemplate?: boolean | Prisma.ChartTemplateDefaultArgs<ExtArgs>
+  syncedTemplate?: boolean | Prisma.ZevChart$syncedTemplateArgs<ExtArgs>
 }
 export type ZevChartIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   sourceTemplate?: boolean | Prisma.ChartTemplateDefaultArgs<ExtArgs>
+  syncedTemplate?: boolean | Prisma.ZevChart$syncedTemplateArgs<ExtArgs>
 }
 
 export type $ZevChartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -895,12 +1139,19 @@ export type $ZevChartPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     zev: Prisma.$ZevPayload<ExtArgs>
     sourceTemplate: Prisma.$ChartTemplatePayload<ExtArgs>
+    /**
+     * Posljednja verzija predloška čije je izmjene računovođa pregledao („Preuzmi izmjene”); null = samo izvorna.
+     * Nova verzija se nudi samo kad je novija od ove (i od izvorne). Preuzimanje je uvijek izričito i djelimično.
+     */
+    syncedTemplate: Prisma.$ChartTemplatePayload<ExtArgs> | null
     accounts: Prisma.$ZevAccountPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     zevId: string
     sourceTemplateId: string
+    syncedTemplateId: string | null
+    syncedAt: Date | null
     codeRules: runtime.JsonValue
     status: $Enums.ZevChartStatus
     activatedAt: Date | null
@@ -1303,6 +1554,7 @@ export interface Prisma__ZevChartClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   sourceTemplate<T extends Prisma.ChartTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChartTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ChartTemplateClient<runtime.Types.Result.GetResult<Prisma.$ChartTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  syncedTemplate<T extends Prisma.ZevChart$syncedTemplateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevChart$syncedTemplateArgs<ExtArgs>>): Prisma.Prisma__ChartTemplateClient<runtime.Types.Result.GetResult<Prisma.$ChartTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   accounts<T extends Prisma.ZevChart$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevChart$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1336,6 +1588,8 @@ export interface ZevChartFieldRefs {
   readonly id: Prisma.FieldRef<"ZevChart", 'String'>
   readonly zevId: Prisma.FieldRef<"ZevChart", 'String'>
   readonly sourceTemplateId: Prisma.FieldRef<"ZevChart", 'String'>
+  readonly syncedTemplateId: Prisma.FieldRef<"ZevChart", 'String'>
+  readonly syncedAt: Prisma.FieldRef<"ZevChart", 'DateTime'>
   readonly codeRules: Prisma.FieldRef<"ZevChart", 'Json'>
   readonly status: Prisma.FieldRef<"ZevChart", 'ZevChartStatus'>
   readonly activatedAt: Prisma.FieldRef<"ZevChart", 'DateTime'>
@@ -1740,6 +1994,25 @@ export type ZevChartDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many ZevCharts to delete.
    */
   limit?: number
+}
+
+/**
+ * ZevChart.syncedTemplate
+ */
+export type ZevChart$syncedTemplateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChartTemplate
+   */
+  select?: Prisma.ChartTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChartTemplate
+   */
+  omit?: Prisma.ChartTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChartTemplateInclude<ExtArgs> | null
+  where?: Prisma.ChartTemplateWhereInput
 }
 
 /**

@@ -1,6 +1,6 @@
 # Kontni plan i knjiženje — arhitektonski i implementacioni plan
 
-**Status: A1 ISPORUČENO u v3.1.0 (2026-11-20; korisnik izabrao major). Odobreno 2026-11-20 (preporuke A-Q1–A-Q9, §9). Sljedeće: A2. Faza B čeka stručnu potvrdu računovođe (§10).**
+**Status: A1 ISPORUČENO u v3.1.0 (2026-11-20; korisnik izabrao major); dopuna u v3.2.0 (konta u nacrtu predloška bez CSV-a, preuzimanje izmjena iz nove verzije). Odobreno 2026-11-20 (preporuke A-Q1–A-Q9, §9). Sljedeće: A2. Faza B čeka stručnu potvrdu računovođe (§10).**
 Plan je izrađen 2026-11-20 čitanjem stvarnog koda (v2.66.0). Nijedan red koda još nije napisan.
 
 **Izmjene korisnika (2026-11-20), ugrađene u §2, §3.5–3.8, §4–§7, §9 i §10 (izvor kontnog okvira u §3.1 i R-1):**
@@ -299,7 +299,7 @@ Preklapanje perioda unutar ZEV-a se odbija u servisu (i exclusion constraint `da
 | Korišćeno konto se ne briše | *Isporučeno u A1:* „korišćeno” = konto **aktivnog** plana (na aktivan plan će upućivati pravila i nalozi). Brisanje samo u nacrtu plana i samo bez podkonta; u aktivnom planu samo deaktivacija |
 | Deaktivacija ne briše istoriju | `active=false`; izvještaji i dalje prikazuju stare stavke; novo knjiženje odbija neaktivno konto |
 | Promjena šifre/značenja korišćenog konta | šifra, `nature`, `postable` i nadređeni konto su **zaključani** čim je plan aktivan (A1); promjena = „Zamijeni konto” (novi red sa `replacesId`, stari deaktiviran, pravila se prevezuju od datuma). Naziv/opis se smiju mijenjati uz audit (`before/after`). |
-| Promjena predloška ne dira ZEV | `ZevChart` je kopija; nova verzija predloška se ZEV-u nudi tek izričitom radnjom (Faza A2+: pregled razlika, ništa automatski) |
+| Promjena predloška ne dira ZEV | `ZevChart` je kopija; nova verzija predloška se ZEV-u nudi tek izričitom radnjom. *Isporučeno u 3.2.0:* „Pregledaj izmjene” (`/knjigovodstvo/izmjene`) — računovođa bira nova konta i nove nazive; promjena značenja i uklonjena konta su samo informacija; `ZevChart.syncedTemplateId` pamti pregledanu verziju |
 | Produkcioni predložak | dodjela ZEV-u traži `status = REVIEWED` sa `source`, `reviewedBy`, `reviewedAt`; `DEMO` samo za demo ZEV (§9 A-Q5) |
 
 ### 3.5 Analitičke dimenzije (§5 zadatka)

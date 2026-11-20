@@ -52,9 +52,9 @@ Sva prava se provjeravaju u servisnom sloju (`src/server/services/*` + `src/serv
 | Preuzimanje | sve | sve | objavljeni + svoji |
 | **Knjigovodstvo** (Faza A1, `Plans/kontni-plan-i-knjizenje-plan.md` §3.7; mogućnosti u `src/lib/accountingCapabilities.ts`) |
 | Kontni plan i poslovne godine — pregled (`ledger.view`) | ✔ | ✔ | – |
-| Kontni plan ZEV-a — dodjela iz predloška, aktivacija, povlačenje, konta, deaktivacija, zamjena (`chart.edit`) | – | ✔ | – |
+| Kontni plan ZEV-a — dodjela iz predloška, aktivacija, povlačenje, konta, deaktivacija, zamjena, preuzimanje izmjena iz nove verzije predloška (`chart.edit`) | – | ✔ | – |
 | Otvaranje poslovne godine (`period.open`) | – | ✔ | – |
-| Kontni predlošci (kontni okviri) — izrada, uvoz, stručna provjera, verzije | samo super admin (platforma) | | |
+| Kontni predlošci (kontni okviri) — izrada, uvoz, pojedinačna konta u nacrtu, stručna provjera, verzije | samo super admin (platforma) | | |
 | **Sistem** |
 | Izvještaji + CSV izvoz | ✔ | ✔ | – |
 | Podešavanja (pravni parametri) | ✔ | pregled | – |
