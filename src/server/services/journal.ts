@@ -262,7 +262,19 @@ async function nextNumber(tx: Tx, zevId: string, yearId: string, yearLabel: stri
 export async function postEntry(actor: Actor, id: string) {
   requireCapability(actor, "journal.post");
   const zevId = requireZev(actor);
-  const posted = await prisma.$transaction(async (tx) => {
+  const posted = await prisma.$transaction((tx) => postEntryInTx(tx, zevId, id, actor.userId));
+  await audit(actor, { action: "journal.post", targetType: "JournalEntry", targetId: id, after: { number: posted.number, postingDate: posted.postingDate } });
+  // Proknjiženo početno stanje uključuje automatsko knjiženje (B2-Q1): odmah se izvode događaji od datuma početka.
+  if (posted.kind === "OPENING") {
+    const { afterLedgerChange } = await import("@/server/services/ledgerEvents");
+    await afterLedgerChange(zevId, actor.userId);
+  }
+  return posted;
+}
+
+/** Jezgro knjiženja (bez provjere prava) — koriste ga `postEntry` i automatsko knjiženje događaja (B2). */
+export async function postEntryInTx(tx: Tx, zevId: string, id: string, userId: string) {
+  {
     await tx.$queryRaw`SELECT id FROM "JournalEntry" WHERE id = ${id} AND "zevId" = ${zevId} FOR UPDATE`;
     const e = await tx.journalEntry.findUniqueOrThrow({ where: { id, zevId }, include: { lines: true, year: true } });
     if (e.status !== "DRAFT") throw new Error("Nalog je već proknjižen.");
@@ -282,10 +294,8 @@ export async function postEntry(actor: Actor, id: string) {
       if (!r.ready) throw new Error(r.problems.join(" "));
     }
     const number = await nextNumber(tx, zevId, e.yearId, e.year.label, e.kind === "OPENING" ? "PS" : "NK");
-    return tx.journalEntry.update({ where: { id }, data: { status: "POSTED", number, postedById: actor.userId, postedAt: new Date() } });
-  });
-  await audit(actor, { action: "journal.post", targetType: "JournalEntry", targetId: id, after: { number: posted.number, postingDate: posted.postingDate } });
-  return posted;
+    return tx.journalEntry.update({ where: { id }, data: { status: "POSTED", number, postedById: userId, postedAt: new Date() } });
+  }
 }
 
 /** Storno: novi proknjiženi nalog sa zamijenjenim stranama, vezom na original i razlogom, u otvorenom periodu. */
@@ -301,6 +311,7 @@ export async function reverseEntry(actor: Actor, id: string, input: { reason: st
     const orig = await tx.journalEntry.findUniqueOrThrow({ where: { id, zevId }, include: { lines: true, reversedBy: true } });
     if (orig.status !== "POSTED") throw new Error("Stornira se samo proknjižen nalog; nacrt se briše.");
     if (orig.kind === "REVERSAL") throw new Error("Storno nalog se ne stornira — knjižite novi nalog.");
+    if (orig.kind === "AUTO") throw new Error("Automatski nalog se stornira stornom dokumenta iz kojeg je nastao (faktura, uplata, raspored…).");
     if (orig.reversedBy) throw new Error(`Nalog je već storniran nalogom ${orig.reversedBy.number}.`);
     if (postingDate < orig.postingDate) throw new Error("Storno ne može biti prije datuma originalnog naloga.");
     // Početno stanje može biti na datum početka u budućnosti; njegov storno smije na taj isti datum.

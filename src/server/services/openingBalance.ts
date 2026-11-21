@@ -13,6 +13,7 @@ import { Prisma, type ControlRole } from "@/generated/prisma/client";
 import { dec, sumDecimals, ZERO } from "@/lib/money";
 import { endOfDay, formatDate } from "@/lib/i18n";
 import { checkLines, normalizeLines, type JournalLineInput } from "@/server/services/journal";
+import { allocationSplitRule, chargeTypePurpose, purposeSplit } from "@/server/services/purposeSplit";
 
 type Tx = Prisma.TransactionClient;
 type Decimal = Prisma.Decimal;
@@ -51,26 +52,9 @@ export type OpeningItem = {
 };
 
 /** Kad potraživanje/korekcija nema namjenu (fakture prije A2): prva aktivna namjena koja nije rezerva (B1-Q3 (c)). */
-async function defaultPurposeId(tx: Tx | typeof prisma, zevId: string) {
+export async function defaultPurposeId(tx: Tx | typeof prisma, zevId: string) {
   const p = await tx.fundPurpose.findFirst({ where: { zevId, active: true, isCommonReserve: false }, orderBy: { code: "asc" } });
   return p?.id ?? null;
-}
-
-/** Iznos podijeljen srazmjerno težinama, sa ostatkom zaokruživanja na najveću težinu (zbir je tačno `total`). */
-function splitProportionally(total: Decimal, weights: Map<string, Decimal>): Map<string, Decimal> {
-  const sum = sumDecimals([...weights.values()]);
-  const out = new Map<string, Decimal>();
-  if (sum.isZero()) return out;
-  let assigned = ZERO;
-  let largest: string | null = null;
-  for (const [k, w] of weights) {
-    const part = total.times(w).dividedBy(sum).toDecimalPlaces(2);
-    out.set(k, part);
-    assigned = assigned.plus(part);
-    if (!largest || w.gt(weights.get(largest)!)) largest = k;
-  }
-  if (largest) out.set(largest, out.get(largest)!.plus(total.minus(assigned)));
-  return out;
 }
 
 /**
@@ -100,26 +84,33 @@ export async function operationalSnapshot(tx: Tx | typeof prisma, zevId: string,
     });
   }
 
-  // Otvorene fakture: iznos − raspoređene uplate do dana, po namjeni linija (vrsta na liniji, pa vrsta stavke naknade).
+  // Otvorene fakture: iznos − raspoređene uplate do dana, po namjeni linija (pravilo vrste, pa podrazumijevana
+  // namjena vrste, pa ZEV-a). Naplaćeni dio se po namjeni dijeli istim pravilom raspodjele kao u automatskom
+  // knjiženju (B2-Q7), pa početno stanje i kasniji rasporedi ostaju usklađeni po namjeni.
+  const splitRule = await allocationSplitRule(tx, zevId);
   const invoices = await tx.invoice.findMany({
     where: { zevId, issueDate: { lte: asOf }, status: { in: ["ISSUED", "PAID", "CANCELLED", "CORRECTED"] } },
     include: {
       allocations: { where: { createdAt: { lte: asOf } }, select: { amount: true } },
-      lines: { include: { chargeType: { select: { defaultPurposeId: true } }, chargeItem: { select: { chargeType: { select: { defaultPurposeId: true } } } } } },
+      lines: { orderBy: { order: "asc" }, select: { amount: true, chargeTypeId: true, chargeItem: { select: { chargeTypeId: true } } } },
     },
     orderBy: { issueDate: "asc" },
   });
   for (const inv of invoices) {
     if ((inv.status === "CANCELLED" || inv.status === "CORRECTED") && !cancelledAfter(asOf, inv.cancelledAt)) continue;
-    const open = dec(inv.total.toString()).minus(sumDecimals(inv.allocations.map((a) => dec(a.amount.toString()))));
+    const paid = sumDecimals(inv.allocations.map((a) => dec(a.amount.toString())));
+    const open = dec(inv.total.toString()).minus(paid);
     if (open.lte(0)) continue;
     const weights = new Map<string, Decimal>();
     for (const l of inv.lines) {
-      const purpose = l.chargeType?.defaultPurposeId ?? l.chargeItem?.chargeType?.defaultPurposeId ?? fallbackPurpose ?? "";
+      const typeId = l.chargeTypeId ?? l.chargeItem?.chargeTypeId ?? null;
+      const purpose = (typeId ? await chargeTypePurpose(tx, zevId, typeId, inv.issueDate) : null) ?? fallbackPurpose ?? "";
       weights.set(purpose, (weights.get(purpose) ?? ZERO).plus(dec(l.amount.toString())));
     }
     if (weights.size === 0) weights.set(fallbackPurpose ?? "", dec(inv.total.toString()));
-    for (const [purpose, amount] of splitProportionally(open, weights)) {
+    const paidBy = purposeSplit(splitRule, weights, paid);
+    for (const [purpose, full] of weights) {
+      const amount = full.minus(paidBy.get(purpose) ?? ZERO);
       if (amount.isZero()) continue;
       items.push({
         sourceType: "INVOICE", sourceId: purpose ? `${inv.id}:${purpose}` : inv.id, role: "OWNER_RECEIVABLE", moneyAccountId: null,
@@ -199,18 +190,18 @@ export async function operationalSnapshot(tx: Tx | typeof prisma, zevId: string,
 // ---------------------------------------------------------------------------
 
 type ControlRow = { role: ControlRole; moneyAccountId: string | null; purposeId: string | null; accountId: string };
-const controlKey = (r: { role: ControlRole; moneyAccountId: string | null; purposeId: string | null }) =>
+export const controlKey = (r: { role: ControlRole; moneyAccountId: string | null; purposeId: string | null }) =>
   `${r.role}:${r.moneyAccountId ?? "-"}:${r.purposeId ?? "-"}`;
 
 /** Važeće kontrolno konto po ključu (uloga, račun novca, namjena) na datum — najkasnije `validFrom` do tog dana. */
-async function controlAccountsAt(tx: Tx | typeof prisma, zevId: string, at: Date) {
+export async function controlAccountsAt(tx: Tx | typeof prisma, zevId: string, at: Date) {
   const rows = await tx.zevControlAccount.findMany({ where: { zevId, validFrom: { lte: at } }, orderBy: [{ validFrom: "desc" }, { createdAt: "desc" }] });
   const map = new Map<string, ControlRow>();
   for (const r of rows) if (!map.has(controlKey(r))) map.set(controlKey(r), r);
   return map;
 }
 
-const ROLE_LABEL: Record<ControlRole, string> = {
+export const ROLE_LABEL: Record<ControlRole, string> = {
   MONEY_ACCOUNT: "račun novca", OWNER_RECEIVABLE: "potraživanja od vlasnika", OWNER_ADVANCE: "avansi vlasnika",
   UNIDENTIFIED_RECEIPTS: "neidentifikovane uplate", SUPPLIER_PAYABLE: "obaveze prema dobavljačima",
 };
@@ -257,10 +248,18 @@ export async function prepareOpening(actor: Actor, input: { startDate: string })
     }
     const draft = existing.find((e) => e.status === "DRAFT") ?? null;
     if (draft && draft.yearId !== period.yearId) throw new Error("Postoji nacrt početnog stanja za drugu godinu — obrišite ga prije nove pripreme.");
-    // Poslije storna novo početno stanje samo dok u godini nema drugih proknjiženih naloga (plan §4).
-    if (existing.some((e) => e.status === "POSTED")) {
-      const others = await tx.journalEntry.count({ where: { zevId, yearId: period.yearId, status: "POSTED", kind: { in: ["MANUAL", "AUTO"] } } });
-      if (others > 0) throw new Error("U godini već postoje proknjiženi nalozi — novo početno stanje više nije moguće.");
+    // Poslije storna novo početno stanje samo dok u godini nema ručnih proknjiženih naloga (plan §4). Automatski
+    // nalozi (B2) nastaju iz evidencije poslije datuma početka i ne zavise od iznosa početnog stanja — ali novo
+    // početno stanje tada mora imati isti datum početka, inače bi se događaji između dva datuma brojali dvaput.
+    const reversed = existing.filter((e) => e.status === "POSTED");
+    if (reversed.length > 0) {
+      const manual = await tx.journalEntry.count({ where: { zevId, yearId: period.yearId, status: "POSTED", kind: "MANUAL" } });
+      if (manual > 0) throw new Error("U godini već postoje proknjiženi ručni nalozi — novo početno stanje više nije moguće.");
+      const auto = await tx.journalEntry.count({ where: { zevId, status: "POSTED", kind: "AUTO" } });
+      const lastStart = reversed.sort((x, y) => y.createdAt.getTime() - x.createdAt.getTime())[0].postingDate;
+      if (auto > 0 && lastStart.getTime() !== start.getTime()) {
+        throw new Error(`Već postoje automatski nalozi od ${formatDate(lastStart)} — novo početno stanje mora imati isti datum početka.`);
+      }
     }
 
     const items = await operationalSnapshot(tx, zevId, asOfIso);

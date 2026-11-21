@@ -126,6 +126,7 @@ export const ModelName = {
   PostingSchemaApproval: 'PostingSchemaApproval',
   JournalEntry: 'JournalEntry',
   JournalLine: 'JournalLine',
+  AccountingEvent: 'AccountingEvent',
   JournalCounter: 'JournalCounter',
   PeriodReopenRequest: 'PeriodReopenRequest',
   OnboardingInvite: 'OnboardingInvite',
@@ -1483,10 +1484,30 @@ export const JournalLineScalarFieldEnum = {
   purposeId: 'purposeId',
   description: 'description',
   openingSourceType: 'openingSourceType',
-  openingSourceId: 'openingSourceId'
+  openingSourceId: 'openingSourceId',
+  ruleId: 'ruleId'
 } as const
 
 export type JournalLineScalarFieldEnum = (typeof JournalLineScalarFieldEnum)[keyof typeof JournalLineScalarFieldEnum]
+
+
+export const AccountingEventScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  kind: 'kind',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  eventDate: 'eventDate',
+  sourceCreatedAt: 'sourceCreatedAt',
+  amount: 'amount',
+  status: 'status',
+  statusDetail: 'statusDetail',
+  journalEntryId: 'journalEntryId',
+  createdAt: 'createdAt',
+  processedAt: 'processedAt'
+} as const
+
+export type AccountingEventScalarFieldEnum = (typeof AccountingEventScalarFieldEnum)[keyof typeof AccountingEventScalarFieldEnum]
 
 
 export const JournalCounterScalarFieldEnum = {

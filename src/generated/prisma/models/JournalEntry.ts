@@ -300,6 +300,7 @@ export type JournalEntryWhereInput = {
   reversalOf?: Prisma.XOR<Prisma.JournalEntryNullableScalarRelationFilter, Prisma.JournalEntryWhereInput> | null
   reversedBy?: Prisma.XOR<Prisma.JournalEntryNullableScalarRelationFilter, Prisma.JournalEntryWhereInput> | null
   lines?: Prisma.JournalLineListRelationFilter
+  event?: Prisma.XOR<Prisma.AccountingEventNullableScalarRelationFilter, Prisma.AccountingEventWhereInput> | null
 }
 
 export type JournalEntryOrderByWithRelationInput = {
@@ -328,6 +329,7 @@ export type JournalEntryOrderByWithRelationInput = {
   reversalOf?: Prisma.JournalEntryOrderByWithRelationInput
   reversedBy?: Prisma.JournalEntryOrderByWithRelationInput
   lines?: Prisma.JournalLineOrderByRelationAggregateInput
+  event?: Prisma.AccountingEventOrderByWithRelationInput
 }
 
 export type JournalEntryWhereUniqueInput = Prisma.AtLeast<{
@@ -360,6 +362,7 @@ export type JournalEntryWhereUniqueInput = Prisma.AtLeast<{
   reversalOf?: Prisma.XOR<Prisma.JournalEntryNullableScalarRelationFilter, Prisma.JournalEntryWhereInput> | null
   reversedBy?: Prisma.XOR<Prisma.JournalEntryNullableScalarRelationFilter, Prisma.JournalEntryWhereInput> | null
   lines?: Prisma.JournalLineListRelationFilter
+  event?: Prisma.XOR<Prisma.AccountingEventNullableScalarRelationFilter, Prisma.AccountingEventWhereInput> | null
 }, "id" | "reversalOfId" | "zevId_number">
 
 export type JournalEntryOrderByWithAggregationInput = {
@@ -434,6 +437,7 @@ export type JournalEntryCreateInput = {
   reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
   reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateInput = {
@@ -458,6 +462,7 @@ export type JournalEntryUncheckedCreateInput = {
   updatedAt?: Date | string
   reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUpdateInput = {
@@ -482,6 +487,7 @@ export type JournalEntryUpdateInput = {
   reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
   reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateInput = {
@@ -506,6 +512,7 @@ export type JournalEntryUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryCreateManyInput = {
@@ -857,6 +864,22 @@ export type JournalEntryUpdateOneRequiredWithoutLinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JournalEntryUpdateToOneWithWhereWithoutLinesInput, Prisma.JournalEntryUpdateWithoutLinesInput>, Prisma.JournalEntryUncheckedUpdateWithoutLinesInput>
 }
 
+export type JournalEntryCreateNestedOneWithoutEventInput = {
+  create?: Prisma.XOR<Prisma.JournalEntryCreateWithoutEventInput, Prisma.JournalEntryUncheckedCreateWithoutEventInput>
+  connectOrCreate?: Prisma.JournalEntryCreateOrConnectWithoutEventInput
+  connect?: Prisma.JournalEntryWhereUniqueInput
+}
+
+export type JournalEntryUpdateOneWithoutEventNestedInput = {
+  create?: Prisma.XOR<Prisma.JournalEntryCreateWithoutEventInput, Prisma.JournalEntryUncheckedCreateWithoutEventInput>
+  connectOrCreate?: Prisma.JournalEntryCreateOrConnectWithoutEventInput
+  upsert?: Prisma.JournalEntryUpsertWithoutEventInput
+  disconnect?: Prisma.JournalEntryWhereInput | boolean
+  delete?: Prisma.JournalEntryWhereInput | boolean
+  connect?: Prisma.JournalEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JournalEntryUpdateToOneWithWhereWithoutEventInput, Prisma.JournalEntryUpdateWithoutEventInput>, Prisma.JournalEntryUncheckedUpdateWithoutEventInput>
+}
+
 export type JournalEntryCreateWithoutZevInput = {
   id?: string
   kind: $Enums.JournalKind
@@ -878,6 +901,7 @@ export type JournalEntryCreateWithoutZevInput = {
   reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
   reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateWithoutZevInput = {
@@ -901,6 +925,7 @@ export type JournalEntryUncheckedCreateWithoutZevInput = {
   updatedAt?: Date | string
   reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryCreateOrConnectWithoutZevInput = {
@@ -975,6 +1000,7 @@ export type JournalEntryCreateWithoutYearInput = {
   reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
   reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateWithoutYearInput = {
@@ -998,6 +1024,7 @@ export type JournalEntryUncheckedCreateWithoutYearInput = {
   updatedAt?: Date | string
   reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryCreateOrConnectWithoutYearInput = {
@@ -1047,6 +1074,7 @@ export type JournalEntryCreateWithoutPeriodInput = {
   reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
   reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateWithoutPeriodInput = {
@@ -1070,6 +1098,7 @@ export type JournalEntryUncheckedCreateWithoutPeriodInput = {
   updatedAt?: Date | string
   reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryCreateOrConnectWithoutPeriodInput = {
@@ -1119,6 +1148,7 @@ export type JournalEntryCreateWithoutReversedByInput = {
   period: Prisma.FiscalPeriodCreateNestedOneWithoutJournalEntriesInput
   reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
   lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateWithoutReversedByInput = {
@@ -1142,6 +1172,7 @@ export type JournalEntryUncheckedCreateWithoutReversedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryCreateOrConnectWithoutReversedByInput = {
@@ -1170,6 +1201,7 @@ export type JournalEntryCreateWithoutReversalOfInput = {
   period: Prisma.FiscalPeriodCreateNestedOneWithoutJournalEntriesInput
   reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateWithoutReversalOfInput = {
@@ -1193,6 +1225,7 @@ export type JournalEntryUncheckedCreateWithoutReversalOfInput = {
   updatedAt?: Date | string
   reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
   lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryCreateOrConnectWithoutReversalOfInput = {
@@ -1232,6 +1265,7 @@ export type JournalEntryUpdateWithoutReversedByInput = {
   period?: Prisma.FiscalPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
   reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
   lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateWithoutReversedByInput = {
@@ -1255,6 +1289,7 @@ export type JournalEntryUncheckedUpdateWithoutReversedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUpsertWithoutReversalOfInput = {
@@ -1289,6 +1324,7 @@ export type JournalEntryUpdateWithoutReversalOfInput = {
   period?: Prisma.FiscalPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
   reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateWithoutReversalOfInput = {
@@ -1312,6 +1348,7 @@ export type JournalEntryUncheckedUpdateWithoutReversalOfInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryCreateWithoutLinesInput = {
@@ -1335,6 +1372,7 @@ export type JournalEntryCreateWithoutLinesInput = {
   period: Prisma.FiscalPeriodCreateNestedOneWithoutJournalEntriesInput
   reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
   reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
+  event?: Prisma.AccountingEventCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryUncheckedCreateWithoutLinesInput = {
@@ -1358,6 +1396,7 @@ export type JournalEntryUncheckedCreateWithoutLinesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
+  event?: Prisma.AccountingEventUncheckedCreateNestedOneWithoutJournalEntryInput
 }
 
 export type JournalEntryCreateOrConnectWithoutLinesInput = {
@@ -1397,6 +1436,7 @@ export type JournalEntryUpdateWithoutLinesInput = {
   period?: Prisma.FiscalPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
   reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
   reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateWithoutLinesInput = {
@@ -1420,6 +1460,119 @@ export type JournalEntryUncheckedUpdateWithoutLinesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
+}
+
+export type JournalEntryCreateWithoutEventInput = {
+  id?: string
+  kind: $Enums.JournalKind
+  number?: string | null
+  documentDate: Date | string
+  postingDate: Date | string
+  description: string
+  status?: $Enums.JournalStatus
+  reversalReason?: string | null
+  sourceType?: string | null
+  sourceId?: string | null
+  createdById: string
+  postedById?: string | null
+  postedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutJournalEntriesInput
+  year: Prisma.FiscalYearCreateNestedOneWithoutJournalEntriesInput
+  period: Prisma.FiscalPeriodCreateNestedOneWithoutJournalEntriesInput
+  reversalOf?: Prisma.JournalEntryCreateNestedOneWithoutReversedByInput
+  reversedBy?: Prisma.JournalEntryCreateNestedOneWithoutReversalOfInput
+  lines?: Prisma.JournalLineCreateNestedManyWithoutEntryInput
+}
+
+export type JournalEntryUncheckedCreateWithoutEventInput = {
+  id?: string
+  zevId: string
+  yearId: string
+  periodId: string
+  kind: $Enums.JournalKind
+  number?: string | null
+  documentDate: Date | string
+  postingDate: Date | string
+  description: string
+  status?: $Enums.JournalStatus
+  reversalOfId?: string | null
+  reversalReason?: string | null
+  sourceType?: string | null
+  sourceId?: string | null
+  createdById: string
+  postedById?: string | null
+  postedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reversedBy?: Prisma.JournalEntryUncheckedCreateNestedOneWithoutReversalOfInput
+  lines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type JournalEntryCreateOrConnectWithoutEventInput = {
+  where: Prisma.JournalEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.JournalEntryCreateWithoutEventInput, Prisma.JournalEntryUncheckedCreateWithoutEventInput>
+}
+
+export type JournalEntryUpsertWithoutEventInput = {
+  update: Prisma.XOR<Prisma.JournalEntryUpdateWithoutEventInput, Prisma.JournalEntryUncheckedUpdateWithoutEventInput>
+  create: Prisma.XOR<Prisma.JournalEntryCreateWithoutEventInput, Prisma.JournalEntryUncheckedCreateWithoutEventInput>
+  where?: Prisma.JournalEntryWhereInput
+}
+
+export type JournalEntryUpdateToOneWithWhereWithoutEventInput = {
+  where?: Prisma.JournalEntryWhereInput
+  data: Prisma.XOR<Prisma.JournalEntryUpdateWithoutEventInput, Prisma.JournalEntryUncheckedUpdateWithoutEventInput>
+}
+
+export type JournalEntryUpdateWithoutEventInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumJournalKindFieldUpdateOperationsInput | $Enums.JournalKind
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
+  reversalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  postedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutJournalEntriesNestedInput
+  year?: Prisma.FiscalYearUpdateOneRequiredWithoutJournalEntriesNestedInput
+  period?: Prisma.FiscalPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+  reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
+  reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
+  lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+}
+
+export type JournalEntryUncheckedUpdateWithoutEventInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  yearId?: Prisma.StringFieldUpdateOperationsInput | string
+  periodId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumJournalKindFieldUpdateOperationsInput | $Enums.JournalKind
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  postedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
+  lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type JournalEntryCreateManyZevInput = {
@@ -1464,6 +1617,7 @@ export type JournalEntryUpdateWithoutZevInput = {
   reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
   reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateWithoutZevInput = {
@@ -1487,6 +1641,7 @@ export type JournalEntryUncheckedUpdateWithoutZevInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateManyWithoutZevInput = {
@@ -1552,6 +1707,7 @@ export type JournalEntryUpdateWithoutYearInput = {
   reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
   reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateWithoutYearInput = {
@@ -1575,6 +1731,7 @@ export type JournalEntryUncheckedUpdateWithoutYearInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateManyWithoutYearInput = {
@@ -1640,6 +1797,7 @@ export type JournalEntryUpdateWithoutPeriodInput = {
   reversalOf?: Prisma.JournalEntryUpdateOneWithoutReversedByNestedInput
   reversedBy?: Prisma.JournalEntryUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateWithoutPeriodInput = {
@@ -1663,6 +1821,7 @@ export type JournalEntryUncheckedUpdateWithoutPeriodInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reversedBy?: Prisma.JournalEntryUncheckedUpdateOneWithoutReversalOfNestedInput
   lines?: Prisma.JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  event?: Prisma.AccountingEventUncheckedUpdateOneWithoutJournalEntryNestedInput
 }
 
 export type JournalEntryUncheckedUpdateManyWithoutPeriodInput = {
@@ -1743,6 +1902,7 @@ export type JournalEntrySelect<ExtArgs extends runtime.Types.Extensions.Internal
   reversalOf?: boolean | Prisma.JournalEntry$reversalOfArgs<ExtArgs>
   reversedBy?: boolean | Prisma.JournalEntry$reversedByArgs<ExtArgs>
   lines?: boolean | Prisma.JournalEntry$linesArgs<ExtArgs>
+  event?: boolean | Prisma.JournalEntry$eventArgs<ExtArgs>
   _count?: boolean | Prisma.JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["journalEntry"]>
 
@@ -1828,6 +1988,7 @@ export type JournalEntryInclude<ExtArgs extends runtime.Types.Extensions.Interna
   reversalOf?: boolean | Prisma.JournalEntry$reversalOfArgs<ExtArgs>
   reversedBy?: boolean | Prisma.JournalEntry$reversedByArgs<ExtArgs>
   lines?: boolean | Prisma.JournalEntry$linesArgs<ExtArgs>
+  event?: boolean | Prisma.JournalEntry$eventArgs<ExtArgs>
   _count?: boolean | Prisma.JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JournalEntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1852,6 +2013,10 @@ export type $JournalEntryPayload<ExtArgs extends runtime.Types.Extensions.Intern
     reversalOf: Prisma.$JournalEntryPayload<ExtArgs> | null
     reversedBy: Prisma.$JournalEntryPayload<ExtArgs> | null
     lines: Prisma.$JournalLinePayload<ExtArgs>[]
+    /**
+     * Automatski nalog (B2): događaj iz kojeg je nastao.
+     */
+    event: Prisma.$AccountingEventPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2276,6 +2441,7 @@ export interface Prisma__JournalEntryClient<T, Null = never, ExtArgs extends run
   reversalOf<T extends Prisma.JournalEntry$reversalOfArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalEntry$reversalOfArgs<ExtArgs>>): Prisma.Prisma__JournalEntryClient<runtime.Types.Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reversedBy<T extends Prisma.JournalEntry$reversedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalEntry$reversedByArgs<ExtArgs>>): Prisma.Prisma__JournalEntryClient<runtime.Types.Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   lines<T extends Prisma.JournalEntry$linesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalEntry$linesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  event<T extends Prisma.JournalEntry$eventArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalEntry$eventArgs<ExtArgs>>): Prisma.Prisma__AccountingEventClient<runtime.Types.Result.GetResult<Prisma.$AccountingEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2784,6 +2950,25 @@ export type JournalEntry$linesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
+}
+
+/**
+ * JournalEntry.event
+ */
+export type JournalEntry$eventArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AccountingEvent
+   */
+  select?: Prisma.AccountingEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AccountingEvent
+   */
+  omit?: Prisma.AccountingEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AccountingEventInclude<ExtArgs> | null
+  where?: Prisma.AccountingEventWhereInput
 }
 
 /**

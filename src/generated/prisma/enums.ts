@@ -557,6 +557,18 @@ export const JournalKind = {
 export type JournalKind = (typeof JournalKind)[keyof typeof JournalKind]
 
 
+export const AccountingEventStatus = {
+  PENDING: 'PENDING',
+  POSTED: 'POSTED',
+  WAITING_RULE: 'WAITING_RULE',
+  WAITING_SCHEMA: 'WAITING_SCHEMA',
+  WAITING_PREDECESSOR: 'WAITING_PREDECESSOR',
+  WAITING_PERIOD: 'WAITING_PERIOD'
+} as const
+
+export type AccountingEventStatus = (typeof AccountingEventStatus)[keyof typeof AccountingEventStatus]
+
+
 export const OnboardingInviteStatus = {
   ACTIVE: 'ACTIVE',
   ACCEPTED: 'ACCEPTED',

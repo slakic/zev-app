@@ -61,6 +61,7 @@ Sva prava se provjeravaju u servisnom sloju (`src/server/services/*` + `src/serv
 | Nacrt ručnog naloga — unos, izmjena, brisanje (`journal.prepare`) | pregled | ✔ | – |
 | Knjiženje naloga (`journal.post`) i storno (`journal.reverse`) | pregled | ✔ | – |
 | Nalog početnog stanja — prijedlog iz evidencije, ručne stavke (`journal.prepare`), knjiženje tek uz usklađivanje (`journal.post`) | pregled | ✔ | – |
+| Automatsko knjiženje — pregled događaja (`ledger.view`); „Obradi na čekanju” i „Proknjiži u tekući period” (`journal.post`); knjiženje se pokreće i samo poslije svake radnje sa fakturom ili uplatom, bez obzira ko je radi | pregled | ✔ | – |
 | Zatvaranje perioda (`period.close`) | – | ✔ | – |
 | Zahtjev i odluka o ponovnom otvaranju perioda — dvije osobe, različite uloge (`period.reopen`) | ✔ | ✔ | – |
 | Kontni predlošci (kontni okviri) — izrada, uvoz, pojedinačna konta u nacrtu, stručna provjera, verzije | samo super admin (platforma) | | |

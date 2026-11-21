@@ -1276,6 +1276,23 @@ export type EnumJournalStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
 }
 
+export type EnumAccountingEventStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountingEventStatus | Prisma.EnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountingEventStatusFilter<$PrismaModel> | $Enums.AccountingEventStatus
+}
+
+export type EnumAccountingEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountingEventStatus | Prisma.EnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountingEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.AccountingEventStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountingEventStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountingEventStatusFilter<$PrismaModel>
+}
+
 export type EnumOnboardingInviteStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
   in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
@@ -2597,6 +2614,23 @@ export type NestedEnumJournalStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumAccountingEventStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountingEventStatus | Prisma.EnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountingEventStatusFilter<$PrismaModel> | $Enums.AccountingEventStatus
+}
+
+export type NestedEnumAccountingEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountingEventStatus | Prisma.EnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountingEventStatus[] | Prisma.ListEnumAccountingEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountingEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.AccountingEventStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountingEventStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountingEventStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumOnboardingInviteStatusFilter<$PrismaModel = never> = {

@@ -22,18 +22,18 @@ enum Role {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String
-  roles        Role[]    // TODO(multitenancy): superseded by Membership.role once the auth layer
-                          // is cut over (see docs/multitenancy-plan.md) — kept for now so existing
-                          // auth code keeps working unchanged; not yet read by anything new.
+  id                     String          @id @default(cuid())
+  email                  String          @unique
+  passwordHash           String
+  roles                  Role[] // TODO(multitenancy): superseded by Membership.role once the auth layer
+  // is cut over (see docs/multitenancy-plan.md) — kept for now so existing
+  // auth code keeps working unchanged; not yet read by anything new.
   /// Platform-level super admin (creates tenants, unrelated to any single Zev). Not a Membership
   /// row — see docs/multitenancy-plan.md §4.3.
-  isSuperAdmin Boolean   @default(false)
-  active       Boolean   @default(true)
-  deactivatedAt DateTime?
-  passwordResetTokenHash String?   // sha256(token); cleared on use, overwritten by a new request
+  isSuperAdmin           Boolean         @default(false)
+  active                 Boolean         @default(true)
+  deactivatedAt          DateTime?
+  passwordResetTokenHash String? // sha256(token); cleared on use, overwritten by a new request
   passwordResetExpiresAt DateTime? // null = no pending reset request
   /// LEGACY — dropped in the follow-up migration once Party.userId (below) is confirmed
   /// live in production (Plans/party-per-tenant-plan.md §2.3, §3.4). Double-written
@@ -41,59 +41,59 @@ model User {
   /// that fix lands (only session.ts's dead SessionUser type used to read it, and that's
   /// removed in the same change) — kept only so a rollback to the prior deployment during
   /// the transition window stays correct.
-  party        Party?    @relation("LegacyUserParty", fields: [partyId], references: [id])
-  partyId      String?   @unique
+  party                  Party?          @relation("LegacyUserParty", fields: [partyId], references: [id])
+  partyId                String?         @unique
   /// One Party per Zev this user holds a Membership in and is also a real person/org in
   /// that tenant's own records — not one Party ever, globally (Plans/party-per-tenant-plan.md
   /// §2). Most users have at most one; a platform admin or a service account (e.g. an
   /// accounting firm) with Memberships in several tenants can have one per tenant.
-  parties      Party[]   @relation("PartyAccount")
-  sessions     Session[]
-  memberships  Membership[]
-  mcpConnections McpConnection[]
+  parties                Party[]         @relation("PartyAccount")
+  sessions               Session[]
+  memberships            Membership[]
+  mcpConnections         McpConnection[]
   /// Lične postavke prikaza (Plans/pristupacni-prikaz-plan.md, D-P1 A): po osobi, ne po ZEV-u,
   /// da važe na svakom uređaju. uiTextLarge = „Veći tekst i dugmad” (data-text="large" na <html>);
   /// uiLayoutSimple = „Jednostavan prikaz” (faza B — polje postoji, UI još ne);
   /// uiPrefsAskedAt = kada je korisniku jednom postavljeno pitanje o prikazu (D-P2 A), null = još nije.
-  uiTextLarge    Boolean   @default(false)
-  uiLayoutSimple Boolean   @default(false)
-  uiPrefsAskedAt DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  uiTextLarge            Boolean         @default(false)
+  uiLayoutSimple         Boolean         @default(false)
+  uiPrefsAskedAt         DateTime?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
   /// Which ZEV this session is currently acting within. Null right after login until
   /// resolved (see getAuthContext in session.ts): auto-picked when the user has exactly
   /// one Membership, left null for a user with none (e.g. a super admin with no chosen
   /// tenant yet). Nulled automatically if that Zev is ever deleted.
-  activeZev   Zev?     @relation(fields: [activeZevId], references: [id], onDelete: SetNull)
+  activeZev   Zev?      @relation(fields: [activeZevId], references: [id], onDelete: SetNull)
   activeZevId String?
-  expiresAt DateTime
-  revokedAt DateTime?
+  expiresAt   DateTime
+  revokedAt   DateTime?
   /// sha256(ip) — kept for correlation with AuditEvent.ipHash (rate-limiting, the auth.login
   /// audit trail). Despite the column name "ip" in the DB (unchanged to avoid a migration),
   /// this has only ever been a one-way hash, never a raw address — see `ipAddress` below for
   /// the one deliberate exception (Plans/live-sessions-admin-plan.md §O1).
-  ipHash    String?  @map("ip")
+  ipHash      String?   @map("ip")
   /// Raw IP address, super-admin-only display (Plans/live-sessions-admin-plan.md §O1) — a
   /// deliberate, narrowly-scoped exception to this app's otherwise hash-only IP handling
   /// (AuditEvent.ipHash, Vote.ipHash). Lives only as long as the session itself: cleared on
   /// logout/revocation and by lazy cleanup once expired (never backfillable for sessions
   /// created before this column existed — ipHash cannot be reversed). Never copied into
   /// AuditEvent, which is append-only and could never un-store it.
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
   /// Throttled "seen" heartbeat (Plans/live-sessions-admin-plan.md §O2, Faza 2) — updated at
   /// most once per 5 minutes from getAuthContext(), not on every request, so a session that's
   /// just an open, idle tab doesn't look identical to one someone actively left running vs.
   /// one whose owner closed the browser hours ago. Null until the first throttled write after
   /// this column existed. "Aktivan sada" in /admin/sesije means < 15 minutes old.
-  lastSeenAt DateTime?
+  lastSeenAt  DateTime?
 
   @@index([userId])
   @@index([activeZevId])
@@ -106,72 +106,72 @@ enum PartyKind {
 
 /// A natural person or legal entity. Owners, occupants, proxies, officers all reference Party.
 model Party {
-  id                    String     @id @default(cuid())
+  id                      String                @id @default(cuid())
   // A Party always belongs to exactly one Zev (confirmed decision, docs/multitenancy-plan.md §8.3).
-  zev                   Zev        @relation(fields: [zevId], references: [id])
-  zevId                 String
-  kind                  PartyKind
-  firstName             String?
-  lastName              String?
-  orgName               String?
-  orgIdNumber           String?    // JIB/MB for organizations
-  email                 String?
-  phone                 String?
-  address               String?    // property/legal address
-  correspondenceAddress String?    // may differ from address
-  note                  String?
-  active                Boolean    @default(true)
+  zev                     Zev                   @relation(fields: [zevId], references: [id])
+  zevId                   String
+  kind                    PartyKind
+  firstName               String?
+  lastName                String?
+  orgName                 String?
+  orgIdNumber             String? // JIB/MB for organizations
+  email                   String?
+  phone                   String?
+  address                 String? // property/legal address
+  correspondenceAddress   String? // may differ from address
+  note                    String?
+  active                  Boolean               @default(true)
   /// Consent to receive/cast assembly votes electronically (see EVOTE_CONSENT_STATUSES in
   /// evoteConsent.ts): NONE | PENDING (form downloaded, not yet returned) | SIGNED | REVOKED.
   /// Kept a plain String (like Attachment.category) so it can evolve without a migration.
-  eVoteConsentStatus     String     @default("NONE")
-  eVoteConsentEmail      String?    // email named on the signed consent form
-  eVoteConsentDocumentId String?    // Attachment.id of the scanned signed copy (category CONSENT)
+  eVoteConsentStatus      String                @default("NONE")
+  eVoteConsentEmail       String? // email named on the signed consent form
+  eVoteConsentDocumentId  String? // Attachment.id of the scanned signed copy (category CONSENT)
   /// Vlasnik je izabrao da mu se svaka faktura izdata na njegovo ime dostavlja e-poštom (PDF u prilogu)
   /// na Party.email (Plans/invoice-email-delivery-plan.md). Istorija uključenja/isključenja se izvodi
   /// iz audit traga (party.invoice_email.enable/disable), isto kao kod e-glasanja.
-  invoiceEmailDelivery   Boolean   @default(false)
-  invoiceEmailDeliveryAt DateTime? // kada je zadnji put uključeno; null dok je isključeno
+  invoiceEmailDelivery    Boolean               @default(false)
+  invoiceEmailDeliveryAt  DateTime? // kada je zadnji put uključeno; null dok je isključeno
   /// Portal account for this Party, if it has one — most Party rows never will (an owner
   /// with no e-mail, a tenant, a proxy-only contact). At most one Party per (userId, zevId)
   /// pair (see @@unique below): a login can hold this relation to a different Party in each
   /// tenant it has a Membership in, but never two in the same tenant.
-  user                  User?      @relation("PartyAccount", fields: [userId], references: [id])
-  userId                String?
+  user                    User?                 @relation("PartyAccount", fields: [userId], references: [id])
+  userId                  String?
   /// LEGACY back-reference only — required by Prisma for the other side of User.party
   /// above, never read by application code. Removed in the same migration that drops
   /// User.partyId (Plans/party-per-tenant-plan.md §2.3, §3.4).
-  legacyUser            User?      @relation("LegacyUserParty")
-  ownershipStakes       OwnershipStake[]
-  occupancies           Occupancy[]
-  proxiesGiven          Proxy[]    @relation("ProxyGrantor")
-  minutesTakerOf        Meeting[]  @relation("MeetingMinutesTaker")
-  proxiesHeld           Proxy[]    @relation("ProxyHolder")
-  officeTerms           OfficeTerm[]
-  invoices              Invoice[]  @relation("InvoiceDebtor")
-  invoiceRecipientFor   Unit[]     @relation("UnitInvoiceRecipient")
-  correspondenceFor     Unit[]     @relation("UnitCorrespondenceContact")
-  votingRepresentativeFor Unit[]   @relation("UnitVotingRepresentative")
-  payments              Payment[]
-  eligibleVoters        EligibleVoter[] @relation("EVOwner")
-  eligibleProxyFor      EligibleVoter[] @relation("EVProxy")
-  votesCast             Vote[]     @relation("VoteVoter")
-  votesRepresented      Vote[]     @relation("VoteRepresented")
-  ballotsReceived       Ballot[]   @relation("BallotRecipient")
-  reportedIssues        MaintenanceIssue[] @relation("IssueReporter")
-  responsibleForIssues  MaintenanceIssue[] @relation("IssueResponsible")
-  notifications         NotificationMessage[]
-  viberSubscriber       ViberSubscriber?
-  attendances           Attendance[]
-  balanceCorrections    BalanceCorrection[]
-  createdAt             DateTime   @default(now())
-  updatedAt             DateTime   @updatedAt
+  legacyUser              User?                 @relation("LegacyUserParty")
+  ownershipStakes         OwnershipStake[]
+  occupancies             Occupancy[]
+  proxiesGiven            Proxy[]               @relation("ProxyGrantor")
+  minutesTakerOf          Meeting[]             @relation("MeetingMinutesTaker")
+  proxiesHeld             Proxy[]               @relation("ProxyHolder")
+  officeTerms             OfficeTerm[]
+  invoices                Invoice[]             @relation("InvoiceDebtor")
+  invoiceRecipientFor     Unit[]                @relation("UnitInvoiceRecipient")
+  correspondenceFor       Unit[]                @relation("UnitCorrespondenceContact")
+  votingRepresentativeFor Unit[]                @relation("UnitVotingRepresentative")
+  payments                Payment[]
+  eligibleVoters          EligibleVoter[]       @relation("EVOwner")
+  eligibleProxyFor        EligibleVoter[]       @relation("EVProxy")
+  votesCast               Vote[]                @relation("VoteVoter")
+  votesRepresented        Vote[]                @relation("VoteRepresented")
+  ballotsReceived         Ballot[]              @relation("BallotRecipient")
+  reportedIssues          MaintenanceIssue[]    @relation("IssueReporter")
+  responsibleForIssues    MaintenanceIssue[]    @relation("IssueResponsible")
+  notifications           NotificationMessage[]
+  viberSubscriber         ViberSubscriber?
+  attendances             Attendance[]
+  balanceCorrections      BalanceCorrection[]
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  journalLines            JournalLine[]
 
   // NULLs are NOT considered equal in a Postgres unique index by default (NULLS DISTINCT),
   // so any number of Party rows with userId = NULL are allowed per Zev — only an actual
   // (userId, zevId) pair must be unique. See Plans/party-per-tenant-plan.md §2.2 point 1.
   @@unique([userId, zevId])
-  journalLines          JournalLine[]
 }
 
 // ---------------------------------------------------------------------------
@@ -183,97 +183,98 @@ model Party {
 /// of the previous one. The mapping of tier -> enabled features lives in application code
 /// (not the DB), so adding a feature to an existing tier never needs a migration.
 enum ZevTier {
-  BASIC          // zgrade/jedinice/vlasnici, skupština i odluke, organi, dokumenti, održavanje
-  BASIC_FINANCE  // + fakturisanje, uplate, troškovi, planovi, finansijski izvještaji
-  FULL           // + elektronsko glasanje
+  BASIC // zgrade/jedinice/vlasnici, skupština i odluke, organi, dokumenti, održavanje
+  BASIC_FINANCE // + fakturisanje, uplate, troškovi, planovi, finansijski izvještaji
+  FULL // + elektronsko glasanje
 }
 
 model Zev {
-  id                 String   @id @default(cuid())
-  legalName          String
-  shortName          String?
-  registrationNumber String?
-  jib                String?  // tax identifier
-  registeredAddress  String?
-  city               String?
-  municipality       String?
-  foundingDate       DateTime?
-  registrationDate   DateTime?
-  note               String?
+  id                        String                  @id @default(cuid())
+  legalName                 String
+  shortName                 String?
+  registrationNumber        String?
+  jib                       String? // tax identifier
+  registeredAddress         String?
+  city                      String?
+  municipality              String?
+  foundingDate              DateTime?
+  registrationDate          DateTime?
+  note                      String?
   /// Feature package — see ZevTier. Existing (pre-multitenancy) tenant defaults to FULL so
   /// nothing it already uses (finance + e-glasanje) becomes newly gated.
-  tier               ZevTier  @default(FULL)
+  tier                      ZevTier                 @default(FULL)
   /// Soft-disable a tenant without deleting its data (e.g. suspended account).
-  active             Boolean  @default(true)
+  active                    Boolean                 @default(true)
   /// Demo/test ZEV (seed): jedini kome se smije dodijeliti DEMO kontni predložak
   /// (Plans/kontni-plan-i-knjizenje-plan.md, A-Q5). Produkcioni ZEV ostaje false.
-  isDemo             Boolean  @default(false)
+  isDemo                    Boolean                 @default(false)
   /// Registar posebnih dijelova (FR, K-02): DRAFT -> ESTABLISHED; REVIEW = postojeci ZEV koji
   /// predsjednik tek treba da provjeri i utvrdi (FR-Q4).
-  unitRegisterStatus        UnitRegisterStatus @default(DRAFT)
-  unitRegisterVersion       Int                @default(0)
+  unitRegisterStatus        UnitRegisterStatus      @default(DRAFT)
+  unitRegisterVersion       Int                     @default(0)
   unitRegisterEstablishedAt DateTime?
   unitRegisterChanges       UnitRegisterChange[]
-  buildings          Building[]
-  accounts           MoneyAccount[]
-  memberships        Membership[]
-  sessions           Session[]
+  buildings                 Building[]
+  accounts                  MoneyAccount[]
+  memberships               Membership[]
+  sessions                  Session[]
   // Back-relations for the 32 models that gained a zevId FK in the NOT NULL + FK step
   // (docs/multitenancy-plan.md §6.3). Not actively queried from the Zev side today —
   // required by Prisma for a two-sided relation, kept here rather than declared one-sided.
   // 30 of the 32 kept that FK required; NotificationMessage and AuditEvent had it loosened
   // back to optional in the Korak 5 addendum (2026-09-08) — see those models' own comments.
-  parties               Party[]
-  entrances             Entrance[]
-  units                 Unit[]
-  ownershipStakes       OwnershipStake[]
-  occupancies           Occupancy[]
-  proxies               Proxy[]
-  officeTerms           OfficeTerm[]
-  allocationGroups      AllocationGroup[]
-  commonAssets          CommonAsset[]
-  meetings              Meeting[]
-  meetingNotes          MeetingNote[]
-  ballots               Ballot[]
-  votingRules           VotingRule[]
-  proposals             Proposal[]
-  votes                 Vote[]
-  transactionCategories TransactionCategory[]
-  finTransactions       FinTransaction[]
-  chargeItems           ChargeItem[]
-  invoiceBatches        InvoiceBatch[]
-  invoices              Invoice[]
-  bankImportBatches     BankImportBatch[]
-  incomingBankSms       IncomingBankSms[]
-  bankRecordMatches     BankRecordMatch[]
-  payments              Payment[]
-  balanceCorrections    BalanceCorrection[]
-  suppliers             Supplier[]
-  expenses              Expense[]
-  annualPlans           AnnualPlan[]
-  planItems             PlanItem[]
-  projects              Project[]
-  maintenanceIssues     MaintenanceIssue[]
-  workOrders            WorkOrder[]
-  documents             Document[]
-  attachments           Attachment[]
-  notificationMessages  NotificationMessage[]
-  auditEvents           AuditEvent[]
-  settings              Setting[]
-  zevCharts             ZevChart[]
-  fundPurposes          FundPurpose[]
-  chargeTypes           ChargeType[]
-  controlAccounts       ZevControlAccount[]
-  postingRules          PostingRule[]
-  schemaApprovals       PostingSchemaApproval[]
-  journalEntries        JournalEntry[]
-  journalLines          JournalLine[]
-  periodReopenRequests  PeriodReopenRequest[]
-  zevAccounts           ZevAccount[]
-  fiscalYears           FiscalYear[]
-  fiscalPeriods         FiscalPeriod[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  parties                   Party[]
+  entrances                 Entrance[]
+  units                     Unit[]
+  ownershipStakes           OwnershipStake[]
+  occupancies               Occupancy[]
+  proxies                   Proxy[]
+  officeTerms               OfficeTerm[]
+  allocationGroups          AllocationGroup[]
+  commonAssets              CommonAsset[]
+  meetings                  Meeting[]
+  meetingNotes              MeetingNote[]
+  ballots                   Ballot[]
+  votingRules               VotingRule[]
+  proposals                 Proposal[]
+  votes                     Vote[]
+  transactionCategories     TransactionCategory[]
+  finTransactions           FinTransaction[]
+  chargeItems               ChargeItem[]
+  invoiceBatches            InvoiceBatch[]
+  invoices                  Invoice[]
+  bankImportBatches         BankImportBatch[]
+  incomingBankSms           IncomingBankSms[]
+  bankRecordMatches         BankRecordMatch[]
+  payments                  Payment[]
+  balanceCorrections        BalanceCorrection[]
+  suppliers                 Supplier[]
+  expenses                  Expense[]
+  annualPlans               AnnualPlan[]
+  planItems                 PlanItem[]
+  projects                  Project[]
+  maintenanceIssues         MaintenanceIssue[]
+  workOrders                WorkOrder[]
+  documents                 Document[]
+  attachments               Attachment[]
+  notificationMessages      NotificationMessage[]
+  auditEvents               AuditEvent[]
+  settings                  Setting[]
+  zevCharts                 ZevChart[]
+  fundPurposes              FundPurpose[]
+  chargeTypes               ChargeType[]
+  controlAccounts           ZevControlAccount[]
+  postingRules              PostingRule[]
+  schemaApprovals           PostingSchemaApproval[]
+  journalEntries            JournalEntry[]
+  journalLines              JournalLine[]
+  accountingEvents          AccountingEvent[]
+  periodReopenRequests      PeriodReopenRequest[]
+  zevAccounts               ZevAccount[]
+  fiscalYears               FiscalYear[]
+  fiscalPeriods             FiscalPeriod[]
+  createdAt                 DateTime                @default(now())
+  updatedAt                 DateTime                @updatedAt
 }
 
 // ---------------------------------------------------------------------------
@@ -321,7 +322,7 @@ model Membership {
   userId    String
   zev       Zev      @relation(fields: [zevId], references: [id])
   zevId     String
-  role      Role     // PRESIDENT | ACCOUNTANT | OWNER — scoped to this Zev, not global
+  role      Role // PRESIDENT | ACCOUNTANT | OWNER — scoped to this Zev, not global
   createdAt DateTime @default(now())
 
   @@unique([userId, zevId, role])
@@ -329,8 +330,8 @@ model Membership {
 }
 
 model Building {
-  id           String     @id @default(cuid())
-  zev          Zev        @relation(fields: [zevId], references: [id])
+  id           String        @id @default(cuid())
+  zev          Zev           @relation(fields: [zevId], references: [id])
   zevId        String
   name         String
   address      String
@@ -341,15 +342,15 @@ model Building {
   entrances    Entrance[]
   units        Unit[]
   commonAssets CommonAsset[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 /// Entrance or functional section of a building
 model Entrance {
   id         String   @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
+  zev        Zev      @relation(fields: [zevId], references: [id])
+  zevId      String
   building   Building @relation(fields: [buildingId], references: [id])
   buildingId String
   name       String
@@ -391,12 +392,12 @@ model UnitRegisterChange {
   id           String                 @id @default(cuid())
   zev          Zev                    @relation(fields: [zevId], references: [id])
   zevId        String
-  version      Int                    // verzija registra NAKON ove izmjene
+  version      Int // verzija registra NAKON ove izmjene
   kind         UnitRegisterChangeKind
   reason       String
-  attachmentId String?                // dokument izmjene (FR-Q3); obavezan osim za ESTABLISH
-  before       Json                   // pogodjene jedinice prije
-  after        Json                   // pogodjene jedinice poslije
+  attachmentId String? // dokument izmjene (FR-Q3); obavezan osim za ESTABLISH
+  before       Json // pogodjene jedinice prije
+  after        Json // pogodjene jedinice poslije
   actorId      String
   createdAt    DateTime               @default(now())
 
@@ -404,60 +405,60 @@ model UnitRegisterChange {
 }
 
 model Unit {
-  id                     String    @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  building               Building  @relation(fields: [buildingId], references: [id])
-  buildingId             String
-  entrance               Entrance? @relation(fields: [entranceId], references: [id])
-  entranceId             String?
-  type                   UnitType
-  label                  String    // e.g. "Stan 12"
-  floor                  Int?
-  usableArea             Decimal   @db.Decimal(10, 2) // m2
-  ownershipShare         Decimal   @db.Decimal(9, 6)  // % share in ZEV common property
-  occupantCount          Int       @default(0)
-  typeCoefficient        Decimal   @default(1) @db.Decimal(6, 3)
-  active                 Boolean   @default(true)
-  note                   String?
-  invoiceRecipient       Party?    @relation("UnitInvoiceRecipient", fields: [invoiceRecipientId], references: [id])
-  invoiceRecipientId     String?
-  correspondenceContact  Party?    @relation("UnitCorrespondenceContact", fields: [correspondenceContactId], references: [id])
+  id                      String                  @id @default(cuid())
+  zev                     Zev                     @relation(fields: [zevId], references: [id])
+  zevId                   String
+  building                Building                @relation(fields: [buildingId], references: [id])
+  buildingId              String
+  entrance                Entrance?               @relation(fields: [entranceId], references: [id])
+  entranceId              String?
+  type                    UnitType
+  label                   String // e.g. "Stan 12"
+  floor                   Int?
+  usableArea              Decimal                 @db.Decimal(10, 2) // m2
+  ownershipShare          Decimal                 @db.Decimal(9, 6) // % share in ZEV common property
+  occupantCount           Int                     @default(0)
+  typeCoefficient         Decimal                 @default(1) @db.Decimal(6, 3)
+  active                  Boolean                 @default(true)
+  note                    String?
+  invoiceRecipient        Party?                  @relation("UnitInvoiceRecipient", fields: [invoiceRecipientId], references: [id])
+  invoiceRecipientId      String?
+  correspondenceContact   Party?                  @relation("UnitCorrespondenceContact", fields: [correspondenceContactId], references: [id])
   correspondenceContactId String?
   /// Zajednicki predstavnik suvlasnika za glasanje (K-03a); null = podrazumijevani (najveci udio).
-  votingRepresentative   Party?    @relation("UnitVotingRepresentative", fields: [votingRepresentativeId], references: [id])
-  votingRepresentativeId String?
-  ownershipStakes        OwnershipStake[]
-  occupancies            Occupancy[]
-  allocationMemberships  AllocationGroupMember[]
-  invoices               Invoice[]
-  chargeExceptions       ChargeUnitOverride[]
-  meterReadings          MeterReading[]
-  proposalScopes         ProposalUnit[]
-  maintenanceIssues      MaintenanceIssue[]
-  planItemScopes         PlanItemUnit[]
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
+  votingRepresentative    Party?                  @relation("UnitVotingRepresentative", fields: [votingRepresentativeId], references: [id])
+  votingRepresentativeId  String?
+  ownershipStakes         OwnershipStake[]
+  occupancies             Occupancy[]
+  allocationMemberships   AllocationGroupMember[]
+  invoices                Invoice[]
+  chargeExceptions        ChargeUnitOverride[]
+  meterReadings           MeterReading[]
+  proposalScopes          ProposalUnit[]
+  maintenanceIssues       MaintenanceIssue[]
+  planItemScopes          PlanItemUnit[]
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  journalLines            JournalLine[]
 
   @@unique([buildingId, label])
-  journalLines          JournalLine[]
 }
 
 /// Effective-dated ownership. Co-ownership = several stakes on same unit whose shares sum to 100.
 model OwnershipStake {
-  id           String    @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  unit         Unit      @relation(fields: [unitId], references: [id])
-  unitId       String
-  owner        Party     @relation(fields: [ownerId], references: [id])
-  ownerId      String
-  sharePercent Decimal   @db.Decimal(9, 6) // % of the unit
-  validFrom    DateTime
-  validTo      DateTime? // null = current
+  id              String    @id @default(cuid())
+  zev             Zev       @relation(fields: [zevId], references: [id])
+  zevId           String
+  unit            Unit      @relation(fields: [unitId], references: [id])
+  unitId          String
+  owner           Party     @relation(fields: [ownerId], references: [id])
+  ownerId         String
+  sharePercent    Decimal   @db.Decimal(9, 6) // % of the unit
+  validFrom       DateTime
+  validTo         DateTime? // null = current
   acquisitionNote String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([unitId, validFrom])
   @@index([ownerId])
@@ -471,8 +472,8 @@ enum OccupancyType {
 
 model Occupancy {
   id        String        @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
+  zev       Zev           @relation(fields: [zevId], references: [id])
+  zevId     String
   unit      Unit          @relation(fields: [unitId], references: [id])
   unitId    String
   party     Party         @relation(fields: [partyId], references: [id])
@@ -496,24 +497,24 @@ enum ProxyScope {
 
 /// Authorization of a proxy to vote for an owner. Effective-dated, revocable.
 model Proxy {
-  id          String     @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  grantor     Party      @relation("ProxyGrantor", fields: [grantorId], references: [id])
-  grantorId   String
-  holder      Party      @relation("ProxyHolder", fields: [holderId], references: [id])
-  holderId    String
-  scope       ProxyScope
-  meeting     Meeting?   @relation(fields: [meetingId], references: [id])
-  meetingId   String?
-  proposalId  String?
-  documentRef String?    // reference to the written authorization
-  validFrom   DateTime
-  validTo     DateTime?
-  revokedAt   DateTime?
+  id            String     @id @default(cuid())
+  zev           Zev        @relation(fields: [zevId], references: [id])
+  zevId         String
+  grantor       Party      @relation("ProxyGrantor", fields: [grantorId], references: [id])
+  grantorId     String
+  holder        Party      @relation("ProxyHolder", fields: [holderId], references: [id])
+  holderId      String
+  scope         ProxyScope
+  meeting       Meeting?   @relation(fields: [meetingId], references: [id])
+  meetingId     String?
+  proposalId    String?
+  documentRef   String? // reference to the written authorization
+  validFrom     DateTime
+  validTo       DateTime?
+  revokedAt     DateTime?
   revokedReason String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   @@index([grantorId])
 }
@@ -532,16 +533,16 @@ enum OfficeRole {
 /// the assumptions flagged for review (board size, mandate length, whether
 /// the ZEV "predsjednik" tracked here is also predsjednik upravnog odbora).
 model OfficeTerm {
-  id        String     @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  role      OfficeRole
-  party     Party      @relation(fields: [partyId], references: [id])
-  partyId   String
-  validFrom DateTime
-  validTo   DateTime?
+  id          String     @id @default(cuid())
+  zev         Zev        @relation(fields: [zevId], references: [id])
+  zevId       String
+  role        OfficeRole
+  party       Party      @relation(fields: [partyId], references: [id])
+  partyId     String
+  validFrom   DateTime
+  validTo     DateTime?
   decisionRef String?
-  createdAt DateTime   @default(now())
+  createdAt   DateTime   @default(now())
 }
 
 model AllocationGroup {
@@ -575,8 +576,8 @@ enum CommonAssetKind {
 
 model CommonAsset {
   id            String          @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
+  zev           Zev             @relation(fields: [zevId], references: [id])
+  zevId         String
   building      Building?       @relation(fields: [buildingId], references: [id])
   buildingId    String?
   kind          CommonAssetKind
@@ -634,34 +635,34 @@ enum MeetingBody {
 }
 
 model Meeting {
-  id             String        @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  title          String
-  type           MeetingType
-  body           MeetingBody   @default(ASSEMBLY)
-  status         MeetingStatus @default(DRAFT)
-  location       String?
-  scheduledAt    DateTime?
-  eVoteOpensAt   DateTime?
-  eVoteClosesAt  DateTime?
+  id              String        @id @default(cuid())
+  zev             Zev           @relation(fields: [zevId], references: [id])
+  zevId           String
+  title           String
+  type            MeetingType
+  body            MeetingBody   @default(ASSEMBLY)
+  status          MeetingStatus @default(DRAFT)
+  location        String?
+  scheduledAt     DateTime?
+  eVoteOpensAt    DateTime?
+  eVoteClosesAt   DateTime?
   discussionNotes String?
   /// Zapisničar sjednice (Plans/sjednica-uzivo-biljeske-i-zapisnik-plan.md, P-B4): lice iz evidencije; ime ide uz potpis u zapisniku.
-  minutesTaker   Party?        @relation("MeetingMinutesTaker", fields: [minutesTakerId], references: [id])
-  minutesTakerId String?
-  agendaItems    AgendaItem[]
-  notes          MeetingNote[]
-  proposals      Proposal[]
-  attendances    Attendance[]
-  proxies        Proxy[]
-  ballots        Ballot[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  minutesTaker    Party?        @relation("MeetingMinutesTaker", fields: [minutesTakerId], references: [id])
+  minutesTakerId  String?
+  agendaItems     AgendaItem[]
+  notes           MeetingNote[]
+  proposals       Proposal[]
+  attendances     Attendance[]
+  proxies         Proxy[]
+  ballots         Ballot[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model AgendaItem {
-  id        String    @id @default(cuid())
-  meeting   Meeting   @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  id        String        @id @default(cuid())
+  meeting   Meeting       @relation(fields: [meetingId], references: [id], onDelete: Cascade)
   meetingId String
   order     Int
   title     String
@@ -703,14 +704,14 @@ model MeetingNote {
 }
 
 model Attendance {
-  id        String  @id @default(cuid())
-  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-  meetingId String
-  party     Party   @relation(fields: [partyId], references: [id])
-  partyId   String
-  present   Boolean @default(true)
+  id         String  @id @default(cuid())
+  meeting    Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meetingId  String
+  party      Party   @relation(fields: [partyId], references: [id])
+  partyId    String
+  present    Boolean @default(true)
   viaProxyId String? // Proxy.id when represented
-  note      String?
+  note       String?
 
   @@unique([meetingId, partyId])
 }
@@ -745,60 +746,60 @@ enum WeightMethod {
 
 /// Reusable, configurable voting rule presets
 model VotingRule {
-  id            String       @id @default(cuid())
-  zev           Zev          @relation(fields: [zevId], references: [id])
-  zevId         String
-  name          String
-  quorumType    QuorumType
-  quorumPercent Decimal?     @db.Decimal(6, 3)
-  majorityType  MajorityType
-  majorityPercent Decimal?   @db.Decimal(6, 3)
-  weightMethod  WeightMethod
-  note          String?
-  proposals     Proposal[]
-  createdAt     DateTime     @default(now())
+  id              String       @id @default(cuid())
+  zev             Zev          @relation(fields: [zevId], references: [id])
+  zevId           String
+  name            String
+  quorumType      QuorumType
+  quorumPercent   Decimal?     @db.Decimal(6, 3)
+  majorityType    MajorityType
+  majorityPercent Decimal?     @db.Decimal(6, 3)
+  weightMethod    WeightMethod
+  note            String?
+  proposals       Proposal[]
+  createdAt       DateTime     @default(now())
 
   @@unique([zevId, name])
 }
 
 model Proposal {
-  id                String         @id @default(cuid())
-  zev               Zev            @relation(fields: [zevId], references: [id])
+  id                String          @id @default(cuid())
+  zev               Zev             @relation(fields: [zevId], references: [id])
   zevId             String
-  meeting           Meeting        @relation(fields: [meetingId], references: [id])
+  meeting           Meeting         @relation(fields: [meetingId], references: [id])
   meetingId         String
-  agendaItem        AgendaItem?    @relation(fields: [agendaItemId], references: [id])
+  agendaItem        AgendaItem?     @relation(fields: [agendaItemId], references: [id])
   agendaItemId      String?
-  code              String         // e.g. "P-2026-03"
-  version           Int            @default(1)
-  supersedesId      String?        @unique
-  supersedes        Proposal?      @relation("ProposalVersions", fields: [supersedesId], references: [id])
-  supersededBy      Proposal?      @relation("ProposalVersions")
+  code              String // e.g. "P-2026-03"
+  version           Int             @default(1)
+  supersedesId      String?         @unique
+  supersedes        Proposal?       @relation("ProposalVersions", fields: [supersedesId], references: [id])
+  supersededBy      Proposal?       @relation("ProposalVersions")
   title             String
-  text              String         // exact proposal text
+  text              String // exact proposal text
   rationale         String?
-  financialImpact   Decimal?       @db.Decimal(14, 2)
-  scopeType         ScopeType      @default(ZEV)
+  financialImpact   Decimal?        @db.Decimal(14, 2)
+  scopeType         ScopeType       @default(ZEV)
   buildingId        String?
   entranceId        String?
   allocationGroupId String?
   scopeUnits        ProposalUnit[]
-  status            ProposalStatus @default(DRAFT)
-  votingRule        VotingRule?    @relation(fields: [votingRuleId], references: [id])
+  status            ProposalStatus  @default(DRAFT)
+  votingRule        VotingRule?     @relation(fields: [votingRuleId], references: [id])
   votingRuleId      String?
   /// Frozen snapshot of quorum/majority/weight rules + eligible base, taken when voting opens
   ruleSnapshot      Json?
-  contentHash       String?        // sha256 of text+attachments at freeze time
+  contentHash       String? // sha256 of text+attachments at freeze time
   votingOpensAt     DateTime?
   votingClosesAt    DateTime?
   frozenAt          DateTime?
-  resultSummary     Json?          // computed result snapshot at close
+  resultSummary     Json? // computed result snapshot at close
   decisionNumber    String?
   eligibleVoters    EligibleVoter[]
   votes             Vote[]
-  attachments       Attachment[]   @relation("ProposalAttachments")
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  attachments       Attachment[]    @relation("ProposalAttachments")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   @@unique([zevId, code, version])
 }
@@ -815,24 +816,24 @@ model ProposalUnit {
 
 /// Snapshot of who may vote on a proposal, with what weight, frozen at voting open.
 model EligibleVoter {
-  id           String    @id @default(cuid())
-  proposal     Proposal  @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  proposalId   String
-  owner        Party     @relation("EVOwner", fields: [ownerId], references: [id])
-  ownerId      String
-  proxy        Party?    @relation("EVProxy", fields: [proxyId], references: [id])
-  proxyId      String?
-  proxyRecordId String?  // Proxy.id used
-  weight       Decimal   @db.Decimal(14, 6)
-  basis        Json      // units + shares this weight derives from
+  id             String          @id @default(cuid())
+  proposal       Proposal        @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposalId     String
+  owner          Party           @relation("EVOwner", fields: [ownerId], references: [id])
+  ownerId        String
+  proxy          Party?          @relation("EVProxy", fields: [proxyId], references: [id])
+  proxyId        String?
+  proxyRecordId  String? // Proxy.id used
+  weight         Decimal         @db.Decimal(14, 6)
+  basis          Json // units + shares this weight derives from
   /// Glasacki subjekt (K-03/K-03a): "P:<partyId>" samostalni vlasnik, "G:<sortirani partyId-jevi>"
   /// suvlasnicka zajednica, "B:<partyId>" clan odbora. Prazno = red upisan starim kodom (v2.42.0).
-  subjectKey     String   @default("")
+  subjectKey     String          @default("")
   /// Sva lica subjekta (za samostalnog = [ownerId]); ownerId je lice koje glasa (predstavnik).
-  memberPartyIds String[] @default([])
-  tokens       ApprovalToken[]
-  votes        Vote[]
-  createdAt    DateTime  @default(now())
+  memberPartyIds String[]        @default([])
+  tokens         ApprovalToken[]
+  votes          Vote[]
+  createdAt      DateTime        @default(now())
 
   @@unique([proposalId, subjectKey, ownerId])
 }
@@ -847,27 +848,27 @@ enum TokenStatus {
 
 /// Approval link token. Only the SHA-256 hash of the token is stored.
 model ApprovalToken {
-  id                String        @id @default(cuid())
-  eligibleVoter     EligibleVoter @relation(fields: [eligibleVoterId], references: [id], onDelete: Cascade)
-  eligibleVoterId   String
-  tokenHash         String        @unique // sha256(token), never plaintext
-  verificationHash  String        // sha256 of one-time personal verification code
-  status            TokenStatus   @default(ACTIVE)
-  expiresAt         DateTime
-  issuedAt          DateTime      @default(now())
-  deliveredVia      String?       // EMAIL | VIBER | MANUAL
-  openedAt          DateTime?
-  usedAt            DateTime?
-  revokedAt         DateTime?
-  revokedReason     String?
-  replacedById      String?       @unique
-  replacedBy        ApprovalToken? @relation("TokenReissue", fields: [replacedById], references: [id])
-  replaces          ApprovalToken? @relation("TokenReissue")
-  failedAttempts    Int           @default(0)
-  vote              Vote?
+  id               String         @id @default(cuid())
+  eligibleVoter    EligibleVoter  @relation(fields: [eligibleVoterId], references: [id], onDelete: Cascade)
+  eligibleVoterId  String
+  tokenHash        String         @unique // sha256(token), never plaintext
+  verificationHash String // sha256 of one-time personal verification code
+  status           TokenStatus    @default(ACTIVE)
+  expiresAt        DateTime
+  issuedAt         DateTime       @default(now())
+  deliveredVia     String? // EMAIL | VIBER | MANUAL
+  openedAt         DateTime?
+  usedAt           DateTime?
+  revokedAt        DateTime?
+  revokedReason    String?
+  replacedById     String?        @unique
+  replacedBy       ApprovalToken? @relation("TokenReissue", fields: [replacedById], references: [id])
+  replaces         ApprovalToken? @relation("TokenReissue")
+  failedAttempts   Int            @default(0)
+  vote             Vote?
   /// v2.44.0: listic sjednice kojem token pripada; null = klasican token po prijedlogu.
-  ballot            Ballot?       @relation(fields: [ballotId], references: [id])
-  ballotId          String?
+  ballot           Ballot?        @relation(fields: [ballotId], references: [id])
+  ballotId         String?
 
   @@index([eligibleVoterId])
   @@index([ballotId])
@@ -883,28 +884,28 @@ enum BallotStatus {
 /// Glasacki listic po sjednici (v2.44.0): jedan link i jedan kod nad tokenima svih prijedloga sjednice
 /// za jednog primaoca. Dokaz ostaje po prijedlogu (Vote + ApprovalToken); listic je samo zajednicki kljuc.
 model Ballot {
-  id               String       @id @default(cuid())
-  zev              Zev          @relation(fields: [zevId], references: [id])
+  id               String          @id @default(cuid())
+  zev              Zev             @relation(fields: [zevId], references: [id])
   zevId            String
-  meeting          Meeting      @relation(fields: [meetingId], references: [id])
+  meeting          Meeting         @relation(fields: [meetingId], references: [id])
   meetingId        String
-  recipient        Party        @relation("BallotRecipient", fields: [recipientPartyId], references: [id])
+  recipient        Party           @relation("BallotRecipient", fields: [recipientPartyId], references: [id])
   recipientPartyId String
-  tokenHash        String       @unique // sha256(link token), never plaintext
-  verificationHash String       // sha256(licni kod)
-  status           BallotStatus @default(ACTIVE)
+  tokenHash        String          @unique // sha256(link token), never plaintext
+  verificationHash String // sha256(licni kod)
+  status           BallotStatus    @default(ACTIVE)
   expiresAt        DateTime
-  issuedAt         DateTime     @default(now())
+  issuedAt         DateTime        @default(now())
   openedAt         DateTime?
   usedAt           DateTime?
   revokedAt        DateTime?
   revokedReason    String?
-  failedAttempts   Int          @default(0)
-  replacedById     String?      @unique
-  replacedBy       Ballot?      @relation("BallotReissue", fields: [replacedById], references: [id])
-  replaces         Ballot?      @relation("BallotReissue")
+  failedAttempts   Int             @default(0)
+  replacedById     String?         @unique
+  replacedBy       Ballot?         @relation("BallotReissue", fields: [replacedById], references: [id])
+  replaces         Ballot?         @relation("BallotReissue")
   tokens           ApprovalToken[]
-  createdAt        DateTime     @default(now())
+  createdAt        DateTime        @default(now())
 
   @@index([meetingId])
 }
@@ -924,40 +925,40 @@ enum VoteChannel {
 /// Immutable vote evidence. UPDATE/DELETE blocked by DB trigger.
 /// Corrections are separate rows referencing correctionOfId with a reason.
 model Vote {
-  id                 String      @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  proposal           Proposal    @relation(fields: [proposalId], references: [id])
-  proposalId         String
-  proposalVersion    Int
-  eligibleVoter      EligibleVoter @relation(fields: [eligibleVoterId], references: [id])
-  eligibleVoterId    String
-  voter              Party       @relation("VoteVoter", fields: [voterId], references: [id])
-  voterId            String      // who physically voted (owner or proxy)
-  represented        Party?      @relation("VoteRepresented", fields: [representedId], references: [id])
-  representedId      String?     // owner represented by proxy
-  proxyRecordId      String?
-  choice             VoteChoice
-  channel            VoteChannel
-  weight             Decimal     @db.Decimal(14, 6)
-  countsForQuorum    Boolean     @default(true)
-  token              ApprovalToken? @relation(fields: [tokenId], references: [id])
-  tokenId            String?     @unique
-  proposalHash       String      // hash of frozen proposal content voter saw
+  id                  String         @id @default(cuid())
+  zev                 Zev            @relation(fields: [zevId], references: [id])
+  zevId               String
+  proposal            Proposal       @relation(fields: [proposalId], references: [id])
+  proposalId          String
+  proposalVersion     Int
+  eligibleVoter       EligibleVoter  @relation(fields: [eligibleVoterId], references: [id])
+  eligibleVoterId     String
+  voter               Party          @relation("VoteVoter", fields: [voterId], references: [id])
+  voterId             String // who physically voted (owner or proxy)
+  represented         Party?         @relation("VoteRepresented", fields: [representedId], references: [id])
+  representedId       String? // owner represented by proxy
+  proxyRecordId       String?
+  choice              VoteChoice
+  channel             VoteChannel
+  weight              Decimal        @db.Decimal(14, 6)
+  countsForQuorum     Boolean        @default(true)
+  token               ApprovalToken? @relation(fields: [tokenId], references: [id])
+  tokenId             String?        @unique
+  proposalHash        String // hash of frozen proposal content voter saw
   acknowledgementText String
-  ipHash             String?     // sha256(ip), retention-limited
-  userAgent          String?
-  issuedAt           DateTime?   // token issued
-  openedAt           DateTime?   // link opened
-  confirmedAt        DateTime?   // identity confirmed
-  submittedAt        DateTime    @default(now())
-  deliveryChannel    String?
-  invalid            Boolean     @default(false)
-  invalidReason      String?
-  correctionOfId     String?     @unique
-  correctionOf       Vote?       @relation("VoteCorrection", fields: [correctionOfId], references: [id])
-  correctedBy        Vote?       @relation("VoteCorrection")
-  correctionReason   String?
+  ipHash              String? // sha256(ip), retention-limited
+  userAgent           String?
+  issuedAt            DateTime? // token issued
+  openedAt            DateTime? // link opened
+  confirmedAt         DateTime? // identity confirmed
+  submittedAt         DateTime       @default(now())
+  deliveryChannel     String?
+  invalid             Boolean        @default(false)
+  invalidReason       String?
+  correctionOfId      String?        @unique
+  correctionOf        Vote?          @relation("VoteCorrection", fields: [correctionOfId], references: [id])
+  correctedBy         Vote?          @relation("VoteCorrection")
+  correctionReason    String?
   correctionAuthority String?
 
   @@unique([proposalId, eligibleVoterId, correctionOfId])
@@ -974,29 +975,29 @@ enum AccountType {
 }
 
 model MoneyAccount {
-  id             String      @id @default(cuid())
-  zev            Zev         @relation(fields: [zevId], references: [id])
-  zevId          String
-  type           AccountType
-  name           String
-  bankName       String?
-  iban           String?     // account number
-  openingBalance Decimal     @default(0) @db.Decimal(14, 2)
-  openingDate    DateTime
-  active         Boolean     @default(true)
-  transactions   FinTransaction[]
-  payments       Payment[]
+  id              String              @id @default(cuid())
+  zev             Zev                 @relation(fields: [zevId], references: [id])
+  zevId           String
+  type            AccountType
+  name            String
+  bankName        String?
+  iban            String? // account number
+  openingBalance  Decimal             @default(0) @db.Decimal(14, 2)
+  openingDate     DateTime
+  active          Boolean             @default(true)
+  transactions    FinTransaction[]
+  payments        Payment[]
   incomingBankSms IncomingBankSms[]
   controlAccounts ZevControlAccount[]
-  createdAt      DateTime    @default(now())
+  createdAt       DateTime            @default(now())
 }
 
 model TransactionCategory {
-  id    String  @id @default(cuid())
-  zev   Zev     @relation(fields: [zevId], references: [id])
-  zevId String
-  name  String
-  kind  String // INCOME | EXPENSE
+  id           String           @id @default(cuid())
+  zev          Zev              @relation(fields: [zevId], references: [id])
+  zevId        String
+  name         String
+  kind         String // INCOME | EXPENSE
   transactions FinTransaction[]
   expenses     Expense[]
   postingRules PostingRule[]
@@ -1017,38 +1018,38 @@ enum TxStatus {
 
 /// Operational cash movement on an account (non-double-entry).
 model FinTransaction {
-  id             String    @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  account        MoneyAccount @relation(fields: [accountId], references: [id])
-  accountId      String
-  date           DateTime
-  type           TxType
-  amount         Decimal   @db.Decimal(14, 2) // always positive; sign by type
-  currency       String    @default("BAM")
+  id               String               @id @default(cuid())
+  zev              Zev                  @relation(fields: [zevId], references: [id])
+  zevId            String
+  account          MoneyAccount         @relation(fields: [accountId], references: [id])
+  accountId        String
+  date             DateTime
+  type             TxType
+  amount           Decimal              @db.Decimal(14, 2) // always positive; sign by type
+  currency         String               @default("BAM")
   counterpartyName String?
-  category       TransactionCategory? @relation(fields: [categoryId], references: [id])
-  categoryId     String?
-  paymentMethod  String?   // BANK | CASH
-  docRef         String?
-  description    String?
-  buildingId     String?
-  entranceId     String?
-  projectId      String?
-  planItemId     String?
-  expenseId      String?
-  payment        Payment?  @relation(fields: [paymentId], references: [id])
-  paymentId      String?   @unique
-  isReserveFund  Boolean   @default(false)
-  status         TxStatus  @default(ACTIVE)
-  cancelledAt    DateTime?
-  cancelReason   String?
-  cancelOfId     String?   @unique
-  cancelOf       FinTransaction? @relation("TxCancel", fields: [cancelOfId], references: [id])
-  cancelledByTx  FinTransaction? @relation("TxCancel")
-  attachments    Attachment[] @relation("TxAttachments")
-  createdById    String?
-  createdAt      DateTime  @default(now())
+  category         TransactionCategory? @relation(fields: [categoryId], references: [id])
+  categoryId       String?
+  paymentMethod    String? // BANK | CASH
+  docRef           String?
+  description      String?
+  buildingId       String?
+  entranceId       String?
+  projectId        String?
+  planItemId       String?
+  expenseId        String?
+  payment          Payment?             @relation(fields: [paymentId], references: [id])
+  paymentId        String?              @unique
+  isReserveFund    Boolean              @default(false)
+  status           TxStatus             @default(ACTIVE)
+  cancelledAt      DateTime?
+  cancelReason     String?
+  cancelOfId       String?              @unique
+  cancelOf         FinTransaction?      @relation("TxCancel", fields: [cancelOfId], references: [id])
+  cancelledByTx    FinTransaction?      @relation("TxCancel")
+  attachments      Attachment[]         @relation("TxAttachments")
+  createdById      String?
+  createdAt        DateTime             @default(now())
 
   @@index([accountId, date])
 }
@@ -1078,35 +1079,35 @@ enum RoundingMethod {
 }
 
 model ChargeItem {
-  id                String         @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
+  id                String               @id @default(cuid())
+  zev               Zev                  @relation(fields: [zevId], references: [id])
+  zevId             String
   name              String
   description       String?
-  scopeType         ScopeType      @default(ZEV)
+  scopeType         ScopeType            @default(ZEV)
   buildingId        String?
   entranceId        String?
   allocationGroupId String?
   method            ChargeMethod
-  rate              Decimal?       @db.Decimal(14, 6) // amount, or rate per m2/%/occupant/consumption unit
+  rate              Decimal?             @db.Decimal(14, 6) // amount, or rate per m2/%/occupant/consumption unit
   effectiveFrom     DateTime
   effectiveTo       DateTime?
-  frequency         BillingFrequency @default(MONTHLY)
-  dueDayOfMonth     Int            @default(15)
-  rounding          RoundingMethod @default(HALF_UP_2)
-  minAmount         Decimal?       @db.Decimal(14, 2)
-  maxAmount         Decimal?       @db.Decimal(14, 2)
-  displayOrder      Int            @default(0)
-  isReserveFund     Boolean        @default(false)
-  active            Boolean        @default(true)
+  frequency         BillingFrequency     @default(MONTHLY)
+  dueDayOfMonth     Int                  @default(15)
+  rounding          RoundingMethod       @default(HALF_UP_2)
+  minAmount         Decimal?             @db.Decimal(14, 2)
+  maxAmount         Decimal?             @db.Decimal(14, 2)
+  displayOrder      Int                  @default(0)
+  isReserveFund     Boolean              @default(false)
+  active            Boolean              @default(true)
   unitOverrides     ChargeUnitOverride[]
   meterReadings     MeterReading[]
   invoiceLines      InvoiceLine[]
   /// Vrsta zaduženja (kontni plan A2, K-3): pravilo knjiženja visi na vrsti, ne na stavci; null = „Čeka podešavanje knjiženja”.
-  chargeType        ChargeType?    @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
+  chargeType        ChargeType?          @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
   chargeTypeId      String?
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
 }
 
 /// Per-unit exemption, custom weight or manual amount for a charge item
@@ -1129,7 +1130,7 @@ model MeterReading {
   chargeItemId String
   unit         Unit       @relation(fields: [unitId], references: [id])
   unitId       String
-  period       String     // "2026-08"
+  period       String // "2026-08"
   quantity     Decimal    @db.Decimal(14, 3)
   enteredById  String?
   createdAt    DateTime   @default(now())
@@ -1147,10 +1148,10 @@ model InvoiceBatch {
   id          String      @id @default(cuid())
   zev         Zev         @relation(fields: [zevId], references: [id])
   zevId       String
-  period      String      // "2026-08" or label for one-time
+  period      String // "2026-08" or label for one-time
   description String?
   status      BatchStatus @default(DRAFT)
-  previewData Json?       // full calculation preview per unit/owner
+  previewData Json? // full calculation preview per unit/owner
   issuedAt    DateTime?
   createdById String?
   invoices    Invoice[]
@@ -1168,35 +1169,35 @@ enum InvoiceStatus {
 }
 
 model Invoice {
-  id             String        @id @default(cuid())
-  zev            Zev           @relation(fields: [zevId], references: [id])
-  zevId          String
-  number         String        // "FAK-2026-000123"
-  batch          InvoiceBatch? @relation(fields: [batchId], references: [id])
-  batchId        String?
-  unit           Unit          @relation(fields: [unitId], references: [id])
-  unitId         String
-  debtor         Party         @relation("InvoiceDebtor", fields: [debtorId], references: [id])
-  debtorId       String        // legally responsible owner at issue time
-  debtorShare    Decimal       @default(100) @db.Decimal(9, 6) // co-ownership split of this invoice
-  issueDate      DateTime
-  dueDate        DateTime
-  periodLabel    String?
-  total          Decimal       @db.Decimal(14, 2)
-  currency       String        @default("BAM")
-  status         InvoiceStatus @default(DRAFT)
-  paymentReference String?     // poziv na broj
-  cancelledAt    DateTime?
-  cancelReason   String?
-  correctionOfId String?       @unique
-  correctionOf   Invoice?      @relation("InvoiceCorrection", fields: [correctionOfId], references: [id])
-  correctedBy    Invoice?      @relation("InvoiceCorrection")
-  lines          InvoiceLine[]
-  allocations    PaymentAllocation[]
-  documentId     String?
-  deliveryStatus String?       // QUEUED | SENT | DELIVERED | FAILED
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id               String              @id @default(cuid())
+  zev              Zev                 @relation(fields: [zevId], references: [id])
+  zevId            String
+  number           String // "FAK-2026-000123"
+  batch            InvoiceBatch?       @relation(fields: [batchId], references: [id])
+  batchId          String?
+  unit             Unit                @relation(fields: [unitId], references: [id])
+  unitId           String
+  debtor           Party               @relation("InvoiceDebtor", fields: [debtorId], references: [id])
+  debtorId         String // legally responsible owner at issue time
+  debtorShare      Decimal             @default(100) @db.Decimal(9, 6) // co-ownership split of this invoice
+  issueDate        DateTime
+  dueDate          DateTime
+  periodLabel      String?
+  total            Decimal             @db.Decimal(14, 2)
+  currency         String              @default("BAM")
+  status           InvoiceStatus       @default(DRAFT)
+  paymentReference String? // poziv na broj
+  cancelledAt      DateTime?
+  cancelReason     String?
+  correctionOfId   String?             @unique
+  correctionOf     Invoice?            @relation("InvoiceCorrection", fields: [correctionOfId], references: [id])
+  correctedBy      Invoice?            @relation("InvoiceCorrection")
+  lines            InvoiceLine[]
+  allocations      PaymentAllocation[]
+  documentId       String?
+  deliveryStatus   String? // QUEUED | SENT | DELIVERED | FAILED
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
 
   @@unique([zevId, number])
   @@index([debtorId])
@@ -1210,7 +1211,7 @@ model InvoiceLine {
   chargeItem   ChargeItem? @relation(fields: [chargeItemId], references: [id])
   chargeItemId String?
   description  String
-  calcSnapshot Json        // method, formula, inputs, allocation basis, rounding
+  calcSnapshot Json // method, formula, inputs, allocation basis, rounding
   amount       Decimal     @db.Decimal(14, 2)
   order        Int         @default(0)
   /// Snimak vrste zaduženja u trenutku izdavanja (A2): kasnija promjena stavke naknade ne mijenja istorijsko zaduženje.
@@ -1226,16 +1227,16 @@ enum PaymentStatus {
 }
 
 model BankImportBatch {
-  id          String    @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  filename    String
-  mapping     Json      // column mapping used
-  sourceType  String    @default("CSV") // CSV | PDF
-  rawText     String?   // izvorni tekst izvučen iz PDF izvoda (revizija / ponovno parsiranje)
-  importedAt  DateTime  @default(now())
+  id           String    @id @default(cuid())
+  zev          Zev       @relation(fields: [zevId], references: [id])
+  zevId        String
+  filename     String
+  mapping      Json // column mapping used
+  sourceType   String    @default("CSV") // CSV | PDF
+  rawText      String? // izvorni tekst izvučen iz PDF izvoda (revizija / ponovno parsiranje)
+  importedAt   DateTime  @default(now())
   importedById String?
-  payments    Payment[]
+  payments     Payment[]
 }
 
 /// SMS obavještenja Nova Banke ("Priliv na ..." / "Odliv sa ...") primljena preko iOS Shortcuts
@@ -1244,30 +1245,30 @@ model BankImportBatch {
 /// PDF izvoda. rawText je null za poruke koje ne počinju sa "NOVA BANKA" (privatnost: tuđe lične
 /// poruke ne smiju završiti u bazi ZEV-a ako je filter u Shortcut-u pogrešno podešen).
 model IncomingBankSms {
-  id                  String        @id @default(cuid())
-  zev                 Zev           @relation(fields: [zevId], references: [id])
+  id                  String            @id @default(cuid())
+  zev                 Zev               @relation(fields: [zevId], references: [id])
   zevId               String
-  receivedAt          DateTime      @default(now())
+  receivedAt          DateTime          @default(now())
   rawText             String?
   /// sha256(normalizovani tekst) — zajedno sa zevId daje jedinstveni ključ za dedup (isti SMS
   /// stigne dvaput: retry u Shortcut-u ili dva telefona). Tekst sadrži "Raspolozivo" stanje poslije
   /// transakcije, pa dvije stvarne uplate istog iznosa nikad nemaju isti heš.
   rawHash             String
-  kind                String        // PRILIV | ODLIV | UNKNOWN
-  status              String        // PENDING | CONFIRMING | CONFIRMED | DISMISSED | REJECTED
+  kind                String // PRILIV | ODLIV | UNKNOWN
+  status              String // PENDING | CONFIRMING | CONFIRMED | DISMISSED | REJECTED
   parseError          String?
-  ownAccount          String?       // samo cifre vlastitog računa iz poruke
-  account             MoneyAccount? @relation(fields: [accountId], references: [id])
-  accountId           String?       // null = račun iz poruke nije upisan ni na jednom računu ZEV-a
-  amount              Decimal?      @db.Decimal(14, 2)
+  ownAccount          String? // samo cifre vlastitog računa iz poruke
+  account             MoneyAccount?     @relation(fields: [accountId], references: [id])
+  accountId           String? // null = račun iz poruke nije upisan ni na jednom računu ZEV-a
+  amount              Decimal?          @db.Decimal(14, 2)
   purposeRaw          String?
-  counterpartyAccount String?       // račun druge strane (cifre); null npr. za bankovnu naknadu
-  counterpartyName    String?       // ime druge strane kako ga je banka ispisala (često skraćeno)
-  balanceAfter        Decimal?      @db.Decimal(14, 2) // "Raspolozivo" — informativno (lanac stanja je Faza 2)
-  duplicateHits       Int           @default(0)
+  counterpartyAccount String? // račun druge strane (cifre); null npr. za bankovnu naknadu
+  counterpartyName    String? // ime druge strane kako ga je banka ispisala (često skraćeno)
+  balanceAfter        Decimal?          @db.Decimal(14, 2) // "Raspolozivo" — informativno (lanac stanja je Faza 2)
+  duplicateHits       Int               @default(0)
   lastDuplicateAt     DateTime?
-  paymentId           String?       @unique // PRILIV potvrđen -> Payment
-  transactionId       String?       @unique // ODLIV potvrđen -> FinTransaction (EXPENSE)
+  paymentId           String?           @unique // PRILIV potvrđen -> Payment
+  transactionId       String?           @unique // ODLIV potvrđen -> FinTransaction (EXPENSE)
   importBatchId       String?
   reviewedById        String?
   reviewedAt          DateTime?
@@ -1288,13 +1289,13 @@ model BankRecordMatch {
   zevId                  String
   sms                    IncomingBankSms @relation(fields: [smsId], references: [id])
   smsId                  String
-  statementBatchId       String?  // PDF serija u kojoj je red nađen (null za ručni unos)
-  statementPaymentId     String?  // drugi zapis priliva; null ako je red izvoda odznačen pri uvozu
-  statementTransactionId String?  // drugi zapis odliva (FinTransaction EXPENSE)
-  decision               String   // SAME | NOT_SAME
-  origin                 String   // IMPORT_SKIP | MANUAL_LINK | MERGE | NOT_SAME
-  survivorPaymentId      String?  // MERGE: uplata koja ostaje
-  reversedPaymentId      String?  // MERGE: uplata stornirana kao duplikat
+  statementBatchId       String? // PDF serija u kojoj je red nađen (null za ručni unos)
+  statementPaymentId     String? // drugi zapis priliva; null ako je red izvoda odznačen pri uvozu
+  statementTransactionId String? // drugi zapis odliva (FinTransaction EXPENSE)
+  decision               String // SAME | NOT_SAME
+  origin                 String // IMPORT_SKIP | MANUAL_LINK | MERGE | NOT_SAME
+  survivorPaymentId      String? // MERGE: uplata koja ostaje
+  reversedPaymentId      String? // MERGE: uplata stornirana kao duplikat
   createdById            String?
   createdAt              DateTime        @default(now())
 
@@ -1304,49 +1305,49 @@ model BankRecordMatch {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  account       MoneyAccount  @relation(fields: [accountId], references: [id])
-  accountId     String
-  date          DateTime
-  amount        Decimal       @db.Decimal(14, 2)
-  currency      String        @default("BAM")
-  payer         Party?        @relation(fields: [payerId], references: [id])
-  payerId       String?
-  payerNameRaw  String?       // as in bank statement
-  reference     String?       // poziv na broj / bank reference
-  purposeRaw    String?       // svrha doznake / opis plaćanja (npr. broj stana koji je platilac naveo)
-  method        String?       // BANK | CASH
-  importBatch   BankImportBatch? @relation(fields: [importBatchId], references: [id])
-  importBatchId String?
-  status        PaymentStatus @default(UNAPPLIED)
-  note          String?
-  reversedAt    DateTime?
+  id             String              @id @default(cuid())
+  zev            Zev                 @relation(fields: [zevId], references: [id])
+  zevId          String
+  account        MoneyAccount        @relation(fields: [accountId], references: [id])
+  accountId      String
+  date           DateTime
+  amount         Decimal             @db.Decimal(14, 2)
+  currency       String              @default("BAM")
+  payer          Party?              @relation(fields: [payerId], references: [id])
+  payerId        String?
+  payerNameRaw   String? // as in bank statement
+  reference      String? // poziv na broj / bank reference
+  purposeRaw     String? // svrha doznake / opis plaćanja (npr. broj stana koji je platilac naveo)
+  method         String? // BANK | CASH
+  importBatch    BankImportBatch?    @relation(fields: [importBatchId], references: [id])
+  importBatchId  String?
+  status         PaymentStatus       @default(UNAPPLIED)
+  note           String?
+  reversedAt     DateTime?
   reversalReason String?
-  reversalOfId  String?       @unique
-  reversalOf    Payment?      @relation("PaymentReversal", fields: [reversalOfId], references: [id])
-  reversedByPmt Payment?      @relation("PaymentReversal")
-  allocations   PaymentAllocation[]
-  transaction   FinTransaction?
-  createdById   String?
-  createdAt     DateTime      @default(now())
+  reversalOfId   String?             @unique
+  reversalOf     Payment?            @relation("PaymentReversal", fields: [reversalOfId], references: [id])
+  reversedByPmt  Payment?            @relation("PaymentReversal")
+  allocations    PaymentAllocation[]
+  transaction    FinTransaction?
+  createdById    String?
+  createdAt      DateTime            @default(now())
 
   @@index([payerId])
 }
 
 /// Append-only allocation of a payment to an invoice. Reversal = new row with negative amount.
 model PaymentAllocation {
-  id          String   @id @default(cuid())
-  payment     Payment  @relation(fields: [paymentId], references: [id])
-  paymentId   String
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
-  invoiceId   String
-  amount      Decimal  @db.Decimal(14, 2) // negative for reversal rows
-  reversalOfId String? @unique
-  reason      String?
-  createdById String?
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  payment      Payment  @relation(fields: [paymentId], references: [id])
+  paymentId    String
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId    String
+  amount       Decimal  @db.Decimal(14, 2) // negative for reversal rows
+  reversalOfId String?  @unique
+  reason       String?
+  createdById  String?
+  createdAt    DateTime @default(now())
 
   @@index([invoiceId])
   @@index([paymentId])
@@ -1355,14 +1356,14 @@ model PaymentAllocation {
 /// Explicit audited owner-balance correction (e.g. authorized debt transfer)
 model BalanceCorrection {
   id          String   @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
+  zev         Zev      @relation(fields: [zevId], references: [id])
+  zevId       String
   party       Party    @relation(fields: [partyId], references: [id])
   partyId     String
   unitId      String?
   amount      Decimal  @db.Decimal(14, 2) // positive increases debt, negative reduces
   reason      String
-  authority   String?  // decision/document authorizing it
+  authority   String? // decision/document authorizing it
   createdById String?
   createdAt   DateTime @default(now())
 }
@@ -1372,24 +1373,24 @@ model BalanceCorrection {
 // ---------------------------------------------------------------------------
 
 model Supplier {
-  id        String    @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  name      String
-  jib       String?
-  address   String?
-  iban      String?
-  contactName String?
-  email     String?
-  phone     String?
-  note      String?
-  active    Boolean   @default(true)
-  expenses  Expense[]
-  offers    ContractorOffer[]
-  workOrders WorkOrder[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  journalLines          JournalLine[]
+  id           String            @id @default(cuid())
+  zev          Zev               @relation(fields: [zevId], references: [id])
+  zevId        String
+  name         String
+  jib          String?
+  address      String?
+  iban         String?
+  contactName  String?
+  email        String?
+  phone        String?
+  note         String?
+  active       Boolean           @default(true)
+  expenses     Expense[]
+  offers       ContractorOffer[]
+  workOrders   WorkOrder[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  journalLines JournalLine[]
 }
 
 enum ExpenseStatus {
@@ -1400,37 +1401,37 @@ enum ExpenseStatus {
 }
 
 model Expense {
-  id             String        @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  supplier       Supplier?     @relation(fields: [supplierId], references: [id])
-  supplierId     String?
-  invoiceNumber  String?
-  invoiceDate    DateTime?
-  category       TransactionCategory? @relation(fields: [categoryId], references: [id])
-  categoryId     String?
-  amount         Decimal       @db.Decimal(14, 2)
-  currency       String        @default("BAM")
-  dueDate        DateTime?
-  status         ExpenseStatus @default(UNPAID)
-  paidDate       DateTime?
-  paidAmount     Decimal       @default(0) @db.Decimal(14, 2)
-  buildingId     String?
-  entranceId     String?
-  projectId      String?
-  planItemId     String?
-  maintenanceIssue MaintenanceIssue? @relation(fields: [maintenanceIssueId], references: [id])
+  id                 String               @id @default(cuid())
+  zev                Zev                  @relation(fields: [zevId], references: [id])
+  zevId              String
+  supplier           Supplier?            @relation(fields: [supplierId], references: [id])
+  supplierId         String?
+  invoiceNumber      String?
+  invoiceDate        DateTime?
+  category           TransactionCategory? @relation(fields: [categoryId], references: [id])
+  categoryId         String?
+  amount             Decimal              @db.Decimal(14, 2)
+  currency           String               @default("BAM")
+  dueDate            DateTime?
+  status             ExpenseStatus        @default(UNPAID)
+  paidDate           DateTime?
+  paidAmount         Decimal              @default(0) @db.Decimal(14, 2)
+  buildingId         String?
+  entranceId         String?
+  projectId          String?
+  planItemId         String?
+  maintenanceIssue   MaintenanceIssue?    @relation(fields: [maintenanceIssueId], references: [id])
   maintenanceIssueId String?
-  workOrderId    String?
-  description    String?
-  recurring      Boolean       @default(false)
-  recurrenceRule String?       // e.g. "MONTHLY"
-  cancelledAt    DateTime?
-  cancelReason   String?
-  attachments    Attachment[]  @relation("ExpenseAttachments")
-  createdById    String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  workOrderId        String?
+  description        String?
+  recurring          Boolean              @default(false)
+  recurrenceRule     String? // e.g. "MONTHLY"
+  cancelledAt        DateTime?
+  cancelReason       String?
+  attachments        Attachment[]         @relation("ExpenseAttachments")
+  createdById        String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
 
   @@index([supplierId, invoiceNumber])
 }
@@ -1452,20 +1453,20 @@ enum PlanStatus {
 }
 
 model AnnualPlan {
-  id         String     @id @default(cuid())
-  zev        Zev        @relation(fields: [zevId], references: [id])
-  zevId      String
-  year       Int
-  kind       PlanKind
-  version    Int        @default(1)
-  status     PlanStatus @default(DRAFT)
-  title      String
-  note       String?
+  id                   String     @id @default(cuid())
+  zev                  Zev        @relation(fields: [zevId], references: [id])
+  zevId                String
+  year                 Int
+  kind                 PlanKind
+  version              Int        @default(1)
+  status               PlanStatus @default(DRAFT)
+  title                String
+  note                 String?
   approvedByProposalId String?
-  approvedAt DateTime?
-  items      PlanItem[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  approvedAt           DateTime?
+  items                PlanItem[]
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
 
   @@unique([zevId, year, kind, version])
 }
@@ -1482,24 +1483,24 @@ enum PlanItemType {
 }
 
 model PlanItem {
-  id            String       @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  plan          AnnualPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  id            String         @id @default(cuid())
+  zev           Zev            @relation(fields: [zevId], references: [id])
+  zevId         String
+  plan          AnnualPlan     @relation(fields: [planId], references: [id], onDelete: Cascade)
   planId        String
   type          PlanItemType
   name          String
   description   String?
-  plannedAmount Decimal      @default(0) @db.Decimal(14, 2)
-  month         Int?         // 1-12 for monthly cash-flow planning / schedule
-  scopeType     ScopeType    @default(ZEV)
+  plannedAmount Decimal        @default(0) @db.Decimal(14, 2)
+  month         Int? // 1-12 for monthly cash-flow planning / schedule
+  scopeType     ScopeType      @default(ZEV)
   buildingId    String?
   entranceId    String?
   projectId     String?
   scopeUnits    PlanItemUnit[]
   categoryName  String?
-  scheduledDate DateTime?    // for inspections / preventive maintenance
-  createdAt     DateTime     @default(now())
+  scheduledDate DateTime? // for inspections / preventive maintenance
+  createdAt     DateTime       @default(now())
 }
 
 model PlanItemUnit {
@@ -1513,15 +1514,15 @@ model PlanItemUnit {
 }
 
 model Project {
-  id            String   @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
+  id            String        @id @default(cuid())
+  zev           Zev           @relation(fields: [zevId], references: [id])
+  zevId         String
   name          String
   description   String?
-  status        String   @default("PLANNED") // PLANNED | ACTIVE | COMPLETED | CANCELLED
-  estimatedCost Decimal? @db.Decimal(14, 2)
-  createdAt     DateTime @default(now())
-  journalLines          JournalLine[]
+  status        String        @default("PLANNED") // PLANNED | ACTIVE | COMPLETED | CANCELLED
+  estimatedCost Decimal?      @db.Decimal(14, 2)
+  createdAt     DateTime      @default(now())
+  journalLines  JournalLine[]
 }
 
 // ---------------------------------------------------------------------------
@@ -1553,43 +1554,43 @@ enum IssueUrgency {
 }
 
 model MaintenanceIssue {
-  id                 String       @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  title              String
-  description        String
-  reporter           Party        @relation("IssueReporter", fields: [reporterId], references: [id])
-  reporterId         String
-  buildingId         String?
-  entranceId         String?
-  unit               Unit?        @relation(fields: [unitId], references: [id])
-  unitId             String?
-  locationNote       String?
-  category           String?
-  urgency            IssueUrgency @default(NORMAL)
-  isEmergency        Boolean      @default(false)
-  safetyImpact       Boolean      @default(false)
-  status             IssueStatus  @default(REPORTED)
-  responsible        Party?       @relation("IssueResponsible", fields: [responsibleId], references: [id])
-  responsibleId      String?
-  approvalProposalId String?
-  emergencyReason    String?
+  id                    String             @id @default(cuid())
+  zev                   Zev                @relation(fields: [zevId], references: [id])
+  zevId                 String
+  title                 String
+  description           String
+  reporter              Party              @relation("IssueReporter", fields: [reporterId], references: [id])
+  reporterId            String
+  buildingId            String?
+  entranceId            String?
+  unit                  Unit?              @relation(fields: [unitId], references: [id])
+  unitId                String?
+  locationNote          String?
+  category              String?
+  urgency               IssueUrgency       @default(NORMAL)
+  isEmergency           Boolean            @default(false)
+  safetyImpact          Boolean            @default(false)
+  status                IssueStatus        @default(REPORTED)
+  responsible           Party?             @relation("IssueResponsible", fields: [responsibleId], references: [id])
+  responsibleId         String?
+  approvalProposalId    String?
+  emergencyReason       String?
   emergencyAuthorizedBy String?
-  emergencyAuthority String?
-  emergencyRatifiedRef String?
-  estimatedCost      Decimal?     @db.Decimal(14, 2)
-  actualCost         Decimal?     @db.Decimal(14, 2)
-  warrantyUntil      DateTime?
-  recurrenceNote     String?
-  planItemId         String?
-  comments           IssueComment[]
-  statusEvents       IssueStatusEvent[]
-  offers             ContractorOffer[]
-  workOrders         WorkOrder[]
-  expenses           Expense[]
-  attachments        Attachment[] @relation("IssueAttachments")
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  emergencyAuthority    String?
+  emergencyRatifiedRef  String?
+  estimatedCost         Decimal?           @db.Decimal(14, 2)
+  actualCost            Decimal?           @db.Decimal(14, 2)
+  warrantyUntil         DateTime?
+  recurrenceNote        String?
+  planItemId            String?
+  comments              IssueComment[]
+  statusEvents          IssueStatusEvent[]
+  offers                ContractorOffer[]
+  workOrders            WorkOrder[]
+  expenses              Expense[]
+  attachments           Attachment[]       @relation("IssueAttachments")
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
 }
 
 model IssueComment {
@@ -1613,16 +1614,16 @@ model IssueStatusEvent {
 }
 
 model ContractorOffer {
-  id         String           @id @default(cuid())
-  issue      MaintenanceIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
-  issueId    String
-  supplier   Supplier         @relation(fields: [supplierId], references: [id])
-  supplierId String
-  amount     Decimal          @db.Decimal(14, 2)
+  id          String           @id @default(cuid())
+  issue       MaintenanceIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId     String
+  supplier    Supplier         @relation(fields: [supplierId], references: [id])
+  supplierId  String
+  amount      Decimal          @db.Decimal(14, 2)
   description String?
-  validUntil DateTime?
-  selected   Boolean          @default(false)
-  createdAt  DateTime         @default(now())
+  validUntil  DateTime?
+  selected    Boolean          @default(false)
+  createdAt   DateTime         @default(now())
 }
 
 model WorkOrder {
@@ -1680,26 +1681,26 @@ enum DocumentStatus {
 
 /// Generated PDF documents. FINAL documents are immutable; a change = new version row.
 model Document {
-  id          String         @id @default(cuid())
-  zev         Zev            @relation(fields: [zevId], references: [id])
-  zevId       String
-  type        DocumentType
-  number      String
-  title       String
-  status      DocumentStatus @default(DRAFT)
-  version     Int            @default(1)
-  sourceType  String?        // e.g. "Meeting", "Invoice", "AnnualPlan"
-  sourceId    String?
+  id                String         @id @default(cuid())
+  zev               Zev            @relation(fields: [zevId], references: [id])
+  zevId             String
+  type              DocumentType
+  number            String
+  title             String
+  status            DocumentStatus @default(DRAFT)
+  version           Int            @default(1)
+  sourceType        String? // e.g. "Meeting", "Invoice", "AnnualPlan"
+  sourceId          String?
   // Legacy Docker deployments only, from before Plans/deployment-portability-plan.md
   // §3: an absolute on-disk path. New rows leave this null and carry their bytes in
   // `blob` instead — readDocumentFile falls back to this path only when `blob` is absent.
-  filePath    String?
-  sha256      String
-  publishedToOwners Boolean  @default(false)
-  createdById String?
-  finalizedAt DateTime?
-  createdAt   DateTime       @default(now())
-  blob        DocumentBlob?
+  filePath          String?
+  sha256            String
+  publishedToOwners Boolean        @default(false)
+  createdById       String?
+  finalizedAt       DateTime?
+  createdAt         DateTime       @default(now())
+  blob              DocumentBlob?
 
   @@unique([zevId, type, number, version])
   @@index([sourceType, sourceId])
@@ -1722,26 +1723,26 @@ model DocumentBlob {
 /// linkedType/linkedId optionally tie an attachment to a specific record (e.g.
 /// "OwnershipStake"), mirroring Document.sourceType/sourceId; both null = general library item.
 model Attachment {
-  id          String   @id @default(cuid())
-  zev   Zev    @relation(fields: [zevId], references: [id])
-  zevId String
-  filename    String
-  mime        String
-  size        Int
+  id           String             @id @default(cuid())
+  zev          Zev                @relation(fields: [zevId], references: [id])
+  zevId        String
+  filename     String
+  mime         String
+  size         Int
   // Legacy Docker deployments only — see Document.filePath above; AttachmentBlob
   // (below) is where new uploads live.
-  filePath    String?
-  sha256      String?
+  filePath     String?
+  sha256       String?
   uploadedById String?
-  category    String   @default("OTHER")
-  linkedType  String?
-  linkedId    String?
-  proposals   Proposal[]        @relation("ProposalAttachments")
-  expenses    Expense[]         @relation("ExpenseAttachments")
-  issues      MaintenanceIssue[] @relation("IssueAttachments")
-  transactions FinTransaction[] @relation("TxAttachments")
-  createdAt   DateTime @default(now())
-  blob        AttachmentBlob?
+  category     String             @default("OTHER")
+  linkedType   String?
+  linkedId     String?
+  proposals    Proposal[]         @relation("ProposalAttachments")
+  expenses     Expense[]          @relation("ExpenseAttachments")
+  issues       MaintenanceIssue[] @relation("IssueAttachments")
+  transactions FinTransaction[]   @relation("TxAttachments")
+  createdAt    DateTime           @default(now())
+  blob         AttachmentBlob?
 
   @@index([linkedType, linkedId])
   @@index([category])
@@ -1769,26 +1770,26 @@ enum NotifStatus {
 }
 
 model NotificationMessage {
-  id           String       @id @default(cuid())
+  id                   String       @id @default(cuid())
   // Nullable on purpose (Korak 5 addendum, 2026-09-08): a handful of notifications are
   // genuinely account-level, not tied to any one tenant (e.g. a password-reset e-mail
   // for a user who may hold memberships in several ZEVs or none) — see queueNotification
   // in src/server/notifications/service.ts. Every other caller passes a real zevId.
-  zev   Zev?    @relation(fields: [zevId], references: [id])
-  zevId String?
-  channel      NotifChannel
-  recipient    Party?       @relation(fields: [recipientId], references: [id])
-  recipientId  String?
-  toAddress    String       // email address or viber subscriber id
-  template     String?
-  subject      String?
-  body         String
-  status       NotifStatus  @default(QUEUED)
-  attempts     Int          @default(0)
-  lastError    String?
-  events       Json?        // delivery/seen/failure callback log
-  relatedType  String?
-  relatedId    String?
+  zev                  Zev?         @relation(fields: [zevId], references: [id])
+  zevId                String?
+  channel              NotifChannel
+  recipient            Party?       @relation(fields: [recipientId], references: [id])
+  recipientId          String?
+  toAddress            String // email address or viber subscriber id
+  template             String?
+  subject              String?
+  body                 String
+  status               NotifStatus  @default(QUEUED)
+  attempts             Int          @default(0)
+  lastError            String?
+  events               Json? // delivery/seen/failure callback log
+  relatedType          String?
+  relatedId            String?
   /// Document.id čiji se PDF (DocumentBlob) šalje kao prilog. Bajtovi se čitaju pri svakom slanju,
   /// pa ponovno slanje (retry) šalje isti, nepromijenjeni PDF.
   attachmentDocumentId String?
@@ -1796,22 +1797,22 @@ model NotificationMessage {
   /// from a lease older than DISPATCH_LEASE_MS, i.e. a crashed send) may send. Cleared when the
   /// attempt ends. Stops a double click from e-mailing the same invoice twice.
   dispatchingAt        DateTime?
-  sentAt       DateTime?
-  createdAt    DateTime     @default(now())
+  sentAt               DateTime?
+  createdAt            DateTime     @default(now())
 
   @@index([recipientId])
   @@index([relatedType, relatedId])
 }
 
 model ViberSubscriber {
-  id        String   @id @default(cuid())
-  party     Party    @relation(fields: [partyId], references: [id])
-  partyId   String   @unique
-  viberId   String   @unique
-  optIn     Boolean  @default(false)
+  id        String    @id @default(cuid())
+  party     Party     @relation(fields: [partyId], references: [id])
+  partyId   String    @unique
+  viberId   String    @unique
+  optIn     Boolean   @default(false)
   optInAt   DateTime?
   optOutAt  DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 /// Append-only audit trail. UPDATE/DELETE blocked by DB trigger.
@@ -1823,11 +1824,11 @@ model AuditEvent {
   // revoked/expired/unknown token lookups, and the login/password-reset moments before
   // a session's active ZEV is resolved. Those get a real NULL here instead of being
   // silently misattributed to whichever ZEV happens to be oldest in the database.
-  zev   Zev?    @relation(fields: [zevId], references: [id])
-  zevId String?
-  actorId    String?  // User.id
-  actorLabel String?  // denormalized display, or "system"
-  action     String   // e.g. "vote.submit", "invoice.issue"
+  zev        Zev?     @relation(fields: [zevId], references: [id])
+  zevId      String?
+  actorId    String? // User.id
+  actorLabel String? // denormalized display, or "system"
+  action     String // e.g. "vote.submit", "invoice.issue"
   targetType String
   targetId   String?
   before     Json?
@@ -1882,10 +1883,10 @@ model PlatformSetting {
 // ---------------------------------------------------------------------------
 
 enum ChartTemplateStatus {
-  DRAFT    // u izradi (uvoz konta); ne dodjeljuje se ZEV-u
-  DEMO     // demonstracioni, izmišljene šifre — samo za Zev.isDemo
+  DRAFT // u izradi (uvoz konta); ne dodjeljuje se ZEV-u
+  DEMO // demonstracioni, izmišljene šifre — samo za Zev.isDemo
   REVIEWED // stručno provjeren: source + reviewedBy + reviewedAt obavezni
-  RETIRED  // ne dodjeljuje se novim ZEV-ovima; postojeći planovi ostaju
+  RETIRED // ne dodjeljuje se novim ZEV-ovima; postojeći planovi ostaju
 }
 
 /// Računovodstvena priroda konta. Lista čeka potvrdu računovođe (plan §10 R-1).
@@ -1899,8 +1900,8 @@ enum AccountNature {
 }
 
 enum ZevChartStatus {
-  DRAFT   // dodijeljen, razrada u toku; šifre, vrste i hijerarhija se još smiju mijenjati
-  ACTIVE  // potvrđen; šifra/vrsta/zbirno-knjižno su zaključani (promjena = zamjena konta)
+  DRAFT // dodijeljen, razrada u toku; šifre, vrste i hijerarhija se još smiju mijenjati
+  ACTIVE // potvrđen; šifra/vrsta/zbirno-knjižno su zaključani (promjena = zamjena konta)
   RETIRED // povučen; ostaje čitljiv
 }
 
@@ -1914,34 +1915,34 @@ enum FiscalStatus {
 /// njegova konta se ne mijenjaju (servis). Dodjela ZEV-u pravi KOPIJU (ZevChart), pa izmjena
 /// predloška nikad ne dira postojeće planove ZEV-ova.
 model ChartTemplate {
-  id           String              @id @default(cuid())
-  key          String
-  version      Int
-  name         String
-  jurisdiction String
-  source       String?             // propis/izvor okvira; obavezan za REVIEWED
-  note         String?
-  status       ChartTemplateStatus @default(DRAFT)
-  reviewedBy   String?             // ime i svojstvo stručnog lica (tekst)
-  reviewedAt   DateTime?
-  validFrom    DateTime?
-  validTo      DateTime?
+  id              String                 @id @default(cuid())
+  key             String
+  version         Int
+  name            String
+  jurisdiction    String
+  source          String? // propis/izvor okvira; obavezan za REVIEWED
+  note            String?
+  status          ChartTemplateStatus    @default(DRAFT)
+  reviewedBy      String? // ime i svojstvo stručnog lica (tekst)
+  reviewedAt      DateTime?
+  validFrom       DateTime?
+  validTo         DateTime?
   /// Pravila šifara, vezana za predložak (src/lib/accountCodes.ts CodeRules):
   /// { digitsOnly, allowedLengths, childExtendsParent, maxDepth }
-  codeRules    Json
-  accounts     ChartTemplateAccount[]
-  zevCharts    ZevChart[]         @relation("ZevChartSource")
-  zevChartsSynced ZevChart[]      @relation("ZevChartSynced")
-  createdById  String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  codeRules       Json
+  accounts        ChartTemplateAccount[]
+  zevCharts       ZevChart[]             @relation("ZevChartSource")
+  zevChartsSynced ZevChart[]             @relation("ZevChartSynced")
+  createdById     String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
 
   @@unique([key, version])
 }
 
 model ChartTemplateAccount {
-  id                 String        @id @default(cuid())
-  template           ChartTemplate @relation(fields: [templateId], references: [id])
+  id                 String                 @id @default(cuid())
+  template           ChartTemplate          @relation(fields: [templateId], references: [id])
   templateId         String
   code               String
   name               String
@@ -1950,8 +1951,8 @@ model ChartTemplateAccount {
   parentId           String?
   children           ChartTemplateAccount[] @relation("TplTree")
   nature             AccountNature
-  postable           Boolean       // false = zbirno konto
-  requiredDimensions String[]      @default([])
+  postable           Boolean // false = zbirno konto
+  requiredDimensions String[]               @default([])
   zevAccounts        ZevAccount[]
 
   @@unique([templateId, code])
@@ -1964,13 +1965,13 @@ model ZevChart {
   zev              Zev            @relation(fields: [zevId], references: [id])
   zevId            String
   sourceTemplate   ChartTemplate  @relation("ZevChartSource", fields: [sourceTemplateId], references: [id])
-  sourceTemplateId String         // tačna verzija iz koje je nastao
+  sourceTemplateId String // tačna verzija iz koje je nastao
   /// Posljednja verzija predloška čije je izmjene računovođa pregledao („Preuzmi izmjene”); null = samo izvorna.
   /// Nova verzija se nudi samo kad je novija od ove (i od izvorne). Preuzimanje je uvijek izričito i djelimično.
   syncedTemplate   ChartTemplate? @relation("ZevChartSynced", fields: [syncedTemplateId], references: [id])
   syncedTemplateId String?
   syncedAt         DateTime?
-  codeRules        Json           // kopija pravila šifara (predložak se poslije dodjele ne čita)
+  codeRules        Json // kopija pravila šifara (predložak se poslije dodjele ne čita)
   status           ZevChartStatus @default(DRAFT)
   activatedAt      DateTime?
   retiredAt        DateTime?
@@ -1982,10 +1983,10 @@ model ZevChart {
 }
 
 model ZevAccount {
-  id                 String        @id @default(cuid())
-  zev                Zev           @relation(fields: [zevId], references: [id])
+  id                 String                @id @default(cuid())
+  zev                Zev                   @relation(fields: [zevId], references: [id])
   zevId              String
-  chart              ZevChart      @relation(fields: [chartId], references: [id])
+  chart              ZevChart              @relation(fields: [chartId], references: [id])
   chartId            String
   /// Konto predloška od kojeg je kopiran; null = lokalna analitika ZEV-a.
   templateAccount    ChartTemplateAccount? @relation(fields: [templateAccountId], references: [id])
@@ -1993,62 +1994,62 @@ model ZevAccount {
   code               String
   name               String
   description        String?
-  parent             ZevAccount?   @relation("ZevTree", fields: [parentId], references: [id], onDelete: Restrict)
+  parent             ZevAccount?           @relation("ZevTree", fields: [parentId], references: [id], onDelete: Restrict)
   parentId           String?
-  children           ZevAccount[]  @relation("ZevTree")
+  children           ZevAccount[]          @relation("ZevTree")
   nature             AccountNature
   postable           Boolean
-  active             Boolean       @default(true)
+  active             Boolean               @default(true)
   deactivatedAt      DateTime?
-  requiredDimensions String[]      @default([])
+  requiredDimensions String[]              @default([])
   /// Kontrolisana zamjena konta aktivnog plana: novi red upućuje na stari, stari se deaktivira.
-  replaces           ZevAccount?   @relation("AccountReplace", fields: [replacesId], references: [id], onDelete: Restrict)
-  replacesId         String?       @unique
-  replacedBy         ZevAccount?   @relation("AccountReplace")
+  replaces           ZevAccount?           @relation("AccountReplace", fields: [replacesId], references: [id], onDelete: Restrict)
+  replacesId         String?               @unique
+  replacedBy         ZevAccount?           @relation("AccountReplace")
   controlRoles       ZevControlAccount[]
   postingRules       PostingRule[]
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  journalLines       JournalLine[]
 
   @@unique([chartId, code])
   @@index([zevId])
-  journalLines       JournalLine[]
 }
 
 /// Poslovna godina ZEV-a. U A1 se samo otvara i pregleda; zatvaranje je Faza B.
 model FiscalYear {
-  id          String         @id @default(cuid())
-  zev         Zev            @relation(fields: [zevId], references: [id])
-  zevId       String
-  label       String
-  startDate   DateTime
-  endDate     DateTime       // posljednji dan godine (uključivo, 00:00 tog dana)
-  status      FiscalStatus   @default(OPEN)
-  periods     FiscalPeriod[]
-  createdById String?
-  createdAt   DateTime       @default(now())
+  id             String         @id @default(cuid())
+  zev            Zev            @relation(fields: [zevId], references: [id])
+  zevId          String
+  label          String
+  startDate      DateTime
+  endDate        DateTime // posljednji dan godine (uključivo, 00:00 tog dana)
+  status         FiscalStatus   @default(OPEN)
+  periods        FiscalPeriod[]
+  createdById    String?
+  createdAt      DateTime       @default(now())
+  journalEntries JournalEntry[]
 
   @@unique([zevId, label])
-  journalEntries JournalEntry[]
 }
 
 model FiscalPeriod {
-  id         String       @id @default(cuid())
-  zev        Zev          @relation(fields: [zevId], references: [id])
-  zevId      String
-  year       FiscalYear   @relation(fields: [yearId], references: [id])
-  yearId     String
-  label      String
-  startDate  DateTime
-  endDate    DateTime
-  status     FiscalStatus @default(OPEN)
-  closedAt   DateTime?
-  closedById String?
+  id             String                @id @default(cuid())
+  zev            Zev                   @relation(fields: [zevId], references: [id])
+  zevId          String
+  year           FiscalYear            @relation(fields: [yearId], references: [id])
+  yearId         String
+  label          String
+  startDate      DateTime
+  endDate        DateTime
+  status         FiscalStatus          @default(OPEN)
+  closedAt       DateTime?
+  closedById     String?
+  journalEntries JournalEntry[]
+  reopenRequests PeriodReopenRequest[]
 
   @@unique([yearId, label])
   @@index([zevId, startDate])
-  journalEntries JournalEntry[]
-  reopenRequests PeriodReopenRequest[]
 }
 
 // ---------------------------------------------------------------------------
@@ -2060,48 +2061,48 @@ model FiscalPeriod {
 
 /// Namjena sredstava (K-4): za šta su sredstva prikupljena i smiju se trošiti. Nije konto.
 model FundPurpose {
-  id              String   @id @default(cuid())
-  zev             Zev      @relation(fields: [zevId], references: [id])
+  id              String              @id @default(cuid())
+  zev             Zev                 @relation(fields: [zevId], references: [id])
   zevId           String
   code            String
   name            String
   /// Zajednička rezerva: njena pravila i kontrolna konta podliježu kapiji COMMON_RESERVE_CLASSIFICATION (K-6).
-  isCommonReserve Boolean  @default(false)
-  decisionRef     String?  // odluka skupštine kojom je namjena utvrđena
-  active          Boolean  @default(true)
+  isCommonReserve Boolean             @default(false)
+  decisionRef     String? // odluka skupštine kojom je namjena utvrđena
+  active          Boolean             @default(true)
   chargeTypes     ChargeType[]
   controlAccounts ZevControlAccount[]
   postingRules    PostingRule[]
-  createdAt       DateTime @default(now())
+  createdAt       DateTime            @default(now())
+  journalLines    JournalLine[]
 
   @@unique([zevId, code])
-  journalLines    JournalLine[]
 }
 
 /// Vrsta zaduženja (K-3): stabilan pojam iznad stavki naknade, na kojem visi pravilo knjiženja.
 model ChargeType {
-  id               String       @id @default(cuid())
-  zev              Zev          @relation(fields: [zevId], references: [id])
+  id               String        @id @default(cuid())
+  zev              Zev           @relation(fields: [zevId], references: [id])
   zevId            String
   code             String
   name             String
-  defaultPurpose   FundPurpose? @relation(fields: [defaultPurposeId], references: [id], onDelete: Restrict)
+  defaultPurpose   FundPurpose?  @relation(fields: [defaultPurposeId], references: [id], onDelete: Restrict)
   defaultPurposeId String?
-  active           Boolean      @default(true)
+  active           Boolean       @default(true)
   chargeItems      ChargeItem[]
   invoiceLines     InvoiceLine[]
   postingRules     PostingRule[]
-  createdAt        DateTime     @default(now())
+  createdAt        DateTime      @default(now())
 
   @@unique([zevId, code])
 }
 
 enum ControlRole {
-  MONEY_ACCOUNT          // konto računa novca (banka/blagajna); moneyAccountId obavezan
-  OWNER_RECEIVABLE       // potraživanja od vlasnika (po namjeni, §11 R-2)
-  OWNER_ADVANCE          // avansi poznatih vlasnika
-  UNIDENTIFIED_RECEIPTS  // neidentifikovane uplate
-  SUPPLIER_PAYABLE       // obaveze prema dobavljačima
+  MONEY_ACCOUNT // konto računa novca (banka/blagajna); moneyAccountId obavezan
+  OWNER_RECEIVABLE // potraživanja od vlasnika (po namjeni, §11 R-2)
+  OWNER_ADVANCE // avansi poznatih vlasnika
+  UNIDENTIFIED_RECEIPTS // neidentifikovane uplate
+  SUPPLIER_PAYABLE // obaveze prema dobavljačima
 }
 
 /// Koje konto igra koju ulogu u šemama knjiženja. Append-only: promjena = nov red sa kasnijim validFrom.
@@ -2152,30 +2153,31 @@ enum PostingRuleStatus {
 /// Pravilo knjiženja (K-3): protivkonto šeme za vrstu zaduženja ili kategoriju, sa datumom početka primjene.
 /// Potvrđen red se ne mijenja (DB okidač); izmjena = nov red sa `supersedesId`, kasnijim `validFrom` i razlogom.
 model PostingRule {
-  id               String              @id @default(cuid())
-  zev              Zev                 @relation(fields: [zevId], references: [id])
+  id               String               @id @default(cuid())
+  zev              Zev                  @relation(fields: [zevId], references: [id])
   zevId            String
   chartId          String
   kind             AccountingEventKind
-  chargeType       ChargeType?         @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
+  chargeType       ChargeType?          @relation(fields: [chargeTypeId], references: [id], onDelete: Restrict)
   chargeTypeId     String?
   category         TransactionCategory? @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   categoryId       String?
-  counterAccount   ZevAccount          @relation(fields: [counterAccountId], references: [id])
+  counterAccount   ZevAccount           @relation(fields: [counterAccountId], references: [id])
   counterAccountId String
-  purpose          FundPurpose?        @relation(fields: [purposeId], references: [id], onDelete: Restrict)
+  purpose          FundPurpose?         @relation(fields: [purposeId], references: [id], onDelete: Restrict)
   purposeId        String?
   validFrom        DateTime
-  status           PostingRuleStatus   @default(DRAFT)
-  supersedes       PostingRule?        @relation("RuleSupersede", fields: [supersedesId], references: [id], onDelete: Restrict)
-  supersedesId     String?             @unique
-  supersededBy     PostingRule?        @relation("RuleSupersede")
+  status           PostingRuleStatus    @default(DRAFT)
+  supersedes       PostingRule?         @relation("RuleSupersede", fields: [supersedesId], references: [id], onDelete: Restrict)
+  supersedesId     String?              @unique
+  supersededBy     PostingRule?         @relation("RuleSupersede")
   reason           String
   expertRef        String?
   createdById      String
   confirmedById    String?
   confirmedAt      DateTime?
-  createdAt        DateTime            @default(now())
+  journalLines     JournalLine[]
+  createdAt        DateTime             @default(now())
 
   @@index([zevId, kind, chargeTypeId, categoryId, validFrom])
 }
@@ -2215,19 +2217,19 @@ enum JournalStatus {
 }
 
 enum JournalKind {
-  MANUAL   // ručni nalog (bez kontrolnih konta, B1-Q5)
-  OPENING  // nalog početnog stanja (B1b)
+  MANUAL // ručni nalog (bez kontrolnih konta, B1-Q5)
+  OPENING // nalog početnog stanja (B1b)
   REVERSAL // storno nalog
-  AUTO     // automatsko knjiženje događaja (B2)
+  AUTO // automatsko knjiženje događaja (B2)
 }
 
 model JournalEntry {
-  id             String        @id @default(cuid())
-  zev            Zev           @relation(fields: [zevId], references: [id])
+  id             String           @id @default(cuid())
+  zev            Zev              @relation(fields: [zevId], references: [id])
   zevId          String
-  year           FiscalYear    @relation(fields: [yearId], references: [id])
+  year           FiscalYear       @relation(fields: [yearId], references: [id])
   yearId         String
-  period         FiscalPeriod  @relation(fields: [periodId], references: [id])
+  period         FiscalPeriod     @relation(fields: [periodId], references: [id])
   periodId       String
   kind           JournalKind
   /// Dodjeljuje se pri knjiženju iz JournalCounter ("NK-2027-0001"); nacrt nema broj.
@@ -2235,10 +2237,10 @@ model JournalEntry {
   documentDate   DateTime
   postingDate    DateTime
   description    String
-  status         JournalStatus @default(DRAFT)
-  reversalOf     JournalEntry? @relation("JournalReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
-  reversalOfId   String?       @unique
-  reversedBy     JournalEntry? @relation("JournalReversal")
+  status         JournalStatus    @default(DRAFT)
+  reversalOf     JournalEntry?    @relation("JournalReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
+  reversalOfId   String?          @unique
+  reversedBy     JournalEntry?    @relation("JournalReversal")
   reversalReason String?
   sourceType     String?
   sourceId       String?
@@ -2246,41 +2248,79 @@ model JournalEntry {
   postedById     String?
   postedAt       DateTime?
   lines          JournalLine[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  /// Automatski nalog (B2): događaj iz kojeg je nastao.
+  event          AccountingEvent?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
   @@unique([zevId, number])
   @@index([zevId, periodId, status])
 }
 
 model JournalLine {
-  id          String       @id @default(cuid())
-  entry       JournalEntry @relation(fields: [entryId], references: [id], onDelete: Restrict)
-  entryId     String
-  zev         Zev          @relation(fields: [zevId], references: [id])
-  zevId       String
-  order       Int
-  account     ZevAccount   @relation(fields: [accountId], references: [id], onDelete: Restrict)
-  accountId   String
-  debit       Decimal      @default(0) @db.Decimal(14, 2)
-  credit      Decimal      @default(0) @db.Decimal(14, 2)
-  party       Party?       @relation(fields: [partyId], references: [id], onDelete: Restrict)
-  partyId     String?
-  unit        Unit?        @relation(fields: [unitId], references: [id], onDelete: Restrict)
-  unitId      String?
-  supplier    Supplier?    @relation(fields: [supplierId], references: [id], onDelete: Restrict)
-  supplierId  String?
-  project     Project?     @relation(fields: [projectId], references: [id], onDelete: Restrict)
-  projectId   String?
-  purpose     FundPurpose? @relation(fields: [purposeId], references: [id], onDelete: Restrict)
-  purposeId   String?
-  description String?
+  id                String       @id @default(cuid())
+  entry             JournalEntry @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  entryId           String
+  zev               Zev          @relation(fields: [zevId], references: [id])
+  zevId             String
+  order             Int
+  account           ZevAccount   @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  accountId         String
+  debit             Decimal      @default(0) @db.Decimal(14, 2)
+  credit            Decimal      @default(0) @db.Decimal(14, 2)
+  party             Party?       @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  partyId           String?
+  unit              Unit?        @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  unitId            String?
+  supplier          Supplier?    @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  supplierId        String?
+  project           Project?     @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  projectId         String?
+  purpose           FundPurpose? @relation(fields: [purposeId], references: [id], onDelete: Restrict)
+  purposeId         String?
+  description       String?
   /// Samo nalog početnog stanja (B1b): izvor stavke.
   openingSourceType String?
   openingSourceId   String?
+  /// Automatski nalog (B2): pravilo knjiženja koje je dalo protivkonto stavke.
+  rule              PostingRule? @relation(fields: [ruleId], references: [id], onDelete: Restrict)
+  ruleId            String?
 
   @@index([entryId])
   @@index([zevId, accountId])
+}
+
+enum AccountingEventStatus {
+  PENDING
+  POSTED
+  WAITING_RULE // „Čeka podešavanje knjiženja”
+  WAITING_SCHEMA // „Čeka potvrdu šeme knjiženja” (kapija K-6 ili pravilo raspodjele)
+  WAITING_PREDECESSOR // „Čeka prethodni događaj”
+  WAITING_PERIOD // „Čeka otvoren period”
+}
+
+/// Događaj za automatsko knjiženje (B2, Plans/kontni-plan-b2-automatsko-knjizenje-plan.md). Izvodi se iz
+/// operativne evidencije (idempotentno, jedinstven ključ izvora) i knjiži kao jedan AUTO nalog.
+model AccountingEvent {
+  id              String                @id @default(cuid())
+  zev             Zev                   @relation(fields: [zevId], references: [id])
+  zevId           String
+  kind            AccountingEventKind
+  sourceType      String
+  sourceId        String
+  eventDate       DateTime
+  /// Redoslijed obrade unutar istog datuma: kad je izvorni zapis nastao.
+  sourceCreatedAt DateTime
+  amount          Decimal               @db.Decimal(14, 2)
+  status          AccountingEventStatus @default(PENDING)
+  statusDetail    String?
+  journalEntry    JournalEntry?         @relation(fields: [journalEntryId], references: [id], onDelete: Restrict)
+  journalEntryId  String?               @unique
+  createdAt       DateTime              @default(now())
+  processedAt     DateTime?
+
+  @@unique([zevId, sourceType, sourceId, kind])
+  @@index([zevId, status, eventDate])
 }
 
 /// Brojač naloga po ZEV-u, godini i seriji; red se zaključava pri knjiženju, pa brojevi nemaju duplikata ni rupa.
@@ -2306,7 +2346,7 @@ model PeriodReopenRequest {
   requestedRole Role
   requestedAt   DateTime     @default(now())
   decidedById   String?
-  decision      String?      // APPROVED | REJECTED
+  decision      String? // APPROVED | REJECTED
   decisionNote  String?
   decidedAt     DateTime?
 
@@ -2320,23 +2360,23 @@ model PeriodReopenRequest {
 // ---------------------------------------------------------------------------
 
 enum OnboardingInviteStatus {
-  ACTIVE   // čeka korak 1
+  ACTIVE // čeka korak 1
   ACCEPTED // pozvani je otvorio nalog / prijavio se; nastao je nacrt
-  REVOKED  // opozvan
+  REVOKED // opozvan
 }
 
 /// Pozivni link za klijenta. Token se nikad ne čuva, samo sha256 (kao ApprovalToken).
 /// „Izdaj novi link" mijenja tokenHash i rok na istom redu — stari link time prestaje da važi.
 model OnboardingInvite {
   id            String                 @id @default(cuid())
-  email         String                 // korak 1 radi samo sa ovom adresom (D3)
-  workingName   String                 // radni naziv ZEV-a (super admin); klijent ga mijenja u koraku 2
+  email         String // korak 1 radi samo sa ovom adresom (D3)
+  workingName   String // radni naziv ZEV-a (super admin); klijent ga mijenja u koraku 2
   tier          ZevTier
   note          String?
   tokenHash     String                 @unique
   status        OnboardingInviteStatus @default(ACTIVE)
   expiresAt     DateTime
-  createdById   String                 // super admin (User.id)
+  createdById   String // super admin (User.id)
   createdAt     DateTime               @default(now())
   openedAt      DateTime?
   acceptedAt    DateTime?
@@ -2349,26 +2389,26 @@ model OnboardingInvite {
 
 enum OnboardingDraftStatus {
   IN_PROGRESS
-  PUBLISHED   // publishedZevId postavljen; nacrt ostaje samo za čitanje kao trag
-  DISCARDED   // super admin ga je odbacio; fajlovi obrisani
+  PUBLISHED // publishedZevId postavljen; nacrt ostaje samo za čitanje kao trag
+  DISCARDED // super admin ga je odbacio; fajlovi obrisani
 }
 
 /// Nacrt ZEV-a koji klijent puni kroz čarobnjak. `data` je OnboardingDraftData
 /// (src/lib/onboarding/draft.ts); `version` je optimistička brava (svaki upis je version+1).
 model OnboardingDraft {
-  id             String                @id @default(cuid())
-  invite         OnboardingInvite      @relation(fields: [inviteId], references: [id])
-  inviteId       String                @unique
-  ownerUserId    String                // nalog iz koraka 1 (User.id)
-  status         OnboardingDraftStatus @default(IN_PROGRESS)
+  id             String                       @id @default(cuid())
+  invite         OnboardingInvite             @relation(fields: [inviteId], references: [id])
+  inviteId       String                       @unique
+  ownerUserId    String // nalog iz koraka 1 (User.id)
+  status         OnboardingDraftStatus        @default(IN_PROGRESS)
   data           Json
-  version        Int                   @default(0)
-  publishedZevId String?               @unique
+  version        Int                          @default(0)
+  publishedZevId String?                      @unique
   publishedAt    DateTime?
   files          OnboardingDraftFile[]
   adminAccess    OnboardingDraftAdminAccess[]
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  createdAt      DateTime                     @default(now())
+  updatedAt      DateTime                     @updatedAt
 
   @@index([ownerUserId, status])
 }
@@ -2381,7 +2421,7 @@ model OnboardingDraftAdminAccess {
   id          String          @id @default(cuid())
   draft       OnboardingDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
   draftId     String
-  adminUserId String          // User.id super admina (običan string, kao ownerUserId)
+  adminUserId String // User.id super admina (običan string, kao ownerUserId)
   grantedAt   DateTime        @default(now())
   /// Posljednji poziv alata kroz ovaj pristup (upisuje se najviše jednom u 5 minuta).
   lastUsedAt  DateTime?
@@ -2410,21 +2450,21 @@ model OnboardingDraftFile {
 /// Veza asistenta (MCP) sa nalogom korisnika (Plans/mcp-platforma-plan.md §2). Čuva se samo sha256
 /// tokena; token se prikazuje jednom. Opseg se provjerava na svakom pozivu (§3).
 model McpConnection {
-  id          String            @id @default(cuid())
-  user        User              @relation(fields: [userId], references: [id])
-  userId      String
-  name        String
-  client      McpClient
-  kind        McpConnectionKind @default(TOKEN)
-  scopes      Json              // McpScope[] — src/lib/mcp/scopes.ts
-  tokenHash   String?           @unique
-  createdAt   DateTime          @default(now())
-  expiresAt   DateTime
-  lastUsedAt  DateTime?
-  revokedAt   DateTime?
-  revokedById String?
+  id            String            @id @default(cuid())
+  user          User              @relation(fields: [userId], references: [id])
+  userId        String
+  name          String
+  client        McpClient
+  kind          McpConnectionKind @default(TOKEN)
+  scopes        Json // McpScope[] — src/lib/mcp/scopes.ts
+  tokenHash     String?           @unique
+  createdAt     DateTime          @default(now())
+  expiresAt     DateTime
+  lastUsedAt    DateTime?
+  revokedAt     DateTime?
+  revokedById   String?
   /// Samo za kind OAUTH: klijent koji je vezu dobio (OAuth 2.1, Plans/mcp-platforma-plan.md §5). tokenHash je tada null.
-  oauthClient   McpOAuthClient? @relation(fields: [oauthClientId], references: [id], onDelete: SetNull)
+  oauthClient   McpOAuthClient?   @relation(fields: [oauthClientId], references: [id], onDelete: SetNull)
   oauthClientId String?
   oauthTokens   McpOAuthToken[]
 

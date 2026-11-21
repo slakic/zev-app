@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import * as j from "@/server/services/journal";
 import * as ob from "@/server/services/openingBalance";
+import * as ev from "@/server/services/ledgerEvents";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "");
 const errUrl = (path: string, e: unknown) => `${path}${path.includes("?") ? "&" : "?"}err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`;
@@ -126,6 +127,37 @@ export async function postOpeningAction(fd: FormData) {
     await j.postEntry(actor, id);
   } catch (e) {
     target = errUrl(OPENING, e);
+  }
+  revalidatePath("/knjigovodstvo");
+  redirect(target);
+}
+
+// ---------------------------------------------------------------------------
+// Automatsko knjiženje (B2)
+// ---------------------------------------------------------------------------
+
+const EVENTS = "/knjigovodstvo?tab=dogadjaji";
+
+export async function processPendingAction() {
+  const actor = await requireActor("ACCOUNTANT");
+  let target: string;
+  try {
+    const r = await ev.processPending(actor);
+    target = `${EVENTS}&msg=eventsProcessed&proknjizeno=${r.posted}&ceka=${r.waiting}`;
+  } catch (e) {
+    target = errUrl(EVENTS, e);
+  }
+  revalidatePath("/knjigovodstvo");
+  redirect(target);
+}
+
+export async function postEventIntoPeriodAction(fd: FormData) {
+  const actor = await requireActor("ACCOUNTANT");
+  let target = `${EVENTS}&msg=eventPosted`;
+  try {
+    await ev.postEventIntoOpenPeriod(actor, str(fd, "eventId"));
+  } catch (e) {
+    target = errUrl(EVENTS, e);
   }
   revalidatePath("/knjigovodstvo");
   redirect(target);

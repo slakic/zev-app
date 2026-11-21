@@ -9,6 +9,7 @@ import type { Prisma, PaymentStatus } from "@/generated/prisma/client";
 import { extractPdfText, parseNovaBankaStatement, extractUnitNumberCandidates } from "@/server/services/bankStatementPdf";
 import { partyDisplayName } from "@/server/services/ownership";
 import { foldDiacritics } from "@/lib/text";
+import { afterLedgerChange } from "./ledgerEvents";
 
 // ---- Manual entry ----
 
@@ -72,6 +73,7 @@ export async function enterPayment(
     }, tx);
     return payment;
   });
+  await afterLedgerChange(actor.zevId, actor.userId);
   return p;
 }
 
@@ -201,6 +203,7 @@ export async function importBankCsv(
     return b;
   }, { timeout: 30000 });
 
+  await afterLedgerChange(actor.zevId, actor.userId);
   return { batchId: batch.id, imported: rows.length, errors };
 }
 
@@ -425,6 +428,7 @@ export async function commitPdfImport(
     },
     { timeout: 30000 }
   );
+  await afterLedgerChange(actor.zevId, actor.userId);
   return { batchId: batch.batchId, imported: input.rows.length, linkedToSms: batch.linked };
 }
 
@@ -537,6 +541,7 @@ export async function commitPdfImports(
     },
     { timeout: 60000 }
   );
+  await afterLedgerChange(actor.zevId, actor.userId);
   return { ...result, statements: statements.length };
 }
 
@@ -924,7 +929,7 @@ export async function allocatePayment(
   // invoice), resolved inside the transaction against the same rows the checks below use.
   const requested = data.amount === undefined || data.amount.trim() === "" ? null : dec(data.amount);
   if (requested && requested.lessThanOrEqualTo(0)) throw new Error("Iznos alokacije mora biti pozitivan.");
-  return prisma.$transaction(async (tx) => {
+  const created = await prisma.$transaction(async (tx) => {
     const payment = await tx.payment.findUniqueOrThrow({ where: { id: data.paymentId, zevId }, include: { allocations: true } });
     if (payment.reversedAt) throw new Error("Stornirana uplata se ne može raspoređivati.");
     const invoice = await tx.invoice.findUniqueOrThrow({ where: { id: data.invoiceId, zevId }, include: { allocations: true } });
@@ -960,6 +965,8 @@ export async function allocatePayment(
     }, tx);
     return alloc;
   });
+  await afterLedgerChange(zevId, actor.userId);
+  return created;
 }
 
 /** Reverse an allocation: append-only negative allocation row.
@@ -969,7 +976,7 @@ export async function reverseAllocation(actor: Actor, allocationId: string, reas
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje alokacije zahtijeva razlog.");
-  return prisma.$transaction(async (tx) => {
+  const reversed = await prisma.$transaction(async (tx) => {
     const orig = await tx.paymentAllocation.findUniqueOrThrow({ where: { id: allocationId }, include: { payment: true } });
     if (orig.payment.zevId !== zevId) throw new Error("Alokacija nije pronađena.");
     if (dec(orig.amount.toString()).lessThanOrEqualTo(0)) throw new Error("Storno zapis se ne može stornirati.");
@@ -994,6 +1001,8 @@ export async function reverseAllocation(actor: Actor, allocationId: string, reas
     }, tx);
     return rev;
   });
+  await afterLedgerChange(zevId, actor.userId);
+  return reversed;
 }
 
 /** Reverse a whole payment (e.g. bank recall). All its allocations are reversed too. */
@@ -1001,7 +1010,9 @@ export async function reversePayment(actor: Actor, paymentId: string, reason: st
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   if (!reason.trim()) throw new Error("Storniranje uplate zahtijeva razlog.");
-  return prisma.$transaction((tx) => reversePaymentInTx(tx, actor, zevId, paymentId, reason));
+  const reversed = await prisma.$transaction((tx) => reversePaymentInTx(tx, actor, zevId, paymentId, reason));
+  await afterLedgerChange(zevId, actor.userId);
+  return reversed;
 }
 
 /** reversePayment() inside the CALLER's transaction (the SMS ↔ izvod merge reverses the duplicate

@@ -54,6 +54,7 @@ export type JournalLineMinAggregateOutputType = {
   description: string | null
   openingSourceType: string | null
   openingSourceId: string | null
+  ruleId: string | null
 }
 
 export type JournalLineMaxAggregateOutputType = {
@@ -72,6 +73,7 @@ export type JournalLineMaxAggregateOutputType = {
   description: string | null
   openingSourceType: string | null
   openingSourceId: string | null
+  ruleId: string | null
 }
 
 export type JournalLineCountAggregateOutputType = {
@@ -90,6 +92,7 @@ export type JournalLineCountAggregateOutputType = {
   description: number
   openingSourceType: number
   openingSourceId: number
+  ruleId: number
   _all: number
 }
 
@@ -122,6 +125,7 @@ export type JournalLineMinAggregateInputType = {
   description?: true
   openingSourceType?: true
   openingSourceId?: true
+  ruleId?: true
 }
 
 export type JournalLineMaxAggregateInputType = {
@@ -140,6 +144,7 @@ export type JournalLineMaxAggregateInputType = {
   description?: true
   openingSourceType?: true
   openingSourceId?: true
+  ruleId?: true
 }
 
 export type JournalLineCountAggregateInputType = {
@@ -158,6 +163,7 @@ export type JournalLineCountAggregateInputType = {
   description?: true
   openingSourceType?: true
   openingSourceId?: true
+  ruleId?: true
   _all?: true
 }
 
@@ -263,6 +269,7 @@ export type JournalLineGroupByOutputType = {
   description: string | null
   openingSourceType: string | null
   openingSourceId: string | null
+  ruleId: string | null
   _count: JournalLineCountAggregateOutputType | null
   _avg: JournalLineAvgAggregateOutputType | null
   _sum: JournalLineSumAggregateOutputType | null
@@ -304,6 +311,7 @@ export type JournalLineWhereInput = {
   description?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   openingSourceType?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   openingSourceId?: Prisma.StringNullableFilter<"JournalLine"> | string | null
+  ruleId?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   entry?: Prisma.XOR<Prisma.JournalEntryScalarRelationFilter, Prisma.JournalEntryWhereInput>
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   account?: Prisma.XOR<Prisma.ZevAccountScalarRelationFilter, Prisma.ZevAccountWhereInput>
@@ -312,6 +320,7 @@ export type JournalLineWhereInput = {
   supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   purpose?: Prisma.XOR<Prisma.FundPurposeNullableScalarRelationFilter, Prisma.FundPurposeWhereInput> | null
+  rule?: Prisma.XOR<Prisma.PostingRuleNullableScalarRelationFilter, Prisma.PostingRuleWhereInput> | null
 }
 
 export type JournalLineOrderByWithRelationInput = {
@@ -330,6 +339,7 @@ export type JournalLineOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   openingSourceType?: Prisma.SortOrderInput | Prisma.SortOrder
   openingSourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ruleId?: Prisma.SortOrderInput | Prisma.SortOrder
   entry?: Prisma.JournalEntryOrderByWithRelationInput
   zev?: Prisma.ZevOrderByWithRelationInput
   account?: Prisma.ZevAccountOrderByWithRelationInput
@@ -338,6 +348,7 @@ export type JournalLineOrderByWithRelationInput = {
   supplier?: Prisma.SupplierOrderByWithRelationInput
   project?: Prisma.ProjectOrderByWithRelationInput
   purpose?: Prisma.FundPurposeOrderByWithRelationInput
+  rule?: Prisma.PostingRuleOrderByWithRelationInput
 }
 
 export type JournalLineWhereUniqueInput = Prisma.AtLeast<{
@@ -359,6 +370,7 @@ export type JournalLineWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   openingSourceType?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   openingSourceId?: Prisma.StringNullableFilter<"JournalLine"> | string | null
+  ruleId?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   entry?: Prisma.XOR<Prisma.JournalEntryScalarRelationFilter, Prisma.JournalEntryWhereInput>
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   account?: Prisma.XOR<Prisma.ZevAccountScalarRelationFilter, Prisma.ZevAccountWhereInput>
@@ -367,6 +379,7 @@ export type JournalLineWhereUniqueInput = Prisma.AtLeast<{
   supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   purpose?: Prisma.XOR<Prisma.FundPurposeNullableScalarRelationFilter, Prisma.FundPurposeWhereInput> | null
+  rule?: Prisma.XOR<Prisma.PostingRuleNullableScalarRelationFilter, Prisma.PostingRuleWhereInput> | null
 }, "id">
 
 export type JournalLineOrderByWithAggregationInput = {
@@ -385,6 +398,7 @@ export type JournalLineOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   openingSourceType?: Prisma.SortOrderInput | Prisma.SortOrder
   openingSourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ruleId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.JournalLineCountOrderByAggregateInput
   _avg?: Prisma.JournalLineAvgOrderByAggregateInput
   _max?: Prisma.JournalLineMaxOrderByAggregateInput
@@ -411,6 +425,7 @@ export type JournalLineScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"JournalLine"> | string | null
   openingSourceType?: Prisma.StringNullableWithAggregatesFilter<"JournalLine"> | string | null
   openingSourceId?: Prisma.StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+  ruleId?: Prisma.StringNullableWithAggregatesFilter<"JournalLine"> | string | null
 }
 
 export type JournalLineCreateInput = {
@@ -429,6 +444,7 @@ export type JournalLineCreateInput = {
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateInput = {
@@ -447,6 +463,7 @@ export type JournalLineUncheckedCreateInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateInput = {
@@ -465,6 +482,7 @@ export type JournalLineUpdateInput = {
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateInput = {
@@ -483,6 +501,7 @@ export type JournalLineUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManyInput = {
@@ -501,6 +520,7 @@ export type JournalLineCreateManyInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateManyMutationInput = {
@@ -529,6 +549,7 @@ export type JournalLineUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineListRelationFilter = {
@@ -557,6 +578,7 @@ export type JournalLineCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   openingSourceType?: Prisma.SortOrder
   openingSourceId?: Prisma.SortOrder
+  ruleId?: Prisma.SortOrder
 }
 
 export type JournalLineAvgOrderByAggregateInput = {
@@ -581,6 +603,7 @@ export type JournalLineMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   openingSourceType?: Prisma.SortOrder
   openingSourceId?: Prisma.SortOrder
+  ruleId?: Prisma.SortOrder
 }
 
 export type JournalLineMinOrderByAggregateInput = {
@@ -599,6 +622,7 @@ export type JournalLineMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   openingSourceType?: Prisma.SortOrder
   openingSourceId?: Prisma.SortOrder
+  ruleId?: Prisma.SortOrder
 }
 
 export type JournalLineSumOrderByAggregateInput = {
@@ -901,6 +925,48 @@ export type JournalLineUncheckedUpdateManyWithoutPurposeNestedInput = {
   deleteMany?: Prisma.JournalLineScalarWhereInput | Prisma.JournalLineScalarWhereInput[]
 }
 
+export type JournalLineCreateNestedManyWithoutRuleInput = {
+  create?: Prisma.XOR<Prisma.JournalLineCreateWithoutRuleInput, Prisma.JournalLineUncheckedCreateWithoutRuleInput> | Prisma.JournalLineCreateWithoutRuleInput[] | Prisma.JournalLineUncheckedCreateWithoutRuleInput[]
+  connectOrCreate?: Prisma.JournalLineCreateOrConnectWithoutRuleInput | Prisma.JournalLineCreateOrConnectWithoutRuleInput[]
+  createMany?: Prisma.JournalLineCreateManyRuleInputEnvelope
+  connect?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+}
+
+export type JournalLineUncheckedCreateNestedManyWithoutRuleInput = {
+  create?: Prisma.XOR<Prisma.JournalLineCreateWithoutRuleInput, Prisma.JournalLineUncheckedCreateWithoutRuleInput> | Prisma.JournalLineCreateWithoutRuleInput[] | Prisma.JournalLineUncheckedCreateWithoutRuleInput[]
+  connectOrCreate?: Prisma.JournalLineCreateOrConnectWithoutRuleInput | Prisma.JournalLineCreateOrConnectWithoutRuleInput[]
+  createMany?: Prisma.JournalLineCreateManyRuleInputEnvelope
+  connect?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+}
+
+export type JournalLineUpdateManyWithoutRuleNestedInput = {
+  create?: Prisma.XOR<Prisma.JournalLineCreateWithoutRuleInput, Prisma.JournalLineUncheckedCreateWithoutRuleInput> | Prisma.JournalLineCreateWithoutRuleInput[] | Prisma.JournalLineUncheckedCreateWithoutRuleInput[]
+  connectOrCreate?: Prisma.JournalLineCreateOrConnectWithoutRuleInput | Prisma.JournalLineCreateOrConnectWithoutRuleInput[]
+  upsert?: Prisma.JournalLineUpsertWithWhereUniqueWithoutRuleInput | Prisma.JournalLineUpsertWithWhereUniqueWithoutRuleInput[]
+  createMany?: Prisma.JournalLineCreateManyRuleInputEnvelope
+  set?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  disconnect?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  delete?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  connect?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  update?: Prisma.JournalLineUpdateWithWhereUniqueWithoutRuleInput | Prisma.JournalLineUpdateWithWhereUniqueWithoutRuleInput[]
+  updateMany?: Prisma.JournalLineUpdateManyWithWhereWithoutRuleInput | Prisma.JournalLineUpdateManyWithWhereWithoutRuleInput[]
+  deleteMany?: Prisma.JournalLineScalarWhereInput | Prisma.JournalLineScalarWhereInput[]
+}
+
+export type JournalLineUncheckedUpdateManyWithoutRuleNestedInput = {
+  create?: Prisma.XOR<Prisma.JournalLineCreateWithoutRuleInput, Prisma.JournalLineUncheckedCreateWithoutRuleInput> | Prisma.JournalLineCreateWithoutRuleInput[] | Prisma.JournalLineUncheckedCreateWithoutRuleInput[]
+  connectOrCreate?: Prisma.JournalLineCreateOrConnectWithoutRuleInput | Prisma.JournalLineCreateOrConnectWithoutRuleInput[]
+  upsert?: Prisma.JournalLineUpsertWithWhereUniqueWithoutRuleInput | Prisma.JournalLineUpsertWithWhereUniqueWithoutRuleInput[]
+  createMany?: Prisma.JournalLineCreateManyRuleInputEnvelope
+  set?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  disconnect?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  delete?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  connect?: Prisma.JournalLineWhereUniqueInput | Prisma.JournalLineWhereUniqueInput[]
+  update?: Prisma.JournalLineUpdateWithWhereUniqueWithoutRuleInput | Prisma.JournalLineUpdateWithWhereUniqueWithoutRuleInput[]
+  updateMany?: Prisma.JournalLineUpdateManyWithWhereWithoutRuleInput | Prisma.JournalLineUpdateManyWithWhereWithoutRuleInput[]
+  deleteMany?: Prisma.JournalLineScalarWhereInput | Prisma.JournalLineScalarWhereInput[]
+}
+
 export type JournalLineCreateNestedManyWithoutEntryInput = {
   create?: Prisma.XOR<Prisma.JournalLineCreateWithoutEntryInput, Prisma.JournalLineUncheckedCreateWithoutEntryInput> | Prisma.JournalLineCreateWithoutEntryInput[] | Prisma.JournalLineUncheckedCreateWithoutEntryInput[]
   connectOrCreate?: Prisma.JournalLineCreateOrConnectWithoutEntryInput | Prisma.JournalLineCreateOrConnectWithoutEntryInput[]
@@ -958,6 +1024,7 @@ export type JournalLineCreateWithoutPartyInput = {
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutPartyInput = {
@@ -975,6 +1042,7 @@ export type JournalLineUncheckedCreateWithoutPartyInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutPartyInput = {
@@ -1022,6 +1090,7 @@ export type JournalLineScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   openingSourceType?: Prisma.StringNullableFilter<"JournalLine"> | string | null
   openingSourceId?: Prisma.StringNullableFilter<"JournalLine"> | string | null
+  ruleId?: Prisma.StringNullableFilter<"JournalLine"> | string | null
 }
 
 export type JournalLineCreateWithoutZevInput = {
@@ -1039,6 +1108,7 @@ export type JournalLineCreateWithoutZevInput = {
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutZevInput = {
@@ -1056,6 +1126,7 @@ export type JournalLineUncheckedCreateWithoutZevInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutZevInput = {
@@ -1099,6 +1170,7 @@ export type JournalLineCreateWithoutUnitInput = {
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutUnitInput = {
@@ -1116,6 +1188,7 @@ export type JournalLineUncheckedCreateWithoutUnitInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutUnitInput = {
@@ -1159,6 +1232,7 @@ export type JournalLineCreateWithoutSupplierInput = {
   unit?: Prisma.UnitCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutSupplierInput = {
@@ -1176,6 +1250,7 @@ export type JournalLineUncheckedCreateWithoutSupplierInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutSupplierInput = {
@@ -1219,6 +1294,7 @@ export type JournalLineCreateWithoutProjectInput = {
   unit?: Prisma.UnitCreateNestedOneWithoutJournalLinesInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutProjectInput = {
@@ -1236,6 +1312,7 @@ export type JournalLineUncheckedCreateWithoutProjectInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutProjectInput = {
@@ -1279,6 +1356,7 @@ export type JournalLineCreateWithoutAccountInput = {
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutAccountInput = {
@@ -1296,6 +1374,7 @@ export type JournalLineUncheckedCreateWithoutAccountInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutAccountInput = {
@@ -1339,6 +1418,7 @@ export type JournalLineCreateWithoutPurposeInput = {
   unit?: Prisma.UnitCreateNestedOneWithoutJournalLinesInput
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutPurposeInput = {
@@ -1356,6 +1436,7 @@ export type JournalLineUncheckedCreateWithoutPurposeInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutPurposeInput = {
@@ -1384,6 +1465,68 @@ export type JournalLineUpdateManyWithWhereWithoutPurposeInput = {
   data: Prisma.XOR<Prisma.JournalLineUpdateManyMutationInput, Prisma.JournalLineUncheckedUpdateManyWithoutPurposeInput>
 }
 
+export type JournalLineCreateWithoutRuleInput = {
+  id?: string
+  order: number
+  debit?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  credit?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: string | null
+  openingSourceType?: string | null
+  openingSourceId?: string | null
+  entry: Prisma.JournalEntryCreateNestedOneWithoutLinesInput
+  zev: Prisma.ZevCreateNestedOneWithoutJournalLinesInput
+  account: Prisma.ZevAccountCreateNestedOneWithoutJournalLinesInput
+  party?: Prisma.PartyCreateNestedOneWithoutJournalLinesInput
+  unit?: Prisma.UnitCreateNestedOneWithoutJournalLinesInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
+  project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
+  purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+}
+
+export type JournalLineUncheckedCreateWithoutRuleInput = {
+  id?: string
+  entryId: string
+  zevId: string
+  order: number
+  accountId: string
+  debit?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  credit?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  partyId?: string | null
+  unitId?: string | null
+  supplierId?: string | null
+  projectId?: string | null
+  purposeId?: string | null
+  description?: string | null
+  openingSourceType?: string | null
+  openingSourceId?: string | null
+}
+
+export type JournalLineCreateOrConnectWithoutRuleInput = {
+  where: Prisma.JournalLineWhereUniqueInput
+  create: Prisma.XOR<Prisma.JournalLineCreateWithoutRuleInput, Prisma.JournalLineUncheckedCreateWithoutRuleInput>
+}
+
+export type JournalLineCreateManyRuleInputEnvelope = {
+  data: Prisma.JournalLineCreateManyRuleInput | Prisma.JournalLineCreateManyRuleInput[]
+  skipDuplicates?: boolean
+}
+
+export type JournalLineUpsertWithWhereUniqueWithoutRuleInput = {
+  where: Prisma.JournalLineWhereUniqueInput
+  update: Prisma.XOR<Prisma.JournalLineUpdateWithoutRuleInput, Prisma.JournalLineUncheckedUpdateWithoutRuleInput>
+  create: Prisma.XOR<Prisma.JournalLineCreateWithoutRuleInput, Prisma.JournalLineUncheckedCreateWithoutRuleInput>
+}
+
+export type JournalLineUpdateWithWhereUniqueWithoutRuleInput = {
+  where: Prisma.JournalLineWhereUniqueInput
+  data: Prisma.XOR<Prisma.JournalLineUpdateWithoutRuleInput, Prisma.JournalLineUncheckedUpdateWithoutRuleInput>
+}
+
+export type JournalLineUpdateManyWithWhereWithoutRuleInput = {
+  where: Prisma.JournalLineScalarWhereInput
+  data: Prisma.XOR<Prisma.JournalLineUpdateManyMutationInput, Prisma.JournalLineUncheckedUpdateManyWithoutRuleInput>
+}
+
 export type JournalLineCreateWithoutEntryInput = {
   id?: string
   order: number
@@ -1399,6 +1542,7 @@ export type JournalLineCreateWithoutEntryInput = {
   supplier?: Prisma.SupplierCreateNestedOneWithoutJournalLinesInput
   project?: Prisma.ProjectCreateNestedOneWithoutJournalLinesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutJournalLinesInput
+  rule?: Prisma.PostingRuleCreateNestedOneWithoutJournalLinesInput
 }
 
 export type JournalLineUncheckedCreateWithoutEntryInput = {
@@ -1416,6 +1560,7 @@ export type JournalLineUncheckedCreateWithoutEntryInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineCreateOrConnectWithoutEntryInput = {
@@ -1459,6 +1604,7 @@ export type JournalLineCreateManyPartyInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutPartyInput = {
@@ -1476,6 +1622,7 @@ export type JournalLineUpdateWithoutPartyInput = {
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutPartyInput = {
@@ -1493,6 +1640,7 @@ export type JournalLineUncheckedUpdateWithoutPartyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutPartyInput = {
@@ -1510,6 +1658,7 @@ export type JournalLineUncheckedUpdateManyWithoutPartyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManyZevInput = {
@@ -1527,6 +1676,7 @@ export type JournalLineCreateManyZevInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutZevInput = {
@@ -1544,6 +1694,7 @@ export type JournalLineUpdateWithoutZevInput = {
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutZevInput = {
@@ -1561,6 +1712,7 @@ export type JournalLineUncheckedUpdateWithoutZevInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutZevInput = {
@@ -1578,6 +1730,7 @@ export type JournalLineUncheckedUpdateManyWithoutZevInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManyUnitInput = {
@@ -1595,6 +1748,7 @@ export type JournalLineCreateManyUnitInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutUnitInput = {
@@ -1612,6 +1766,7 @@ export type JournalLineUpdateWithoutUnitInput = {
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutUnitInput = {
@@ -1629,6 +1784,7 @@ export type JournalLineUncheckedUpdateWithoutUnitInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutUnitInput = {
@@ -1646,6 +1802,7 @@ export type JournalLineUncheckedUpdateManyWithoutUnitInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManySupplierInput = {
@@ -1663,6 +1820,7 @@ export type JournalLineCreateManySupplierInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutSupplierInput = {
@@ -1680,6 +1838,7 @@ export type JournalLineUpdateWithoutSupplierInput = {
   unit?: Prisma.UnitUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutSupplierInput = {
@@ -1697,6 +1856,7 @@ export type JournalLineUncheckedUpdateWithoutSupplierInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutSupplierInput = {
@@ -1714,6 +1874,7 @@ export type JournalLineUncheckedUpdateManyWithoutSupplierInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManyProjectInput = {
@@ -1731,6 +1892,7 @@ export type JournalLineCreateManyProjectInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutProjectInput = {
@@ -1748,6 +1910,7 @@ export type JournalLineUpdateWithoutProjectInput = {
   unit?: Prisma.UnitUpdateOneWithoutJournalLinesNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutProjectInput = {
@@ -1765,6 +1928,7 @@ export type JournalLineUncheckedUpdateWithoutProjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutProjectInput = {
@@ -1782,6 +1946,7 @@ export type JournalLineUncheckedUpdateManyWithoutProjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManyAccountInput = {
@@ -1799,6 +1964,7 @@ export type JournalLineCreateManyAccountInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutAccountInput = {
@@ -1816,6 +1982,7 @@ export type JournalLineUpdateWithoutAccountInput = {
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutAccountInput = {
@@ -1833,6 +2000,7 @@ export type JournalLineUncheckedUpdateWithoutAccountInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutAccountInput = {
@@ -1850,6 +2018,7 @@ export type JournalLineUncheckedUpdateManyWithoutAccountInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineCreateManyPurposeInput = {
@@ -1867,6 +2036,7 @@ export type JournalLineCreateManyPurposeInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutPurposeInput = {
@@ -1884,6 +2054,7 @@ export type JournalLineUpdateWithoutPurposeInput = {
   unit?: Prisma.UnitUpdateOneWithoutJournalLinesNestedInput
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutPurposeInput = {
@@ -1901,6 +2072,7 @@ export type JournalLineUncheckedUpdateWithoutPurposeInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutPurposeInput = {
@@ -1915,6 +2087,79 @@ export type JournalLineUncheckedUpdateManyWithoutPurposeInput = {
   unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type JournalLineCreateManyRuleInput = {
+  id?: string
+  entryId: string
+  zevId: string
+  order: number
+  accountId: string
+  debit?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  credit?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  partyId?: string | null
+  unitId?: string | null
+  supplierId?: string | null
+  projectId?: string | null
+  purposeId?: string | null
+  description?: string | null
+  openingSourceType?: string | null
+  openingSourceId?: string | null
+}
+
+export type JournalLineUpdateWithoutRuleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  debit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  credit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entry?: Prisma.JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+  zev?: Prisma.ZevUpdateOneRequiredWithoutJournalLinesNestedInput
+  account?: Prisma.ZevAccountUpdateOneRequiredWithoutJournalLinesNestedInput
+  party?: Prisma.PartyUpdateOneWithoutJournalLinesNestedInput
+  unit?: Prisma.UnitUpdateOneWithoutJournalLinesNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
+  project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
+  purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+}
+
+export type JournalLineUncheckedUpdateWithoutRuleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  entryId?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  debit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  credit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purposeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type JournalLineUncheckedUpdateManyWithoutRuleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  entryId?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  debit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  credit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  partyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purposeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1935,6 +2180,7 @@ export type JournalLineCreateManyEntryInput = {
   description?: string | null
   openingSourceType?: string | null
   openingSourceId?: string | null
+  ruleId?: string | null
 }
 
 export type JournalLineUpdateWithoutEntryInput = {
@@ -1952,6 +2198,7 @@ export type JournalLineUpdateWithoutEntryInput = {
   supplier?: Prisma.SupplierUpdateOneWithoutJournalLinesNestedInput
   project?: Prisma.ProjectUpdateOneWithoutJournalLinesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutJournalLinesNestedInput
+  rule?: Prisma.PostingRuleUpdateOneWithoutJournalLinesNestedInput
 }
 
 export type JournalLineUncheckedUpdateWithoutEntryInput = {
@@ -1969,6 +2216,7 @@ export type JournalLineUncheckedUpdateWithoutEntryInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type JournalLineUncheckedUpdateManyWithoutEntryInput = {
@@ -1986,6 +2234,7 @@ export type JournalLineUncheckedUpdateManyWithoutEntryInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openingSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ruleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -2006,6 +2255,7 @@ export type JournalLineSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   description?: boolean
   openingSourceType?: boolean
   openingSourceId?: boolean
+  ruleId?: boolean
   entry?: boolean | Prisma.JournalEntryDefaultArgs<ExtArgs>
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.ZevAccountDefaultArgs<ExtArgs>
@@ -2014,6 +2264,7 @@ export type JournalLineSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   supplier?: boolean | Prisma.JournalLine$supplierArgs<ExtArgs>
   project?: boolean | Prisma.JournalLine$projectArgs<ExtArgs>
   purpose?: boolean | Prisma.JournalLine$purposeArgs<ExtArgs>
+  rule?: boolean | Prisma.JournalLine$ruleArgs<ExtArgs>
 }, ExtArgs["result"]["journalLine"]>
 
 export type JournalLineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2032,6 +2283,7 @@ export type JournalLineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   description?: boolean
   openingSourceType?: boolean
   openingSourceId?: boolean
+  ruleId?: boolean
   entry?: boolean | Prisma.JournalEntryDefaultArgs<ExtArgs>
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.ZevAccountDefaultArgs<ExtArgs>
@@ -2040,6 +2292,7 @@ export type JournalLineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   supplier?: boolean | Prisma.JournalLine$supplierArgs<ExtArgs>
   project?: boolean | Prisma.JournalLine$projectArgs<ExtArgs>
   purpose?: boolean | Prisma.JournalLine$purposeArgs<ExtArgs>
+  rule?: boolean | Prisma.JournalLine$ruleArgs<ExtArgs>
 }, ExtArgs["result"]["journalLine"]>
 
 export type JournalLineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2058,6 +2311,7 @@ export type JournalLineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   description?: boolean
   openingSourceType?: boolean
   openingSourceId?: boolean
+  ruleId?: boolean
   entry?: boolean | Prisma.JournalEntryDefaultArgs<ExtArgs>
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   account?: boolean | Prisma.ZevAccountDefaultArgs<ExtArgs>
@@ -2066,6 +2320,7 @@ export type JournalLineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   supplier?: boolean | Prisma.JournalLine$supplierArgs<ExtArgs>
   project?: boolean | Prisma.JournalLine$projectArgs<ExtArgs>
   purpose?: boolean | Prisma.JournalLine$purposeArgs<ExtArgs>
+  rule?: boolean | Prisma.JournalLine$ruleArgs<ExtArgs>
 }, ExtArgs["result"]["journalLine"]>
 
 export type JournalLineSelectScalar = {
@@ -2084,9 +2339,10 @@ export type JournalLineSelectScalar = {
   description?: boolean
   openingSourceType?: boolean
   openingSourceId?: boolean
+  ruleId?: boolean
 }
 
-export type JournalLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "entryId" | "zevId" | "order" | "accountId" | "debit" | "credit" | "partyId" | "unitId" | "supplierId" | "projectId" | "purposeId" | "description" | "openingSourceType" | "openingSourceId", ExtArgs["result"]["journalLine"]>
+export type JournalLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "entryId" | "zevId" | "order" | "accountId" | "debit" | "credit" | "partyId" | "unitId" | "supplierId" | "projectId" | "purposeId" | "description" | "openingSourceType" | "openingSourceId" | "ruleId", ExtArgs["result"]["journalLine"]>
 export type JournalLineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entry?: boolean | Prisma.JournalEntryDefaultArgs<ExtArgs>
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -2096,6 +2352,7 @@ export type JournalLineInclude<ExtArgs extends runtime.Types.Extensions.Internal
   supplier?: boolean | Prisma.JournalLine$supplierArgs<ExtArgs>
   project?: boolean | Prisma.JournalLine$projectArgs<ExtArgs>
   purpose?: boolean | Prisma.JournalLine$purposeArgs<ExtArgs>
+  rule?: boolean | Prisma.JournalLine$ruleArgs<ExtArgs>
 }
 export type JournalLineIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entry?: boolean | Prisma.JournalEntryDefaultArgs<ExtArgs>
@@ -2106,6 +2363,7 @@ export type JournalLineIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.
   supplier?: boolean | Prisma.JournalLine$supplierArgs<ExtArgs>
   project?: boolean | Prisma.JournalLine$projectArgs<ExtArgs>
   purpose?: boolean | Prisma.JournalLine$purposeArgs<ExtArgs>
+  rule?: boolean | Prisma.JournalLine$ruleArgs<ExtArgs>
 }
 export type JournalLineIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entry?: boolean | Prisma.JournalEntryDefaultArgs<ExtArgs>
@@ -2116,6 +2374,7 @@ export type JournalLineIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
   supplier?: boolean | Prisma.JournalLine$supplierArgs<ExtArgs>
   project?: boolean | Prisma.JournalLine$projectArgs<ExtArgs>
   purpose?: boolean | Prisma.JournalLine$purposeArgs<ExtArgs>
+  rule?: boolean | Prisma.JournalLine$ruleArgs<ExtArgs>
 }
 
 export type $JournalLinePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2129,6 +2388,10 @@ export type $JournalLinePayload<ExtArgs extends runtime.Types.Extensions.Interna
     supplier: Prisma.$SupplierPayload<ExtArgs> | null
     project: Prisma.$ProjectPayload<ExtArgs> | null
     purpose: Prisma.$FundPurposePayload<ExtArgs> | null
+    /**
+     * Automatski nalog (B2): pravilo knjiženja koje je dalo protivkonto stavke.
+     */
+    rule: Prisma.$PostingRulePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2149,6 +2412,7 @@ export type $JournalLinePayload<ExtArgs extends runtime.Types.Extensions.Interna
      */
     openingSourceType: string | null
     openingSourceId: string | null
+    ruleId: string | null
   }, ExtArgs["result"]["journalLine"]>
   composites: {}
 }
@@ -2551,6 +2815,7 @@ export interface Prisma__JournalLineClient<T, Null = never, ExtArgs extends runt
   supplier<T extends Prisma.JournalLine$supplierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalLine$supplierArgs<ExtArgs>>): Prisma.Prisma__SupplierClient<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   project<T extends Prisma.JournalLine$projectArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalLine$projectArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   purpose<T extends Prisma.JournalLine$purposeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalLine$purposeArgs<ExtArgs>>): Prisma.Prisma__FundPurposeClient<runtime.Types.Result.GetResult<Prisma.$FundPurposePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  rule<T extends Prisma.JournalLine$ruleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JournalLine$ruleArgs<ExtArgs>>): Prisma.Prisma__PostingRuleClient<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2595,6 +2860,7 @@ export interface JournalLineFieldRefs {
   readonly description: Prisma.FieldRef<"JournalLine", 'String'>
   readonly openingSourceType: Prisma.FieldRef<"JournalLine", 'String'>
   readonly openingSourceId: Prisma.FieldRef<"JournalLine", 'String'>
+  readonly ruleId: Prisma.FieldRef<"JournalLine", 'String'>
 }
     
 
@@ -3088,6 +3354,25 @@ export type JournalLine$purposeArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.FundPurposeInclude<ExtArgs> | null
   where?: Prisma.FundPurposeWhereInput
+}
+
+/**
+ * JournalLine.rule
+ */
+export type JournalLine$ruleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostingRule
+   */
+  select?: Prisma.PostingRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostingRule
+   */
+  omit?: Prisma.PostingRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostingRuleInclude<ExtArgs> | null
+  where?: Prisma.PostingRuleWhereInput
 }
 
 /**

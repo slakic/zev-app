@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { autoEntrySource } from "@/server/services/ledgerEvents";
 import { requireActor } from "@/server/actor";
 import { hasCapability } from "@/lib/accountingCapabilities";
 import { getEntry } from "@/server/services/journal";
@@ -33,7 +34,9 @@ export default async function JournalEntryPage({
   const isDraft = e.status === "DRAFT";
   const canPrepare = hasCapability(actor.roles, "journal.prepare") && isDraft && e.kind === "MANUAL";
   const canPost = hasCapability(actor.roles, "journal.post") && isDraft && e.kind !== "OPENING";
-  const canReverse = hasCapability(actor.roles, "journal.reverse") && !isDraft && e.kind !== "REVERSAL" && !e.reversedBy;
+  const canReverse = hasCapability(actor.roles, "journal.reverse") && !isDraft && e.kind !== "REVERSAL" && e.kind !== "AUTO" && !e.reversedBy;
+  const src = e.kind === "AUTO" ? await autoEntrySource(actor, e.sourceType, e.sourceId) : null;
+  const source = src ? { href: src.href, label: t(`ledger.journal.source.${src.type}`) } : null;
   const debit = sumDecimals(e.lines.map((l) => dec(l.debit.toString())));
   const credit = sumDecimals(e.lines.map((l) => dec(l.credit.toString())));
   const options = canPrepare ? await editorOptionsFor(actor) : null;
@@ -66,10 +69,14 @@ export default async function JournalEntryPage({
               {e.reversalOf && (
                 <div><dt className="text-hint text-slate-500">{t("ledger.journal.detail.reversalOf")}</dt><dd><RowLink href={`/knjigovodstvo/nalozi/${e.reversalOf.id}`}>{e.reversalOf.number}</RowLink></dd></div>
               )}
+              {source && (
+                <div><dt className="text-hint text-slate-500">{t("ledger.journal.sourceTitle")}</dt><dd><RowLink href={source.href}>{source.label}</RowLink></dd></div>
+              )}
               {e.reversedBy && (
                 <div><dt className="text-hint text-slate-500">{t("ledger.journal.detail.reversedBy")}</dt><dd><RowLink href={`/knjigovodstvo/nalozi/${e.reversedBy.id}`}>{e.reversedBy.number}</RowLink></dd></div>
               )}
             </dl>
+            {e.kind === "AUTO" && <p className="max-w-[68ch] text-sm text-slate-600">{t("ledger.journal.autoNote")}</p>}
           </div>
         </Card>
 

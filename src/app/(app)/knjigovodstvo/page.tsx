@@ -10,18 +10,20 @@ import { AccountTreeTable } from "@/components/account-tree-table";
 import { AddAccountForm } from "@/components/add-account-form";
 import { RulesTab } from "./rules-tab";
 import { JournalTab } from "./journal-tab";
+import { EventsTab } from "./events-tab";
 import { listReopenRequests } from "@/server/services/journal";
 import { closePeriodAction, decideReopenAction, requestReopenAction } from "@/server/actions/journal";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { activateChartAction, assignChartAction, openFiscalYearAction, retireChartAction } from "@/server/actions/chartOfAccounts";
 
-const TABS = ["plan", "godine", "pravila", "nalozi", "izvjestaji"] as const;
+const TABS = ["plan", "godine", "pravila", "nalozi", "dogadjaji", "izvjestaji"] as const;
 type TabKey = (typeof TABS)[number];
 const TAB_LABEL: Record<TabKey, string> = {
   plan: "ledger.tabs.plan",
   godine: "ledger.tabs.periods",
   pravila: "ledger.tabs.rules",
   nalozi: "ledger.tabs.journal",
+  dogadjaji: "ledger.tabs.events",
   izvjestaji: "ledger.tabs.reports",
 };
 
@@ -41,14 +43,14 @@ const periodHeaders: ColumnSpec[] = [
 export default async function LedgerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; q?: string; show?: string; msg?: string; err?: string; period?: string; status?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; show?: string; msg?: string; err?: string; period?: string; status?: string; prikaz?: string; proknjizeno?: string; ceka?: string }>;
 }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const sp = await searchParams;
   const tab: TabKey = (TABS as readonly string[]).includes(sp.tab ?? "") ? (sp.tab as TabKey) : "plan";
   const canEdit = hasCapability(actor.roles, "chart.edit");
   const canOpenPeriod = hasCapability(actor.roles, "period.open");
-  const msg = ledgerMessage(sp.msg);
+  const msg = ledgerMessage(sp.msg, { proknjizeno: sp.proknjizeno ?? "", ceka: sp.ceka ?? "" });
 
   return (
     <div>
@@ -64,6 +66,7 @@ export default async function LedgerPage({
       {tab === "godine" && <PeriodsTab actor={actor} canOpen={canOpenPeriod} />}
       {tab === "pravila" && <RulesTab actor={actor} />}
       {tab === "nalozi" && <JournalTab actor={actor} periodId={sp.period ?? ""} status={sp.status ?? ""} />}
+      {tab === "dogadjaji" && <EventsTab actor={actor} filter={sp.prikaz ?? ""} />}
       {tab === "izvjestaji" && <NotYet text={t("ledger.upcoming.reports")} title={t("ledger.tabs.reports")} />}
     </div>
   );

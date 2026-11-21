@@ -286,6 +286,7 @@ export type PostingRuleWhereInput = {
   purpose?: Prisma.XOR<Prisma.FundPurposeNullableScalarRelationFilter, Prisma.FundPurposeWhereInput> | null
   supersedes?: Prisma.XOR<Prisma.PostingRuleNullableScalarRelationFilter, Prisma.PostingRuleWhereInput> | null
   supersededBy?: Prisma.XOR<Prisma.PostingRuleNullableScalarRelationFilter, Prisma.PostingRuleWhereInput> | null
+  journalLines?: Prisma.JournalLineListRelationFilter
 }
 
 export type PostingRuleOrderByWithRelationInput = {
@@ -313,6 +314,7 @@ export type PostingRuleOrderByWithRelationInput = {
   purpose?: Prisma.FundPurposeOrderByWithRelationInput
   supersedes?: Prisma.PostingRuleOrderByWithRelationInput
   supersededBy?: Prisma.PostingRuleOrderByWithRelationInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
 }
 
 export type PostingRuleWhereUniqueInput = Prisma.AtLeast<{
@@ -343,6 +345,7 @@ export type PostingRuleWhereUniqueInput = Prisma.AtLeast<{
   purpose?: Prisma.XOR<Prisma.FundPurposeNullableScalarRelationFilter, Prisma.FundPurposeWhereInput> | null
   supersedes?: Prisma.XOR<Prisma.PostingRuleNullableScalarRelationFilter, Prisma.PostingRuleWhereInput> | null
   supersededBy?: Prisma.XOR<Prisma.PostingRuleNullableScalarRelationFilter, Prisma.PostingRuleWhereInput> | null
+  journalLines?: Prisma.JournalLineListRelationFilter
 }, "id" | "supersedesId">
 
 export type PostingRuleOrderByWithAggregationInput = {
@@ -410,6 +413,7 @@ export type PostingRuleCreateInput = {
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateInput = {
@@ -431,6 +435,7 @@ export type PostingRuleUncheckedCreateInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUpdateInput = {
@@ -452,6 +457,7 @@ export type PostingRuleUpdateInput = {
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateInput = {
@@ -473,6 +479,7 @@ export type PostingRuleUncheckedUpdateInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleCreateManyInput = {
@@ -870,6 +877,22 @@ export type PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PostingRuleUpdateToOneWithWhereWithoutSupersedesInput, Prisma.PostingRuleUpdateWithoutSupersedesInput>, Prisma.PostingRuleUncheckedUpdateWithoutSupersedesInput>
 }
 
+export type PostingRuleCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.PostingRuleCreateWithoutJournalLinesInput, Prisma.PostingRuleUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.PostingRuleCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.PostingRuleWhereUniqueInput
+}
+
+export type PostingRuleUpdateOneWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.PostingRuleCreateWithoutJournalLinesInput, Prisma.PostingRuleUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.PostingRuleCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.PostingRuleUpsertWithoutJournalLinesInput
+  disconnect?: Prisma.PostingRuleWhereInput | boolean
+  delete?: Prisma.PostingRuleWhereInput | boolean
+  connect?: Prisma.PostingRuleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PostingRuleUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.PostingRuleUpdateWithoutJournalLinesInput>, Prisma.PostingRuleUncheckedUpdateWithoutJournalLinesInput>
+}
+
 export type PostingRuleCreateWithoutZevInput = {
   id?: string
   chartId: string
@@ -888,6 +911,7 @@ export type PostingRuleCreateWithoutZevInput = {
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutZevInput = {
@@ -908,6 +932,7 @@ export type PostingRuleUncheckedCreateWithoutZevInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutZevInput = {
@@ -977,6 +1002,7 @@ export type PostingRuleCreateWithoutCategoryInput = {
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutCategoryInput = {
@@ -997,6 +1023,7 @@ export type PostingRuleUncheckedCreateWithoutCategoryInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutCategoryInput = {
@@ -1043,6 +1070,7 @@ export type PostingRuleCreateWithoutCounterAccountInput = {
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutCounterAccountInput = {
@@ -1063,6 +1091,7 @@ export type PostingRuleUncheckedCreateWithoutCounterAccountInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutCounterAccountInput = {
@@ -1109,6 +1138,7 @@ export type PostingRuleCreateWithoutPurposeInput = {
   counterAccount: Prisma.ZevAccountCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutPurposeInput = {
@@ -1129,6 +1159,7 @@ export type PostingRuleUncheckedCreateWithoutPurposeInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutPurposeInput = {
@@ -1175,6 +1206,7 @@ export type PostingRuleCreateWithoutChargeTypeInput = {
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutChargeTypeInput = {
@@ -1195,6 +1227,7 @@ export type PostingRuleUncheckedCreateWithoutChargeTypeInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutChargeTypeInput = {
@@ -1241,6 +1274,7 @@ export type PostingRuleCreateWithoutSupersededByInput = {
   counterAccount: Prisma.ZevAccountCreateNestedOneWithoutPostingRulesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutSupersededByInput = {
@@ -1261,6 +1295,7 @@ export type PostingRuleUncheckedCreateWithoutSupersededByInput = {
   confirmedById?: string | null
   confirmedAt?: Date | string | null
   createdAt?: Date | string
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutSupersededByInput = {
@@ -1286,6 +1321,7 @@ export type PostingRuleCreateWithoutSupersedesInput = {
   counterAccount: Prisma.ZevAccountCreateNestedOneWithoutPostingRulesInput
   purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
   supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleUncheckedCreateWithoutSupersedesInput = {
@@ -1306,6 +1342,7 @@ export type PostingRuleUncheckedCreateWithoutSupersedesInput = {
   confirmedAt?: Date | string | null
   createdAt?: Date | string
   supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutRuleInput
 }
 
 export type PostingRuleCreateOrConnectWithoutSupersedesInput = {
@@ -1342,6 +1379,7 @@ export type PostingRuleUpdateWithoutSupersededByInput = {
   counterAccount?: Prisma.ZevAccountUpdateOneRequiredWithoutPostingRulesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutSupersededByInput = {
@@ -1362,6 +1400,7 @@ export type PostingRuleUncheckedUpdateWithoutSupersededByInput = {
   confirmedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUpsertWithoutSupersedesInput = {
@@ -1393,6 +1432,7 @@ export type PostingRuleUpdateWithoutSupersedesInput = {
   counterAccount?: Prisma.ZevAccountUpdateOneRequiredWithoutPostingRulesNestedInput
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutSupersedesInput = {
@@ -1406,6 +1446,107 @@ export type PostingRuleUncheckedUpdateWithoutSupersedesInput = {
   purposeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumPostingRuleStatusFieldUpdateOperationsInput | $Enums.PostingRuleStatus
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  expertRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  confirmedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
+}
+
+export type PostingRuleCreateWithoutJournalLinesInput = {
+  id?: string
+  chartId: string
+  kind: $Enums.AccountingEventKind
+  validFrom: Date | string
+  status?: $Enums.PostingRuleStatus
+  reason: string
+  expertRef?: string | null
+  createdById: string
+  confirmedById?: string | null
+  confirmedAt?: Date | string | null
+  createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPostingRulesInput
+  chargeType?: Prisma.ChargeTypeCreateNestedOneWithoutPostingRulesInput
+  category?: Prisma.TransactionCategoryCreateNestedOneWithoutPostingRulesInput
+  counterAccount: Prisma.ZevAccountCreateNestedOneWithoutPostingRulesInput
+  purpose?: Prisma.FundPurposeCreateNestedOneWithoutPostingRulesInput
+  supersedes?: Prisma.PostingRuleCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.PostingRuleCreateNestedOneWithoutSupersedesInput
+}
+
+export type PostingRuleUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  zevId: string
+  chartId: string
+  kind: $Enums.AccountingEventKind
+  chargeTypeId?: string | null
+  categoryId?: string | null
+  counterAccountId: string
+  purposeId?: string | null
+  validFrom: Date | string
+  status?: $Enums.PostingRuleStatus
+  supersedesId?: string | null
+  reason: string
+  expertRef?: string | null
+  createdById: string
+  confirmedById?: string | null
+  confirmedAt?: Date | string | null
+  createdAt?: Date | string
+  supersededBy?: Prisma.PostingRuleUncheckedCreateNestedOneWithoutSupersedesInput
+}
+
+export type PostingRuleCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.PostingRuleWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostingRuleCreateWithoutJournalLinesInput, Prisma.PostingRuleUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type PostingRuleUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.PostingRuleUpdateWithoutJournalLinesInput, Prisma.PostingRuleUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.PostingRuleCreateWithoutJournalLinesInput, Prisma.PostingRuleUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.PostingRuleWhereInput
+}
+
+export type PostingRuleUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.PostingRuleWhereInput
+  data: Prisma.XOR<Prisma.PostingRuleUpdateWithoutJournalLinesInput, Prisma.PostingRuleUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type PostingRuleUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  chartId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumAccountingEventKindFieldUpdateOperationsInput | $Enums.AccountingEventKind
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumPostingRuleStatusFieldUpdateOperationsInput | $Enums.PostingRuleStatus
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  expertRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  confirmedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPostingRulesNestedInput
+  chargeType?: Prisma.ChargeTypeUpdateOneWithoutPostingRulesNestedInput
+  category?: Prisma.TransactionCategoryUpdateOneWithoutPostingRulesNestedInput
+  counterAccount?: Prisma.ZevAccountUpdateOneRequiredWithoutPostingRulesNestedInput
+  purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
+  supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+}
+
+export type PostingRuleUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  chartId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumAccountingEventKindFieldUpdateOperationsInput | $Enums.AccountingEventKind
+  chargeTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  counterAccountId?: Prisma.StringFieldUpdateOperationsInput | string
+  purposeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumPostingRuleStatusFieldUpdateOperationsInput | $Enums.PostingRuleStatus
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   expertRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1452,6 +1593,7 @@ export type PostingRuleUpdateWithoutZevInput = {
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutZevInput = {
@@ -1472,6 +1614,7 @@ export type PostingRuleUncheckedUpdateWithoutZevInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateManyWithoutZevInput = {
@@ -1530,6 +1673,7 @@ export type PostingRuleUpdateWithoutCategoryInput = {
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutCategoryInput = {
@@ -1550,6 +1694,7 @@ export type PostingRuleUncheckedUpdateWithoutCategoryInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateManyWithoutCategoryInput = {
@@ -1608,6 +1753,7 @@ export type PostingRuleUpdateWithoutCounterAccountInput = {
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutCounterAccountInput = {
@@ -1628,6 +1774,7 @@ export type PostingRuleUncheckedUpdateWithoutCounterAccountInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateManyWithoutCounterAccountInput = {
@@ -1686,6 +1833,7 @@ export type PostingRuleUpdateWithoutPurposeInput = {
   counterAccount?: Prisma.ZevAccountUpdateOneRequiredWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutPurposeInput = {
@@ -1706,6 +1854,7 @@ export type PostingRuleUncheckedUpdateWithoutPurposeInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateManyWithoutPurposeInput = {
@@ -1764,6 +1913,7 @@ export type PostingRuleUpdateWithoutChargeTypeInput = {
   purpose?: Prisma.FundPurposeUpdateOneWithoutPostingRulesNestedInput
   supersedes?: Prisma.PostingRuleUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.PostingRuleUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateWithoutChargeTypeInput = {
@@ -1784,6 +1934,7 @@ export type PostingRuleUncheckedUpdateWithoutChargeTypeInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersededBy?: Prisma.PostingRuleUncheckedUpdateOneWithoutSupersedesNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutRuleNestedInput
 }
 
 export type PostingRuleUncheckedUpdateManyWithoutChargeTypeInput = {
@@ -1805,6 +1956,35 @@ export type PostingRuleUncheckedUpdateManyWithoutChargeTypeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type PostingRuleCountOutputType
+ */
+
+export type PostingRuleCountOutputType = {
+  journalLines: number
+}
+
+export type PostingRuleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  journalLines?: boolean | PostingRuleCountOutputTypeCountJournalLinesArgs
+}
+
+/**
+ * PostingRuleCountOutputType without action
+ */
+export type PostingRuleCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostingRuleCountOutputType
+   */
+  select?: Prisma.PostingRuleCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PostingRuleCountOutputType without action
+ */
+export type PostingRuleCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
 
 
 export type PostingRuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1832,6 +2012,8 @@ export type PostingRuleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   purpose?: boolean | Prisma.PostingRule$purposeArgs<ExtArgs>
   supersedes?: boolean | Prisma.PostingRule$supersedesArgs<ExtArgs>
   supersededBy?: boolean | Prisma.PostingRule$supersededByArgs<ExtArgs>
+  journalLines?: boolean | Prisma.PostingRule$journalLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.PostingRuleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["postingRule"]>
 
 export type PostingRuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1915,6 +2097,8 @@ export type PostingRuleInclude<ExtArgs extends runtime.Types.Extensions.Internal
   purpose?: boolean | Prisma.PostingRule$purposeArgs<ExtArgs>
   supersedes?: boolean | Prisma.PostingRule$supersedesArgs<ExtArgs>
   supersededBy?: boolean | Prisma.PostingRule$supersededByArgs<ExtArgs>
+  journalLines?: boolean | Prisma.PostingRule$journalLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.PostingRuleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PostingRuleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -1943,6 +2127,7 @@ export type $PostingRulePayload<ExtArgs extends runtime.Types.Extensions.Interna
     purpose: Prisma.$FundPurposePayload<ExtArgs> | null
     supersedes: Prisma.$PostingRulePayload<ExtArgs> | null
     supersededBy: Prisma.$PostingRulePayload<ExtArgs> | null
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2363,6 +2548,7 @@ export interface Prisma__PostingRuleClient<T, Null = never, ExtArgs extends runt
   purpose<T extends Prisma.PostingRule$purposeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostingRule$purposeArgs<ExtArgs>>): Prisma.Prisma__FundPurposeClient<runtime.Types.Result.GetResult<Prisma.$FundPurposePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   supersedes<T extends Prisma.PostingRule$supersedesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostingRule$supersedesArgs<ExtArgs>>): Prisma.Prisma__PostingRuleClient<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   supersededBy<T extends Prisma.PostingRule$supersededByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostingRule$supersededByArgs<ExtArgs>>): Prisma.Prisma__PostingRuleClient<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  journalLines<T extends Prisma.PostingRule$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostingRule$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2902,6 +3088,30 @@ export type PostingRule$supersededByArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.PostingRuleInclude<ExtArgs> | null
   where?: Prisma.PostingRuleWhereInput
+}
+
+/**
+ * PostingRule.journalLines
+ */
+export type PostingRule$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
 }
 
 /**

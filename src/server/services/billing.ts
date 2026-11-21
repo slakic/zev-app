@@ -10,6 +10,7 @@ import { endOfDay, toZonedDateIso } from "@/lib/i18n";
 import { unitsInScope } from "./property";
 import { currentStakesForUnit, partyDisplayName } from "./ownership";
 import { queueInvoiceEmails } from "./invoiceEmail";
+import { afterLedgerChange } from "./ledgerEvents";
 import type { ChargeMethod, BillingFrequency, RoundingMethod, ScopeType, Prisma } from "@/generated/prisma/client";
 
 // ---- Charge items ----
@@ -362,18 +363,21 @@ export async function issueBatch(actor: Actor, batchId: string, opts?: { dueDate
   }, { timeout: 30000 });
   // After commit, never inside it: only writes outbox rows for debtors who opted in (R3); sending is separate.
   await queueInvoiceEmails(actor, issued.map((i) => i.id), "ISSUED");
+  await afterLedgerChange(zevId, actor.userId);
   return issued;
 }
 
 /** One-time single invoice (e.g. special charge). */
 export async function issueSingleInvoice(
   actor: Actor,
-  data: { unitId: string; debtorId: string; dueDate: Date; description: string; amount: string; periodLabel?: string }
+  data: { unitId: string; debtorId: string; dueDate: Date; description: string; amount: string; periodLabel?: string; chargeTypeId?: string | null }
 ) {
   requireRole(actor, "ACCOUNTANT");
   const zevId = requireZev(actor);
   await prisma.unit.findUniqueOrThrow({ where: { id: data.unitId, zevId } });
   await prisma.party.findUniqueOrThrow({ where: { id: data.debtorId, zevId } });
+  // Vrsta zaduženja na liniji (pravilo knjiženja B2 visi na vrsti).
+  if (data.chargeTypeId) await prisma.chargeType.findUniqueOrThrow({ where: { id: data.chargeTypeId, zevId } });
   const issued = await prisma.$transaction(async (tx) => {
     const number = await nextInvoiceNumber(tx, zevId, new Date().getFullYear());
     const inv = await tx.invoice.create({
@@ -392,6 +396,7 @@ export async function issueSingleInvoice(
             description: data.description,
             calcSnapshot: { method: "MANUAL", formula: "ručno unesen iznos", inputs: { amount: data.amount }, allocationBasis: "jednokratno", rounding: "HALF_UP_2", rawAmount: data.amount, amount: data.amount, name: data.description, chargeItemId: null } as unknown as Prisma.InputJsonValue,
             amount: data.amount,
+            chargeTypeId: data.chargeTypeId ?? null,
           }],
         },
       },
@@ -400,6 +405,7 @@ export async function issueSingleInvoice(
     return inv;
   });
   await queueInvoiceEmails(actor, [issued.id], "ISSUED");
+  await afterLedgerChange(zevId, actor.userId);
   return issued;
 }
 
@@ -558,6 +564,7 @@ export async function cancelInvoice(actor: Actor, invoiceId: string, reason: str
     return result;
   });
   await queueInvoiceEmails(actor, [invoiceId], "CANCELLED");
+  await afterLedgerChange(zevId, actor.userId);
   return updated;
 }
 
@@ -574,7 +581,13 @@ export async function correctInvoice(
   const zevId = requireZev(actor);
   if (!data.reason.trim()) throw new Error("Korekcija zahtijeva razlog.");
   const corrective = await prisma.$transaction(async (tx) => {
-    const original = await tx.invoice.findUniqueOrThrow({ where: { id: invoiceId, zevId }, include: { correctedBy: true } });
+    const original = await tx.invoice.findUniqueOrThrow({
+      where: { id: invoiceId, zevId },
+      include: { correctedBy: true, lines: { select: { chargeTypeId: true, chargeItem: { select: { chargeTypeId: true } } } } },
+    });
+    // Korektivna faktura nasljeđuje vrstu zaduženja kad je original ima jednu (knjiženje B2 po vrsti).
+    const types = new Set(original.lines.map((l) => l.chargeTypeId ?? l.chargeItem?.chargeTypeId ?? null));
+    const inheritedType = types.size === 1 ? [...types][0] : null;
     if (original.status !== "ISSUED") throw new Error("Samo izdata faktura može biti korigovana.");
     if (original.correctedBy) throw new Error("Faktura je već korigovana.");
     const number = await nextInvoiceNumber(tx, zevId, new Date().getFullYear());
@@ -599,6 +612,7 @@ export async function correctInvoice(
               allocationBasis: "korekcija", rounding: "HALF_UP_2", rawAmount: data.newTotal, amount: data.newTotal, chargeItemId: null,
             } as unknown as Prisma.InputJsonValue,
             amount: data.newTotal,
+            chargeTypeId: inheritedType,
           }],
         },
       },
@@ -615,5 +629,6 @@ export async function correctInvoice(
     return created;
   });
   await queueInvoiceEmails(actor, [corrective.id], "CORRECTED");
+  await afterLedgerChange(zevId, actor.userId);
   return corrective;
 }

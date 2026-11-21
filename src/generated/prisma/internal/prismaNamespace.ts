@@ -472,6 +472,7 @@ export const ModelName = {
   PostingSchemaApproval: 'PostingSchemaApproval',
   JournalEntry: 'JournalEntry',
   JournalLine: 'JournalLine',
+  AccountingEvent: 'AccountingEvent',
   JournalCounter: 'JournalCounter',
   PeriodReopenRequest: 'PeriodReopenRequest',
   OnboardingInvite: 'OnboardingInvite',
@@ -497,7 +498,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "fundPurpose" | "chargeType" | "zevControlAccount" | "postingRule" | "postingSchemaApproval" | "journalEntry" | "journalLine" | "journalCounter" | "periodReopenRequest" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "fundPurpose" | "chargeType" | "zevControlAccount" | "postingRule" | "postingSchemaApproval" | "journalEntry" | "journalLine" | "accountingEvent" | "journalCounter" | "periodReopenRequest" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6051,6 +6052,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AccountingEvent: {
+      payload: Prisma.$AccountingEventPayload<ExtArgs>
+      fields: Prisma.AccountingEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AccountingEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AccountingEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>
+        }
+        findFirst: {
+          args: Prisma.AccountingEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AccountingEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>
+        }
+        findMany: {
+          args: Prisma.AccountingEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>[]
+        }
+        create: {
+          args: Prisma.AccountingEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>
+        }
+        createMany: {
+          args: Prisma.AccountingEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AccountingEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>[]
+        }
+        delete: {
+          args: Prisma.AccountingEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>
+        }
+        update: {
+          args: Prisma.AccountingEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.AccountingEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AccountingEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AccountingEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.AccountingEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountingEventPayload>
+        }
+        aggregate: {
+          args: Prisma.AccountingEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAccountingEvent>
+        }
+        groupBy: {
+          args: Prisma.AccountingEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccountingEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AccountingEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccountingEventCountAggregateOutputType> | number
+        }
+      }
+    }
     JournalCounter: {
       payload: Prisma.$JournalCounterPayload<ExtArgs>
       fields: Prisma.JournalCounterFieldRefs
@@ -8159,10 +8234,30 @@ export const JournalLineScalarFieldEnum = {
   purposeId: 'purposeId',
   description: 'description',
   openingSourceType: 'openingSourceType',
-  openingSourceId: 'openingSourceId'
+  openingSourceId: 'openingSourceId',
+  ruleId: 'ruleId'
 } as const
 
 export type JournalLineScalarFieldEnum = (typeof JournalLineScalarFieldEnum)[keyof typeof JournalLineScalarFieldEnum]
+
+
+export const AccountingEventScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  kind: 'kind',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  eventDate: 'eventDate',
+  sourceCreatedAt: 'sourceCreatedAt',
+  amount: 'amount',
+  status: 'status',
+  statusDetail: 'statusDetail',
+  journalEntryId: 'journalEntryId',
+  createdAt: 'createdAt',
+  processedAt: 'processedAt'
+} as const
+
+export type AccountingEventScalarFieldEnum = (typeof AccountingEventScalarFieldEnum)[keyof typeof AccountingEventScalarFieldEnum]
 
 
 export const JournalCounterScalarFieldEnum = {
@@ -9201,6 +9296,20 @@ export type ListEnumJournalStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'AccountingEventStatus'
+ */
+export type EnumAccountingEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountingEventStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountingEventStatus[]'
+ */
+export type ListEnumAccountingEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountingEventStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'OnboardingInviteStatus'
  */
 export type EnumOnboardingInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingInviteStatus'>
@@ -9523,6 +9632,7 @@ export type GlobalOmitConfig = {
   postingSchemaApproval?: Prisma.PostingSchemaApprovalOmit
   journalEntry?: Prisma.JournalEntryOmit
   journalLine?: Prisma.JournalLineOmit
+  accountingEvent?: Prisma.AccountingEventOmit
   journalCounter?: Prisma.JournalCounterOmit
   periodReopenRequest?: Prisma.PeriodReopenRequestOmit
   onboardingInvite?: Prisma.OnboardingInviteOmit

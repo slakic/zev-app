@@ -21,6 +21,7 @@ import {
   refreshPaymentStatus,
   reversePaymentInTx,
 } from "@/server/services/payments";
+import { afterLedgerChange } from "@/server/services/ledgerEvents";
 
 const DAY = 86400000;
 /** SMS receipt vs. statement/booking date: same window the import-time checks use. */
@@ -294,7 +295,7 @@ export async function mergeChannelDuplicate(actor: Actor, input: { smsId: string
   const smsPaymentId = sms.paymentId;
   if (smsPaymentId === input.otherPaymentId) throw new Error("Izaberite drugu uplatu.");
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const include = { allocations: true } as const;
     const smsPayment = await tx.payment.findUniqueOrThrow({ where: { id: smsPaymentId, zevId }, include });
     const other = await tx.payment.findUniqueOrThrow({ where: { id: input.otherPaymentId, zevId }, include });
@@ -363,6 +364,8 @@ export async function mergeChannelDuplicate(actor: Actor, input: { smsId: string
     }, tx);
     return { survivorPaymentId: survivor.id, reversedPaymentId: duplicate.id, moved: moved.toFixed(2), notMoved: notMoved.toFixed(2) };
   });
+  await afterLedgerChange(actor.zevId, actor.userId);
+  return result;
 }
 
 /** "Ista transakcija" for an outflow pair (decision P3: link only, nothing is reversed). */

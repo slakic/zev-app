@@ -43,6 +43,31 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.8.0] - 2026-11-21
+
+Kontni plan, **Faza B2a — automatsko knjiženje događaja vlasnika** (`Plans/kontni-plan-b2-automatsko-knjizenje-plan.md`). Novi tab Knjigovodstvo → **Događaji**.
+
+**Migracija: da — `20261122090000_accounting_events` (tabela `AccountingEvent` sa jedinstvenim ključem izvora, enum `AccountingEventStatus`, kolona `JournalLine.ruleId`, okidač: proknjižen događaj se ne mijenja); samo dodavanje. Primijeniti prije deploya.**
+
+### Dodato
+
+- **Automatsko knjiženje** od datuma proknjiženog početnog stanja (B2-Q1): zaduženje (izdata faktura, po vrsti zaduženja), uplata (avans ili neidentifikovane), raspored uplate (avans → potraživanja po namjeni), storno fakture, rasporeda i uplate — svaki kao poseban automatski nalog (B2-Q3), po potvrđenim pravilima i kontrolnim kontima na datum dokumenta; stavka nosi pravilo (`ruleId`).
+- **Neidentifikovana uplata raspoređena na fakturu** knjiži identifikaciju (neidentifikovane → avans dužnika) pa raspored (B2-Q4).
+- **Djelimičan raspored na fakturu sa više namjena** po pravilu raspodjele, kumulativno (zbir rasporeda tačno zatvara fakturu po namjeni); „najstarije prvo” u okviru fakture = redoslijed stavki (B2-Q7).
+- **Čekanje sa razlogom** umjesto knjiženja na „opšte konto”: nema pravila ili kontrolnog konta, stavka bez vrste, rezerva bez potvrde šeme, nije izabrano pravilo raspodjele, prethodni događaj nije proknjižen, zatvoren period. Dokument se izdaje i evidentira normalno.
+- **Tab „Događaji”:** stanje po statusu, događaji na čekanju sa razlogom i vezom na dokument, „Obradi na čekanju” i „Proknjiži u tekući period” za događaj iz zatvorenog perioda (B2-Q6; datum dokumenta ostaje).
+- Automatski nalog prikazuje izvor (faktura, uplata) i ne stornira se ručno — storno dokumenta knjiži suprotan nalog.
+- Jednokratna faktura prima vrstu zaduženja (servis); korektivna faktura nasljeđuje vrstu originala.
+- Testovi `tests/ledger-events.test.ts` (uključujući saglasnost salda kontrolnih konta u knjizi sa evidencijom).
+
+### Izmijenjeno
+
+- Novo početno stanje poslije storna: blokiraju ga samo proknjiženi ručni nalozi; uz postojeće automatske naloge mora imati isti datum početka.
+- Podjela naplaćenog dijela fakture po namjeni u početnom stanju koristi isto pravilo raspodjele kao automatsko knjiženje.
+- Upozorenje na vrhu Knjigovodstva usklađeno (fakture, uplate i raspoređivanja se knjiže automatski; dobavljači i ručne transakcije još ne).
+
+Uputstvo: novo 13.11 „Automatsko knjiženje (tab „Događaji”)”, dopune 13.10 (ispravka početnog stanja), uvoda poglavlja 13 i napomene u 1., rječnik (događaj).
+
 ## [3.7.0] - 2026-11-21
 
 Kontni plan, **Faza B1b — nalog početnog stanja** (`Plans/kontni-plan-b1-nalozi-plan.md` §4). Nova stranica Knjigovodstvo → Nalozi → **Početno stanje**.

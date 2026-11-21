@@ -31,6 +31,7 @@ import {
   type StatementRowInput,
 } from "@/server/services/payments";
 import { partyDisplayName } from "@/server/services/ownership";
+import { afterLedgerChange } from "@/server/services/ledgerEvents";
 
 /** Setting row holding this tenant's webhook secret (as a hash). Deliberately NOT one of the
  *  SettingKeys in settings-defaults.ts, so the generic "Parametri" form can neither show nor
@@ -571,6 +572,7 @@ export async function confirmBankSms(actor: Actor, input: { items: ConfirmBankSm
     },
     { timeout: 30000 }
   );
+  await afterLedgerChange(actor.zevId, actor.userId);
   return { confirmed: items.length };
 }
 

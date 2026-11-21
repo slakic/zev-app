@@ -421,6 +421,12 @@ export type JournalEntry = Prisma.JournalEntryModel
  */
 export type JournalLine = Prisma.JournalLineModel
 /**
+ * Model AccountingEvent
+ * Događaj za automatsko knjiženje (B2, Plans/kontni-plan-b2-automatsko-knjizenje-plan.md). Izvodi se iz
+ * operativne evidencije (idempotentno, jedinstven ključ izvora) i knjiži kao jedan AUTO nalog.
+ */
+export type AccountingEvent = Prisma.AccountingEventModel
+/**
  * Model JournalCounter
  * Brojač naloga po ZEV-u, godini i seriji; red se zaključava pri knjiženju, pa brojevi nemaju duplikata ni rupa.
  */

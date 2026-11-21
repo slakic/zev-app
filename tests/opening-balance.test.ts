@@ -162,6 +162,9 @@ describe("B1b: nalog početnog stanja", () => {
     const rev = await j.reverseEntry(f.accountant, posted!.id, { reason: "Ispravka", postingDate: START });
     expect(rev.kind).toBe("REVERSAL");
     expect((await ob.openingStatus(f.accountant)).posted).toBeNull();
+    // Evidencija iz 2030. je u međuvremenu automatski proknjižena (B2) — novi datum početka bi je brojao dvaput.
+    expect(await prisma.journalEntry.count({ where: { zevId: f.zev.id, kind: "AUTO", status: "POSTED" } })).toBeGreaterThan(0);
+    await expect(ob.prepareOpening(f.accountant, { startDate: "2030-02-01" })).rejects.toThrow(/isti datum početka/);
     const again = await ob.prepareOpening(f.accountant, { startDate: START });
     expect(again.status).toBe("DRAFT");
   });
@@ -172,15 +175,15 @@ describe("B1b: nalog početnog stanja", () => {
     const year = await prisma.fiscalYear.findFirstOrThrow({ where: { zevId: f.zev.id, label: "2030" }, include: { periods: true } });
     await prisma.journalEntry.create({
       data: { zevId: f.zev.id, yearId: year.id, periodId: year.periods[0].id, kind: "MANUAL", status: "DRAFT", documentDate: at(START), postingDate: at(START), description: "x", createdById: f.accountant.userId },
-    }).then((e) => prisma.journalEntry.update({ where: { id: e.id }, data: { kind: "AUTO" } })).then(async (e) => {
-      // Uravnotežen nalog direktno u bazi (ručni nalog ne smije u budućnost), pa knjiženje kroz servis.
+    }).then(async (e) => {
+      // Uravnotežen ručni nalog direktno u bazi (kroz servis ne smije u budućnost), pa knjiženje kroz servis.
       await prisma.journalLine.createMany({ data: [
         { entryId: e.id, zevId: f.zev.id, order: 0, accountId: ctx.acc("34001"), debit: "1.00" },
-        { entryId: e.id, zevId: f.zev.id, order: 1, accountId: ctx.acc("43201"), credit: "1.00" },
+        { entryId: e.id, zevId: f.zev.id, order: 1, accountId: ctx.acc("34001"), credit: "1.00" },
       ] });
       await j.postEntry(f.accountant, e.id);
     });
-    await expect(ob.prepareOpening(f.accountant, { startDate: START })).rejects.toThrow(/novo početno stanje više nije moguće/);
+    await expect(ob.prepareOpening(f.accountant, { startDate: START })).rejects.toThrow(/ručni nalozi — novo početno stanje više nije moguće/);
   });
 });
 
