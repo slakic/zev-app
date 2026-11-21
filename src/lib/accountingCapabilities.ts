@@ -22,6 +22,16 @@ export const ACCOUNTING_CAPABILITIES = {
   "rules.confirm": ["ACCOUNTANT"],
   /** Evidencija stručne potvrde šeme pod kapijom (K-6), uz ime stručnog lica (A-Q9 (a)). */
   "schema.approve": ["ACCOUNTANT"],
+  /** Nacrt naloga: unos, izmjena, brisanje (B1). */
+  "journal.prepare": ["ACCOUNTANT"],
+  /** Knjiženje naloga (B1). */
+  "journal.post": ["ACCOUNTANT"],
+  /** Storno proknjiženog naloga (B1). */
+  "journal.reverse": ["ACCOUNTANT"],
+  /** Zatvaranje perioda (B1). */
+  "period.close": ["ACCOUNTANT"],
+  /** Ponovno otvaranje perioda — traži jedno lice, odobrava DRUGO lice druge uloge (B1-Q2 (a)). */
+  "period.reopen": ["PRESIDENT", "ACCOUNTANT"],
   /** Pregled kontnog plana, perioda i (kasnije) knjiga. */
   "ledger.view": ["PRESIDENT", "ACCOUNTANT"],
 } as const satisfies Record<string, readonly Role[]>;

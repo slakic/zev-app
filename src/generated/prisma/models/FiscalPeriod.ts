@@ -216,6 +216,8 @@ export type FiscalPeriodWhereInput = {
   closedById?: Prisma.StringNullableFilter<"FiscalPeriod"> | string | null
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   year?: Prisma.XOR<Prisma.FiscalYearScalarRelationFilter, Prisma.FiscalYearWhereInput>
+  journalEntries?: Prisma.JournalEntryListRelationFilter
+  reopenRequests?: Prisma.PeriodReopenRequestListRelationFilter
 }
 
 export type FiscalPeriodOrderByWithRelationInput = {
@@ -230,6 +232,8 @@ export type FiscalPeriodOrderByWithRelationInput = {
   closedById?: Prisma.SortOrderInput | Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
   year?: Prisma.FiscalYearOrderByWithRelationInput
+  journalEntries?: Prisma.JournalEntryOrderByRelationAggregateInput
+  reopenRequests?: Prisma.PeriodReopenRequestOrderByRelationAggregateInput
 }
 
 export type FiscalPeriodWhereUniqueInput = Prisma.AtLeast<{
@@ -248,6 +252,8 @@ export type FiscalPeriodWhereUniqueInput = Prisma.AtLeast<{
   closedById?: Prisma.StringNullableFilter<"FiscalPeriod"> | string | null
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
   year?: Prisma.XOR<Prisma.FiscalYearScalarRelationFilter, Prisma.FiscalYearWhereInput>
+  journalEntries?: Prisma.JournalEntryListRelationFilter
+  reopenRequests?: Prisma.PeriodReopenRequestListRelationFilter
 }, "id" | "yearId_label">
 
 export type FiscalPeriodOrderByWithAggregationInput = {
@@ -290,6 +296,8 @@ export type FiscalPeriodCreateInput = {
   closedById?: string | null
   zev: Prisma.ZevCreateNestedOneWithoutFiscalPeriodsInput
   year: Prisma.FiscalYearCreateNestedOneWithoutPeriodsInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutPeriodInput
+  reopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutPeriodInput
 }
 
 export type FiscalPeriodUncheckedCreateInput = {
@@ -302,6 +310,8 @@ export type FiscalPeriodUncheckedCreateInput = {
   status?: $Enums.FiscalStatus
   closedAt?: Date | string | null
   closedById?: string | null
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutPeriodInput
 }
 
 export type FiscalPeriodUpdateInput = {
@@ -314,6 +324,8 @@ export type FiscalPeriodUpdateInput = {
   closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zev?: Prisma.ZevUpdateOneRequiredWithoutFiscalPeriodsNestedInput
   year?: Prisma.FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutPeriodNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutPeriodNestedInput
 }
 
 export type FiscalPeriodUncheckedUpdateInput = {
@@ -326,6 +338,8 @@ export type FiscalPeriodUncheckedUpdateInput = {
   status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutPeriodNestedInput
 }
 
 export type FiscalPeriodCreateManyInput = {
@@ -413,6 +427,11 @@ export type FiscalPeriodMinOrderByAggregateInput = {
   closedById?: Prisma.SortOrder
 }
 
+export type FiscalPeriodScalarRelationFilter = {
+  is?: Prisma.FiscalPeriodWhereInput
+  isNot?: Prisma.FiscalPeriodWhereInput
+}
+
 export type FiscalPeriodCreateNestedManyWithoutZevInput = {
   create?: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutZevInput, Prisma.FiscalPeriodUncheckedCreateWithoutZevInput> | Prisma.FiscalPeriodCreateWithoutZevInput[] | Prisma.FiscalPeriodUncheckedCreateWithoutZevInput[]
   connectOrCreate?: Prisma.FiscalPeriodCreateOrConnectWithoutZevInput | Prisma.FiscalPeriodCreateOrConnectWithoutZevInput[]
@@ -497,6 +516,34 @@ export type FiscalPeriodUncheckedUpdateManyWithoutYearNestedInput = {
   deleteMany?: Prisma.FiscalPeriodScalarWhereInput | Prisma.FiscalPeriodScalarWhereInput[]
 }
 
+export type FiscalPeriodCreateNestedOneWithoutJournalEntriesInput = {
+  create?: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutJournalEntriesInput, Prisma.FiscalPeriodUncheckedCreateWithoutJournalEntriesInput>
+  connectOrCreate?: Prisma.FiscalPeriodCreateOrConnectWithoutJournalEntriesInput
+  connect?: Prisma.FiscalPeriodWhereUniqueInput
+}
+
+export type FiscalPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutJournalEntriesInput, Prisma.FiscalPeriodUncheckedCreateWithoutJournalEntriesInput>
+  connectOrCreate?: Prisma.FiscalPeriodCreateOrConnectWithoutJournalEntriesInput
+  upsert?: Prisma.FiscalPeriodUpsertWithoutJournalEntriesInput
+  connect?: Prisma.FiscalPeriodWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FiscalPeriodUpdateToOneWithWhereWithoutJournalEntriesInput, Prisma.FiscalPeriodUpdateWithoutJournalEntriesInput>, Prisma.FiscalPeriodUncheckedUpdateWithoutJournalEntriesInput>
+}
+
+export type FiscalPeriodCreateNestedOneWithoutReopenRequestsInput = {
+  create?: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutReopenRequestsInput, Prisma.FiscalPeriodUncheckedCreateWithoutReopenRequestsInput>
+  connectOrCreate?: Prisma.FiscalPeriodCreateOrConnectWithoutReopenRequestsInput
+  connect?: Prisma.FiscalPeriodWhereUniqueInput
+}
+
+export type FiscalPeriodUpdateOneRequiredWithoutReopenRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutReopenRequestsInput, Prisma.FiscalPeriodUncheckedCreateWithoutReopenRequestsInput>
+  connectOrCreate?: Prisma.FiscalPeriodCreateOrConnectWithoutReopenRequestsInput
+  upsert?: Prisma.FiscalPeriodUpsertWithoutReopenRequestsInput
+  connect?: Prisma.FiscalPeriodWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FiscalPeriodUpdateToOneWithWhereWithoutReopenRequestsInput, Prisma.FiscalPeriodUpdateWithoutReopenRequestsInput>, Prisma.FiscalPeriodUncheckedUpdateWithoutReopenRequestsInput>
+}
+
 export type FiscalPeriodCreateWithoutZevInput = {
   id?: string
   label: string
@@ -506,6 +553,8 @@ export type FiscalPeriodCreateWithoutZevInput = {
   closedAt?: Date | string | null
   closedById?: string | null
   year: Prisma.FiscalYearCreateNestedOneWithoutPeriodsInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutPeriodInput
+  reopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutPeriodInput
 }
 
 export type FiscalPeriodUncheckedCreateWithoutZevInput = {
@@ -517,6 +566,8 @@ export type FiscalPeriodUncheckedCreateWithoutZevInput = {
   status?: $Enums.FiscalStatus
   closedAt?: Date | string | null
   closedById?: string | null
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutPeriodInput
 }
 
 export type FiscalPeriodCreateOrConnectWithoutZevInput = {
@@ -569,6 +620,8 @@ export type FiscalPeriodCreateWithoutYearInput = {
   closedAt?: Date | string | null
   closedById?: string | null
   zev: Prisma.ZevCreateNestedOneWithoutFiscalPeriodsInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutPeriodInput
+  reopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutPeriodInput
 }
 
 export type FiscalPeriodUncheckedCreateWithoutYearInput = {
@@ -580,6 +633,8 @@ export type FiscalPeriodUncheckedCreateWithoutYearInput = {
   status?: $Enums.FiscalStatus
   closedAt?: Date | string | null
   closedById?: string | null
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutPeriodInput
 }
 
 export type FiscalPeriodCreateOrConnectWithoutYearInput = {
@@ -608,6 +663,142 @@ export type FiscalPeriodUpdateManyWithWhereWithoutYearInput = {
   data: Prisma.XOR<Prisma.FiscalPeriodUpdateManyMutationInput, Prisma.FiscalPeriodUncheckedUpdateManyWithoutYearInput>
 }
 
+export type FiscalPeriodCreateWithoutJournalEntriesInput = {
+  id?: string
+  label: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.FiscalStatus
+  closedAt?: Date | string | null
+  closedById?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutFiscalPeriodsInput
+  year: Prisma.FiscalYearCreateNestedOneWithoutPeriodsInput
+  reopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutPeriodInput
+}
+
+export type FiscalPeriodUncheckedCreateWithoutJournalEntriesInput = {
+  id?: string
+  zevId: string
+  yearId: string
+  label: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.FiscalStatus
+  closedAt?: Date | string | null
+  closedById?: string | null
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutPeriodInput
+}
+
+export type FiscalPeriodCreateOrConnectWithoutJournalEntriesInput = {
+  where: Prisma.FiscalPeriodWhereUniqueInput
+  create: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutJournalEntriesInput, Prisma.FiscalPeriodUncheckedCreateWithoutJournalEntriesInput>
+}
+
+export type FiscalPeriodUpsertWithoutJournalEntriesInput = {
+  update: Prisma.XOR<Prisma.FiscalPeriodUpdateWithoutJournalEntriesInput, Prisma.FiscalPeriodUncheckedUpdateWithoutJournalEntriesInput>
+  create: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutJournalEntriesInput, Prisma.FiscalPeriodUncheckedCreateWithoutJournalEntriesInput>
+  where?: Prisma.FiscalPeriodWhereInput
+}
+
+export type FiscalPeriodUpdateToOneWithWhereWithoutJournalEntriesInput = {
+  where?: Prisma.FiscalPeriodWhereInput
+  data: Prisma.XOR<Prisma.FiscalPeriodUpdateWithoutJournalEntriesInput, Prisma.FiscalPeriodUncheckedUpdateWithoutJournalEntriesInput>
+}
+
+export type FiscalPeriodUpdateWithoutJournalEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFiscalPeriodsNestedInput
+  year?: Prisma.FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutPeriodNestedInput
+}
+
+export type FiscalPeriodUncheckedUpdateWithoutJournalEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  yearId?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutPeriodNestedInput
+}
+
+export type FiscalPeriodCreateWithoutReopenRequestsInput = {
+  id?: string
+  label: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.FiscalStatus
+  closedAt?: Date | string | null
+  closedById?: string | null
+  zev: Prisma.ZevCreateNestedOneWithoutFiscalPeriodsInput
+  year: Prisma.FiscalYearCreateNestedOneWithoutPeriodsInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutPeriodInput
+}
+
+export type FiscalPeriodUncheckedCreateWithoutReopenRequestsInput = {
+  id?: string
+  zevId: string
+  yearId: string
+  label: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.FiscalStatus
+  closedAt?: Date | string | null
+  closedById?: string | null
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+}
+
+export type FiscalPeriodCreateOrConnectWithoutReopenRequestsInput = {
+  where: Prisma.FiscalPeriodWhereUniqueInput
+  create: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutReopenRequestsInput, Prisma.FiscalPeriodUncheckedCreateWithoutReopenRequestsInput>
+}
+
+export type FiscalPeriodUpsertWithoutReopenRequestsInput = {
+  update: Prisma.XOR<Prisma.FiscalPeriodUpdateWithoutReopenRequestsInput, Prisma.FiscalPeriodUncheckedUpdateWithoutReopenRequestsInput>
+  create: Prisma.XOR<Prisma.FiscalPeriodCreateWithoutReopenRequestsInput, Prisma.FiscalPeriodUncheckedCreateWithoutReopenRequestsInput>
+  where?: Prisma.FiscalPeriodWhereInput
+}
+
+export type FiscalPeriodUpdateToOneWithWhereWithoutReopenRequestsInput = {
+  where?: Prisma.FiscalPeriodWhereInput
+  data: Prisma.XOR<Prisma.FiscalPeriodUpdateWithoutReopenRequestsInput, Prisma.FiscalPeriodUncheckedUpdateWithoutReopenRequestsInput>
+}
+
+export type FiscalPeriodUpdateWithoutReopenRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFiscalPeriodsNestedInput
+  year?: Prisma.FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutPeriodNestedInput
+}
+
+export type FiscalPeriodUncheckedUpdateWithoutReopenRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  yearId?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+}
+
 export type FiscalPeriodCreateManyZevInput = {
   id?: string
   yearId: string
@@ -628,6 +819,8 @@ export type FiscalPeriodUpdateWithoutZevInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutPeriodNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutPeriodNestedInput
 }
 
 export type FiscalPeriodUncheckedUpdateWithoutZevInput = {
@@ -639,6 +832,8 @@ export type FiscalPeriodUncheckedUpdateWithoutZevInput = {
   status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutPeriodNestedInput
 }
 
 export type FiscalPeriodUncheckedUpdateManyWithoutZevInput = {
@@ -672,6 +867,8 @@ export type FiscalPeriodUpdateWithoutYearInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zev?: Prisma.ZevUpdateOneRequiredWithoutFiscalPeriodsNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutPeriodNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutPeriodNestedInput
 }
 
 export type FiscalPeriodUncheckedUpdateWithoutYearInput = {
@@ -683,6 +880,8 @@ export type FiscalPeriodUncheckedUpdateWithoutYearInput = {
   status?: Prisma.EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+  reopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutPeriodNestedInput
 }
 
 export type FiscalPeriodUncheckedUpdateManyWithoutYearInput = {
@@ -697,6 +896,44 @@ export type FiscalPeriodUncheckedUpdateManyWithoutYearInput = {
 }
 
 
+/**
+ * Count Type FiscalPeriodCountOutputType
+ */
+
+export type FiscalPeriodCountOutputType = {
+  journalEntries: number
+  reopenRequests: number
+}
+
+export type FiscalPeriodCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  journalEntries?: boolean | FiscalPeriodCountOutputTypeCountJournalEntriesArgs
+  reopenRequests?: boolean | FiscalPeriodCountOutputTypeCountReopenRequestsArgs
+}
+
+/**
+ * FiscalPeriodCountOutputType without action
+ */
+export type FiscalPeriodCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FiscalPeriodCountOutputType
+   */
+  select?: Prisma.FiscalPeriodCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * FiscalPeriodCountOutputType without action
+ */
+export type FiscalPeriodCountOutputTypeCountJournalEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalEntryWhereInput
+}
+
+/**
+ * FiscalPeriodCountOutputType without action
+ */
+export type FiscalPeriodCountOutputTypeCountReopenRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PeriodReopenRequestWhereInput
+}
+
 
 export type FiscalPeriodSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -710,6 +947,9 @@ export type FiscalPeriodSelect<ExtArgs extends runtime.Types.Extensions.Internal
   closedById?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   year?: boolean | Prisma.FiscalYearDefaultArgs<ExtArgs>
+  journalEntries?: boolean | Prisma.FiscalPeriod$journalEntriesArgs<ExtArgs>
+  reopenRequests?: boolean | Prisma.FiscalPeriod$reopenRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.FiscalPeriodCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["fiscalPeriod"]>
 
 export type FiscalPeriodSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -756,6 +996,9 @@ export type FiscalPeriodOmit<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type FiscalPeriodInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
   year?: boolean | Prisma.FiscalYearDefaultArgs<ExtArgs>
+  journalEntries?: boolean | Prisma.FiscalPeriod$journalEntriesArgs<ExtArgs>
+  reopenRequests?: boolean | Prisma.FiscalPeriod$reopenRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.FiscalPeriodCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FiscalPeriodIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -771,6 +1014,8 @@ export type $FiscalPeriodPayload<ExtArgs extends runtime.Types.Extensions.Intern
   objects: {
     zev: Prisma.$ZevPayload<ExtArgs>
     year: Prisma.$FiscalYearPayload<ExtArgs>
+    journalEntries: Prisma.$JournalEntryPayload<ExtArgs>[]
+    reopenRequests: Prisma.$PeriodReopenRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1178,6 +1423,8 @@ export interface Prisma__FiscalPeriodClient<T, Null = never, ExtArgs extends run
   readonly [Symbol.toStringTag]: "PrismaPromise"
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   year<T extends Prisma.FiscalYearDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FiscalYearDefaultArgs<ExtArgs>>): Prisma.Prisma__FiscalYearClient<runtime.Types.Result.GetResult<Prisma.$FiscalYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  journalEntries<T extends Prisma.FiscalPeriod$journalEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FiscalPeriod$journalEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reopenRequests<T extends Prisma.FiscalPeriod$reopenRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FiscalPeriod$reopenRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PeriodReopenRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1614,6 +1861,54 @@ export type FiscalPeriodDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many FiscalPeriods to delete.
    */
   limit?: number
+}
+
+/**
+ * FiscalPeriod.journalEntries
+ */
+export type FiscalPeriod$journalEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalEntry
+   */
+  select?: Prisma.JournalEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalEntry
+   */
+  omit?: Prisma.JournalEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalEntryInclude<ExtArgs> | null
+  where?: Prisma.JournalEntryWhereInput
+  orderBy?: Prisma.JournalEntryOrderByWithRelationInput | Prisma.JournalEntryOrderByWithRelationInput[]
+  cursor?: Prisma.JournalEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalEntryScalarFieldEnum | Prisma.JournalEntryScalarFieldEnum[]
+}
+
+/**
+ * FiscalPeriod.reopenRequests
+ */
+export type FiscalPeriod$reopenRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PeriodReopenRequest
+   */
+  select?: Prisma.PeriodReopenRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PeriodReopenRequest
+   */
+  omit?: Prisma.PeriodReopenRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PeriodReopenRequestInclude<ExtArgs> | null
+  where?: Prisma.PeriodReopenRequestWhereInput
+  orderBy?: Prisma.PeriodReopenRequestOrderByWithRelationInput | Prisma.PeriodReopenRequestOrderByWithRelationInput[]
+  cursor?: Prisma.PeriodReopenRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PeriodReopenRequestScalarFieldEnum | Prisma.PeriodReopenRequestScalarFieldEnum[]
 }
 
 /**

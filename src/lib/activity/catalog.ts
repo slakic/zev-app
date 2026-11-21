@@ -164,6 +164,16 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "posting_rule.withdraw": "FINANCE",
   "posting_schema.approve": "FINANCE",
   "posting_schema.revoke": "FINANCE",
+  // Nalozi i periodi (B1a)
+  "journal.create": "FINANCE",
+  "journal.update": "FINANCE",
+  "journal.delete": "FINANCE",
+  "journal.post": "FINANCE",
+  "journal.reverse": "FINANCE",
+  "fiscal_period.close": "FINANCE",
+  "fiscal_period.reopen_request": "FINANCE",
+  "fiscal_period.reopen": "FINANCE",
+  "fiscal_period.reopen_reject": "FINANCE",
 
   // ---- SYSTEM — platform/technical (excluded from /aktivnosti by default; §9/Faza 3 for
   // /admin/aktivnosti, where this is exactly what a super admin wants to see) ----

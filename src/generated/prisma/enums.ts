@@ -539,6 +539,24 @@ export const GatedSchema = {
 export type GatedSchema = (typeof GatedSchema)[keyof typeof GatedSchema]
 
 
+export const JournalStatus = {
+  DRAFT: 'DRAFT',
+  POSTED: 'POSTED'
+} as const
+
+export type JournalStatus = (typeof JournalStatus)[keyof typeof JournalStatus]
+
+
+export const JournalKind = {
+  MANUAL: 'MANUAL',
+  OPENING: 'OPENING',
+  REVERSAL: 'REVERSAL',
+  AUTO: 'AUTO'
+} as const
+
+export type JournalKind = (typeof JournalKind)[keyof typeof JournalKind]
+
+
 export const OnboardingInviteStatus = {
   ACTIVE: 'ACTIVE',
   ACCEPTED: 'ACCEPTED',

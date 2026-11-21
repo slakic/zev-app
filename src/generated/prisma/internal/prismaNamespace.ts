@@ -470,6 +470,10 @@ export const ModelName = {
   ZevControlAccount: 'ZevControlAccount',
   PostingRule: 'PostingRule',
   PostingSchemaApproval: 'PostingSchemaApproval',
+  JournalEntry: 'JournalEntry',
+  JournalLine: 'JournalLine',
+  JournalCounter: 'JournalCounter',
+  PeriodReopenRequest: 'PeriodReopenRequest',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
@@ -493,7 +497,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "fundPurpose" | "chargeType" | "zevControlAccount" | "postingRule" | "postingSchemaApproval" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
+    modelProps: "user" | "session" | "party" | "zev" | "membership" | "building" | "entrance" | "unitRegisterChange" | "unit" | "ownershipStake" | "occupancy" | "proxy" | "officeTerm" | "allocationGroup" | "allocationGroupMember" | "commonAsset" | "meeting" | "agendaItem" | "meetingNote" | "attendance" | "votingRule" | "proposal" | "proposalUnit" | "eligibleVoter" | "approvalToken" | "ballot" | "vote" | "moneyAccount" | "transactionCategory" | "finTransaction" | "chargeItem" | "chargeUnitOverride" | "meterReading" | "invoiceBatch" | "invoice" | "invoiceLine" | "bankImportBatch" | "incomingBankSms" | "bankRecordMatch" | "payment" | "paymentAllocation" | "balanceCorrection" | "supplier" | "expense" | "annualPlan" | "planItem" | "planItemUnit" | "project" | "maintenanceIssue" | "issueComment" | "issueStatusEvent" | "contractorOffer" | "workOrder" | "document" | "documentBlob" | "attachment" | "attachmentBlob" | "notificationMessage" | "viberSubscriber" | "auditEvent" | "setting" | "platformSetting" | "chartTemplate" | "chartTemplateAccount" | "zevChart" | "zevAccount" | "fiscalYear" | "fiscalPeriod" | "fundPurpose" | "chargeType" | "zevControlAccount" | "postingRule" | "postingSchemaApproval" | "journalEntry" | "journalLine" | "journalCounter" | "periodReopenRequest" | "onboardingInvite" | "onboardingDraft" | "onboardingDraftAdminAccess" | "onboardingDraftFile" | "mcpConnection" | "mcpOAuthClient" | "mcpOAuthCode" | "mcpOAuthToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5899,6 +5903,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    JournalEntry: {
+      payload: Prisma.$JournalEntryPayload<ExtArgs>
+      fields: Prisma.JournalEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JournalEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JournalEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.JournalEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JournalEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>
+        }
+        findMany: {
+          args: Prisma.JournalEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>[]
+        }
+        create: {
+          args: Prisma.JournalEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>
+        }
+        createMany: {
+          args: Prisma.JournalEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JournalEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.JournalEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>
+        }
+        update: {
+          args: Prisma.JournalEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.JournalEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JournalEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JournalEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.JournalEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.JournalEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJournalEntry>
+        }
+        groupBy: {
+          args: Prisma.JournalEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JournalEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalEntryCountAggregateOutputType> | number
+        }
+      }
+    }
+    JournalLine: {
+      payload: Prisma.$JournalLinePayload<ExtArgs>
+      fields: Prisma.JournalLineFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JournalLineFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JournalLineFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>
+        }
+        findFirst: {
+          args: Prisma.JournalLineFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JournalLineFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>
+        }
+        findMany: {
+          args: Prisma.JournalLineFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>[]
+        }
+        create: {
+          args: Prisma.JournalLineCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>
+        }
+        createMany: {
+          args: Prisma.JournalLineCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JournalLineCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>[]
+        }
+        delete: {
+          args: Prisma.JournalLineDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>
+        }
+        update: {
+          args: Prisma.JournalLineUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>
+        }
+        deleteMany: {
+          args: Prisma.JournalLineDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JournalLineUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JournalLineUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>[]
+        }
+        upsert: {
+          args: Prisma.JournalLineUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalLinePayload>
+        }
+        aggregate: {
+          args: Prisma.JournalLineAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJournalLine>
+        }
+        groupBy: {
+          args: Prisma.JournalLineGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalLineGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JournalLineCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalLineCountAggregateOutputType> | number
+        }
+      }
+    }
+    JournalCounter: {
+      payload: Prisma.$JournalCounterPayload<ExtArgs>
+      fields: Prisma.JournalCounterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JournalCounterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JournalCounterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>
+        }
+        findFirst: {
+          args: Prisma.JournalCounterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JournalCounterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>
+        }
+        findMany: {
+          args: Prisma.JournalCounterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>[]
+        }
+        create: {
+          args: Prisma.JournalCounterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>
+        }
+        createMany: {
+          args: Prisma.JournalCounterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JournalCounterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>[]
+        }
+        delete: {
+          args: Prisma.JournalCounterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>
+        }
+        update: {
+          args: Prisma.JournalCounterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>
+        }
+        deleteMany: {
+          args: Prisma.JournalCounterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JournalCounterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JournalCounterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>[]
+        }
+        upsert: {
+          args: Prisma.JournalCounterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalCounterPayload>
+        }
+        aggregate: {
+          args: Prisma.JournalCounterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJournalCounter>
+        }
+        groupBy: {
+          args: Prisma.JournalCounterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalCounterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JournalCounterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalCounterCountAggregateOutputType> | number
+        }
+      }
+    }
+    PeriodReopenRequest: {
+      payload: Prisma.$PeriodReopenRequestPayload<ExtArgs>
+      fields: Prisma.PeriodReopenRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PeriodReopenRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PeriodReopenRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.PeriodReopenRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PeriodReopenRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>
+        }
+        findMany: {
+          args: Prisma.PeriodReopenRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>[]
+        }
+        create: {
+          args: Prisma.PeriodReopenRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>
+        }
+        createMany: {
+          args: Prisma.PeriodReopenRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PeriodReopenRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.PeriodReopenRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>
+        }
+        update: {
+          args: Prisma.PeriodReopenRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.PeriodReopenRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PeriodReopenRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PeriodReopenRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.PeriodReopenRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PeriodReopenRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.PeriodReopenRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePeriodReopenRequest>
+        }
+        groupBy: {
+          args: Prisma.PeriodReopenRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PeriodReopenRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PeriodReopenRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PeriodReopenRequestCountAggregateOutputType> | number
+        }
+      }
+    }
     OnboardingInvite: {
       payload: Prisma.$OnboardingInvitePayload<ExtArgs>
       fields: Prisma.OnboardingInviteFieldRefs
@@ -7819,6 +8119,79 @@ export const PostingSchemaApprovalScalarFieldEnum = {
 export type PostingSchemaApprovalScalarFieldEnum = (typeof PostingSchemaApprovalScalarFieldEnum)[keyof typeof PostingSchemaApprovalScalarFieldEnum]
 
 
+export const JournalEntryScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  yearId: 'yearId',
+  periodId: 'periodId',
+  kind: 'kind',
+  number: 'number',
+  documentDate: 'documentDate',
+  postingDate: 'postingDate',
+  description: 'description',
+  status: 'status',
+  reversalOfId: 'reversalOfId',
+  reversalReason: 'reversalReason',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  createdById: 'createdById',
+  postedById: 'postedById',
+  postedAt: 'postedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JournalEntryScalarFieldEnum = (typeof JournalEntryScalarFieldEnum)[keyof typeof JournalEntryScalarFieldEnum]
+
+
+export const JournalLineScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  zevId: 'zevId',
+  order: 'order',
+  accountId: 'accountId',
+  debit: 'debit',
+  credit: 'credit',
+  partyId: 'partyId',
+  unitId: 'unitId',
+  supplierId: 'supplierId',
+  projectId: 'projectId',
+  purposeId: 'purposeId',
+  description: 'description',
+  openingSourceType: 'openingSourceType',
+  openingSourceId: 'openingSourceId'
+} as const
+
+export type JournalLineScalarFieldEnum = (typeof JournalLineScalarFieldEnum)[keyof typeof JournalLineScalarFieldEnum]
+
+
+export const JournalCounterScalarFieldEnum = {
+  zevId: 'zevId',
+  yearId: 'yearId',
+  series: 'series',
+  next: 'next'
+} as const
+
+export type JournalCounterScalarFieldEnum = (typeof JournalCounterScalarFieldEnum)[keyof typeof JournalCounterScalarFieldEnum]
+
+
+export const PeriodReopenRequestScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  periodId: 'periodId',
+  reason: 'reason',
+  requestedById: 'requestedById',
+  requestedRole: 'requestedRole',
+  requestedAt: 'requestedAt',
+  decidedById: 'decidedById',
+  decision: 'decision',
+  decisionNote: 'decisionNote',
+  decidedAt: 'decidedAt'
+} as const
+
+export type PeriodReopenRequestScalarFieldEnum = (typeof PeriodReopenRequestScalarFieldEnum)[keyof typeof PeriodReopenRequestScalarFieldEnum]
+
+
 export const OnboardingInviteScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -8800,6 +9173,34 @@ export type ListEnumGatedSchemaFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'JournalKind'
+ */
+export type EnumJournalKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalKind'>
+    
+
+
+/**
+ * Reference to a field of type 'JournalKind[]'
+ */
+export type ListEnumJournalKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JournalStatus'
+ */
+export type EnumJournalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JournalStatus[]'
+ */
+export type ListEnumJournalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'OnboardingInviteStatus'
  */
 export type EnumOnboardingInviteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingInviteStatus'>
@@ -9120,6 +9521,10 @@ export type GlobalOmitConfig = {
   zevControlAccount?: Prisma.ZevControlAccountOmit
   postingRule?: Prisma.PostingRuleOmit
   postingSchemaApproval?: Prisma.PostingSchemaApprovalOmit
+  journalEntry?: Prisma.JournalEntryOmit
+  journalLine?: Prisma.JournalLineOmit
+  journalCounter?: Prisma.JournalCounterOmit
+  periodReopenRequest?: Prisma.PeriodReopenRequestOmit
   onboardingInvite?: Prisma.OnboardingInviteOmit
   onboardingDraft?: Prisma.OnboardingDraftOmit
   onboardingDraftAdminAccess?: Prisma.OnboardingDraftAdminAccessOmit

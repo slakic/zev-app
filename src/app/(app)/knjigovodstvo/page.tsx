@@ -9,6 +9,9 @@ import {
 import { AccountTreeTable } from "@/components/account-tree-table";
 import { AddAccountForm } from "@/components/add-account-form";
 import { RulesTab } from "./rules-tab";
+import { JournalTab } from "./journal-tab";
+import { listReopenRequests } from "@/server/services/journal";
+import { closePeriodAction, decideReopenAction, requestReopenAction } from "@/server/actions/journal";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { activateChartAction, assignChartAction, openFiscalYearAction, retireChartAction } from "@/server/actions/chartOfAccounts";
 
@@ -27,6 +30,7 @@ const periodHeaders: ColumnSpec[] = [
   { label: t("ledger.periods.colFrom") },
   { label: t("ledger.periods.colTo") },
   { label: t("ledger.periods.colStatus") },
+  { label: t("ledger.periods2.colActions"), actions: true },
 ];
 
 /**
@@ -37,7 +41,7 @@ const periodHeaders: ColumnSpec[] = [
 export default async function LedgerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; q?: string; show?: string; msg?: string; err?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; show?: string; msg?: string; err?: string; period?: string; status?: string }>;
 }) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const sp = await searchParams;
@@ -59,7 +63,7 @@ export default async function LedgerPage({
       {tab === "plan" && <PlanTab actor={actor} canEdit={canEdit} q={sp.q ?? ""} show={sp.show === "all" ? "all" : "active"} />}
       {tab === "godine" && <PeriodsTab actor={actor} canOpen={canOpenPeriod} />}
       {tab === "pravila" && <RulesTab actor={actor} />}
-      {tab === "nalozi" && <NotYet text={t("ledger.upcoming.journal")} title={t("ledger.tabs.journal")} />}
+      {tab === "nalozi" && <JournalTab actor={actor} periodId={sp.period ?? ""} status={sp.status ?? ""} />}
       {tab === "izvjestaji" && <NotYet text={t("ledger.upcoming.reports")} title={t("ledger.tabs.reports")} />}
     </div>
   );
@@ -223,7 +227,13 @@ async function PlanTab({ actor, canEdit, q, show }: { actor: Actor; canEdit: boo
 }
 
 async function PeriodsTab({ actor, canOpen }: { actor: Actor; canOpen: boolean }) {
-  const years = await listFiscalYears(actor);
+  const [years, requests] = await Promise.all([listFiscalYears(actor), listReopenRequests(actor)]);
+  const canClose = hasCapability(actor.roles, "period.close");
+  const canReopen = hasCapability(actor.roles, "period.reopen");
+  const pendingByPeriod = new Map(requests.filter((r) => !r.decision).map((r) => [r.periodId, r]));
+  // Odluku donosi drugo lice druge uloge (B1-Q2 (a)); servis to provjerava, ovdje se samo bira šta se prikazuje.
+  const canDecide = (r: { requestedById: string; requestedRole: string }) =>
+    r.requestedById !== actor.userId && actor.roles.includes(r.requestedRole === "PRESIDENT" ? "ACCOUNTANT" : "PRESIDENT");
   const nextYear = years.length > 0 ? years[0].endDate.getUTCFullYear() + 1 : new Date().getFullYear();
   return (
     <div className="space-y-6">
@@ -241,6 +251,7 @@ async function PeriodsTab({ actor, canOpen }: { actor: Actor; canOpen: boolean }
                 <Td>{formatDate(p.startDate)}</Td>
                 <Td>{formatDate(p.endDate)}</Td>
                 <Td><StatusBadge status={p.status} label={tEnum("fiscalStatus", p.status)} /></Td>
+                <Td><PeriodActions period={p} canClose={canClose} canReopen={canReopen} pending={pendingByPeriod.get(p.id) ?? null} canDecide={canDecide} /></Td>
               </tr>
             ))}
           </Table>
@@ -270,4 +281,72 @@ async function PeriodsTab({ actor, canOpen }: { actor: Actor; canOpen: boolean }
       )}
     </div>
   );
+}
+
+function PeriodActions({
+  period, canClose, canReopen, pending, canDecide,
+}: {
+  period: { id: string; label: string; status: string };
+  canClose: boolean;
+  canReopen: boolean;
+  pending: { id: string; reason: string; requestedById: string; requestedRole: string } | null;
+  canDecide: (r: { requestedById: string; requestedRole: string }) => boolean;
+}) {
+  if (period.status === "OPEN") {
+    return canClose ? (
+      <ConfirmAction
+        trigger={t("ledger.periods2.close")}
+        title={tf("ledger.periods2.closeTitle", { period: period.label })}
+        body={<p className="text-sm text-amber-900">{t("ledger.periods2.closeBody")}</p>}
+        confirmLabel={t("ledger.periods2.closeConfirm")}
+        confirmVariant="primary"
+        action={closePeriodAction}
+        hiddenFields={{ periodId: period.id }}
+      />
+    ) : null;
+  }
+  if (pending) {
+    return (
+      <div className="space-y-2">
+        <p className="text-hint text-slate-600">{tf("ledger.periods2.pending", { razlog: pending.reason })}</p>
+        {canDecide(pending) && (
+          <div className="flex flex-wrap items-start gap-2">
+            <ConfirmAction
+              trigger={t("ledger.periods2.approve")}
+              title={tf("ledger.periods2.approveTitle", { period: period.label })}
+              body={<p className="text-sm text-amber-900">{t("ledger.periods2.approveBody")}</p>}
+              confirmLabel={t("ledger.periods2.approve")}
+              confirmVariant="primary"
+              action={decideReopenAction}
+              hiddenFields={{ requestId: pending.id, decision: "APPROVED" }}
+            >
+              <Field label={t("ledger.periods2.decideNote")}><input name="note" className={inputCls} /></Field>
+            </ConfirmAction>
+            <ConfirmAction
+              trigger={t("ledger.periods2.reject")}
+              title={t("ledger.periods2.rejectTitle")}
+              body={<p className="text-sm text-amber-900">{t("ledger.periods2.rejectBody")}</p>}
+              confirmLabel={t("ledger.periods2.reject")}
+              action={decideReopenAction}
+              hiddenFields={{ requestId: pending.id, decision: "REJECTED" }}
+            >
+              <Field label={t("ledger.periods2.decideNote")}><input name="note" className={inputCls} /></Field>
+            </ConfirmAction>
+          </div>
+        )}
+      </div>
+    );
+  }
+  return canReopen ? (
+    <ConfirmAction
+      trigger={t("ledger.periods2.reopen")}
+      title={tf("ledger.periods2.reopenTitle", { period: period.label })}
+      body={<p className="text-sm text-amber-900">{t("ledger.periods2.reopenBody")}</p>}
+      confirmLabel={t("ledger.periods2.reopenConfirm")}
+      action={requestReopenAction}
+      hiddenFields={{ periodId: period.id }}
+    >
+      <Field label={t("ledger.periods2.reopenReason")}><input name="reason" required className={inputCls} /></Field>
+    </ConfirmAction>
+  ) : null;
 }

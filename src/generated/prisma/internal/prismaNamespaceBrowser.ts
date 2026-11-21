@@ -124,6 +124,10 @@ export const ModelName = {
   ZevControlAccount: 'ZevControlAccount',
   PostingRule: 'PostingRule',
   PostingSchemaApproval: 'PostingSchemaApproval',
+  JournalEntry: 'JournalEntry',
+  JournalLine: 'JournalLine',
+  JournalCounter: 'JournalCounter',
+  PeriodReopenRequest: 'PeriodReopenRequest',
   OnboardingInvite: 'OnboardingInvite',
   OnboardingDraft: 'OnboardingDraft',
   OnboardingDraftAdminAccess: 'OnboardingDraftAdminAccess',
@@ -1437,6 +1441,79 @@ export const PostingSchemaApprovalScalarFieldEnum = {
 } as const
 
 export type PostingSchemaApprovalScalarFieldEnum = (typeof PostingSchemaApprovalScalarFieldEnum)[keyof typeof PostingSchemaApprovalScalarFieldEnum]
+
+
+export const JournalEntryScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  yearId: 'yearId',
+  periodId: 'periodId',
+  kind: 'kind',
+  number: 'number',
+  documentDate: 'documentDate',
+  postingDate: 'postingDate',
+  description: 'description',
+  status: 'status',
+  reversalOfId: 'reversalOfId',
+  reversalReason: 'reversalReason',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  createdById: 'createdById',
+  postedById: 'postedById',
+  postedAt: 'postedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JournalEntryScalarFieldEnum = (typeof JournalEntryScalarFieldEnum)[keyof typeof JournalEntryScalarFieldEnum]
+
+
+export const JournalLineScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  zevId: 'zevId',
+  order: 'order',
+  accountId: 'accountId',
+  debit: 'debit',
+  credit: 'credit',
+  partyId: 'partyId',
+  unitId: 'unitId',
+  supplierId: 'supplierId',
+  projectId: 'projectId',
+  purposeId: 'purposeId',
+  description: 'description',
+  openingSourceType: 'openingSourceType',
+  openingSourceId: 'openingSourceId'
+} as const
+
+export type JournalLineScalarFieldEnum = (typeof JournalLineScalarFieldEnum)[keyof typeof JournalLineScalarFieldEnum]
+
+
+export const JournalCounterScalarFieldEnum = {
+  zevId: 'zevId',
+  yearId: 'yearId',
+  series: 'series',
+  next: 'next'
+} as const
+
+export type JournalCounterScalarFieldEnum = (typeof JournalCounterScalarFieldEnum)[keyof typeof JournalCounterScalarFieldEnum]
+
+
+export const PeriodReopenRequestScalarFieldEnum = {
+  id: 'id',
+  zevId: 'zevId',
+  periodId: 'periodId',
+  reason: 'reason',
+  requestedById: 'requestedById',
+  requestedRole: 'requestedRole',
+  requestedAt: 'requestedAt',
+  decidedById: 'decidedById',
+  decision: 'decision',
+  decisionNote: 'decisionNote',
+  decidedAt: 'decidedAt'
+} as const
+
+export type PeriodReopenRequestScalarFieldEnum = (typeof PeriodReopenRequestScalarFieldEnum)[keyof typeof PeriodReopenRequestScalarFieldEnum]
 
 
 export const OnboardingInviteScalarFieldEnum = {

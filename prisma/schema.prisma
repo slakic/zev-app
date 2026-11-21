@@ -171,6 +171,7 @@ model Party {
   // so any number of Party rows with userId = NULL are allowed per Zev — only an actual
   // (userId, zevId) pair must be unique. See Plans/party-per-tenant-plan.md §2.2 point 1.
   @@unique([userId, zevId])
+  journalLines          JournalLine[]
 }
 
 // ---------------------------------------------------------------------------
@@ -265,6 +266,9 @@ model Zev {
   controlAccounts       ZevControlAccount[]
   postingRules          PostingRule[]
   schemaApprovals       PostingSchemaApproval[]
+  journalEntries        JournalEntry[]
+  journalLines          JournalLine[]
+  periodReopenRequests  PeriodReopenRequest[]
   zevAccounts           ZevAccount[]
   fiscalYears           FiscalYear[]
   fiscalPeriods         FiscalPeriod[]
@@ -436,6 +440,7 @@ model Unit {
   updatedAt              DateTime  @updatedAt
 
   @@unique([buildingId, label])
+  journalLines          JournalLine[]
 }
 
 /// Effective-dated ownership. Co-ownership = several stakes on same unit whose shares sum to 100.
@@ -1384,6 +1389,7 @@ model Supplier {
   workOrders WorkOrder[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  journalLines          JournalLine[]
 }
 
 enum ExpenseStatus {
@@ -1515,6 +1521,7 @@ model Project {
   status        String   @default("PLANNED") // PLANNED | ACTIVE | COMPLETED | CANCELLED
   estimatedCost Decimal? @db.Decimal(14, 2)
   createdAt     DateTime @default(now())
+  journalLines          JournalLine[]
 }
 
 // ---------------------------------------------------------------------------
@@ -2005,6 +2012,7 @@ model ZevAccount {
 
   @@unique([chartId, code])
   @@index([zevId])
+  journalLines       JournalLine[]
 }
 
 /// Poslovna godina ZEV-a. U A1 se samo otvara i pregleda; zatvaranje je Faza B.
@@ -2021,6 +2029,7 @@ model FiscalYear {
   createdAt   DateTime       @default(now())
 
   @@unique([zevId, label])
+  journalEntries JournalEntry[]
 }
 
 model FiscalPeriod {
@@ -2038,6 +2047,8 @@ model FiscalPeriod {
 
   @@unique([yearId, label])
   @@index([zevId, startDate])
+  journalEntries JournalEntry[]
+  reopenRequests PeriodReopenRequest[]
 }
 
 // ---------------------------------------------------------------------------
@@ -2064,6 +2075,7 @@ model FundPurpose {
   createdAt       DateTime @default(now())
 
   @@unique([zevId, code])
+  journalLines    JournalLine[]
 }
 
 /// Vrsta zaduženja (K-3): stabilan pojam iznad stavki naknade, na kojem visi pravilo knjiženja.
@@ -2190,6 +2202,115 @@ model PostingSchemaApproval {
   createdAt    DateTime               @default(now())
 
   @@index([zevId, schema])
+}
+
+// ---------------------------------------------------------------------------
+// Faza B1a: nalozi za knjiženje (Plans/kontni-plan-b1-nalozi-plan.md). Proknjižen nalog i njegove
+// stavke se ne mijenjaju (DB okidač); ravnotežu POSTED naloga provjerava i odloženi okidač u bazi.
+// ---------------------------------------------------------------------------
+
+enum JournalStatus {
+  DRAFT
+  POSTED
+}
+
+enum JournalKind {
+  MANUAL   // ručni nalog (bez kontrolnih konta, B1-Q5)
+  OPENING  // nalog početnog stanja (B1b)
+  REVERSAL // storno nalog
+  AUTO     // automatsko knjiženje događaja (B2)
+}
+
+model JournalEntry {
+  id             String        @id @default(cuid())
+  zev            Zev           @relation(fields: [zevId], references: [id])
+  zevId          String
+  year           FiscalYear    @relation(fields: [yearId], references: [id])
+  yearId         String
+  period         FiscalPeriod  @relation(fields: [periodId], references: [id])
+  periodId       String
+  kind           JournalKind
+  /// Dodjeljuje se pri knjiženju iz JournalCounter ("NK-2027-0001"); nacrt nema broj.
+  number         String?
+  documentDate   DateTime
+  postingDate    DateTime
+  description    String
+  status         JournalStatus @default(DRAFT)
+  reversalOf     JournalEntry? @relation("JournalReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
+  reversalOfId   String?       @unique
+  reversedBy     JournalEntry? @relation("JournalReversal")
+  reversalReason String?
+  sourceType     String?
+  sourceId       String?
+  createdById    String
+  postedById     String?
+  postedAt       DateTime?
+  lines          JournalLine[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@unique([zevId, number])
+  @@index([zevId, periodId, status])
+}
+
+model JournalLine {
+  id          String       @id @default(cuid())
+  entry       JournalEntry @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  entryId     String
+  zev         Zev          @relation(fields: [zevId], references: [id])
+  zevId       String
+  order       Int
+  account     ZevAccount   @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  accountId   String
+  debit       Decimal      @default(0) @db.Decimal(14, 2)
+  credit      Decimal      @default(0) @db.Decimal(14, 2)
+  party       Party?       @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  partyId     String?
+  unit        Unit?        @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  unitId      String?
+  supplier    Supplier?    @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  supplierId  String?
+  project     Project?     @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  projectId   String?
+  purpose     FundPurpose? @relation(fields: [purposeId], references: [id], onDelete: Restrict)
+  purposeId   String?
+  description String?
+  /// Samo nalog početnog stanja (B1b): izvor stavke.
+  openingSourceType String?
+  openingSourceId   String?
+
+  @@index([entryId])
+  @@index([zevId, accountId])
+}
+
+/// Brojač naloga po ZEV-u, godini i seriji; red se zaključava pri knjiženju, pa brojevi nemaju duplikata ni rupa.
+model JournalCounter {
+  zevId  String
+  yearId String
+  series String
+  next   Int    @default(1)
+
+  @@id([zevId, yearId, series])
+}
+
+/// Ponovno otvaranje zatvorenog perioda uz dvostruko odobrenje (B1-Q2 (a)): traži jedno lice, odobrava drugo lice
+/// druge uloge (predsjednik ↔ računovođa).
+model PeriodReopenRequest {
+  id            String       @id @default(cuid())
+  zev           Zev          @relation(fields: [zevId], references: [id])
+  zevId         String
+  period        FiscalPeriod @relation(fields: [periodId], references: [id])
+  periodId      String
+  reason        String
+  requestedById String
+  requestedRole Role
+  requestedAt   DateTime     @default(now())
+  decidedById   String?
+  decision      String?      // APPROVED | REJECTED
+  decisionNote  String?
+  decidedAt     DateTime?
+
+  @@index([zevId, periodId])
 }
 
 // ---------------------------------------------------------------------------

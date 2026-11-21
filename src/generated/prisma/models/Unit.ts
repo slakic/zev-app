@@ -351,6 +351,7 @@ export type UnitWhereInput = {
   proposalScopes?: Prisma.ProposalUnitListRelationFilter
   maintenanceIssues?: Prisma.MaintenanceIssueListRelationFilter
   planItemScopes?: Prisma.PlanItemUnitListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }
 
 export type UnitOrderByWithRelationInput = {
@@ -387,6 +388,7 @@ export type UnitOrderByWithRelationInput = {
   proposalScopes?: Prisma.ProposalUnitOrderByRelationAggregateInput
   maintenanceIssues?: Prisma.MaintenanceIssueOrderByRelationAggregateInput
   planItemScopes?: Prisma.PlanItemUnitOrderByRelationAggregateInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
 }
 
 export type UnitWhereUniqueInput = Prisma.AtLeast<{
@@ -427,6 +429,7 @@ export type UnitWhereUniqueInput = Prisma.AtLeast<{
   proposalScopes?: Prisma.ProposalUnitListRelationFilter
   maintenanceIssues?: Prisma.MaintenanceIssueListRelationFilter
   planItemScopes?: Prisma.PlanItemUnitListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }, "id" | "buildingId_label">
 
 export type UnitOrderByWithAggregationInput = {
@@ -507,6 +510,7 @@ export type UnitCreateInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateInput = {
@@ -537,6 +541,7 @@ export type UnitUncheckedCreateInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUpdateInput = {
@@ -567,6 +572,7 @@ export type UnitUpdateInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateInput = {
@@ -597,6 +603,7 @@ export type UnitUncheckedUpdateInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateManyInput = {
@@ -1152,6 +1159,22 @@ export type UnitUpdateOneWithoutMaintenanceIssuesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UnitUpdateToOneWithWhereWithoutMaintenanceIssuesInput, Prisma.UnitUpdateWithoutMaintenanceIssuesInput>, Prisma.UnitUncheckedUpdateWithoutMaintenanceIssuesInput>
 }
 
+export type UnitCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutJournalLinesInput, Prisma.UnitUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.UnitWhereUniqueInput
+}
+
+export type UnitUpdateOneWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.UnitCreateWithoutJournalLinesInput, Prisma.UnitUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.UnitCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.UnitUpsertWithoutJournalLinesInput
+  disconnect?: Prisma.UnitWhereInput | boolean
+  delete?: Prisma.UnitWhereInput | boolean
+  connect?: Prisma.UnitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UnitUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.UnitUpdateWithoutJournalLinesInput>, Prisma.UnitUncheckedUpdateWithoutJournalLinesInput>
+}
+
 export type UnitCreateWithoutInvoiceRecipientInput = {
   id?: string
   type: $Enums.UnitType
@@ -1179,6 +1202,7 @@ export type UnitCreateWithoutInvoiceRecipientInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutInvoiceRecipientInput = {
@@ -1208,6 +1232,7 @@ export type UnitUncheckedCreateWithoutInvoiceRecipientInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutInvoiceRecipientInput = {
@@ -1247,6 +1272,7 @@ export type UnitCreateWithoutCorrespondenceContactInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutCorrespondenceContactInput = {
@@ -1276,6 +1302,7 @@ export type UnitUncheckedCreateWithoutCorrespondenceContactInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutCorrespondenceContactInput = {
@@ -1315,6 +1342,7 @@ export type UnitCreateWithoutVotingRepresentativeInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutVotingRepresentativeInput = {
@@ -1344,6 +1372,7 @@ export type UnitUncheckedCreateWithoutVotingRepresentativeInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutVotingRepresentativeInput = {
@@ -1455,6 +1484,7 @@ export type UnitCreateWithoutZevInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutZevInput = {
@@ -1484,6 +1514,7 @@ export type UnitUncheckedCreateWithoutZevInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutZevInput = {
@@ -1539,6 +1570,7 @@ export type UnitCreateWithoutBuildingInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutBuildingInput = {
@@ -1568,6 +1600,7 @@ export type UnitUncheckedCreateWithoutBuildingInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutBuildingInput = {
@@ -1623,6 +1656,7 @@ export type UnitCreateWithoutEntranceInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutEntranceInput = {
@@ -1652,6 +1686,7 @@ export type UnitUncheckedCreateWithoutEntranceInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutEntranceInput = {
@@ -1707,6 +1742,7 @@ export type UnitCreateWithoutOwnershipStakesInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutOwnershipStakesInput = {
@@ -1736,6 +1772,7 @@ export type UnitUncheckedCreateWithoutOwnershipStakesInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutOwnershipStakesInput = {
@@ -1781,6 +1818,7 @@ export type UnitUpdateWithoutOwnershipStakesInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutOwnershipStakesInput = {
@@ -1810,6 +1848,7 @@ export type UnitUncheckedUpdateWithoutOwnershipStakesInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutOccupanciesInput = {
@@ -1839,6 +1878,7 @@ export type UnitCreateWithoutOccupanciesInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutOccupanciesInput = {
@@ -1868,6 +1908,7 @@ export type UnitUncheckedCreateWithoutOccupanciesInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutOccupanciesInput = {
@@ -1913,6 +1954,7 @@ export type UnitUpdateWithoutOccupanciesInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutOccupanciesInput = {
@@ -1942,6 +1984,7 @@ export type UnitUncheckedUpdateWithoutOccupanciesInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutAllocationMembershipsInput = {
@@ -1971,6 +2014,7 @@ export type UnitCreateWithoutAllocationMembershipsInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutAllocationMembershipsInput = {
@@ -2000,6 +2044,7 @@ export type UnitUncheckedCreateWithoutAllocationMembershipsInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutAllocationMembershipsInput = {
@@ -2045,6 +2090,7 @@ export type UnitUpdateWithoutAllocationMembershipsInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutAllocationMembershipsInput = {
@@ -2074,6 +2120,7 @@ export type UnitUncheckedUpdateWithoutAllocationMembershipsInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutProposalScopesInput = {
@@ -2103,6 +2150,7 @@ export type UnitCreateWithoutProposalScopesInput = {
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutProposalScopesInput = {
@@ -2132,6 +2180,7 @@ export type UnitUncheckedCreateWithoutProposalScopesInput = {
   meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutProposalScopesInput = {
@@ -2177,6 +2226,7 @@ export type UnitUpdateWithoutProposalScopesInput = {
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutProposalScopesInput = {
@@ -2206,6 +2256,7 @@ export type UnitUncheckedUpdateWithoutProposalScopesInput = {
   meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutChargeExceptionsInput = {
@@ -2235,6 +2286,7 @@ export type UnitCreateWithoutChargeExceptionsInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutChargeExceptionsInput = {
@@ -2264,6 +2316,7 @@ export type UnitUncheckedCreateWithoutChargeExceptionsInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutChargeExceptionsInput = {
@@ -2309,6 +2362,7 @@ export type UnitUpdateWithoutChargeExceptionsInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutChargeExceptionsInput = {
@@ -2338,6 +2392,7 @@ export type UnitUncheckedUpdateWithoutChargeExceptionsInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutMeterReadingsInput = {
@@ -2367,6 +2422,7 @@ export type UnitCreateWithoutMeterReadingsInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutMeterReadingsInput = {
@@ -2396,6 +2452,7 @@ export type UnitUncheckedCreateWithoutMeterReadingsInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutMeterReadingsInput = {
@@ -2441,6 +2498,7 @@ export type UnitUpdateWithoutMeterReadingsInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutMeterReadingsInput = {
@@ -2470,6 +2528,7 @@ export type UnitUncheckedUpdateWithoutMeterReadingsInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutInvoicesInput = {
@@ -2499,6 +2558,7 @@ export type UnitCreateWithoutInvoicesInput = {
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutInvoicesInput = {
@@ -2528,6 +2588,7 @@ export type UnitUncheckedCreateWithoutInvoicesInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutInvoicesInput = {
@@ -2573,6 +2634,7 @@ export type UnitUpdateWithoutInvoicesInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutInvoicesInput = {
@@ -2602,6 +2664,7 @@ export type UnitUncheckedUpdateWithoutInvoicesInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutPlanItemScopesInput = {
@@ -2631,6 +2694,7 @@ export type UnitCreateWithoutPlanItemScopesInput = {
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutUnitInput
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutPlanItemScopesInput = {
@@ -2660,6 +2724,7 @@ export type UnitUncheckedCreateWithoutPlanItemScopesInput = {
   meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutUnitInput
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutPlanItemScopesInput = {
@@ -2705,6 +2770,7 @@ export type UnitUpdateWithoutPlanItemScopesInput = {
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutUnitNestedInput
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutPlanItemScopesInput = {
@@ -2734,6 +2800,7 @@ export type UnitUncheckedUpdateWithoutPlanItemScopesInput = {
   meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutUnitNestedInput
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitCreateWithoutMaintenanceIssuesInput = {
@@ -2763,6 +2830,7 @@ export type UnitCreateWithoutMaintenanceIssuesInput = {
   meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutUnitInput
   proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutUnitInput
 }
 
 export type UnitUncheckedCreateWithoutMaintenanceIssuesInput = {
@@ -2792,6 +2860,7 @@ export type UnitUncheckedCreateWithoutMaintenanceIssuesInput = {
   meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutUnitInput
   proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutUnitInput
 }
 
 export type UnitCreateOrConnectWithoutMaintenanceIssuesInput = {
@@ -2837,6 +2906,7 @@ export type UnitUpdateWithoutMaintenanceIssuesInput = {
   meterReadings?: Prisma.MeterReadingUpdateManyWithoutUnitNestedInput
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutMaintenanceIssuesInput = {
@@ -2865,6 +2935,143 @@ export type UnitUncheckedUpdateWithoutMaintenanceIssuesInput = {
   chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutUnitNestedInput
   meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutUnitNestedInput
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
+  planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
+}
+
+export type UnitCreateWithoutJournalLinesInput = {
+  id?: string
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutUnitsInput
+  building: Prisma.BuildingCreateNestedOneWithoutUnitsInput
+  entrance?: Prisma.EntranceCreateNestedOneWithoutUnitsInput
+  invoiceRecipient?: Prisma.PartyCreateNestedOneWithoutInvoiceRecipientForInput
+  correspondenceContact?: Prisma.PartyCreateNestedOneWithoutCorrespondenceForInput
+  votingRepresentative?: Prisma.PartyCreateNestedOneWithoutVotingRepresentativeForInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutUnitInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutUnitInput
+  allocationMemberships?: Prisma.AllocationGroupMemberCreateNestedManyWithoutUnitInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUnitInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideCreateNestedManyWithoutUnitInput
+  meterReadings?: Prisma.MeterReadingCreateNestedManyWithoutUnitInput
+  proposalScopes?: Prisma.ProposalUnitCreateNestedManyWithoutUnitInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutUnitInput
+  planItemScopes?: Prisma.PlanItemUnitCreateNestedManyWithoutUnitInput
+}
+
+export type UnitUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  zevId: string
+  buildingId: string
+  entranceId?: string | null
+  type: $Enums.UnitType
+  label: string
+  floor?: number | null
+  usableArea: runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare: runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: number
+  typeCoefficient?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: boolean
+  note?: string | null
+  invoiceRecipientId?: string | null
+  correspondenceContactId?: string | null
+  votingRepresentativeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutUnitInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutUnitInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUncheckedCreateNestedManyWithoutUnitInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUnitInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedCreateNestedManyWithoutUnitInput
+  meterReadings?: Prisma.MeterReadingUncheckedCreateNestedManyWithoutUnitInput
+  proposalScopes?: Prisma.ProposalUnitUncheckedCreateNestedManyWithoutUnitInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutUnitInput
+  planItemScopes?: Prisma.PlanItemUnitUncheckedCreateNestedManyWithoutUnitInput
+}
+
+export type UnitCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.UnitWhereUniqueInput
+  create: Prisma.XOR<Prisma.UnitCreateWithoutJournalLinesInput, Prisma.UnitUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type UnitUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.UnitUpdateWithoutJournalLinesInput, Prisma.UnitUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.UnitCreateWithoutJournalLinesInput, Prisma.UnitUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.UnitWhereInput
+}
+
+export type UnitUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.UnitWhereInput
+  data: Prisma.XOR<Prisma.UnitUpdateWithoutJournalLinesInput, Prisma.UnitUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type UnitUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutUnitsNestedInput
+  building?: Prisma.BuildingUpdateOneRequiredWithoutUnitsNestedInput
+  entrance?: Prisma.EntranceUpdateOneWithoutUnitsNestedInput
+  invoiceRecipient?: Prisma.PartyUpdateOneWithoutInvoiceRecipientForNestedInput
+  correspondenceContact?: Prisma.PartyUpdateOneWithoutCorrespondenceForNestedInput
+  votingRepresentative?: Prisma.PartyUpdateOneWithoutVotingRepresentativeForNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutUnitNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutUnitNestedInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUpdateManyWithoutUnitNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUnitNestedInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUpdateManyWithoutUnitNestedInput
+  meterReadings?: Prisma.MeterReadingUpdateManyWithoutUnitNestedInput
+  proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
+  planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+}
+
+export type UnitUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  buildingId?: Prisma.StringFieldUpdateOperationsInput | string
+  entranceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumUnitTypeFieldUpdateOperationsInput | $Enums.UnitType
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  floor?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usableArea?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  ownershipShare?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  occupantCount?: Prisma.IntFieldUpdateOperationsInput | number
+  typeCoefficient?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceRecipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  votingRepresentativeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutUnitNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutUnitNestedInput
+  allocationMemberships?: Prisma.AllocationGroupMemberUncheckedUpdateManyWithoutUnitNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUnitNestedInput
+  chargeExceptions?: Prisma.ChargeUnitOverrideUncheckedUpdateManyWithoutUnitNestedInput
+  meterReadings?: Prisma.MeterReadingUncheckedUpdateManyWithoutUnitNestedInput
+  proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
 }
 
@@ -2955,6 +3162,7 @@ export type UnitUpdateWithoutInvoiceRecipientInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutInvoiceRecipientInput = {
@@ -2984,6 +3192,7 @@ export type UnitUncheckedUpdateWithoutInvoiceRecipientInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateManyWithoutInvoiceRecipientInput = {
@@ -3033,6 +3242,7 @@ export type UnitUpdateWithoutCorrespondenceContactInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutCorrespondenceContactInput = {
@@ -3062,6 +3272,7 @@ export type UnitUncheckedUpdateWithoutCorrespondenceContactInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateManyWithoutCorrespondenceContactInput = {
@@ -3111,6 +3322,7 @@ export type UnitUpdateWithoutVotingRepresentativeInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutVotingRepresentativeInput = {
@@ -3140,6 +3352,7 @@ export type UnitUncheckedUpdateWithoutVotingRepresentativeInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateManyWithoutVotingRepresentativeInput = {
@@ -3209,6 +3422,7 @@ export type UnitUpdateWithoutZevInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutZevInput = {
@@ -3238,6 +3452,7 @@ export type UnitUncheckedUpdateWithoutZevInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateManyWithoutZevInput = {
@@ -3307,6 +3522,7 @@ export type UnitUpdateWithoutBuildingInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutBuildingInput = {
@@ -3336,6 +3552,7 @@ export type UnitUncheckedUpdateWithoutBuildingInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateManyWithoutBuildingInput = {
@@ -3405,6 +3622,7 @@ export type UnitUpdateWithoutEntranceInput = {
   proposalScopes?: Prisma.ProposalUnitUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateWithoutEntranceInput = {
@@ -3434,6 +3652,7 @@ export type UnitUncheckedUpdateWithoutEntranceInput = {
   proposalScopes?: Prisma.ProposalUnitUncheckedUpdateManyWithoutUnitNestedInput
   maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutUnitNestedInput
   planItemScopes?: Prisma.PlanItemUnitUncheckedUpdateManyWithoutUnitNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutUnitNestedInput
 }
 
 export type UnitUncheckedUpdateManyWithoutEntranceInput = {
@@ -3471,6 +3690,7 @@ export type UnitCountOutputType = {
   proposalScopes: number
   maintenanceIssues: number
   planItemScopes: number
+  journalLines: number
 }
 
 export type UnitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3483,6 +3703,7 @@ export type UnitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   proposalScopes?: boolean | UnitCountOutputTypeCountProposalScopesArgs
   maintenanceIssues?: boolean | UnitCountOutputTypeCountMaintenanceIssuesArgs
   planItemScopes?: boolean | UnitCountOutputTypeCountPlanItemScopesArgs
+  journalLines?: boolean | UnitCountOutputTypeCountJournalLinesArgs
 }
 
 /**
@@ -3558,6 +3779,13 @@ export type UnitCountOutputTypeCountPlanItemScopesArgs<ExtArgs extends runtime.T
   where?: Prisma.PlanItemUnitWhereInput
 }
 
+/**
+ * UnitCountOutputType without action
+ */
+export type UnitCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
 
 export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3593,6 +3821,7 @@ export type UnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   proposalScopes?: boolean | Prisma.Unit$proposalScopesArgs<ExtArgs>
   maintenanceIssues?: boolean | Prisma.Unit$maintenanceIssuesArgs<ExtArgs>
   planItemScopes?: boolean | Prisma.Unit$planItemScopesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Unit$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.UnitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["unit"]>
 
@@ -3688,6 +3917,7 @@ export type UnitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   proposalScopes?: boolean | Prisma.Unit$proposalScopesArgs<ExtArgs>
   maintenanceIssues?: boolean | Prisma.Unit$maintenanceIssuesArgs<ExtArgs>
   planItemScopes?: boolean | Prisma.Unit$planItemScopesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Unit$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.UnitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UnitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3728,6 +3958,7 @@ export type $UnitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     proposalScopes: Prisma.$ProposalUnitPayload<ExtArgs>[]
     maintenanceIssues: Prisma.$MaintenanceIssuePayload<ExtArgs>[]
     planItemScopes: Prisma.$PlanItemUnitPayload<ExtArgs>[]
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4157,6 +4388,7 @@ export interface Prisma__UnitClient<T, Null = never, ExtArgs extends runtime.Typ
   proposalScopes<T extends Prisma.Unit$proposalScopesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$proposalScopesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProposalUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   maintenanceIssues<T extends Prisma.Unit$maintenanceIssuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$maintenanceIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   planItemScopes<T extends Prisma.Unit$planItemScopesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$planItemScopesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanItemUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalLines<T extends Prisma.Unit$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Unit$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4894,6 +5126,30 @@ export type Unit$planItemScopesArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.PlanItemUnitScalarFieldEnum | Prisma.PlanItemUnitScalarFieldEnum[]
+}
+
+/**
+ * Unit.journalLines
+ */
+export type Unit$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
 }
 
 /**

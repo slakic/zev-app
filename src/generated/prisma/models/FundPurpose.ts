@@ -210,6 +210,7 @@ export type FundPurposeWhereInput = {
   chargeTypes?: Prisma.ChargeTypeListRelationFilter
   controlAccounts?: Prisma.ZevControlAccountListRelationFilter
   postingRules?: Prisma.PostingRuleListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }
 
 export type FundPurposeOrderByWithRelationInput = {
@@ -225,6 +226,7 @@ export type FundPurposeOrderByWithRelationInput = {
   chargeTypes?: Prisma.ChargeTypeOrderByRelationAggregateInput
   controlAccounts?: Prisma.ZevControlAccountOrderByRelationAggregateInput
   postingRules?: Prisma.PostingRuleOrderByRelationAggregateInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
 }
 
 export type FundPurposeWhereUniqueInput = Prisma.AtLeast<{
@@ -244,6 +246,7 @@ export type FundPurposeWhereUniqueInput = Prisma.AtLeast<{
   chargeTypes?: Prisma.ChargeTypeListRelationFilter
   controlAccounts?: Prisma.ZevControlAccountListRelationFilter
   postingRules?: Prisma.PostingRuleListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }, "id" | "zevId_code">
 
 export type FundPurposeOrderByWithAggregationInput = {
@@ -286,6 +289,7 @@ export type FundPurposeCreateInput = {
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutDefaultPurposeInput
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutPurposeInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeUncheckedCreateInput = {
@@ -300,6 +304,7 @@ export type FundPurposeUncheckedCreateInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutDefaultPurposeInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutPurposeInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeUpdateInput = {
@@ -314,6 +319,7 @@ export type FundPurposeUpdateInput = {
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutDefaultPurposeNestedInput
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutPurposeNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeUncheckedUpdateInput = {
@@ -328,6 +334,7 @@ export type FundPurposeUncheckedUpdateInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutDefaultPurposeNestedInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutPurposeNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeCreateManyInput = {
@@ -505,6 +512,22 @@ export type FundPurposeUpdateOneWithoutPostingRulesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.FundPurposeUpdateToOneWithWhereWithoutPostingRulesInput, Prisma.FundPurposeUpdateWithoutPostingRulesInput>, Prisma.FundPurposeUncheckedUpdateWithoutPostingRulesInput>
 }
 
+export type FundPurposeCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.FundPurposeCreateWithoutJournalLinesInput, Prisma.FundPurposeUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.FundPurposeCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.FundPurposeWhereUniqueInput
+}
+
+export type FundPurposeUpdateOneWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.FundPurposeCreateWithoutJournalLinesInput, Prisma.FundPurposeUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.FundPurposeCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.FundPurposeUpsertWithoutJournalLinesInput
+  disconnect?: Prisma.FundPurposeWhereInput | boolean
+  delete?: Prisma.FundPurposeWhereInput | boolean
+  connect?: Prisma.FundPurposeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FundPurposeUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.FundPurposeUpdateWithoutJournalLinesInput>, Prisma.FundPurposeUncheckedUpdateWithoutJournalLinesInput>
+}
+
 export type FundPurposeCreateWithoutZevInput = {
   id?: string
   code: string
@@ -516,6 +539,7 @@ export type FundPurposeCreateWithoutZevInput = {
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutDefaultPurposeInput
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutPurposeInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeUncheckedCreateWithoutZevInput = {
@@ -529,6 +553,7 @@ export type FundPurposeUncheckedCreateWithoutZevInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutDefaultPurposeInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutPurposeInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeCreateOrConnectWithoutZevInput = {
@@ -582,6 +607,7 @@ export type FundPurposeCreateWithoutChargeTypesInput = {
   zev: Prisma.ZevCreateNestedOneWithoutFundPurposesInput
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutPurposeInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeUncheckedCreateWithoutChargeTypesInput = {
@@ -595,6 +621,7 @@ export type FundPurposeUncheckedCreateWithoutChargeTypesInput = {
   createdAt?: Date | string
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutPurposeInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeCreateOrConnectWithoutChargeTypesInput = {
@@ -624,6 +651,7 @@ export type FundPurposeUpdateWithoutChargeTypesInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutFundPurposesNestedInput
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutPurposeNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeUncheckedUpdateWithoutChargeTypesInput = {
@@ -637,6 +665,7 @@ export type FundPurposeUncheckedUpdateWithoutChargeTypesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutPurposeNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeCreateWithoutControlAccountsInput = {
@@ -650,6 +679,7 @@ export type FundPurposeCreateWithoutControlAccountsInput = {
   zev: Prisma.ZevCreateNestedOneWithoutFundPurposesInput
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutDefaultPurposeInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeUncheckedCreateWithoutControlAccountsInput = {
@@ -663,6 +693,7 @@ export type FundPurposeUncheckedCreateWithoutControlAccountsInput = {
   createdAt?: Date | string
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutDefaultPurposeInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeCreateOrConnectWithoutControlAccountsInput = {
@@ -692,6 +723,7 @@ export type FundPurposeUpdateWithoutControlAccountsInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutFundPurposesNestedInput
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutDefaultPurposeNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeUncheckedUpdateWithoutControlAccountsInput = {
@@ -705,6 +737,7 @@ export type FundPurposeUncheckedUpdateWithoutControlAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutDefaultPurposeNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeCreateWithoutPostingRulesInput = {
@@ -718,6 +751,7 @@ export type FundPurposeCreateWithoutPostingRulesInput = {
   zev: Prisma.ZevCreateNestedOneWithoutFundPurposesInput
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutDefaultPurposeInput
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeUncheckedCreateWithoutPostingRulesInput = {
@@ -731,6 +765,7 @@ export type FundPurposeUncheckedCreateWithoutPostingRulesInput = {
   createdAt?: Date | string
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutDefaultPurposeInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutPurposeInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPurposeInput
 }
 
 export type FundPurposeCreateOrConnectWithoutPostingRulesInput = {
@@ -760,6 +795,7 @@ export type FundPurposeUpdateWithoutPostingRulesInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutFundPurposesNestedInput
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutDefaultPurposeNestedInput
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeUncheckedUpdateWithoutPostingRulesInput = {
@@ -773,6 +809,79 @@ export type FundPurposeUncheckedUpdateWithoutPostingRulesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutDefaultPurposeNestedInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPurposeNestedInput
+}
+
+export type FundPurposeCreateWithoutJournalLinesInput = {
+  id?: string
+  code: string
+  name: string
+  isCommonReserve?: boolean
+  decisionRef?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutFundPurposesInput
+  chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutDefaultPurposeInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutPurposeInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutPurposeInput
+}
+
+export type FundPurposeUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  zevId: string
+  code: string
+  name: string
+  isCommonReserve?: boolean
+  decisionRef?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutDefaultPurposeInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutPurposeInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutPurposeInput
+}
+
+export type FundPurposeCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.FundPurposeWhereUniqueInput
+  create: Prisma.XOR<Prisma.FundPurposeCreateWithoutJournalLinesInput, Prisma.FundPurposeUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type FundPurposeUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.FundPurposeUpdateWithoutJournalLinesInput, Prisma.FundPurposeUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.FundPurposeCreateWithoutJournalLinesInput, Prisma.FundPurposeUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.FundPurposeWhereInput
+}
+
+export type FundPurposeUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.FundPurposeWhereInput
+  data: Prisma.XOR<Prisma.FundPurposeUpdateWithoutJournalLinesInput, Prisma.FundPurposeUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type FundPurposeUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isCommonReserve?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutFundPurposesNestedInput
+  chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutDefaultPurposeNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutPurposeNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutPurposeNestedInput
+}
+
+export type FundPurposeUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isCommonReserve?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  decisionRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutDefaultPurposeNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutPurposeNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeCreateManyZevInput = {
@@ -796,6 +905,7 @@ export type FundPurposeUpdateWithoutZevInput = {
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutDefaultPurposeNestedInput
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutPurposeNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeUncheckedUpdateWithoutZevInput = {
@@ -809,6 +919,7 @@ export type FundPurposeUncheckedUpdateWithoutZevInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutDefaultPurposeNestedInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutPurposeNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutPurposeNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPurposeNestedInput
 }
 
 export type FundPurposeUncheckedUpdateManyWithoutZevInput = {
@@ -830,12 +941,14 @@ export type FundPurposeCountOutputType = {
   chargeTypes: number
   controlAccounts: number
   postingRules: number
+  journalLines: number
 }
 
 export type FundPurposeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chargeTypes?: boolean | FundPurposeCountOutputTypeCountChargeTypesArgs
   controlAccounts?: boolean | FundPurposeCountOutputTypeCountControlAccountsArgs
   postingRules?: boolean | FundPurposeCountOutputTypeCountPostingRulesArgs
+  journalLines?: boolean | FundPurposeCountOutputTypeCountJournalLinesArgs
 }
 
 /**
@@ -869,6 +982,13 @@ export type FundPurposeCountOutputTypeCountPostingRulesArgs<ExtArgs extends runt
   where?: Prisma.PostingRuleWhereInput
 }
 
+/**
+ * FundPurposeCountOutputType without action
+ */
+export type FundPurposeCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
 
 export type FundPurposeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -883,6 +1003,7 @@ export type FundPurposeSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   chargeTypes?: boolean | Prisma.FundPurpose$chargeTypesArgs<ExtArgs>
   controlAccounts?: boolean | Prisma.FundPurpose$controlAccountsArgs<ExtArgs>
   postingRules?: boolean | Prisma.FundPurpose$postingRulesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.FundPurpose$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.FundPurposeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["fundPurpose"]>
 
@@ -927,6 +1048,7 @@ export type FundPurposeInclude<ExtArgs extends runtime.Types.Extensions.Internal
   chargeTypes?: boolean | Prisma.FundPurpose$chargeTypesArgs<ExtArgs>
   controlAccounts?: boolean | Prisma.FundPurpose$controlAccountsArgs<ExtArgs>
   postingRules?: boolean | Prisma.FundPurpose$postingRulesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.FundPurpose$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.FundPurposeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FundPurposeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -943,6 +1065,7 @@ export type $FundPurposePayload<ExtArgs extends runtime.Types.Extensions.Interna
     chargeTypes: Prisma.$ChargeTypePayload<ExtArgs>[]
     controlAccounts: Prisma.$ZevControlAccountPayload<ExtArgs>[]
     postingRules: Prisma.$PostingRulePayload<ExtArgs>[]
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1354,6 +1477,7 @@ export interface Prisma__FundPurposeClient<T, Null = never, ExtArgs extends runt
   chargeTypes<T extends Prisma.FundPurpose$chargeTypesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FundPurpose$chargeTypesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChargeTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   controlAccounts<T extends Prisma.FundPurpose$controlAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FundPurpose$controlAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevControlAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   postingRules<T extends Prisma.FundPurpose$postingRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FundPurpose$postingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalLines<T extends Prisma.FundPurpose$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FundPurpose$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1861,6 +1985,30 @@ export type FundPurpose$postingRulesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.PostingRuleScalarFieldEnum | Prisma.PostingRuleScalarFieldEnum[]
+}
+
+/**
+ * FundPurpose.journalLines
+ */
+export type FundPurpose$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
 }
 
 /**

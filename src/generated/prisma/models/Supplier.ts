@@ -250,6 +250,7 @@ export type SupplierWhereInput = {
   expenses?: Prisma.ExpenseListRelationFilter
   offers?: Prisma.ContractorOfferListRelationFilter
   workOrders?: Prisma.WorkOrderListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }
 
 export type SupplierOrderByWithRelationInput = {
@@ -270,6 +271,7 @@ export type SupplierOrderByWithRelationInput = {
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
   offers?: Prisma.ContractorOfferOrderByRelationAggregateInput
   workOrders?: Prisma.WorkOrderOrderByRelationAggregateInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
 }
 
 export type SupplierWhereUniqueInput = Prisma.AtLeast<{
@@ -293,6 +295,7 @@ export type SupplierWhereUniqueInput = Prisma.AtLeast<{
   expenses?: Prisma.ExpenseListRelationFilter
   offers?: Prisma.ContractorOfferListRelationFilter
   workOrders?: Prisma.WorkOrderListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }, "id">
 
 export type SupplierOrderByWithAggregationInput = {
@@ -350,6 +353,7 @@ export type SupplierCreateInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateInput = {
@@ -369,6 +373,7 @@ export type SupplierUncheckedCreateInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUpdateInput = {
@@ -388,6 +393,7 @@ export type SupplierUpdateInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateInput = {
@@ -407,6 +413,7 @@ export type SupplierUncheckedUpdateInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierCreateManyInput = {
@@ -610,6 +617,22 @@ export type SupplierUpdateOneRequiredWithoutWorkOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SupplierUpdateToOneWithWhereWithoutWorkOrdersInput, Prisma.SupplierUpdateWithoutWorkOrdersInput>, Prisma.SupplierUncheckedUpdateWithoutWorkOrdersInput>
 }
 
+export type SupplierCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.SupplierCreateWithoutJournalLinesInput, Prisma.SupplierUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.SupplierWhereUniqueInput
+}
+
+export type SupplierUpdateOneWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.SupplierCreateWithoutJournalLinesInput, Prisma.SupplierUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.SupplierUpsertWithoutJournalLinesInput
+  disconnect?: Prisma.SupplierWhereInput | boolean
+  delete?: Prisma.SupplierWhereInput | boolean
+  connect?: Prisma.SupplierWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SupplierUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.SupplierUpdateWithoutJournalLinesInput>, Prisma.SupplierUncheckedUpdateWithoutJournalLinesInput>
+}
+
 export type SupplierCreateWithoutZevInput = {
   id?: string
   name: string
@@ -626,6 +649,7 @@ export type SupplierCreateWithoutZevInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutZevInput = {
@@ -644,6 +668,7 @@ export type SupplierUncheckedCreateWithoutZevInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierCreateOrConnectWithoutZevInput = {
@@ -707,6 +732,7 @@ export type SupplierCreateWithoutExpensesInput = {
   zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutExpensesInput = {
@@ -725,6 +751,7 @@ export type SupplierUncheckedCreateWithoutExpensesInput = {
   updatedAt?: Date | string
   offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierCreateOrConnectWithoutExpensesInput = {
@@ -759,6 +786,7 @@ export type SupplierUpdateWithoutExpensesInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutExpensesInput = {
@@ -777,6 +805,7 @@ export type SupplierUncheckedUpdateWithoutExpensesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierCreateWithoutOffersInput = {
@@ -795,6 +824,7 @@ export type SupplierCreateWithoutOffersInput = {
   zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutOffersInput = {
@@ -813,6 +843,7 @@ export type SupplierUncheckedCreateWithoutOffersInput = {
   updatedAt?: Date | string
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutSupplierInput
   workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierCreateOrConnectWithoutOffersInput = {
@@ -847,6 +878,7 @@ export type SupplierUpdateWithoutOffersInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutOffersInput = {
@@ -865,6 +897,7 @@ export type SupplierUncheckedUpdateWithoutOffersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierCreateWithoutWorkOrdersInput = {
@@ -883,6 +916,7 @@ export type SupplierCreateWithoutWorkOrdersInput = {
   zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierUncheckedCreateWithoutWorkOrdersInput = {
@@ -901,6 +935,7 @@ export type SupplierUncheckedCreateWithoutWorkOrdersInput = {
   updatedAt?: Date | string
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutSupplierInput
   offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutSupplierInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutSupplierInput
 }
 
 export type SupplierCreateOrConnectWithoutWorkOrdersInput = {
@@ -935,6 +970,7 @@ export type SupplierUpdateWithoutWorkOrdersInput = {
   zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutWorkOrdersInput = {
@@ -953,6 +989,99 @@ export type SupplierUncheckedUpdateWithoutWorkOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutSupplierNestedInput
+}
+
+export type SupplierCreateWithoutJournalLinesInput = {
+  id?: string
+  name: string
+  jib?: string | null
+  address?: string | null
+  iban?: string | null
+  contactName?: string | null
+  email?: string | null
+  phone?: string | null
+  note?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutSuppliersInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutSupplierInput
+  offers?: Prisma.ContractorOfferCreateNestedManyWithoutSupplierInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutSupplierInput
+}
+
+export type SupplierUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  zevId: string
+  name: string
+  jib?: string | null
+  address?: string | null
+  iban?: string | null
+  contactName?: string | null
+  email?: string | null
+  phone?: string | null
+  note?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutSupplierInput
+  offers?: Prisma.ContractorOfferUncheckedCreateNestedManyWithoutSupplierInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutSupplierInput
+}
+
+export type SupplierCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.SupplierWhereUniqueInput
+  create: Prisma.XOR<Prisma.SupplierCreateWithoutJournalLinesInput, Prisma.SupplierUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type SupplierUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.SupplierUpdateWithoutJournalLinesInput, Prisma.SupplierUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.SupplierCreateWithoutJournalLinesInput, Prisma.SupplierUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.SupplierWhereInput
+}
+
+export type SupplierUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.SupplierWhereInput
+  data: Prisma.XOR<Prisma.SupplierUpdateWithoutJournalLinesInput, Prisma.SupplierUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type SupplierUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutSuppliersNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
+  offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
+}
+
+export type SupplierUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
+  offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierCreateManyZevInput = {
@@ -986,6 +1115,7 @@ export type SupplierUpdateWithoutZevInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutZevInput = {
@@ -1004,6 +1134,7 @@ export type SupplierUncheckedUpdateWithoutZevInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutSupplierNestedInput
   offers?: Prisma.ContractorOfferUncheckedUpdateManyWithoutSupplierNestedInput
   workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutSupplierNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutSupplierNestedInput
 }
 
 export type SupplierUncheckedUpdateManyWithoutZevInput = {
@@ -1030,12 +1161,14 @@ export type SupplierCountOutputType = {
   expenses: number
   offers: number
   workOrders: number
+  journalLines: number
 }
 
 export type SupplierCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   expenses?: boolean | SupplierCountOutputTypeCountExpensesArgs
   offers?: boolean | SupplierCountOutputTypeCountOffersArgs
   workOrders?: boolean | SupplierCountOutputTypeCountWorkOrdersArgs
+  journalLines?: boolean | SupplierCountOutputTypeCountJournalLinesArgs
 }
 
 /**
@@ -1069,6 +1202,13 @@ export type SupplierCountOutputTypeCountWorkOrdersArgs<ExtArgs extends runtime.T
   where?: Prisma.WorkOrderWhereInput
 }
 
+/**
+ * SupplierCountOutputType without action
+ */
+export type SupplierCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
 
 export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1088,6 +1228,7 @@ export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   expenses?: boolean | Prisma.Supplier$expensesArgs<ExtArgs>
   offers?: boolean | Prisma.Supplier$offersArgs<ExtArgs>
   workOrders?: boolean | Prisma.Supplier$workOrdersArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Supplier$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.SupplierCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["supplier"]>
 
@@ -1147,6 +1288,7 @@ export type SupplierInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   expenses?: boolean | Prisma.Supplier$expensesArgs<ExtArgs>
   offers?: boolean | Prisma.Supplier$offersArgs<ExtArgs>
   workOrders?: boolean | Prisma.Supplier$workOrdersArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Supplier$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.SupplierCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SupplierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1163,6 +1305,7 @@ export type $SupplierPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     expenses: Prisma.$ExpensePayload<ExtArgs>[]
     offers: Prisma.$ContractorOfferPayload<ExtArgs>[]
     workOrders: Prisma.$WorkOrderPayload<ExtArgs>[]
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1576,6 +1719,7 @@ export interface Prisma__SupplierClient<T, Null = never, ExtArgs extends runtime
   expenses<T extends Prisma.Supplier$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   offers<T extends Prisma.Supplier$offersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$offersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractorOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workOrders<T extends Prisma.Supplier$workOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$workOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalLines<T extends Prisma.Supplier$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2088,6 +2232,30 @@ export type Supplier$workOrdersArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.WorkOrderScalarFieldEnum | Prisma.WorkOrderScalarFieldEnum[]
+}
+
+/**
+ * Supplier.journalLines
+ */
+export type Supplier$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
 }
 
 /**

@@ -218,6 +218,7 @@
       <a class="lvl-3" href="#136-nova-verzija-predloska">13.6 Nova verzija kontnog predloška</a>
       <a class="lvl-3" href="#137-poslovne-godine">13.7 Poslovne godine</a>
       <a class="lvl-3" href="#138-pravila-knjizenja">13.8 Pravila knjiženja</a>
+      <a class="lvl-3" href="#139-nalozi-za-knjizenje">13.9 Nalozi za knjiženje</a>
       <a class="lvl-2" href="#14-podesavanja">14. Podešavanja</a>
       <a class="lvl-3" href="#141-moji-podaci">14.1 Moji podaci</a>
       <a class="lvl-3" href="#142-tab-zev">14.2 Tab „ZEV"</a>
@@ -264,16 +265,16 @@
 <h2 id="1-uvod">1. Uvod</h2>
 <h3 id="11-cemu-sluzi-aplikacija">1.1 Čemu služi aplikacija</h3>
 <p><strong>ZEV upravnik</strong> je aplikacija za vođenje jedne zajednice etažnih vlasnika (ZEV) u Republici Srpskoj, iz dana u dan i kroz cijelu godinu. Na jednom mjestu vodite:</p>
-<ul><li>zgrade, ulaze, stanove, poslovne prostore, garaže i zajedničke dijelove zgrade,</li><li>vlasnike, suvlasnike, stanare, zakupce i punomoćnike,</li><li>organe ZEV: predsjednika, računovođu i upravni odbor,</li><li>sjednice skupštine i upravnog odbora, prijedloge, glasanje (i elektronsko), odluke i zapisnike,</li><li>mjesečne naknade, fakture vlasnicima, uplate i salda,</li><li>troškove i dobavljače,</li><li>godišnji plan održavanja i finansijski plan,</li><li>prijave kvarova, ponude izvođača i radne naloge,</li><li>dokumente (PDF) i izvještaje,</li><li>kontni plan i poslovne godine (poglavlje 13).</li></ul>
+<ul><li>zgrade, ulaze, stanove, poslovne prostore, garaže i zajedničke dijelove zgrade,</li><li>vlasnike, suvlasnike, stanare, zakupce i punomoćnike,</li><li>organe ZEV: predsjednika, računovođu i upravni odbor,</li><li>sjednice skupštine i upravnog odbora, prijedloge, glasanje (i elektronsko), odluke i zapisnike,</li><li>mjesečne naknade, fakture vlasnicima, uplate i salda,</li><li>troškove i dobavljače,</li><li>godišnji plan održavanja i finansijski plan,</li><li>prijave kvarova, ponude izvođača i radne naloge,</li><li>dokumente (PDF) i izvještaje,</li><li>kontni plan, poslovne godine i naloge za knjiženje (poglavlje 13).</li></ul>
 <p>Aplikacija pamti sve bitne radnje. Izdata faktura, predat glas ili evidentirana uplata ne mogu se tiho promijeniti ni obrisati. Greška se ispravlja <strong>novim zapisom</strong> (korekcijom ili stornom) uz obavezan razlog, a originalni zapis ostaje vidljiv.</p>
-<blockquote><p><strong>Napomena:</strong> Aplikacija služi za operativnu evidenciju. Ima kontni plan (poglavlje 13), ali još nije zakonsko knjigovodstvo: nema naloga za knjiženje, glavne knjige ni bilansa. Podatke za eksternog računovođu izvozite iz modula <strong>Izvještaji</strong>.</p></blockquote>
+<blockquote><p><strong>Napomena:</strong> Aplikacija služi za operativnu evidenciju. Ima kontni plan i ručne naloge za knjiženje (poglavlje 13), ali još nije zakonsko knjigovodstvo: fakture, uplate i troškovi se ne knjiže automatski, a glavne knjige i bilansa još nema. Podatke za eksternog računovođu izvozite iz modula <strong>Izvještaji</strong>.</p></blockquote>
 <h3 id="12-uloge">1.2 Uloge</h3>
 <p>Postoje tri uloge. Uloge se dodjeljuju svakom nalogu posebno, a jedna osoba može imati i više uloga.</p>
 <div class="table-wrap"><table>
 <thead><tr><th>Uloga</th><th>Kako se prikazuje</th><th>Šta u praksi radi</th></tr></thead>
 <tbody>
-<tr><td><strong>Predsjednik ZEV</strong></td><td>„Predsjednik ZEV"</td><td>Upravlja svim: unosi zgrade, jedinice i vlasnike, otvara naloge vlasnicima, zakazuje sjednice, otvara i zatvara glasanje, evidentira odluke, vodi održavanje, usvaja planove i objavljuje dokumente vlasnicima. <strong>Knjigovodstvo</strong> samo pregleda.</td></tr>
-<tr><td><strong>Računovođa</strong></td><td>„Računovođa"</td><td>Vodi finansije: stavke naknada, serije faktura, uplate, uvoz bankovnih izvoda, troškove i plaćanja dobavljačima, izvještaje, kontni plan, poslovne godine i pravila knjiženja (<strong>Knjigovodstvo</strong>). Skupštinu, planove i održavanje uglavnom samo pregleda. Može pomagati u vođenju sjednice uživo.</td></tr>
+<tr><td><strong>Predsjednik ZEV</strong></td><td>„Predsjednik ZEV"</td><td>Upravlja svim: unosi zgrade, jedinice i vlasnike, otvara naloge vlasnicima, zakazuje sjednice, otvara i zatvara glasanje, evidentira odluke, vodi održavanje, usvaja planove i objavljuje dokumente vlasnicima. <strong>Knjigovodstvo</strong> pregleda; jedino učestvuje u ponovnom otvaranju zatvorenog perioda.</td></tr>
+<tr><td><strong>Računovođa</strong></td><td>„Računovođa"</td><td>Vodi finansije: stavke naknada, serije faktura, uplate, uvoz bankovnih izvoda, troškove i plaćanja dobavljačima, izvještaje, kontni plan, poslovne godine, pravila knjiženja, naloge za knjiženje i zatvaranje perioda (<strong>Knjigovodstvo</strong>). Skupštinu, planove i održavanje uglavnom samo pregleda. Može pomagati u vođenju sjednice uživo.</td></tr>
 <tr><td><strong>Vlasnik / Član skupštine</strong></td><td>„Član skupštine / vlasnik"</td><td>Vidi svoje fakture, uplate i saldo, glasa elektronski preko ličnog linka, prijavljuje kvarove i prati svoje prijave, čita objavljene odluke i dokumente, mijenja svoje kontakt podatke.</td></tr>
 </tbody></table></div>
 <p>Kada kliknete na krug sa inicijalima u gornjem desnom uglu, ispod imena piše uloga (ili uloge) vašeg naloga.</p>
@@ -891,9 +892,9 @@
 <ul><li><strong>Pregled po zgradama:</strong> prilivi, odlivi i neto po zgradi.</li><li><strong>Pregled po projektima:</strong> prilivi, odlivi i neto po investicionom projektu.</li></ul>
 <hr>
 <h2 id="13-knjigovodstvo">13. Knjigovodstvo</h2>
-<p><strong>Knjigovodstvo</strong> otvarate iz lijevog menija: predsjednik u grupi <em>Uprava</em>, računovođa u grupi <em>Finansije</em>. Računovođa uređuje kontni plan i otvara poslovne godine. Predsjednik sve vidi, ali ne mijenja ništa. Vlasnik ovaj modul ne vidi.</p>
-<blockquote><p><strong>Važno:</strong> Na vrhu stranice stalno piše da ovo još nije zakonsko knjigovodstvo, i to ostaje i kad je kontni plan aktivan. Kontni plan je spisak konta za razvrstavanje poslovnih promjena. Knjiženja (nalozi, glavna knjiga, bruto bilans) u aplikaciji još nema; ne uključuje ga aktivacija plana, nego dolazi u sljedećoj fazi, kad računovođa potvrdi pravila knjiženja. Do tada fakture, uplate i troškovi rade potpuno isto kao ranije.</p></blockquote>
-<p>Modul ima pet tabova: <strong>Kontni plan</strong>, <strong>Poslovne godine</strong>, <strong>Pravila knjiženja</strong>, <strong>Nalozi</strong> i <strong>Izvještaji</strong>. Na posljednja dva piše <strong>„Nije još dostupno”</strong>, uz rečenicu šta će se tu raditi.</p>
+<p><strong>Knjigovodstvo</strong> otvarate iz lijevog menija: predsjednik u grupi <em>Uprava</em>, računovođa u grupi <em>Finansije</em>. Računovođa uređuje kontni plan, otvara poslovne godine, knjiži naloge i zatvara periode. Predsjednik sve vidi; jedino učestvuje u ponovnom otvaranju zatvorenog perioda (13.7). Vlasnik ovaj modul ne vidi.</p>
+<blockquote><p><strong>Važno:</strong> Na vrhu stranice stalno piše da ovo još nije zakonsko knjigovodstvo, i to ostaje i kad je kontni plan aktivan. Računovođa može ručno unositi i knjižiti naloge (13.9) i zatvarati periode, ali fakture, uplate i troškovi se još ne knjiže automatski, a glavne knjige i bruto bilansa još nema. To dolazi u sljedećim fazama, kad računovođa potvrdi pravila knjiženja. Do tada fakture, uplate i troškovi rade potpuno isto kao ranije.</p></blockquote>
+<p>Modul ima pet tabova: <strong>Kontni plan</strong>, <strong>Poslovne godine</strong>, <strong>Pravila knjiženja</strong>, <strong>Nalozi</strong> i <strong>Izvještaji</strong>. Na posljednjem piše <strong>„Nije još dostupno”</strong>, uz rečenicu šta će se tu raditi.</p>
 <h3 id="131-dodjela-kontnog-plana">13.1 Dodjela kontnog plana</h3>
 <p>Dok ZEV nema kontni plan, na tabu <strong>Kontni plan</strong> stoji kartica <strong>Dodijelite kontni plan</strong> (računovođa):</p>
 <ol><li>U polju <strong>Kontni predložak</strong> izaberite predložak. Uz naziv piše verzija, status i broj konta.</li><li>Kliknite <strong>Preuzmi kontni plan</strong>.</li></ol>
@@ -929,7 +930,10 @@
 <h3 id="137-poslovne-godine">13.7 Poslovne godine</h3>
 <p>Tab <strong>Poslovne godine</strong> prikazuje svaku godinu sa njenim periodima (<strong>Period</strong>, <strong>Od</strong>, <strong>Do</strong>, <strong>Status</strong>).</p>
 <ol><li>U kartici <strong>Otvori poslovnu godinu</strong> (računovođa) upišite <strong>Oznaka</strong>, <strong>Prvi dan</strong> i <strong>Posljednji dan</strong>.</li><li>U polju <strong>Periodi</strong> izaberite <strong>Mjesečni</strong> ili <strong>Jedan period za cijelu godinu</strong>.</li><li>Kliknite <strong>Otvori godinu</strong>.</li></ol>
-<p>Poslovne godine se ne smiju preklapati. Zatvaranje perioda dolazi zajedno sa nalozima za knjiženje.</p>
+<p>Poslovne godine se ne smiju preklapati.</p>
+<p><strong>Zatvaranje perioda.</strong> U koloni <strong>Radnje</strong> računovođa klikne <strong>Zatvori period</strong> i potvrdi sa <strong>Da, zatvori</strong>. U zatvoren period se više ništa ne knjiži, ni storno. Period se ne može zatvoriti dok u njemu postoji nacrt naloga: nacrt prvo proknjižite ili obrišite.</p>
+<p><strong>Ponovno otvaranje</strong> traži dvije osobe sa različitim ulogama:</p>
+<ol><li>Predsjednik ili računovođa klikne <strong>Zatraži ponovno otvaranje</strong>, upiše razlog i pošalje zahtjev. U redu perioda piše da zahtjev čeka odluku.</li><li>Druga osoba, sa drugom ulogom (računovođa za zahtjev predsjednika, predsjednik za zahtjev računovođe), klikne <strong>Odobri</strong> ili <strong>Odbij</strong>, uz napomenu po želji.</li><li>Po odobrenju period je ponovo <strong>Otvoren</strong>. Zahtjev i odluka ostaju u revizorskom tragu.</li></ol>
 <h3 id="138-pravila-knjizenja">13.8 Pravila knjiženja</h3>
 <p>Na tabu <strong>Pravila knjiženja</strong> računovođa podešava kako će se poslovne promjene knjižiti kad se uključi knjiženje (sljedeća faza). <strong>Ništa se sada ne knjiži.</strong> Predsjednik sve vidi, ali ne mijenja. Kontni plan mora biti aktivan.</p>
 <ul>
@@ -942,6 +946,14 @@
 <li><strong>Djelimična uplata na fakturu sa više namjena</strong>: pravilo raspodjele kad vlasnik plati samo dio fakture koja ima i održavanje i rezervu, a nije naveo namjenu — <strong>Srazmjerno stavkama fakture</strong> ili <strong>Prvo najstarije dospjele obaveze</strong>. Dok nije izabrano, takav raspored čeka.</li>
 </ul>
 <p>Sve izmjene se bilježe u revizorskom tragu.</p>
+
+<h3 id="139-nalozi-za-knjizenje">13.9 Nalozi za knjiženje</h3>
+<p>Tab <strong>Nalozi</strong> prikazuje sve naloge (<strong>Broj</strong>, <strong>Datum knjiženja</strong>, <strong>Opis</strong>, <strong>Vrsta</strong>, <strong>Iznos</strong>, <strong>Status</strong>), sa filterom po periodu i statusu. Nalog unosi i knjiži računovođa; predsjednik naloge samo pregleda. Potrebni su aktivan kontni plan i otvorena poslovna godina.</p>
+<ol><li>Kliknite <strong>Novi nalog</strong>. Upišite <strong>Datum dokumenta</strong>, <strong>Datum knjiženja</strong> i <strong>Opis</strong>. Datum knjiženja ne smije biti u budućnosti i mora pasti u otvoren period.</li><li>Za svaku stavku izaberite konto i upišite iznos ili u <strong>Duguje</strong> ili u <strong>Potražuje</strong> (nikad u oba). Pod <strong>Analitika i opis stavke</strong> po potrebi izaberite vlasnika, poseban dio, dobavljača, projekat ili namjenu; ako konto traži analitiku, nalog se bez nje ne snima. <strong>Dodaj stavku</strong> dodaje red, <strong>Ukloni</strong> ga briše.</li><li>Ispod tabele stoje zbirovi duguje/potražuje i oznaka <strong>Uravnoteženo</strong> ili <strong>Razlika</strong>.</li><li>Kliknite <strong>Sačuvaj nacrt</strong>. Ako nešto nije u redu, poruka se pojavi iznad tabele, a unesene stavke ostaju.</li></ol>
+<p>U ručnom nalogu se ne mogu birati kontrolna konta (banka, blagajna, potraživanja od vlasnika, avansi, dobavljači) — ona se mijenjaju kroz knjiženje dokumenata, storno i početno stanje.</p>
+<p><strong>Nacrt</strong> nema broj i slobodno se mijenja ili briše (<strong>Obriši nacrt</strong>). <strong>Proknjiži</strong> provjerava da su duguje i potražuje jednaki i da je period otvoren; nalog tada dobija broj (npr. <em>NK-2026-0001</em>) i više se ne mijenja.</p>
+<p><strong>Storno.</strong> Greška u proknjiženom nalogu ispravlja se stornom: na stranici naloga kliknite <strong>Storniraj</strong>, upišite razlog i datum knjiženja storna (u otvorenom periodu). Nastaje novi nalog vrste <strong>Storno</strong>, sa istim stavkama na obrnutim stranama i vezom na original. Nalog se može stornirati samo jednom, a storno se ne stornira. Ispravan nalog zatim unesite kao novi.</p>
+<p>Nalog početnog stanja i automatsko knjiženje faktura, uplata i troškova dolaze u sljedećim verzijama.</p>
 
 <h2 id="14-podesavanja">14. Podešavanja</h2>
 <p><strong>Podešavanja ZEV-a</strong> otvarate iz lijevog menija (grupa <em>Uprava</em>). Vlasnik ih otvara iz menija naloga (krug sa inicijalima) kao <strong>Moji podaci</strong>.</p>
@@ -1205,11 +1217,12 @@
 <p><strong>Lični link i verifikacioni kod:</strong> jednokratni, lični pristup glasanju koji vlasnik dobija e-mailom. Link otvara stranicu za glasanje, a kod potvrđuje identitet.</p>
 <p><strong>MCP:</strong> standardni način da se asistent (na primjer Claude ili ChatGPT) uz vašu dozvolu poveže sa aplikacijom. Ne morate ga razumjeti da biste ga koristili (poglavlje 17).</p>
 <p><strong>Nacrt (novog ZEV-a):</strong> podaci o novom ZEV-u koje klijent unosi u čarobnjaku. Nacrt postaje ZEV tek objavom.</p>
+<p><strong>Nalog za knjiženje:</strong> zapis sa stavkama duguje i potražuje na kontima kontnog plana, čiji su zbirovi jednaki. Nacrt se mijenja; proknjižen nalog dobija broj i više se ne mijenja (poglavlje 13.9).</p>
 <p><strong>Namjena sredstava:</strong> za šta su sredstva prikupljena i smiju se trošiti (npr. redovno održavanje, zajednička rezerva) — poglavlje 13.8.</p>
 <p><strong>Obuhvat:</strong> na šta se nešto odnosi. Može biti cijela ZEV, jedna zgrada, ulaz ili odabrane jedinice.</p>
 <p><strong>Opseg (veze asistenta):</strong> šta tačno asistent smije u okviru jedne veze, na primjer da čita jedan nacrt ili samo da provjeri vezu.</p>
 <p><strong>Poseban dio:</strong> stan, poslovni prostor, garaža ili druga samostalna jedinica u zgradi.</p>
-<p><strong>Poslovna godina:</strong> obračunski period ZEV-a (obično kalendarska godina), podijeljen na mjesečne periode.</p>
+<p><strong>Poslovna godina:</strong> obračunski period ZEV-a (obično kalendarska godina), podijeljen na mjesečne periode. U zatvoren period se ne knjiži; ponovno otvaranje odobravaju dvije osobe sa različitim ulogama (poglavlje 13.7).</p>
 <p><strong>Povezani asistent:</strong> asistent (Claude, ChatGPT…) koji uz vašu dozvolu radi sa vašim nalogom, u okviru izabranog opsega i roka. Vezu možete prekinuti u svakom trenutku.</p>
 <p><strong>Poziv (za novi ZEV):</strong> lični link koji administrator platforme šalje klijentu da otvori nalog i započne čarobnjak. Važi 14 dana.</p>
 <p><strong>Poziv na broj:</strong> oznaka na fakturi koju vlasnik upisuje pri plaćanju, kako bi se uplata lakše povezala sa fakturom.</p>
@@ -1221,7 +1234,7 @@
 <p><strong>Skupština ZEV:</strong> najviši organ zajednice, koji čine svi etažni vlasnici.</p>
 <p><strong>Snimak pravila:</strong> kopija pravila glasanja (kvorum, većina, težina) sačuvana uz prijedlog u trenutku otvaranja glasanja. Kasnije izmjene pravila ne utiču na nju.</p>
 <p><strong>Stavka naknade:</strong> definicija onoga što se naplaćuje vlasnicima i načina na koji se obračunava.</p>
-<p><strong>Storno:</strong> poništavanje zapisa (fakture, uplate, raspoređivanja ili troška) novim zapisom, uz razlog. Originalni zapis ostaje vidljiv.</p>
+<p><strong>Storno:</strong> poništavanje zapisa (fakture, uplate, raspoređivanja, troška ili proknjiženog naloga) novim zapisom, uz razlog. Originalni zapis ostaje vidljiv; storno naloga ima iste stavke na obrnutim stranama.</p>
 <p><strong>Težina glasa:</strong> koliko vrijedi glas jednog vlasnika. Zavisi od pravila: jedan glas po vlasniku, prema vlasničkom udjelu ili prema površini.</p>
 <p><strong>Token:</strong> dug tajni niz znakova koji asistentu služi kao lozinka za vezu. Prikazuje se samo jednom i ne smije se dijeliti.</p>
 <p><strong>Upravni odbor:</strong> kolegijalno tijelo koje bira skupština i koje upravlja zajednicom između sjednica skupštine.</p>

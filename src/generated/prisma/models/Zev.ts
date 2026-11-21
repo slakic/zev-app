@@ -376,6 +376,9 @@ export type ZevWhereInput = {
   controlAccounts?: Prisma.ZevControlAccountListRelationFilter
   postingRules?: Prisma.PostingRuleListRelationFilter
   schemaApprovals?: Prisma.PostingSchemaApprovalListRelationFilter
+  journalEntries?: Prisma.JournalEntryListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
+  periodReopenRequests?: Prisma.PeriodReopenRequestListRelationFilter
   zevAccounts?: Prisma.ZevAccountListRelationFilter
   fiscalYears?: Prisma.FiscalYearListRelationFilter
   fiscalPeriods?: Prisma.FiscalPeriodListRelationFilter
@@ -449,6 +452,9 @@ export type ZevOrderByWithRelationInput = {
   controlAccounts?: Prisma.ZevControlAccountOrderByRelationAggregateInput
   postingRules?: Prisma.PostingRuleOrderByRelationAggregateInput
   schemaApprovals?: Prisma.PostingSchemaApprovalOrderByRelationAggregateInput
+  journalEntries?: Prisma.JournalEntryOrderByRelationAggregateInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestOrderByRelationAggregateInput
   zevAccounts?: Prisma.ZevAccountOrderByRelationAggregateInput
   fiscalYears?: Prisma.FiscalYearOrderByRelationAggregateInput
   fiscalPeriods?: Prisma.FiscalPeriodOrderByRelationAggregateInput
@@ -525,6 +531,9 @@ export type ZevWhereUniqueInput = Prisma.AtLeast<{
   controlAccounts?: Prisma.ZevControlAccountListRelationFilter
   postingRules?: Prisma.PostingRuleListRelationFilter
   schemaApprovals?: Prisma.PostingSchemaApprovalListRelationFilter
+  journalEntries?: Prisma.JournalEntryListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
+  periodReopenRequests?: Prisma.PeriodReopenRequestListRelationFilter
   zevAccounts?: Prisma.ZevAccountListRelationFilter
   fiscalYears?: Prisma.FiscalYearListRelationFilter
   fiscalPeriods?: Prisma.FiscalPeriodListRelationFilter
@@ -650,6 +659,9 @@ export type ZevCreateInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -723,6 +735,9 @@ export type ZevUncheckedCreateInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -796,6 +811,9 @@ export type ZevUpdateInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -869,6 +887,9 @@ export type ZevUncheckedUpdateInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -1760,6 +1781,48 @@ export type ZevUpdateOneRequiredWithoutSchemaApprovalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutSchemaApprovalsInput, Prisma.ZevUpdateWithoutSchemaApprovalsInput>, Prisma.ZevUncheckedUpdateWithoutSchemaApprovalsInput>
 }
 
+export type ZevCreateNestedOneWithoutJournalEntriesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutJournalEntriesInput, Prisma.ZevUncheckedCreateWithoutJournalEntriesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutJournalEntriesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutJournalEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutJournalEntriesInput, Prisma.ZevUncheckedCreateWithoutJournalEntriesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutJournalEntriesInput
+  upsert?: Prisma.ZevUpsertWithoutJournalEntriesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutJournalEntriesInput, Prisma.ZevUpdateWithoutJournalEntriesInput>, Prisma.ZevUncheckedUpdateWithoutJournalEntriesInput>
+}
+
+export type ZevCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutJournalLinesInput, Prisma.ZevUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutJournalLinesInput, Prisma.ZevUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.ZevUpsertWithoutJournalLinesInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.ZevUpdateWithoutJournalLinesInput>, Prisma.ZevUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type ZevCreateNestedOneWithoutPeriodReopenRequestsInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPeriodReopenRequestsInput, Prisma.ZevUncheckedCreateWithoutPeriodReopenRequestsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPeriodReopenRequestsInput
+  connect?: Prisma.ZevWhereUniqueInput
+}
+
+export type ZevUpdateOneRequiredWithoutPeriodReopenRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.ZevCreateWithoutPeriodReopenRequestsInput, Prisma.ZevUncheckedCreateWithoutPeriodReopenRequestsInput>
+  connectOrCreate?: Prisma.ZevCreateOrConnectWithoutPeriodReopenRequestsInput
+  upsert?: Prisma.ZevUpsertWithoutPeriodReopenRequestsInput
+  connect?: Prisma.ZevWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ZevUpdateToOneWithWhereWithoutPeriodReopenRequestsInput, Prisma.ZevUpdateWithoutPeriodReopenRequestsInput>, Prisma.ZevUncheckedUpdateWithoutPeriodReopenRequestsInput>
+}
+
 export type ZevCreateWithoutSessionsInput = {
   id?: string
   legalName: string
@@ -1827,6 +1890,9 @@ export type ZevCreateWithoutSessionsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -1899,6 +1965,9 @@ export type ZevUncheckedCreateWithoutSessionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -1987,6 +2056,9 @@ export type ZevUpdateWithoutSessionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -2059,6 +2131,9 @@ export type ZevUncheckedUpdateWithoutSessionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -2131,6 +2206,9 @@ export type ZevCreateWithoutPartiesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -2203,6 +2281,9 @@ export type ZevUncheckedCreateWithoutPartiesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -2291,6 +2372,9 @@ export type ZevUpdateWithoutPartiesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -2363,6 +2447,9 @@ export type ZevUncheckedUpdateWithoutPartiesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -2435,6 +2522,9 @@ export type ZevCreateWithoutMembershipsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -2507,6 +2597,9 @@ export type ZevUncheckedCreateWithoutMembershipsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -2595,6 +2688,9 @@ export type ZevUpdateWithoutMembershipsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -2667,6 +2763,9 @@ export type ZevUncheckedUpdateWithoutMembershipsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -2739,6 +2838,9 @@ export type ZevCreateWithoutBuildingsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -2811,6 +2913,9 @@ export type ZevUncheckedCreateWithoutBuildingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -2899,6 +3004,9 @@ export type ZevUpdateWithoutBuildingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -2971,6 +3079,9 @@ export type ZevUncheckedUpdateWithoutBuildingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -3043,6 +3154,9 @@ export type ZevCreateWithoutEntrancesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -3115,6 +3229,9 @@ export type ZevUncheckedCreateWithoutEntrancesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -3203,6 +3320,9 @@ export type ZevUpdateWithoutEntrancesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -3275,6 +3395,9 @@ export type ZevUncheckedUpdateWithoutEntrancesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -3347,6 +3470,9 @@ export type ZevCreateWithoutUnitRegisterChangesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -3419,6 +3545,9 @@ export type ZevUncheckedCreateWithoutUnitRegisterChangesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -3507,6 +3636,9 @@ export type ZevUpdateWithoutUnitRegisterChangesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -3579,6 +3711,9 @@ export type ZevUncheckedUpdateWithoutUnitRegisterChangesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -3651,6 +3786,9 @@ export type ZevCreateWithoutUnitsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -3723,6 +3861,9 @@ export type ZevUncheckedCreateWithoutUnitsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -3811,6 +3952,9 @@ export type ZevUpdateWithoutUnitsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -3883,6 +4027,9 @@ export type ZevUncheckedUpdateWithoutUnitsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -3955,6 +4102,9 @@ export type ZevCreateWithoutOwnershipStakesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -4027,6 +4177,9 @@ export type ZevUncheckedCreateWithoutOwnershipStakesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -4115,6 +4268,9 @@ export type ZevUpdateWithoutOwnershipStakesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -4187,6 +4343,9 @@ export type ZevUncheckedUpdateWithoutOwnershipStakesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -4259,6 +4418,9 @@ export type ZevCreateWithoutOccupanciesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -4331,6 +4493,9 @@ export type ZevUncheckedCreateWithoutOccupanciesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -4419,6 +4584,9 @@ export type ZevUpdateWithoutOccupanciesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -4491,6 +4659,9 @@ export type ZevUncheckedUpdateWithoutOccupanciesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -4563,6 +4734,9 @@ export type ZevCreateWithoutProxiesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -4635,6 +4809,9 @@ export type ZevUncheckedCreateWithoutProxiesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -4723,6 +4900,9 @@ export type ZevUpdateWithoutProxiesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -4795,6 +4975,9 @@ export type ZevUncheckedUpdateWithoutProxiesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -4867,6 +5050,9 @@ export type ZevCreateWithoutOfficeTermsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -4939,6 +5125,9 @@ export type ZevUncheckedCreateWithoutOfficeTermsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -5027,6 +5216,9 @@ export type ZevUpdateWithoutOfficeTermsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -5099,6 +5291,9 @@ export type ZevUncheckedUpdateWithoutOfficeTermsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -5171,6 +5366,9 @@ export type ZevCreateWithoutAllocationGroupsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -5243,6 +5441,9 @@ export type ZevUncheckedCreateWithoutAllocationGroupsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -5331,6 +5532,9 @@ export type ZevUpdateWithoutAllocationGroupsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -5403,6 +5607,9 @@ export type ZevUncheckedUpdateWithoutAllocationGroupsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -5475,6 +5682,9 @@ export type ZevCreateWithoutCommonAssetsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -5547,6 +5757,9 @@ export type ZevUncheckedCreateWithoutCommonAssetsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -5635,6 +5848,9 @@ export type ZevUpdateWithoutCommonAssetsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -5707,6 +5923,9 @@ export type ZevUncheckedUpdateWithoutCommonAssetsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -5779,6 +5998,9 @@ export type ZevCreateWithoutMeetingsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -5851,6 +6073,9 @@ export type ZevUncheckedCreateWithoutMeetingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -5939,6 +6164,9 @@ export type ZevUpdateWithoutMeetingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -6011,6 +6239,9 @@ export type ZevUncheckedUpdateWithoutMeetingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -6083,6 +6314,9 @@ export type ZevCreateWithoutMeetingNotesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -6155,6 +6389,9 @@ export type ZevUncheckedCreateWithoutMeetingNotesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -6243,6 +6480,9 @@ export type ZevUpdateWithoutMeetingNotesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -6315,6 +6555,9 @@ export type ZevUncheckedUpdateWithoutMeetingNotesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -6387,6 +6630,9 @@ export type ZevCreateWithoutVotingRulesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -6459,6 +6705,9 @@ export type ZevUncheckedCreateWithoutVotingRulesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -6547,6 +6796,9 @@ export type ZevUpdateWithoutVotingRulesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -6619,6 +6871,9 @@ export type ZevUncheckedUpdateWithoutVotingRulesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -6691,6 +6946,9 @@ export type ZevCreateWithoutProposalsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -6763,6 +7021,9 @@ export type ZevUncheckedCreateWithoutProposalsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -6851,6 +7112,9 @@ export type ZevUpdateWithoutProposalsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -6923,6 +7187,9 @@ export type ZevUncheckedUpdateWithoutProposalsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -6995,6 +7262,9 @@ export type ZevCreateWithoutBallotsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -7067,6 +7337,9 @@ export type ZevUncheckedCreateWithoutBallotsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -7155,6 +7428,9 @@ export type ZevUpdateWithoutBallotsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -7227,6 +7503,9 @@ export type ZevUncheckedUpdateWithoutBallotsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -7299,6 +7578,9 @@ export type ZevCreateWithoutVotesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -7371,6 +7653,9 @@ export type ZevUncheckedCreateWithoutVotesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -7459,6 +7744,9 @@ export type ZevUpdateWithoutVotesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -7531,6 +7819,9 @@ export type ZevUncheckedUpdateWithoutVotesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -7603,6 +7894,9 @@ export type ZevCreateWithoutAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -7675,6 +7969,9 @@ export type ZevUncheckedCreateWithoutAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -7763,6 +8060,9 @@ export type ZevUpdateWithoutAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -7835,6 +8135,9 @@ export type ZevUncheckedUpdateWithoutAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -7907,6 +8210,9 @@ export type ZevCreateWithoutTransactionCategoriesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -7979,6 +8285,9 @@ export type ZevUncheckedCreateWithoutTransactionCategoriesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -8067,6 +8376,9 @@ export type ZevUpdateWithoutTransactionCategoriesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -8139,6 +8451,9 @@ export type ZevUncheckedUpdateWithoutTransactionCategoriesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -8211,6 +8526,9 @@ export type ZevCreateWithoutFinTransactionsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -8283,6 +8601,9 @@ export type ZevUncheckedCreateWithoutFinTransactionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -8371,6 +8692,9 @@ export type ZevUpdateWithoutFinTransactionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -8443,6 +8767,9 @@ export type ZevUncheckedUpdateWithoutFinTransactionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -8515,6 +8842,9 @@ export type ZevCreateWithoutChargeItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -8587,6 +8917,9 @@ export type ZevUncheckedCreateWithoutChargeItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -8675,6 +9008,9 @@ export type ZevUpdateWithoutChargeItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -8747,6 +9083,9 @@ export type ZevUncheckedUpdateWithoutChargeItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -8819,6 +9158,9 @@ export type ZevCreateWithoutInvoiceBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -8891,6 +9233,9 @@ export type ZevUncheckedCreateWithoutInvoiceBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -8979,6 +9324,9 @@ export type ZevUpdateWithoutInvoiceBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -9051,6 +9399,9 @@ export type ZevUncheckedUpdateWithoutInvoiceBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -9123,6 +9474,9 @@ export type ZevCreateWithoutInvoicesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -9195,6 +9549,9 @@ export type ZevUncheckedCreateWithoutInvoicesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -9283,6 +9640,9 @@ export type ZevUpdateWithoutInvoicesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -9355,6 +9715,9 @@ export type ZevUncheckedUpdateWithoutInvoicesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -9427,6 +9790,9 @@ export type ZevCreateWithoutBankImportBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -9499,6 +9865,9 @@ export type ZevUncheckedCreateWithoutBankImportBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -9587,6 +9956,9 @@ export type ZevUpdateWithoutBankImportBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -9659,6 +10031,9 @@ export type ZevUncheckedUpdateWithoutBankImportBatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -9731,6 +10106,9 @@ export type ZevCreateWithoutIncomingBankSmsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -9803,6 +10181,9 @@ export type ZevUncheckedCreateWithoutIncomingBankSmsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -9891,6 +10272,9 @@ export type ZevUpdateWithoutIncomingBankSmsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -9963,6 +10347,9 @@ export type ZevUncheckedUpdateWithoutIncomingBankSmsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -10035,6 +10422,9 @@ export type ZevCreateWithoutBankRecordMatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -10107,6 +10497,9 @@ export type ZevUncheckedCreateWithoutBankRecordMatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -10195,6 +10588,9 @@ export type ZevUpdateWithoutBankRecordMatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -10267,6 +10663,9 @@ export type ZevUncheckedUpdateWithoutBankRecordMatchesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -10339,6 +10738,9 @@ export type ZevCreateWithoutPaymentsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -10411,6 +10813,9 @@ export type ZevUncheckedCreateWithoutPaymentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -10499,6 +10904,9 @@ export type ZevUpdateWithoutPaymentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -10571,6 +10979,9 @@ export type ZevUncheckedUpdateWithoutPaymentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -10643,6 +11054,9 @@ export type ZevCreateWithoutBalanceCorrectionsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -10715,6 +11129,9 @@ export type ZevUncheckedCreateWithoutBalanceCorrectionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -10803,6 +11220,9 @@ export type ZevUpdateWithoutBalanceCorrectionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -10875,6 +11295,9 @@ export type ZevUncheckedUpdateWithoutBalanceCorrectionsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -10947,6 +11370,9 @@ export type ZevCreateWithoutSuppliersInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -11019,6 +11445,9 @@ export type ZevUncheckedCreateWithoutSuppliersInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -11107,6 +11536,9 @@ export type ZevUpdateWithoutSuppliersInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -11179,6 +11611,9 @@ export type ZevUncheckedUpdateWithoutSuppliersInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -11251,6 +11686,9 @@ export type ZevCreateWithoutExpensesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -11323,6 +11761,9 @@ export type ZevUncheckedCreateWithoutExpensesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -11411,6 +11852,9 @@ export type ZevUpdateWithoutExpensesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -11483,6 +11927,9 @@ export type ZevUncheckedUpdateWithoutExpensesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -11555,6 +12002,9 @@ export type ZevCreateWithoutAnnualPlansInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -11627,6 +12077,9 @@ export type ZevUncheckedCreateWithoutAnnualPlansInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -11715,6 +12168,9 @@ export type ZevUpdateWithoutAnnualPlansInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -11787,6 +12243,9 @@ export type ZevUncheckedUpdateWithoutAnnualPlansInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -11859,6 +12318,9 @@ export type ZevCreateWithoutPlanItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -11931,6 +12393,9 @@ export type ZevUncheckedCreateWithoutPlanItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -12019,6 +12484,9 @@ export type ZevUpdateWithoutPlanItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -12091,6 +12559,9 @@ export type ZevUncheckedUpdateWithoutPlanItemsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -12163,6 +12634,9 @@ export type ZevCreateWithoutProjectsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -12235,6 +12709,9 @@ export type ZevUncheckedCreateWithoutProjectsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -12323,6 +12800,9 @@ export type ZevUpdateWithoutProjectsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -12395,6 +12875,9 @@ export type ZevUncheckedUpdateWithoutProjectsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -12467,6 +12950,9 @@ export type ZevCreateWithoutMaintenanceIssuesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -12539,6 +13025,9 @@ export type ZevUncheckedCreateWithoutMaintenanceIssuesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -12627,6 +13116,9 @@ export type ZevUpdateWithoutMaintenanceIssuesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -12699,6 +13191,9 @@ export type ZevUncheckedUpdateWithoutMaintenanceIssuesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -12771,6 +13266,9 @@ export type ZevCreateWithoutWorkOrdersInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -12843,6 +13341,9 @@ export type ZevUncheckedCreateWithoutWorkOrdersInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -12931,6 +13432,9 @@ export type ZevUpdateWithoutWorkOrdersInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -13003,6 +13507,9 @@ export type ZevUncheckedUpdateWithoutWorkOrdersInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -13075,6 +13582,9 @@ export type ZevCreateWithoutDocumentsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -13147,6 +13657,9 @@ export type ZevUncheckedCreateWithoutDocumentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -13235,6 +13748,9 @@ export type ZevUpdateWithoutDocumentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -13307,6 +13823,9 @@ export type ZevUncheckedUpdateWithoutDocumentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -13379,6 +13898,9 @@ export type ZevCreateWithoutAttachmentsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -13451,6 +13973,9 @@ export type ZevUncheckedCreateWithoutAttachmentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -13539,6 +14064,9 @@ export type ZevUpdateWithoutAttachmentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -13611,6 +14139,9 @@ export type ZevUncheckedUpdateWithoutAttachmentsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -13683,6 +14214,9 @@ export type ZevCreateWithoutNotificationMessagesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -13755,6 +14289,9 @@ export type ZevUncheckedCreateWithoutNotificationMessagesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -13843,6 +14380,9 @@ export type ZevUpdateWithoutNotificationMessagesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -13915,6 +14455,9 @@ export type ZevUncheckedUpdateWithoutNotificationMessagesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -13987,6 +14530,9 @@ export type ZevCreateWithoutAuditEventsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -14059,6 +14605,9 @@ export type ZevUncheckedCreateWithoutAuditEventsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -14147,6 +14696,9 @@ export type ZevUpdateWithoutAuditEventsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -14219,6 +14771,9 @@ export type ZevUncheckedUpdateWithoutAuditEventsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -14291,6 +14846,9 @@ export type ZevCreateWithoutSettingsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -14363,6 +14921,9 @@ export type ZevUncheckedCreateWithoutSettingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -14451,6 +15012,9 @@ export type ZevUpdateWithoutSettingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -14523,6 +15087,9 @@ export type ZevUncheckedUpdateWithoutSettingsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -14595,6 +15162,9 @@ export type ZevCreateWithoutZevChartsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -14667,6 +15237,9 @@ export type ZevUncheckedCreateWithoutZevChartsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -14755,6 +15328,9 @@ export type ZevUpdateWithoutZevChartsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -14827,6 +15403,9 @@ export type ZevUncheckedUpdateWithoutZevChartsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -14900,6 +15479,9 @@ export type ZevCreateWithoutZevAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
@@ -14972,6 +15554,9 @@ export type ZevUncheckedCreateWithoutZevAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
@@ -15060,6 +15645,9 @@ export type ZevUpdateWithoutZevAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
@@ -15132,6 +15720,9 @@ export type ZevUncheckedUpdateWithoutZevAccountsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
@@ -15204,6 +15795,9 @@ export type ZevCreateWithoutFiscalYearsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
 }
@@ -15276,6 +15870,9 @@ export type ZevUncheckedCreateWithoutFiscalYearsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
 }
@@ -15364,6 +15961,9 @@ export type ZevUpdateWithoutFiscalYearsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
 }
@@ -15436,6 +16036,9 @@ export type ZevUncheckedUpdateWithoutFiscalYearsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
 }
@@ -15508,6 +16111,9 @@ export type ZevCreateWithoutFiscalPeriodsInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
 }
@@ -15580,6 +16186,9 @@ export type ZevUncheckedCreateWithoutFiscalPeriodsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
 }
@@ -15668,6 +16277,9 @@ export type ZevUpdateWithoutFiscalPeriodsInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
 }
@@ -15740,6 +16352,9 @@ export type ZevUncheckedUpdateWithoutFiscalPeriodsInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
 }
@@ -15811,6 +16426,9 @@ export type ZevCreateWithoutFundPurposesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -15883,6 +16501,9 @@ export type ZevUncheckedCreateWithoutFundPurposesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -15971,6 +16592,9 @@ export type ZevUpdateWithoutFundPurposesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -16043,6 +16667,9 @@ export type ZevUncheckedUpdateWithoutFundPurposesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -16115,6 +16742,9 @@ export type ZevCreateWithoutChargeTypesInput = {
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -16187,6 +16817,9 @@ export type ZevUncheckedCreateWithoutChargeTypesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -16275,6 +16908,9 @@ export type ZevUpdateWithoutChargeTypesInput = {
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -16347,6 +16983,9 @@ export type ZevUncheckedUpdateWithoutChargeTypesInput = {
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -16419,6 +17058,9 @@ export type ZevCreateWithoutControlAccountsInput = {
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -16491,6 +17133,9 @@ export type ZevUncheckedCreateWithoutControlAccountsInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -16579,6 +17224,9 @@ export type ZevUpdateWithoutControlAccountsInput = {
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -16651,6 +17299,9 @@ export type ZevUncheckedUpdateWithoutControlAccountsInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -16723,6 +17374,9 @@ export type ZevCreateWithoutPostingRulesInput = {
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutZevInput
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -16795,6 +17449,9 @@ export type ZevUncheckedCreateWithoutPostingRulesInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutZevInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -16883,6 +17540,9 @@ export type ZevUpdateWithoutPostingRulesInput = {
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutZevNestedInput
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -16955,6 +17615,9 @@ export type ZevUncheckedUpdateWithoutPostingRulesInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutZevNestedInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -17027,6 +17690,9 @@ export type ZevCreateWithoutSchemaApprovalsInput = {
   chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutZevInput
   controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
@@ -17099,6 +17765,9 @@ export type ZevUncheckedCreateWithoutSchemaApprovalsInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutZevInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
   postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
   zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
   fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
@@ -17187,6 +17856,9 @@ export type ZevUpdateWithoutSchemaApprovalsInput = {
   chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutZevNestedInput
   controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
@@ -17259,6 +17931,957 @@ export type ZevUncheckedUpdateWithoutSchemaApprovalsInput = {
   chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutZevNestedInput
   controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
   postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutJournalEntriesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  fundPurposes?: Prisma.FundPurposeCreateNestedManyWithoutZevInput
+  chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutZevInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutJournalEntriesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  fundPurposes?: Prisma.FundPurposeUncheckedCreateNestedManyWithoutZevInput
+  chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutZevInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutJournalEntriesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutJournalEntriesInput, Prisma.ZevUncheckedCreateWithoutJournalEntriesInput>
+}
+
+export type ZevUpsertWithoutJournalEntriesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutJournalEntriesInput, Prisma.ZevUncheckedUpdateWithoutJournalEntriesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutJournalEntriesInput, Prisma.ZevUncheckedCreateWithoutJournalEntriesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutJournalEntriesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutJournalEntriesInput, Prisma.ZevUncheckedUpdateWithoutJournalEntriesInput>
+}
+
+export type ZevUpdateWithoutJournalEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  fundPurposes?: Prisma.FundPurposeUpdateManyWithoutZevNestedInput
+  chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutZevNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutJournalEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  fundPurposes?: Prisma.FundPurposeUncheckedUpdateManyWithoutZevNestedInput
+  chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutZevNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutJournalLinesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  fundPurposes?: Prisma.FundPurposeCreateNestedManyWithoutZevInput
+  chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutZevInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  fundPurposes?: Prisma.FundPurposeUncheckedCreateNestedManyWithoutZevInput
+  chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutZevInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutJournalLinesInput, Prisma.ZevUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type ZevUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutJournalLinesInput, Prisma.ZevUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutJournalLinesInput, Prisma.ZevUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutJournalLinesInput, Prisma.ZevUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type ZevUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  fundPurposes?: Prisma.FundPurposeUpdateManyWithoutZevNestedInput
+  chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutZevNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  fundPurposes?: Prisma.FundPurposeUncheckedUpdateManyWithoutZevNestedInput
+  chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutZevNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  periodReopenRequests?: Prisma.PeriodReopenRequestUncheckedUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
+}
+
+export type ZevCreateWithoutPeriodReopenRequestsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartCreateNestedManyWithoutZevInput
+  fundPurposes?: Prisma.FundPurposeCreateNestedManyWithoutZevInput
+  chargeTypes?: Prisma.ChargeTypeCreateNestedManyWithoutZevInput
+  controlAccounts?: Prisma.ZevControlAccountCreateNestedManyWithoutZevInput
+  postingRules?: Prisma.PostingRuleCreateNestedManyWithoutZevInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutZevInput
+}
+
+export type ZevUncheckedCreateWithoutPeriodReopenRequestsInput = {
+  id?: string
+  legalName: string
+  shortName?: string | null
+  registrationNumber?: string | null
+  jib?: string | null
+  registeredAddress?: string | null
+  city?: string | null
+  municipality?: string | null
+  foundingDate?: Date | string | null
+  registrationDate?: Date | string | null
+  note?: string | null
+  tier?: $Enums.ZevTier
+  active?: boolean
+  isDemo?: boolean
+  unitRegisterStatus?: $Enums.UnitRegisterStatus
+  unitRegisterVersion?: number
+  unitRegisterEstablishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedCreateNestedManyWithoutZevInput
+  buildings?: Prisma.BuildingUncheckedCreateNestedManyWithoutZevInput
+  accounts?: Prisma.MoneyAccountUncheckedCreateNestedManyWithoutZevInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutZevInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutActiveZevInput
+  parties?: Prisma.PartyUncheckedCreateNestedManyWithoutZevInput
+  entrances?: Prisma.EntranceUncheckedCreateNestedManyWithoutZevInput
+  units?: Prisma.UnitUncheckedCreateNestedManyWithoutZevInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutZevInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutZevInput
+  proxies?: Prisma.ProxyUncheckedCreateNestedManyWithoutZevInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutZevInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedCreateNestedManyWithoutZevInput
+  commonAssets?: Prisma.CommonAssetUncheckedCreateNestedManyWithoutZevInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutZevInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedCreateNestedManyWithoutZevInput
+  ballots?: Prisma.BallotUncheckedCreateNestedManyWithoutZevInput
+  votingRules?: Prisma.VotingRuleUncheckedCreateNestedManyWithoutZevInput
+  proposals?: Prisma.ProposalUncheckedCreateNestedManyWithoutZevInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutZevInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedCreateNestedManyWithoutZevInput
+  finTransactions?: Prisma.FinTransactionUncheckedCreateNestedManyWithoutZevInput
+  chargeItems?: Prisma.ChargeItemUncheckedCreateNestedManyWithoutZevInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedCreateNestedManyWithoutZevInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutZevInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedCreateNestedManyWithoutZevInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedCreateNestedManyWithoutZevInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedCreateNestedManyWithoutZevInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutZevInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutZevInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutZevInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutZevInput
+  annualPlans?: Prisma.AnnualPlanUncheckedCreateNestedManyWithoutZevInput
+  planItems?: Prisma.PlanItemUncheckedCreateNestedManyWithoutZevInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutZevInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutZevInput
+  workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutZevInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutZevInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutZevInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutZevInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutZevInput
+  settings?: Prisma.SettingUncheckedCreateNestedManyWithoutZevInput
+  zevCharts?: Prisma.ZevChartUncheckedCreateNestedManyWithoutZevInput
+  fundPurposes?: Prisma.FundPurposeUncheckedCreateNestedManyWithoutZevInput
+  chargeTypes?: Prisma.ChargeTypeUncheckedCreateNestedManyWithoutZevInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedCreateNestedManyWithoutZevInput
+  postingRules?: Prisma.PostingRuleUncheckedCreateNestedManyWithoutZevInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedCreateNestedManyWithoutZevInput
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutZevInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutZevInput
+  zevAccounts?: Prisma.ZevAccountUncheckedCreateNestedManyWithoutZevInput
+  fiscalYears?: Prisma.FiscalYearUncheckedCreateNestedManyWithoutZevInput
+  fiscalPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutZevInput
+}
+
+export type ZevCreateOrConnectWithoutPeriodReopenRequestsInput = {
+  where: Prisma.ZevWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPeriodReopenRequestsInput, Prisma.ZevUncheckedCreateWithoutPeriodReopenRequestsInput>
+}
+
+export type ZevUpsertWithoutPeriodReopenRequestsInput = {
+  update: Prisma.XOR<Prisma.ZevUpdateWithoutPeriodReopenRequestsInput, Prisma.ZevUncheckedUpdateWithoutPeriodReopenRequestsInput>
+  create: Prisma.XOR<Prisma.ZevCreateWithoutPeriodReopenRequestsInput, Prisma.ZevUncheckedCreateWithoutPeriodReopenRequestsInput>
+  where?: Prisma.ZevWhereInput
+}
+
+export type ZevUpdateToOneWithWhereWithoutPeriodReopenRequestsInput = {
+  where?: Prisma.ZevWhereInput
+  data: Prisma.XOR<Prisma.ZevUpdateWithoutPeriodReopenRequestsInput, Prisma.ZevUncheckedUpdateWithoutPeriodReopenRequestsInput>
+}
+
+export type ZevUpdateWithoutPeriodReopenRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUpdateManyWithoutZevNestedInput
+  fundPurposes?: Prisma.FundPurposeUpdateManyWithoutZevNestedInput
+  chargeTypes?: Prisma.ChargeTypeUpdateManyWithoutZevNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUpdateManyWithoutZevNestedInput
+  postingRules?: Prisma.PostingRuleUpdateManyWithoutZevNestedInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutZevNestedInput
+  zevAccounts?: Prisma.ZevAccountUpdateManyWithoutZevNestedInput
+  fiscalYears?: Prisma.FiscalYearUpdateManyWithoutZevNestedInput
+  fiscalPeriods?: Prisma.FiscalPeriodUpdateManyWithoutZevNestedInput
+}
+
+export type ZevUncheckedUpdateWithoutPeriodReopenRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jib?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registeredAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tier?: Prisma.EnumZevTierFieldUpdateOperationsInput | $Enums.ZevTier
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  unitRegisterStatus?: Prisma.EnumUnitRegisterStatusFieldUpdateOperationsInput | $Enums.UnitRegisterStatus
+  unitRegisterVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  unitRegisterEstablishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  unitRegisterChanges?: Prisma.UnitRegisterChangeUncheckedUpdateManyWithoutZevNestedInput
+  buildings?: Prisma.BuildingUncheckedUpdateManyWithoutZevNestedInput
+  accounts?: Prisma.MoneyAccountUncheckedUpdateManyWithoutZevNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutZevNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutActiveZevNestedInput
+  parties?: Prisma.PartyUncheckedUpdateManyWithoutZevNestedInput
+  entrances?: Prisma.EntranceUncheckedUpdateManyWithoutZevNestedInput
+  units?: Prisma.UnitUncheckedUpdateManyWithoutZevNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutZevNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutZevNestedInput
+  proxies?: Prisma.ProxyUncheckedUpdateManyWithoutZevNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutZevNestedInput
+  allocationGroups?: Prisma.AllocationGroupUncheckedUpdateManyWithoutZevNestedInput
+  commonAssets?: Prisma.CommonAssetUncheckedUpdateManyWithoutZevNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutZevNestedInput
+  meetingNotes?: Prisma.MeetingNoteUncheckedUpdateManyWithoutZevNestedInput
+  ballots?: Prisma.BallotUncheckedUpdateManyWithoutZevNestedInput
+  votingRules?: Prisma.VotingRuleUncheckedUpdateManyWithoutZevNestedInput
+  proposals?: Prisma.ProposalUncheckedUpdateManyWithoutZevNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutZevNestedInput
+  transactionCategories?: Prisma.TransactionCategoryUncheckedUpdateManyWithoutZevNestedInput
+  finTransactions?: Prisma.FinTransactionUncheckedUpdateManyWithoutZevNestedInput
+  chargeItems?: Prisma.ChargeItemUncheckedUpdateManyWithoutZevNestedInput
+  invoiceBatches?: Prisma.InvoiceBatchUncheckedUpdateManyWithoutZevNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutZevNestedInput
+  bankImportBatches?: Prisma.BankImportBatchUncheckedUpdateManyWithoutZevNestedInput
+  incomingBankSms?: Prisma.IncomingBankSmsUncheckedUpdateManyWithoutZevNestedInput
+  bankRecordMatches?: Prisma.BankRecordMatchUncheckedUpdateManyWithoutZevNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutZevNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutZevNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutZevNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutZevNestedInput
+  annualPlans?: Prisma.AnnualPlanUncheckedUpdateManyWithoutZevNestedInput
+  planItems?: Prisma.PlanItemUncheckedUpdateManyWithoutZevNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutZevNestedInput
+  maintenanceIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutZevNestedInput
+  workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutZevNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutZevNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutZevNestedInput
+  notificationMessages?: Prisma.NotificationMessageUncheckedUpdateManyWithoutZevNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutZevNestedInput
+  settings?: Prisma.SettingUncheckedUpdateManyWithoutZevNestedInput
+  zevCharts?: Prisma.ZevChartUncheckedUpdateManyWithoutZevNestedInput
+  fundPurposes?: Prisma.FundPurposeUncheckedUpdateManyWithoutZevNestedInput
+  chargeTypes?: Prisma.ChargeTypeUncheckedUpdateManyWithoutZevNestedInput
+  controlAccounts?: Prisma.ZevControlAccountUncheckedUpdateManyWithoutZevNestedInput
+  postingRules?: Prisma.PostingRuleUncheckedUpdateManyWithoutZevNestedInput
+  schemaApprovals?: Prisma.PostingSchemaApprovalUncheckedUpdateManyWithoutZevNestedInput
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutZevNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutZevNestedInput
   zevAccounts?: Prisma.ZevAccountUncheckedUpdateManyWithoutZevNestedInput
   fiscalYears?: Prisma.FiscalYearUncheckedUpdateManyWithoutZevNestedInput
   fiscalPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutZevNestedInput
@@ -17318,6 +18941,9 @@ export type ZevCountOutputType = {
   controlAccounts: number
   postingRules: number
   schemaApprovals: number
+  journalEntries: number
+  journalLines: number
+  periodReopenRequests: number
   zevAccounts: number
   fiscalYears: number
   fiscalPeriods: number
@@ -17372,6 +18998,9 @@ export type ZevCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.In
   controlAccounts?: boolean | ZevCountOutputTypeCountControlAccountsArgs
   postingRules?: boolean | ZevCountOutputTypeCountPostingRulesArgs
   schemaApprovals?: boolean | ZevCountOutputTypeCountSchemaApprovalsArgs
+  journalEntries?: boolean | ZevCountOutputTypeCountJournalEntriesArgs
+  journalLines?: boolean | ZevCountOutputTypeCountJournalLinesArgs
+  periodReopenRequests?: boolean | ZevCountOutputTypeCountPeriodReopenRequestsArgs
   zevAccounts?: boolean | ZevCountOutputTypeCountZevAccountsArgs
   fiscalYears?: boolean | ZevCountOutputTypeCountFiscalYearsArgs
   fiscalPeriods?: boolean | ZevCountOutputTypeCountFiscalPeriodsArgs
@@ -17726,6 +19355,27 @@ export type ZevCountOutputTypeCountSchemaApprovalsArgs<ExtArgs extends runtime.T
 /**
  * ZevCountOutputType without action
  */
+export type ZevCountOutputTypeCountJournalEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalEntryWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
+export type ZevCountOutputTypeCountPeriodReopenRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PeriodReopenRequestWhereInput
+}
+
+/**
+ * ZevCountOutputType without action
+ */
 export type ZevCountOutputTypeCountZevAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ZevAccountWhereInput
 }
@@ -17813,6 +19463,9 @@ export type ZevSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   controlAccounts?: boolean | Prisma.Zev$controlAccountsArgs<ExtArgs>
   postingRules?: boolean | Prisma.Zev$postingRulesArgs<ExtArgs>
   schemaApprovals?: boolean | Prisma.Zev$schemaApprovalsArgs<ExtArgs>
+  journalEntries?: boolean | Prisma.Zev$journalEntriesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Zev$journalLinesArgs<ExtArgs>
+  periodReopenRequests?: boolean | Prisma.Zev$periodReopenRequestsArgs<ExtArgs>
   zevAccounts?: boolean | Prisma.Zev$zevAccountsArgs<ExtArgs>
   fiscalYears?: boolean | Prisma.Zev$fiscalYearsArgs<ExtArgs>
   fiscalPeriods?: boolean | Prisma.Zev$fiscalPeriodsArgs<ExtArgs>
@@ -17935,6 +19588,9 @@ export type ZevInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   controlAccounts?: boolean | Prisma.Zev$controlAccountsArgs<ExtArgs>
   postingRules?: boolean | Prisma.Zev$postingRulesArgs<ExtArgs>
   schemaApprovals?: boolean | Prisma.Zev$schemaApprovalsArgs<ExtArgs>
+  journalEntries?: boolean | Prisma.Zev$journalEntriesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Zev$journalLinesArgs<ExtArgs>
+  periodReopenRequests?: boolean | Prisma.Zev$periodReopenRequestsArgs<ExtArgs>
   zevAccounts?: boolean | Prisma.Zev$zevAccountsArgs<ExtArgs>
   fiscalYears?: boolean | Prisma.Zev$fiscalYearsArgs<ExtArgs>
   fiscalPeriods?: boolean | Prisma.Zev$fiscalPeriodsArgs<ExtArgs>
@@ -17994,6 +19650,9 @@ export type $ZevPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     controlAccounts: Prisma.$ZevControlAccountPayload<ExtArgs>[]
     postingRules: Prisma.$PostingRulePayload<ExtArgs>[]
     schemaApprovals: Prisma.$PostingSchemaApprovalPayload<ExtArgs>[]
+    journalEntries: Prisma.$JournalEntryPayload<ExtArgs>[]
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
+    periodReopenRequests: Prisma.$PeriodReopenRequestPayload<ExtArgs>[]
     zevAccounts: Prisma.$ZevAccountPayload<ExtArgs>[]
     fiscalYears: Prisma.$FiscalYearPayload<ExtArgs>[]
     fiscalPeriods: Prisma.$FiscalPeriodPayload<ExtArgs>[]
@@ -18475,6 +20134,9 @@ export interface Prisma__ZevClient<T, Null = never, ExtArgs extends runtime.Type
   controlAccounts<T extends Prisma.Zev$controlAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$controlAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevControlAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   postingRules<T extends Prisma.Zev$postingRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$postingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostingRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   schemaApprovals<T extends Prisma.Zev$schemaApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$schemaApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostingSchemaApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalEntries<T extends Prisma.Zev$journalEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$journalEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalLines<T extends Prisma.Zev$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  periodReopenRequests<T extends Prisma.Zev$periodReopenRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$periodReopenRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PeriodReopenRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   zevAccounts<T extends Prisma.Zev$zevAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$zevAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZevAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fiscalYears<T extends Prisma.Zev$fiscalYearsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$fiscalYearsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FiscalYearPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fiscalPeriods<T extends Prisma.Zev$fiscalPeriodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zev$fiscalPeriodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FiscalPeriodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20068,6 +21730,78 @@ export type Zev$schemaApprovalsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.PostingSchemaApprovalScalarFieldEnum | Prisma.PostingSchemaApprovalScalarFieldEnum[]
+}
+
+/**
+ * Zev.journalEntries
+ */
+export type Zev$journalEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalEntry
+   */
+  select?: Prisma.JournalEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalEntry
+   */
+  omit?: Prisma.JournalEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalEntryInclude<ExtArgs> | null
+  where?: Prisma.JournalEntryWhereInput
+  orderBy?: Prisma.JournalEntryOrderByWithRelationInput | Prisma.JournalEntryOrderByWithRelationInput[]
+  cursor?: Prisma.JournalEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalEntryScalarFieldEnum | Prisma.JournalEntryScalarFieldEnum[]
+}
+
+/**
+ * Zev.journalLines
+ */
+export type Zev$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
+}
+
+/**
+ * Zev.periodReopenRequests
+ */
+export type Zev$periodReopenRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PeriodReopenRequest
+   */
+  select?: Prisma.PeriodReopenRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PeriodReopenRequest
+   */
+  omit?: Prisma.PeriodReopenRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PeriodReopenRequestInclude<ExtArgs> | null
+  where?: Prisma.PeriodReopenRequestWhereInput
+  orderBy?: Prisma.PeriodReopenRequestOrderByWithRelationInput | Prisma.PeriodReopenRequestOrderByWithRelationInput[]
+  cursor?: Prisma.PeriodReopenRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PeriodReopenRequestScalarFieldEnum | Prisma.PeriodReopenRequestScalarFieldEnum[]
 }
 
 /**

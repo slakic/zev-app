@@ -43,6 +43,28 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.6.0] - 2026-11-21
+
+Kontni plan, **Faza B1a — nalozi za knjiženje, storno i periodi** (`Plans/kontni-plan-b1-nalozi-plan.md`). Tab „Nalozi” u Knjigovodstvu je sada aktivan. Fakture, uplate i troškovi se **još ne knjiže automatski**; nalog početnog stanja (B1b) slijedi.
+
+**Migracija: da — `20261121150000_journal_entries` (tabele `JournalEntry`, `JournalLine`, `JournalCounter`, `PeriodReopenRequest`, enumi `JournalStatus` i `JournalKind`; okidači: proknjižen nalog i njegove stavke se ne mijenjaju, nalog mora biti uravnotežen pri knjiženju, stavka ima iznos na tačno jednoj strani); samo dodavanje. Primijeniti prije deploya.**
+
+### Dodato
+
+- **Ručni nalog za knjiženje:** zaglavlje (datum dokumenta, datum knjiženja, opis) i promjenljiv broj stavki duguje/potražuje, sa analitikom (vlasnik, poseban dio, dobavljač, projekat, namjena) i zbirovima uživo. Nacrt se mijenja i briše; greška pri snimanju ne briše unesene stavke.
+- **Kontrole:** aktivan kontni plan, samo knjižna i aktivna konta, obavezna analitika po kontu, analitika iz istog ZEV-a, bez kontrolnih konta u ručnom nalogu (B1-Q5), datum knjiženja ne u budućnosti (B1-Q7) i u otvorenom periodu.
+- **Knjiženje:** provjera ravnoteže, broj po godini i seriji (`NK-2026-0001`); proknjižen nalog je nepromjenljiv i na nivou baze.
+- **Storno:** novi nalog vrste „Storno” sa obrnutim stranama i vezom na original, uz razlog i datum u otvorenom periodu; jedan storno po nalogu, storno se ne stornira.
+- **Zatvaranje perioda** (računovođa; ne dok u periodu ima nacrta, B1-Q6) i **ponovno otvaranje uz dvostruko odobrenje** — zahtjev i odluka od dvije osobe sa različitim ulogama (B1-Q2).
+- Nove mogućnosti `journal.prepare`, `journal.post`, `journal.reverse`, `period.close` (računovođa) i `period.reopen` (predsjednik i računovođa); sve radnje u revizorskom tragu.
+- Testovi `tests/journal.test.ts`.
+
+### Izmijenjeno
+
+- Upozorenje na vrhu Knjigovodstva: ručni nalozi postoje, automatsko knjiženje, glavna knjiga i bruto bilans još ne.
+
+Uputstvo: novo 13.9 „Nalozi za knjiženje”, zatvaranje i ponovno otvaranje perioda u 13.7, uvod (napomena i poglavlje 13), tabela uloga i rječnik (nalog za knjiženje, storno, poslovna godina).
+
 ## [3.5.0] - 2026-11-21
 
 Kontni plan, **Faza A2 — podešavanje knjiženja** (`Plans/kontni-plan-i-knjizenje-plan.md` §3.5–3.6, §11). Tab „Pravila knjiženja” u Knjigovodstvu je sada aktivan. **Ništa se ne knjiži** — ovo je podešavanje koje će koristiti knjiženje u sljedećoj fazi.

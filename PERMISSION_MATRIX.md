@@ -58,6 +58,10 @@ Sva prava se provjeravaju u servisnom sloju (`src/server/services/*` + `src/serv
 | Kontrolna konta, nacrti pravila knjiženja, pravilo raspodjele djelimične uplate (`rules.edit`) | pregled | ✔ | – |
 | Potvrda pravila knjiženja, uz ime stručnog lica (`rules.confirm`) | – | ✔ | – |
 | Evidencija i opoziv stručne potvrde šeme pod kapijom (`schema.approve`) | – | ✔ | – |
+| Nacrt ručnog naloga — unos, izmjena, brisanje (`journal.prepare`) | pregled | ✔ | – |
+| Knjiženje naloga (`journal.post`) i storno (`journal.reverse`) | pregled | ✔ | – |
+| Zatvaranje perioda (`period.close`) | – | ✔ | – |
+| Zahtjev i odluka o ponovnom otvaranju perioda — dvije osobe, različite uloge (`period.reopen`) | ✔ | ✔ | – |
 | Kontni predlošci (kontni okviri) — izrada, uvoz, pojedinačna konta u nacrtu, stručna provjera, verzije | samo super admin (platforma) | | |
 | **Sistem** |
 | Izvještaji + CSV izvoz | ✔ | ✔ | – |

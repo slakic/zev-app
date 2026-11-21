@@ -335,6 +335,7 @@ export type PartyWhereInput = {
   viberSubscriber?: Prisma.XOR<Prisma.ViberSubscriberNullableScalarRelationFilter, Prisma.ViberSubscriberWhereInput> | null
   attendances?: Prisma.AttendanceListRelationFilter
   balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }
 
 export type PartyOrderByWithRelationInput = {
@@ -384,6 +385,7 @@ export type PartyOrderByWithRelationInput = {
   viberSubscriber?: Prisma.ViberSubscriberOrderByWithRelationInput
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
   balanceCorrections?: Prisma.BalanceCorrectionOrderByRelationAggregateInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
 }
 
 export type PartyWhereUniqueInput = Prisma.AtLeast<{
@@ -437,6 +439,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   viberSubscriber?: Prisma.XOR<Prisma.ViberSubscriberNullableScalarRelationFilter, Prisma.ViberSubscriberWhereInput> | null
   attendances?: Prisma.AttendanceListRelationFilter
   balanceCorrections?: Prisma.BalanceCorrectionListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
 }, "id" | "userId_zevId">
 
 export type PartyOrderByWithAggregationInput = {
@@ -538,6 +541,7 @@ export type PartyCreateInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateInput = {
@@ -585,6 +589,7 @@ export type PartyUncheckedCreateInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUpdateInput = {
@@ -632,6 +637,7 @@ export type PartyUpdateInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateInput = {
@@ -679,6 +685,7 @@ export type PartyUncheckedUpdateInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateManyInput = {
@@ -1278,6 +1285,22 @@ export type PartyUpdateOneRequiredWithoutViberSubscriberNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutViberSubscriberInput, Prisma.PartyUpdateWithoutViberSubscriberInput>, Prisma.PartyUncheckedUpdateWithoutViberSubscriberInput>
 }
 
+export type PartyCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutJournalLinesInput, Prisma.PartyUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.PartyWhereUniqueInput
+}
+
+export type PartyUpdateOneWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutJournalLinesInput, Prisma.PartyUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.PartyUpsertWithoutJournalLinesInput
+  disconnect?: Prisma.PartyWhereInput | boolean
+  delete?: Prisma.PartyWhereInput | boolean
+  connect?: Prisma.PartyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.PartyUpdateWithoutJournalLinesInput>, Prisma.PartyUncheckedUpdateWithoutJournalLinesInput>
+}
+
 export type PartyCreateWithoutLegacyUserInput = {
   id?: string
   kind: $Enums.PartyKind
@@ -1322,6 +1345,7 @@ export type PartyCreateWithoutLegacyUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutLegacyUserInput = {
@@ -1368,6 +1392,7 @@ export type PartyUncheckedCreateWithoutLegacyUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutLegacyUserInput = {
@@ -1419,6 +1444,7 @@ export type PartyCreateWithoutUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutUserInput = {
@@ -1465,6 +1491,7 @@ export type PartyUncheckedCreateWithoutUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutUserInput = {
@@ -1532,6 +1559,7 @@ export type PartyUpdateWithoutLegacyUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutLegacyUserInput = {
@@ -1578,6 +1606,7 @@ export type PartyUncheckedUpdateWithoutLegacyUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithWhereUniqueWithoutUserInput = {
@@ -1667,6 +1696,7 @@ export type PartyCreateWithoutZevInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutZevInput = {
@@ -1713,6 +1743,7 @@ export type PartyUncheckedCreateWithoutZevInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutZevInput = {
@@ -1785,6 +1816,7 @@ export type PartyCreateWithoutInvoiceRecipientForInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
@@ -1831,6 +1863,7 @@ export type PartyUncheckedCreateWithoutInvoiceRecipientForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutInvoiceRecipientForInput = {
@@ -1882,6 +1915,7 @@ export type PartyCreateWithoutCorrespondenceForInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
@@ -1928,6 +1962,7 @@ export type PartyUncheckedCreateWithoutCorrespondenceForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutCorrespondenceForInput = {
@@ -1979,6 +2014,7 @@ export type PartyCreateWithoutVotingRepresentativeForInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutVotingRepresentativeForInput = {
@@ -2025,6 +2061,7 @@ export type PartyUncheckedCreateWithoutVotingRepresentativeForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutVotingRepresentativeForInput = {
@@ -2087,6 +2124,7 @@ export type PartyUpdateWithoutInvoiceRecipientForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
@@ -2133,6 +2171,7 @@ export type PartyUncheckedUpdateWithoutInvoiceRecipientForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithoutCorrespondenceForInput = {
@@ -2190,6 +2229,7 @@ export type PartyUpdateWithoutCorrespondenceForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
@@ -2236,6 +2276,7 @@ export type PartyUncheckedUpdateWithoutCorrespondenceForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithoutVotingRepresentativeForInput = {
@@ -2293,6 +2334,7 @@ export type PartyUpdateWithoutVotingRepresentativeForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutVotingRepresentativeForInput = {
@@ -2339,6 +2381,7 @@ export type PartyUncheckedUpdateWithoutVotingRepresentativeForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutOwnershipStakesInput = {
@@ -2385,6 +2428,7 @@ export type PartyCreateWithoutOwnershipStakesInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
@@ -2431,6 +2475,7 @@ export type PartyUncheckedCreateWithoutOwnershipStakesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutOwnershipStakesInput = {
@@ -2493,6 +2538,7 @@ export type PartyUpdateWithoutOwnershipStakesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
@@ -2539,6 +2585,7 @@ export type PartyUncheckedUpdateWithoutOwnershipStakesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutOccupanciesInput = {
@@ -2585,6 +2632,7 @@ export type PartyCreateWithoutOccupanciesInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutOccupanciesInput = {
@@ -2631,6 +2679,7 @@ export type PartyUncheckedCreateWithoutOccupanciesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutOccupanciesInput = {
@@ -2693,6 +2742,7 @@ export type PartyUpdateWithoutOccupanciesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutOccupanciesInput = {
@@ -2739,6 +2789,7 @@ export type PartyUncheckedUpdateWithoutOccupanciesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutProxiesGivenInput = {
@@ -2785,6 +2836,7 @@ export type PartyCreateWithoutProxiesGivenInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutProxiesGivenInput = {
@@ -2831,6 +2883,7 @@ export type PartyUncheckedCreateWithoutProxiesGivenInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutProxiesGivenInput = {
@@ -2882,6 +2935,7 @@ export type PartyCreateWithoutProxiesHeldInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutProxiesHeldInput = {
@@ -2928,6 +2982,7 @@ export type PartyUncheckedCreateWithoutProxiesHeldInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutProxiesHeldInput = {
@@ -2990,6 +3045,7 @@ export type PartyUpdateWithoutProxiesGivenInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
@@ -3036,6 +3092,7 @@ export type PartyUncheckedUpdateWithoutProxiesGivenInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithoutProxiesHeldInput = {
@@ -3093,6 +3150,7 @@ export type PartyUpdateWithoutProxiesHeldInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
@@ -3139,6 +3197,7 @@ export type PartyUncheckedUpdateWithoutProxiesHeldInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutOfficeTermsInput = {
@@ -3185,6 +3244,7 @@ export type PartyCreateWithoutOfficeTermsInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutOfficeTermsInput = {
@@ -3231,6 +3291,7 @@ export type PartyUncheckedCreateWithoutOfficeTermsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutOfficeTermsInput = {
@@ -3293,6 +3354,7 @@ export type PartyUpdateWithoutOfficeTermsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
@@ -3339,6 +3401,7 @@ export type PartyUncheckedUpdateWithoutOfficeTermsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutMinutesTakerOfInput = {
@@ -3385,6 +3448,7 @@ export type PartyCreateWithoutMinutesTakerOfInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutMinutesTakerOfInput = {
@@ -3431,6 +3495,7 @@ export type PartyUncheckedCreateWithoutMinutesTakerOfInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutMinutesTakerOfInput = {
@@ -3493,6 +3558,7 @@ export type PartyUpdateWithoutMinutesTakerOfInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutMinutesTakerOfInput = {
@@ -3539,6 +3605,7 @@ export type PartyUncheckedUpdateWithoutMinutesTakerOfInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutAttendancesInput = {
@@ -3585,6 +3652,7 @@ export type PartyCreateWithoutAttendancesInput = {
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutAttendancesInput = {
@@ -3631,6 +3699,7 @@ export type PartyUncheckedCreateWithoutAttendancesInput = {
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutAttendancesInput = {
@@ -3693,6 +3762,7 @@ export type PartyUpdateWithoutAttendancesInput = {
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutAttendancesInput = {
@@ -3739,6 +3809,7 @@ export type PartyUncheckedUpdateWithoutAttendancesInput = {
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutEligibleVotersInput = {
@@ -3785,6 +3856,7 @@ export type PartyCreateWithoutEligibleVotersInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutEligibleVotersInput = {
@@ -3831,6 +3903,7 @@ export type PartyUncheckedCreateWithoutEligibleVotersInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutEligibleVotersInput = {
@@ -3882,6 +3955,7 @@ export type PartyCreateWithoutEligibleProxyForInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
@@ -3928,6 +4002,7 @@ export type PartyUncheckedCreateWithoutEligibleProxyForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutEligibleProxyForInput = {
@@ -3990,6 +4065,7 @@ export type PartyUpdateWithoutEligibleVotersInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
@@ -4036,6 +4112,7 @@ export type PartyUncheckedUpdateWithoutEligibleVotersInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithoutEligibleProxyForInput = {
@@ -4093,6 +4170,7 @@ export type PartyUpdateWithoutEligibleProxyForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
@@ -4139,6 +4217,7 @@ export type PartyUncheckedUpdateWithoutEligibleProxyForInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutBallotsReceivedInput = {
@@ -4185,6 +4264,7 @@ export type PartyCreateWithoutBallotsReceivedInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutBallotsReceivedInput = {
@@ -4231,6 +4311,7 @@ export type PartyUncheckedCreateWithoutBallotsReceivedInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutBallotsReceivedInput = {
@@ -4293,6 +4374,7 @@ export type PartyUpdateWithoutBallotsReceivedInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutBallotsReceivedInput = {
@@ -4339,6 +4421,7 @@ export type PartyUncheckedUpdateWithoutBallotsReceivedInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutVotesCastInput = {
@@ -4385,6 +4468,7 @@ export type PartyCreateWithoutVotesCastInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutVotesCastInput = {
@@ -4431,6 +4515,7 @@ export type PartyUncheckedCreateWithoutVotesCastInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutVotesCastInput = {
@@ -4482,6 +4567,7 @@ export type PartyCreateWithoutVotesRepresentedInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
@@ -4528,6 +4614,7 @@ export type PartyUncheckedCreateWithoutVotesRepresentedInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutVotesRepresentedInput = {
@@ -4590,6 +4677,7 @@ export type PartyUpdateWithoutVotesCastInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutVotesCastInput = {
@@ -4636,6 +4724,7 @@ export type PartyUncheckedUpdateWithoutVotesCastInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithoutVotesRepresentedInput = {
@@ -4693,6 +4782,7 @@ export type PartyUpdateWithoutVotesRepresentedInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
@@ -4739,6 +4829,7 @@ export type PartyUncheckedUpdateWithoutVotesRepresentedInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutInvoicesInput = {
@@ -4785,6 +4876,7 @@ export type PartyCreateWithoutInvoicesInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutInvoicesInput = {
@@ -4831,6 +4923,7 @@ export type PartyUncheckedCreateWithoutInvoicesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutInvoicesInput = {
@@ -4893,6 +4986,7 @@ export type PartyUpdateWithoutInvoicesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutInvoicesInput = {
@@ -4939,6 +5033,7 @@ export type PartyUncheckedUpdateWithoutInvoicesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutPaymentsInput = {
@@ -4985,6 +5080,7 @@ export type PartyCreateWithoutPaymentsInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutPaymentsInput = {
@@ -5031,6 +5127,7 @@ export type PartyUncheckedCreateWithoutPaymentsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutPaymentsInput = {
@@ -5093,6 +5190,7 @@ export type PartyUpdateWithoutPaymentsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutPaymentsInput = {
@@ -5139,6 +5237,7 @@ export type PartyUncheckedUpdateWithoutPaymentsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutBalanceCorrectionsInput = {
@@ -5185,6 +5284,7 @@ export type PartyCreateWithoutBalanceCorrectionsInput = {
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
@@ -5231,6 +5331,7 @@ export type PartyUncheckedCreateWithoutBalanceCorrectionsInput = {
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutBalanceCorrectionsInput = {
@@ -5293,6 +5394,7 @@ export type PartyUpdateWithoutBalanceCorrectionsInput = {
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
@@ -5339,6 +5441,7 @@ export type PartyUncheckedUpdateWithoutBalanceCorrectionsInput = {
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutReportedIssuesInput = {
@@ -5385,6 +5488,7 @@ export type PartyCreateWithoutReportedIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutReportedIssuesInput = {
@@ -5431,6 +5535,7 @@ export type PartyUncheckedCreateWithoutReportedIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutReportedIssuesInput = {
@@ -5482,6 +5587,7 @@ export type PartyCreateWithoutResponsibleForIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
@@ -5528,6 +5634,7 @@ export type PartyUncheckedCreateWithoutResponsibleForIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutResponsibleForIssuesInput = {
@@ -5590,6 +5697,7 @@ export type PartyUpdateWithoutReportedIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
@@ -5636,6 +5744,7 @@ export type PartyUncheckedUpdateWithoutReportedIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUpsertWithoutResponsibleForIssuesInput = {
@@ -5693,6 +5802,7 @@ export type PartyUpdateWithoutResponsibleForIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
@@ -5739,6 +5849,7 @@ export type PartyUncheckedUpdateWithoutResponsibleForIssuesInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutNotificationsInput = {
@@ -5785,6 +5896,7 @@ export type PartyCreateWithoutNotificationsInput = {
   viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutNotificationsInput = {
@@ -5831,6 +5943,7 @@ export type PartyUncheckedCreateWithoutNotificationsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutNotificationsInput = {
@@ -5893,6 +6006,7 @@ export type PartyUpdateWithoutNotificationsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutNotificationsInput = {
@@ -5939,6 +6053,7 @@ export type PartyUncheckedUpdateWithoutNotificationsInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyCreateWithoutViberSubscriberInput = {
@@ -5985,6 +6100,7 @@ export type PartyCreateWithoutViberSubscriberInput = {
   notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutPartyInput
 }
 
 export type PartyUncheckedCreateWithoutViberSubscriberInput = {
@@ -6031,6 +6147,7 @@ export type PartyUncheckedCreateWithoutViberSubscriberInput = {
   notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutPartyInput
 }
 
 export type PartyCreateOrConnectWithoutViberSubscriberInput = {
@@ -6093,6 +6210,7 @@ export type PartyUpdateWithoutViberSubscriberInput = {
   notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
@@ -6137,6 +6255,211 @@ export type PartyUncheckedUpdateWithoutViberSubscriberInput = {
   reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
   responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
   notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyCreateWithoutJournalLinesInput = {
+  id?: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutPartiesInput
+  user?: Prisma.UserCreateNestedOneWithoutPartiesInput
+  legacyUser?: Prisma.UserCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingCreateNestedManyWithoutMinutesTakerInput
+  proxiesHeld?: Prisma.ProxyCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitCreateNestedManyWithoutVotingRepresentativeInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotCreateNestedManyWithoutRecipientInput
+  reportedIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionCreateNestedManyWithoutPartyInput
+}
+
+export type PartyUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  zevId: string
+  kind: $Enums.PartyKind
+  firstName?: string | null
+  lastName?: string | null
+  orgName?: string | null
+  orgIdNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  correspondenceAddress?: string | null
+  note?: string | null
+  active?: boolean
+  eVoteConsentStatus?: string
+  eVoteConsentEmail?: string | null
+  eVoteConsentDocumentId?: string | null
+  invoiceEmailDelivery?: boolean
+  invoiceEmailDeliveryAt?: Date | string | null
+  userId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  legacyUser?: Prisma.UserUncheckedCreateNestedOneWithoutPartyInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedCreateNestedManyWithoutOwnerInput
+  occupancies?: Prisma.OccupancyUncheckedCreateNestedManyWithoutPartyInput
+  proxiesGiven?: Prisma.ProxyUncheckedCreateNestedManyWithoutGrantorInput
+  minutesTakerOf?: Prisma.MeetingUncheckedCreateNestedManyWithoutMinutesTakerInput
+  proxiesHeld?: Prisma.ProxyUncheckedCreateNestedManyWithoutHolderInput
+  officeTerms?: Prisma.OfficeTermUncheckedCreateNestedManyWithoutPartyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutDebtorInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedCreateNestedManyWithoutInvoiceRecipientInput
+  correspondenceFor?: Prisma.UnitUncheckedCreateNestedManyWithoutCorrespondenceContactInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedCreateNestedManyWithoutVotingRepresentativeInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPayerInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutOwnerInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedCreateNestedManyWithoutProxyInput
+  votesCast?: Prisma.VoteUncheckedCreateNestedManyWithoutVoterInput
+  votesRepresented?: Prisma.VoteUncheckedCreateNestedManyWithoutRepresentedInput
+  ballotsReceived?: Prisma.BallotUncheckedCreateNestedManyWithoutRecipientInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutReporterInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedCreateNestedManyWithoutResponsibleInput
+  notifications?: Prisma.NotificationMessageUncheckedCreateNestedManyWithoutRecipientInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedCreateNestedOneWithoutPartyInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPartyInput
+  balanceCorrections?: Prisma.BalanceCorrectionUncheckedCreateNestedManyWithoutPartyInput
+}
+
+export type PartyCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.PartyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartyCreateWithoutJournalLinesInput, Prisma.PartyUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type PartyUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutJournalLinesInput, Prisma.PartyUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutJournalLinesInput, Prisma.PartyUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.PartyWhereInput
+}
+
+export type PartyUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.PartyWhereInput
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutJournalLinesInput, Prisma.PartyUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type PartyUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutPartiesNestedInput
+  user?: Prisma.UserUpdateOneWithoutPartiesNestedInput
+  legacyUser?: Prisma.UserUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUpdateManyWithoutMinutesTakerNestedInput
+  proxiesHeld?: Prisma.ProxyUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUpdateManyWithoutRecipientNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
+  balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPartyKindFieldUpdateOperationsInput | $Enums.PartyKind
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correspondenceAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eVoteConsentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  eVoteConsentEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eVoteConsentDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceEmailDelivery?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invoiceEmailDeliveryAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  legacyUser?: Prisma.UserUncheckedUpdateOneWithoutPartyNestedInput
+  ownershipStakes?: Prisma.OwnershipStakeUncheckedUpdateManyWithoutOwnerNestedInput
+  occupancies?: Prisma.OccupancyUncheckedUpdateManyWithoutPartyNestedInput
+  proxiesGiven?: Prisma.ProxyUncheckedUpdateManyWithoutGrantorNestedInput
+  minutesTakerOf?: Prisma.MeetingUncheckedUpdateManyWithoutMinutesTakerNestedInput
+  proxiesHeld?: Prisma.ProxyUncheckedUpdateManyWithoutHolderNestedInput
+  officeTerms?: Prisma.OfficeTermUncheckedUpdateManyWithoutPartyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutDebtorNestedInput
+  invoiceRecipientFor?: Prisma.UnitUncheckedUpdateManyWithoutInvoiceRecipientNestedInput
+  correspondenceFor?: Prisma.UnitUncheckedUpdateManyWithoutCorrespondenceContactNestedInput
+  votingRepresentativeFor?: Prisma.UnitUncheckedUpdateManyWithoutVotingRepresentativeNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPayerNestedInput
+  eligibleVoters?: Prisma.EligibleVoterUncheckedUpdateManyWithoutOwnerNestedInput
+  eligibleProxyFor?: Prisma.EligibleVoterUncheckedUpdateManyWithoutProxyNestedInput
+  votesCast?: Prisma.VoteUncheckedUpdateManyWithoutVoterNestedInput
+  votesRepresented?: Prisma.VoteUncheckedUpdateManyWithoutRepresentedNestedInput
+  ballotsReceived?: Prisma.BallotUncheckedUpdateManyWithoutRecipientNestedInput
+  reportedIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutReporterNestedInput
+  responsibleForIssues?: Prisma.MaintenanceIssueUncheckedUpdateManyWithoutResponsibleNestedInput
+  notifications?: Prisma.NotificationMessageUncheckedUpdateManyWithoutRecipientNestedInput
+  viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
 }
@@ -6208,6 +6531,7 @@ export type PartyUpdateWithoutUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutUserInput = {
@@ -6254,6 +6578,7 @@ export type PartyUncheckedUpdateWithoutUserInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateManyWithoutUserInput = {
@@ -6346,6 +6671,7 @@ export type PartyUpdateWithoutZevInput = {
   viberSubscriber?: Prisma.ViberSubscriberUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateWithoutZevInput = {
@@ -6392,6 +6718,7 @@ export type PartyUncheckedUpdateWithoutZevInput = {
   viberSubscriber?: Prisma.ViberSubscriberUncheckedUpdateOneWithoutPartyNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPartyNestedInput
   balanceCorrections?: Prisma.BalanceCorrectionUncheckedUpdateManyWithoutPartyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutPartyNestedInput
 }
 
 export type PartyUncheckedUpdateManyWithoutZevInput = {
@@ -6444,6 +6771,7 @@ export type PartyCountOutputType = {
   notifications: number
   attendances: number
   balanceCorrections: number
+  journalLines: number
 }
 
 export type PartyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6468,6 +6796,7 @@ export type PartyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   notifications?: boolean | PartyCountOutputTypeCountNotificationsArgs
   attendances?: boolean | PartyCountOutputTypeCountAttendancesArgs
   balanceCorrections?: boolean | PartyCountOutputTypeCountBalanceCorrectionsArgs
+  journalLines?: boolean | PartyCountOutputTypeCountJournalLinesArgs
 }
 
 /**
@@ -6627,6 +6956,13 @@ export type PartyCountOutputTypeCountBalanceCorrectionsArgs<ExtArgs extends runt
   where?: Prisma.BalanceCorrectionWhereInput
 }
 
+/**
+ * PartyCountOutputType without action
+ */
+export type PartyCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
 
 export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6675,6 +7011,7 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   viberSubscriber?: boolean | Prisma.Party$viberSubscriberArgs<ExtArgs>
   attendances?: boolean | Prisma.Party$attendancesArgs<ExtArgs>
   balanceCorrections?: boolean | Prisma.Party$balanceCorrectionsArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Party$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.PartyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["party"]>
 
@@ -6781,6 +7118,7 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   viberSubscriber?: boolean | Prisma.Party$viberSubscriberArgs<ExtArgs>
   attendances?: boolean | Prisma.Party$attendancesArgs<ExtArgs>
   balanceCorrections?: boolean | Prisma.Party$balanceCorrectionsArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Party$journalLinesArgs<ExtArgs>
   _count?: boolean | Prisma.PartyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PartyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6831,6 +7169,7 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     viberSubscriber: Prisma.$ViberSubscriberPayload<ExtArgs> | null
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
     balanceCorrections: Prisma.$BalanceCorrectionPayload<ExtArgs>[]
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7283,6 +7622,7 @@ export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Ty
   viberSubscriber<T extends Prisma.Party$viberSubscriberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$viberSubscriberArgs<ExtArgs>>): Prisma.Prisma__ViberSubscriberClient<runtime.Types.Result.GetResult<Prisma.$ViberSubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   attendances<T extends Prisma.Party$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   balanceCorrections<T extends Prisma.Party$balanceCorrectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$balanceCorrectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BalanceCorrectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalLines<T extends Prisma.Party$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8292,6 +8632,30 @@ export type Party$balanceCorrectionsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.BalanceCorrectionScalarFieldEnum | Prisma.BalanceCorrectionScalarFieldEnum[]
+}
+
+/**
+ * Party.journalLines
+ */
+export type Party$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
 }
 
 /**

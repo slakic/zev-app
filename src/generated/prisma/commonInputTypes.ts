@@ -1242,6 +1242,40 @@ export type EnumGatedSchemaWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumGatedSchemaFilter<$PrismaModel>
 }
 
+export type EnumJournalKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalKind | Prisma.EnumJournalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalKindFilter<$PrismaModel> | $Enums.JournalKind
+}
+
+export type EnumJournalStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalStatus | Prisma.EnumJournalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel> | $Enums.JournalStatus
+}
+
+export type EnumJournalKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalKind | Prisma.EnumJournalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalKindWithAggregatesFilter<$PrismaModel> | $Enums.JournalKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJournalKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJournalKindFilter<$PrismaModel>
+}
+
+export type EnumJournalStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalStatus | Prisma.EnumJournalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalStatusWithAggregatesFilter<$PrismaModel> | $Enums.JournalStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
+}
+
 export type EnumOnboardingInviteStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.OnboardingInviteStatus | Prisma.EnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
   in?: $Enums.OnboardingInviteStatus[] | Prisma.ListEnumOnboardingInviteStatusFieldRefInput<$PrismaModel>
@@ -2529,6 +2563,40 @@ export type NestedEnumGatedSchemaWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumGatedSchemaFilter<$PrismaModel>
   _max?: Prisma.NestedEnumGatedSchemaFilter<$PrismaModel>
+}
+
+export type NestedEnumJournalKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalKind | Prisma.EnumJournalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalKindFilter<$PrismaModel> | $Enums.JournalKind
+}
+
+export type NestedEnumJournalStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalStatus | Prisma.EnumJournalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel> | $Enums.JournalStatus
+}
+
+export type NestedEnumJournalKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalKind | Prisma.EnumJournalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalKind[] | Prisma.ListEnumJournalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalKindWithAggregatesFilter<$PrismaModel> | $Enums.JournalKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJournalKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJournalKindFilter<$PrismaModel>
+}
+
+export type NestedEnumJournalStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalStatus | Prisma.EnumJournalStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JournalStatus[] | Prisma.ListEnumJournalStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJournalStatusWithAggregatesFilter<$PrismaModel> | $Enums.JournalStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJournalStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumOnboardingInviteStatusFilter<$PrismaModel = never> = {

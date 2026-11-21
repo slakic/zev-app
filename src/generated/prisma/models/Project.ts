@@ -233,6 +233,7 @@ export type ProjectWhereInput = {
   estimatedCost?: Prisma.DecimalNullableFilter<"Project"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
+  journalLines?: Prisma.JournalLineListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -244,6 +245,7 @@ export type ProjectOrderByWithRelationInput = {
   estimatedCost?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   zev?: Prisma.ZevOrderByWithRelationInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -258,6 +260,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   estimatedCost?: Prisma.DecimalNullableFilter<"Project"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   zev?: Prisma.XOR<Prisma.ZevScalarRelationFilter, Prisma.ZevWhereInput>
+  journalLines?: Prisma.JournalLineListRelationFilter
 }, "id">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -296,6 +299,7 @@ export type ProjectCreateInput = {
   estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   zev: Prisma.ZevCreateNestedOneWithoutProjectsInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -306,6 +310,7 @@ export type ProjectUncheckedCreateInput = {
   status?: string
   estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -316,6 +321,7 @@ export type ProjectUpdateInput = {
   estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   zev?: Prisma.ZevUpdateOneRequiredWithoutProjectsNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -326,6 +332,7 @@ export type ProjectUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -405,6 +412,11 @@ export type ProjectSumOrderByAggregateInput = {
   estimatedCost?: Prisma.SortOrder
 }
 
+export type ProjectNullableScalarRelationFilter = {
+  is?: Prisma.ProjectWhereInput | null
+  isNot?: Prisma.ProjectWhereInput | null
+}
+
 export type ProjectCreateNestedManyWithoutZevInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutZevInput, Prisma.ProjectUncheckedCreateWithoutZevInput> | Prisma.ProjectCreateWithoutZevInput[] | Prisma.ProjectUncheckedCreateWithoutZevInput[]
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutZevInput | Prisma.ProjectCreateOrConnectWithoutZevInput[]
@@ -447,6 +459,22 @@ export type ProjectUncheckedUpdateManyWithoutZevNestedInput = {
   deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
+export type ProjectCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutJournalLinesInput, Prisma.ProjectUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutJournalLinesInput, Prisma.ProjectUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.ProjectUpsertWithoutJournalLinesInput
+  disconnect?: Prisma.ProjectWhereInput | boolean
+  delete?: Prisma.ProjectWhereInput | boolean
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.ProjectUpdateWithoutJournalLinesInput>, Prisma.ProjectUncheckedUpdateWithoutJournalLinesInput>
+}
+
 export type ProjectCreateWithoutZevInput = {
   id?: string
   name: string
@@ -454,6 +482,7 @@ export type ProjectCreateWithoutZevInput = {
   status?: string
   estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutZevInput = {
@@ -463,6 +492,7 @@ export type ProjectUncheckedCreateWithoutZevInput = {
   status?: string
   estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutZevInput = {
@@ -504,6 +534,62 @@ export type ProjectScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }
 
+export type ProjectCreateWithoutJournalLinesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: string
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  zev: Prisma.ZevCreateNestedOneWithoutProjectsInput
+}
+
+export type ProjectUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  zevId: string
+  name: string
+  description?: string | null
+  status?: string
+  estimatedCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+}
+
+export type ProjectCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutJournalLinesInput, Prisma.ProjectUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type ProjectUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutJournalLinesInput, Prisma.ProjectUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutJournalLinesInput, Prisma.ProjectUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutJournalLinesInput, Prisma.ProjectUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type ProjectUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zev?: Prisma.ZevUpdateOneRequiredWithoutProjectsNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zevId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ProjectCreateManyZevInput = {
   id?: string
   name: string
@@ -520,6 +606,7 @@ export type ProjectUpdateWithoutZevInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journalLines?: Prisma.JournalLineUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutZevInput = {
@@ -529,6 +616,7 @@ export type ProjectUncheckedUpdateWithoutZevInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   estimatedCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutZevInput = {
@@ -541,6 +629,35 @@ export type ProjectUncheckedUpdateManyWithoutZevInput = {
 }
 
 
+/**
+ * Count Type ProjectCountOutputType
+ */
+
+export type ProjectCountOutputType = {
+  journalLines: number
+}
+
+export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  journalLines?: boolean | ProjectCountOutputTypeCountJournalLinesArgs
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectCountOutputType
+   */
+  select?: Prisma.ProjectCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -551,6 +668,8 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   estimatedCost?: boolean
   createdAt?: boolean
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Project$journalLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -588,6 +707,8 @@ export type ProjectSelectScalar = {
 export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "zevId" | "name" | "description" | "status" | "estimatedCost" | "createdAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Project$journalLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zev?: boolean | Prisma.ZevDefaultArgs<ExtArgs>
@@ -600,6 +721,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Project"
   objects: {
     zev: Prisma.$ZevPayload<ExtArgs>
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1004,6 +1126,7 @@ readonly fields: ProjectFieldRefs;
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   zev<T extends Prisma.ZevDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZevDefaultArgs<ExtArgs>>): Prisma.Prisma__ZevClient<runtime.Types.Result.GetResult<Prisma.$ZevPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  journalLines<T extends Prisma.Project$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1438,6 +1561,30 @@ export type ProjectDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Projects to delete.
    */
   limit?: number
+}
+
+/**
+ * Project.journalLines
+ */
+export type Project$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
 }
 
 /**

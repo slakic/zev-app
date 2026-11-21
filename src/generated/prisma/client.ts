@@ -435,6 +435,27 @@ export type PostingRule = Prisma.PostingRuleModel
  */
 export type PostingSchemaApproval = Prisma.PostingSchemaApprovalModel
 /**
+ * Model JournalEntry
+ * 
+ */
+export type JournalEntry = Prisma.JournalEntryModel
+/**
+ * Model JournalLine
+ * 
+ */
+export type JournalLine = Prisma.JournalLineModel
+/**
+ * Model JournalCounter
+ * Brojač naloga po ZEV-u, godini i seriji; red se zaključava pri knjiženju, pa brojevi nemaju duplikata ni rupa.
+ */
+export type JournalCounter = Prisma.JournalCounterModel
+/**
+ * Model PeriodReopenRequest
+ * Ponovno otvaranje zatvorenog perioda uz dvostruko odobrenje (B1-Q2 (a)): traži jedno lice, odobrava drugo lice
+ * druge uloge (predsjednik ↔ računovođa).
+ */
+export type PeriodReopenRequest = Prisma.PeriodReopenRequestModel
+/**
  * Model OnboardingInvite
  * Pozivni link za klijenta. Token se nikad ne čuva, samo sha256 (kao ApprovalToken).
  * „Izdaj novi link" mijenja tokenHash i rok na istom redu — stari link time prestaje da važi.
