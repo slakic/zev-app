@@ -43,6 +43,27 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.7.0] - 2026-11-21
+
+Kontni plan, **Faza B1b — nalog početnog stanja** (`Plans/kontni-plan-b1-nalozi-plan.md` §4). Nova stranica Knjigovodstvo → Nalozi → **Početno stanje**.
+
+**Migracija: ne** (šema iz 3.6.0 već ima sve: vrsta naloga `OPENING`, serija `PS`, izvor stavke `openingSourceType`/`openingSourceId`).
+
+### Dodato
+
+- **Prijedlog iz evidencije na dan:** „Pripremi prijedlog” pravi nacrt sa datumom početka iz stanja na kraj prethodnog dana — računi novca, otvorene fakture po vlasniku i namjeni (srazmjerno stavkama fakture; stavka bez vrste ide na redovno održavanje, B1-Q3), korekcije salda i avansi po vlasniku, neidentifikovane uplate i neplaćeni računi dobavljača. Ništa nastalo, raspoređeno ili stornirano poslije tog dana ne mijenja stanje na taj dan.
+- **Ručne stavke** koje evidencija ne zna (razgraničena sredstva, rezultat ranijih godina, razlika na kontu koje bira računovođa, B1-Q4) u istom uređivaču stavki; razlika uživo računa cio nalog. Kontrolna konta se tu ne biraju.
+- **Usklađivanje** po kontrolnom kontu: glavna knjiga · analitika (vlasnik/dobavljač) · evidencija na dan, izračunata ponovo. Knjiženje (`PS-GGGG-NNNN`) tek kad je nalog uravnotežen i sve usklađeno — provjerava i server.
+- **Ponovna priprema** zamjenjuje stavke iz evidencije bez dupliranja, ručne ostaju. Jedno nestornirano početno stanje po ZEV-u; poslije storna novo samo dok u godini nema drugih proknjiženih naloga.
+- Kartica „Početno stanje” na tabu Nalozi sa statusom i vezom; nacrt početnog stanja se sa stranice naloga upućuje na ovu stranicu.
+- Testovi `tests/opening-balance.test.ts`.
+
+### Ispravljeno
+
+- **Storno početnog stanja** sa datumom u budućnosti (npr. 1.1.2027.) više nije blokiran do tog datuma: smije se knjižiti na isti datum, koji je i podrazumijevan u obrascu.
+
+Uputstvo: novo 13.10 „Početno stanje”, dopune 13.9 (storno početnog stanja) i napomene u uvodu poglavlja 13, rječnik (početno stanje).
+
 ## [3.6.0] - 2026-11-21
 
 Kontni plan, **Faza B1a — nalozi za knjiženje, storno i periodi** (`Plans/kontni-plan-b1-nalozi-plan.md`). Tab „Nalozi” u Knjigovodstvu je sada aktivan. Fakture, uplate i troškovi se **još ne knjiže automatski**; nalog početnog stanja (B1b) slijedi.

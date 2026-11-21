@@ -117,7 +117,7 @@ async function openPeriodFor(tx: Tx, zevId: string, postingDate: Date, lock: boo
 
 type NormalizedLine = Required<Omit<JournalLineInput, "debit" | "credit">> & { debit: Prisma.Decimal; credit: Prisma.Decimal };
 
-function normalizeLines(lines: JournalLineInput[]): NormalizedLine[] {
+export function normalizeLines(lines: JournalLineInput[]): NormalizedLine[] {
   const out = lines
     .filter((l) => l.accountId || l.debit || l.credit)
     .map((l, i) => {
@@ -140,7 +140,7 @@ function normalizeLines(lines: JournalLineInput[]): NormalizedLine[] {
  * Konta i dimenzije stavki: aktivno knjižno konto aktivnog plana ZEV-a, dimenzije iz istog ZEV-a, obavezne dimenzije
  * konta popunjene, ručni nalog bez kontrolnih konta.
  */
-async function checkLines(tx: Tx, zevId: string, kind: JournalKind, lines: NormalizedLine[]) {
+export async function checkLines(tx: Tx, zevId: string, kind: JournalKind, lines: NormalizedLine[], controlMessage?: string) {
   const chart = await tx.zevChart.findFirst({ where: { zevId, status: "ACTIVE" } });
   if (!chart) throw new Error("Kontni plan ZEV-a nije aktivan.");
   const accountIds = [...new Set(lines.map((l) => l.accountId))];
@@ -165,7 +165,7 @@ async function checkLines(tx: Tx, zevId: string, kind: JournalKind, lines: Norma
     if (!a.postable) throw new Error(`Stavka ${i + 1}: konto „${a.code}” je zbirno — knjiži se samo na knjižna konta.`);
     if (!a.active) throw new Error(`Stavka ${i + 1}: konto „${a.code}” je neaktivno.`);
     if (kind === "MANUAL" && controlIds.has(a.id)) {
-      throw new Error(`Stavka ${i + 1}: konto „${a.code}” je kontrolno konto — ručni nalog ga ne koristi (mijenja se kroz događaje, storno i početno stanje).`);
+      throw new Error(`Stavka ${i + 1}: konto „${a.code}” je kontrolno konto — ${controlMessage ?? "ručni nalog ga ne koristi (mijenja se kroz događaje, storno i početno stanje)."}`);
     }
     const dims: Record<string, string | null> = { PARTY: l.partyId, UNIT: l.unitId, SUPPLIER: l.supplierId, PROJECT: l.projectId, PURPOSE: l.purposeId };
     for (const d of a.requiredDimensions) {
@@ -273,6 +273,14 @@ export async function postEntry(actor: Actor, id: string) {
     await checkLines(tx, zevId, e.kind, lines as unknown as NormalizedLine[]);
     const t = totals(lines);
     if (!t.debit.eq(t.credit)) throw new Error(`Nalog nije uravnotežen: duguje ${t.debit.toFixed(2)}, potražuje ${t.credit.toFixed(2)}.`);
+    if (e.kind === "OPENING") {
+      // Početno stanje (B1b): jedno nestornirano po ZEV-u, i samo usklađeno sa analitikom i evidencijom na dan.
+      const other = await tx.journalEntry.findFirst({ where: { zevId, kind: "OPENING", status: "POSTED", reversedBy: null } });
+      if (other) throw new Error(`Početno stanje je već proknjiženo nalogom ${other.number}.`);
+      const { reconcileOpeningInTx } = await import("@/server/services/openingBalance");
+      const r = await reconcileOpeningInTx(tx, zevId, id);
+      if (!r.ready) throw new Error(r.problems.join(" "));
+    }
     const number = await nextNumber(tx, zevId, e.yearId, e.year.label, e.kind === "OPENING" ? "PS" : "NK");
     return tx.journalEntry.update({ where: { id }, data: { status: "POSTED", number, postedById: actor.userId, postedAt: new Date() } });
   });
@@ -288,7 +296,6 @@ export async function reverseEntry(actor: Actor, id: string, input: { reason: st
   if (!reason) throw new Error("Storno zahtijeva razlog.");
   if (!isDate(input.postingDate)) throw new Error("Unesite datum storna.");
   const postingDate = dateOnly(input.postingDate);
-  if (postingDate > endOfDay(toZonedDateIso(new Date()))) throw new Error("Datum storna ne može biti u budućnosti.");
   const rev = await prisma.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT id FROM "JournalEntry" WHERE id = ${id} AND "zevId" = ${zevId} FOR UPDATE`;
     const orig = await tx.journalEntry.findUniqueOrThrow({ where: { id, zevId }, include: { lines: true, reversedBy: true } });
@@ -296,6 +303,9 @@ export async function reverseEntry(actor: Actor, id: string, input: { reason: st
     if (orig.kind === "REVERSAL") throw new Error("Storno nalog se ne stornira — knjižite novi nalog.");
     if (orig.reversedBy) throw new Error(`Nalog je već storniran nalogom ${orig.reversedBy.number}.`);
     if (postingDate < orig.postingDate) throw new Error("Storno ne može biti prije datuma originalnog naloga.");
+    // Početno stanje može biti na datum početka u budućnosti; njegov storno smije na taj isti datum.
+    const sameDayOpening = orig.kind === "OPENING" && postingDate.getTime() === orig.postingDate.getTime();
+    if (postingDate > endOfDay(toZonedDateIso(new Date())) && !sameDayOpening) throw new Error("Datum storna ne može biti u budućnosti.");
     const period = await openPeriodFor(tx, zevId, postingDate, true);
     const year = await tx.fiscalYear.findUniqueOrThrow({ where: { id: period.yearId } });
     const draft = await tx.journalEntry.create({

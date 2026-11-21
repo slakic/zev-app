@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireActor } from "@/server/actor";
 import * as j from "@/server/services/journal";
+import * as ob from "@/server/services/openingBalance";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "");
 const errUrl = (path: string, e: unknown) => `${path}${path.includes("?") ? "&" : "?"}err=${encodeURIComponent(e instanceof Error ? e.message : "Greška")}`;
@@ -84,4 +85,48 @@ export async function decideReopenAction(fd: FormData) {
   const actor = await requireActor("PRESIDENT", "ACCOUNTANT");
   const approve = str(fd, "decision") === "APPROVED";
   await onPeriod(approve ? "reopenApproved" : "reopenRejected", () => j.decideReopen(actor, str(fd, "requestId"), approve, str(fd, "note") || null));
+}
+
+// ---------------------------------------------------------------------------
+// Početno stanje (B1b)
+// ---------------------------------------------------------------------------
+
+const OPENING = "/knjigovodstvo/pocetno-stanje";
+
+export async function prepareOpeningAction(fd: FormData) {
+  const actor = await requireActor("ACCOUNTANT");
+  let target = `${OPENING}?msg=openingPrepared`;
+  try {
+    await ob.prepareOpening(actor, { startDate: str(fd, "startDate") });
+  } catch (e) {
+    target = errUrl(OPENING, e);
+  }
+  revalidatePath("/knjigovodstvo");
+  redirect(target);
+}
+
+/** Ručne stavke nacrta početnog stanja iz uređivača (useActionState, kao saveJournalDraftAction). */
+export async function saveOpeningLinesAction(_prev: { error: string } | null, fd: FormData): Promise<{ error: string } | null> {
+  const actor = await requireActor("ACCOUNTANT");
+  try {
+    const lines = JSON.parse(str(fd, "payload") || "[]") as j.JournalLineInput[];
+    await ob.saveOpeningManualLines(actor, str(fd, "id"), { description: str(fd, "description"), lines });
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Greška" };
+  }
+  revalidatePath("/knjigovodstvo");
+  redirect(`${OPENING}?msg=openingSaved`);
+}
+
+export async function postOpeningAction(fd: FormData) {
+  const actor = await requireActor("ACCOUNTANT");
+  const id = str(fd, "id");
+  let target = `/knjigovodstvo/nalozi/${id}?msg=journalPosted`;
+  try {
+    await j.postEntry(actor, id);
+  } catch (e) {
+    target = errUrl(OPENING, e);
+  }
+  revalidatePath("/knjigovodstvo");
+  redirect(target);
 }

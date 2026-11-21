@@ -1,6 +1,6 @@
 # Faza B1 — nalozi za knjiženje, kontrole, storno, periodi i početno stanje
 
-**Status: ODOBRENO 2026-11-21 (korisnik prihvatio preporuke B1-Q1–B1-Q7: (a), (a), (c), (a), (a), (a), (b)). B1a implementiran (nalozi, kontrole, storno, zatvaranje i ponovno otvaranje perioda; migracija 20261121150000_journal_entries još samo lokalno). B1b (početno stanje) slijedi.** Napisan 2026-11-21 čitanjem koda v3.5.0. Nijedan red koda još nije
+**Status: ODOBRENO 2026-11-21 (korisnik prihvatio preporuke B1-Q1–B1-Q7: (a), (a), (c), (a), (a), (a), (b)). B1a isporučen u v3.6.0 (nalozi, kontrole, storno, periodi). B1b implementiran: početno stanje sa usklađivanjem (`openingBalance.ts`, `/knjigovodstvo/pocetno-stanje`), bez nove migracije. Dopune: storno početnog stanja smije na njegov datum i kad je u budućnosti; otvorena faktura se po namjeni dijeli srazmjerno stavkama fakture.** Napisan 2026-11-21 čitanjem koda v3.5.0. Nijedan red koda još nije
 napisan. Nastavlja `Plans/kontni-plan-i-knjizenje-plan.md` (§4, §6, §11); ovdje je samo ono što B1 isporučuje.
 
 **Cilj:** temelj knjiženja — nalog sa stavkama duguje/potražuje i svim kontrolama, ručni nalog, storno, zatvaranje i

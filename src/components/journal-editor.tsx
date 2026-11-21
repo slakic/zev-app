@@ -37,7 +37,7 @@ function cents(v: string): number {
 const fmt = (c: number) => (c / 100).toLocaleString("sr-Latn", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function JournalEditor({
-  action, entryId, options, labels, initial,
+  action, entryId, options, labels, initial, fixedDates, base,
 }: {
   /** Server akcija za useActionState: greška se vraća (redovi ostaju), uspjeh preusmjerava. */
   action: (prev: { error: string } | null, fd: FormData) => Promise<{ error: string } | null>;
@@ -45,6 +45,10 @@ export function JournalEditor({
   options: JournalEditorOptions;
   labels: EditorLabels;
   initial: { documentDate: string; postingDate: string; description: string; lines: EditorLine[] };
+  /** Početno stanje: datumi su zadati (datum početka), pa se polja za datum ne prikazuju. */
+  fixedDates?: boolean;
+  /** Zbirovi stavki koje nisu u uređivaču (stavke iz evidencije), u feninzima — ulaze u zbir i razliku. */
+  base?: { debit: number; credit: number };
 }) {
   const [lines, setLines] = useState<EditorLine[]>(initial.lines.length ? initial.lines : [emptyLine(), emptyLine()]);
   const [state, formAction, pending] = useActionState(action, null);
@@ -53,8 +57,8 @@ export function JournalEditor({
   const [header, setHeader] = useState({ documentDate: initial.documentDate, postingDate: initial.postingDate, description: initial.description });
   const set = (i: number, patch: Partial<EditorLine>) => setLines((ls) => ls.map((l, k) => (k === i ? { ...l, ...patch } : l)));
   const { debit, credit } = useMemo(
-    () => lines.reduce((t, l) => ({ debit: t.debit + cents(l.debit), credit: t.credit + cents(l.credit) }), { debit: 0, credit: 0 }),
-    [lines]
+    () => lines.reduce((t, l) => ({ debit: t.debit + cents(l.debit), credit: t.credit + cents(l.credit) }), { debit: base?.debit ?? 0, credit: base?.credit ?? 0 }),
+    [lines, base?.debit, base?.credit]
   );
   const diff = debit - credit;
   const columns: ColumnSpec[] = [
@@ -79,8 +83,10 @@ export function JournalEditor({
       {entryId && <input type="hidden" name="id" value={entryId} />}
       <input type="hidden" name="payload" value={JSON.stringify(lines)} />
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {!fixedDates && <>
         <Field label={labels.documentDate}><input type="date" name="documentDate" required value={header.documentDate} onChange={(e) => setHeader((h) => ({ ...h, documentDate: e.target.value }))} className={inputCls} /></Field>
         <Field label={labels.postingDate}><input type="date" name="postingDate" required value={header.postingDate} onChange={(e) => setHeader((h) => ({ ...h, postingDate: e.target.value }))} className={inputCls} /></Field>
+        </>}
         <Field label={labels.description}><input name="description" required value={header.description} onChange={(e) => setHeader((h) => ({ ...h, description: e.target.value }))} className={inputCls} /></Field>
       </div>
       <Table id="journal-editor" caption={labels.caption} headers={columns} empty={lines.length === 0} emptyTitle={labels.emptyTitle}>

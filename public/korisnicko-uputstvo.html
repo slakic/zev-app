@@ -219,6 +219,7 @@
       <a class="lvl-3" href="#137-poslovne-godine">13.7 Poslovne godine</a>
       <a class="lvl-3" href="#138-pravila-knjizenja">13.8 Pravila knjiženja</a>
       <a class="lvl-3" href="#139-nalozi-za-knjizenje">13.9 Nalozi za knjiženje</a>
+      <a class="lvl-3" href="#1310-pocetno-stanje">13.10 Početno stanje</a>
       <a class="lvl-2" href="#14-podesavanja">14. Podešavanja</a>
       <a class="lvl-3" href="#141-moji-podaci">14.1 Moji podaci</a>
       <a class="lvl-3" href="#142-tab-zev">14.2 Tab „ZEV"</a>
@@ -893,7 +894,7 @@
 <hr>
 <h2 id="13-knjigovodstvo">13. Knjigovodstvo</h2>
 <p><strong>Knjigovodstvo</strong> otvarate iz lijevog menija: predsjednik u grupi <em>Uprava</em>, računovođa u grupi <em>Finansije</em>. Računovođa uređuje kontni plan, otvara poslovne godine, knjiži naloge i zatvara periode. Predsjednik sve vidi; jedino učestvuje u ponovnom otvaranju zatvorenog perioda (13.7). Vlasnik ovaj modul ne vidi.</p>
-<blockquote><p><strong>Važno:</strong> Na vrhu stranice stalno piše da ovo još nije zakonsko knjigovodstvo, i to ostaje i kad je kontni plan aktivan. Računovođa može ručno unositi i knjižiti naloge (13.9) i zatvarati periode, ali fakture, uplate i troškovi se još ne knjiže automatski, a glavne knjige i bruto bilansa još nema. To dolazi u sljedećim fazama, kad računovođa potvrdi pravila knjiženja. Do tada fakture, uplate i troškovi rade potpuno isto kao ranije.</p></blockquote>
+<blockquote><p><strong>Važno:</strong> Na vrhu stranice stalno piše da ovo još nije zakonsko knjigovodstvo, i to ostaje i kad je kontni plan aktivan. Računovođa može ručno unositi i knjižiti naloge (13.9), proknjižiti početno stanje (13.10) i zatvarati periode, ali fakture, uplate i troškovi se još ne knjiže automatski, a glavne knjige i bruto bilansa još nema. To dolazi u sljedećim fazama, kad računovođa potvrdi pravila knjiženja. Do tada fakture, uplate i troškovi rade potpuno isto kao ranije.</p></blockquote>
 <p>Modul ima pet tabova: <strong>Kontni plan</strong>, <strong>Poslovne godine</strong>, <strong>Pravila knjiženja</strong>, <strong>Nalozi</strong> i <strong>Izvještaji</strong>. Na posljednjem piše <strong>„Nije još dostupno”</strong>, uz rečenicu šta će se tu raditi.</p>
 <h3 id="131-dodjela-kontnog-plana">13.1 Dodjela kontnog plana</h3>
 <p>Dok ZEV nema kontni plan, na tabu <strong>Kontni plan</strong> stoji kartica <strong>Dodijelite kontni plan</strong> (računovođa):</p>
@@ -953,7 +954,12 @@
 <p>U ručnom nalogu se ne mogu birati kontrolna konta (banka, blagajna, potraživanja od vlasnika, avansi, dobavljači) — ona se mijenjaju kroz knjiženje dokumenata, storno i početno stanje.</p>
 <p><strong>Nacrt</strong> nema broj i slobodno se mijenja ili briše (<strong>Obriši nacrt</strong>). <strong>Proknjiži</strong> provjerava da su duguje i potražuje jednaki i da je period otvoren; nalog tada dobija broj (npr. <em>NK-2026-0001</em>) i više se ne mijenja.</p>
 <p><strong>Storno.</strong> Greška u proknjiženom nalogu ispravlja se stornom: na stranici naloga kliknite <strong>Storniraj</strong>, upišite razlog i datum knjiženja storna (u otvorenom periodu). Nastaje novi nalog vrste <strong>Storno</strong>, sa istim stavkama na obrnutim stranama i vezom na original. Nalog se može stornirati samo jednom, a storno se ne stornira. Ispravan nalog zatim unesite kao novi.</p>
-<p>Nalog početnog stanja i automatsko knjiženje faktura, uplata i troškova dolaze u sljedećim verzijama.</p>
+<p>Storno početnog stanja koje je na datum u budućnosti (npr. 1.1.2027.) knjiži se na taj isti datum. Automatsko knjiženje faktura, uplata i troškova dolazi u sljedećim verzijama.</p>
+<h3 id="1310-pocetno-stanje">13.10 Početno stanje</h3>
+<p>Nalog početnog stanja prenosi stanja iz evidencije u knjigovodstvo na dan kad počinje knjiženje. Otvarate ga iz taba <strong>Nalozi</strong>, u kartici <strong>Početno stanje</strong>, dugmetom <strong>Otvori početno stanje</strong>. Potrebni su aktivan kontni plan, otvorena poslovna godina za datum početka i kontrolna konta (13.8) koja važe na taj datum.</p>
+<ol><li>Upišite <strong>Datum početka knjiženja</strong> (npr. 1.1.2027.) i kliknite <strong>Pripremi prijedlog</strong>. Stanja se računaju na kraj prethodnog dana (31.12.2026.): ništa što je nastalo ili raspoređeno poslije tog dana ne ulazi u stanje.</li><li>U kartici <strong>Stavke iz evidencije</strong> su: stanje svakog računa novca; svaka otvorena faktura po vlasniku i namjeni (iznos se dijeli po stavkama fakture; stavka bez vrste zaduženja ide na redovno održavanje); korekcije salda po vlasniku; avans po vlasniku; svaka neidentifikovana uplata; svaki neplaćen račun dobavljača. Ove stavke se ne mijenjaju ručno.</li><li>U kartici <strong>Stavke koje evidencija ne zna</strong> dodajte ono što aplikacija ne vodi: razgraničena sredstva, rezultat ranijih godina i stavku razlike na kontu koje sami izaberete. Kontrolna konta se ovdje ne biraju. Zbir ispod tabele uključuje i stavke iz evidencije, pa oznaka <strong>Uravnoteženo</strong> znači da je cio nalog uravnotežen. Kliknite <strong>Sačuvaj nacrt</strong>.</li><li>Kartica <strong>Usklađivanje</strong> za svako kontrolno konto pokazuje <strong>Glavna knjiga</strong> (zbir stavki naloga), <strong>Analitika</strong> (zbir stavki sa vlasnikom ili dobavljačem) i <strong>Evidencija</strong> (stanje na dan, izračunato ponovo). Kad su sva tri ista, piše <strong>Usklađeno</strong>.</li><li>Dugme <strong>Proknjiži početno stanje</strong> pojavljuje se tek kad je nalog uravnotežen i sve usklađeno; do tada iznad njega piše šta nedostaje. Proknjižen nalog dobija broj serije <em>PS</em> (npr. <em>PS-2027-0001</em>).</li></ol>
+<p>Ako se evidencija promijeni poslije pripreme (npr. naknadno unesena uplata iz decembra), red u usklađivanju pokazuje <strong>Razlika</strong>. Kliknite <strong>Pripremi ponovo</strong>: stavke iz evidencije se zamjenjuju svježim stanjem, a ručno dodate stavke ostaju.</p>
+<p>Početno stanje se knjiži jednom. Ispravka poslije knjiženja je storno i novo početno stanje, i to samo dok u toj godini nema drugih proknjiženih naloga. Predsjednik početno stanje samo pregleda.</p>
 
 <h2 id="14-podesavanja">14. Podešavanja</h2>
 <p><strong>Podešavanja ZEV-a</strong> otvarate iz lijevog menija (grupa <em>Uprava</em>). Vlasnik ih otvara iz menija naloga (krug sa inicijalima) kao <strong>Moji podaci</strong>.</p>
@@ -1221,6 +1227,7 @@
 <p><strong>Namjena sredstava:</strong> za šta su sredstva prikupljena i smiju se trošiti (npr. redovno održavanje, zajednička rezerva) — poglavlje 13.8.</p>
 <p><strong>Obuhvat:</strong> na šta se nešto odnosi. Može biti cijela ZEV, jedna zgrada, ulaz ili odabrane jedinice.</p>
 <p><strong>Opseg (veze asistenta):</strong> šta tačno asistent smije u okviru jedne veze, na primjer da čita jedan nacrt ili samo da provjeri vezu.</p>
+<p><strong>Početno stanje (nalog):</strong> nalog koji prenosi stanja iz evidencije (novac, potraživanja, avansi, dobavljači) u knjigovodstvo na dan početka knjiženja, uz usklađivanje glavne knjige i analitike (poglavlje 13.10).</p>
 <p><strong>Poseban dio:</strong> stan, poslovni prostor, garaža ili druga samostalna jedinica u zgradi.</p>
 <p><strong>Poslovna godina:</strong> obračunski period ZEV-a (obično kalendarska godina), podijeljen na mjesečne periode. U zatvoren period se ne knjiži; ponovno otvaranje odobravaju dvije osobe sa različitim ulogama (poglavlje 13.7).</p>
 <p><strong>Povezani asistent:</strong> asistent (Claude, ChatGPT…) koji uz vašu dozvolu radi sa vašim nalogom, u okviru izabranog opsega i roka. Vezu možete prekinuti u svakom trenutku.</p>

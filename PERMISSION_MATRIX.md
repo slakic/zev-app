@@ -60,6 +60,7 @@ Sva prava se provjeravaju u servisnom sloju (`src/server/services/*` + `src/serv
 | Evidencija i opoziv stručne potvrde šeme pod kapijom (`schema.approve`) | – | ✔ | – |
 | Nacrt ručnog naloga — unos, izmjena, brisanje (`journal.prepare`) | pregled | ✔ | – |
 | Knjiženje naloga (`journal.post`) i storno (`journal.reverse`) | pregled | ✔ | – |
+| Nalog početnog stanja — prijedlog iz evidencije, ručne stavke (`journal.prepare`), knjiženje tek uz usklađivanje (`journal.post`) | pregled | ✔ | – |
 | Zatvaranje perioda (`period.close`) | – | ✔ | – |
 | Zahtjev i odluka o ponovnom otvaranju perioda — dvije osobe, različite uloge (`period.reopen`) | ✔ | ✔ | – |
 | Kontni predlošci (kontni okviri) — izrada, uvoz, pojedinačna konta u nacrtu, stručna provjera, verzije | samo super admin (platforma) | | |

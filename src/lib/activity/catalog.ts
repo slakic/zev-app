@@ -170,6 +170,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "journal.delete": "FINANCE",
   "journal.post": "FINANCE",
   "journal.reverse": "FINANCE",
+  "journal.opening_prepare": "FINANCE",
   "fiscal_period.close": "FINANCE",
   "fiscal_period.reopen_request": "FINANCE",
   "fiscal_period.reopen": "FINANCE",

@@ -6,7 +6,7 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { dec, formatMoney, sumDecimals } from "@/lib/money";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { formatDate, formatDateTime, t, tEnum, tf, toZonedDateIso } from "@/lib/i18n";
-import { Card, ConfirmAction, Field, Flash, inputCls, PageHeader, RowLink, StatusBadge, Table, Td, type ColumnSpec } from "@/components/ui";
+import { BtnLink, Card, ConfirmAction, Field, Flash, inputCls, PageHeader, RowLink, StatusBadge, Table, Td, type ColumnSpec } from "@/components/ui";
 import { JournalEditor } from "@/components/journal-editor";
 import { deleteJournalDraftAction, postJournalAction, reverseJournalAction, saveJournalDraftAction } from "@/server/actions/journal";
 import { editorLabels, editorOptionsFor } from "../editor-props";
@@ -32,7 +32,7 @@ export default async function JournalEntryPage({
   if (!e) notFound();
   const isDraft = e.status === "DRAFT";
   const canPrepare = hasCapability(actor.roles, "journal.prepare") && isDraft && e.kind === "MANUAL";
-  const canPost = hasCapability(actor.roles, "journal.post") && isDraft;
+  const canPost = hasCapability(actor.roles, "journal.post") && isDraft && e.kind !== "OPENING";
   const canReverse = hasCapability(actor.roles, "journal.reverse") && !isDraft && e.kind !== "REVERSAL" && !e.reversedBy;
   const debit = sumDecimals(e.lines.map((l) => dec(l.debit.toString())));
   const credit = sumDecimals(e.lines.map((l) => dec(l.credit.toString())));
@@ -110,6 +110,15 @@ export default async function JournalEntryPage({
           </Card>
         )}
 
+        {isDraft && e.kind === "OPENING" && (
+          <Card>
+            <div className="space-y-3">
+              <p className="text-sm text-slate-600">{t("ledger.journal.opening.editHere")}</p>
+              <BtnLink href="/knjigovodstvo/pocetno-stanje" variant="tonal">{t("ledger.journal.openingOpen")}</BtnLink>
+            </div>
+          </Card>
+        )}
+
         {(canPost || canPrepare || canReverse) && (
           <Card>
             <div className="flex flex-wrap items-start gap-3">
@@ -145,7 +154,7 @@ export default async function JournalEntryPage({
                 >
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <Field label={t("ledger.journal.detail.reverseReason")}><input name="reason" required className={inputCls} /></Field>
-                    <Field label={t("ledger.journal.detail.reverseDate")}><input type="date" name="postingDate" required defaultValue={toZonedDateIso(new Date())} className={inputCls} /></Field>
+                    <Field label={t("ledger.journal.detail.reverseDate")}><input type="date" name="postingDate" required defaultValue={e.kind === "OPENING" && iso(e.postingDate) > toZonedDateIso(new Date()) ? iso(e.postingDate) : toZonedDateIso(new Date())} className={inputCls} /></Field>
                   </div>
                 </ConfirmAction>
               )}

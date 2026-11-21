@@ -1,9 +1,10 @@
 // Tab „Nalozi” (B1a, Plans/kontni-plan-b1-nalozi-plan.md §5): lista naloga sa filterom perioda i statusa.
 import { hasCapability } from "@/lib/accountingCapabilities";
 import { listEntries } from "@/server/services/journal";
+import { openingStatus } from "@/server/services/openingBalance";
 import { listFiscalYears } from "@/server/services/chartOfAccounts";
 import { formatMoney } from "@/lib/money";
-import { formatDate, t, tEnum } from "@/lib/i18n";
+import { formatDate, t, tEnum, tf } from "@/lib/i18n";
 import { BtnLink, Card, Field, FilterBar, inputCls, RowLink, StatusBadge, Table, Td, type ColumnSpec } from "@/components/ui";
 import type { requireActor } from "@/server/actor";
 
@@ -20,7 +21,7 @@ const headers: ColumnSpec[] = [
 
 export async function JournalTab({ actor, periodId, status }: { actor: Actor; periodId: string; status: string }) {
   const canPrepare = hasCapability(actor.roles, "journal.prepare");
-  const [entries, years] = await Promise.all([listEntries(actor, { periodId, status }), listFiscalYears(actor)]);
+  const [entries, years, opening] = await Promise.all([listEntries(actor, { periodId, status }), listFiscalYears(actor), openingStatus(actor)]);
   const periods = years.flatMap((y) => y.periods);
 
   return (
@@ -64,9 +65,15 @@ export async function JournalTab({ actor, periodId, status }: { actor: Actor; pe
         </div>
       </Card>
       <Card title={t("ledger.journal.openingTitle")}>
-        <div className="space-y-2">
-          <StatusBadge status="NOT_YET_AVAILABLE" label={t("ledger.notYet")} />
-          <p className="max-w-[68ch] text-sm text-slate-600">{t("ledger.journal.openingSoon")}</p>
+        <div className="space-y-3">
+          <p className="max-w-[68ch] text-sm text-slate-600">
+            {opening.posted
+              ? tf("ledger.journal.openingPosted", { broj: opening.posted.number ?? "" })
+              : opening.draft
+                ? tf("ledger.journal.openingDraft", { datum: formatDate(opening.draft.postingDate) })
+                : t("ledger.journal.openingNone")}
+          </p>
+          {(periods.length > 0 || opening.posted) && <BtnLink href="/knjigovodstvo/pocetno-stanje" variant="tonal">{t("ledger.journal.openingOpen")}</BtnLink>}
         </div>
       </Card>
     </div>
