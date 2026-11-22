@@ -64,7 +64,10 @@ export async function EventsTab({ actor, filter }: { actor: Actor; filter: strin
             <Table id="ledger-events" caption={E("listTitle")} headers={headers} empty={rows.length === 0} emptyTitle={view === "WAITING" ? E("empty") : E("emptyAll")}>
               {rows.map((r) => (
                 <tr key={r.id}>
-                  <Td>{formatDate(r.eventDate)}</Td>
+                  <Td>
+                    {formatDate(r.eventDate)}
+                    {start && r.eventDate < start && <span className="block text-hint text-slate-500">{E("late")}</span>}
+                  </Td>
                   <Td>{tEnum("eventKind", r.kind)}</Td>
                   <Td>{r.sourceHref ? <RowLink href={r.sourceHref}>{r.sourceLabel}</RowLink> : r.sourceLabel}</Td>
                   <Td><span className="whitespace-nowrap tabular-nums">{formatMoney(r.amount)}</span></Td>

@@ -73,7 +73,10 @@ export async function JournalTab({ actor, periodId, status }: { actor: Actor; pe
                 ? tf("ledger.journal.openingDraft", { datum: formatDate(opening.draft.postingDate) })
                 : t("ledger.journal.openingNone")}
           </p>
-          {(periods.length > 0 || opening.posted) && <BtnLink href="/knjigovodstvo/pocetno-stanje" variant="tonal">{t("ledger.journal.openingOpen")}</BtnLink>}
+          <div className="flex flex-wrap gap-3">
+            {(periods.length > 0 || opening.posted) && <BtnLink href="/knjigovodstvo/pocetno-stanje" variant="tonal">{t("ledger.journal.openingOpen")}</BtnLink>}
+            {!opening.posted && <BtnLink href="/knjigovodstvo/proba" variant="secondary">{t("ledger.dryRun.open")}</BtnLink>}
+          </div>
         </div>
       </Card>
     </div>

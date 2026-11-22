@@ -232,77 +232,80 @@ export async function prepareOpening(actor: Actor, input: { startDate: string })
   requireCapability(actor, "journal.prepare");
   const zevId = requireZev(actor);
   if (!isDate(input.startDate)) throw new Error("Unesite datum početka knjiženja.");
-  const start = dateOnly(input.startDate);
   const asOfIso = dayBefore(input.startDate);
-
-  const result = await prisma.$transaction(async (tx) => {
-    const chart = await tx.zevChart.findFirst({ where: { zevId, status: "ACTIVE" } });
-    if (!chart) throw new Error("Kontni plan ZEV-a nije aktivan.");
-    const period = await tx.fiscalPeriod.findFirst({ where: { zevId, startDate: { lte: start }, endDate: { gte: start } }, include: { year: true } });
-    if (!period) throw new Error("Za datum početka ne postoji poslovna godina — otvorite je na tabu „Poslovne godine”.");
-    if (period.status !== "OPEN" || period.year.status !== "OPEN") throw new Error(`Period ${period.label} je zatvoren.`);
-
-    const existing = await tx.journalEntry.findMany({ where: { zevId, kind: "OPENING" }, include: { reversedBy: { select: { id: true } } } });
-    if (existing.some((e) => e.status === "POSTED" && !e.reversedBy)) {
-      throw new Error("Početno stanje je već proknjiženo. Za ispravku ga prvo stornirajte.");
-    }
-    const draft = existing.find((e) => e.status === "DRAFT") ?? null;
-    if (draft && draft.yearId !== period.yearId) throw new Error("Postoji nacrt početnog stanja za drugu godinu — obrišite ga prije nove pripreme.");
-    // Poslije storna novo početno stanje samo dok u godini nema ručnih proknjiženih naloga (plan §4). Automatski
-    // nalozi (B2) nastaju iz evidencije poslije datuma početka i ne zavise od iznosa početnog stanja — ali novo
-    // početno stanje tada mora imati isti datum početka, inače bi se događaji između dva datuma brojali dvaput.
-    const reversed = existing.filter((e) => e.status === "POSTED");
-    if (reversed.length > 0) {
-      const manual = await tx.journalEntry.count({ where: { zevId, yearId: period.yearId, status: "POSTED", kind: "MANUAL" } });
-      if (manual > 0) throw new Error("U godini već postoje proknjiženi ručni nalozi — novo početno stanje više nije moguće.");
-      const auto = await tx.journalEntry.count({ where: { zevId, status: "POSTED", kind: "AUTO" } });
-      const lastStart = reversed.sort((x, y) => y.createdAt.getTime() - x.createdAt.getTime())[0].postingDate;
-      if (auto > 0 && lastStart.getTime() !== start.getTime()) {
-        throw new Error(`Već postoje automatski nalozi od ${formatDate(lastStart)} — novo početno stanje mora imati isti datum početka.`);
-      }
-    }
-
-    const items = await operationalSnapshot(tx, zevId, asOfIso);
-    const controls = await controlAccountsAt(tx, zevId, start);
-    const missing = new Set<string>();
-    const generated = items.map((it) => {
-      const c = controls.get(controlKey(it));
-      if (!c) missing.add(ROLE_LABEL[it.role]);
-      return { it, accountId: c?.accountId ?? "" };
-    });
-    if (missing.size > 0) {
-      throw new Error(`Nedostaje kontrolno konto (${[...missing].join(", ")}) važeće na ${formatDate(start)} — postavite ga na tabu „Pravila knjiženja”.`);
-    }
-
-    const header = {
-      yearId: period.yearId, periodId: period.id, documentDate: start, postingDate: start,
-      description: draft?.description ?? `Početno stanje na ${formatDate(start)}`,
-    };
-    const entry = draft
-      ? await tx.journalEntry.update({ where: { id: draft.id }, data: header })
-      : await tx.journalEntry.create({ data: { ...header, zevId, kind: "OPENING", createdById: actor.userId } });
-    await tx.journalLine.deleteMany({ where: { entryId: entry.id, openingSourceType: { not: null } } });
-    const manualCount = await tx.journalLine.count({ where: { entryId: entry.id } });
-    await tx.journalLine.createMany({
-      data: generated.map(({ it, accountId }, i) => ({
-        entryId: entry.id, zevId, order: i, accountId,
-        debit: it.side === "D" ? it.amount.toFixed(2) : "0", credit: it.side === "P" ? it.amount.toFixed(2) : "0",
-        partyId: it.partyId, unitId: it.unitId, supplierId: it.supplierId, purposeId: it.purposeId,
-        description: it.description, openingSourceType: it.sourceType, openingSourceId: it.sourceId,
-      })),
-    });
-    // Ručne stavke idu iza stavki iz evidencije.
-    if (manualCount > 0) {
-      const manual = await tx.journalLine.findMany({ where: { entryId: entry.id, openingSourceType: null }, orderBy: { order: "asc" } });
-      for (const [k, l] of manual.entries()) await tx.journalLine.update({ where: { id: l.id }, data: { order: generated.length + k } });
-    }
-    return { entry, lines: generated.length, replaced: !!draft };
-  });
+  const result = await prisma.$transaction((tx) => prepareOpeningInTx(tx, zevId, actor.userId, input.startDate));
   await audit(actor, {
     action: "journal.opening_prepare", targetType: "JournalEntry", targetId: result.entry.id,
     after: { startDate: input.startDate, asOf: asOfIso, lines: result.lines, replaced: result.replaced },
   });
   return result.entry;
+}
+
+/** Priprema u zadatoj transakciji — i za probno knjiženje (B4), koje transakciju poništava. */
+export async function prepareOpeningInTx(tx: Tx, zevId: string, userId: string, startDate: string) {
+  const start = dateOnly(startDate);
+  const asOfIso = dayBefore(startDate);
+  const chart = await tx.zevChart.findFirst({ where: { zevId, status: "ACTIVE" } });
+  if (!chart) throw new Error("Kontni plan ZEV-a nije aktivan.");
+  const period = await tx.fiscalPeriod.findFirst({ where: { zevId, startDate: { lte: start }, endDate: { gte: start } }, include: { year: true } });
+  if (!period) throw new Error("Za datum početka ne postoji poslovna godina — otvorite je na tabu „Poslovne godine”.");
+  if (period.status !== "OPEN" || period.year.status !== "OPEN") throw new Error(`Period ${period.label} je zatvoren.`);
+
+  const existing = await tx.journalEntry.findMany({ where: { zevId, kind: "OPENING" }, include: { reversedBy: { select: { id: true } } } });
+  if (existing.some((e) => e.status === "POSTED" && !e.reversedBy)) {
+    throw new Error("Početno stanje je već proknjiženo. Za ispravku ga prvo stornirajte.");
+  }
+  const draft = existing.find((e) => e.status === "DRAFT") ?? null;
+  if (draft && draft.yearId !== period.yearId) throw new Error("Postoji nacrt početnog stanja za drugu godinu — obrišite ga prije nove pripreme.");
+  // Poslije storna novo početno stanje samo dok u godini nema ručnih proknjiženih naloga (plan §4). Automatski
+  // nalozi (B2) nastaju iz evidencije poslije datuma početka i ne zavise od iznosa početnog stanja — ali novo
+  // početno stanje tada mora imati isti datum početka, inače bi se događaji između dva datuma brojali dvaput.
+  const reversed = existing.filter((e) => e.status === "POSTED");
+  if (reversed.length > 0) {
+    const manual = await tx.journalEntry.count({ where: { zevId, yearId: period.yearId, status: "POSTED", kind: "MANUAL" } });
+    if (manual > 0) throw new Error("U godini već postoje proknjiženi ručni nalozi — novo početno stanje više nije moguće.");
+    const auto = await tx.journalEntry.count({ where: { zevId, status: "POSTED", kind: "AUTO" } });
+    const lastStart = reversed.sort((x, y) => y.createdAt.getTime() - x.createdAt.getTime())[0].postingDate;
+    if (auto > 0 && lastStart.getTime() !== start.getTime()) {
+      throw new Error(`Već postoje automatski nalozi od ${formatDate(lastStart)} — novo početno stanje mora imati isti datum početka.`);
+    }
+  }
+
+  const items = await operationalSnapshot(tx, zevId, asOfIso);
+  const controls = await controlAccountsAt(tx, zevId, start);
+  const missing = new Set<string>();
+  const generated = items.map((it) => {
+    const c = controls.get(controlKey(it));
+    if (!c) missing.add(ROLE_LABEL[it.role]);
+    return { it, accountId: c?.accountId ?? "" };
+  });
+  if (missing.size > 0) {
+    throw new Error(`Nedostaje kontrolno konto (${[...missing].join(", ")}) važeće na ${formatDate(start)} — postavite ga na tabu „Pravila knjiženja”.`);
+  }
+
+  const header = {
+    yearId: period.yearId, periodId: period.id, documentDate: start, postingDate: start,
+    description: draft?.description ?? `Početno stanje na ${formatDate(start)}`,
+  };
+  const entry = draft
+    ? await tx.journalEntry.update({ where: { id: draft.id }, data: header })
+    : await tx.journalEntry.create({ data: { ...header, zevId, kind: "OPENING", createdById: userId } });
+  await tx.journalLine.deleteMany({ where: { entryId: entry.id, openingSourceType: { not: null } } });
+  const manualCount = await tx.journalLine.count({ where: { entryId: entry.id } });
+  await tx.journalLine.createMany({
+    data: generated.map(({ it, accountId }, i) => ({
+      entryId: entry.id, zevId, order: i, accountId,
+      debit: it.side === "D" ? it.amount.toFixed(2) : "0", credit: it.side === "P" ? it.amount.toFixed(2) : "0",
+      partyId: it.partyId, unitId: it.unitId, supplierId: it.supplierId, purposeId: it.purposeId,
+      description: it.description, openingSourceType: it.sourceType, openingSourceId: it.sourceId,
+    })),
+  });
+  // Ručne stavke idu iza stavki iz evidencije.
+  if (manualCount > 0) {
+    const manual = await tx.journalLine.findMany({ where: { entryId: entry.id, openingSourceType: null }, orderBy: { order: "asc" } });
+    for (const [k, l] of manual.entries()) await tx.journalLine.update({ where: { id: l.id }, data: { order: generated.length + k } });
+  }
+  return { entry, lines: generated.length, replaced: !!draft };
 }
 
 /** Ručne stavke nacrta početnog stanja (razgraničena sredstva, rezultat ranijih godina, razlika) i opis naloga. */

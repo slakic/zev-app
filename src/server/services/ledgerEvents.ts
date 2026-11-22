@@ -47,8 +47,12 @@ export const OWNER_EVENT_KINDS: AccountingEventKind[] = [
 
 /** Datum početka knjiženja: datum proknjiženog, nestorniranog početnog stanja; null = knjiženje nije aktivno. */
 export async function ledgerStart(db: Db, zevId: string): Promise<Date | null> {
-  const e = await db.journalEntry.findFirst({ where: { zevId, kind: "OPENING", status: "POSTED", reversedBy: null }, select: { postingDate: true } });
-  return e?.postingDate ?? null;
+  return (await openingEntry(db, zevId))?.postingDate ?? null;
+}
+
+/** Proknjiženo, nestornirano početno stanje: datum početka i trenutak knjiženja (granica „kasno unesenog” zapisa). */
+async function openingEntry(db: Db, zevId: string) {
+  return db.journalEntry.findFirst({ where: { zevId, kind: "OPENING", status: "POSTED", reversedBy: null }, select: { postingDate: true, postedAt: true } });
 }
 
 // ---------------------------------------------------------------------------
@@ -61,18 +65,25 @@ type NewEvent = { kind: AccountingEventKind; sourceType: string; sourceId: strin
  * Upisuje događaje koji nedostaju za sve zapise evidencije od datuma početka. Idempotentno (skipDuplicates na
  * jedinstvenom ključu izvora). Vraća broj novih događaja.
  */
-export async function syncEvents(zevId: string): Promise<number> {
-  const start = await ledgerStart(prisma, zevId);
-  if (!start) return 0;
+export async function syncEvents(zevId: string, db: Db = prisma): Promise<number> {
+  const opening = await openingEntry(db, zevId);
+  if (!opening) return 0;
+  const start = opening.postingDate;
+  // B4-Q5 (a): zapis sa datumom prije početka koji je unesen POSLIJE knjiženja početnog stanja nije u početnom
+  // stanju — dobija događaj (datum dokumenta ostaje, knjiži se na datum početka, `processEventInTx`).
+  const postedAt = opening.postedAt ?? new Date(0);
+  const late = { gt: postedAt };
   // Granica upita sa danom rezerve (zona); tačan dan se provjerava ispod.
   const from = new Date(start.getTime() - 36 * 3600 * 1000);
   const onOrAfter = (d: Date) => dayOf(d) >= start;
+  /** Datum prije početka, ali zapis (ili storno) nastao poslije knjiženja početnog stanja. */
+  const isLate = (happenedAt: Date) => happenedAt > postedAt;
   const out: NewEvent[] = [];
 
-  const invoices = await prisma.invoice.findMany({
+  const invoices = await db.invoice.findMany({
     where: {
       zevId, status: { in: ["ISSUED", "PAID", "CANCELLED", "CORRECTED"] },
-      OR: [{ issueDate: { gte: from } }, { cancelledAt: { gte: from } }, { status: "CORRECTED" }],
+      OR: [{ issueDate: { gte: from } }, { cancelledAt: { gte: from } }, { status: "CORRECTED" }, { createdAt: late }, { cancelledAt: late }],
     },
     include: { batch: { select: { status: true } }, correctedBy: { select: { issueDate: true, createdAt: true } } },
   });
@@ -80,24 +91,24 @@ export async function syncEvents(zevId: string): Promise<number> {
     // Faktura iz serije koja nije izdata nikad nije bila zaduženje (storniran nacrt).
     const wasIssued = !inv.batch || inv.batch.status === "ISSUED";
     if (!wasIssued) continue;
-    if (onOrAfter(inv.issueDate)) {
+    if (onOrAfter(inv.issueDate) || isLate(inv.createdAt)) {
       out.push({ kind: "CHARGE_ISSUED", sourceType: "Invoice", sourceId: inv.id, eventDate: dayOf(inv.issueDate), sourceCreatedAt: inv.createdAt, amount: inv.total.toFixed(2) });
     }
     const cancelAt = inv.status === "CANCELLED" ? inv.cancelledAt : inv.status === "CORRECTED" ? inv.correctedBy?.issueDate ?? null : null;
-    if (cancelAt && onOrAfter(cancelAt)) {
+    if (cancelAt && (onOrAfter(cancelAt) || isLate(cancelAt))) {
       out.push({ kind: "CHARGE_CANCELLED", sourceType: "Invoice", sourceId: inv.id, eventDate: dayOf(cancelAt), sourceCreatedAt: inv.status === "CORRECTED" ? inv.correctedBy!.createdAt : cancelAt, amount: inv.total.toFixed(2) });
     }
   }
 
-  const payments = await prisma.payment.findMany({ where: { zevId, OR: [{ date: { gte: from } }, { reversedAt: { gte: from } }] } });
+  const payments = await db.payment.findMany({ where: { zevId, OR: [{ date: { gte: from } }, { reversedAt: { gte: from } }, { createdAt: late }, { reversedAt: late }] } });
   for (const p of payments) {
-    if (onOrAfter(p.date)) out.push({ kind: "PAYMENT_RECEIVED", sourceType: "Payment", sourceId: p.id, eventDate: dayOf(p.date), sourceCreatedAt: p.createdAt, amount: p.amount.toFixed(2) });
-    if (p.reversedAt && onOrAfter(p.reversedAt)) out.push({ kind: "PAYMENT_REVERSED", sourceType: "Payment", sourceId: p.id, eventDate: dayOf(p.reversedAt), sourceCreatedAt: p.reversedAt, amount: p.amount.toFixed(2) });
+    if (onOrAfter(p.date) || isLate(p.createdAt)) out.push({ kind: "PAYMENT_RECEIVED", sourceType: "Payment", sourceId: p.id, eventDate: dayOf(p.date), sourceCreatedAt: p.createdAt, amount: p.amount.toFixed(2) });
+    if (p.reversedAt && (onOrAfter(p.reversedAt) || isLate(p.reversedAt))) out.push({ kind: "PAYMENT_REVERSED", sourceType: "Payment", sourceId: p.id, eventDate: dayOf(p.reversedAt), sourceCreatedAt: p.reversedAt, amount: p.amount.toFixed(2) });
   }
 
-  const allocations = await prisma.paymentAllocation.findMany({ where: { payment: { zevId }, createdAt: { gte: from } }, include: { payment: { select: { payerId: true } } } });
+  const allocations = await db.paymentAllocation.findMany({ where: { payment: { zevId }, OR: [{ createdAt: { gte: from } }, { createdAt: late }] }, include: { payment: { select: { payerId: true } } } });
   for (const a of allocations) {
-    if (!onOrAfter(a.createdAt)) continue;
+    if (!onOrAfter(a.createdAt) && !isLate(a.createdAt)) continue;
     const base = { sourceType: "PaymentAllocation", sourceId: a.id, eventDate: dayOf(a.createdAt), sourceCreatedAt: a.createdAt };
     const amount = dec(a.amount.toString());
     if (amount.gt(0)) {
@@ -110,33 +121,33 @@ export async function syncEvents(zevId: string): Promise<number> {
   }
 
   // Korekcije salda (B2-Q8): dug lica raste (+) ili pada (−) na dan unosa.
-  const corrections = await prisma.balanceCorrection.findMany({ where: { zevId, createdAt: { gte: from } } });
+  const corrections = await db.balanceCorrection.findMany({ where: { zevId, OR: [{ createdAt: { gte: from } }, { createdAt: late }] } });
   for (const c of corrections) {
-    if (onOrAfter(c.createdAt)) out.push({ kind: "BALANCE_CORRECTION", sourceType: "BalanceCorrection", sourceId: c.id, eventDate: dayOf(c.createdAt), sourceCreatedAt: c.createdAt, amount: c.amount.toFixed(2) });
+    if (onOrAfter(c.createdAt) || isLate(c.createdAt)) out.push({ kind: "BALANCE_CORRECTION", sourceType: "BalanceCorrection", sourceId: c.id, eventDate: dayOf(c.createdAt), sourceCreatedAt: c.createdAt, amount: c.amount.toFixed(2) });
   }
 
   // Računi dobavljača: datum računa (bez datuma — dan unosa), storno na dan storna.
-  const expenses = await prisma.expense.findMany({
-    where: { zevId, OR: [{ invoiceDate: { gte: from } }, { invoiceDate: null, createdAt: { gte: from } }, { cancelledAt: { gte: from } }] },
+  const expenses = await db.expense.findMany({
+    where: { zevId, OR: [{ invoiceDate: { gte: from } }, { invoiceDate: null, createdAt: { gte: from } }, { cancelledAt: { gte: from } }, { createdAt: late }, { cancelledAt: late }] },
   });
   for (const e of expenses) {
     const base = { sourceType: "Expense", sourceId: e.id, amount: e.amount.toFixed(2) };
-    if (onOrAfter(expenseDate(e))) out.push({ ...base, kind: "SUPPLIER_INVOICE", eventDate: dayOf(expenseDate(e)), sourceCreatedAt: e.createdAt });
-    if (e.status === "CANCELLED" && e.cancelledAt && onOrAfter(e.cancelledAt)) out.push({ ...base, kind: "SUPPLIER_INVOICE_CANCELLED", eventDate: dayOf(e.cancelledAt), sourceCreatedAt: e.cancelledAt });
+    if (onOrAfter(expenseDate(e)) || isLate(e.createdAt)) out.push({ ...base, kind: "SUPPLIER_INVOICE", eventDate: dayOf(expenseDate(e)), sourceCreatedAt: e.createdAt });
+    if (e.status === "CANCELLED" && e.cancelledAt && (onOrAfter(e.cancelledAt) || isLate(e.cancelledAt))) out.push({ ...base, kind: "SUPPLIER_INVOICE_CANCELLED", eventDate: dayOf(e.cancelledAt), sourceCreatedAt: e.cancelledAt });
   }
 
   // Promet bez uplate (K-2: promet uplate vlasnika knjiži se kroz uplatu): plaćanje troška ili ručni prihod/rashod.
-  const txs = await prisma.finTransaction.findMany({
-    where: { zevId, paymentId: null, type: { in: ["INCOME", "EXPENSE"] }, OR: [{ date: { gte: from } }, { cancelledAt: { gte: from } }] },
+  const txs = await db.finTransaction.findMany({
+    where: { zevId, paymentId: null, type: { in: ["INCOME", "EXPENSE"] }, OR: [{ date: { gte: from } }, { cancelledAt: { gte: from } }, { createdAt: late }, { cancelledAt: late }] },
   });
   for (const t of txs) {
     const base = { sourceType: "FinTransaction", sourceId: t.id, amount: t.amount.toFixed(2) };
-    if (onOrAfter(t.date)) out.push({ ...base, kind: transactionKind(t), eventDate: dayOf(t.date), sourceCreatedAt: t.createdAt });
-    if (t.status === "CANCELLED" && t.cancelledAt && onOrAfter(t.cancelledAt)) out.push({ ...base, kind: "TRANSACTION_CANCELLED", eventDate: dayOf(t.cancelledAt), sourceCreatedAt: t.cancelledAt });
+    if (onOrAfter(t.date) || isLate(t.createdAt)) out.push({ ...base, kind: transactionKind(t), eventDate: dayOf(t.date), sourceCreatedAt: t.createdAt });
+    if (t.status === "CANCELLED" && t.cancelledAt && (onOrAfter(t.cancelledAt) || isLate(t.cancelledAt))) out.push({ ...base, kind: "TRANSACTION_CANCELLED", eventDate: dayOf(t.cancelledAt), sourceCreatedAt: t.cancelledAt });
   }
 
   if (out.length === 0) return 0;
-  const res = await prisma.accountingEvent.createMany({ data: out.map((e) => ({ ...e, zevId })), skipDuplicates: true });
+  const res = await db.accountingEvent.createMany({ data: out.map((e) => ({ ...e, zevId })), skipDuplicates: true });
   return res.count;
 }
 
@@ -568,76 +579,106 @@ async function periodFor(db: Db, zevId: string, at: Date) {
  */
 export async function processEvent(zevId: string, eventId: string, userId: string, opts: { intoOpenPeriod?: boolean } = {}) {
   try {
-    return await prisma.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT id FROM "AccountingEvent" WHERE id = ${eventId} AND "zevId" = ${zevId} FOR UPDATE`;
-      const ev = await tx.accountingEvent.findUniqueOrThrow({ where: { id: eventId, zevId } });
-      if (ev.status === "POSTED") return ev;
-      const b = await build(tx, zevId, context(tx, zevId), ev);
-      if (!b.ok) return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: b.status, statusDetail: b.detail, processedAt: new Date() } });
-      const lines = netLines(b.lines);
-      if (lines.length < 2) {
-        // Ništa za knjižiti (npr. raspored nule) — događaj se zatvara bez naloga nije dozvoljen; ostavlja se vidljiv.
-        return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "WAITING_RULE", statusDetail: "Događaj ne daje stavke za knjiženje.", processedAt: new Date() } });
-      }
-
-      let postingDate = ev.eventDate;
-      let period = await periodFor(tx, zevId, postingDate);
-      if (opts.intoOpenPeriod) {
-        const next = await tx.fiscalPeriod.findFirst({ where: { zevId, status: "OPEN", year: { status: "OPEN" }, endDate: { gte: ev.eventDate } }, orderBy: { startDate: "asc" }, include: { year: true } });
-        if (next) {
-          period = next;
-          if (next.startDate > postingDate) postingDate = next.startDate;
-        }
-      }
-      if (!period) return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "WAITING_PERIOD", statusDetail: `Za ${formatDate(postingDate)} ne postoji poslovna godina.`, processedAt: new Date() } });
-      if (period.status !== "OPEN" || period.year.status !== "OPEN") {
-        return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "WAITING_PERIOD", statusDetail: `Period ${period.label} je zatvoren.`, processedAt: new Date() } });
-      }
-
-      // Storno se veže na original samo ako original još nije storniran (veza je jedinstvena).
-      let reversalOfId = b.reversalOfId ?? null;
-      if (reversalOfId && (await tx.journalEntry.count({ where: { reversalOfId } })) > 0) reversalOfId = null;
-      const entry = await tx.journalEntry.create({
-        data: {
-          zevId, yearId: period.yearId, periodId: period.id, kind: "AUTO", documentDate: ev.eventDate, postingDate,
-          description: b.description, sourceType: ev.sourceType, sourceId: ev.sourceId, reversalOfId, createdById: userId,
-        },
-      });
-      await tx.journalLine.createMany({
-        data: lines.map((l, i) => ({
-          entryId: entry.id, zevId, order: i, accountId: l.accountId,
-          debit: l.amount.gt(0) ? l.amount.toFixed(2) : "0", credit: l.amount.lt(0) ? l.amount.abs().toFixed(2) : "0",
-          partyId: l.partyId ?? null, unitId: l.unitId ?? null, supplierId: l.supplierId ?? null, projectId: l.projectId ?? null,
-          purposeId: l.purposeId ?? null, description: l.description ?? null, ruleId: l.ruleId ?? null,
-        })),
-      });
-      await postEntryInTx(tx, zevId, entry.id, userId);
-      return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "POSTED", statusDetail: null, journalEntryId: entry.id, processedAt: new Date() } });
-    });
+    return await prisma.$transaction((tx) => processEventInTx(tx, zevId, eventId, userId, opts));
   } catch (e) {
     // Kontrole knjiženja (dimenzija, konto…) — događaj čeka sa porukom; poslovna radnja je već prošla.
-    const detail = e instanceof Error ? e.message : "Greška pri knjiženju.";
-    await prisma.accountingEvent.updateMany({ where: { id: eventId, zevId, status: { not: "POSTED" } }, data: { status: "WAITING_RULE", statusDetail: detail.slice(0, 500), processedAt: new Date() } });
+    await markFailed(prisma, zevId, eventId, e);
     return null;
   }
 }
 
+async function markFailed(db: Db, zevId: string, eventId: string, e: unknown) {
+  const detail = e instanceof Error ? e.message : "Greška pri knjiženju.";
+  await db.accountingEvent.updateMany({ where: { id: eventId, zevId, status: { not: "POSTED" } }, data: { status: "WAITING_RULE", statusDetail: detail.slice(0, 500), processedAt: new Date() } });
+}
+
+/** Isto kao `processEvent`, u zadatoj transakciji (probno knjiženje, B4-Q2 (a)); greška se ne hvata. */
+export async function processEventInTx(tx: Tx, zevId: string, eventId: string, userId: string, opts: { intoOpenPeriod?: boolean } = {}) {
+  await tx.$queryRaw`SELECT id FROM "AccountingEvent" WHERE id = ${eventId} AND "zevId" = ${zevId} FOR UPDATE`;
+  const ev = await tx.accountingEvent.findUniqueOrThrow({ where: { id: eventId, zevId } });
+  if (ev.status === "POSTED") return ev;
+  // Kasno unesen dokument (B4-Q5 (a)): datum prije početka knjiženja → šema i knjiženje na datum početka,
+  // datum dokumenta ostaje izvorni.
+  const start = await ledgerStart(tx, zevId);
+  const lateEntry = !!start && ev.eventDate < start;
+  const bookDate = lateEntry ? start! : ev.eventDate;
+  const b = await build(tx, zevId, context(tx, zevId), { ...ev, eventDate: bookDate });
+  if (!b.ok) return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: b.status, statusDetail: b.detail, processedAt: new Date() } });
+  const lines = netLines(b.lines);
+  if (lines.length < 2) {
+    // Ništa za knjižiti (npr. raspored nule) — događaj se zatvara bez naloga nije dozvoljen; ostavlja se vidljiv.
+    return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "WAITING_RULE", statusDetail: "Događaj ne daje stavke za knjiženje.", processedAt: new Date() } });
+  }
+
+  let postingDate = bookDate;
+  let period = await periodFor(tx, zevId, postingDate);
+  if (opts.intoOpenPeriod) {
+    const next = await tx.fiscalPeriod.findFirst({ where: { zevId, status: "OPEN", year: { status: "OPEN" }, endDate: { gte: bookDate } }, orderBy: { startDate: "asc" }, include: { year: true } });
+    if (next) {
+      period = next;
+      if (next.startDate > postingDate) postingDate = next.startDate;
+    }
+  }
+  if (!period) return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "WAITING_PERIOD", statusDetail: `Za ${formatDate(postingDate)} ne postoji poslovna godina.`, processedAt: new Date() } });
+  if (period.status !== "OPEN" || period.year.status !== "OPEN") {
+    return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "WAITING_PERIOD", statusDetail: `Period ${period.label} je zatvoren.`, processedAt: new Date() } });
+  }
+
+  // Storno se veže na original samo ako original još nije storniran (veza je jedinstvena).
+  let reversalOfId = b.reversalOfId ?? null;
+  if (reversalOfId && (await tx.journalEntry.count({ where: { reversalOfId } })) > 0) reversalOfId = null;
+  const entry = await tx.journalEntry.create({
+    data: {
+      zevId, yearId: period.yearId, periodId: period.id, kind: "AUTO", documentDate: ev.eventDate, postingDate,
+      description: lateEntry ? `${b.description} (${LATE_ENTRY_LABEL})` : b.description,
+      sourceType: ev.sourceType, sourceId: ev.sourceId, reversalOfId, createdById: userId,
+    },
+  });
+  await tx.journalLine.createMany({
+    data: lines.map((l, i) => ({
+      entryId: entry.id, zevId, order: i, accountId: l.accountId,
+      debit: l.amount.gt(0) ? l.amount.toFixed(2) : "0", credit: l.amount.lt(0) ? l.amount.abs().toFixed(2) : "0",
+      partyId: l.partyId ?? null, unitId: l.unitId ?? null, supplierId: l.supplierId ?? null, projectId: l.projectId ?? null,
+      purposeId: l.purposeId ?? null, description: l.description ?? null, ruleId: l.ruleId ?? null,
+    })),
+  });
+  await postEntryInTx(tx, zevId, entry.id, userId);
+  return tx.accountingEvent.update({ where: { id: ev.id }, data: { status: "POSTED", statusDetail: null, journalEntryId: entry.id, processedAt: new Date() } });
+}
+
+/** Oznaka automatskog naloga za dokument sa datumom prije početka knjiženja, unesen poslije početnog stanja. */
+export const LATE_ENTRY_LABEL = "kasno unesen dokument, datum prije početka knjiženja";
+
 /** Obrađuje sve neproknjižene događaje redom datuma; ponavlja dok ima napretka (prethodnici u istom prolazu). */
-export async function processEvents(zevId: string, userId: string) {
+export async function processEvents(zevId: string, userId: string, tx?: Tx) {
   let posted = 0;
   for (let pass = 0; pass < 10; pass++) {
-    const events = await prisma.accountingEvent.findMany({ where: { zevId, status: { not: "POSTED" } }, select: { id: true, kind: true, eventDate: true, sourceCreatedAt: true } });
+    const events = await (tx ?? prisma).accountingEvent.findMany({ where: { zevId, status: { not: "POSTED" } }, select: { id: true, kind: true, eventDate: true, sourceCreatedAt: true } });
     events.sort((a, b) =>
       a.eventDate.getTime() - b.eventDate.getTime() || a.sourceCreatedAt.getTime() - b.sourceCreatedAt.getTime() || (KIND_ORDER[a.kind] ?? 9) - (KIND_ORDER[b.kind] ?? 9));
     let progress = 0;
     for (const e of events) {
-      const r = await processEvent(zevId, e.id, userId);
+      const r = tx ? await processInSavepoint(tx, zevId, e.id, userId) : await processEvent(zevId, e.id, userId);
       if (r?.status === "POSTED") progress++;
     }
     posted += progress;
     if (progress === 0) break;
   }
   return posted;
+}
+
+/** U spoljnoj transakciji (proba): greška jednog događaja se vraća na savepoint, kao zasebna transakcija van probe. */
+async function processInSavepoint(tx: Tx, zevId: string, eventId: string, userId: string) {
+  await tx.$executeRawUnsafe("SAVEPOINT ledger_event");
+  try {
+    const r = await processEventInTx(tx, zevId, eventId, userId);
+    await tx.$executeRawUnsafe("RELEASE SAVEPOINT ledger_event");
+    return r;
+  } catch (e) {
+    await tx.$executeRawUnsafe("ROLLBACK TO SAVEPOINT ledger_event");
+    await markFailed(tx, zevId, eventId, e);
+    return null;
+  }
 }
 
 /**
@@ -666,7 +707,7 @@ export type EventRow = {
 };
 
 /** Oznaka i veza izvora događaja (faktura, uplata; raspored vodi na uplatu). */
-async function describeSources(zevId: string, events: { sourceType: string; sourceId: string }[]) {
+export async function describeSources(zevId: string, events: { sourceType: string; sourceId: string }[]) {
   const ids = (t: string) => [...new Set(events.filter((e) => e.sourceType === t).map((e) => e.sourceId))];
   const [invoices, payments, allocations, expenses, txs, corrections] = await Promise.all([
     prisma.invoice.findMany({ where: { zevId, id: { in: ids("Invoice") } }, select: { id: true, number: true } }),

@@ -43,6 +43,25 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.12.0] - 2026-11-22
+
+Kontni plan, **Faza B4 — probno knjiženje, aktivacija i provjera cijelog toka** (`Plans/kontni-plan-b4-proba-i-aktivacija-plan.md`). Nova stranica Knjigovodstvo → Nalozi → **Probno knjiženje**.
+
+**Migracija: ne** (aktivacija ostaje proknjiženo početno stanje, B4-Q1; oznaka kasno unesenog dokumenta se izvodi, ne čuva).
+
+### Dodato
+
+- **Probno knjiženje** (B4-Q2, B4-Q3): za izabrani datum početka priprema i knjiži početno stanje, obrađuje sve događaje do danas, računa bruto bilans i usklađivanje — u transakciji koja se na kraju poništava; ništa se ne upisuje osim zapisa „Pokrenuto probno knjiženje” u revizorskom tragu. Prikazuje spremnost (plan, period, kontrolna konta, pravila, pravilo raspodjele, šema rezerve, stavke bez vrste), početno stanje sa usklađivanjem (razlika evidencije privremeno na jednom kontu, uz napomenu), šta bi se proknjižilo i šta bi čekalo i zašto (sa primjerima dokumenata), bruto bilans i usklađivanje na danas. Pravo: predsjednik i računovođa.
+- **Kasno uneseni dokumenti** (B4-Q5): uplata, faktura, račun dobavljača, transakcija ili korekcija sa datumom prije početka knjiženja, unesena (ili stornirana) poslije knjiženja početnog stanja, knjiži se na datum početka uz izvorni datum dokumenta; nalog i tab Događaji to označavaju. Knjiga i evidencija ostaju usklađene.
+- Napomena uz **Proknjiži početno stanje**: šta aktivacija pokreće i preporuka probe ako za taj datum nije pokrenuta u posljednja 24 sata (ne blokira, B4-Q4); veze na probu sa stranice početnog stanja i taba Nalozi.
+- Testovi `tests/ledger-dry-run.test.ts` (proba ne upisuje ništa i daje isti ishod kao aktivacija; kasno unesena uplata) i `tests/ledger-e2e.test.ts` (cijeli tok: proba, aktivacija, sve vrste događaja, storna, čekanja koja se razriješe, kasna uplata, zatvoren period, izvještaji koji se slažu).
+
+### Izmijenjeno
+
+- Obrada događaja može raditi u zadatoj transakciji (`syncEvents`, `processEventInTx`, savepoint po događaju u probi); van probe ponašanje je isto.
+
+Uputstvo: novo 13.11 „Prelazak na knjiženje” (koraci za prelaz, probno knjiženje, kasno uneseni dokumenti); dosadašnja 13.11 i 13.12 prenumerisana u 13.12 i 13.13 (sa svim unakrsnim referencama), dopuna 13.10, rječnik (probno knjiženje).
+
 ## [3.11.0] - 2026-11-22
 
 Kontni plan, **Faza B3b — usklađivanje i pregledi** (`Plans/kontni-plan-b3-izvjestaji-plan.md` §4). Nova kartica „Usklađivanje i pregledi” na tabu Knjigovodstvo → Izvještaji.

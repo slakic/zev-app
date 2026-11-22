@@ -6,7 +6,7 @@
 // kontrolni zbir prema knjizi (B3-Q3).
 import { prisma } from "@/lib/prisma";
 import { requireCapability, requireZev, type Actor } from "@/server/auth/guards";
-import type { AccountingEventKind, ControlRole } from "@/generated/prisma/client";
+import type { AccountingEventKind, ControlRole, Prisma } from "@/generated/prisma/client";
 import { dec, sumDecimals, ZERO, type Decimal } from "@/lib/money";
 import { toZonedDateIso } from "@/lib/i18n";
 import { audit } from "@/server/audit";
@@ -15,6 +15,8 @@ import { operationalSnapshot, ROLE_LABEL, type OpeningItem } from "@/server/serv
 import { ledgerStart, postedEntryNumber } from "@/server/services/ledgerEvents";
 import { partyDisplayName } from "@/server/services/ownership";
 import { purposeOverview, type PurposeRow } from "@/server/services/ledgerReports";
+
+type Db = Prisma.TransactionClient | typeof prisma;
 
 const dateOnly = (s: string) => new Date(`${s}T00:00:00Z`);
 const isIso = (s: string | null | undefined): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(dateOnly(s).getTime());
@@ -35,14 +37,14 @@ const signed = (role: ControlRole, debit: Decimal, credit: Decimal) => (LIABILIT
 const itemValue = (it: OpeningItem) => (it.side === "D" ? signed(it.role, it.amount, ZERO) : signed(it.role, ZERO, it.amount));
 
 /** Mapa konto → (uloga, račun novca) iz svih redova kontrolnih konta, pa i ranije važećih (stavke ostaju na starom kontu). */
-async function controlMap(zevId: string) {
-  const rows = await prisma.zevControlAccount.findMany({ where: { zevId }, select: { accountId: true, role: true, moneyAccountId: true } });
+async function controlMap(zevId: string, db: Db = prisma) {
+  const rows = await db.zevControlAccount.findMany({ where: { zevId }, select: { accountId: true, role: true, moneyAccountId: true } });
   return new Map(rows.map((r) => [r.accountId, { role: r.role, moneyAccountId: r.moneyAccountId }]));
 }
 
 /** Saldo kontrolnih konta u knjizi do dana (samo proknjiženo), po stavci — za usklađivanje i preglede. */
-async function controlLines(zevId: string, asOfIso: string, accountIds: string[]) {
-  return prisma.journalLine.findMany({
+async function controlLines(zevId: string, asOfIso: string, accountIds: string[], db: Db = prisma) {
+  return db.journalLine.findMany({
     where: { zevId, accountId: { in: accountIds }, entry: { status: "POSTED", postingDate: { lte: dateOnly(asOfIso) } } },
     select: {
       accountId: true, debit: true, credit: true, partyId: true, supplierId: true, openingSourceType: true, openingSourceId: true,
@@ -95,9 +97,9 @@ function eventEffects(
 }
 
 /** Događaji sa datumom do dana koji u knjizi na taj dan nisu: čekaju, ili su proknjiženi u kasniji period. */
-async function pendingEffects(zevId: string, asOfIso: string) {
+async function pendingEffects(zevId: string, asOfIso: string, db: Db = prisma) {
   const day = dateOnly(asOfIso);
-  const events = await prisma.accountingEvent.findMany({
+  const events = await db.accountingEvent.findMany({
     where: {
       zevId, eventDate: { lte: day },
       OR: [{ status: { not: "POSTED" } }, { journalEntry: { postingDate: { gt: day } } }],
@@ -107,9 +109,9 @@ async function pendingEffects(zevId: string, asOfIso: string) {
   const ids = (t: string) => events.filter((e) => e.sourceType === t).map((e) => e.sourceId);
   const allocIds = ids("PaymentAllocation");
   const [payments, txs, allocations] = await Promise.all([
-    prisma.payment.findMany({ where: { zevId, id: { in: ids("Payment") } }, select: { id: true, accountId: true, payerId: true } }),
-    prisma.finTransaction.findMany({ where: { zevId, id: { in: ids("FinTransaction") } }, select: { id: true, accountId: true, type: true, expenseId: true } }),
-    prisma.paymentAllocation.findMany({
+    db.payment.findMany({ where: { zevId, id: { in: ids("Payment") } }, select: { id: true, accountId: true, payerId: true } }),
+    db.finTransaction.findMany({ where: { zevId, id: { in: ids("FinTransaction") } }, select: { id: true, accountId: true, type: true, expenseId: true } }),
+    db.paymentAllocation.findMany({
       where: { id: { in: allocIds }, payment: { zevId } },
       select: { id: true, paymentId: true, payment: { select: { payerId: true } }, invoice: { select: { debtorId: true } } },
     }),
@@ -155,17 +157,21 @@ export type ReconRow = {
  */
 export async function reconcileAt(actor: Actor, asOfIso: string) {
   requireCapability(actor, "ledger.view");
-  const zevId = requireZev(actor);
-  const start = await ledgerStart(prisma, zevId);
+  return reconcileAtDb(prisma, requireZev(actor), asOfIso);
+}
+
+/** Usklađivanje iz zadate veze (i u transakciji probnog knjiženja, B4). */
+export async function reconcileAtDb(db: Db, zevId: string, asOfIso: string) {
+  const start = await ledgerStart(db, zevId);
   if (!start || asOfIso < iso(start)) return { asOfIso, start: start ? iso(start) : null, active: false, rows: [] as ReconRow[], ok: true };
 
-  const controls = await controlMap(zevId);
+  const controls = await controlMap(zevId, db);
   const [lines, items, pending, moneyAccounts, accounts] = await Promise.all([
-    controlLines(zevId, asOfIso, [...controls.keys()]),
-    operationalSnapshot(prisma, zevId, asOfIso),
-    pendingEffects(zevId, asOfIso),
-    prisma.moneyAccount.findMany({ where: { zevId }, select: { id: true, name: true } }),
-    prisma.zevAccount.findMany({ where: { zevId, id: { in: [...controls.keys()] } }, select: { id: true, code: true } }),
+    controlLines(zevId, asOfIso, [...controls.keys()], db),
+    operationalSnapshot(db, zevId, asOfIso),
+    pendingEffects(zevId, asOfIso, db),
+    db.moneyAccount.findMany({ where: { zevId }, select: { id: true, name: true } }),
+    db.zevAccount.findMany({ where: { zevId, id: { in: [...controls.keys()] } }, select: { id: true, code: true } }),
   ]);
   type G = { role: ControlRole; moneyAccountId: string | null; accounts: Set<string>; ledger: Decimal; analytics: Decimal; operational: Decimal };
   const groups = new Map<string, G>();

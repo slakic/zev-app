@@ -2,11 +2,12 @@ import { requireActor } from "@/server/actor";
 import { hasCapability } from "@/lib/accountingCapabilities";
 import { getEntry } from "@/server/services/journal";
 import { openingStatus, reconcileOpening } from "@/server/services/openingBalance";
+import { lastDryRun } from "@/server/services/ledgerDryRun";
 import { listFiscalYears } from "@/server/services/chartOfAccounts";
 import { partyDisplayName } from "@/server/services/ownership";
 import { dec, formatMoney } from "@/lib/money";
 import { ledgerMessage } from "@/lib/ledgerMessages";
-import { formatDate, t, tf } from "@/lib/i18n";
+import { formatDate, formatDateTime, t, tf } from "@/lib/i18n";
 import { BtnLink, Card, ConfirmAction, Field, Flash, inputCls, PageHeader, StatusBadge, SubmitBtn, Table, Td, type ColumnSpec } from "@/components/ui";
 import { JournalEditor } from "@/components/journal-editor";
 import { deleteJournalDraftAction, postOpeningAction, prepareOpeningAction, saveOpeningLinesAction } from "@/server/actions/journal";
@@ -47,6 +48,9 @@ export default async function OpeningBalancePage({ searchParams }: { searchParam
   const years = await listFiscalYears(actor);
   const openYears = years.filter((y) => y.status === "OPEN").sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
   const defaultStart = draft ? iso(draft.postingDate) : openYears[0] ? iso(openYears[0].startDate) : "";
+  const lastRun = status.posted ? null : await lastDryRun(actor);
+  // B4-Q4 (a): proba se preporučuje, ne traži — napomena ako za ovaj datum nije pokrenuta u posljednja 24 sata.
+  const recentRun = !!draft && !!lastRun && lastRun.startDate === iso(draft.postingDate) && Date.now() - lastRun.at.getTime() < 24 * 3600 * 1000;
 
   const generated = draft?.lines.filter((l) => l.openingSourceType) ?? [];
   const manual = draft?.lines.filter((l) => !l.openingSourceType) ?? [];
@@ -64,6 +68,16 @@ export default async function OpeningBalancePage({ searchParams }: { searchParam
       <Flash msg={ledgerMessage(sp.msg)} err={sp.err} />
       <div className="space-y-6">
         <p className="max-w-[68ch] text-sm text-slate-600">{O("intro")}</p>
+
+        {!status.posted && (
+          <Card title={t("ledger.dryRun.cardTitle")}>
+            <div className="space-y-3">
+              <p className="max-w-[68ch] text-sm text-slate-600">{t("ledger.dryRun.cardText")}</p>
+              {lastRun && <p className="text-hint text-slate-500">{tf("ledger.dryRun.cardLast", { vrijeme: formatDateTime(lastRun.at), datum: formatDate(lastRun.startDate) })}</p>}
+              <BtnLink href={`/knjigovodstvo/proba${draft ? `?datum=${iso(draft.postingDate)}` : ""}`} variant="tonal">{t("ledger.dryRun.open")}</BtnLink>
+            </div>
+          </Card>
+        )}
 
         {status.posted && (
           <Card title={O("postedTitle")}>
@@ -156,7 +170,13 @@ export default async function OpeningBalancePage({ searchParams }: { searchParam
                     <ConfirmAction
                       trigger={O("post")}
                       title={O("postTitle")}
-                      body={<p className="text-sm text-amber-900">{O("postBody")}</p>}
+                      body={
+                        <div className="space-y-2 text-sm text-amber-900">
+                          <p>{tf("ledger.dryRun.postActivation", { datum: formatDate(draft.postingDate) })}</p>
+                          <p>{O("postBody")}</p>
+                          {!recentRun && <p className="font-medium">{t("ledger.dryRun.postNoDryRun")}</p>}
+                        </div>
+                      }
                       confirmLabel={O("postConfirm")}
                       confirmVariant="primary"
                       action={postOpeningAction}

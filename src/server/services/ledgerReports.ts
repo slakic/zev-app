@@ -14,6 +14,8 @@ import { autoEntrySource } from "@/server/services/ledgerEvents";
 import { toCsv } from "@/server/services/reports";
 import { audit } from "@/server/audit";
 
+type Db = Prisma.TransactionClient | typeof prisma;
+
 const dateOnly = (s: string) => new Date(`${s}T00:00:00Z`);
 const isIso = (s: string | null | undefined): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(dateOnly(s).getTime());
 const iso = (d: Date) => d.toISOString().slice(0, 10);
@@ -88,8 +90,8 @@ export function lineAnalytics(l: Pick<Line, "party" | "unit" | "supplier" | "pro
     .filter(Boolean).join(", ");
 }
 
-async function zevAccounts(zevId: string) {
-  return prisma.zevAccount.findMany({ where: { zevId }, select: { id: true, code: true, name: true, nature: true, postable: true, parentId: true } });
+async function zevAccounts(zevId: string, db: Db = prisma) {
+  return db.zevAccount.findMany({ where: { zevId }, select: { id: true, code: true, name: true, nature: true, postable: true, parentId: true } });
 }
 type Acc = Awaited<ReturnType<typeof zevAccounts>>[number];
 
@@ -113,10 +115,14 @@ export type TrialRow = {
 
 export async function trialBalance(actor: Actor, input: ReportRange & DimFilter & { withSummary?: boolean }) {
   requireCapability(actor, "ledger.view");
-  const zevId = requireZev(actor);
+  return trialBalanceDb(prisma, requireZev(actor), input);
+}
+
+/** Bruto bilans iz zadate veze (i u transakciji probnog knjiženja, B4). */
+export async function trialBalanceDb(db: Db, zevId: string, input: ReportRange & DimFilter & { withSummary?: boolean }) {
   const [accounts, lines] = await Promise.all([
-    zevAccounts(zevId),
-    prisma.journalLine.findMany({
+    zevAccounts(zevId, db),
+    db.journalLine.findMany({
       where: { zevId, ...dimWhere(input), entry: { status: "POSTED", postingDate: { lte: dateOnly(input.to) } } },
       select: { accountId: true, debit: true, credit: true, entry: { select: { kind: true, postingDate: true } } },
     }),
