@@ -27,11 +27,13 @@ export function amt(v: string): string {
   return v === "0.00" || v === "-0.00" ? "" : km(v);
 }
 
-export function ReportHeader({ title, range, csvHref }: { title: string; range: { from: string; to: string }; csvHref?: string }) {
+export function ReportHeader({
+  title, range, asOf, csvHref,
+}: { title: string; range?: { from: string; to: string }; /** Izvještaj „na dan” umjesto perioda. */ asOf?: string; csvHref?: string }) {
   return (
     <PageHeader
       title={title}
-      subtitle={tf("ledger.reports.period", { od: formatDate(range.from), do: formatDate(range.to) })}
+      subtitle={asOf ? tf("ledger.reports.asOf", { dan: formatDate(asOf) }) : range ? tf("ledger.reports.period", { od: formatDate(range.from), do: formatDate(range.to) }) : undefined}
       backHref={REPORTS_HREF}
       backLabel={t("ledger.reports.back")}
       actions={csvHref ? <BtnLink href={csvHref} variant="secondary">{t("ledger.reports.csv")}</BtnLink> : undefined}
@@ -73,6 +75,18 @@ export function RangeFilter({
         </p>
       )}
     </div>
+  );
+}
+
+/** GET filter sa jednim danom („stanje na dan”). */
+export function AsOfFilter({ asOf, children }: { asOf: string; children?: ReactNode }) {
+  return (
+    <FilterBar>
+      {children}
+      <Field label={t("ledger.reports.day")}>
+        <input type="date" name="dan" defaultValue={asOf} required className={inputCls} />
+      </Field>
+    </FilterBar>
   );
 }
 

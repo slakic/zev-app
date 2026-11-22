@@ -3,6 +3,7 @@ import { getAuthContext } from "@/server/auth/session";
 import { ForbiddenError } from "@/server/auth/guards";
 import { isPrefetchRequest, prefetchIgnored } from "@/server/http/prefetch";
 import { LEDGER_CSV_TYPES, ledgerReportCsv, reportRange, type LedgerCsvType } from "@/server/services/ledgerReports";
+import { asOfDay, RECON_CSV_TYPES, reconciliationCsv, type ReconCsvType } from "@/server/services/ledgerReconciliation";
 
 /** CSV izvještaja iz knjige (B3a §2.4): `?type=…&from=…&to=…` uz parametre izvještaja. Prava provjerava servis. */
 export async function GET(req: NextRequest) {
@@ -12,8 +13,18 @@ export async function GET(req: NextRequest) {
   const actor = { userId: session.userId, roles: session.roles, partyId: session.partyId, zevId: session.zevId, isSuperAdmin: session.isSuperAdmin, label: session.displayName };
   const sp = req.nextUrl.searchParams;
   const type = sp.get("type") as LedgerCsvType;
-  if (!LEDGER_CSV_TYPES.includes(type)) return new NextResponse("Nepoznat izvještaj.", { status: 400 });
+  const recon = sp.get("type") as ReconCsvType;
   try {
+    // Izvještaji „na dan” i godišnji pregled (B3b).
+    if (RECON_CSV_TYPES.includes(recon)) {
+      const asOf = asOfDay(sp.get("dan"));
+      const csv = await reconciliationCsv(actor, recon, { asOf, year: sp.get("godina") });
+      const suffix = recon === "godisnji" ? sp.get("godina") ?? "" : asOf;
+      return new NextResponse(csv, {
+        headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="knjiga-${recon}-${suffix}.csv"` },
+      });
+    }
+    if (!LEDGER_CSV_TYPES.includes(type)) return new NextResponse("Nepoznat izvještaj.", { status: 400 });
     const range = await reportRange(actor, sp.get("from"), sp.get("to"));
     const csv = await ledgerReportCsv(actor, type, {
       from: range.from, to: range.to,

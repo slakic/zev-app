@@ -43,6 +43,23 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.11.0] - 2026-11-22
+
+Kontni plan, **Faza B3b — usklađivanje i pregledi** (`Plans/kontni-plan-b3-izvjestaji-plan.md` §4). Nova kartica „Usklađivanje i pregledi” na tabu Knjigovodstvo → Izvještaji.
+
+**Migracija: ne.**
+
+### Dodato
+
+- **Usklađivanje knjige i evidencije** na izabrani dan, po ulozi kontrolnog konta (račun novca po računu, potraživanja, avansi, neidentifikovane uplate, dobavljači): glavna knjiga, evidencija, razlika, dio razlike koji **čeka knjiženje** (događaji do tog dana koji nisu proknjiženi ili su proknjiženi u kasniji period, sa vezom na tab Događaji) i **neobjašnjen** ostatak; stanje Slaže se / Čeka knjiženje / Razlika (B3-Q5). Neslaganje analitike sa glavnom knjigom se ističe.
+- **Avansi i neidentifikovane uplate:** avans po vlasniku i neidentifikovane uplate po uplati, knjiga prema evidenciji, sa istim objašnjenjem razlike.
+- **Otvorene stavke po dospijeću:** neplaćene fakture vlasnika i računi dobavljača iz evidencije po starosti (nije dospjelo, do 30, 31–60, 61–90, preko 90 dana), stavke po vlasniku/dobavljaču sa nalogom kojim su proknjižene, kontrolni zbir prema knjizi (B3-Q3).
+- **Godišnji pregled iz knjige:** prihodi i rashodi po kontu, rezultat i pregled po namjeni za poslovnu godinu; postojeći godišnji izvještaj (PDF) iz evidencije ostaje nepromijenjen (B3-Q7).
+- Veza „Dokumenti koji nisu proknjiženi” na tab Događaji; CSV za sva četiri pregleda (u revizorskom tragu).
+- Testovi `tests/ledger-reconciliation.test.ts`.
+
+Uputstvo: dopuna 13.12 (Usklađivanje i pregledi), 13.11 (veza na usklađivanje), rječnik (usklađivanje).
+
 ## [3.10.0] - 2026-11-22
 
 Kontni plan, **Faza B3a — izvještaji iz knjige** (`Plans/kontni-plan-b3-izvjestaji-plan.md` §2–3). Tab Knjigovodstvo → **Izvještaji** više nije „Nije još dostupno”.

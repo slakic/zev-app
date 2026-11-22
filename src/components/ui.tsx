@@ -105,6 +105,8 @@ const statusTone: Record<string, string> = {
   REVIEWED: "green", DEMO: "amber", RETIRED: "slate", OPEN: "green", ACCOUNT_INACTIVE: "slate", NOT_YET_AVAILABLE: "slate",
   // Podešavanje knjiženja (A2): pokrivenost, status pravila, kapija.
   POSTED: "green", WAITING_RULE: "amber", WAITING_SCHEMA: "slate", WAITING_PREDECESSOR: "blue", WAITING_PERIOD: "amber", COVER_OK: "green", COVER_MISSING: "amber", COVER_DRAFT: "blue", COVER_GATED: "slate", CONFIRMED: "green", GATE_CLOSED: "slate", GATE_OPEN: "green", NOT_SET: "amber",
+  // Usklađivanje knjige sa evidencijom (B3b): slaže se / razlika čeka knjiženje / neobjašnjena razlika.
+  RECON_OK: "green", RECON_WAITING: "amber", RECON_DIFF: "red",
 };
 
 /** Text label + colour, never colour alone. Rendered as a Material-style tonal chip. */
