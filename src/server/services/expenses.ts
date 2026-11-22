@@ -5,6 +5,7 @@ import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec } from "@/lib/money";
 import type { Prisma } from "@/generated/prisma/client";
 import { endOfDay, toZonedDateIso } from "@/lib/i18n";
+import { afterLedgerChange, categoryRequired, dropUnpostedEvents, postedEntryNumber } from "@/server/services/ledgerEvents";
 
 // ---- Suppliers ----
 
@@ -72,6 +73,9 @@ export async function createExpense(
   requireRole(actor, "ACCOUNTANT", "PRESIDENT");
   const zevId = requireZev(actor);
   if (dec(data.amount).lessThanOrEqualTo(0)) throw new Error("Iznos mora biti pozitivan.");
+  if (!data.categoryId && (await categoryRequired(prisma, zevId, data.invoiceDate ?? new Date()))) {
+    throw new Error("Izaberite kategoriju troška — knjiženje je aktivno i račun se knjiži po pravilu kategorije.");
+  }
   if (!data.allowDuplicate) {
     const dups = await findDuplicateExpenses(actor, data);
     if (dups.length > 0) {
@@ -104,6 +108,7 @@ export async function createExpense(
     action: "expense.create", targetType: "Expense", targetId: e.id,
     after: { supplierId: e.supplierId, invoiceNumber: e.invoiceNumber, amount: e.amount.toString() },
   });
+  await afterLedgerChange(zevId, actor.userId);
   return e;
 }
 
@@ -124,14 +129,33 @@ export async function updateExpense(actor: Actor, id: string, data: Prisma.Expen
   if (before.status === "PAID" && !reason) {
     throw new Error("Izmjena plaćenog troška zahtijeva razlog.");
   }
+  // B2-Q5 (a): proknjižen račun dobavljača — iznos, dobavljač, kategorija i datum računa se ne mijenjaju.
+  const entry = await postedEntryNumber(prisma, zevId, "Expense", id, "SUPPLIER_INVOICE");
+  const locked = LOCKED_FIELDS.filter((k) => k in data && !sameValue(before[k], data[k]));
+  if (entry !== null && locked.length > 0) {
+    throw new Error(`Račun dobavljača je proknjižen (nalog ${entry}) — iznos, dobavljač, kategorija i datum računa se više ne mijenjaju. Ispravka: stornirajte trošak i unesite ga ponovo.`);
+  }
   const e = await prisma.expense.update({ where: { id, zevId }, data });
+  if (locked.length > 0) await dropUnpostedEvents(prisma, zevId, "Expense", id);
   await audit(actor, {
     action: "expense.update", targetType: "Expense", targetId: id,
     before: { amount: before.amount.toString(), status: before.status },
     after: { amount: e.amount.toString(), status: e.status },
     reason: reason ?? null,
   });
+  await afterLedgerChange(zevId, actor.userId);
   return e;
+}
+
+const LOCKED_FIELDS = ["amount", "supplierId", "categoryId", "invoiceDate"] as const;
+
+/** Da li ulazna vrijednost izmjene (string, Decimal, Date ili null) ostavlja polje nepromijenjeno. */
+function sameValue(current: unknown, next: unknown): boolean {
+  if (next && typeof next === "object" && "set" in next) next = (next as { set: unknown }).set;
+  if (current == null || next == null || next === "") return (current ?? null) === (next === "" ? null : next ?? null);
+  if (current instanceof Date) return next instanceof Date || typeof next === "string" ? current.getTime() === new Date(next).getTime() : false;
+  if (typeof current === "object" && "toFixed" in (current as object)) return dec(String(current)).eq(dec(String(next)));
+  return String(current) === String(next);
 }
 
 /** Pay an expense from an account (creates the outgoing transaction atomically). */
@@ -182,6 +206,9 @@ export async function payExpense(
       after: { amount: amount.toFixed(2), transactionId: t.id, status: updated.status },
     }, tx);
     return updated;
+  }).then(async (r) => {
+    await afterLedgerChange(zevId, actor.userId);
+    return r;
   });
 }
 
@@ -198,6 +225,7 @@ export async function cancelExpense(actor: Actor, id: string, reason: string) {
     data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: reason },
   });
   await audit(actor, { action: "expense.cancel", targetType: "Expense", targetId: id, before: { status: before.status }, reason });
+  await afterLedgerChange(zevId, actor.userId);
   return e;
 }
 

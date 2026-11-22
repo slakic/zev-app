@@ -5,6 +5,7 @@ import { requireRole, requireZev, type Actor } from "@/server/auth/guards";
 import { dec, ZERO, sumDecimals } from "@/lib/money";
 import { assertBankAccount, compactIdentifier } from "@/lib/identifiers";
 import type { AccountType, TxType } from "@/generated/prisma/client";
+import { afterLedgerChange, categoryRequired } from "@/server/services/ledgerEvents";
 
 export async function listAccounts(actor: Actor) {
   requireRole(actor, "PRESIDENT", "ACCOUNTANT");
@@ -104,6 +105,11 @@ export async function enterTransaction(
   const zevId = requireZev(actor);
   if (dec(data.amount).lessThanOrEqualTo(0)) throw new Error("Iznos mora biti pozitivan.");
   await prisma.moneyAccount.findUniqueOrThrow({ where: { id: data.accountId, zevId } });
+  if (data.categoryId) await prisma.transactionCategory.findUniqueOrThrow({ where: { id: data.categoryId, zevId } });
+  if (data.expenseId) await prisma.expense.findUniqueOrThrow({ where: { id: data.expenseId, zevId } });
+  if (!data.categoryId && !data.expenseId && data.type !== "TRANSFER" && (await categoryRequired(prisma, zevId, data.date))) {
+    throw new Error("Izaberite kategoriju — knjiženje je aktivno i transakcija se knjiži po pravilu kategorije.");
+  }
   const t = await prisma.finTransaction.create({
     data: { ...data, zevId, createdById: actor.userId },
   });
@@ -111,6 +117,7 @@ export async function enterTransaction(
     action: "transaction.enter", targetType: "FinTransaction", targetId: t.id,
     after: { type: t.type, amount: t.amount.toString(), accountId: t.accountId },
   });
+  await afterLedgerChange(zevId, actor.userId);
   return t;
 }
 
@@ -121,6 +128,7 @@ export async function cancelTransaction(actor: Actor, id: string, reason: string
   if (!reason.trim()) throw new Error("Storno zahtijeva razlog.");
   const before = await prisma.finTransaction.findUniqueOrThrow({ where: { id, zevId } });
   if (before.status === "CANCELLED") throw new Error("Transakcija je već stornirana.");
+  if (before.paymentId) throw new Error("Promet uplate vlasnika stornira se stornom uplate.");
   const t = await prisma.finTransaction.update({
     where: { id, zevId },
     data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: reason },
@@ -129,6 +137,7 @@ export async function cancelTransaction(actor: Actor, id: string, reason: string
     action: "transaction.cancel", targetType: "FinTransaction", targetId: id,
     before: { status: before.status }, after: { status: "CANCELLED" }, reason,
   });
+  await afterLedgerChange(zevId, actor.userId);
   return t;
 }
 

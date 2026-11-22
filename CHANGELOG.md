@@ -43,6 +43,34 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.9.0] - 2026-11-21
+
+Kontni plan, **Faza B2b — automatsko knjiženje dobavljača, ručnih transakcija i korekcija salda** (`Plans/kontni-plan-b2-automatsko-knjizenje-plan.md`).
+
+**Migracija: ne** (`PostingRule.kind` je već `AccountingEventKind`, pa pravilo „Korekcija salda” i novi događaji ne traže izmjenu šeme).
+
+### Dodato
+
+- **Račun dobavljača** (trošak) se knjiži automatski od datuma početka: duguje konto iz pravila kategorije troška (sa namjenom i projektom), potražuje dobavljači (analitika po dobavljaču). Storno troška knjiži tačnu suprotnost originalnog naloga.
+- **Plaćanje dobavljaču** iz oba izvora — plaćanje troška i isplata sa izvoda/SMS-a vezana za trošak: duguje dobavljači, potražuje račun novca. Čeka dok račun dobavljača nije proknjižen.
+- **Ručni prihod i rashod** (npr. provizija banke, kamata) po pravilu kategorije: račun novca ↔ konto iz pravila; storno transakcije knjiži suprotan nalog. Promet uplate vlasnika nikad ne pravi ručni događaj (K-2).
+- **Korekcija salda** se knjiži na potraživanja od vlasnika (po vlasniku, jedinici i namjeni), druga strana je novo pravilo **„Korekcija salda”** — jedno za cio ZEV, bez ključa; pojavljuje se u obrascu pravila i u pokrivenosti.
+- **Oznaka stanja knjiženja** na fakturi, uplati, rasporedu uplate i u tabeli troškova: broj naloga sa vezom ili stanje čekanja sa razlogom; vide je samo uloge sa pregledom knjige, i to kad je knjiženje aktivno.
+- Testovi `tests/ledger-events-b2b.test.ts` (uključujući saglasnost salda dobavljača u knjizi sa evidencijom).
+
+### Izmijenjeno
+
+- **Proknjižen račun dobavljača se ne mijenja** (iznos, dobavljač, kategorija, datum računa — B2-Q5); ispravka je storno troška i novi unos. Izmjena neproknjiženog troška izvodi događaj ponovo.
+- **Kategorija je obavezna** od datuma početka knjiženja za trošak, ručnu transakciju i izlazni red izvoda/SMS-a bez troška (B2-Q9).
+- Promet uplate vlasnika više se ne stornira kao obična transakcija — samo stornom uplate.
+- Upozorenje na vrhu Knjigovodstva i uvod taba „Događaji” usklađeni sa novim događajima.
+
+### Ispravljeno
+
+- Dupla tačka iza datuma u porukama čekanja („21.11.2026..”).
+
+Uputstvo: dopune 7.6 (kategorija pri uvozu PDF izvoda), 8.2 (obavezna kategorija, „Stanje knjiženja”, „Proknjižen račun se ne mijenja”), uvoda poglavlja 13, 13.8 (pravilo „Korekcija salda”, pokrivenost), 13.9 i 13.11 (novi događaji, razlozi čekanja, „Kategorija je obavezna”, „Oznaka na dokumentu”), rječnik (događaj).
+
 ## [3.8.0] - 2026-11-21
 
 Kontni plan, **Faza B2a — automatsko knjiženje događaja vlasnika** (`Plans/kontni-plan-b2-automatsko-knjizenje-plan.md`). Novi tab Knjigovodstvo → **Događaji**.

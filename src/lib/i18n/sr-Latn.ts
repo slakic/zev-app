@@ -1525,7 +1525,7 @@ const srLatn = {
   ledger: {
     title: "Knjigovodstvo",
     subtitle: "Kontni plan i poslovne godine ZEV-a",
-    notLegal: "Ovo još nije zakonsko knjigovodstvo. Od proknjiženog početnog stanja fakture, uplate i raspoređivanja se knjiže automatski (tab „Događaji”), a računi dobavljača i ručne transakcije još ne; glavne knjige i bruto bilansa još nema — to dolazi u sljedećim fazama. Fakture, uplate i troškovi rade kao i ranije.",
+    notLegal: "Ovo još nije zakonsko knjigovodstvo. Od proknjiženog početnog stanja fakture, uplate, raspoređivanja, troškovi i ostale poslovne promjene se knjiže automatski (tab „Događaji”); glavne knjige i bruto bilansa još nema — to dolazi u sljedećim fazama. Fakture, uplate i troškovi rade kao i ranije, a trošak i isplata bez troška tada traže kategoriju.",
     tabs: { plan: "Kontni plan", periods: "Poslovne godine", rules: "Pravila knjiženja", journal: "Nalozi", events: "Događaji", reports: "Izvještaji" },
     notYet: "Nije još dostupno",
     exportXlsx: "Izvoz u Excel",
@@ -1570,7 +1570,7 @@ const srLatn = {
       eventPosted: "Događaj je proknjižen u tekući period.",
     },
     events: {
-      intro: "Fakture, uplate i raspoređivanja od datuma početka knjiženja knjiže se sami, svaki kao poseban automatski nalog, po potvrđenim pravilima. Šta ne može da se proknjiži, čeka ovdje sa razlogom — sam dokument je izdat ili evidentiran normalno.",
+      intro: "Fakture, uplate, raspoređivanja, računi i plaćanja dobavljača, ručni prihodi i rashodi i korekcije salda od datuma početka knjiženja knjiže se sami, svaki kao poseban automatski nalog, po potvrđenim pravilima. Šta ne može da se proknjiži, čeka ovdje sa razlogom — sam dokument je izdat ili evidentiran normalno.",
       inactive: "Automatsko knjiženje počinje kad se proknjiži početno stanje (tab „Nalozi” → „Početno stanje”).",
       active: "Automatsko knjiženje je aktivno od {datum}",
       process: "Obradi na čekanju",
@@ -1593,6 +1593,9 @@ const srLatn = {
       intoPeriodTitle: "Proknjižiti u prvi otvoren period?",
       intoPeriodBody: "Datum dokumenta ostaje isti, a datum knjiženja je prvi dan prvog otvorenog perioda. Zatvoren period se ne mijenja.",
       intoPeriodConfirm: "Proknjiži",
+    },
+    notes: {
+      label: "Knjiženje:",
     },
     sync: {
       cardTitle: "Nova verzija kontnog predloška",

@@ -9,6 +9,8 @@ import { getPaymentChannelInfo } from "@/server/services/paymentMatching";
 import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, sumDecimals, parseMoneyInput } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
+import { PostingNotes } from "@/components/posting-notes";
+import { postingNotes } from "@/server/services/ledgerEvents";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowAction, RowLink, Flash, type ColumnSpec } from "@/components/ui";
 
 const suggestionHeaders: ColumnSpec[] = [
@@ -82,6 +84,8 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
   const channel = await getPaymentChannelInfo(actor, id);
   const suggestions = payment.status !== "REVERSED" && free.greaterThan(0) ? await suggestMatches(actor, id) : [];
   const isAccountant = actor.roles.includes("ACCOUNTANT");
+  const postings = (await postingNotes(actor, "Payment", [payment.id]))?.get(payment.id);
+  const allocationPostings = await postingNotes(actor, "PaymentAllocation", payment.allocations.map((a) => a.id));
   // An allocation that already has a storno row cannot be reversed again (reverseAllocation refuses it).
   const reversedAllocationIds = new Set(payment.allocations.map((a) => a.reversalOfId).filter((x): x is string => Boolean(x)));
   const openInvoices = (
@@ -134,6 +138,7 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
           </span>
         )}
       </div>
+      {postings && <div className="mb-4"><PostingNotes notes={postings} /></div>}
 
       {free.greaterThan(0) && payment.status !== "REVERSED" && (
         <p className="-mt-2 mb-4 text-hint text-slate-600">
@@ -220,7 +225,12 @@ export default async function PaymentDetailPage({ params, searchParams }: { para
                 <Td>{formatDateTime(a.createdAt)}</Td>
                 <Td><RowLink href={`/fakture/${a.invoiceId}`}>{a.invoice.number}</RowLink></Td>
                 <Td>{formatMoney(a.amount.toString())}</Td>
-                <Td>{a.reason ?? "—"}</Td>
+                <Td>
+                  <div className="space-y-1">
+                    <div>{a.reason ?? "—"}</div>
+                    <PostingNotes notes={allocationPostings?.get(a.id)} compact />
+                  </div>
+                </Td>
                 {isAccountant && (
                   <Td>
                     {Number(a.amount) > 0 && !a.reversalOfId && !reversedAllocationIds.has(a.id) && payment.status !== "REVERSED" && (

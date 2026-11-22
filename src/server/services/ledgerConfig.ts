@@ -304,6 +304,7 @@ export const RULE_KINDS = {
   SUPPLIER_INVOICE: "expenseCategory",
   CASH_EXPENSE: "expenseCategory",
   CASH_INCOME: "incomeCategory",
+  BALANCE_CORRECTION: "none", // B2-Q8: jedno pravilo po ZEV-u, bez ključa
 } as const satisfies Partial<Record<AccountingEventKind, string>>;
 export type RuleKind = keyof typeof RULE_KINDS;
 
@@ -356,8 +357,10 @@ export async function createRuleDraft(
   const chart = await activeChart(zevId);
   const keyType = RULE_KINDS[kind];
   const chargeTypeId = keyType === "chargeType" ? input.chargeTypeId || null : null;
-  const categoryId = keyType !== "chargeType" ? input.categoryId || null : null;
-  if (keyType === "chargeType") {
+  const categoryId = keyType === "expenseCategory" || keyType === "incomeCategory" ? input.categoryId || null : null;
+  if (keyType === "none") {
+    // Korekcija salda nema ni vrstu zaduženja ni kategoriju.
+  } else if (keyType === "chargeType") {
     if (!chargeTypeId) throw new Error("Izaberite vrstu zaduženja.");
     await prisma.chargeType.findUniqueOrThrow({ where: { id: chargeTypeId, zevId } });
   } else {
@@ -528,7 +531,7 @@ export async function getCoverage(actor: Actor) {
 
   const ruleRows: { kind: RuleKind; keyId: string; keyLabel: string; status: CoverageStatus; confirmed: (typeof rules)[number] | null; draft: (typeof rules)[number] | null }[] = [];
   const add = (kind: RuleKind, keyId: string, keyLabel: string, isReserve: boolean) => {
-    const forKey = rules.filter((r) => r.kind === kind && (r.chargeTypeId === keyId || r.categoryId === keyId));
+    const forKey = rules.filter((r) => r.kind === kind && (RULE_KINDS[kind] === "none" || r.chargeTypeId === keyId || r.categoryId === keyId));
     const confirmed = forKey.filter((r) => r.status === "CONFIRMED").at(-1) ?? null;
     const draft = forKey.find((r) => r.status === "DRAFT") ?? null;
     const reserveRule = isReserve || (draft?.purpose?.isCommonReserve ?? false);
@@ -541,6 +544,7 @@ export async function getCoverage(actor: Actor) {
     add("CASH_EXPENSE", c.id, c.name, false);
   }
   for (const c of categories.filter((c) => c.kind === "INCOME")) add("CASH_INCOME", c.id, c.name, false);
+  add("BALANCE_CORRECTION", "", "Sve korekcije salda", false);
 
   const currentByKey = new Map(controls.current.map((c) => [keyOf(c), c]));
   const controlRows: { role: ControlRole; moneyAccountId: string | null; purposeId: string | null; forLabel: string; current: (typeof controls.current)[number] | null }[] = [];

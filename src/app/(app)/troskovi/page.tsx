@@ -12,6 +12,8 @@ import { formatMoney, parseMoneyInput, dec } from "@/lib/money";
 import { formatDate, tEnum, t, tf, toZonedDateIso } from "@/lib/i18n";
 import { ExpenseForm } from "@/components/expense-form";
 import { expenseValuesFromForm, type ExpenseFormState } from "@/lib/expenseFormState";
+import { PostingNotes } from "@/components/posting-notes";
+import { postingNotes } from "@/server/services/ledgerEvents";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, Flash, ToggleBtn, ConfirmAction, Tabs, FilterBar, BtnLink, type ColumnSpec } from "@/components/ui";
 
 const supplierHeaders: ColumnSpec[] = [
@@ -167,6 +169,7 @@ export default async function ExpensesPage({
         return (av - bv) * dir;
       })
     : rawExpenses;
+  const expensePostings = await postingNotes(actor, "Expense", rawExpenses.map((e) => e.id));
   return (
     <div>
       <PageHeader title="Troškovi i dobavljači" subtitle="Ulazne fakture, plaćanja, veza sa planom i održavanjem" />
@@ -271,7 +274,12 @@ export default async function ExpensesPage({
                 <Td>{formatMoney(e.amount.toString())}</Td>
                 <Td>{formatMoney(e.paidAmount.toString())}</Td>
                 <Td>{formatDate(e.dueDate)}</Td>
-                <Td><StatusBadge status={e.status} label={tEnum("expenseStatus", e.status)} /></Td>
+                <Td>
+                  <div className="space-y-1">
+                    <StatusBadge status={e.status} label={tEnum("expenseStatus", e.status)} />
+                    <PostingNotes notes={expensePostings?.get(e.id)} compact />
+                  </div>
+                </Td>
                 <Td>
                   {(e.status === "UNPAID" || e.status === "PARTIALLY_PAID") && actor.roles.includes("ACCOUNTANT") && (() => {
                     const remaining = dec(e.amount.toString()).minus(dec(e.paidAmount.toString()));

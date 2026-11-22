@@ -16,6 +16,8 @@ import { partyDisplayName } from "@/server/services/ownership";
 import { formatMoney, dec, parseMoneyInput, ZERO } from "@/lib/money";
 import { formatDate, formatDateTime, tEnum, t, tf } from "@/lib/i18n";
 import { isOneForm } from "@/lib/plural";
+import { PostingNotes } from "@/components/posting-notes";
+import { postingNotes } from "@/server/services/ledgerEvents";
 import { PageHeader, Card, Table, Td, StatusBadge, Field, inputCls, SubmitBtn, ConfirmAction, RowLink, Flash, type ColumnSpec } from "@/components/ui";
 
 // Slanje e-pošte može potrajati (PDF + Mailjet), pa isti budžet kao na stranici serije.
@@ -132,6 +134,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
   const overdue = pay.payable && pay.overdueDays > 0;
   const emailStatus = await getInvoiceEmailStatus(actor, id);
   const isAccountant = actor.roles.includes("ACCOUNTANT");
+  const postings = (await postingNotes(actor, "Invoice", [inv.id]))?.get(inv.id);
   // Payments that still hold money on this invoice (net of storno rows) — the ones to reverse first.
   const livePayments = new Map<string, { label: string; net: ReturnType<typeof dec> }>();
   for (const a of inv.allocations) {
@@ -232,6 +235,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
           {inv.cancelReason && <span className="text-sm text-red-600">Storno: {inv.cancelReason}</span>}
         </div>
       )}
+      {postings && <div className="mb-4"><PostingNotes notes={postings} /></div>}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card title="Iznosi">

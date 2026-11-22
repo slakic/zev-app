@@ -9,7 +9,7 @@ import type { Prisma, PaymentStatus } from "@/generated/prisma/client";
 import { extractPdfText, parseNovaBankaStatement, extractUnitNumberCandidates } from "@/server/services/bankStatementPdf";
 import { partyDisplayName } from "@/server/services/ownership";
 import { foldDiacritics } from "@/lib/text";
-import { afterLedgerChange } from "./ledgerEvents";
+import { afterLedgerChange, categoryRequired } from "./ledgerEvents";
 
 // ---- Manual entry ----
 
@@ -603,6 +603,10 @@ export async function assertStatementRowsCommittable(zevId: string, rows: Statem
           `Trošak "${exp.invoiceNumber ?? exp.id}" ima otvoreno ${open.toFixed(2)} KM, a stavka je ${dec(r.amount).toFixed(2)} KM — otkačite vezu ili ispravite iznos.`
         );
       }
+    }
+    // B2-Q9 (b): izlaz bez troška je ručni rashod — dok je knjiženje aktivno traži kategoriju.
+    if (r.direction === "OUT" && !r.expenseId && !r.categoryName?.trim() && (await categoryRequired(prisma, zevId, new Date(r.date)))) {
+      throw new Error(`Izlaz od ${dec(r.amount).toFixed(2)} KM (${r.payerNameRaw || "bez primaoca"}) nema ni trošak ni kategoriju — knjiženje je aktivno, upišite kategoriju ili izaberite trošak.`);
     }
   }
 }

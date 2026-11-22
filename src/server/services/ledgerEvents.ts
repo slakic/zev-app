@@ -12,10 +12,12 @@
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/server/audit";
 import { requireCapability, requireZev, type Actor } from "@/server/auth/guards";
+import { hasCapability } from "@/lib/accountingCapabilities";
 import { Prisma, type AccountingEventKind, type AccountingEventStatus, type ControlRole } from "@/generated/prisma/client";
 import { dec, sumDecimals, ZERO } from "@/lib/money";
 import { formatDate, toZonedDateIso } from "@/lib/i18n";
 import { postEntryInTx } from "@/server/services/journal";
+import { displayNameOf } from "@/server/auth/displayName";
 import { controlAccountsAt, controlKey, defaultPurposeId, ROLE_LABEL } from "@/server/services/openingBalance";
 import { allocationSplitRule, chargeTypePurpose, confirmedChargeRule, purposeSplit, type AllocationSplitRule } from "@/server/services/purposeSplit";
 
@@ -31,6 +33,8 @@ const dayOf = (d: Date) => dateOnly(toZonedDateIso(d));
 const KIND_ORDER: Partial<Record<AccountingEventKind, number>> = {
   CHARGE_ISSUED: 0, PAYMENT_RECEIVED: 1, PAYMENT_IDENTIFIED: 2, PAYMENT_ALLOCATED: 3,
   ALLOCATION_REVERSED: 4, PAYMENT_REVERSED: 5, CHARGE_CANCELLED: 6,
+  BALANCE_CORRECTION: 0, SUPPLIER_INVOICE: 0, SUPPLIER_PAYMENT: 1, CASH_INCOME: 1, CASH_EXPENSE: 1,
+  TRANSACTION_CANCELLED: 7, SUPPLIER_INVOICE_CANCELLED: 8,
 };
 
 export const OWNER_EVENT_KINDS: AccountingEventKind[] = [
@@ -105,10 +109,43 @@ export async function syncEvents(zevId: string): Promise<number> {
     }
   }
 
+  // Korekcije salda (B2-Q8): dug lica raste (+) ili pada (−) na dan unosa.
+  const corrections = await prisma.balanceCorrection.findMany({ where: { zevId, createdAt: { gte: from } } });
+  for (const c of corrections) {
+    if (onOrAfter(c.createdAt)) out.push({ kind: "BALANCE_CORRECTION", sourceType: "BalanceCorrection", sourceId: c.id, eventDate: dayOf(c.createdAt), sourceCreatedAt: c.createdAt, amount: c.amount.toFixed(2) });
+  }
+
+  // Računi dobavljača: datum računa (bez datuma — dan unosa), storno na dan storna.
+  const expenses = await prisma.expense.findMany({
+    where: { zevId, OR: [{ invoiceDate: { gte: from } }, { invoiceDate: null, createdAt: { gte: from } }, { cancelledAt: { gte: from } }] },
+  });
+  for (const e of expenses) {
+    const base = { sourceType: "Expense", sourceId: e.id, amount: e.amount.toFixed(2) };
+    if (onOrAfter(expenseDate(e))) out.push({ ...base, kind: "SUPPLIER_INVOICE", eventDate: dayOf(expenseDate(e)), sourceCreatedAt: e.createdAt });
+    if (e.status === "CANCELLED" && e.cancelledAt && onOrAfter(e.cancelledAt)) out.push({ ...base, kind: "SUPPLIER_INVOICE_CANCELLED", eventDate: dayOf(e.cancelledAt), sourceCreatedAt: e.cancelledAt });
+  }
+
+  // Promet bez uplate (K-2: promet uplate vlasnika knjiži se kroz uplatu): plaćanje troška ili ručni prihod/rashod.
+  const txs = await prisma.finTransaction.findMany({
+    where: { zevId, paymentId: null, type: { in: ["INCOME", "EXPENSE"] }, OR: [{ date: { gte: from } }, { cancelledAt: { gte: from } }] },
+  });
+  for (const t of txs) {
+    const base = { sourceType: "FinTransaction", sourceId: t.id, amount: t.amount.toFixed(2) };
+    if (onOrAfter(t.date)) out.push({ ...base, kind: transactionKind(t), eventDate: dayOf(t.date), sourceCreatedAt: t.createdAt });
+    if (t.status === "CANCELLED" && t.cancelledAt && onOrAfter(t.cancelledAt)) out.push({ ...base, kind: "TRANSACTION_CANCELLED", eventDate: dayOf(t.cancelledAt), sourceCreatedAt: t.cancelledAt });
+  }
+
   if (out.length === 0) return 0;
   const res = await prisma.accountingEvent.createMany({ data: out.map((e) => ({ ...e, zevId })), skipDuplicates: true });
   return res.count;
 }
+
+/** Datum računa dobavljača; trošak bez datuma računa nastaje danom unosa. */
+export const expenseDate = (e: { invoiceDate: Date | null; createdAt: Date }) => e.invoiceDate ?? e.createdAt;
+
+/** Vrsta događaja prometa bez uplate: izlaz sa troškom je plaćanje dobavljaču, ostalo ručni prihod/rashod. */
+const transactionKind = (t: { type: string; expenseId: string | null }): AccountingEventKind =>
+  t.type === "EXPENSE" ? (t.expenseId ? "SUPPLIER_PAYMENT" : "CASH_EXPENSE") : "CASH_INCOME";
 
 // ---------------------------------------------------------------------------
 // Šeme
@@ -143,7 +180,7 @@ function context(db: Db, zevId: string) {
       const exact = m.get(controlKey({ role, moneyAccountId: opts.moneyAccountId ?? null, purposeId: opts.purposeId ?? null }));
       // Potraživanja: konto bez namjene važi za namjene bez sopstvenog konta (A2).
       const c = exact ?? (role === "OWNER_RECEIVABLE" && opts.purposeId ? m.get(controlKey({ role, moneyAccountId: null, purposeId: null })) : undefined);
-      if (!c) throw new Waiting("WAITING_RULE", `Nedostaje kontrolno konto (${ROLE_LABEL[role]}) važeće na ${formatDate(at)}.`);
+      if (!c) throw new Waiting("WAITING_RULE", `Nedostaje kontrolno konto (${ROLE_LABEL[role]}) važeće na ${formatDate(at)}`);
       return c.accountId;
     },
     async purpose(id: string | null) {
@@ -212,7 +249,7 @@ async function chargeLines(db: Db, zevId: string, ctx: Ctx, inv: InvoiceFull, at
     const rule = await confirmedChargeRule(db, zevId, typeId, at);
     const purposeId = rule?.purposeId ?? ct.defaultPurposeId ?? null;
     await assertReserveAllowed(ctx, purposeId);
-    if (!rule) throw new Waiting("WAITING_RULE", `Vrsta zaduženja „${ct.name}” nema potvrđeno pravilo knjiženja na ${formatDate(at)}.`);
+    if (!rule) throw new Waiting("WAITING_RULE", `Vrsta zaduženja „${ct.name}” nema potvrđeno pravilo knjiženja na ${formatDate(at)}`);
     const receivable = await ctx.control("OWNER_RECEIVABLE", at, { purposeId });
     lines.push({ accountId: receivable, amount, partyId: inv.debtorId, unitId: inv.unitId, purposeId, description: `Faktura ${inv.number}` });
     lines.push({ accountId: rule.counterAccountId, amount: amount.negated(), unitId: inv.unitId, purposeId, ruleId: rule.id, description: ct.name });
@@ -282,6 +319,82 @@ async function identifiedLines(db: Db, zevId: string, ctx: Ctx, a: AllocationFul
 }
 
 // ---------------------------------------------------------------------------
+// Dobavljači, ručni promet, korekcije salda (B2b)
+// ---------------------------------------------------------------------------
+
+/** Potvrđeno pravilo po kategoriji (ili bez ključa — korekcija salda) na dan. */
+async function confirmedRule(db: Db, zevId: string, kind: AccountingEventKind, categoryId: string | null, at: Date) {
+  return db.postingRule.findFirst({
+    where: { zevId, kind, categoryId, chargeTypeId: null, status: "CONFIRMED", validFrom: { lte: at } },
+    orderBy: [{ validFrom: "desc" }, { createdAt: "desc" }],
+  });
+}
+
+/** Pravilo kategorije sa namjenom (izričita namjena pravila, inače podrazumijevana namjena ZEV-a). */
+async function categoryRule(db: Db, zevId: string, ctx: Ctx, kind: "SUPPLIER_INVOICE" | "CASH_INCOME" | "CASH_EXPENSE", categoryId: string | null, at: Date, what: string) {
+  if (!categoryId) throw new Waiting("WAITING_RULE", `${what} nema kategoriju — bez kategorije nema pravila knjiženja.`);
+  const cat = await db.transactionCategory.findUniqueOrThrow({ where: { id: categoryId, zevId } });
+  const rule = await confirmedRule(db, zevId, kind, categoryId, at);
+  if (!rule) throw new Waiting("WAITING_RULE", `Kategorija „${cat.name}” nema potvrđeno pravilo knjiženja (${KIND_LABEL[kind]}) na ${formatDate(at)}`);
+  const purposeId = rule.purposeId ?? (await ctx.fallbackPurpose());
+  await assertReserveAllowed(ctx, purposeId);
+  return { rule, purposeId, categoryName: cat.name };
+}
+
+const KIND_LABEL: Partial<Record<AccountingEventKind, string>> = {
+  SUPPLIER_INVOICE: "račun dobavljača", CASH_INCOME: "ručni prihod", CASH_EXPENSE: "ručni rashod",
+};
+
+type ExpenseFull = Prisma.ExpenseGetPayload<{ include: { supplier: { select: { name: true } } } }>;
+
+const expenseLabel = (e: ExpenseFull) => `Račun ${e.supplier?.name ?? "bez dobavljača"}${e.invoiceNumber ? ` br. ${e.invoiceNumber}` : ""}`;
+
+/** Račun dobavljača: D protivkonto pravila kategorije (projekat, namjena) / P dobavljači (dobavljač). */
+async function supplierInvoiceLines(db: Db, zevId: string, ctx: Ctx, e: ExpenseFull, at: Date): Promise<Signed[]> {
+  const { rule, purposeId, categoryName } = await categoryRule(db, zevId, ctx, "SUPPLIER_INVOICE", e.categoryId, at, "Trošak");
+  const amount = dec(e.amount.toString());
+  return [
+    { accountId: rule.counterAccountId, amount, projectId: e.projectId, purposeId, ruleId: rule.id, description: categoryName },
+    { accountId: await ctx.control("SUPPLIER_PAYABLE", at), amount: amount.negated(), supplierId: e.supplierId, description: expenseLabel(e) },
+  ];
+}
+
+type TxFull = Prisma.FinTransactionGetPayload<object>;
+
+/** Promet bez uplate: plaćanje dobavljaču (D dobavljači / P novac) ili ručni prihod/rashod po pravilu kategorije. */
+async function transactionLines(db: Db, zevId: string, ctx: Ctx, t: TxFull, at: Date): Promise<Signed[]> {
+  const amount = dec(t.amount.toString());
+  const money = await ctx.control("MONEY_ACCOUNT", at, { moneyAccountId: t.accountId });
+  const kind = transactionKind(t);
+  if (kind === "SUPPLIER_PAYMENT") {
+    const e = await db.expense.findUniqueOrThrow({ where: { id: t.expenseId!, zevId }, include: { supplier: { select: { name: true } } } });
+    return [
+      { accountId: await ctx.control("SUPPLIER_PAYABLE", at), amount, supplierId: e.supplierId, description: expenseLabel(e) },
+      { accountId: money, amount: amount.negated(), description: `Plaćanje ${formatDate(t.date)}` },
+    ];
+  }
+  const { rule, purposeId, categoryName } = await categoryRule(db, zevId, ctx, kind as "CASH_INCOME" | "CASH_EXPENSE", t.categoryId, at, "Transakcija");
+  const sign = kind === "CASH_INCOME" ? amount : amount.negated();
+  return [
+    { accountId: money, amount: sign, description: t.counterpartyName ?? t.description ?? categoryName },
+    { accountId: rule.counterAccountId, amount: sign.negated(), projectId: t.projectId, purposeId, ruleId: rule.id, description: categoryName },
+  ];
+}
+
+/** Korekcija salda (B2-Q8): D/P potraživanja (lice, dio, namjena) / protivkonto pravila „Korekcija salda”. */
+async function correctionLines(db: Db, zevId: string, ctx: Ctx, c: { amount: Prisma.Decimal; partyId: string; unitId: string | null; reason: string }, at: Date): Promise<Signed[]> {
+  const rule = await confirmedRule(db, zevId, "BALANCE_CORRECTION", null, at);
+  if (!rule) throw new Waiting("WAITING_RULE", `Nema potvrđenog pravila knjiženja „Korekcija salda” na ${formatDate(at)}`);
+  const purposeId = rule.purposeId ?? (await ctx.fallbackPurpose());
+  await assertReserveAllowed(ctx, purposeId);
+  const amount = dec(c.amount.toString());
+  return [
+    { accountId: await ctx.control("OWNER_RECEIVABLE", at, { purposeId }), amount, partyId: c.partyId, unitId: c.unitId, purposeId, description: c.reason },
+    { accountId: rule.counterAccountId, amount: amount.negated(), unitId: c.unitId, purposeId, ruleId: rule.id, description: "Korekcija salda" },
+  ];
+}
+
+// ---------------------------------------------------------------------------
 // Storno: suprotnost proknjiženog originala (ili šeme, ako je original prije početka)
 // ---------------------------------------------------------------------------
 
@@ -308,11 +421,16 @@ async function entryLines(db: Db, entryId: string): Promise<Signed[]> {
   }));
 }
 
+const ORIGINAL_LABEL: Partial<Record<AccountingEventKind, string>> = {
+  CHARGE_ISSUED: "zaduženje", PAYMENT_RECEIVED: "priliv uplate", SUPPLIER_INVOICE: "račun dobavljača",
+  SUPPLIER_PAYMENT: "plaćanje dobavljaču", CASH_INCOME: "prihod", CASH_EXPENSE: "rashod",
+};
+
 /** Linije koje je original dao: proknjižen događaj → njegov nalog; nema događaja (prije početka) → šema; inače čeka. */
 async function originalLines(db: Db, zevId: string, sourceType: string, sourceId: string, kind: AccountingEventKind, fresh: () => Promise<Signed[]>) {
   const ev = await db.accountingEvent.findUnique({ where: { zevId_sourceType_sourceId_kind: { zevId, sourceType, sourceId, kind } } });
   if (!ev) return { lines: await fresh(), entryId: null as string | null };
-  if (ev.status !== "POSTED" || !ev.journalEntryId) throw new Waiting("WAITING_PREDECESSOR", `Čeka da se proknjiži originalni događaj (${ev.kind === "CHARGE_ISSUED" ? "zaduženje" : ev.kind === "PAYMENT_RECEIVED" ? "priliv uplate" : "raspored"}).`);
+  if (ev.status !== "POSTED" || !ev.journalEntryId) throw new Waiting("WAITING_PREDECESSOR", `Čeka da se proknjiži originalni događaj (${ORIGINAL_LABEL[ev.kind] ?? "raspored"}).`);
   return { lines: await entryLines(db, ev.journalEntryId), entryId: ev.journalEntryId };
 }
 
@@ -394,6 +512,31 @@ async function build(db: Db, zevId: string, ctx: Ctx, ev: { kind: AccountingEven
         }
         const lines = negate(await relatedAllocationLines(db, zevId, ctx, a, at));
         return { ok: true, lines, description: `Storno rasporeda na fakturu ${inv.number}`, reversalOfId };
+      }
+      case "SUPPLIER_INVOICE": {
+        const e = await db.expense.findUniqueOrThrow({ where: { id: ev.sourceId, zevId }, include: { supplier: { select: { name: true } } } });
+        return { ok: true, lines: await supplierInvoiceLines(db, zevId, ctx, e, at), description: expenseLabel(e) };
+      }
+      case "SUPPLIER_INVOICE_CANCELLED": {
+        const e = await db.expense.findUniqueOrThrow({ where: { id: ev.sourceId, zevId }, include: { supplier: { select: { name: true } } } });
+        const o = await originalLines(db, zevId, "Expense", e.id, "SUPPLIER_INVOICE", () => supplierInvoiceLines(db, zevId, ctx, e, at));
+        return { ok: true, lines: negate(o.lines), description: `Storno — ${expenseLabel(e)}`, reversalOfId: o.entryId };
+      }
+      case "SUPPLIER_PAYMENT":
+      case "CASH_INCOME":
+      case "CASH_EXPENSE": {
+        const t = await db.finTransaction.findUniqueOrThrow({ where: { id: ev.sourceId, zevId } });
+        if (t.expenseId) await requirePosted(db, zevId, "Expense", t.expenseId, "SUPPLIER_INVOICE", "račun dobavljača koji se plaća");
+        return { ok: true, lines: await transactionLines(db, zevId, ctx, t, at), description: `${t.expenseId ? "Plaćanje dobavljaču" : t.type === "INCOME" ? "Prihod" : "Rashod"} ${formatDate(t.date)}${t.counterpartyName ? ` — ${t.counterpartyName}` : ""}` };
+      }
+      case "TRANSACTION_CANCELLED": {
+        const t = await db.finTransaction.findUniqueOrThrow({ where: { id: ev.sourceId, zevId } });
+        const o = await originalLines(db, zevId, "FinTransaction", t.id, transactionKind(t), () => transactionLines(db, zevId, ctx, t, at));
+        return { ok: true, lines: negate(o.lines), description: `Storno transakcije ${formatDate(t.date)}${t.counterpartyName ? ` — ${t.counterpartyName}` : ""}`, reversalOfId: o.entryId };
+      }
+      case "BALANCE_CORRECTION": {
+        const c = await db.balanceCorrection.findUniqueOrThrow({ where: { id: ev.sourceId, zevId } });
+        return { ok: true, lines: await correctionLines(db, zevId, ctx, c, at), description: `Korekcija salda — ${c.reason}` };
       }
       default:
         return wait("WAITING_RULE", "Ova vrsta događaja se još ne knjiži automatski.");
@@ -515,6 +658,8 @@ export async function afterLedgerChange(zevId: string | null | undefined, userId
 // Ekran „Događaji” (prava provjerava servis)
 // ---------------------------------------------------------------------------
 
+const EXPENSES_HREF = "/troskovi?tab=troskovi";
+
 export type EventRow = {
   id: string; kind: AccountingEventKind; status: AccountingEventStatus; statusDetail: string | null; eventDate: Date; amount: string;
   sourceLabel: string; sourceHref: string | null; entryId: string | null; entryNumber: string | null;
@@ -523,15 +668,24 @@ export type EventRow = {
 /** Oznaka i veza izvora događaja (faktura, uplata; raspored vodi na uplatu). */
 async function describeSources(zevId: string, events: { sourceType: string; sourceId: string }[]) {
   const ids = (t: string) => [...new Set(events.filter((e) => e.sourceType === t).map((e) => e.sourceId))];
-  const [invoices, payments, allocations] = await Promise.all([
+  const [invoices, payments, allocations, expenses, txs, corrections] = await Promise.all([
     prisma.invoice.findMany({ where: { zevId, id: { in: ids("Invoice") } }, select: { id: true, number: true } }),
     prisma.payment.findMany({ where: { zevId, id: { in: ids("Payment") } }, select: { id: true, date: true, payerNameRaw: true } }),
     prisma.paymentAllocation.findMany({ where: { id: { in: ids("PaymentAllocation") } }, select: { id: true, paymentId: true, invoice: { select: { number: true } } } }),
+    prisma.expense.findMany({ where: { zevId, id: { in: ids("Expense") } }, include: { supplier: { select: { name: true } } } }),
+    prisma.finTransaction.findMany({ where: { zevId, id: { in: ids("FinTransaction") } }, select: { id: true, date: true, type: true, expenseId: true, counterpartyName: true } }),
+    prisma.balanceCorrection.findMany({ where: { zevId, id: { in: ids("BalanceCorrection") } }, select: { id: true, reason: true, party: { select: { kind: true, firstName: true, lastName: true, orgName: true } } } }),
   ]);
   const out = new Map<string, { label: string; href: string | null }>();
   for (const i of invoices) out.set(`Invoice:${i.id}`, { label: `Faktura ${i.number}`, href: `/fakture/${i.id}` });
   for (const p of payments) out.set(`Payment:${p.id}`, { label: `Uplata ${formatDate(p.date)}${p.payerNameRaw ? ` — ${p.payerNameRaw}` : ""}`, href: `/fakture/uplate/${p.id}` });
   for (const a of allocations) out.set(`PaymentAllocation:${a.id}`, { label: `Raspored na fakturu ${a.invoice.number}`, href: `/fakture/uplate/${a.paymentId}` });
+  for (const e of expenses) out.set(`Expense:${e.id}`, { label: expenseLabel(e), href: EXPENSES_HREF });
+  for (const t of txs) {
+    const what = t.expenseId ? "Plaćanje dobavljaču" : t.type === "INCOME" ? "Prihod" : "Rashod";
+    out.set(`FinTransaction:${t.id}`, { label: `${what} ${formatDate(t.date)}${t.counterpartyName ? ` — ${t.counterpartyName}` : ""}`, href: t.expenseId ? EXPENSES_HREF : null });
+  }
+  for (const c of corrections) out.set(`BalanceCorrection:${c.id}`, { label: `Korekcija salda — ${displayNameOf(c.party, "")}`, href: null });
   return out;
 }
 
@@ -592,5 +746,61 @@ export async function autoEntrySource(actor: Actor, type: string | null, id: str
     const a = await prisma.paymentAllocation.findFirst({ where: { id, payment: { zevId } }, select: { paymentId: true } });
     return a ? { type, href: `/fakture/uplate/${a.paymentId}` } : null;
   }
+  if (type === "Expense") return { type, href: EXPENSES_HREF };
+  if (type === "FinTransaction") {
+    const t = await prisma.finTransaction.findFirst({ where: { id, zevId }, select: { expenseId: true } });
+    return t?.expenseId ? { type, href: EXPENSES_HREF } : null;
+  }
   return null;
+}
+
+export type PostingNote = { kind: AccountingEventKind; status: AccountingEventStatus; detail: string | null; entryId: string | null; entryNumber: string | null };
+
+/**
+ * Stanje knjiženja dokumenata za oznaku na fakturi, uplati i trošku (§5) — samo za uloge sa pregledom knjige i
+ * samo kad je knjiženje aktivno (inače null). Ključ mape je id dokumenta; događaji redom nastanka.
+ */
+export async function postingNotes(actor: Actor, sourceType: "Invoice" | "Payment" | "PaymentAllocation" | "Expense", ids: string[]): Promise<Map<string, PostingNote[]> | null> {
+  if (!hasCapability(actor.roles, "ledger.view") || !actor.zevId || ids.length === 0) return null;
+  if (!(await ledgerStart(prisma, actor.zevId))) return null;
+  // Trošak nosi i događaje svojih plaćanja (promet sa vezom na trošak).
+  const owner = new Map(ids.map((id) => [id, id]));
+  const sources: Prisma.AccountingEventWhereInput[] = [{ sourceType, sourceId: { in: ids } }];
+  if (sourceType === "Expense") {
+    const txs = await prisma.finTransaction.findMany({ where: { zevId: actor.zevId, expenseId: { in: ids } }, select: { id: true, expenseId: true } });
+    for (const t of txs) owner.set(t.id, t.expenseId!);
+    if (txs.length > 0) sources.push({ sourceType: "FinTransaction", sourceId: { in: txs.map((t) => t.id) } });
+  }
+  const events = await prisma.accountingEvent.findMany({
+    where: { zevId: actor.zevId, OR: sources },
+    include: { journalEntry: { select: { id: true, number: true } } },
+    orderBy: [{ eventDate: "asc" }, { sourceCreatedAt: "asc" }],
+  });
+  const out = new Map<string, PostingNote[]>();
+  for (const e of events) {
+    const key = owner.get(e.sourceId) ?? e.sourceId;
+    const list = out.get(key) ?? [];
+    list.push({ kind: e.kind, status: e.status, detail: e.statusDetail, entryId: e.journalEntry?.id ?? null, entryNumber: e.journalEntry?.number ?? null });
+    out.set(key, list);
+  }
+  return out;
+}
+
+/** Broj naloga kojim je događaj izvora proknjižen (null = nije proknjižen ili ne postoji). */
+export async function postedEntryNumber(db: Db, zevId: string, sourceType: string, sourceId: string, kind: AccountingEventKind): Promise<string | null> {
+  const ev = await db.accountingEvent.findUnique({
+    where: { zevId_sourceType_sourceId_kind: { zevId, sourceType, sourceId, kind } }, include: { journalEntry: { select: { number: true } } },
+  });
+  return ev?.status === "POSTED" ? ev.journalEntry?.number ?? "" : null;
+}
+
+/** B2-Q9 (b): kad je knjiženje aktivno, ručni prihod/rashod i trošak od datuma početka moraju imati kategoriju. */
+export async function categoryRequired(db: Db, zevId: string, date: Date): Promise<boolean> {
+  const start = await ledgerStart(db, zevId);
+  return !!start && dayOf(date) >= start;
+}
+
+/** Neproknjiženi događaj se izvodi ponovo (npr. poslije izmjene troška prije knjiženja). */
+export async function dropUnpostedEvents(db: Db, zevId: string, sourceType: string, sourceId: string) {
+  await db.accountingEvent.deleteMany({ where: { zevId, sourceType, sourceId, status: { not: "POSTED" } } });
 }
