@@ -43,6 +43,19 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.12.1] - 2026-11-22
+
+Dorada B4 poslije provjere produkcije: sve fakture izdate prije uvođenja vrsta zaduženja imaju stavke bez vrste.
+
+**Migracija: ne.**
+
+### Ispravljeno
+
+- **Storno fakture iz vremena prije početka knjiženja** sa stavkom bez vrste zaduženja više ne čeka zauvijek: stavka se knjiži na vrstu čija je podrazumijevana namjena ona iz početnog stanja (redovno održavanje, B1-Q3), pa se skida tačno potraživanje koje je početno stanje proknjižilo. Nova faktura sa stavkom bez vrste i dalje čeka.
+- Test u `tests/ledger-dry-run.test.ts`.
+
+Uputstvo: dopuna 13.12 (storno dokumenta iz vremena prije početka knjiženja i fakture bez vrste zaduženja).
+
 ## [3.12.0] - 2026-11-22
 
 Kontni plan, **Faza B4 — probno knjiženje, aktivacija i provjera cijelog toka** (`Plans/kontni-plan-b4-proba-i-aktivacija-plan.md`). Nova stranica Knjigovodstvo → Nalozi → **Probno knjiženje**.

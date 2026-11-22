@@ -246,11 +246,25 @@ async function assertReserveAllowed(ctx: Ctx, purposeId: string | null) {
   }
 }
 
-/** Zaduženje: D potraživanja (vlasnik, dio, namjena) / P protivkonto pravila — po paru za svaku vrstu zaduženja. */
-async function chargeLines(db: Db, zevId: string, ctx: Ctx, inv: InvoiceFull, at: Date): Promise<Signed[]> {
+/**
+ * Zaduženje: D potraživanja (vlasnik, dio, namjena) / P protivkonto pravila — po paru za svaku vrstu zaduženja.
+ * `untypedAsDefault`: stavka bez vrste (faktura izdata prije vrsta zaduženja) ide na vrstu čija je podrazumijevana
+ * namjena ona iz početnog stanja (B1-Q3) — samo za storno fakture koja je sadržana u početnom stanju.
+ */
+async function chargeLines(db: Db, zevId: string, ctx: Ctx, inv: InvoiceFull, at: Date, opts: { untypedAsDefault?: boolean } = {}): Promise<Signed[]> {
   const byType = new Map<string, Decimal>();
+  let defaultType: string | null | undefined;
   for (const l of inv.lines) {
-    const typeId = l.chargeTypeId ?? l.chargeItem?.chargeTypeId ?? null;
+    let typeId = l.chargeTypeId ?? l.chargeItem?.chargeTypeId ?? null;
+    if (!typeId && opts.untypedAsDefault) {
+      if (defaultType === undefined) {
+        const purposeId = await ctx.fallbackPurpose();
+        defaultType = purposeId
+          ? (await db.chargeType.findFirst({ where: { zevId, active: true, defaultPurposeId: purposeId }, orderBy: { code: "asc" }, select: { id: true } }))?.id ?? null
+          : null;
+      }
+      typeId = defaultType;
+    }
     if (!typeId) throw new Waiting("WAITING_RULE", `Faktura ${inv.number} ima stavku bez vrste zaduženja („${l.description}”).`);
     byType.set(typeId, (byType.get(typeId) ?? ZERO).plus(dec(l.amount.toString())));
   }
@@ -481,7 +495,9 @@ async function build(db: Db, zevId: string, ctx: Ctx, ev: { kind: AccountingEven
       }
       case "CHARGE_CANCELLED": {
         const inv = await loadInvoice(db, zevId, ev.sourceId);
-        const o = await originalLines(db, zevId, "Invoice", inv.id, "CHARGE_ISSUED", () => chargeLines(db, zevId, ctx, inv, at));
+        // Faktura prije početka nema zaduženje u knjizi (sadržana je u početnom stanju) — storno po svježoj šemi, a
+        // stavka bez vrste ide na podrazumijevanu namjenu, kao u početnom stanju.
+        const o = await originalLines(db, zevId, "Invoice", inv.id, "CHARGE_ISSUED", () => chargeLines(db, zevId, ctx, inv, at, { untypedAsDefault: true }));
         return { ok: true, lines: negate(o.lines), description: `Storno zaduženja — faktura ${inv.number}`, reversalOfId: o.entryId };
       }
       case "PAYMENT_RECEIVED": {

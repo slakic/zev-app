@@ -11,6 +11,7 @@ import * as ev from "@/server/services/ledgerEvents";
 import * as pay from "@/server/services/payments";
 import * as dr from "@/server/services/ledgerDryRun";
 import * as rc from "@/server/services/ledgerReconciliation";
+import * as billing from "@/server/services/billing";
 import { toZonedDateIso } from "@/lib/i18n";
 
 const RULES = { digitsOnly: true, allowedLengths: [1, 2, 3, 5], childExtendsParent: true, maxDepth: 4 };
@@ -77,6 +78,7 @@ describe("B4: probno knjiženje i kasno uneseni dokumenti", () => {
   let f: Fixture;
   let ctx: Ctx;
   let dry: dr.DryRunResult;
+  let untyped: { id: string };
 
   beforeAll(async () => {
     sa = await createSuperAdminActor("b4-sa");
@@ -84,6 +86,13 @@ describe("B4: probno knjiženje i kasno uneseni dokumenti", () => {
     ctx = await setup(sa, f, "b4");
     // Evidencija prije početka (ulazi u početno stanje) i poslije (događaji).
     await invoice(f, "40.00", ctx.odrz, new Date(`${PREV}T10:00:00Z`));
+    // Faktura izdata prije vrsta zaduženja: stavka bez vrste (kao sve fakture iz 2026. u produkciji).
+    untyped = await prisma.invoice.create({
+      data: {
+        zevId: f.zev.id, number: uid("F"), unitId: f.u1.id, debtorId: f.ownerC.id, issueDate: new Date(`${PREV}T10:00:00Z`), dueDate: new Date(`${PREV}T10:00:00Z`),
+        total: "12.00", status: "ISSUED", lines: { create: [{ description: "Stara naknada", calcSnapshot: {}, amount: "12.00", order: 0 }] },
+      },
+    });
     await pay.enterPayment(f.accountant, { accountId: f.account.id, date: new Date(`${PREV}T10:00:00Z`), amount: "15.00", payerId: f.ownerB.id });
     const inv = await invoice(f, "50.00", ctx.odrz);
     await invoice(f, "20.00", ctx.rez);
@@ -138,6 +147,17 @@ describe("B4: probno knjiženje i kasno uneseni dokumenti", () => {
     const r = await rc.reconcileAt(f.accountant, TODAY);
     expect(r.ok).toBe(true);
     expect(r.rows.find((x) => x.role === "MONEY_ACCOUNT")).toMatchObject({ difference: "0.00" });
+  });
+
+  it("storno fakture iz prethodne godine sa stavkom bez vrste knjiži se po podrazumijevanoj namjeni (kao početno stanje)", async () => {
+    await billing.cancelInvoice(f.accountant, untyped.id, "Pogrešno izdata");
+    const e = await prisma.accountingEvent.findUniqueOrThrow({ where: { zevId_sourceType_sourceId_kind: { zevId: f.zev.id, sourceType: "Invoice", sourceId: untyped.id, kind: "CHARGE_CANCELLED" } } });
+    expect(e.status).toBe("POSTED");
+    const lines = await prisma.journalLine.findMany({ where: { entryId: e.journalEntryId! }, include: { account: { select: { code: true } } } });
+    expect(lines.find((l) => l.account.code === "20101")).toMatchObject({ partyId: f.ownerC.id });
+    expect(Number(lines.find((l) => l.account.code === "20101")!.credit)).toBe(12);
+    expect(Number(lines.find((l) => l.account.code === "49901")!.debit)).toBe(12);
+    expect((await rc.reconcileAt(f.accountant, TODAY)).ok).toBe(true);
   });
 
   it("zapis prije početka unesen PRIJE knjiženja početnog stanja nema događaj (sadržan je u početnom stanju)", async () => {
