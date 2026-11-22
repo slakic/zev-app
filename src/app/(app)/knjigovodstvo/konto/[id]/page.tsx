@@ -5,7 +5,7 @@ import { getZevAccount, getZevChart } from "@/server/services/chartOfAccounts";
 import { ACCOUNT_NATURES } from "@/lib/accountCodes";
 import { ledgerMessage } from "@/lib/ledgerMessages";
 import { t, tEnum, tf } from "@/lib/i18n";
-import { PageHeader, Card, Flash, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, StatusBadge, RowLink } from "@/components/ui";
+import { PageHeader, Card, Flash, Field, inputCls, SubmitBtn, ToggleBtn, ConfirmAction, StatusBadge, RowLink, BtnLink } from "@/components/ui";
 import { AddAccountForm } from "@/components/add-account-form";
 import {
   deactivateAccountAction, deleteAccountAction, reactivateAccountAction, replaceAccountAction, updateAccountAction,
@@ -72,6 +72,12 @@ export default async function AccountPage({
             )}
           </dl>
         </Card>
+
+        {acc.chart.status !== "DRAFT" && (
+          <Card title={t("ledger.reports.accountCardTitle")} hint={t("ledger.reports.accountCardHint")}>
+            <BtnLink href={`/knjigovodstvo/izvjestaji/kartica?konto=${acc.id}`} variant="tonal">{t("ledger.reports.openCard")}</BtnLink>
+          </Card>
+        )}
 
         {canEdit && (
           <Card title={t("ledger.account.edit")} hint={isDraft ? undefined : t("ledger.account.editLockedHint")}>

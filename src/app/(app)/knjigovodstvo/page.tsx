@@ -11,6 +11,7 @@ import { AddAccountForm } from "@/components/add-account-form";
 import { RulesTab } from "./rules-tab";
 import { JournalTab } from "./journal-tab";
 import { EventsTab } from "./events-tab";
+import { ReportsTab } from "./reports-tab";
 import { listReopenRequests } from "@/server/services/journal";
 import { closePeriodAction, decideReopenAction, requestReopenAction } from "@/server/actions/journal";
 import { ledgerMessage } from "@/lib/ledgerMessages";
@@ -37,7 +38,7 @@ const periodHeaders: ColumnSpec[] = [
 
 /**
  * „Knjigovodstvo” (Plans/kontni-plan-i-knjizenje-plan.md §3.8, Faza A1): kontni plan ZEV-a i poslovne godine.
- * Pravila, nalozi i izvještaji su vidljivi kao tabovi sa „Nije još dostupno” (A-Q7). Prava: predsjednik vidi,
+ * Pravila, nalozi, događaji i izvještaji iz knjige su tabovi (A2–B3). Prava: predsjednik vidi,
  * računovođa uređuje — provjerava ih servis (`requireCapability`), stranica samo bira šta prikazuje.
  */
 export default async function LedgerPage({
@@ -67,19 +68,8 @@ export default async function LedgerPage({
       {tab === "pravila" && <RulesTab actor={actor} />}
       {tab === "nalozi" && <JournalTab actor={actor} periodId={sp.period ?? ""} status={sp.status ?? ""} />}
       {tab === "dogadjaji" && <EventsTab actor={actor} filter={sp.prikaz ?? ""} />}
-      {tab === "izvjestaji" && <NotYet text={t("ledger.upcoming.reports")} title={t("ledger.tabs.reports")} />}
+      {tab === "izvjestaji" && <ReportsTab />}
     </div>
-  );
-}
-
-function NotYet({ title, text }: { title: string; text: string }) {
-  return (
-    <Card title={title}>
-      <div className="space-y-3">
-        <StatusBadge status="NOT_YET_AVAILABLE" label={t("ledger.notYet")} />
-        <p className="max-w-[68ch] text-sm text-slate-600">{text}</p>
-      </div>
-    </Card>
   );
 }
 

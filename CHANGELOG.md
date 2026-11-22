@@ -43,6 +43,30 @@ Korištena je jednostavnija šema oblika `MAJOR.mmm`:
 
 </details>
 
+## [3.10.0] - 2026-11-22
+
+Kontni plan, **Faza B3a — izvještaji iz knjige** (`Plans/kontni-plan-b3-izvjestaji-plan.md` §2–3). Tab Knjigovodstvo → **Izvještaji** više nije „Nije još dostupno”.
+
+**Migracija: ne** (izvještaji se računaju na zahtjev iz postojećih stavki naloga).
+
+### Dodato
+
+- **Spisak izvještaja** na tabu „Izvještaji”; svaki izvještaj je podstranica sa periodom (Od–Do ili jedan klik na poslovnu godinu) i dugmetom **Izvoz CSV** (B3-Q2).
+- **Dnevnik knjiženja:** proknjiženi nalozi u periodu sa stavkama i zbirom, filter po vrsti naloga.
+- **Bruto bilans:** početno stanje, promet i saldo po kontu (duguje/potražuje), po izboru sa zbirnim kontima; filter po namjeni ili projektu; klik na konto otvara karticu.
+- **Kartica konta:** početno stanje, stavke sa saldom u prirodnoj strani konta, promet i završno stanje; zbirno konto obuhvata podkonta; veza i sa stranice konta. **Glavna knjiga** (sve kartice) kao CSV (B3-Q6).
+- **Kartica vlasnika** i **kartica dobavljača** iz knjige.
+- **Pregled po namjeni** (dug vlasnika, zaduženo, naplaćeno, prihodi, rashodi; rezerva označena) i **pregled po projektu**, sa vezom na bruto bilans filtriran po namjeni/projektu.
+- **Storno nalozi:** ručni i automatski storno u periodu, sa originalom, razlogom, iznosom, dokumentom i ko je proknjižio.
+- Samo proknjiženi nalozi; period po datumu knjiženja (B3-Q4); „početno stanje” izvještaja = nalog početnog stanja + promet prije perioda. Izvoz CSV-a se bilježi u revizorskom tragu („Izvezen izvještaj iz knjige (CSV)”).
+- Testovi `tests/ledger-reports.test.ts`.
+
+### Izmijenjeno
+
+- Upozorenje na vrhu Knjigovodstva upućuje na tab „Izvještaji”.
+
+Uputstvo: novo 13.12 „Izvještaji iz knjige”, dopune 13.5 (Promet konta), uvoda poglavlja 13 i napomene u 1. (bila je zastarjela i poslije B2b), bočni sadržaj, rječnik (bruto bilans, kartica konta).
+
 ## [3.9.0] - 2026-11-21
 
 Kontni plan, **Faza B2b — automatsko knjiženje dobavljača, ručnih transakcija i korekcija salda** (`Plans/kontni-plan-b2-automatsko-knjizenje-plan.md`).

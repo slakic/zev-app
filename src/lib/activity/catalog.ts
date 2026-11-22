@@ -173,6 +173,7 @@ export const ACTION_CATEGORY: Record<string, ActivityCategory> = {
   "journal.opening_prepare": "FINANCE",
   "journal.events_process": "FINANCE",
   "journal.event_into_period": "FINANCE",
+  "ledger.report.export": "FINANCE",
   "fiscal_period.close": "FINANCE",
   "fiscal_period.reopen_request": "FINANCE",
   "fiscal_period.reopen": "FINANCE",
